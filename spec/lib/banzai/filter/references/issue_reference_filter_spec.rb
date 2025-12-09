@@ -584,7 +584,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
     end
   end
 
-  describe '#object_link_text_extras' do
+  describe '#object_link_content_html_extras' do
     before do
       enable_design_management(enabled)
     end
@@ -592,7 +592,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
     let(:current_user) { project.first_owner }
     let(:enabled) { true }
     let(:matches) { Issue.link_reference_pattern.match(input_text) }
-    let(:extras) { subject.object_link_text_extras(issue, matches) }
+    let(:extras) { subject.object_link_content_html_extras(issue, matches) }
 
     subject { filter_instance }
 

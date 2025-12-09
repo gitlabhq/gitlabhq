@@ -34,12 +34,16 @@ describe('broadcast message on dismiss', () => {
 
     mockAxios = new MockAdapter(axios);
 
+    window.gon = {
+      broadcast_message_dismissal_path: dismissalPath,
+    };
     initBroadcastNotifications();
   });
 
   afterEach(() => {
     resetHTMLFixture();
     mockAxios.restore();
+    delete window.gon;
   });
 
   it('removes broadcast message', () => {
@@ -74,6 +78,34 @@ describe('broadcast message on dismiss', () => {
         broadcast_message_id: messageId,
         expires_at: endsAt,
       });
+    });
+  });
+
+  describe('when data-dismissal-path is incorrect', () => {
+    beforeEach(() => {
+      window.gon = {
+        broadcast_message_dismissal_path: '/some/other/path',
+      };
+    });
+
+    it('does not call broadcast_message_dismissal endpoint', async () => {
+      jest.spyOn(axios, 'post');
+
+      dismiss();
+      await waitForPromises();
+
+      expect(axios.post).toHaveBeenCalledTimes(0);
+    });
+
+    it('captures error using Sentry', async () => {
+      jest.spyOn(Sentry, 'captureException').mockImplementation();
+
+      dismiss();
+      await waitForPromises();
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(
+        new Error('Dismissal path mismatch for broadcast message'),
+      );
     });
   });
 

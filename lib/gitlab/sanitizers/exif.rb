@@ -14,36 +14,9 @@ module Gitlab
         ImageHeight
         ImageWidth
         ImageSize
-        Copyright
-        CopyrightNotice
         Orientation
       ].freeze
 
-      # these tags are common in exiftool output, these
-      # do not contain any sensitive information, but
-      # we don't need to preserve them when removing
-      # exif tags
-      IGNORED_TAGS = %w[
-        ColorComponents
-        EncodingProcess
-        ExifByteOrder
-        ExifToolVersion
-        JFIFVersion
-        Directory
-        FileAccessDate
-        FileInodeChangeDate
-        FileModifyDate
-        FileName
-        FilePermissions
-        FileSize
-        SourceFile
-        Megapixels
-        FileType
-        FileTypeExtension
-        MIMEType
-      ].freeze
-
-      ALLOWED_TAGS = ALLOWLISTED_TAGS + IGNORED_TAGS
       EXCLUDE_PARAMS = ALLOWLISTED_TAGS.map { |tag| "-#{tag}" }
       ALLOWED_MIME_TYPES = %w[image/jpeg image/tiff].freeze
 
@@ -82,15 +55,6 @@ module Gitlab
         Dir.mktmpdir('gitlab-exif') do |tmpdir|
           src_path = fetch_upload_to_file(uploader, tmpdir)
 
-          to_remove = extra_tags(src_path)
-
-          if to_remove.empty?
-            logger.info "#{upload_ref(uploader.upload)}: only whitelisted tags present, skipping"
-            break
-          end
-
-          logger.info "#{upload_ref(uploader.upload)}: found exif tags to remove: #{to_remove}"
-
           break if dry_run
 
           remove_and_store(tmpdir, src_path, uploader)
@@ -106,24 +70,12 @@ module Gitlab
           check_for_allowed_types(content)
         end
 
-        to_remove = extra_tags(src_path)
-
-        if to_remove.empty?
-          logger.info "#{src_path}: only whitelisted tags present, skipping"
-          return
-        end
-
-        logger.info "#{src_path}: found exif tags to remove: #{to_remove}"
         return if dry_run
 
         exec_remove_exif!(src_path)
       end
 
       private
-
-      def extra_tags(path)
-        exif_tags(path).keys - ALLOWED_TAGS
-      end
 
       def remove_and_store(tmpdir, src_path, uploader)
         exec_remove_exif!(src_path)
@@ -132,13 +84,15 @@ module Gitlab
       end
 
       def exec_remove_exif!(path)
-        # IPTC and XMP-iptcExt groups may keep copyright information so
-        # we always preserve them
-        cmd = ["exiftool", "-all=", "-tagsFromFile", "@", *EXCLUDE_PARAMS, "--IPTC:all", "--XMP-iptcExt:all", path]
-        output, status = Gitlab::Popen.popen(cmd)
+        [
+          ["exiftool", "-IPTC=", "-XMP=", path],
+          ["exiftool", "-all=", "-tagsFromFile", "@", *EXCLUDE_PARAMS, path]
+        ].each do |cmd|
+          output, status = Gitlab::Popen.popen(cmd)
 
-        if status != 0
-          raise "exiftool return code is #{status}: #{output}"
+          if status != 0
+            raise "exiftool return code is #{status}: #{output}"
+          end
         end
 
         if File.size(path) == 0
@@ -181,15 +135,6 @@ module Gitlab
 
       def upload_ref(upload)
         "#{upload.id}:#{upload.path}"
-      end
-
-      def exif_tags(path)
-        cmd = ["exiftool", "-all", "-j", "-sort", "--IPTC:all", "--XMP-iptcExt:all", path]
-        output, status = Gitlab::Popen.popen(cmd)
-
-        raise "failed to get exif tags: #{output}" if status != 0
-
-        Gitlab::Json.parse(output).first
       end
     end
   end

@@ -60,6 +60,8 @@ module Gitlab
       gon.uf_error_prefix        = ::Gitlab::Utils::ErrorMessage::UF_ERROR_PREFIX
       gon.pat_prefix             = Gitlab::CurrentSettings.current_application_settings.personal_access_token_prefix
       gon.keyboard_shortcuts_enabled = current_user ? current_user.keyboard_shortcuts_enabled : true
+      gon.broadcast_message_dismissal_path =
+        current_user ? Gitlab::Routing.url_helpers.broadcast_message_dismissals_path : nil
 
       gon.diagramsnet_url = Gitlab::CurrentSettings.diagramsnet_url if Gitlab::CurrentSettings.diagramsnet_enabled
 

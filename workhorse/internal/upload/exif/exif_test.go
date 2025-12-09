@@ -77,7 +77,7 @@ func TestNewCleanerWithValidFile(t *testing.T) {
 	size, err := io.Copy(io.Discard, cleaner)
 	require.NoError(t, err, "Expected no error when reading output")
 
-	sizeAfterStrip := int64(25399)
+	sizeAfterStrip := int64(22464)
 	require.Equal(t, sizeAfterStrip, size, "Different size of converted image")
 }
 
@@ -88,9 +88,8 @@ func TestNewCleanerWithInvalidFile(t *testing.T) {
 	cleaner, err := NewCleaner(ctx, strings.NewReader("invalid image"))
 	require.NoError(t, err, "Expected no error when creating cleaner command")
 
-	size, err := io.Copy(io.Discard, cleaner)
+	_, err = io.Copy(io.Discard, cleaner)
 	require.Error(t, err, "Expected error when reading output")
-	require.Equal(t, int64(0), size, "Size of invalid image should be 0")
 }
 
 func TestNewCleanerReadingAfterEOF(t *testing.T) {
