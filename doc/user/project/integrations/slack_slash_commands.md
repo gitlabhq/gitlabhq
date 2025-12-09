@@ -2,9 +2,11 @@
 stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Slack slash commands
+title: Slack slash commands (deprecated)
 description: "Configure Slack slash commands for GitLab Self-Managed instances."
 ---
+
+<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
 
 {{< details >}}
 
@@ -13,16 +15,25 @@ description: "Configure Slack slash commands for GitLab Self-Managed instances."
 
 {{< /details >}}
 
-{{< alert type="note" >}}
+{{< alert type="warning" >}}
 
-This feature is only configurable on GitLab Self-Managed.
-For GitLab.com, use the [GitLab for Slack app](gitlab_slack_application.md) instead.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/569345) in GitLab 18.7
+and is planned for removal in 19.0. Use [GitLab for Slack app](gitlab_slack_application.md) instead.
+
+This change is a breaking change.
 
 {{< /alert >}}
 
 You can use [slash commands](gitlab_slack_application.md#slash-commands) to run common GitLab operations,
 like creating an issue, from a [Slack](https://slack.com/) chat environment.
 To run slash commands in Slack, you must configure both Slack and GitLab.
+
+{{< alert type="note" >}}
+
+This feature is only configurable on GitLab Self-Managed.
+For GitLab.com, use the [GitLab for Slack app](gitlab_slack_application.md) instead.
+
+{{< /alert >}}
 
 GitLab can also send events (such as `issue created`) to Slack as part of
 [Slack notifications](gitlab_slack_application.md#slack-notifications).
@@ -47,3 +58,5 @@ Slack slash commands are scoped to a project. To configure Slack slash commands:
    1. Select **Save changes**.
 
 You can now run slash commands in Slack.
+
+<!--- end_remove -->

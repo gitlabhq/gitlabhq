@@ -1,0 +1,27 @@
+- title: "Slack slash commands"
+  removal_milestone: "19.0"
+  announcement_milestone: "18.7"
+  breaking_change: true
+  window: 3
+  reporter: thiagocsf
+  stage: Create
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/569345
+  check_impact: https://gitlab.com/gitlab-org/gitlab/-/work_items/569345#am-i-impacted
+  impact: low
+  impact_details: https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?usage=edge_case&migration_complexity=minor_manual&scope=instance&identification_complexity=single&additional_complexity=no&base_impact=minor&pipeline_impact=none&compliance_impact=none&availability_impact=none&authorization_impact=none&API_impact=none
+  impact_offering: [Dedicated, self-managed]
+  scope: [instance, group, project]
+  resolution_role: [Admin]
+  manual_task: true
+  body: |  # (required) Don't change this line.
+    The [Slack slash commands integration](https://docs.gitlab.com/user/project/integrations/slack_slash_commands/) is
+    deprecated in favor of the [GitLab for Slack app](https://docs.gitlab.com/user/project/integrations/gitlab_slack_application/),
+    which provides a more secure integration method with the same capabilities.
+
+    From GitLab 19.0, users will no longer be able to configure or use the Slack slash commands integration. This
+    integration is only available on GitLab Self-Managed and GitLab Dedicated instances. If you're on GitLab.com, you
+    don't need to do anything.
+
+    If you're on GitLab Self-Managed or GitLab Dedicated, to find out if you're impacted, see
+    [issue 569345](https://gitlab.com/gitlab-org/gitlab/-/work_items/569345#am-i-impacted).
+  documentation_url: https://docs.gitlab.com/user/project/integrations/slack_slash_commands/

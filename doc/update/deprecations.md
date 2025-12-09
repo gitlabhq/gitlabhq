@@ -244,6 +244,31 @@ For more information about updating your storage driver configuration, see [use 
 
 </div>
 
+<div class="deprecation breaking-change" data-milestone="19.0">
+
+### Slack slash commands
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.7</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/569345).
+
+</div>
+
+The [Slack slash commands integration](https://docs.gitlab.com/user/project/integrations/slack_slash_commands/) is
+deprecated in favor of the [GitLab for Slack app](https://docs.gitlab.com/user/project/integrations/gitlab_slack_application/),
+which provides a more secure integration method with the same capabilities.
+
+From GitLab 19.0, users will no longer be able to configure or use the Slack slash commands integration. This
+integration is only available on GitLab Self-Managed and GitLab Dedicated instances. If you're on GitLab.com, you
+don't need to do anything.
+
+If you're on GitLab Self-Managed or GitLab Dedicated, to find out if you're impacted, see
+[issue 569345](https://gitlab.com/gitlab-org/gitlab/-/work_items/569345#am-i-impacted).
+
+</div>
+
 <div class="deprecation " data-milestone="19.0">
 
 ### The `ci_job_token_scope_enabled` projects API attribute is deprecated

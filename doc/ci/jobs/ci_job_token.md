@@ -131,7 +131,7 @@ Prerequisites:
 
 To add a group or project to the allowlist:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
 1. Select **Add group or project**.
@@ -290,7 +290,7 @@ Prerequisites:
 
 To set a feature to be only visible to project members:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Set the visibility to **Only project members** for the features you want to restrict access to.
@@ -335,7 +335,7 @@ Prerequisites:
 
 To disable the job token allowlist:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
 1. Under **Authorized groups and projects**, select **All groups and projects**.
@@ -364,10 +364,10 @@ pipelines can push to the project. Job tokens from other
 [projects or groups in the allowlist](#add-a-group-or-project-to-the-job-token-allowlist) cannot
 push to your project.
 
-When you use a job token to push to the project, no CI pipelines are triggered. The job token has
-the same access permissions as the user who started the job.
+When you use a job token to push to the project, no CI/CD pipelines are triggered.
+The job token has the same access permissions as the user who started the job.
 
-If you use the tool semantic-release, with **Allow Git push requests to the repository** setting enabled, the tool gives precedence to `CI_JOB_TOKEN` embedded over a GitLab personal access token, if one is configured. There is an [open issue](https://github.com/semantic-release/gitlab/issues/891) that tracks resolution for this edge case.
+If you use the `semantic-release` tool, [this setting might prevent pipeline creation](#the-semantic-release-tool-and-job-tokens).
 
 {{< alert type="warning" >}}
 
@@ -383,7 +383,7 @@ Prerequisites:
 
 To grant permission to job tokens generated in your project to push to the project's repository:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
 1. In the **Permissions** section, select **Allow Git push requests to the repository**.
@@ -442,7 +442,7 @@ You cannot use job tokens to authenticate GraphQL requests.
 You can track which other projects use a CI/CD job token to authenticate with your project
 in an authentication log. To check the log:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**. The **Authentication log** section displays the
    list of other projects that accessed your project by authenticating with a job token.
@@ -465,7 +465,7 @@ Beginning in GitLab 19.0, CI/CD job tokens use the JWT standard by default. Proj
 
 To use the legacy format for your CI/CD tokens:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Turn off **Enable JWT format for CI/CD job tokens**.
@@ -520,6 +520,16 @@ While troubleshooting CI/CD job token authentication issues, be aware that:
   - To remove project access.
 - The CI job token becomes invalid if the job is no longer running, has been erased,
   or if the project is in the process of being deleted.
+
+### The `semantic-release` tool and job tokens
+
+There is a known issue if you use the `semantic-release` tool with the [**Allow Git push requests to the repository** setting](#allow-git-push-requests-to-your-project-repository).
+When enabled:
+
+- The tool authenticates with the job token, even if the tool is configured to use a personal access token.
+- The job token does not trigger new pipelines, so release pipelines might not run.
+
+For more information, see the [issue 891](https://github.com/semantic-release/gitlab/issues/891).
 
 ### JWT format job token errors
 
