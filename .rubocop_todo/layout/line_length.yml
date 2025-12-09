@@ -1114,7 +1114,6 @@ Layout/LineLength:
     - 'ee/spec/lib/elastic/latest/custom_language_analyzers_spec.rb'
     - 'ee/spec/lib/elastic/multi_version_class_proxy_spec.rb'
     - 'ee/spec/lib/elastic/multi_version_instance_proxy_spec.rb'
-    - 'ee/spec/lib/gem_extensions/elasticsearch/model/adapter/active_record/records_spec.rb'
     - 'ee/spec/lib/gitlab/analytics/cycle_analytics/aggregated/data_for_duration_chart_spec.rb'
     - 'ee/spec/lib/gitlab/analytics/cycle_analytics/data_collector_spec.rb'
     - 'ee/spec/lib/gitlab/analytics/cycle_analytics/data_for_duration_chart_spec.rb'

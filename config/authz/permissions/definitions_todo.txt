@@ -163,7 +163,6 @@ build_service_proxy_enabled
 bulk_admin_epic
 cache_blob
 cancel_build
-cancel_pipeline
 change_commit_committer_check
 change_commit_committer_name_check
 change_group
@@ -236,7 +235,6 @@ create_organization
 create_package
 create_pages
 create_path_lock
-create_pipeline
 create_project
 create_project_secrets
 create_projects
@@ -616,7 +614,6 @@ read_parent
 read_path_locks
 read_pipeline_metadata
 read_pipeline_schedule_variables
-read_pipeline_variable
 read_pod_logs
 read_pro_ai_analytics
 read_project

@@ -201,8 +201,7 @@ Prerequisites:
 
 To control access to protected variables and runners:
 
-1. On the left sidebar, select **Search or go to** and find your project.
-   If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Under **Access protected resources in merge request pipelines**, select or clear

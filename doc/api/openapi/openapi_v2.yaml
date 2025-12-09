@@ -51,6 +51,8 @@ tags:
   description: Operations about branches
 - name: secure_files
   description: Operations about secure_files
+- name: pipeline_schedules
+  description: Operations about pipeline_schedules
 - name: cargo_packages
   description: Operations about cargo_packages
 - name: commits
@@ -12824,7 +12826,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: getApiV4ProjectsIdPipelineSchedules
     post:
       description: Create a new pipeline schedule
@@ -12858,7 +12860,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: postApiV4ProjectsIdPipelineSchedules
   "/api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}":
     get:
@@ -12891,7 +12893,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: getApiV4ProjectsIdPipelineSchedulesPipelineScheduleId
     put:
       description: Edit a pipeline schedule
@@ -12932,7 +12934,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: putApiV4ProjectsIdPipelineSchedulesPipelineScheduleId
     delete:
       description: Delete a pipeline schedule
@@ -12964,7 +12966,7 @@ paths:
         '412':
           description: Precondition Failed
       tags:
-      - projects
+      - pipeline_schedules
       operationId: deleteApiV4ProjectsIdPipelineSchedulesPipelineScheduleId
   "/api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}/pipelines":
     get:
@@ -13089,7 +13091,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: getApiV4ProjectsIdPipelineSchedulesPipelineScheduleIdPipelines
   "/api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}/take_ownership":
     post:
@@ -13126,7 +13128,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: postApiV4ProjectsIdPipelineSchedulesPipelineScheduleIdTakeOwnership
   "/api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}/play":
     post:
@@ -13160,7 +13162,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: postApiV4ProjectsIdPipelineSchedulesPipelineScheduleIdPlay
   "/api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}/variables":
     post:
@@ -13202,7 +13204,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: postApiV4ProjectsIdPipelineSchedulesPipelineScheduleIdVariables
   "/api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}/variables/{key}":
     get:
@@ -13241,7 +13243,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: getApiV4ProjectsIdPipelineSchedulesPipelineScheduleIdVariablesKey
     put:
       description: Edit a pipeline schedule variable
@@ -13288,7 +13290,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: putApiV4ProjectsIdPipelineSchedulesPipelineScheduleIdVariablesKey
     delete:
       description: Delete a pipeline schedule variable
@@ -13326,7 +13328,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: deleteApiV4ProjectsIdPipelineSchedulesPipelineScheduleIdVariablesKey
   "/api/v4/projects/{id}/(ref/{ref}/)trigger/pipeline":
     post:

@@ -18,6 +18,14 @@ module Gitlab
             def composable_class
               Gitlab::Ci::Config::Header::Input::Rules::Rule
             end
+
+            def errors
+              super.map do |error|
+                error.gsub(/(?:header:spec:inputs:)?(\w+):rules:rule (?:base |config )?(.+)/) do
+                  "`#{::Regexp.last_match(1)}` input: #{::Regexp.last_match(2)}"
+                end
+              end
+            end
           end
         end
       end

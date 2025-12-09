@@ -80,7 +80,8 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedRelationExportUploads,
       uploader: 'ImportExportUploader',
       path: 'orphaned/path/file1.tar.gz',
       size: 2048,
-      store: 1
+      store: 1,
+      project_id: project.id
     )
   end
 
@@ -91,7 +92,8 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedRelationExportUploads,
       uploader: 'ImportExportUploader',
       path: 'orphaned/path/file2.tar.gz',
       size: 3072,
-      store: 2
+      store: 2,
+      project_id: project.id
     )
   end
 

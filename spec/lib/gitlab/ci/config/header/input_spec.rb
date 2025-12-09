@@ -33,8 +33,8 @@ RSpec.describe Gitlab::Ci::Config::Header::Input, feature_category: :pipeline_co
       let(:config) do
         {
           rules: [
-            { if: '$[[ inputs.environment ]] == "production"', options: %w[option_a option_b] },
-            { options: %w[option_c option_d] }
+            { if: '$[[ inputs.environment ]] == "production"', options: %w[option_a option_b], default: 'option_a' },
+            { options: %w[option_c option_d], default: 'option_c' }
           ]
         }
       end
@@ -101,7 +101,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Input, feature_category: :pipeline_co
         end
 
         it 'reports error about rule type' do
-          expect(entry.errors).to eq(['environment:rules:rule config should be a hash'])
+          expect(entry.errors).to eq(['`environment` input: should be a hash'])
         end
       end
 
@@ -119,7 +119,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Input, feature_category: :pipeline_co
         end
 
         it 'reports error about unknown keys' do
-          expect(entry.errors).to eq(['environment:rules:rule config contains unknown keys: invalid_key'])
+          expect(entry.errors).to eq(['`environment` input: contains unknown keys: invalid_key'])
         end
       end
 
@@ -135,25 +135,9 @@ RSpec.describe Gitlab::Ci::Config::Header::Input, feature_category: :pipeline_co
         end
 
         it 'reports error about missing options or default' do
-          expect(entry.errors).to eq([
-            'environment:rules:rule config rule with \'if\' must define \'options\' or \'default\''
-          ])
-        end
-      end
+          error_message = "`environment` input: rule must define 'options' with at least one value and a 'default'"
 
-      context 'when fallback rule has no options' do
-        let(:config) do
-          {
-            rules: [{ default: 'value_a' }]
-          }
-        end
-
-        it 'is not valid' do
-          expect(entry).not_to be_valid
-        end
-
-        it 'reports error about missing options' do
-          expect(entry.errors).to eq(['environment:rules:rule config fallback rule must define \'options\''])
+          expect(entry.errors).to eq([error_message])
         end
       end
 

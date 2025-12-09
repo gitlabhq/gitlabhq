@@ -49,41 +49,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
         bulk_import_batch_trackers.namespace_id
         bulk_import_batch_trackers.project_id
       ], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213933
-      *uploads_and_partitions,
       'security_scans.project_id', # NOT NULL constraint NOT VALID
       'keys.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/577246
       'oauth_applications.organization_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/579291
-    ]
-  end
-
-  # The following tables are work in progress as part of
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
-  # TODO: Remove these exceptions once the issue is closed.
-  let(:uploads_and_partitions) do
-    %w[
-      abuse_report_uploads.organization_id
-      achievement_uploads.namespace_id
-      ai_vectorizable_file_uploads.project_id
-      alert_management_alert_metric_image_uploads.project_id
-      bulk_import_export_upload_uploads.project_id bulk_import_export_upload_uploads.namespace_id
-      dependency_list_export_part_uploads.organization_id
-      dependency_list_export_uploads.organization_id dependency_list_export_uploads.namespace_id
-      dependency_list_export_uploads.project_id
-      design_management_action_uploads.namespace_id
-      import_export_upload_uploads.project_id import_export_upload_uploads.namespace_id
-      issuable_metric_image_uploads.namespace_id
-      namespace_uploads.namespace_id
-      organization_detail_uploads.organization_id
-      project_import_export_relation_export_upload_uploads.project_id
-      project_topic_uploads.organization_id
-      project_uploads.project_id
-      snippet_uploads.organization_id
-      user_permission_export_upload_uploads.uploaded_by_user_id
-      user_uploads.organization_id
-      vulnerability_export_part_uploads.organization_id
-      vulnerability_export_uploads.organization_id
-      vulnerability_archive_export_uploads.project_id
-      vulnerability_remediation_uploads.project_id
     ]
   end
 

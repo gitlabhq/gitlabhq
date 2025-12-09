@@ -47,11 +47,7 @@ Prerequisites:
 - Foundational agents must be [turned on](_index.md#turn-foundational-agents-on-or-off).
 - During the beta, the Planner Agent is in read-only mode.
 
-1. On the left sidebar, select **Search or go to** and find your project.
-
-   If you've [turned the new navigation on](../../../interface_redesign.md),
-   this field is on the top bar.
-
+1. On the top bar, select **Search or go to** and find your project.
 1. Open an issue, epic, or merge request in your project.
 1. Open GitLab Duo Chat:
 

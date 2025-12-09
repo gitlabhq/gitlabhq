@@ -59,7 +59,7 @@ Prerequisites:
 
 To view a list of flows associated with your project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Flows**.
    - To view flows enabled in the project, select the **Enabled** tab.
    - To view flows managed by the project, select the **Managed** tab.
@@ -74,7 +74,7 @@ Prerequisites:
 
 To create a flow:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Flows**.
 1. Select **New flow**.
 1. Under **Basic information**:
@@ -105,7 +105,7 @@ Prerequisites:
 
 To enable a flow in a top-level group:
 
-1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**, then select the **Flows** tab.
 1. Select the flow you want to enable.
 1. In the upper-right corner, select **Enable in group**.
@@ -123,7 +123,7 @@ Prerequisites:
 
 To enable a flow in a project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Flows**.
 1. In the upper-right corner, select **Enable flow from group**.
 1. From the dropdown list, select the flow you want to enable.
@@ -147,7 +147,7 @@ Prerequisites:
 
 To disable a flow:
 
-1. On the left sidebar, select **Search or go to** and find your group or project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group or project.
 1. Select **Automate** > **Flows**.
 1. Find the flow you want to remove and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Disable**.
 1. On the confirmation dialog, select **Disable**.
@@ -188,7 +188,7 @@ Prerequisites:
 
 To duplicate a flow:
 
-1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**, then select the **Flows** tab.
 1. Select the flow you want to duplicate.
 1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Duplicate**.
@@ -203,7 +203,7 @@ Prerequisites:
 
 - You must be a member of the managing project and have at least the Maintainer role.
 
-1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**, then select the **Flows** tab.
 1. Select the flow you want to manage.
    - To edit a flow:
@@ -219,7 +219,7 @@ You can report an flow if it contains potentially offensive material or poses a 
 
 To report a flow:
 
-1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**, then select the **Flows** tab.
 1. Select the flow you want to report.
 1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Report to admin**.

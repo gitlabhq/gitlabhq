@@ -59,6 +59,7 @@ Migration/UpdateLargeTable:
   - :project_uploads
   - :projects
   - :resource_state_events
+  - :sbom_occurrence_refs
   - :sbom_occurrences
   - :security_scans
   - :uploads

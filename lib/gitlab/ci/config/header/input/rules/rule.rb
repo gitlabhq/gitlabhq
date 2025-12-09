@@ -23,8 +23,7 @@ module Gitlab
                 validates :config, allowed_keys: ALLOWED_KEYS
 
                 with_options allow_nil: true do
-                  # TODO: Change to `expression: true` after inputs lexeme is merged
-                  validates :if, type: String
+                  validates :if, expression: true
                   validates :options, type: Array
                 end
 
@@ -36,12 +35,19 @@ module Gitlab
                   end
 
                   has_default = config.key?(:default)
+                  has_options = options.is_a?(Array) && options.any?
 
-                  if self.if && !options && !has_default
-                    errors.add(:config, "rule with 'if' must define 'options' or 'default'")
+                  if !has_options && !has_default
+                    errors.add(:base, "rule must define 'options' with at least one value and a 'default'")
                   end
 
-                  errors.add(:config, "fallback rule must define 'options'") if !self.if && !options
+                  if has_options && !has_default
+                    errors.add(:base, "rule must define 'options' with at least one value and a 'default'")
+                  end
+
+                  if has_default && has_options && options.exclude?(config[:default])
+                    errors.add(:base, "default '#{config[:default]}' must be one of the options")
+                  end
                 end
               end
 

@@ -41,7 +41,8 @@ module API
             desc: 'Search across recent successful pipelines instead of just the latest one.'
         end
         route_setting :authentication, job_token_allowed: true
-        route_setting :authorization, job_token_policies: :read_jobs
+        route_setting :authorization, job_token_policies: :read_jobs,
+          permissions: :download_job_artifact, boundary_type: :project
         get ':id/jobs/artifacts/:ref_name/download',
           urgency: :low,
           requirements: { ref_name: /.+/ } do
@@ -89,7 +90,8 @@ module API
         end
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_jobs,
-          allow_public_access_for_enabled_project_features: [:repository, :builds]
+          allow_public_access_for_enabled_project_features: [:repository, :builds],
+          permissions: :download_job_artifact, boundary_type: :project
         get ':id/jobs/artifacts/:ref_name/raw/*artifact_path',
           urgency: :low,
           format: false,
@@ -122,7 +124,8 @@ module API
                   'available only on Premium and Ultimate tiers.'
         end
         route_setting :authentication, job_token_allowed: true
-        route_setting :authorization, job_token_policies: :read_jobs
+        route_setting :authorization, job_token_policies: :read_jobs,
+          permissions: :download_job_artifact, boundary_type: :project
         get ':id/jobs/:job_id/artifacts', urgency: :low do
           authorize_download_artifacts!
 
@@ -149,7 +152,8 @@ module API
                   'available only on Premium and Ultimate tiers.'
         end
         route_setting :authentication, job_token_allowed: true
-        route_setting :authorization, job_token_policies: :read_jobs
+        route_setting :authorization, job_token_policies: :read_jobs,
+          permissions: :download_job_artifact, boundary_type: :project
         get ':id/jobs/:job_id/artifacts/*artifact_path', urgency: :low, format: false do
           authorize_download_artifacts!
 
@@ -181,6 +185,7 @@ module API
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
         end
+        route_setting :authorization, permissions: :preserve_job_artifact, boundary_type: :project
         post ':id/jobs/:job_id/artifacts/keep' do
           build = find_build!(params[:job_id])
           authorize!(:keep_job_artifacts, build)
@@ -204,6 +209,7 @@ module API
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
         end
+        route_setting :authorization, permissions: :delete_job_artifact, boundary_type: :project
         delete ':id/jobs/:job_id/artifacts' do
           authorize_delete_job_artifact!
           build = find_build!(params[:job_id])
@@ -224,6 +230,7 @@ module API
             { code: 409, message: 'Conflict' }
           ]
         end
+        route_setting :authorization, permissions: :delete_artifact, boundary_type: :project
         delete ':id/artifacts' do
           authorize_delete_job_artifact!
 

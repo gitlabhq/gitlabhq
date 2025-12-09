@@ -68,7 +68,8 @@ module API
 
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_pipelines,
-          allow_public_access_for_enabled_project_features: [:repository, :builds]
+          allow_public_access_for_enabled_project_features: [:repository, :builds],
+          permissions: :read_pipeline, boundary_type: :project
         get ':id/pipelines', urgency: :low, feature_category: :continuous_integration do
           authorize! :read_pipeline, user_project
           authorize! :read_build, user_project
@@ -92,6 +93,8 @@ module API
         params do
           use :create_pipeline_params
         end
+
+        route_setting :authorization, permissions: :create_pipeline, boundary_type: :project
         post ':id/pipeline', urgency: :low, feature_category: :pipeline_composition do
           Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20711')
 
@@ -125,6 +128,8 @@ module API
           optional :ref, type: String, desc: 'Branch ref of pipeline. Uses project default branch if not specified.',
             documentation: { example: 'develop' }
         end
+
+        route_setting :authorization, permissions: :read_pipeline, boundary_type: :project
         get ':id/pipelines/latest', urgency: :low, feature_category: :continuous_integration do
           authorize! :read_pipeline, latest_pipeline
 
@@ -146,7 +151,8 @@ module API
 
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_pipelines,
-          allow_public_access_for_enabled_project_features: [:repository, :builds]
+          allow_public_access_for_enabled_project_features: [:repository, :builds],
+          permissions: :read_pipeline, boundary_type: :project
         get ':id/pipelines/:pipeline_id', urgency: :low, feature_category: :continuous_integration do
           authorize! :read_pipeline, pipeline
 
@@ -172,7 +178,8 @@ module API
         route_setting :mcp, tool_name: :get_pipeline_jobs, params: [:id, :pipeline_id, :per_page, :page]
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_jobs,
-          allow_public_access_for_enabled_project_features: [:repository, :builds]
+          allow_public_access_for_enabled_project_features: [:repository, :builds],
+          permissions: :read_pipeline_job, boundary_type: :project
         get ':id/pipelines/:pipeline_id/jobs', urgency: :low, feature_category: :continuous_integration do
           authorize!(:read_pipeline, user_project)
 
@@ -204,7 +211,8 @@ module API
 
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_pipelines,
-          allow_public_access_for_enabled_project_features: [:repository, :builds]
+          allow_public_access_for_enabled_project_features: [:repository, :builds],
+          permissions: :read_pipeline_bridge, boundary_type: :project
         get ':id/pipelines/:pipeline_id/bridges', urgency: :low, feature_category: :pipeline_composition do
           authorize!(:read_build, user_project)
 
@@ -233,6 +241,8 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
         end
+
+        route_setting :authorization, permissions: :read_pipeline_variable, boundary_type: :project
         get ':id/pipelines/:pipeline_id/variables', feature_category: :pipeline_composition, urgency: :low do
           authorize! :read_pipeline_variable, pipeline
 
@@ -251,6 +261,8 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
         end
+
+        route_setting :authorization, permissions: :read_pipeline_test_report, boundary_type: :project
         get ':id/pipelines/:pipeline_id/test_report', feature_category: :code_testing, urgency: :low do
           authorize! :read_build, pipeline
 
@@ -271,6 +283,8 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
         end
+
+        route_setting :authorization, permissions: :read_pipeline_test_report_summary, boundary_type: :project
         get ':id/pipelines/:pipeline_id/test_report_summary', feature_category: :code_testing do
           authorize! :read_build, pipeline
 
@@ -284,6 +298,8 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
         end
+
+        route_setting :authorization, permissions: :delete_pipeline, boundary_type: :project
         delete ':id/pipelines/:pipeline_id', urgency: :low, feature_category: :continuous_integration do
           authorize! :destroy_pipeline, pipeline
 
@@ -309,7 +325,8 @@ module API
           requires :name, type: String, desc: 'The name of the pipeline', documentation: { example: 'Deployment to production' }
         end
         route_setting :authentication, job_token_allowed: true
-        route_setting :authorization, job_token_policies: :admin_pipelines
+        route_setting :authorization, permissions: :update_pipeline_metadata, boundary_type: :project,
+          job_token_policies: :admin_pipelines
         put ':id/pipelines/:pipeline_id/metadata', urgency: :low, feature_category: :continuous_integration do
           authorize! :update_pipeline, pipeline
 
@@ -336,6 +353,8 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
         end
+
+        route_setting :authorization, permissions: :retry_pipeline, boundary_type: :project
         post ':id/pipelines/:pipeline_id/retry', urgency: :low, feature_category: :continuous_integration do
           authorize! :update_pipeline, pipeline
 
@@ -360,6 +379,8 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
         end
+
+        route_setting :authorization, permissions: :cancel_pipeline, boundary_type: :project
         post ':id/pipelines/:pipeline_id/cancel', urgency: :low, feature_category: :continuous_integration do
           authorize! :cancel_pipeline, pipeline
 

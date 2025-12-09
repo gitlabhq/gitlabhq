@@ -1,0 +1,8 @@
+---
+name: cancel_pipeline
+description: Grants the ability to cancel pipelines
+feature_category: continuous_integration
+permissions:
+  - cancel_pipeline
+boundaries:
+  - project

@@ -968,6 +968,8 @@
   rules:
     - <<: *if-merge-request-labels-run-search-tests
       changes: *ci-patterns
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
     - <<: *if-merge-request-labels-group-global-search
       changes: *ci-patterns
     - <<: *if-merge-request-labels-run-search-tests

@@ -79,6 +79,12 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
           expect(job.job_artifacts.size).to eq 0
         end
 
+        it_behaves_like 'authorizing granular token permissions', :delete_job_artifact do
+          let(:boundary_object) { project }
+          let(:user) { maintainer }
+          let(:request) { delete api("/projects/#{project.id}/jobs/#{job.id}/artifacts", personal_access_token: pat) }
+        end
+
         it 'returns status 204 (no content)' do
           expect(response).to have_gitlab_http_status(:no_content)
         end
@@ -149,6 +155,12 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
         delete api("/projects/#{project.id}/artifacts", api_user)
 
         expect(response).to have_gitlab_http_status(:accepted)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_artifact do
+        let(:boundary_object) { project }
+        let(:user) { maintainer }
+        let(:request) { delete api("/projects/#{project.id}/artifacts", personal_access_token: pat) }
       end
 
       context 'when project is undergoing stats refresh' do
@@ -268,6 +280,11 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
             expect(response).to have_gitlab_http_status(:ok)
           end
         end
+
+        it_behaves_like 'authorizing granular token permissions', :download_job_artifact do
+          let(:boundary_object) { project }
+          let(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts/#{artifact}", personal_access_token: pat) }
+        end
       end
     end
 
@@ -316,6 +333,11 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
           context 'authorized user' do
             it_behaves_like 'downloads artifact'
+
+            it_behaves_like 'authorizing granular token permissions', :download_job_artifact do
+              let(:boundary_object) { project }
+              let(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", personal_access_token: pat) }
+            end
           end
 
           context 'when job token is used' do
@@ -632,6 +654,18 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
         it_behaves_like 'a valid file'
       end
+
+      it_behaves_like 'authorizing granular token permissions', :download_job_artifact do
+        let(:boundary_object) { project }
+        let(:user) { reporter }
+        let(:request) do
+          get api("/projects/#{project.id}/jobs/artifacts/#{pipeline.ref}/download", personal_access_token: pat), params: { job: job.name }
+        end
+
+        before_all do
+          pipeline.update!(status: :success)
+        end
+      end
     end
 
     context 'when search_recent_successful_pipelines parameter is used' do
@@ -810,6 +844,17 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
           )
           expect(response.parsed_body).to be_empty
         end
+
+        it_behaves_like 'authorizing granular token permissions', :download_job_artifact do
+          let(:boundary_object) { project }
+          let(:request) do
+            get api("/projects/#{project.id}/jobs/artifacts/#{pipeline.ref}/raw/#{artifact}", personal_access_token: pat), params: { job: job.name }
+          end
+
+          before_all do
+            pipeline.update!(status: :success)
+          end
+        end
       end
 
       context 'with branch name containing slash' do
@@ -897,6 +942,11 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
         it 'responds with :not_found' do
           expect(response).to have_gitlab_http_status(:not_found)
         end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :preserve_job_artifact do
+        let(:boundary_object) { project }
+        let(:request) { post api("/projects/#{project.id}/jobs/#{job.id}/artifacts/keep", personal_access_token: pat) }
       end
     end
 

@@ -1,0 +1,8 @@
+---
+name: create_pipeline
+description: Grants the ability to create pipelines
+feature_category: continuous_integration
+permissions:
+  - create_pipeline
+boundaries:
+  - project

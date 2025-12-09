@@ -37,7 +37,7 @@ Requests that exceed the limits are logged in the `application_json.log` file.
 
 To limit the number of pipeline requests:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Pipelines Rate Limits**.
 1. Under **Max requests per minute per project, user, and commit**, enter a value greater than `0` to limit pipelines for the same project, commit, and user combination.

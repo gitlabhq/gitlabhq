@@ -126,6 +126,7 @@ Returns [`AdminMemberRole`](#adminmemberrole).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="queryadminmemberroleassignable"></a>`assignable` | [`Boolean`](#boolean) | Filter for member roles the current user can assign. |
 | <a id="queryadminmemberroleid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
 | <a id="queryadminmemberroleids"></a>`ids` | [`[MemberRoleID!]`](#memberroleid) | Global IDs of the member role to look up. |
 | <a id="queryadminmemberroleorderby"></a>`orderBy` | [`MemberRolesOrderBy`](#memberrolesorderby) | Ordering column. Default is NAME. |
@@ -165,6 +166,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="queryadminmemberrolesassignable"></a>`assignable` | [`Boolean`](#boolean) | Filter for member roles the current user can assign. |
 | <a id="queryadminmemberrolesid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
 | <a id="queryadminmemberrolesids"></a>`ids` | [`[MemberRoleID!]`](#memberroleid) | Global IDs of the member role to look up. |
 | <a id="queryadminmemberrolesorderby"></a>`orderBy` | [`MemberRolesOrderBy`](#memberrolesorderby) | Ordering column. Default is NAME. |
@@ -1270,6 +1272,7 @@ Returns [`MemberRole`](#memberrole).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="querymemberroleassignable"></a>`assignable` | [`Boolean`](#boolean) | Filter for member roles the current user can assign. |
 | <a id="querymemberroleid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
 | <a id="querymemberroleids"></a>`ids` | [`[MemberRoleID!]`](#memberroleid) | Global IDs of the member role to look up. |
 | <a id="querymemberroleorderby"></a>`orderBy` | [`MemberRolesOrderBy`](#memberrolesorderby) | Ordering column. Default is NAME. |
@@ -1309,6 +1312,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="querymemberrolesassignable"></a>`assignable` | [`Boolean`](#boolean) | Filter for member roles the current user can assign. |
 | <a id="querymemberrolesid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
 | <a id="querymemberrolesids"></a>`ids` | [`[MemberRoleID!]`](#memberroleid) | Global IDs of the member role to look up. |
 | <a id="querymemberrolesorderby"></a>`orderBy` | [`MemberRolesOrderBy`](#memberrolesorderby) | Ordering column. Default is NAME. |
@@ -33969,6 +33973,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupmemberrolesassignable"></a>`assignable` | [`Boolean`](#boolean) | Filter for member roles the current user can assign. |
 | <a id="groupmemberrolesid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
 | <a id="groupmemberrolesids"></a>`ids` | [`[MemberRoleID!]`](#memberroleid) | Global IDs of the member role to look up. |
 | <a id="groupmemberrolesorderby"></a>`orderBy` | [`MemberRolesOrderBy`](#memberrolesorderby) | Ordering column. Default is NAME. |
@@ -42989,6 +42994,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectmemberrolesassignable"></a>`assignable` | [`Boolean`](#boolean) | Filter for member roles the current user can assign. |
 | <a id="projectmemberrolesid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
 | <a id="projectmemberrolesids"></a>`ids` | [`[MemberRoleID!]`](#memberroleid) | Global IDs of the member role to look up. |
 | <a id="projectmemberrolesorderby"></a>`orderBy` | [`MemberRolesOrderBy`](#memberrolesorderby) | Ordering column. Default is NAME. |

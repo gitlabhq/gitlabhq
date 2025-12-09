@@ -40,7 +40,7 @@ Prerequisites:
 
 To create a pipeline schedule:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline schedules**.
 1. Select **New schedule**.
 1. Complete the fields.
@@ -72,7 +72,7 @@ Prerequisites:
 
 To edit a pipeline schedule:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline schedules**.
 1. Next to the schedule, select **Edit** ({{< icon name="pencil" >}}).
 1. Make your changes, then select **Save changes**.
@@ -84,7 +84,7 @@ When you run a scheduled pipeline manually, it uses your permissions instead of 
 
 To trigger a pipeline schedule immediately instead of waiting for the next scheduled time:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline schedules**.
 1. Next to the schedule, select **Run** ({{< icon name="play" >}}).
 
@@ -100,7 +100,7 @@ Prerequisites:
 
 To take ownership of a schedule:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline schedules**.
 1. Next to the schedule, select **Take ownership**.
 
@@ -114,7 +114,7 @@ To take ownership of a schedule:
 
 To view the active pipeline schedules that you own across all your projects:
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../user/interface_redesign.md), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. Select **Account**.
 1. Scroll to **Scheduled pipelines you own**.

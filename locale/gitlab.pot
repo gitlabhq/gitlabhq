@@ -2482,6 +2482,12 @@ msgstr ""
 msgid "AIAgent|Your agent's system prompt will be applied to the chat input."
 msgstr ""
 
+msgid "AICatalog|A new version is available"
+msgstr ""
+
+msgid "AICatalog|A new version is available. If you have at least the Maintainer role, you can update this item."
+msgstr ""
+
 msgid "AICatalog|A private %{itemType}:"
 msgstr ""
 
@@ -2531,6 +2537,9 @@ msgid "AICatalog|Agent does not exist"
 msgstr ""
 
 msgid "AICatalog|Agent enabled in %{name}."
+msgstr ""
+
+msgid "AICatalog|Agent is now at version %{newVersion}."
 msgstr ""
 
 msgid "AICatalog|Agent is required."
@@ -2644,7 +2653,19 @@ msgstr ""
 msgid "AICatalog|Could not enable flow in the %{target}. Check that the %{target} meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
+msgid "AICatalog|Could not update agent in the %{target}."
+msgstr ""
+
+msgid "AICatalog|Could not update agent."
+msgstr ""
+
 msgid "AICatalog|Could not update agent. Try again."
+msgstr ""
+
+msgid "AICatalog|Could not update flow in the %{target}."
+msgstr ""
+
+msgid "AICatalog|Could not update flow."
 msgstr ""
 
 msgid "AICatalog|Could not update flow. Try again."
@@ -2800,6 +2821,9 @@ msgstr ""
 msgid "AICatalog|Flow enabled in %{name}."
 msgstr ""
 
+msgid "AICatalog|Flow is now at version %{newVersion}."
+msgstr ""
+
 msgid "AICatalog|Flow is required."
 msgstr ""
 
@@ -2897,6 +2921,12 @@ msgid "AICatalog|Only members of this project can edit or delete this agent."
 msgstr ""
 
 msgid "AICatalog|Only members of this project can edit or delete this flow."
+msgstr ""
+
+msgid "AICatalog|Only this agent in this project will be updated. Other projects using this agent will not be affected."
+msgstr ""
+
+msgid "AICatalog|Only this flow in this project will be updated. Other projects using this flow will not be affected."
 msgstr ""
 
 msgid "AICatalog|Open source projects."
@@ -3046,6 +3076,12 @@ msgstr ""
 msgid "AICatalog|Trigger this flow when the service account user is mentioned in an issue or merge request."
 msgstr ""
 
+msgid "AICatalog|Update available"
+msgstr ""
+
+msgid "AICatalog|Update to %{version}"
+msgstr ""
+
 msgid "AICatalog|Use agents in your %{namespaceType}."
 msgstr ""
 
@@ -3056,6 +3092,12 @@ msgid "AICatalog|Use agents with GitLab Duo Chat to complete tasks and answer co
 msgstr ""
 
 msgid "AICatalog|Use flows in your %{namespaceType}."
+msgstr ""
+
+msgid "AICatalog|View enabled version"
+msgstr ""
+
+msgid "AICatalog|View latest version"
 msgstr ""
 
 msgid "AICatalog|Visibility"

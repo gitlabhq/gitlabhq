@@ -23,6 +23,7 @@ module API
             { code: 404, message: 'Not found' }
           ]
           is_array true
+          tags %w[pipeline_schedules]
         end
         params do
           use :pagination
@@ -49,6 +50,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags %w[pipeline_schedules]
         end
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
@@ -67,6 +69,7 @@ module API
             { code: 404, message: 'Not found' }
           ]
           is_array true
+          tags %w[pipeline_schedules]
         end
         params do
           use :pagination
@@ -109,6 +112,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags %w[pipeline_schedules]
         end
         params do
           requires :description, type: String, desc: 'The description of pipeline schedule', documentation: { example: 'Test schedule pipeline' }
@@ -153,6 +157,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags %w[pipeline_schedules]
         end
         params do
           requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id', documentation: { example: 13 }
@@ -199,6 +204,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags %w[pipeline_schedules]
         end
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
@@ -226,6 +232,7 @@ module API
             { code: 404, message: 'Not found' },
             { code: 412, message: 'Precondition Failed' }
           ]
+          tags %w[pipeline_schedules]
         end
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
@@ -246,6 +253,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags %w[pipeline_schedules]
         end
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
@@ -274,6 +282,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags %w[pipeline_schedules]
         end
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
@@ -308,6 +317,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags %w[pipeline_schedules]
         end
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
@@ -329,6 +339,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags %w[pipeline_schedules]
         end
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
@@ -361,6 +372,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags %w[pipeline_schedules]
         end
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }

@@ -1,0 +1,9 @@
+---
+name: preserve_job_artifact
+description: Grants the ability to keep job artifacts from expiring
+feature_category: job_artifacts
+boundaries:
+  - project
+permissions:
+  - preserve_job_artifact
+

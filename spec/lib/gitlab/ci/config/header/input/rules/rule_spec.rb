@@ -14,7 +14,12 @@ RSpec.describe Gitlab::Ci::Config::Header::Input::Rules::Rule, feature_category:
     context 'with if and options' do
       let(:config) { { if: '$[[ inputs.env ]] == "prod"', options: %w[a b] } }
 
-      it { is_expected.to be_valid }
+      it { is_expected.not_to be_valid }
+
+      it 'has error about missing default' do
+        entry.compose!
+        expect(entry.errors).to include(/must define 'options' with at least one value and a 'default'/)
+      end
     end
 
     context 'with if and default (no options)' do
@@ -29,12 +34,6 @@ RSpec.describe Gitlab::Ci::Config::Header::Input::Rules::Rule, feature_category:
       it { is_expected.to be_valid }
     end
 
-    context 'with fallback rule' do
-      let(:config) { { options: %w[a b] } }
-
-      it { is_expected.to be_valid }
-    end
-
     context 'with fallback rule having both options and default' do
       let(:config) { { options: %w[a b], default: 'a' } }
 
@@ -45,22 +44,21 @@ RSpec.describe Gitlab::Ci::Config::Header::Input::Rules::Rule, feature_category:
       let(:config) { { if: '$[[ inputs.env ]] == "prod"' } }
 
       it { is_expected.not_to be_valid }
+
+      it 'has error about missing options and default' do
+        entry.compose!
+        expect(entry.errors).to include(/must define 'options' with at least one value and a 'default'/)
+      end
     end
 
-    context 'when fallback rule has no options' do
-      let(:config) { { default: 'value' } }
-
-      it { is_expected.not_to be_valid }
-    end
-
-    context 'when if is not a string' do
+    context 'when if is not a valid expression' do
       let(:config) { { if: 123, options: %w[a b] } }
 
       it { is_expected.not_to be_valid }
 
-      it 'has error about if type' do
+      it 'has error about invalid expression' do
         entry.compose!
-        expect(entry.errors).to include(/if should be a string/)
+        expect(entry.errors).to include(/invalid expression syntax/i)
       end
     end
 
@@ -105,6 +103,78 @@ RSpec.describe Gitlab::Ci::Config::Header::Input::Rules::Rule, feature_category:
       it 'has error about presence' do
         entry.compose!
         expect(entry.errors).to include(/can't be blank/)
+      end
+    end
+
+    context 'when default is not in options list' do
+      let(:config) { { if: '$[[ inputs.env ]] == "prod"', options: %w[a b], default: 'c' } }
+
+      it { is_expected.not_to be_valid }
+
+      it 'has error about invalid default' do
+        entry.compose!
+        expect(entry.errors).to include(/default 'c' must be one of the options/)
+      end
+    end
+
+    context 'when fallback rule default is not in options list' do
+      let(:config) { { options: %w[a b], default: 'c' } }
+
+      it { is_expected.not_to be_valid }
+
+      it 'has error about invalid default' do
+        entry.compose!
+        expect(entry.errors).to include(/default 'c' must be one of the options/)
+      end
+    end
+
+    context 'when rule with if has empty options and no default' do
+      let(:config) { { if: '$[[ inputs.env ]] == "prod"', options: [] } }
+
+      it { is_expected.not_to be_valid }
+
+      it 'has error about missing options and default' do
+        entry.compose!
+        expect(entry.errors).to include(/must define 'options' with at least one value and a 'default'/)
+      end
+    end
+
+    context 'when fallback rule has empty options' do
+      let(:config) { { options: [] } }
+
+      it { is_expected.not_to be_valid }
+
+      it 'has error about missing options' do
+        entry.compose!
+        expect(entry.errors).to include(/must define 'options' with at least one value/)
+      end
+    end
+
+    context 'when fallback rule has empty string options but no default' do
+      let(:config) { { options: [''] } }
+
+      it { is_expected.not_to be_valid }
+
+      it 'has error about missing default' do
+        entry.compose!
+        expect(entry.errors).to include(/must define 'options' with at least one value and a 'default'/)
+      end
+    end
+
+    context 'when fallback rule has empty string options with default' do
+      let(:config) { { options: [''], default: '' } }
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when fallback rule has options but no default' do
+      let(:config) { { options: %w[a b] } }
+
+      it { is_expected.not_to be_valid }
+
+      it 'has error about missing default' do
+        entry.compose!
+        expect(entry.errors).to include(/must define 'options' with at least one value and a 'default'/)
       end
     end
   end

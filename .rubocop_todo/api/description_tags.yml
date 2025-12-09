@@ -74,7 +74,6 @@ API/DescriptionTags:
     - 'lib/api/ci/catalog.rb'
     - 'lib/api/ci/job_artifacts.rb'
     - 'lib/api/ci/jobs.rb'
-    - 'lib/api/ci/pipeline_schedules.rb'
     - 'lib/api/ci/pipelines.rb'
     - 'lib/api/ci/runner.rb'
     - 'lib/api/ci/runners.rb'
