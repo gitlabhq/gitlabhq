@@ -2,6 +2,32 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.6.2 (2025-12-10)
+
+### Fixed (3 changes)
+
+- [Handle 429s during github LFS import](https://gitlab.com/gitlab-org/security/gitlab/-/commit/de982c5ce9f7cb3d68b487aef4d5770d1ae32fed)
+- [Fix partition missing error in project_daily_statistics backfill](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a9a2a6f278f822d1fb73336a55696fcf94dca055)
+- [Update diff note representation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2ad30bf915c8adf50c1ddb56441a61a7a48a9279)
+
+### Changed (2 changes)
+
+- [Fix: Restore branch protection check in cache_suffix_for](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c30a088a7d553805e9c4e7afda52c563c47eb8e6)
+- [Ensure LFS imports work correctly with nil revisions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b32e678fe2ddecefd70a9a9823753847a09c20cf)
+
+### Security (10 changes)
+
+- [Hide private project name to unauthorized users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7060745b8ada531cc1445df9afc9fef3d3aef24a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5550))
+- [Reflected External Path Injection in Swagger UI at /-/sandbox/swagger via...](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d9abe4b48fa7afd2cfc278b1dbb28e7c83ae9c59) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5568))
+- [Apply requestBodyUploader to commit creation endpoints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3bd577e0ee92c19cb9e48d370e215eae6458ebdc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5581))
+- [Fix "Total 2FA Bypass for Users"](https://gitlab.com/gitlab-org/security/gitlab/-/commit/887505e8fcfa67bd4f483b68bbdf541e6c1139fc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5573))
+- [Add strict validations for dismissal path input](https://gitlab.com/gitlab-org/security/gitlab/-/commit/39a07480e84bf59c161c618e8f2f6d637905596a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5585))
+- [Fix merge request delete modal not escaping title](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9fba70dae46e2330d0ff509c6a708c5dd3bd627d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5570))
+- [Correct text/HTML confusion in AbstractReferenceFilter#object_link_text](https://gitlab.com/gitlab-org/security/gitlab/-/commit/437d7e5696f19a3780a50c5a778bb8e0afc086dc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5546))
+- [Fixes the logical bug present in the complexity_multiplier method](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2648233caf6d0d58a28c32678d0058c53d0e9a6c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5529))
+- [Require correct permissions to access frameworks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/daecb53efb85e3f5a77872f66916aca49971b2c0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5540))
+- [Stop preserving various exif tags](https://gitlab.com/gitlab-org/security/gitlab/-/commit/83c482c7395eb687001daa4e7a2856acd30cef82) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5532))
+
 ## 18.6.1 (2025-11-25)
 
 ### Fixed (3 changes)
