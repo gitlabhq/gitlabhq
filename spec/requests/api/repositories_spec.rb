@@ -466,6 +466,8 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     let(:route) { "/projects/#{project.id}/repository/compare" }
 
     shared_examples_for 'repository compare' do
+      include_context 'for workhorse body uploads'
+
       it "compares branches" do
         expect(::Gitlab::Git::Compare).to receive(:new).with(anything, anything, anything, {
           straight: false
@@ -613,7 +615,8 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         expect(commit_messages(response)).not_to include("Cool new commit")
 
         # Then create a new commit via the API
-        post api("/projects/#{project.id}/repository/commits", user), params: {
+        url = api("/projects/#{project.id}/repository/commits", user)
+        params =  {
           branch: "feature",
           commit_message: "Cool new commit",
           actions: [
@@ -624,6 +627,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
             }
           ]
         }
+        perform_workhorse_json_body_upload(url, params.to_json)
 
         expect(response).to have_gitlab_http_status(:created)
 

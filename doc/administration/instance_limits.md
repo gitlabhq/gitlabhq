@@ -1534,6 +1534,26 @@ The [changelog API](../api/repositories.md#add-changelog-data-to-file) enforces 
 
 - Each top-level group can have a maximum of 5 Amazon S3 streaming destinations.
 
+## Commits and Files API limits
+
+{{< history >}}
+
+- Introduced in GitLab 18.7.
+
+{{< /history >}}
+
+The Commits and Files APIs enforce maximum size and rate limits on the following endpoints:
+
+- `POST /projects/:id/repository/commits` - [Create a commit with multiple files and actions](../api/commits.md#create-a-commit-with-multiple-files-and-actions)
+- `POST /projects/:id/repository/files/:file_path` - [Create new file in repository](../api/repository_files.md#create-new-file-in-repository)
+- `PUT /projects/:id/repository/files/:file_path` - [Update existing file in repository](../api/repository_files.md#update-existing-file-in-repository)
+
+- **Maximum request size**: Requests that exceed this limit receive
+  a `413 Request Entity Too Large` error with the following message: `RequestBody: upload failed: the upload size <size> is over maximum of 314572800 bytes: entity is too large`. The default is 300 MB (314,572,800 bytes).
+- **Rate limit**: 3 requests per 30 seconds for requests above 20 MB.
+
+The maximum request size is configurable on GitLab Self-Managed by setting the `GITLAB_COMMITS_MAX_REQUEST_SIZE_BYTES` environment variable. This variable sets the maximum request size in bytes. Instructions on how to set an environment variable can be found in [HTTP Request Limits](#http-request-limits).
+
 ## List all instance limits
 
 To list all instance limit values, run the following from the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):

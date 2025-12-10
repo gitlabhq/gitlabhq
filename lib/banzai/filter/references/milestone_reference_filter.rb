@@ -136,15 +136,15 @@ module Banzai
             .milestone_url(milestone, only_path: context[:only_path])
         end
 
-        def object_link_text(object, matches)
-          milestone_link = escape_once(super)
+        def object_link_content_html(object, matches)
+          html = super
           reference = object.project&.to_reference_base(project)
 
-          if reference.present?
-            "#{milestone_link} <i>in #{reference}</i>".html_safe
-          else
-            milestone_link
-          end
+          i = doc.document.create_element('i')
+          i.content = "in #{reference}"
+          html += " #{i.to_html}" if reference.present?
+
+          html
         end
 
         def object_link_title(object, matches)

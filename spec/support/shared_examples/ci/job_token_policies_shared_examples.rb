@@ -65,7 +65,7 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
         do_request
 
         expected_message = '403 Forbidden - Insufficient permissions to access this resource ' \
-          "in project #{source_project.path}. "
+          "in project ##{source_project.id}. "
 
         expected_message << if Array(policies).size == 1
                               "The following token permission is required: #{policies}."
