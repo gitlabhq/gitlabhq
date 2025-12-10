@@ -13,21 +13,20 @@
 = gitlab_ui_form_for [@project, @merge_request], url: project_new_merge_request_path(@project), method: :get, html: { class: "merge-request-form" } do |f|
   - if params[:nav_source].present?
     = hidden_field_tag(:nav_source, params[:nav_source])
+  - if @merge_request.errors.any?
+    = form_errors(@merge_request)
   .js-merge-request-new-compare.row{ data: mr_compare_form_data(current_user, @merge_request) }
     .gl-col-lg-6
       %div
-        %h2.gl-text-size-h2
+        %h2.gl-text-size-h2.gl-mt-0
           = _('Source branch')
         #js-source-project-dropdown{ data: { current_project: { value: f.object.source_project_id.to_s, text: f.object.source_project.full_path, refsUrl: refs_project_path(f.object.source_project) }.to_json, current_branch: { value: f.object.source_branch.presence, text: f.object.source_branch.presence }.to_json } }
 
     .gl-col-lg-6
       %div
-        %h2.gl-text-size-h2
+        %h2.gl-text-size-h2.gl-mt-0
           = _('Target branch')
         #js-target-project-dropdown{ data: { target_projects_path: target_projects_project_json_compare_index_path(@project), current_project: { value: f.object.target_project_id.to_s, text: f.object.target_project.full_path, refsUrl: refs_project_path(f.object.target_project) }.to_json, current_branch: { value: f.object.target_branch.presence, text: f.object.target_branch.presence }.to_json } }
-
-  - if @merge_request.errors.any?
-    = form_errors(@merge_request)
   .row
     .gl-col-12
       = f.submit _('Compare branches and continue'), data: { testid: 'compare-branches-button' }, pajamas_button: true

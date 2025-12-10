@@ -29,8 +29,13 @@ instructions:
       4. Ensure input validation for user-provided parameters
       5. Ensure no information disclosure in error responses
       6. Ensure all modified or new queries are flagged as needing a database reviewer
-      7. Ensure all modified or new queries have both raw SQL and query plans documented in the merge request description
-      8. Analyze query plans for common pitfalls in the merge request description:
+      7. Ensure all ActiveRecord scope changes (new scopes, modified scopes, or scope deletions) are flagged as needing a database reviewer
+      8. For ActiveRecord scope changes, verify:
+         - The scope includes appropriate indexes for filtered columns
+         - The scope avoids expensive operations like subqueries on large tables
+         - Default scopes are avoided unless absolutely necessary (they can cause unexpected query behavior)
+      9. Ensure all modified or new queries have both raw SQL and query plans documented in the merge request description
+      10. Analyze query plans for common pitfalls in the merge request description:
         - Sequential scans on large tables
         - Nested loops with large datasets
         - Missing or inefficient index usage
@@ -38,7 +43,8 @@ instructions:
         - Unexpected sort operations
         - Verify the query returns expected records (not zero rows)
         - Check that maximum query execution time is under 100ms
-      9. Flag comments that only describe what code does (e.g., "# Loop through users") rather than why. Suggest removing these comments and using better naming or method extraction instead
+        - Ensure the query plan reflects the complete query as executed by the database, including all chained scopes, pagination, ordering, and any other modifiers - not a partial or simplified version of the query
+      11. Flag comments that only describe what code does (e.g., "# Loop through users") rather than why. Suggest removing these comments and using better naming or method extraction instead
 
   - name: Database Migrations
     fileFilters:

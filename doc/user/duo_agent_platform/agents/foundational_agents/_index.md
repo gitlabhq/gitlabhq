@@ -38,6 +38,8 @@ The following foundational agents are available:
   planning workflows.
 - [Security Analyst](security_analyst_agent.md), for
   security analysis and vulnerability management.
+- [Data Analyst](data_analyst.md), for analysis
+  and visualization of platform data.
 
 ## Duplicate an agent
 

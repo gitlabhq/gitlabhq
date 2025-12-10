@@ -203,7 +203,7 @@
 {"name":"fog-aliyun","version":"0.4.0","platform":"ruby","checksum":"8f2334604beb781eafbb9cd5f50141fbb2c7eb77c7f2b01f45c2e04db0e5cc38"},
 {"name":"fog-aws","version":"3.33.1","platform":"ruby","checksum":"20c7336ed978be6cbf2765844c53f30676288af98f1cb49945aa7b7b45a799a5"},
 {"name":"fog-core","version":"2.6.0","platform":"ruby","checksum":"3fe08aa83a23cddce42f4ba412040c08f890d7ff04c175c0ee59119371245be6"},
-{"name":"fog-google","version":"1.25.0","platform":"ruby","checksum":"58aea3b0abf5938ed6ca2a3b51282cfe7038403e2eeb70bdb0a1b998307ce18f"},
+{"name":"fog-google","version":"1.26.0","platform":"ruby","checksum":"232fdead3088c8a61a84e0d44895aadc9df8aa5cc4d2e0c983a97a6e70d7c6ad"},
 {"name":"fog-json","version":"1.2.0","platform":"ruby","checksum":"dd4f5ab362dbc72b687240bba9d2dd841d5dfe888a285797533f85c03ea548fe"},
 {"name":"fog-local","version":"0.9.0","platform":"ruby","checksum":"2bb5ffb153343a2d641018e2571155ebabd11908a7133504ead7ee03586a6a1c"},
 {"name":"fog-xml","version":"0.1.5","platform":"ruby","checksum":"52b9fea10701461dd3eaf9d9839702169b418dbbf50426786b9b74fade373bd6"},

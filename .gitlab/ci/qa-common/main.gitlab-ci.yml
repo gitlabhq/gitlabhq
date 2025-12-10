@@ -168,6 +168,8 @@ stages:
   script:
     - echo "Processing E2E Istanbul coverage..."
     - yarn node scripts/frontend/merge_e2e_coverage.js
+    - echo "Collecting E2E frontend test mappings..."
+    - find qa/tmp -name 'js-coverage-by-example-*.json' -exec cp {} coverage-e2e-frontend/ \; 2>/dev/null || echo "No E2E test mapping files found"
   artifacts:
     paths:
       - coverage-e2e-frontend/

@@ -25208,6 +25208,9 @@ msgstr ""
 msgid "Duo Agent Platform|Something went wrong saving Duo Agent Platform settings"
 msgstr ""
 
+msgid "DuoAgentPlatform|%{agentName} %{date}"
+msgstr ""
+
 msgid "DuoAgentPlatform|%{formattedName} created"
 msgstr ""
 
@@ -25268,6 +25271,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Session triggered"
 msgstr ""
 
+msgid "DuoAgentPlatform|Triggered"
+msgstr ""
+
 msgid "DuoAgentPlatform|User messaged agent"
 msgstr ""
 
@@ -25283,10 +25289,25 @@ msgstr ""
 msgid "DuoAgenticChat|Invalid chat state provided"
 msgstr ""
 
+msgid "DuoAgenticChat|Need more credits? Contact your administrator."
+msgstr ""
+
+msgid "DuoAgenticChat|No GitLab Credits remain"
+msgstr ""
+
+msgid "DuoAgenticChat|No GitLab Credits remain for this billing period. Turn off the %{agenticModeStart}Agentic mode%{agenticModeEnd} toggle or ask your administrator for more credits. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "DuoAgenticChat|No credits remain for this billing period. To continue collaborating with GitLab Duo, turn off the Agentic mode toggle. You can still get AI assistance, just without the advanced agentic features. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "DuoAgenticChat|The agent associated with this conversation is no longer available. You can view the conversation history but cannot send new messages."
 msgstr ""
 
 msgid "DuoAgenticChat|This chat was deleted."
+msgstr ""
+
+msgid "DuoAgenticChat|Turn off Agentic mode"
 msgstr ""
 
 msgid "DuoAgenticChat|Unable to connect to workflow service. Please try again."
@@ -32935,6 +32956,9 @@ msgstr ""
 msgid "GroupSAML|Generate a SCIM token to set up your System for Cross-Domain Identity Management."
 msgstr ""
 
+msgid "GroupSAML|Group SAML single sign-on session expired"
+msgstr ""
+
 msgid "GroupSAML|Identity Provider"
 msgstr ""
 
@@ -32963,6 +32987,12 @@ msgid "GroupSAML|New SAML group link saved."
 msgstr ""
 
 msgid "GroupSAML|No active SAML group links"
+msgstr ""
+
+msgid "GroupSAML|Re-authenticate %{group}"
+msgstr ""
+
+msgid "GroupSAML|Re-authenticate to view your work items and avoid disruptions."
 msgstr ""
 
 msgid "GroupSAML|Reset SCIM token"
@@ -33011,9 +33041,6 @@ msgid "GroupSAML|SHA1 or SHA256 fingerprint of the SAML token signing certificat
 msgstr ""
 
 msgid "GroupSAML|Some branches are inaccessible because your SAML session has expired. To access the branches, select the group’s path to reauthenticate."
-msgstr ""
-
-msgid "GroupSAML|Some items may be hidden because your SAML session has expired. Select the group’s path to reauthenticate and view any hidden items."
 msgstr ""
 
 msgid "GroupSAML|The SCIM token is now hidden. To see the value of the token again, you need to %{linkStart}reset it%{linkEnd}."
@@ -41245,6 +41272,9 @@ msgid "MemberRole|The Planner role is suitable for team members who need to mana
 msgstr ""
 
 msgid "MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code."
+msgstr ""
+
+msgid "MemberRole|The Security Manager role provides comprehensive visibility and management over security aspects of the group or project."
 msgstr ""
 
 msgid "MemberRole|This member is an LDAP user. Changing their role will override the settings from the LDAP group sync."

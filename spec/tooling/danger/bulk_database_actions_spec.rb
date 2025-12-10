@@ -61,7 +61,8 @@ RSpec.describe Tooling::Danger::BulkDatabaseActions, feature_category: :tooling 
             'bulk_update',
             'bulk_delete',
             'bulk_upsert!',
-            'bulk_insert!'
+            'bulk_insert!',
+            'scope :published, ->'
           ]
         end
 
@@ -82,7 +83,8 @@ RSpec.describe Tooling::Danger::BulkDatabaseActions, feature_category: :tooling 
             'delete_keys(key)',
             'destroy_hook(hook)',
             'destroy_all_merged',
-            'update_all_mirrors'
+            'update_all_mirrors',
+            'update_scope'
           ]
         end
 
@@ -92,6 +94,51 @@ RSpec.describe Tooling::Danger::BulkDatabaseActions, feature_category: :tooling 
 
             bulk_database_actions.add_suggestions_for(filename)
           end
+        end
+      end
+    end
+  end
+
+  context 'for single line ActiveRecord scope change' do
+    context 'when file is a non-spec Ruby file' do
+      let(:filename) { 'app/services/personal_access_tokens/revoke_token_family_service.rb' }
+
+      context 'when comment is expected' do
+        let(:file_diff) do
+          <<~DIFF.split("\n")
+              scope :self_and_ancestors_not_aimed_for_deletion, -> do
+                left_joins(:group)
+                  .where(marked_for_deletion_at: nil)
+          +       .where.not(Group.self_or_ancestors_deletion_schedule_subquery.exists)
+                  .without_deleted
+              end
+          DIFF
+        end
+
+        specify do
+          expect(bulk_database_actions).to receive(:markdown).with(comment_text.chomp, file: filename, line: 4)
+
+          bulk_database_actions.add_suggestions_for(filename)
+        end
+      end
+
+      context 'when no comment is expected' do
+        let(:file_diff) do
+          <<~DIFF.split("\n")
+              scope :self_and_ancestors_not_aimed_for_deletion, -> do
+                left_joins(:group)
+                  .where(marked_for_deletion_at: nil)
+                  .where.not(Group.self_or_ancestors_deletion_schedule_subquery.exists)
+                  .without_deleted
+              end
+          +   validates :project_id, presence: true
+          DIFF
+        end
+
+        specify do
+          expect(bulk_database_actions).not_to receive(:markdown)
+
+          bulk_database_actions.add_suggestions_for(filename)
         end
       end
     end

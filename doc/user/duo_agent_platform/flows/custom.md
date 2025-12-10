@@ -226,3 +226,18 @@ To report a flow:
 1. Complete the abuse report, then select **Submit**.
 
 An administrator is notified and can choose to hide or delete the flow.
+
+## Group sharing and flows
+
+When you enable a flow in a group, a related service account is automatically created. The service account:
+
+- Uses [composite identity authentication](../security.md) to ensure that the flow can never access more than the user who runs the flow.
+- Is added as a member to any project under the top-level group that enables the flow, so the flow can't access resources outside that group.
+- Is granted access to any additional groups that are shared with the top-level group. The service account is treated like any other group member for group sharing.
+
+{{< alert type="note" >}}
+
+Sharing flow service accounts across multiple top-level groups can create unintended access
+permissions and security risks.
+
+{{< /alert >}}

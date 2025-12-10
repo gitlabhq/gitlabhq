@@ -547,6 +547,13 @@ func configureRoutes(u *upstream) {
 		u.route("POST",
 			newRoute(apiPattern+`v4/jobs/[0-9]+/sbom_scans\z`, "api_jobs_sbom_scans", railsBackend), mimeMultipartUploader),
 
+		// Commits
+		u.route("POST", newRoute(apiProjectPattern+`/repository/commits\z`, "api_projects_repository_commits", railsBackend), requestBodyUploader),
+
+		// Files
+		u.route("POST", newRoute(apiProjectPattern+`/repository/files/[^/]+\z`, "api_projects_repository_files", railsBackend), requestBodyUploader),
+		u.route("PUT", newRoute(apiProjectPattern+`/repository/files/[^/]+\z`, "api_projects_repository_files", railsBackend), requestBodyUploader),
+
 		// GitLab Observability Backend (GOB). Write paths are versioned with v1 to align with
 		// OpenTelemetry compatibility, where SDKs POST to /v1/traces, /v1/logs and /v1/metrics.
 		u.route("POST", newRoute(apiProjectPattern+`/observability/v1/traces`, "api_observability_traces", railsBackend), gob.WithProjectAuth("/write/traces")),

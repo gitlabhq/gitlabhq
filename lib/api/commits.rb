@@ -9,6 +9,7 @@ module API
     include Helpers::Unidiff
 
     helpers ::API::Helpers::NotesHelpers
+    helpers ::API::Helpers::CommitsBodyUploaderHelper
 
     allow_ai_workflows_access
 
@@ -19,6 +20,13 @@ module API
       authorize_read_code!
 
       verify_pagination_params!
+    end
+
+    rescue_from Oj::ParseError do |e|
+      Gitlab::ErrorTracking.track_exception(e)
+
+      message = 'Invalid json'
+      render_structured_api_error!({ message: message, error: message }, 400)
     end
 
     helpers do
@@ -60,6 +68,82 @@ module API
             event: 'create_commit_from_web_ide'
           ).to_context]
         )
+      end
+
+      def validate_commits_attrs!(attrs)
+        bad_request!('branch is required') if attrs[:branch].blank?
+        bad_request!('commit_message is required') if attrs[:commit_message].blank?
+        bad_request!('actions is required') if attrs[:actions].blank?
+
+        if attrs.key?(:start_sha) && attrs.key?(:start_branch)
+          bad_request!('start_branch, start_sha are mutually exclusive')
+        end
+
+        attrs[:actions].each_with_index do |action, index|
+          bad_request!("actions[#{index}][action] is required") if action[:action].blank?
+          bad_request!("actions[#{index}][file_path] is required") if action[:file_path].blank?
+
+          err = validate_commit_action!(action, index)
+
+          bad_request!(err) if err
+        end
+
+        filter_commits_attrs!(attrs)
+      end
+
+      def validate_commit_action!(action, index)
+        if %w[create update move delete chmod].exclude?(action[:action])
+          return "actions[#{index}][action] must be one of: create, update, move, delete, chmod"
+        end
+
+        if action.key?(:encoding)
+          return "actions[#{index}][encoding] must be text or base64" if %w[text base64].exclude?(action[:encoding])
+        else
+          action[:encoding] = 'text'
+        end
+
+        case action[:action]
+        when 'update'
+          "actions[#{index}][content] is required for update action" unless action.key?(:content)
+        when 'move'
+          "actions[#{index}][previous_path] is required for move action" if action[:previous_path].blank?
+        when 'chmod'
+          if !action.key?(:execute_filemode)
+            "actions[#{index}][execute_filemode] is required for chmod action"
+          elsif [true, false, "true", "false"].exclude?(action[:execute_filemode])
+            "actions[#{index}][execute_filemode] must be a boolean"
+          else
+            action[:execute_filemode] = ActiveModel::Type::Boolean.new.cast(action[:execute_filemode])
+            nil
+          end
+        end
+      end
+
+      def filter_commits_attrs!(attrs)
+        attrs.slice!(
+          :branch,
+          :commit_message,
+          :actions,
+          :start_branch,
+          :start_sha,
+          :start_project,
+          :author_email,
+          :author_name,
+          :stats,
+          :force
+        )
+
+        attrs[:actions].each do |action|
+          action.slice!(
+            :action,
+            :file_path,
+            :previous_path,
+            :content,
+            :encoding,
+            :last_commit_id,
+            :execute_filemode
+          )
+        end
       end
     end
 
@@ -149,6 +233,22 @@ module API
         render_api_error!('ref_name is invalid', 400)
       end
 
+      # POST /:id/repository/commits/authorize'
+      desc 'Authorize commits upload' do
+        success code: 200
+        failure [
+          { code: 400, message: 'Bad Request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[commits]
+        hidden true
+      end
+      post ':id/repository/commits/authorize' do
+        workhorse_authorize_commits_body_upload!
+      end
+
       desc 'Commit multiple file changes as one commit' do
         success code: 200, model: Entities::CommitDetail
         tags %w[commits]
@@ -161,96 +261,30 @@ module API
         detail 'This feature was introduced in GitLab 8.13'
       end
       params do
-        requires :branch,
-          type: String,
-          desc: 'Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`.',
-          allow_blank: false,
-          documentation: { example: 'master' }
-        requires :commit_message,
-          type: String,
-          desc: 'Commit message',
-          documentation: { example: 'initial commit' }
-        requires :actions,
-          type: Array,
-          desc: 'Actions to perform in commit' do
-          requires :action,
-            type: String,
-            desc: 'The action to perform, `create`, `delete`, `move`, `update`, `chmod`', values: %w[create update move delete chmod].freeze,
-            allow_blank: false
-          requires :file_path,
-            type: String,
-            desc: 'Full path to the file.',
-            documentation: { example: 'lib/class.rb' }
-          given action: ->(action) { action == 'move' } do
-            requires :previous_path,
-              type: String,
-              desc: 'Original full path to the file being moved.',
-              documentation: { example: 'lib/class.rb' }
-          end
-          given action: ->(action) { %w[create move].include? action } do
-            optional :content,
-              type: String,
-              desc: 'File content',
-              documentation: { example: 'Some file content' }
-          end
-          given action: ->(action) { action == 'update' } do
-            requires :content,
-              type: String,
-              desc: 'File content',
-              documentation: { example: 'Some file content' }
-          end
-          optional :encoding, type: String, desc: '`text` or `base64`', default: 'text', values: %w[text base64]
-          given action: ->(action) { %w[update move delete].include? action } do
-            optional :last_commit_id,
-              type: String,
-              desc: 'Last known file commit id',
-              documentation: { example: '2695effb5807a22ff3d138d593fd856244e155e7' }
-          end
-          given action: ->(action) { action == 'chmod' } do
-            requires :execute_filemode, type: Boolean, desc: 'When `true/false` enables/disables the execute flag on the file.'
-          end
-        end
-
-        optional :start_branch,
-          type: String,
-          desc: 'Name of the branch to start the new branch from',
-          documentation: { example: 'staging' }
-        optional :start_sha,
-          type: String,
-          desc: 'SHA of the commit to start the new branch from',
-          documentation: { example: '2695effb5807a22ff3d138d593fd856244e155e7' }
-        mutually_exclusive :start_branch, :start_sha
-
-        optional :start_project,
-          types: [Integer, String],
-          desc: 'The ID or path of the project to start the new branch from',
-          documentation: { example: 1 }
-        optional :author_email,
-          type: String,
-          desc: 'Author email for commit',
-          documentation: { example: 'janedoe@example.com' }
-        optional :author_name,
-          type: String,
-          desc: 'Author name for commit',
-          documentation: { example: 'Jane Doe' }
-        optional :stats, type: Boolean, default: true, desc: 'Include commit stats'
-        optional :force, type: Boolean, default: false, desc: 'When `true` overwrites the target branch with a new commit based on the `start_branch` or `start_sha`'
+        requires :file, type: ::API::Validations::Types::WorkhorseFile, desc: 'The commit content to be created (generated by Multipart middleware)', documentation: { type: 'file' }
       end
       post ':id/repository/commits' do
-        if params[:start_project]
-          start_project = find_project!(params[:start_project])
+        require_gitlab_workhorse!
+
+        attrs = file_params_from_body_upload
+
+        authorize_push_to_branch!(attrs[:branch])
+
+        validate_commits_attrs!(attrs)
+
+        if attrs[:start_project]
+          start_project = find_project!(attrs[:start_project])
 
           unless can?(current_user, :read_code, start_project) && user_project.forked_from?(start_project)
             forbidden!("Project is not included in the fork network for #{start_project.full_name}")
           end
         end
 
-        authorize_push_to_branch!(params[:branch])
-
-        attrs = declared_params
         attrs[:branch_name] = attrs.delete(:branch)
         attrs[:start_branch] ||= attrs[:branch_name] unless attrs[:start_sha]
         attrs[:start_project] = start_project if start_project
+        attrs[:stats] = ActiveModel::Type::Boolean.new.cast(attrs[:stats]) != false # default: true
+        attrs[:force] = ActiveModel::Type::Boolean.new.cast(attrs[:force]) == true # default: false
 
         result = ::Files::MultiService.new(user_project, current_user, attrs).execute
 
@@ -259,7 +293,7 @@ module API
 
           track_web_ide_commit_events
 
-          present commit_detail, with: Entities::CommitDetail, include_stats: params[:stats], current_user: current_user
+          present commit_detail, with: Entities::CommitDetail, include_stats: attrs[:stats], current_user: current_user
         else
           render_api_error!(result[:message], 400)
         end

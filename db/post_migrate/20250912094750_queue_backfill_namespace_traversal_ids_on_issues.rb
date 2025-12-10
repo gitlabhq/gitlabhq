@@ -11,17 +11,10 @@ class QueueBackfillNamespaceTraversalIdsOnIssues < Gitlab::Database::Migration[2
   DELAY_INTERVAL = 2.minutes
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :issues,
-      :id,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE,
-      job_interval: DELAY_INTERVAL
-    )
+    # no-op: This migration has been requeued by RequeueBackfillNamespaceTraversalIdsOnIssues
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :issues, :id, [])
+    # no-op: This migration has been requeued by RequeueBackfillNamespaceTraversalIdsOnIssues
   end
 end

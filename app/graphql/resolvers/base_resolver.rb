@@ -125,13 +125,14 @@ module Resolvers
     end
 
     def self.complexity_multiplier(args)
-      # if the number of iids present in the args is of a sufficiently large
-      # size, we want to ensure that the complexity multiplier is applied
-      if args[:iid] || (args[:iids].present? && args[:iids].length <= 100)
-        0
-      elsif args[:iids].present? && args[:iids].length > 100
-        0.02
+      # Single iid lookup gets no multiplier (optimized case)
+      return 0 if args[:iid]
+
+      # Array of iids - apply multiplier based on size
+      if args[:iids].present?
+        args[:iids].length > 100 ? 0.02 : 0.01
       else
+        # Default multiplier for other cases
         0.01
       end
     end

@@ -24,6 +24,7 @@ title: External agents
 
 - Introduced in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `ai_flow_triggers`. Enabled by default.
 - Renamed from CLI agents in GitLab 18.6.
+- Enabling in groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578318) in GitLab 18.7 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_agents`. Enabled on GitLab.com.
 
 {{< /history >}}
 
@@ -139,6 +140,8 @@ Prerequisites:
 Each project that mentions an external agent must have a unique [group service account](../../../user/profile/service_accounts.md).
 Mention the service account username when you assign tasks to the external agent.
 
+If you create an external agent from the AI Catalog and enable it in a top-level group, a service account is automatically created with the name `ai-<agent>-<group>`. For example, if you enable an agent named `Claude code agent` in the `GitLab Duo` group, the service account name is `ai-claude-code-agent-gitlab-duo`.
+
 {{< alert type="warning" >}}
 
 If you use the same service account across multiple projects, that gives the external agent attached to that service account access to all of those projects.
@@ -233,8 +236,8 @@ Prerequisites:
 - You must have at least the Maintainer role for the project.
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Automate** > **Flows**.
-1. Select **New flow**.
+1. Select **Automate** > **Agents**.
+1. Select **New agent**.
 1. Under **Basic information**:
    1. In **Display name**, enter a name.
    1. In **Description**, enter a description.
@@ -243,7 +246,7 @@ Prerequisites:
    1. Select **External**.
    1. Enter your external agent configuration.
       You can write your own YAML, or edit an example configuration.
-1. Select **Create flow**.
+1. Select **Create agent**.
 
 The external agent appears in the AI Catalog.
 
@@ -263,21 +266,51 @@ To create a configuration file:
 
 ## Enable an external agent
 
-If you created an external agent from the AI Catalog, you must enable it in a project to use it.
+If you create an external agent from the AI Catalog, to use it, you must:
+
+1. Enable it in a top-level group.
+1. Enable it in the project you want to use it in.
+
+### Enable in a top-level group
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To enable an external agent in a top-level group:
+
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. Select **AI Catalog**, then select the **Agents** tab.
+1. Select the external agent you want to enable.
+1. In the upper-right corner, select **Enable in group**.
+1. From the dropdown list, select the group you want to enable the external agent in.
+1. Select **Enable**.
+
+The external agent appears in the group's **Automate** > **Agents** page.
+
+### Enable in a project
 
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
+- The agent must be enabled in the project's top-level group.
 
 To enable an external agent in a project:
 
-1. On the left sidebar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog**, then select the **Flows** tab.
-1. Select your external agent, then select **Enable in project**.
-1. From the dropdown list, select the project you want to enable the external agent in.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. Select **Automate** > **Agents**.
+1. In the upper-right corner, select **Enable agent from group**.
+1. From the dropdown list, select the external agent you want to enable.
+1. For **Add triggers**, select which event types trigger the external agent:
+   - **Mention**: When the service account user is mentioned
+     in a comment on an issue or merge request.
+   - **Assign**: When the service account user is assigned
+     to an issue or merge request.
+   - **Assign reviewer**: When the service account user is assigned
+     as a reviewer to a merge request.
 1. Select **Enable**.
 
-The external agent appears in the project's **Flows** list.
+The external agent appears in the project's **Automate** > **Agents** list.
 
 ## Create a trigger
 
@@ -285,6 +318,8 @@ You must now [create a trigger](../triggers/_index.md), which determines when th
 
 For example, you can specify the agent to be triggered when you mention a service account
 in a discussion, or when you assign the service account as a reviewer.
+
+If you create an external agent from the AI Catalog, when you enable the agent in a project you also create triggers.
 
 ## Use an external agent
 

@@ -243,7 +243,7 @@ RSpec.describe Resolvers::BaseResolver, feature_category: :api do
 
       expect(field.complexity.call({}, { sort: 'foo' }, 1)).to eq 6
       expect(field.complexity.call({}, { sort: 'foo', iid: 1 }, 1)).to eq 3
-      expect(field.complexity.call({}, { sort: 'foo', iids: [1, 2, 3] }, 1)).to eq 3
+      expect(field.complexity.call({}, { sort: 'foo', iids: [1, 2, 3] }, 1)).to eq 6
     end
 
     it 'does increase complexity when the number of iids present surpasses 100' do

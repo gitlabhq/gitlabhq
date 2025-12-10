@@ -77,13 +77,22 @@ test-coverage:export-rspec-and-e2e:
     - |
       echo "Merging Jest + E2E coverage..."
       node scripts/frontend/merge_coverage_frontend.js
-    - echo "Exporting merged Jest + E2E coverage to ClickHouse..."
-    - bundle exec test-coverage
-        --test-reports 'jest-reports/**/*.json'
-        --coverage-report 'coverage-frontend/lcov.info'
-        --test-map 'jest-test-mapping/jest-source-to-test.json'
-        --clickhouse-url "${CLICKHOUSE_URL}"
-        --clickhouse-database "${CLICKHOUSE_DATABASE}"
+    - |
+      echo "Merging E2E test mappings with Jest mappings..."
+      node scripts/frontend/merge_e2e_frontend_test_mapping.js
+
+      if [ ! -f "jest-test-mapping/merged-source-to-test.json" ]; then
+        echo "Merged test mapping not found. Skipping export to ClickHouse..."
+        exit 0
+      fi
+
+      echo "Exporting merged Jest + E2E coverage to ClickHouse..."
+      bundle exec test-coverage \
+        --test-reports 'jest-reports/**/*.json,e2e-test-reports/rspec-*.json' \
+        --coverage-report 'coverage-frontend/lcov.info' \
+        --test-map 'jest-test-mapping/merged-source-to-test.json' \
+        --clickhouse-url "${CLICKHOUSE_URL}" \
+        --clickhouse-database "${CLICKHOUSE_DATABASE}" \
         --clickhouse-username "${CLICKHOUSE_USERNAME}"
   artifacts:
     paths:
@@ -91,6 +100,7 @@ test-coverage:export-rspec-and-e2e:
       - coverage-e2e-frontend/
       - jest-reports/
       - jest-test-mapping/
+      - e2e-test-reports/
     expire_in: 7d
 
 test-coverage:export-workhorse:

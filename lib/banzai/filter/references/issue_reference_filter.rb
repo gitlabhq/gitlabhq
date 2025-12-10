@@ -30,7 +30,7 @@ module Banzai
                 .includes(:project, :namespace, :work_item_type, :author)
         end
 
-        def object_link_text_extras(issue, matches)
+        def object_link_content_html_extras(issue, matches)
           super + design_link_extras(issue, matches.named_captures['path'])
         end
 
@@ -63,7 +63,7 @@ module Banzai
 
         def design_link_extras(issue, path)
           if path == '/designs' && read_designs?(issue)
-            ['designs']
+            [CGI.escapeHTML('designs')]
           else
             []
           end

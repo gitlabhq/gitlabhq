@@ -62,12 +62,12 @@ module Banzai
           end
         end
 
-        def object_link_text_extras(object, matches)
+        def object_link_content_html_extras(object, matches)
           extras = super
 
           path = matches[:path] if matches.names.include?("path")
           if path == '/builds'
-            extras.unshift "builds"
+            extras.unshift CGI.escapeHTML("builds")
           end
 
           extras
