@@ -11060,6 +11060,7 @@ CREATE TABLE ai_catalog_item_versions (
     schema_version smallint NOT NULL,
     version text NOT NULL,
     definition jsonb DEFAULT '{}'::jsonb NOT NULL,
+    created_by_id bigint,
     CONSTRAINT check_8cabb46fa3 CHECK ((char_length(version) <= 50))
 );
 
@@ -11317,9 +11318,11 @@ CREATE TABLE ai_settings (
     minimum_access_level_manage smallint,
     minimum_access_level_enable_on_projects smallint,
     minimum_access_level_execute_async smallint,
+    feature_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_3cf9826589 CHECK ((char_length(ai_gateway_url) <= 2048)),
     CONSTRAINT check_900d7a89b3 CHECK ((char_length(duo_agent_platform_service_url) <= 2048)),
     CONSTRAINT check_a02bd8868c CHECK ((char_length(amazon_q_role_arn) <= 2048)),
+    CONSTRAINT check_ai_settings_feature_settings_is_hash CHECK ((jsonb_typeof(feature_settings) = 'object'::text)),
     CONSTRAINT check_singleton CHECK ((singleton IS TRUE))
 );
 
@@ -21392,7 +21395,9 @@ CREATE TABLE namespace_ai_settings (
     minimum_access_level_execute smallint,
     minimum_access_level_manage smallint,
     minimum_access_level_enable_on_projects smallint,
-    minimum_access_level_execute_async smallint
+    minimum_access_level_execute_async smallint,
+    feature_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT check_namespace_ai_settings_feature_settings_is_hash CHECK ((jsonb_typeof(feature_settings) = 'object'::text))
 );
 
 CREATE TABLE namespace_bans (
@@ -40406,6 +40411,8 @@ CREATE INDEX index_ai_catalog_item_version_dependencies_on_dependency_id ON ai_c
 
 CREATE INDEX index_ai_catalog_item_version_dependencies_on_organization_id ON ai_catalog_item_version_dependencies USING btree (organization_id);
 
+CREATE INDEX index_ai_catalog_item_versions_on_created_by_id ON ai_catalog_item_versions USING btree (created_by_id);
+
 CREATE INDEX index_ai_catalog_item_versions_on_organization_id ON ai_catalog_item_versions USING btree (organization_id);
 
 CREATE INDEX index_ai_catalog_items_on_item_type ON ai_catalog_items USING btree (item_type);
@@ -44456,11 +44463,9 @@ CREATE INDEX index_sprints_on_title ON sprints USING btree (title);
 
 CREATE INDEX index_sprints_on_title_trigram ON sprints USING gin (title gin_trgm_ops);
 
-CREATE UNIQUE INDEX index_ssh_signatures_on_commit_sha ON ssh_signatures USING btree (commit_sha);
-
 CREATE INDEX index_ssh_signatures_on_key_id ON ssh_signatures USING btree (key_id);
 
-CREATE INDEX index_ssh_signatures_on_project_id ON ssh_signatures USING btree (project_id);
+CREATE UNIQUE INDEX index_ssh_signatures_on_project_id_and_commit_sha ON ssh_signatures USING btree (project_id, commit_sha);
 
 CREATE INDEX index_ssh_signatures_on_user_id ON ssh_signatures USING btree (user_id);
 
@@ -50009,6 +50014,9 @@ ALTER TABLE ONLY bulk_import_configurations
 
 ALTER TABLE ONLY scan_result_policy_violations
     ADD CONSTRAINT fk_17ce579abf FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_catalog_item_versions
+    ADD CONSTRAINT fk_17de6d0f79 FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_1800597ef9 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;

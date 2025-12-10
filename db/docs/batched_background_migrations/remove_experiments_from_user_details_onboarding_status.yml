@@ -1,0 +1,8 @@
+---
+migration_job_name: RemoveExperimentsFromUserDetailsOnboardingStatus
+description: Removes the experiment key from onboarding_status json column in user_details table
+feature_category: onboarding
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214896
+milestone: '18.7'
+queued_migration_version: 20251203214635
+finalized_by: # version of the migration that finalized this BBM

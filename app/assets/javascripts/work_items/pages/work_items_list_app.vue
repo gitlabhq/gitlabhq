@@ -61,6 +61,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
+import { setPageFullWidth, setPageDefaultWidth } from '~/lib/utils/common_utils';
 import { __, s__, n__, formatNumber } from '~/locale';
 import {
   OPERATOR_IS,
@@ -978,8 +979,12 @@ export default {
     this.releasesCache = [];
     this.areReleasesFetched = false;
   },
+  mounted() {
+    setPageFullWidth();
+  },
   beforeDestroy() {
     window.removeEventListener('popstate', this.checkDrawerParams);
+    setPageDefaultWidth();
   },
   methods: {
     combineSlimAndFullLists(slim, full) {

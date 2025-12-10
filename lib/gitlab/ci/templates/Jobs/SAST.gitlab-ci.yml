@@ -66,6 +66,7 @@ gitlab-advanced-sast:
       - "scan-metrics-$CI_DEFAULT_BRANCH"
     paths:
       - "scan_metrics.csv"
+  timeout: 3h
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never

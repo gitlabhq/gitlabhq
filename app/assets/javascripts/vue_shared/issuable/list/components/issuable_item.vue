@@ -391,7 +391,7 @@ export default {
 <template>
   <li
     :id="`issuable_${issuableId}`"
-    class="issue !gl-flex !gl-px-5"
+    class="issue !gl-flex gl-flex-col gl-gap-y-3 !gl-px-5 @sm/panel:gl-flex-row"
     :class="{
       closed: issuable.closedAt,
       '!gl-bg-feedback-info': isActive,
@@ -424,7 +424,7 @@ export default {
       <span class="gl-sr-only">{{ issuable.title }}</span>
     </gl-form-checkbox>
     <div class="issuable-main-info">
-      <div data-testid="issuable-title" class="issue-title title">
+      <div data-testid="issuable-title" class="issue-title title gl-text-[0]">
         <status-badge
           v-if="showDraftStatusBadge"
           :state="issuable.state"
@@ -438,6 +438,7 @@ export default {
           class="gl-mr-2"
           :work-item-type="type"
           show-tooltip-on-hover
+          icon-variant="subtle"
         />
         <button
           v-if="issuable.confidential"
@@ -446,7 +447,7 @@ export default {
           class="button-reset gl-mr-2 gl-inline-block gl-w-5"
           data-testid="confidential-icon-container"
         >
-          <gl-icon name="eye-slash" />
+          <gl-icon name="eye-slash" variant="warning" />
         </button>
         <span
           v-if="issuable.hidden"
@@ -503,74 +504,70 @@ export default {
           {{ taskStatus }}
         </span>
       </div>
-      <div class="issuable-info">
+      <div class="issuable-info gl-flex gl-flex-wrap gl-items-center gl-gap-3 gl-gap-y-1">
         <slot v-if="hasSlotContents('reference')" name="reference"></slot>
         <span v-else data-testid="issuable-reference" class="issuable-reference">
           {{ reference }}
         </span>
-        <span class="gl-hidden @sm/panel:gl-inline">
-          <span aria-hidden="true">&middot;</span>
-          <span class="issuable-authored gl-mr-3">
-            <gl-sprintf v-if="author.name" :message="__('created %{timeAgo} by %{author}')">
-              <template #timeAgo>
-                <button
-                  v-if="issuable.createdAt"
-                  v-gl-tooltip.bottom
-                  :title="tooltipTitle(issuable.createdAt)"
-                  :aria-label="tooltipTitle(issuable.createdAt)"
-                  data-testid="issuable-created-at"
-                  class="button-reset gl-text-subtle"
-                >
-                  {{ createdAt }}
-                </button>
-              </template>
-              <template #author>
-                <span v-if="externalAuthor" data-testid="external-author"
-                  >{{ externalAuthor }} {{ __('via') }}</span
-                >
-                <slot v-if="hasSlotContents('author')" name="author"></slot>
-                <gl-link
-                  v-else
-                  :data-user-id="authorId"
-                  :data-username="author.username"
-                  :data-name="author.name"
-                  :data-avatar-url="author.avatarUrl"
-                  :href="author.webPath"
-                  data-testid="issuable-author"
-                  class="author-link js-user-link gl-text-sm !gl-text-subtle"
-                  @click.stop
-                >
-                  <span class="author">{{ author.name }}</span>
-                </gl-link>
-              </template>
-            </gl-sprintf>
-            <gl-sprintf v-else :message="__('created %{timeAgo}')">
-              <template #timeAgo>
-                <span
-                  v-if="issuable.createdAt"
-                  v-gl-tooltip.bottom
-                  :title="tooltipTitle(issuable.createdAt)"
-                  data-testid="issuable-created-at"
-                >
-                  {{ createdAt }}
-                </span>
-              </template>
-            </gl-sprintf>
-          </span>
-          <slot name="timeframe"></slot>
-          <slot name="target-branch"></slot>
+        <span class="-gl-ml-2 gl-hidden @sm/panel:gl-block" aria-hidden="true">&middot;</span>
+        <span class="issuable-authored -gl-ml-2 gl-hidden @sm/panel:gl-block">
+          <gl-sprintf v-if="author.name" :message="__('created %{timeAgo} by %{author}')">
+            <template #timeAgo>
+              <button
+                v-if="issuable.createdAt"
+                v-gl-tooltip.bottom
+                :title="tooltipTitle(issuable.createdAt)"
+                :aria-label="tooltipTitle(issuable.createdAt)"
+                data-testid="issuable-created-at"
+                class="button-reset gl-text-subtle"
+              >
+                {{ createdAt }}
+              </button>
+            </template>
+            <template #author>
+              <span v-if="externalAuthor" data-testid="external-author"
+                >{{ externalAuthor }} {{ __('via') }}</span
+              >
+              <slot v-if="hasSlotContents('author')" name="author"></slot>
+              <gl-link
+                v-else
+                :data-user-id="authorId"
+                :data-username="author.username"
+                :data-name="author.name"
+                :data-avatar-url="author.avatarUrl"
+                :href="author.webPath"
+                data-testid="issuable-author"
+                class="author-link js-user-link gl-text-sm !gl-text-subtle"
+                @click.stop
+              >
+                <span class="author">{{ author.name }}</span>
+              </gl-link>
+            </template>
+          </gl-sprintf>
+          <gl-sprintf v-else :message="__('created %{timeAgo}')">
+            <template #timeAgo>
+              <span
+                v-if="issuable.createdAt"
+                v-gl-tooltip.bottom
+                :title="tooltipTitle(issuable.createdAt)"
+                data-testid="issuable-created-at"
+              >
+                {{ createdAt }}
+              </span>
+            </template>
+          </gl-sprintf>
         </span>
-        <p
+        <slot name="timeframe"></slot>
+        <slot name="target-branch"></slot>
+        <template
           v-if="
             labels.length && !hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.LABELS)
           "
-          role="group"
-          :aria-label="__('Labels')"
-          class="gl-mb-0 gl-mt-1 gl-flex gl-flex-wrap gl-gap-2"
         >
           <gl-label
             v-for="(label, index) in labels"
             :key="index"
+            :class="{ '-gl-mr-2': index < labels.length - 1 }"
             :background-color="label.color"
             :title="labelTitle(label)"
             :description="label.description"
@@ -578,10 +575,10 @@ export default {
             :target="labelTarget(label)"
             @click.stop
           />
-        </p>
+        </template>
       </div>
     </div>
-    <div class="issuable-meta gl-max-w-2/8 @md/panel:gl-max-w-3/8">
+    <div class="issuable-meta @sm/panel:gl-max-w-2/8 @md/panel:gl-max-w-3/8">
       <ul
         v-if="showIssuableMeta"
         class="controls gl-flex gl-max-w-full gl-flex-wrap-reverse gl-justify-end gl-gap-3 gl-gap-y-2"

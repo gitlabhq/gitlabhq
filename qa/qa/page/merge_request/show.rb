@@ -4,8 +4,6 @@ module QA
   module Page
     module MergeRequest
       class Show < Page::Base
-        include Page::Component::Issuable::Sidebar
-
         view 'app/assets/javascripts/batch_comments/components/review_drawer.vue' do
           element 'submit-review-button'
         end
@@ -67,6 +65,23 @@ module QA
 
         view 'app/assets/javascripts/notes/components/noteable_note.vue' do
           element 'noteable-note-container'
+        end
+
+        view 'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_value.vue' do
+          element 'selected-label-content'
+        end
+
+        view 'app/assets/javascripts/sidebar/components/labels/labels_select_widget/labels_select_root.vue' do
+          element 'sidebar-labels'
+        end
+
+        view 'app/assets/javascripts/sidebar/components/sidebar_dropdown_widget.vue' do
+          element 'milestone-link', 'data-testid="`${formatIssuableAttribute.kebab}-link`"' # rubocop:disable QA/ElementWithPattern
+        end
+
+        view 'app/views/shared/issuable/_sidebar.html.haml' do
+          element 'assignee-block-container'
+          element 'sidebar-milestones'
         end
 
         view 'app/views/projects/merge_requests/_code_dropdown.html.haml' do
@@ -169,6 +184,24 @@ module QA
 
         view 'app/helpers/projects_helper.rb' do
           element 'author-link'
+        end
+
+        def has_assignee?(username)
+          wait_assignees_block_finish_loading do
+            has_text?(username)
+          end
+        end
+
+        def has_label?(label)
+          wait_labels_block_finish_loading do
+            has_element?('selected-label-content', label_name: label)
+          end
+        end
+
+        def has_milestone?(milestone_title)
+          wait_milestone_block_finish_loading do
+            has_element?('milestone-link', text: milestone_title)
+          end
         end
 
         def has_comment?(comment_text, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
@@ -606,6 +639,33 @@ module QA
         end
 
         private
+
+        def wait_assignees_block_finish_loading
+          within_element('assignee-block-container') do
+            wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
+              finished_loading_block?
+              yield
+            end
+          end
+        end
+
+        def wait_labels_block_finish_loading
+          within_element('sidebar-labels') do
+            wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
+              finished_loading_block?
+              yield
+            end
+          end
+        end
+
+        def wait_milestone_block_finish_loading
+          within_element('sidebar-milestones') do
+            wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
+              finished_loading_block?
+              yield
+            end
+          end
+        end
 
         def submit_commit
           # There may be two modals due to https://gitlab.com/gitlab-org/gitlab/-/issues/538079

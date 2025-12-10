@@ -9,15 +9,23 @@ title: Maven virtual registry API
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
 {{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161615) in GitLab 17.4 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
+- Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1. Disabled by default. Feature flag `virtual_registry_maven` removed.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
+
+{{< /history >}}
 
 {{< alert type="flag" >}}
 
 The availability of these endpoints is controlled by a feature flag.
 For more information, see the history.
-These endpoints are available in [beta](../policy/development_stages_support.md#beta).
-Review the documentation carefully before you use them.
 
 {{< /alert >}}
 
@@ -36,10 +44,6 @@ Use the following endpoints to create and manage Maven virtual registries.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161615) in GitLab 17.4 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
-- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
 - `downloads_count` and `downloaded_at` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201790) in GitLab 18.4.
 
 {{< /history >}}
@@ -81,15 +85,6 @@ Example response:
 
 ### Create a virtual registry
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161615) in GitLab 17.4 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
-- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
-
-{{< /history >}}
-
 Creates a Maven virtual registry for a group.
 
 ```plaintext
@@ -128,15 +123,6 @@ Example response:
 
 ### Get a virtual registry
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161615) in GitLab 17.4 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
-- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
-
-{{< /history >}}
-
 Gets a specific Maven virtual registry.
 
 ```plaintext
@@ -172,15 +158,6 @@ Example response:
 
 ### Update a virtual registry
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189070) in GitLab 18.0 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
-- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
-
-{{< /history >}}
-
 Updates a specific Maven virtual registry.
 
 ```plaintext
@@ -206,15 +183,6 @@ curl --request PATCH \
 If successful, returns a [`200 OK`](rest/troubleshooting.md#status-codes) status code.
 
 ### Delete a virtual registry
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161615) in GitLab 17.4 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
-- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
-
-{{< /history >}}
 
 {{< alert type="warning" >}}
 
@@ -332,7 +300,7 @@ Example response:
 
 {{< /history >}}
 
-Tests the connection to a Maven upstream registry that hasn't been added to the virtual registry yet. This endpoint validates connectivity and credentials before creating the upstream registry.
+Tests the connection to a Maven upstream registry that has not yet been added to the virtual registry. This endpoint validates connectivity and credentials before creating the upstream registry.
 
 ```plaintext
 POST /groups/:id/-/virtual_registries/packages/maven/upstreams/test
@@ -342,10 +310,10 @@ Supported attributes:
 
 | Attribute | Type | Required | Description |
 |:----------|:-----|:---------|:------------|
-| `id` | string/integer | yes | The group ID or full group path. Must be a top-level group. |
-| `url` | string | yes | The URL of the upstream registry. |
-| `username` | string | no | The username of the upstream registry. |
-| `password` | string | no | The password of the upstream registry. |
+| `id` | string/integer | Yes | The group ID or full group path. Must be a top-level group. |
+| `url` | string | Yes | The URL of the upstream registry. |
+| `password` | string | No | The password of the upstream registry. |
+| `username` | string | No | The username of the upstream registry. |
 
 {{< alert type="note" >}}
 
@@ -364,7 +332,7 @@ The `test` endpoint sends a HEAD request to the provided upstream URL using a te
 | 401 | Authentication failed | `{ "success": false, "result": "Error: 401 - Unauthorized" }` |
 | 403 | Access forbidden | `{ "success": false, "result": "Error: 403 - Forbidden" }` |
 | 5XX | Upstream server error | `{ "success": false, "result": "Error: 5XX - Server Error" }` |
-| Network errors | Connection/timeout issues | `{ "success": false, "result": "Error: Connection timeout" }` |
+| Network errors | Connection or timeout issues | `{ "success": false, "result": "Error: Connection timeout" }` |
 
 Example request:
 
@@ -384,15 +352,6 @@ Example response:
 ```
 
 ### List all upstream registries for a virtual registry
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162019) in GitLab 17.4 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
-- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
-
-{{< /history >}}
 
 Lists all upstream registries for a Maven virtual registry.
 
@@ -442,10 +401,6 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162019) in GitLab 17.4 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
-- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
 - `metadata_cache_validity_hours` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556138) in GitLab 18.3.
 
 {{< /history >}}
@@ -458,14 +413,14 @@ POST /virtual_registries/packages/maven/registries/:id/upstreams
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of the Maven virtual registry. |
-| `url` | string | yes | The URL of the upstream registry. |
-| `username` | string | no | The username of the upstream registry. |
-| `password` | string | no | The password of the upstream registry. |
-| `name` | string | no | The name of the upstream registry. |
-| `description` | string | no | The description of the upstream registry. |
-| `cache_validity_hours` | integer | no | The cache validity period. Defaults to 24 hours. |
-| `metadata_cache_validity_hours` | integer | no | The metadata cache validity period. Defaults to 24 hours. |
+| `id` | integer | Yes | The ID of the Maven virtual registry. |
+| `url` | string | Yes | The URL of the upstream registry. |
+| `cache_validity_hours` | integer | No | The cache validity period. Defaults to 24 hours. |
+| `description` | string | No | The description of the upstream registry. |
+| `metadata_cache_validity_hours` | integer | No | The metadata cache validity period. Defaults to 24 hours. |
+| `name` | string | No | The name of the upstream registry. |
+| `password` | string | No | The password of the upstream registry. |
+| `username` | string | No | The username of the upstream registry. |
 
 {{< alert type="note" >}}
 
@@ -509,15 +464,6 @@ Example response:
 ```
 
 ### Get an upstream registry
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162019) in GitLab 17.4 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
-- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
-
-{{< /history >}}
 
 Gets a specific upstream registry for a Maven virtual registry.
 
@@ -567,10 +513,6 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162019) in GitLab 17.4 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
-- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
 - `metadata_cache_validity_hours` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556138) in GitLab 18.3.
 
 {{< /history >}}
@@ -583,14 +525,14 @@ PATCH /virtual_registries/packages/maven/upstreams/:id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of the upstream registry. |
-| `url` | string | no | The URL of the upstream registry. |
-| `name` | string | no | The name of the upstream registry. |
-| `description` | string | no | The description of the upstream registry. |
-| `username` | string | no | The username of the upstream registry. |
-| `password` | string | no | The password of the upstream registry. |
-| `cache_validity_hours` | integer | no | The cache validity period. Defaults to 24 hours. |
-| `metadata_cache_validity_hours` | integer | no | The metadata cache validity period. Defaults to 24 hours. |
+| `id` | integer | Yes | The ID of the upstream registry. |
+| `cache_validity_hours` | integer | No | The cache validity period. Defaults to 24 hours. |
+| `description` | string | No | The description of the upstream registry. |
+| `metadata_cache_validity_hours` | integer | No | The metadata cache validity period. Defaults to 24 hours. |
+| `name` | string | No | The name of the upstream registry. |
+| `password` | string | No | The password of the upstream registry. |
+| `url` | string | No | The URL of the upstream registry. |
+| `username` | string | No | The username of the upstream registry. |
 
 {{< alert type="note" >}}
 
@@ -612,15 +554,6 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
 If successful, returns a [`200 OK`](rest/troubleshooting.md#status-codes) status code.
 
 ### Update an upstream registry position
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186890) in GitLab 18.0 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
-- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
-
-{{< /history >}}
 
 Updates the position of an upstream registry in an ordered list for a Maven virtual registry.
 
@@ -645,15 +578,6 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
 If successful, returns a [`200 OK`](rest/troubleshooting.md#status-codes) status code.
 
 ### Delete an upstream registry
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162019) in GitLab 17.4 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
-- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
-
-{{< /history >}}
 
 Deletes a specific upstream registry for a Maven virtual registry.
 
@@ -831,15 +755,6 @@ Use the following endpoints to manage cache entries for a Maven virtual registry
 
 ### List upstream registry cache entries
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162614) in GitLab 17.4 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
-- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
-
-{{< /history >}}
-
 Lists cache entries for a Maven upstream registry.
 
 ```plaintext
@@ -850,10 +765,10 @@ Supported attributes:
 
 | Attribute | Type | Required | Description |
 |:----------|:-----|:---------|:------------|
-| `id` | integer | yes | The ID of the upstream registry. |
-| `search` | string | no | The search query for the relative path of the package (for example, `foo/bar/mypkg`). |
-| `page` | integer | no | The page number. Defaults to 1. |
-| `per_page` | integer | no | The number of items per page. Defaults to 20. |
+| `id` | integer | Yes | The ID of the upstream registry. |
+| `page` | integer | No | The page number. Defaults to 1. |
+| `per_page` | integer | No | The number of items per page. Defaults to 20. |
+| `search` | string | No | The search query for the relative path of the package (for example, `foo/bar/mypkg`). |
 
 Example request:
 
@@ -888,15 +803,6 @@ Example response:
 
 ### Delete an upstream registry cache entry
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162614) in GitLab 17.4 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
-- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
-
-{{< /history >}}
-
 Deletes a specific cache entry for a Maven upstream registry.
 
 ```plaintext
@@ -905,7 +811,7 @@ DELETE /virtual_registries/packages/maven/cache_entries/*id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | string | yes | The base64-encoded upstream ID and relative path of the cache entry (for example, 'Zm9vL2Jhci9teXBrZy5wb20='). |
+| `id` | string | Yes | The base64-encoded upstream ID and relative path of the cache entry (for example, 'Zm9vL2Jhci9teXBrZy5wb20='). |
 
 Example request:
 
@@ -937,15 +843,6 @@ see [Maven virtual registry](../user/packages/virtual_registry/maven/_index.md).
 
 ### Download a package
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160891) in GitLab 17.3 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
-- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
-
-{{< /history >}}
-
 Downloads a package from a Maven virtual registry. To access this resource, you must [authenticate with the registry](../user/packages/package_registry/supported_functionality.md#authenticate-with-the-registry).
 
 ```plaintext
@@ -956,8 +853,8 @@ Supported attributes:
 
 | Attribute | Type | Required | Description |
 |:----------|:-----|:---------|:------------|
-| `id` | integer | yes | The ID of the Maven virtual registry. |
-| `path` | string | yes | The full package path (for example, `foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar`). |
+| `id` | integer | Yes | The ID of the Maven virtual registry. |
+| `path` | string | Yes | The full package path (for example, `foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar`). |
 
 Example request:
 
@@ -977,15 +874,6 @@ the following response headers:
 
 ### Upload a package
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163641) in GitLab 17.4 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
-- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
-
-{{< /history >}}
-
 Uploads a package to a Maven virtual registry. This endpoint is accessible only by [GitLab Workhorse](../development/workhorse/_index.md).
 
 ```plaintext
@@ -994,9 +882,9 @@ POST /virtual_registries/packages/maven/:id/*path/upload
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of the Maven virtual registry. |
-| `path` | string | yes | The full package path (for example, `foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar`). |
-| `file` | file | yes | The file being uploaded. |
+| `id` | integer | Yes | The ID of the Maven virtual registry. |
+| `file` | file | Yes | The file being uploaded. |
+| `path` | string | Yes | The full package path (for example, `foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar`). |
 
 Request headers:
 

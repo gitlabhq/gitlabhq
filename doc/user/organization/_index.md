@@ -50,7 +50,7 @@ see [epic 9265](https://gitlab.com/groups/gitlab-org/-/epics/9265).
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/441531) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `allow_organization_creation`. Disabled by default.
-- [Consolidated](https://gitlab.com/gitlab-org/gitlab/-/issues/549062) with `organization_switching` feature flag in GitLab 18.4. Disabled by default.
+- Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/549062) to `organization_switching` in GitLab 18.4. Disabled by default. Feature flag `allow_organization_creation` removed.
 
 {{< /history >}}
 

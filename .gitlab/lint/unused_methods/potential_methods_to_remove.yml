@@ -5,8 +5,6 @@
 # If it turns out that a method you are attempting to remove is in fact in use,
 #   remove it from this file and add it to `excluded_methods.yml`.
 #
-discover_duo_pro_hand_raise_lead_data:
-  file: ee/app/helpers/gitlab_subscriptions/hand_raise_leads_helper.rb
 decrease_retries!:
   file: ee/app/models/ai/active_context/migration.rb
 code_suggestions_self_hosted?:

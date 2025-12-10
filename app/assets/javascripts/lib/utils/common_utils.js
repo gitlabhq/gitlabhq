@@ -789,3 +789,25 @@ export const hasCiConfigExtension = (path) => {
  */
 export const isElementStuck = (el) =>
   el.getBoundingClientRect().top <= parseInt(getComputedStyle(el).top, 10);
+
+/**
+ * Force fluid layout for a single component. Useful when using VueRouter to avoid
+ * Rails-based layout changes persisting unintentionally.
+ */
+export function setPageFullWidth() {
+  const wrappers = document.querySelectorAll('.container-fluid.container-limited');
+
+  wrappers.forEach((el) => {
+    el.classList.add('not-container-limited');
+    el.classList.remove('container-limited');
+  });
+}
+
+export function setPageDefaultWidth() {
+  const wrappers = document.querySelectorAll('.container-fluid.not-container-limited');
+
+  wrappers.forEach((el) => {
+    el.classList.add('container-limited');
+    el.classList.remove('not-container-limited');
+  });
+}

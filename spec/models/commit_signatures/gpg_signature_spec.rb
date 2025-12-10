@@ -22,7 +22,11 @@ RSpec.describe CommitSignatures::GpgSignature, feature_category: :source_code_ma
   end
 
   it_behaves_like 'having unique enum values'
-  it_behaves_like 'commit signature'
+
+  it_behaves_like 'commit signature' do
+    let(:signature_attributes) { { commit_sha: commit_sha } }
+  end
+
   it_behaves_like 'signature with type checking', :gpg
 
   describe 'associations' do

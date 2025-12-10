@@ -26,7 +26,11 @@ RSpec.describe CommitSignatures::X509CommitSignature, feature_category: :source_
   let(:signature) { create(:x509_commit_signature, commit_sha: commit_sha, x509_certificate: x509_certificate) }
 
   it_behaves_like 'having unique enum values'
-  it_behaves_like 'commit signature'
+
+  it_behaves_like 'commit signature' do
+    let(:signature_attributes) { { commit_sha: commit_sha } }
+  end
+
   it_behaves_like 'signature with type checking', :x509
 
   describe 'validation' do

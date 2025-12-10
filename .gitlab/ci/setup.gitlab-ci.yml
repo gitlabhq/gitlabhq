@@ -63,6 +63,10 @@ set-pipeline-name:
     - .predictive-job
     - .setup:rules:set-pipeline-name
     - .fast-no-clone-job
+  needs:
+    # Wait for danger-review to complete so we can fetch labels it adds
+    - job: danger-review
+      optional: true
   variables:
     # We use > instead of | because we want the files to be space-separated.
     FILES_TO_DOWNLOAD: >

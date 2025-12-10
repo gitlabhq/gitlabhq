@@ -112,6 +112,10 @@ export default {
   apollo: {
     pipelines: {
       query: getPipelinesQuery,
+      // we poll only for new pipeline creation
+      // and rely on the subscription for real-time
+      // status updates
+      pollInterval: 10000,
       variables() {
         // Map frontend scope to GraphQL scope
         const scopeMap = {

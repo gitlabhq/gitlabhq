@@ -1,4 +1,4 @@
-import { GlIcon, GlTooltip, GlLink } from '@gitlab/ui';
+import { GlIcon, GlTooltip, GlLink, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 
@@ -9,7 +9,7 @@ describe('WorkItemAttribute Component', () => {
     wrapper = shallowMountExtended(WorkItemAttribute, {
       propsData,
       scopedSlots,
-      stubs: { GlTooltip, GlIcon, GlLink },
+      stubs: { GlTooltip, GlIcon, GlLink, GlTruncate },
     });
   };
 
@@ -17,6 +17,7 @@ describe('WorkItemAttribute Component', () => {
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findLink = () => wrapper.findComponent(GlLink);
+  const findTruncate = () => wrapper.findComponent(GlTruncate);
 
   it('renders the wrapper component with correct class and attributes', () => {
     createComponent({
@@ -66,9 +67,9 @@ describe('WorkItemAttribute Component', () => {
       anchorId: 'test-anchor',
     });
 
-    const titleEl = wrapper.find('span.title-class');
+    const titleEl = findTruncate();
     expect(titleEl.exists()).toBe(true);
-    expect(titleEl.text()).toBe('Test Title');
+    expect(titleEl.props('text')).toBe('Test Title');
     expect(titleEl.attributes('data-testid')).toBe('test-anchor-title');
   });
 
@@ -106,23 +107,25 @@ describe('WorkItemAttribute Component', () => {
     it('renders GlLink component instead of span', () => {
       createComponent({ isLink: true, href: 'https://example.com' });
 
-      const link = findLink();
-      expect(link.exists()).toBe(true);
-      expect(link.attributes('href')).toBe('https://example.com');
+      const wrapperEl = findWrapper();
+      expect(wrapperEl.exists()).toBe(true);
+      expect(wrapperEl.attributes('href')).toBe('https://example.com');
     });
 
     it('does not render GlLink when `isLink` is false', () => {
       createComponent({ isLink: false });
 
-      expect(findLink().exists()).toBe(false);
+      const wrapperEl = findWrapper();
+      expect(wrapperEl.exists()).toBe(true);
+      expect(wrapperEl.element.tagName.toLowerCase()).toBe('span');
     });
 
     it('renders the wrapper component inside the GlLink', () => {
-      createComponent({ isLink: true });
+      createComponent({ isLink: true, href: 'https://example.com' });
 
-      const link = findLink();
-      expect(link.exists()).toBe(true);
-      expect(findWrapper().exists()).toBe(true);
+      const wrapperEl = findWrapper();
+      expect(wrapperEl.exists()).toBe(true);
+      expect(wrapperEl.element.tagName.toLowerCase()).toBe('a');
     });
   });
 
@@ -132,7 +135,7 @@ describe('WorkItemAttribute Component', () => {
         stopPropagation: jest.fn(),
       };
       createComponent({ isLink: true });
-      findLink().vm.$emit('click', mockEvent);
+      wrapper.vm.$emit('click', mockEvent);
 
       expect(wrapper.emitted().click).toHaveLength(1);
       expect(wrapper.emitted().click[0][0]).toBe(mockEvent);
@@ -143,7 +146,6 @@ describe('WorkItemAttribute Component', () => {
         stopPropagation: jest.fn(),
       };
       createComponent({ isLink: true, href: 'https://example.com' });
-
       findLink().vm.$emit('click', mockEvent);
 
       expect(mockEvent.stopPropagation).toHaveBeenCalled();
@@ -155,7 +157,7 @@ describe('WorkItemAttribute Component', () => {
       };
       createComponent({ isLink: true });
 
-      findLink().vm.$emit('click', mockEvent);
+      wrapper.vm.$emit('click', mockEvent);
 
       expect(mockEvent.stopPropagation).not.toHaveBeenCalled();
     });

@@ -257,7 +257,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-p-4">
+  <div class="gl-flex gl-flex-col gl-gap-3 gl-p-4">
     <div class="gl-flex" dir="auto">
       <h3
         class="board-card-title gl-isolate gl-mb-0 gl-mt-0 gl-min-w-0 gl-hyphens-auto gl-break-words gl-text-base"
@@ -297,11 +297,11 @@ export default {
       </h3>
       <slot></slot>
     </div>
-    <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 gl-flex gl-flex-wrap">
+    <div v-if="showLabelFooter" class="board-card-labels gl-flex gl-flex-wrap gl-gap-2">
       <template v-for="label in orderedLabels">
         <gl-label
           :key="label.id"
-          class="js-no-trigger gl-mr-2 gl-mt-2"
+          class="js-no-trigger"
           :background-color="label.color"
           :title="label.title"
           :description="label.description"
@@ -312,16 +312,17 @@ export default {
       </template>
     </div>
     <div
-      class="board-card-footer gl-mt-3 gl-flex gl-flex-wrap gl-items-end gl-justify-between gl-gap-y-3"
+      class="board-card-footer gl-flex gl-flex-wrap gl-items-start gl-justify-between gl-gap-y-2"
     >
       <div
-        class="board-card-number-container gl-flex gl-flex-wrap-reverse gl-items-start gl-overflow-hidden"
+        class="board-card-number-container gl-flex gl-flex-wrap-reverse gl-items-center gl-overflow-hidden"
+        :class="{ 'gl-min-h-6': cappedAssignees.length > 0 }"
       >
-        <span class="board-info-items gl-inline-block gl-leading-20">
+        <div class="board-info-items gl-flex gl-flex-wrap gl-gap-3 gl-gap-y-2 gl-leading-20">
           <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-5" />
           <span
             v-if="showBoardCardNumber"
-            class="board-card-number gl-isolate gl-mr-3 gl-gap-2 gl-overflow-hidden gl-text-sm gl-text-subtle"
+            class="board-card-number gl-isolate gl-gap-2 gl-overflow-hidden gl-text-sm gl-text-subtle"
             :class="{ 'gl-text-base': isEpicBoard }"
           >
             <work-item-type-icon
@@ -355,24 +356,24 @@ export default {
             :opened-issues-weight="descendantWeightSum.openedIssues"
             :closed-issues-weight="descendantWeightSum.closedIssues"
           />
-          <span v-if="!isEpicBoard">
+          <template v-if="!isEpicBoard">
             <issue-weight
               v-if="validIssueWeight(item)"
               data-testid="issue-weight"
-              class="gl-isolate gl-mr-3"
+              class="gl-isolate"
               :weight="item.weight"
             />
             <issue-milestone
               v-if="item.milestone"
               data-testid="issue-milestone"
               :milestone="item.milestone"
-              class="gl-isolate gl-mr-3 gl-inline-flex gl-max-w-15 gl-cursor-help gl-items-center gl-align-bottom gl-text-sm gl-text-subtle"
+              class="gl-isolate gl-flex gl-max-w-15 gl-cursor-help gl-items-center gl-align-bottom gl-text-sm gl-text-subtle"
             />
             <issue-iteration
               v-if="item.iteration"
               data-testid="issue-iteration"
               :iteration="item.iteration"
-              class="gl-isolate gl-mr-3 gl-align-bottom"
+              class="gl-isolate gl-align-bottom"
             />
             <issue-due-date
               v-if="item.dueDate"
@@ -384,7 +385,7 @@ export default {
             <issue-time-estimate
               v-if="item.timeEstimate"
               data-testid="issue-estimate"
-              class="gl-isolate gl-mr-3"
+              class="gl-isolate"
               :estimate="item.timeEstimate"
             />
             <issue-health-status
@@ -393,8 +394,8 @@ export default {
               class="gl-isolate"
               :health-status="item.healthStatus"
             />
-          </span>
-        </span>
+          </template>
+        </div>
       </div>
       <div class="gl-flex gl-flex-1 gl-flex-wrap gl-items-center gl-justify-end gl-gap-3">
         <div class="board-card-assignee gl-flex">

@@ -298,8 +298,12 @@ ul.wiki-pages-list.content-list {
     display: none;
   }
 
+  .wiki-sidebar {
+    display: none;
+  }
+
   .content-wrapper {
-    padding: 0 !important;
+    padding: 0;
   }
 
   .container-limited.limit-container-width {

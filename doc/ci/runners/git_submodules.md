@@ -196,22 +196,40 @@ Setting the `GIT_STRATEGY` to `clone` should resolve the issue.
 
 ### Error: `fatal: could not read Username for 'https://gitlab.com': No such device or address`
 
-You might encounter this error when your CI/CD job attempts to clone or fetch Git submodules.
-This issue occurs in two scenarios:
+You might encounter this error when your CI/CD job attempts to clone, fetch, or perform other Git operations with submodules.
+This issue occurs when:
 
-- When working with nested submodules, because GitLab Runner 18.6 and later externalizes Git configuration, which may not automatically inherited by submodules.
-- When using GitLab-hosted runners, because the `CI_SERVER_FQDN` is different from `https://gitlab.com`. GitLab Runner automatically performs Git URL substitution to authenticate through `CI_JOB_TOKEN`, but this substitution may not apply to submodules on `https://gitlab.com`.
+- Running Git commands (like `git fetch`) from within a submodule directory, because the externalized Git configuration may not be automatically inherited for all Git operations.
+- Working with nested submodules, because GitLab Runner 18.6 and later externalizes Git configuration, which may not be automatically inherited by submodules.
+- Using GitLab-hosted runners with submodules that reference `https://gitlab.com`, because the `CI_SERVER_FQDN` differs from `gitlab.com`.
+  GitLab Runner automatically performs Git URL substitution during initial checkout, but this may not apply to subsequent Git operations within submodule directories.
 
 To resolve this issue:
 
-- For nested submodules, see [Check out nested submodules](#check-out-nested-submodules).
-- For GitLab-hosted runners, create a `pre_get_sources_script` and configure the URL substitution with `CI_JOB_TOKEN` manually:
+- For nested submodules, see [check out nested submodules](#check-out-nested-submodules).
+- For Git operations within submodule directories, explicitly pass the externalized configuration:
 
   ```yaml
-  variables:
-    GIT_SUBMODULE_STRATEGY: recursive
-    GIT_SUBMODULE_DEPTH: 1
-  hooks:
-    pre_get_sources_script:
-      - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}".insteadOf "${SUBMODULE_URL}"
+    my-job:
+      script:
+        - cd path/to/submodule
+        - git -c "include.path=$(git -C $CI_PROJECT_DIR config include.path)" fetch origin
+  ```
+
+- For GitLab-hosted runners or jobs with multiple Git operations within submodules,
+  configure URL substitution with `CI_JOB_TOKEN`. Use `pre_get_sources_script` for all jobs, or `before_script` for specific jobs:
+
+  ```yaml
+    # Option 1: Configure globally for all jobs
+    hooks:
+      pre_get_sources_script:
+        - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}".insteadOf "https://gitlab.com"
+
+    # Option 2: Configure for specific jobs
+    my-job:
+      before_script:
+        - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}".insteadOf "https://gitlab.com"
+      script:
+        - cd path/to/submodule
+        - git fetch origin
   ```

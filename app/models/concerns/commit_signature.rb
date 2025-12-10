@@ -17,6 +17,7 @@ module CommitSignature
     validates :project_id, presence: true
 
     scope :by_commit_sha, ->(shas) { where(commit_sha: shas) }
+    scope :by_commit_shas_and_project_ids, ->(shas, project_ids) { where(commit_sha: shas, project_id: project_ids) }
   end
 
   class_methods do

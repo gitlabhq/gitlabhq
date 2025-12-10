@@ -13,10 +13,10 @@ RSpec.shared_examples 'commit signature' do
   end
 
   describe '.safe_create!' do
-    it 'finds a signature by commit sha if it existed' do
+    it 'finds a signature by existent unique attributes' do
       signature
 
-      expect(described_class.safe_create!(commit_sha: commit_sha)).to eq(signature)
+      expect(described_class.safe_create!(signature_attributes)).to eq(signature)
     end
 
     it 'creates a new signature if it was not found' do

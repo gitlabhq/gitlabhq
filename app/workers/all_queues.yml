@@ -5115,7 +5115,7 @@
   :worker_name: ReactiveCachingWorker
   :feature_category: :not_owned
   :has_external_dependencies: false
-  :urgency: :low
+  :urgency: :high
   :resource_boundary: :cpu
   :weight: 1
   :idempotent: false

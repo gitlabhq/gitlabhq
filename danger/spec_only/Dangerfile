@@ -1,0 +1,5 @@
+# frozen_string_literal: true
+
+return unless helper.ci?
+
+spec_only.add_or_remove_label

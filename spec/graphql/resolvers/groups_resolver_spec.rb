@@ -17,13 +17,13 @@ RSpec.describe Resolvers::GroupsResolver, :with_current_organization, feature_ca
 
     subject { resolve(described_class, args: params, lookahead: positive_lookahead, ctx: { current_user: user }) }
 
-    before do
-      ::Current.organization = organization
-    end
-
     context 'when in another Organization' do
       let_it_be(:organization) { create(:organization) }
       let_it_be(:another_org_group) { create(:group, organization: organization) }
+
+      before do
+        stub_current_organization(organization)
+      end
 
       it 'includes groups in the current Organization' do
         another_org_group.add_developer(user)

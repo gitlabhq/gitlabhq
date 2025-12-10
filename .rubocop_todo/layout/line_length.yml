@@ -2135,7 +2135,6 @@ Layout/LineLength:
     - 'qa/qa/ee/page/project/secure/show.rb'
     - 'qa/qa/flow/sign_up.rb'
     - 'qa/qa/git/repository.rb'
-    - 'qa/qa/page/component/issuable/sidebar.rb'
     - 'qa/qa/page/dashboard/snippet/index.rb'
     - 'qa/qa/page/group/settings/package_registries.rb'
     - 'qa/qa/page/merge_request/new.rb'

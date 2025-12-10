@@ -25409,9 +25409,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Edit trigger"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Edit trigger."
-msgstr ""
-
 msgid "DuoAgentsPlatform|Enter a description for this trigger"
 msgstr ""
 
@@ -25464,6 +25461,9 @@ msgid "DuoAgentsPlatform|List files"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Manage automated flows within your project."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Manage trigger settings."
 msgstr ""
 
 msgid "DuoAgentsPlatform|New agent sessions will appear here."
