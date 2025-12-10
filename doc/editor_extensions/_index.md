@@ -3,10 +3,10 @@ stage: AI-powered
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Extend the features of GitLab to Visual Studio Code, JetBrains IDEs, Visual Studio, Eclipse, and Neovim.
-title: Editor Extensions
+title: Editor extensions
 ---
 
-GitLab Editor Extensions bring the power of GitLab and GitLab Duo directly into your preferred
+GitLab editor extensions bring the power of GitLab and GitLab Duo directly into your preferred
 development environments. Use GitLab features and GitLab Duo AI capabilities to handle everyday tasks
 without leaving your editor. For example:
 
@@ -36,7 +36,7 @@ If you prefer a command-line interface, try:
 
 ## Features
 
-Our editor extensions offer powerful GitLab Duo integration, with Visual Studio Code and `glab` featuring
+GitLab editor extensions offer powerful GitLab Duo integration, with Visual Studio Code and `glab` featuring
 an integrated GitLab workflow experience.
 
 ### GitLab Duo Code Suggestions
@@ -59,9 +59,9 @@ Use [GitLab Duo Chat](../user/gitlab_duo_chat/_index.md) to interact with an AI 
 - Ask about GitLab: Get answers about how GitLab works, concepts, and step-by-step instructions.
 - Code-related queries: Ask for explanations of code snippets, generate tests, or refactor selected code in your IDE.
 
-## Editor Extensions team runbook
+## Editor extensions team runbook
 
-Use the [Editor Extensions team runbook](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/editor-extensions)
+Use the [editor extensions team runbook](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/editor-extensions)
 to learn more about debugging all supported editor extensions. For internal users, this runbook contains instructions
 for requesting internal help.
 
@@ -72,7 +72,7 @@ or want to contribute to the development of our extensions:
 
 - Report issues in their GitLab projects.
 - Submit feature requests by creating a new issue in the
-  [Editor Extensions project](https://gitlab.com/gitlab-org/editor-extensions/product/-/issues/).
+  [`editor-extensions` project](https://gitlab.com/gitlab-org/editor-extensions/product/-/issues/).
 - Submit merge requests in the respective GitLab projects.
 
 ## Related topics

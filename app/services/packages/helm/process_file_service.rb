@@ -83,7 +83,7 @@ module Packages
       strong_memoize_attr :temp_package
 
       def package
-        package = ::Packages::Helm::Package.for_projects(package_file.package.project)
+        package = ::Packages::Helm::Package.for_projects(package_file.project_id)
                                            .with_name(chart_name)
                                            .with_version(chart_version)
                                            .not_pending_destruction

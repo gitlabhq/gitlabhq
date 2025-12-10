@@ -9,7 +9,7 @@ module Resolvers
         def resolve
           raise_resource_not_available_error! unless resource_available?
 
-          ::Authz::PermissionGroups::Assignable.all
+          ::Authz::PermissionGroups::Assignable.definitions
         end
 
         private

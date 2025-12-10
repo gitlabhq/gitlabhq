@@ -20,6 +20,7 @@ module Packages
             file_name: params[:file_name],
             file_sha1: params['file.sha1'],
             file_md5: params['file.md5'],
+            project_id: package.project_id,
             conan_file_metadatum_attributes: {
               conan_file_type: params[:conan_file_type],
               package_reference_id: package_reference_id,

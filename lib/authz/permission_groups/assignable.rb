@@ -20,8 +20,6 @@ module Authz
           Rails.root.join(BASE_PATH, '**/*.yml')
         end
 
-        private
-
         def definitions
           all.values
         end
@@ -32,13 +30,10 @@ module Authz
       end
 
       def category
-        # 'path/to/app/config/authz/permission_groups/assignable_permissions/category/resource/action.yml'
-        category = source_file
-          .split(self.class::BASE_PATH) # [..., 'category/resource/action.yml']
-          .last                         # 'category/resource/action.yml'
-          .split('/').reverse[2]        # ['action.yml', 'resource', 'category'] => 'category' or ''
-
-        category.presence || feature_category
+        source_file                     # path/to/<base_path>/**/resource/action.yml'
+          .split(self.class::BASE_PATH) # [..., '**/resource/action.yml']
+          .last                         # '**/resource/action.yml'
+          .split('/').reverse[2]        # ['action.yml', 'resource', ...]
       end
     end
   end

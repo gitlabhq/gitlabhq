@@ -1011,3 +1011,32 @@ When using SBOM-based dependency scanning on GitLab Self-Managed instances, ther
 Workaround for Self-Managed instances: If you need to pass compliance framework checks that require the "Dependency scanning running" control, you can use the `v2` template (`Jobs/Dependency-Scanning.v2.gitlab-ci.yml`) which generates both SBOM and dependency scanning reports
 
 For more information about compliance controls, see [GitLab compliance controls](../../../compliance/compliance_frameworks/_index.md#gitlab-compliance-controls).
+
+### Error: `failed to verify certificate: x509: certificate signed by unknown authority`
+
+When the dependency scanning analyzer connects to a host the following error might occur. The cause of this
+error is that the certificate used by the dependency scanning analyzer is not trusted by the host.
+
+```plaintext
+failed to verify certificate: x509: certificate signed by unknown authority
+```
+
+To resolve this issue, provide the self-signed certificate in the `ADDITIONAL_CA_CERT_BUNDLE` CI/CD variable.
+This certificate will then be used by the dependency scanning analyzer when connecting to the host.
+
+The value of the `ADDITIONAL_CA_CERT_BUNDLE` environment variable must be the certificate itself:
+
+```yaml
+include:
+  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+
+dependency-scanning:
+  variables:
+    ADDITIONAL_CA_CERT_BUNDLE: |
+      -----BEGIN CERTIFICATE-----
+      <...>
+      -----END CERTIFICATE-----
+  before_script:
+    - echo "$ADDITIONAL_CA_CERT_BUNDLE" > /tmp/cacert.pem
+    - export SSL_CERT_FILE="/tmp/cacert.pem"
+```

@@ -2,8 +2,8 @@
 stage: AI-powered
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Configure GitLab Editor Extensions including Visual Studio Code, JetBrains IDEs, Visual Studio, Eclipse and Neovim.
-title: Configure Editor Extensions
+description: Configure GitLab editor extensions for Visual Studio Code, JetBrains IDEs, Visual Studio, Eclipse, and Neovim.
+title: Configure editor extensions
 ---
 
 {{< details >}}
@@ -13,7 +13,7 @@ title: Configure Editor Extensions
 
 {{< /details >}}
 
-Configure Editor Extensions settings for your GitLab instance.
+Configure editor extensions settings for your GitLab instance.
 
 ## Create an OAuth application
 

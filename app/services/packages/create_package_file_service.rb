@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 module Packages
   class CreatePackageFileService
-    attr_reader :package, :params
-
     def initialize(package, params)
       @package = package
       @params = params
@@ -17,7 +15,8 @@ module Packages
           file_sha1: params[:file_sha1],
           file_sha256: params[:file_sha256],
           file_md5: params[:file_md5],
-          status: params[:status]
+          status: params[:status],
+          project_id: package.project_id
         }.compact_blank
       )
 
@@ -28,5 +27,9 @@ module Packages
       package_file.save!
       package_file
     end
+
+    private
+
+    attr_reader :package, :params
   end
 end

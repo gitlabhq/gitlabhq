@@ -9,7 +9,7 @@ RSpec.describe Packages::Nuget::CreateSymbolsWorker, type: :worker, feature_cate
       create(
         :package_file,
         :snupkg,
-        package_id: package.id,
+        package: package,
         file_fixture: expand_fixture_path('packages/nuget/package_with_symbols.snupkg')
       )
     end

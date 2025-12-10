@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Unique name for the permission"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the permission"
+    },
+    "feature_category": {
+      "type": "string",
+      "description": "Feature category of the permission",
+      "format": "known_product_category"
+    },
+    "action": {
+      "type": "string",
+      "description": "Override for the generated action name"
+    },
+    "resource": {
+      "type": "string",
+      "description": "Override for the generated resource name"
+    },
+    "boundaries": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "instance",
+          "group",
+          "project",
+          "user"
+        ]
+      },
+      "minItems": 1,
+      "description": "List of resource types that the permission can be applied to"
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "known_permissions"
+      },
+      "minItems": 1,
+      "description": "List of raw permissions the assignable permission expands to"
+    }
+  },
+  "required": [
+    "name",
+    "description",
+    "feature_category",
+    "permissions",
+    "boundaries"
+  ]
+}

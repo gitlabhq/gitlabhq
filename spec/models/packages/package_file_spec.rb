@@ -18,6 +18,7 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
 
   describe 'relationships' do
     it { is_expected.to belong_to(:package) }
+    it { is_expected.to belong_to(:project) }
     it { is_expected.to have_one(:conan_file_metadatum) }
     it { is_expected.to have_many(:package_file_build_infos).inverse_of(:package_file) }
 
@@ -566,6 +567,14 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
           expect(joined_result).to contain_exactly(helm_package_file2)
         end
       end
+    end
+  end
+
+  describe '.preload_project' do
+    subject(:packages) { described_class.preload_project }
+
+    it 'preloads project' do
+      expect(packages.first.association(:project)).to be_loaded
     end
   end
 

@@ -242,7 +242,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #######################################################################
           #
           #  The following permissions have a definition file but are not found in declarative policy.
-          #  Remove the definition files for the unkonwn permissions.
+          #  Remove the definition files for the unknown permissions.
           #
           #    - defined_permission
           #

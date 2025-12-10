@@ -2,8 +2,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::CreatePackageFileService, feature_category: :package_registry do
-  let_it_be(:package) { create(:maven_package) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:package) { create(:generic_package) }
+  let(:user) { package.creator }
 
   let(:service) { described_class.new(package, params) }
 
@@ -19,13 +19,8 @@ RSpec.describe Packages::CreatePackageFileService, feature_category: :package_re
       end
 
       it 'creates a new package file' do
-        package_file = subject
-
-        expect(package_file).to be_valid
-        expect(package_file).to have_attributes(
-          file_name: 'foo.jar',
-          status: 'default'
-        )
+        is_expected.to be_valid
+          .and have_attributes(file_name: 'foo.jar', status: 'default', project_id: package.project_id)
       end
 
       it_behaves_like 'assigns build to package file'

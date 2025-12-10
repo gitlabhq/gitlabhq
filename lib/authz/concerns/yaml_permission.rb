@@ -27,10 +27,10 @@ module Authz
 
           Dir.glob(config_path).each do |file|
             item = load_from_file(file)
-            items[item.name.to_sym] = item
+            items[item.name.presence || file] = item
           end
 
-          items
+          items.symbolize_keys
         end
 
         def load_from_file(path)

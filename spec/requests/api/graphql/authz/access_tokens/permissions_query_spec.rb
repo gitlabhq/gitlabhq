@@ -27,7 +27,9 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
   let(:permissions_data) { graphql_data['accessTokenPermissions'] }
 
   before do
-    allow(::Authz::PermissionGroups::Assignable).to receive_messages(all: [target_permission])
+    allow(::Authz::PermissionGroups::Assignable).to receive(:all).and_return(
+      target_permission.name => target_permission
+    )
   end
 
   context 'when user is authenticated' do
@@ -39,7 +41,7 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
         'description' => 'Grants the ability to update wikis',
         'action' => 'update',
         'resource' => 'wiki',
-        'category' => 'project_management',
+        'category' => 'wiki',
         'boundaries' => %w[GROUP PROJECT]
       }])
     end

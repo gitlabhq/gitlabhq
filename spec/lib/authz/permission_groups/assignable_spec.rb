@@ -62,15 +62,13 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
       subject { assignable.category }
 
       context 'when not nested under a category directory' do
-        let(:file_path) { "#{described_class::BASE_PATH}resource/action.yml" }
+        let(:file_path) { "#{described_class::BASE_PATH}/resource/action.yml" }
 
-        it 'returns feature_category' do
-          is_expected.to eq('feature_category_name')
-        end
+        it { is_expected.to eq('') }
       end
 
       context 'when nested under a category directory' do
-        let(:file_path) { "#{described_class::BASE_PATH}resource_category/resource/action.yml" }
+        let(:file_path) { "#{described_class::BASE_PATH}/resource_category/resource/action.yml" }
 
         it 'returns the name of the category directory' do
           is_expected.to eq('resource_category')

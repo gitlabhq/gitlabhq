@@ -1321,6 +1321,11 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
 
             expect(response).to redirect_to(admin_root_path)
           end
+
+          it 'creates an audit event' do
+            expect { reauthenticate_and_check_admin_mode(expected_admin_mode: true) }
+              .to change { AuditEvent.count }.by(1)
+          end
         end
 
         context 'when not requested first' do
@@ -1365,6 +1370,11 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
             reauthenticate_and_check_admin_mode(expected_admin_mode: false)
 
             expect(response).to redirect_to(new_admin_session_path)
+          end
+
+          it 'does not create an audit event' do
+            expect { reauthenticate_and_check_admin_mode(expected_admin_mode: false) }
+              .not_to change { AuditEvent.count }
           end
         end
 

@@ -12,6 +12,7 @@ import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time
 import WorkItemBulkEditSidebar from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue';
 import WorkItemHealthStatus from '~/work_items/components/work_item_health_status.vue';
 import WorkItemListHeading from '~/work_items/components/work_item_list_heading.vue';
+import WorkItemsSavedViewsSelectors from '~/work_items/components/shared/work_items_saved_views_selectors.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -149,6 +150,7 @@ const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal)
 const findBulkEditStartButton = () => wrapper.findByTestId('bulk-edit-start-button');
 const findBulkEditSidebar = () => wrapper.findComponent(WorkItemBulkEditSidebar);
 const findWorkItemListHeading = () => wrapper.findComponent(WorkItemListHeading);
+const findWorkItemsSavedViewsSelectors = () => wrapper.findComponent(WorkItemsSavedViewsSelectors);
 const findWorkItemUserPreferences = () => wrapper.findComponent(WorkItemUserPreferences);
 const findChildItem1 = () => wrapper.findAllComponents(IssuableItem).at(0);
 const findChildItem2 = () => wrapper.findAllComponents(IssuableItem).at(1);
@@ -166,6 +168,7 @@ const mountComponent = ({
   mockPreferencesHandler = mockPreferencesQueryHandler,
   userPreferenceMutationResponse = userPreferenceMutationHandler,
   workItemPlanningView = false,
+  workItemsSavedViewsEnabled = false,
   props = {},
   additionalHandlers = [],
   canReadCrmOrganization = true,
@@ -247,6 +250,7 @@ const mountComponent = ({
       hasProjects,
       newIssuePath: '',
       workItemPlanningViewEnabled: false,
+      workItemsSavedViewsEnabled,
       ...provide,
     },
     propsData: {
@@ -1899,6 +1903,15 @@ describe('when workItemPlanningView flag is enabled', () => {
     await waitForPromises();
 
     expect(wrapper.text()).toContain('3 items');
+  });
+});
+
+describe('when workItemsSavedViewsEnabled flag is enabled', () => {
+  it('renders the WorkItemsSavedViewsSelectors', async () => {
+    mountComponent({ workItemPlanningView: true, workItemsSavedViewsEnabled: true });
+    await waitForPromises();
+
+    expect(findWorkItemsSavedViewsSelectors().exists()).toBe(true);
   });
 });
 

@@ -3,6 +3,7 @@
 FactoryBot.define do
   factory :package_file, class: 'Packages::PackageFile' do
     package { association(:generic_package) }
+    project { package.project }
 
     file_name { 'somefile.txt' }
 

@@ -77,7 +77,7 @@ module Packages
 
       def distribution
         Packages::Debian::DistributionsFinder.new(
-          @package_file.package.project,
+          @package_file.project,
           codename_or_suite: package_distribution
         ).execute.last!
       end

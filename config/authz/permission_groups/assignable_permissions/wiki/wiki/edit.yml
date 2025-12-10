@@ -1,6 +1,7 @@
 ---
 name: edit_wiki
 description: Grants the ability to edit wikis
+feature_category: wiki
 permissions:
   - update_wiki
   - upload_wiki_attachment

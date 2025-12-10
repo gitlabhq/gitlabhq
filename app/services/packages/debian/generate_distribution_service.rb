@@ -160,7 +160,7 @@ module Packages
       def pool_prefix(package_file)
         case @distribution
         when ::Packages::Debian::GroupDistribution
-          "pool/#{@distribution.codename}/#{package_file.package.project_id}"
+          "pool/#{@distribution.codename}/#{package_file.project_id}"
         else
           "pool/#{@distribution.codename}"
         end

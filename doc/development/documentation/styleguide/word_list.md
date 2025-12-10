@@ -938,6 +938,20 @@ For example:
 
 For API documentation and programmatic changes, use **[update](#update)**.
 
+## editor extensions
+
+Use lowercase **editor extensions** when referring to the broader category of extensions offered by
+GitLab. However, if the UI has different capitalization, make the documentation match the UI.
+
+Individual extensions have their own names. For example, GitLab for VS Code and
+[GitLab Duo Plugin for JetBrains IDEs](#gitlab-duo-plugin-for-jetbrains-ides).
+
+Use:
+
+- Configure GitLab editor extensions in your IDE.
+- Code Suggestions is available in the following editor extensions.
+- On the left sidebar, select **Settings** > **General**, and then expand **Editor Extensions**.
+
 ## e.g.
 
 Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/LatinTerms.yml))

@@ -18,7 +18,7 @@ module API
       private
 
       def can_read_pipeline?(package_file, opts)
-        Ability.allowed?(opts[:user], :read_pipeline, package_file.package.project)
+        Ability.allowed?(opts[:user], :read_pipeline, package_file.project)
       end
     end
   end

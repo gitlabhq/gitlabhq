@@ -415,13 +415,9 @@ export default {
         return false;
       }
 
-      // Hide Parent widget on Epic or Issue creation according to license permissions
-      if (
-        this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_ISSUE ||
-        this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_EPIC
-      ) {
-        if (!this.validateAllowedParentTypes(this.selectedWorkItemTypeName).length) return false;
-      }
+      // Hide Parent widget on work item creation according to license permissions
+
+      if (!this.validateAllowedParentTypes(this.selectedWorkItemTypeName).length) return false;
 
       return Boolean(this.workItemHierarchy);
     },
@@ -699,7 +695,7 @@ export default {
         this.workItemTypes
           ?.find((type) => type.name === selectedWorkItemType)
           ?.widgetDefinitions.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)
-          .allowedParentTypes?.nodes || []
+          ?.allowedParentTypes?.nodes || []
       );
     },
     isWidgetSupported(widgetType) {

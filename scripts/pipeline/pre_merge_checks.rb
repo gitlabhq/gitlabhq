@@ -136,6 +136,8 @@ class PreMergeChecks
       MSG
     end
 
+    # Allow predictive pipelines for spec-only changes
+    return if pipeline.name.include?('spec-only')
     return unless pipeline.name.include?(PREDICTIVE_PIPELINE_IDENTIFIER)
 
     fail_check! <<~MSG

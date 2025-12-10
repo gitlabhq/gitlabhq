@@ -3,7 +3,7 @@
 module Tasks
   module Gitlab
     module Permissions
-      class ValidateTask
+      class ValidateTask < ::Tasks::Gitlab::Permissions::BaseValidateTask
         PERMISSION_DIR = ::Authz::Permission::BASE_PATH
         PERMISSION_TODO_FILE = "#{PERMISSION_DIR}/definitions_todo.txt".freeze
         JSON_SCHEMA_FILE = 'config/authz/permissions/type_schema.json'
@@ -21,20 +21,6 @@ module Tasks
           view: 'read'
         }.freeze
 
-        ERROR_MESSAGES = {
-          definition: "The following permissions are missing a definition file." \
-            "\nRun bundle exec rails generate authz:permission <NAME> to generate definition files.",
-          excluded: "The following permissions have a definition file." \
-            "\nRemove them from config/authz/permissions/definitions_todo.txt.",
-          schema: "The following permissions failed schema validation.",
-          action: "The following permissions contain a disallowed action.",
-          name: "The following permissions have invalid names." \
-            "\nPermission name must be in the format action_resource[_subresource].",
-          file: "The following permission definitions do not exist at the expected path.",
-          unknown_permission: "The following permissions have a definition file but are not found in " \
-            "declarative policy.\nRemove the definition files for the unkonwn permissions."
-        }.freeze
-
         attr_reader :declarative_policy_permissions
 
         def initialize
@@ -50,15 +36,16 @@ module Tasks
           @declarative_policy_permissions = load_declarative_policy_permissions
         end
 
-        def run
-          validate!
-
-          puts "Permission definitions are up-to-date"
-        end
-
         private
 
         attr_reader :violations
+
+        def validate!
+          declarative_policy_permissions.each { |permission| validate_permission(permission) }
+          validate_unknown_permissions
+
+          super
+        end
 
         def load_declarative_policy_permissions
           require_policy_files
@@ -70,87 +57,6 @@ module Tasks
           end
 
           permissions.sort.uniq
-        end
-
-        def validate!
-          declarative_policy_permissions.each { |permission| validate_permission(permission) }
-          validate_unknown_permissions
-
-          abort_if_errors_found!
-        end
-
-        def abort_if_errors_found!
-          return if violations.all? { |_, v| v.empty? }
-
-          print_errors
-
-          abort
-        end
-
-        def print_errors
-          out = format_error_list(:definition)
-          out += format_error_list(:excluded)
-          out += format_schema_errors
-          out += format_error_list(:name)
-          out += format_action_errors
-          out += format_file_errors
-          out += format_error_list(:unknown_permission)
-
-          puts "#######################################################################\n#"
-          puts out.gsub(/^/, '#  ').gsub(/\s+$/, '')
-          puts "#######################################################################"
-        end
-
-        def format_error_list(kind)
-          return '' if violations[kind].empty?
-
-          out = "#{ERROR_MESSAGES[kind]}\n\n"
-
-          violations[kind].each do |permission|
-            out += "  - #{permission}\n"
-          end
-
-          "#{out}\n"
-        end
-
-        def format_schema_errors
-          return '' if violations[:schema].empty?
-
-          out = "#{ERROR_MESSAGES[:schema]}\n\n"
-
-          violations[:schema].each_key do |permission|
-            out += "  - #{permission}\n"
-            violations[:schema][permission].each { |error| out += "      - #{JSONSchemer::Errors.pretty(error)}\n" }
-          end
-
-          "#{out}\n"
-        end
-
-        def format_action_errors
-          return '' if violations[:action].empty?
-
-          out = "#{ERROR_MESSAGES[:action]}\n\n"
-
-          violations[:action].each_key do |permission|
-            action = violations[:action][permission]
-            preferred = DISALLOWED_ACTIONS[action]
-
-            out += "  - #{permission}: Prefer #{preferred} over #{action}.\n"
-          end
-
-          "#{out}\n"
-        end
-
-        def format_file_errors
-          return '' if violations[:file].empty?
-
-          out = "#{ERROR_MESSAGES[:file]}\n"
-
-          violations[:file].each do |permission, expected|
-            out += "\n  - #{permission}\n    #{expected}\n"
-          end
-
-          "#{out}\n"
         end
 
         def require_policy_files
@@ -172,11 +78,6 @@ module Tasks
           validate_name(permission)
           validate_action(permission)
           validate_file(permission)
-        end
-
-        def validate_schema(permission)
-          errors = schema_validator.validate(permission.definition)
-          violations[:schema][permission.name] = errors if errors.any?
         end
 
         def validate_action(permission)
@@ -226,6 +127,31 @@ module Tasks
           violations[:unknown_permission] = defined_permissions - declarative_policy_permissions
         end
 
+        def format_all_errors
+          out = format_error_list(:definition)
+          out += format_error_list(:excluded)
+          out += format_schema_errors
+          out += format_error_list(:name)
+          out += format_action_errors
+          out += format_file_errors
+          out + format_error_list(:unknown_permission)
+        end
+
+        def format_action_errors
+          return '' if violations[:action].empty?
+
+          out = "#{error_messages[:action]}\n\n"
+
+          violations[:action].each_key do |permission|
+            action = violations[:action][permission]
+            preferred = DISALLOWED_ACTIONS[action]
+
+            out += "  - #{permission}: Prefer #{preferred} over #{action}.\n"
+          end
+
+          "#{out}\n"
+        end
+
         def exclusion_list
           @excludes ||= if File.exist?(exclusion_file)
                           File.read(exclusion_file).split("\n").reject(&:empty?).map { |p| p.strip.to_sym }
@@ -238,8 +164,24 @@ module Tasks
           Rails.root.join(PERMISSION_TODO_FILE)
         end
 
-        def schema_validator
-          @schema_validator ||= JSONSchemer.schema(Rails.root.join(JSON_SCHEMA_FILE))
+        def error_messages
+          {
+            definition: "The following permissions are missing a definition file." \
+              "\nRun bundle exec rails generate authz:permission <NAME> to generate definition files.",
+            excluded: "The following permissions have a definition file." \
+              "\nRemove them from config/authz/permissions/definitions_todo.txt.",
+            schema: "The following permissions failed schema validation.",
+            action: "The following permissions contain a disallowed action.",
+            name: "The following permissions have invalid names." \
+              "\nPermission name must be in the format action_resource[_subresource].",
+            file: "The following permission definitions do not exist at the expected path.",
+            unknown_permission: "The following permissions have a definition file but are not found in " \
+              "declarative policy.\nRemove the definition files for the unknown permissions."
+          }
+        end
+
+        def json_schema_file
+          Rails.root.join("#{PERMISSION_DIR}/type_schema.json")
         end
       end
     end

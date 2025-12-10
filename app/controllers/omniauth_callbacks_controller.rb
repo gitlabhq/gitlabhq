@@ -162,13 +162,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       return render_403 unless link_provider_allowed?(oauth['provider'])
 
       set_session_active_since(oauth['provider']) if ::AuthHelper.saml_providers.include?(oauth['provider'].to_sym)
-      track_event(current_user, oauth['provider'], 'succeeded')
+
+      # Track that the auth succeeded, except if this is a request for admin mode. Requests for admin mode are not
+      # actually authenticated at this point, so we defer tracking until the end of admin_mode_flow.
+      track_event(current_user, oauth['provider'], 'succeeded') unless admin_mode_request?
 
       handle_step_up_auth
 
-      if Gitlab::CurrentSettings.admin_mode
-        return admin_mode_flow(auth_module::User) if current_user_mode.admin_mode_requested?
-      end
+      return admin_mode_flow(auth_module::User) if admin_mode_request?
 
       identity_linker ||= auth_module::IdentityLinker.new(current_user, oauth, session)
       return redirect_authorize_identity_link(identity_linker) if identity_linker.authorization_required?
@@ -194,6 +195,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   rescue InvalidFragmentError
     fail_login_with_message("Invalid state")
+  end
+
+  def admin_mode_request?
+    Gitlab::CurrentSettings.admin_mode && current_user_mode.admin_mode_requested?
   end
 
   def link_identity(identity_linker)
@@ -460,6 +465,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       # Can only reach here if the omniauth identity matches current user
       # and current_user is an admin that requested admin mode
       current_user_mode.enable_admin_mode!(skip_password_validation: true)
+      track_event(current_user, oauth['provider'], 'succeeded')
 
       redirect_to stored_location_for(:redirect) || admin_root_path, notice: _('Admin mode enabled')
     end

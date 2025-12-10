@@ -2584,6 +2584,9 @@ msgstr ""
 msgid "AICatalog|Basic information"
 msgstr ""
 
+msgid "AICatalog|Build a custom agent in GitLab or connect to an AI model provider you already use."
+msgstr ""
+
 msgid "AICatalog|Build agents and flows to automate tasks and solve complex problems."
 msgstr ""
 
@@ -2599,7 +2602,7 @@ msgstr ""
 msgid "AICatalog|Can't be shared, even within your organization."
 msgstr ""
 
-msgid "AICatalog|Choose what events in this project trigger the flow. You can change this later."
+msgid "AICatalog|Choose what events in this project trigger the %{itemType}. You can change this later."
 msgstr ""
 
 msgid "AICatalog|Choose who can view and interact with this agent."
@@ -2684,6 +2687,9 @@ msgid "AICatalog|Created and maintained by %{boldStart}GitLab%{boldEnd}"
 msgstr ""
 
 msgid "AICatalog|Creating proprietary business logic."
+msgstr ""
+
+msgid "AICatalog|Custom"
 msgstr ""
 
 msgid "AICatalog|Define the agent's personality, expertise, and behavior. This changes how the agent solves problems and responds to requests."
@@ -3001,9 +3007,6 @@ msgstr ""
 msgid "AICatalog|Select at least one trigger."
 msgstr ""
 
-msgid "AICatalog|Select the type of your flow."
-msgstr ""
-
 msgid "AICatalog|Select which tools this agent can use."
 msgstr ""
 
@@ -3067,13 +3070,16 @@ msgstr ""
 msgid "AICatalog|Tools"
 msgstr ""
 
-msgid "AICatalog|Trigger this flow when the service account user is assigned as a reviewer to a merge request."
+msgid "AICatalog|Trigger this %{itemType} when the service account user is assigned as a reviewer to a merge request."
 msgstr ""
 
-msgid "AICatalog|Trigger this flow when the service account user is assigned to issue or merge request."
+msgid "AICatalog|Trigger this %{itemType} when the service account user is assigned to issue or merge request."
 msgstr ""
 
-msgid "AICatalog|Trigger this flow when the service account user is mentioned in an issue or merge request."
+msgid "AICatalog|Trigger this %{itemType} when the service account user is mentioned in an issue or merge request."
+msgstr ""
+
+msgid "AICatalog|Type"
 msgstr ""
 
 msgid "AICatalog|Update available"
@@ -76373,6 +76379,9 @@ msgid "WorkItem|All activity"
 msgstr ""
 
 msgid "WorkItem|All current statuses must be mapped to a new value."
+msgstr ""
+
+msgid "WorkItem|All items"
 msgstr ""
 
 msgid "WorkItem|An error occurred updating the RSS link. Please refresh the page to try again."

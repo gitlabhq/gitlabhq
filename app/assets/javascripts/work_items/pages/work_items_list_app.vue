@@ -125,6 +125,7 @@ import WorkItemDrawer from '../components/work_item_drawer.vue';
 import WorkItemListHeading from '../components/work_item_list_heading.vue';
 import WorkItemUserPreferences from '../components/shared/work_item_user_preferences.vue';
 import WorkItemListActions from '../components/work_item_list_actions.vue';
+import WorkItemsSavedViewsSelectors from '../components/shared/work_items_saved_views_selectors.vue';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -193,6 +194,7 @@ export default {
     GlIcon,
     GlSkeletonLoader,
     NewResourceDropdown,
+    WorkItemsSavedViewsSelectors,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -239,6 +241,7 @@ export default {
     'hasProjects',
     'newIssuePath',
     'workItemPlanningViewEnabled',
+    'workItemsSavedViewsEnabled',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -1555,54 +1558,85 @@ export default {
           </div>
         </template>
 
-        <template v-if="isPlanningViewsEnabled" #list-header>
-          <work-item-list-heading>
-            <div class="gl-flex gl-justify-end gl-gap-3">
-              <gl-button
-                v-if="enableClientSideBoardsExperiment"
-                data-testid="show-local-board-button"
-                @click="showLocalBoard = true"
-              >
-                {{ __('Launch board') }}
-              </gl-button>
-              <gl-button
-                v-if="allowBulkEditing"
-                :disabled="isBulkEditDisabled"
-                data-testid="bulk-edit-start-button"
-                @click="showBulkEditSidebar = true"
-              >
-                {{ __('Bulk edit') }}
-              </gl-button>
-              <create-work-item-modal
-                v-if="showProjectNewWorkItem"
-                :always-show-work-item-type-select="!isEpicsList"
-                :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
-                :full-path="rootPageFullPath"
-                :is-group="isGroup"
-                :preselected-work-item-type="preselectedWorkItemType"
-                :is-epics-list="isEpicsList"
-                :show-project-selector="!hasEpicsFeature"
-                @workItemCreated="handleWorkItemCreated"
-              />
-              <new-resource-dropdown
-                v-if="isGroupIssuesList"
-                :query="$options.searchProjectsQuery"
-                :query-variables="newIssueDropdownQueryVariables"
-                :extract-projects="extractProjects"
-                :group-id="groupId"
-              />
-              <work-item-list-actions
-                :show-import-export-buttons="showImportExportButtons"
-                :show-work-item-by-email-button="showWorkItemByEmail"
-                :work-item-count="currentTabCount"
-                :query-variables="csvExportQueryVariables"
-                :full-path="rootPageFullPath"
-                :url-params="urlParams"
-                :is-epics-list="isEpicsList"
-                :is-group-issues-list="isGroupIssuesList"
-              />
-            </div>
-          </work-item-list-heading>
+        <template #list-header>
+          <template v-if="isPlanningViewsEnabled">
+            <template v-if="!workItemsSavedViewsEnabled">
+              <work-item-list-heading>
+                <div class="gl-flex gl-justify-end gl-gap-3">
+                  <gl-button
+                    v-if="enableClientSideBoardsExperiment"
+                    data-testid="show-local-board-button"
+                    @click="showLocalBoard = true"
+                  >
+                    {{ __('Launch board') }}
+                  </gl-button>
+                  <gl-button
+                    v-if="allowBulkEditing"
+                    :disabled="isBulkEditDisabled"
+                    data-testid="bulk-edit-start-button"
+                    @click="showBulkEditSidebar = true"
+                  >
+                    {{ __('Bulk edit') }}
+                  </gl-button>
+                  <create-work-item-modal
+                    v-if="showProjectNewWorkItem"
+                    :always-show-work-item-type-select="!isEpicsList"
+                    :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
+                    :full-path="rootPageFullPath"
+                    :is-group="isGroup"
+                    :preselected-work-item-type="preselectedWorkItemType"
+                    :is-epics-list="isEpicsList"
+                    :show-project-selector="!hasEpicsFeature"
+                    @workItemCreated="handleWorkItemCreated"
+                  />
+                  <new-resource-dropdown
+                    v-if="isGroupIssuesList"
+                    :query="$options.searchProjectsQuery"
+                    :query-variables="newIssueDropdownQueryVariables"
+                    :extract-projects="extractProjects"
+                    :group-id="groupId"
+                  />
+                  <work-item-list-actions
+                    :show-import-export-buttons="showImportExportButtons"
+                    :show-work-item-by-email-button="showWorkItemByEmail"
+                    :work-item-count="currentTabCount"
+                    :query-variables="csvExportQueryVariables"
+                    :full-path="rootPageFullPath"
+                    :url-params="urlParams"
+                    :is-epics-list="isEpicsList"
+                    :is-group-issues-list="isGroupIssuesList"
+                  />
+                </div>
+              </work-item-list-heading>
+            </template>
+
+            <template v-if="workItemsSavedViewsEnabled">
+              <work-items-saved-views-selectors>
+                <template #header-area>
+                  <work-item-list-actions
+                    :show-import-export-buttons="showImportExportButtons"
+                    :show-work-item-by-email-button="showWorkItemByEmail"
+                    :work-item-count="currentTabCount"
+                    :query-variables="csvExportQueryVariables"
+                    :full-path="rootPageFullPath"
+                    :url-params="urlParams"
+                    :is-epics-list="isEpicsList"
+                    :is-group-issues-list="isGroupIssuesList"
+                  />
+                  <create-work-item-modal
+                    v-if="showProjectNewWorkItem"
+                    :always-show-work-item-type-select="!isEpicsList"
+                    :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
+                    :full-path="rootPageFullPath"
+                    :is-group="isGroup"
+                    :preselected-work-item-type="preselectedWorkItemType"
+                    :is-epics-list="isEpicsList"
+                    @workItemCreated="handleWorkItemCreated"
+                  />
+                </template>
+              </work-items-saved-views-selectors>
+            </template>
+          </template>
         </template>
 
         <template v-if="isPlanningViewsEnabled" #before-list-items>

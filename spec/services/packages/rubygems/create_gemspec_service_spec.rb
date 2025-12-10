@@ -14,27 +14,33 @@ RSpec.describe Packages::Rubygems::CreateGemspecService, feature_category: :pack
   describe '#execute' do
     subject { service.execute }
 
+    let(:gemspec_file) { package.package_files.find_by(file_name: "#{gemspec.name}.gemspec") }
+
     it 'creates a new package file', :aggregate_failures do
       expect { subject }.to change { package.package_files.count }.by(1)
 
-      gemspec_file = package.package_files.find_by(file_name: "#{gemspec.name}.gemspec")
-      expect(gemspec_file.file).not_to be_nil
-      expect(gemspec_file.size).not_to be_nil
-      expect(gemspec_file.file_md5).not_to be_nil
-      expect(gemspec_file.file_sha1).not_to be_nil
-      expect(gemspec_file.file_sha256).not_to be_nil
+      expect(gemspec_file).to have_attributes(
+        file: be_present,
+        size: be_present,
+        file_md5: be_present,
+        file_sha1: be_present,
+        file_sha256: be_present,
+        project_id: package.project_id
+      )
     end
 
     context 'with FIPS mode', :fips_mode do
       it 'does not generate file_md5' do
         expect { subject }.to change { package.package_files.count }.by(1)
 
-        gemspec_file = package.package_files.find_by(file_name: "#{gemspec.name}.gemspec")
-        expect(gemspec_file.file).not_to be_nil
-        expect(gemspec_file.size).not_to be_nil
-        expect(gemspec_file.file_md5).to be_nil
-        expect(gemspec_file.file_sha1).not_to be_nil
-        expect(gemspec_file.file_sha256).not_to be_nil
+        expect(gemspec_file).to have_attributes(
+          file: be_present,
+          size: be_present,
+          file_md5: be_nil,
+          file_sha1: be_present,
+          file_sha256: be_present,
+          project_id: package.project_id
+        )
       end
     end
   end
