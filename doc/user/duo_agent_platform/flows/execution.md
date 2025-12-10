@@ -209,6 +209,7 @@ Flows that use CI/CD are executed on runners. These runners must:
   For example, `docker`, `docker-autoscaler`, `kubernetes`, or others.
   The `shell` executor is not supported.
 - Have the `gitlab--duo` tag, so the runner knows to pick up the correct jobs.
+- Be instance runners or assigned to the top-level group. Flows cannot use runners configured for a subgroup or project. On GitLab Self-Managed this restriction can be disabled by disabling the `duo_runner_restrictions` feature flag.
 
 In addition, runners on GitLab Self-Managed:
 
@@ -223,7 +224,6 @@ In addition, runners on GitLab Self-Managed:
 On GitLab.com, flows can use:
 
 - [Hosted runners](../../../ci/runners/hosted_runners/_index.md), which GitLab provides.
-- A runner assigned to the top-level group. Flows cannot use runners configured for a subgroup or project.
 
 Flows executed on runners can be secured with runtime sandboxing offering network and filesystem isolation. In order to benefit from sandboxing it is required to:
 

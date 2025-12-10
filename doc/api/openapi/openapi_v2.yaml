@@ -48366,21 +48366,40 @@ definitions:
             format: int32
             description: The minimum access level required to execute Duo Agent Platform.
               This field is behind a feature flag.
+            enum:
+            - 10
+            - 15
+            - 20
+            - 30
+            - 40
+            - 50
           minimum_access_level_execute_async:
             type: integer
             format: int32
             description: The minimum access level required to execute Duo Agent Platform
               features in CI/CD. This field is behind a feature flag.
+            enum:
+            - 30
+            - 40
+            - 50
           minimum_access_level_manage:
             type: integer
             format: int32
             description: The minimum access level required to manage Duo Agent Platform.
               This field is behind a feature flag.
+            enum:
+            - 30
+            - 40
+            - 50
           minimum_access_level_enable_on_projects:
             type: integer
             format: int32
             description: The minimum access level required to enable Duo Agent Platform.
               This field is behind a feature flag.
+            enum:
+            - 30
+            - 40
+            - 50
     required:
     - name
     - path
@@ -48610,21 +48629,40 @@ definitions:
             format: int32
             description: The minimum access level required to execute Duo Agent Platform.
               This field is behind a feature flag.
+            enum:
+            - 10
+            - 15
+            - 20
+            - 30
+            - 40
+            - 50
           minimum_access_level_execute_async:
             type: integer
             format: int32
             description: The minimum access level required to execute Duo Agent Platform
               features in CI/CD. This field is behind a feature flag.
+            enum:
+            - 30
+            - 40
+            - 50
           minimum_access_level_manage:
             type: integer
             format: int32
             description: The minimum access level required to manage Duo Agent Platform.
               This field is behind a feature flag.
+            enum:
+            - 30
+            - 40
+            - 50
           minimum_access_level_enable_on_projects:
             type: integer
             format: int32
             description: The minimum access level required to enable Duo Agent Platform.
               This field is behind a feature flag.
+            enum:
+            - 30
+            - 40
+            - 50
       prevent_sharing_groups_outside_hierarchy:
         type: boolean
         description: Prevent sharing groups within this namespace with any groups
@@ -48712,6 +48750,12 @@ definitions:
       only_allow_merge_if_all_discussions_are_resolved:
         type: boolean
         description: Only allow to merge if all threads are resolved
+      enabled_foundational_flows:
+        type: array
+        description: IDs of enabled foundational flows
+        items:
+          type: integer
+          format: int32
     description: Update a group. Available only for users who can administrate groups.
   API_Entities_GroupDetail:
     type: object

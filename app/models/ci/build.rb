@@ -465,12 +465,6 @@ module Ci
     end
 
     def self.build_matchers(project)
-      return legacy_build_matchers(project) if Feature.disabled?(:ci_build_uses_job_definition_tag_list, project)
-
-      new_build_matchers(project)
-    end
-
-    def self.new_build_matchers(project)
       unique_params = [
         :protected,
         Arel.sql(tag_names_array_query)
@@ -482,22 +476,6 @@ module Ci
       ]
 
       joins(:job_definition).group(*unique_params).pluck(*pluck_params).map do |values|
-        Gitlab::Ci::Matching::BuildMatcher.new(
-          build_ids: values[0],
-          protected: values[1],
-          tag_list: values[2],
-          project: project
-        )
-      end
-    end
-
-    def self.legacy_build_matchers(project)
-      unique_params = [
-        :protected,
-        Arel.sql("(#{arel_tag_names_array.to_sql})")
-      ]
-
-      group(*unique_params).pluck('array_agg(id)', *unique_params).map do |values|
         Gitlab::Ci::Matching::BuildMatcher.new(
           build_ids: values[0],
           protected: values[1],
@@ -904,9 +882,7 @@ module Ci
 
     override :tag_list
     def tag_list
-      # Check job_definition first to avoid loading project if not needed
       return super if job_definition.nil?
-      return super if Feature.disabled?(:ci_build_uses_job_definition_tag_list, Project.actor_from_id(project_id))
 
       job_definition.tag_list
     end

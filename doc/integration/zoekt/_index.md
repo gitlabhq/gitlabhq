@@ -43,7 +43,7 @@ You can use exact match and regular expression modes to search for code in a gro
 
 Prerequisites:
 
-- You must have administrator access to the instance.
+- Be an administrator of the instance.
 
 To [enable exact code search](#enable-exact-code-search) in GitLab,
 you must have at least one Zoekt node connected to the instance.
@@ -62,8 +62,8 @@ The following installation methods are available for testing, not for production
 
 Prerequisites:
 
-- You must have administrator access to the instance.
-- You must [install Zoekt](#install-zoekt).
+- Be an administrator of the instance.
+- Zoekt is [installed](#install-zoekt).
 
 To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
 
@@ -564,7 +564,7 @@ To set the number of replicas per namespace:
 
 Prerequisites:
 
-- You must have administrator access to the instance.
+- Be an administrator of the instance.
 
 To run Zoekt on a different server than GitLab:
 

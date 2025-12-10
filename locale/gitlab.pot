@@ -10714,12 +10714,6 @@ msgstr ""
 msgid "BetaBadge|A %{link_start}beta%{link_end} feature is not yet production-ready, but is ready for testing and unlikely to change significantly before it's released."
 msgstr ""
 
-msgid "BetaBadge|A beta feature is not yet production-ready, but is ready for testing and unlikely to change significantly before it's released."
-msgstr ""
-
-msgid "BetaBadge|Are subject to the GitLab Testing Agreement."
-msgstr ""
-
 msgid "BetaBadge|Are supported on a commercially-reasonable effort basis."
 msgstr ""
 
@@ -22906,6 +22900,9 @@ msgid "Default projects limit"
 msgstr ""
 
 msgid "Default role"
+msgstr ""
+
+msgid "Default search scope"
 msgstr ""
 
 msgid "Default timeout"
@@ -63011,6 +63008,9 @@ msgstr ""
 msgid "Select a day"
 msgstr ""
 
+msgid "Select a default search scope. For the system default, a scope is selected automatically based on context and availability."
+msgstr ""
+
 msgid "Select a group"
 msgstr ""
 
@@ -66636,6 +66636,9 @@ msgid "SynthaxHighlightingTheme|Solarized Light"
 msgstr ""
 
 msgid "System default (%{default})"
+msgstr ""
+
+msgid "System default (automatic)"
 msgstr ""
 
 msgid "System exchange"
@@ -74828,6 +74831,9 @@ msgstr ""
 msgid "Vulnerability|Assert:"
 msgstr ""
 
+msgid "Vulnerability|Auto-dismissed by a security policy"
+msgstr ""
+
 msgid "Vulnerability|Bug Bounty"
 msgstr ""
 
@@ -75054,6 +75060,9 @@ msgid "Vulnerability|The scanner determined this vulnerability to be a false pos
 msgstr ""
 
 msgid "Vulnerability|The unmodified response is the original response that had no mutations done to the request"
+msgstr ""
+
+msgid "Vulnerability|This vulnerability was auto-dismissed by a security policy."
 msgstr ""
 
 msgid "Vulnerability|This vulnerability was bypassed by a user in a merge request. The user accepted the risk in a security policy configured to use warn mode."
@@ -75335,6 +75344,129 @@ msgstr ""
 msgid "Webhooks help"
 msgstr ""
 
+msgid "WebhooksTrigger|A comment is made or edited on a confidential issue."
+msgstr ""
+
+msgid "WebhooksTrigger|A comment is made or edited on an issue or merge request."
+msgstr ""
+
+msgid "WebhooksTrigger|A confidential issue is created, updated, closed, or reopened."
+msgstr ""
+
+msgid "WebhooksTrigger|A deployment starts, finishes, fails, or is canceled."
+msgstr ""
+
+msgid "WebhooksTrigger|A feature flag is turned on or off."
+msgstr ""
+
+msgid "WebhooksTrigger|A group member is created, updated, or removed."
+msgstr ""
+
+msgid "WebhooksTrigger|A job's status changes."
+msgstr ""
+
+msgid "WebhooksTrigger|A merge request is created, updated, or merged."
+msgstr ""
+
+msgid "WebhooksTrigger|A milestone is created, closed, reopened, or deleted."
+msgstr ""
+
+msgid "WebhooksTrigger|A new tag is pushed to the repository."
+msgstr ""
+
+msgid "WebhooksTrigger|A pipeline's status changes."
+msgstr ""
+
+msgid "WebhooksTrigger|A project is created or removed."
+msgstr ""
+
+msgid "WebhooksTrigger|A release is created, updated, or deleted."
+msgstr ""
+
+msgid "WebhooksTrigger|A subgroup is created or removed."
+msgstr ""
+
+msgid "WebhooksTrigger|A vulnerability is created or updated."
+msgstr ""
+
+msgid "WebhooksTrigger|A wiki page is created or updated."
+msgstr ""
+
+msgid "WebhooksTrigger|An access token expires in the next 7 days."
+msgstr ""
+
+msgid "WebhooksTrigger|An emoji is awarded or revoked."
+msgstr ""
+
+msgid "WebhooksTrigger|An issue is created, updated, closed, or reopened."
+msgstr ""
+
+msgid "WebhooksTrigger|Comments"
+msgstr ""
+
+msgid "WebhooksTrigger|Confidential comments"
+msgstr ""
+
+msgid "WebhooksTrigger|Confidential issues events"
+msgstr ""
+
+msgid "WebhooksTrigger|Deployment events"
+msgstr ""
+
+msgid "WebhooksTrigger|Emoji events"
+msgstr ""
+
+msgid "WebhooksTrigger|Feature flag events"
+msgstr ""
+
+msgid "WebhooksTrigger|Issues events"
+msgstr ""
+
+msgid "WebhooksTrigger|Job events"
+msgstr ""
+
+msgid "WebhooksTrigger|Member events"
+msgstr ""
+
+msgid "WebhooksTrigger|Merge request events"
+msgstr ""
+
+msgid "WebhooksTrigger|Milestone events"
+msgstr ""
+
+msgid "WebhooksTrigger|Pipeline events"
+msgstr ""
+
+msgid "WebhooksTrigger|Project events"
+msgstr ""
+
+msgid "WebhooksTrigger|Releases events"
+msgstr ""
+
+msgid "WebhooksTrigger|Resource access token events"
+msgstr ""
+
+msgid "WebhooksTrigger|Subgroup events"
+msgstr ""
+
+msgid "WebhooksTrigger|Tag push events"
+msgstr ""
+
+msgid "WebhooksTrigger|Trigger"
+msgstr ""
+
+msgid "WebhooksTrigger|Vulnerability events"
+msgstr ""
+
+msgid "WebhooksTrigger|Which emoji events trigger webhooks?"
+msgstr ""
+
+msgid "WebhooksTrigger|Which project or group access token events trigger webhooks?"
+msgstr ""
+
+msgid "WebhooksTrigger|Wiki page events"
+msgstr ""
+
 msgid "Webhooks|+ Add URL masking"
 msgstr ""
 
@@ -75344,43 +75476,10 @@ msgstr ""
 msgid "Webhooks|A URL is required."
 msgstr ""
 
-msgid "Webhooks|A comment is made or edited on a confidential issue."
-msgstr ""
-
-msgid "Webhooks|A comment is made or edited on an issue or merge request."
-msgstr ""
-
-msgid "Webhooks|A confidential issue is created, updated, closed, or reopened."
-msgstr ""
-
-msgid "Webhooks|A deployment starts, finishes, fails, or is canceled."
-msgstr ""
-
-msgid "Webhooks|A feature flag is turned on or off."
-msgstr ""
-
 msgid "Webhooks|A group member is created, updated, or removed."
 msgstr ""
 
-msgid "Webhooks|A job's status changes."
-msgstr ""
-
-msgid "Webhooks|A merge request is created, updated, or merged."
-msgstr ""
-
-msgid "Webhooks|A milestone is created, closed, reopened, or deleted."
-msgstr ""
-
-msgid "Webhooks|A new tag is pushed to the repository."
-msgstr ""
-
-msgid "Webhooks|A pipeline's status changes."
-msgstr ""
-
 msgid "Webhooks|A project is created or removed."
-msgstr ""
-
-msgid "Webhooks|A release is created, updated, or deleted."
 msgstr ""
 
 msgid "Webhooks|A subgroup is created or removed."
@@ -75395,19 +75494,7 @@ msgstr ""
 msgid "Webhooks|A webhook in this project was automatically disabled after it was retried multiple times."
 msgstr ""
 
-msgid "Webhooks|A wiki page is created or updated."
-msgstr ""
-
 msgid "Webhooks|Add custom header"
-msgstr ""
-
-msgid "Webhooks|An access token expires in the next 7 days. %{help_link}?"
-msgstr ""
-
-msgid "Webhooks|An emoji is awarded or revoked. %{help_link}?"
-msgstr ""
-
-msgid "Webhooks|An issue is created, updated, closed, or reopened."
 msgstr ""
 
 msgid "Webhooks|Are you sure you want to delete this group hook?"
@@ -75576,9 +75663,6 @@ msgid "Webhooks|The webhook has %{help_link_start}failed%{help_link_end} %{failu
 msgstr ""
 
 msgid "Webhooks|The webhook has %{help_link_start}failed%{help_link_end} %{failure_count} times consecutively and is disabled for %{retry_time}. To re-enable the webhook earlier, see %{strong_start}Recent events%{strong_end} for more information about the error, then test your settings."
-msgstr ""
-
-msgid "Webhooks|Trigger"
 msgstr ""
 
 msgid "Webhooks|URL is triggered when a member promotion request is queued, approved, or denied"
@@ -75790,12 +75874,6 @@ msgid "Whether to enforce minimum language server version."
 msgstr ""
 
 msgid "Which API requests are affected?"
-msgstr ""
-
-msgid "Which emoji events trigger webhooks"
-msgstr ""
-
-msgid "Which project or group access token events trigger webhooks"
 msgstr ""
 
 msgid "Who can approve?"

@@ -9,13 +9,20 @@ module Gitlab
 
           attr_reader :attributes
 
-          def initialize(pipeline, attributes = {})
-            super(pipeline)
+          def initialize(pipeline, attributes = {}, logger:)
+            super(pipeline, logger: logger)
 
             @attributes = attributes
           end
 
           def variables
+            logger.instrument(:pipeline_seed_context_build_variables) do
+              build_variables
+            end
+          end
+          strong_memoize_attr :variables
+
+          def build_variables
             pipeline
               .variables_builder
               .scoped_variables_for_pipeline_seed(
@@ -26,7 +33,6 @@ module Gitlab
                 trigger: pipeline.trigger
               )
           end
-          strong_memoize_attr :variables
 
           private
 

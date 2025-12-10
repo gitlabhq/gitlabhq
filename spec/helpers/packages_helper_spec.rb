@@ -39,16 +39,18 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
   end
 
   describe '#package_registry_project_url' do
-    it 'returns maven registry url when registry_type is not provided' do
-      url = helper.package_registry_project_url(1)
+    subject { helper.package_registry_project_url(*params) }
 
-      expect(url).to eq("#{base_url}projects/1/packages/maven")
+    context 'when registry_type is not provided' do
+      let(:params) { [project.id] }
+
+      it { is_expected.to eq("#{base_url}projects/#{project.id}/packages/maven") }
     end
 
-    it 'returns specified registry url when registry_type is provided' do
-      url = helper.package_registry_project_url(1, :npm)
+    context 'when registry_type is provided' do
+      let(:params) { [project.id, :npm] }
 
-      expect(url).to eq("#{base_url}projects/1/packages/npm")
+      it { is_expected.to eq("#{base_url}projects/#{project.id}/packages/npm") }
     end
   end
 

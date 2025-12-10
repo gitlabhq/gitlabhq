@@ -7,10 +7,11 @@ module Gitlab
         class Base
           include Gitlab::Utils::StrongMemoize
 
-          attr_reader :pipeline
+          attr_reader :pipeline, :logger
 
-          def initialize(pipeline)
+          def initialize(pipeline, logger:)
             @pipeline = pipeline
+            @logger = logger
           end
 
           def variables
@@ -31,7 +32,12 @@ module Gitlab
 
           def variables_sorted_and_expanded
             strong_memoize(:variables_sorted_and_expanded) do
-              variables.sort_and_expand_all
+              # Call variables first to memoize and ensure only sort_and_expand_all is instrumented
+              variables
+
+              logger.instrument(:pipeline_seed_context_build_variables_sort_and_expand_all) do
+                variables.sort_and_expand_all
+              end
             end
           end
 

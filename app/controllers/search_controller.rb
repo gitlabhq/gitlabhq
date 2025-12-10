@@ -9,7 +9,6 @@ class SearchController < ApplicationController
   include SearchRateLimitable
 
   RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete, :aggregations].freeze
-  CODE_SEARCH_LITERALS = %w[blob: extension: path: filename:].freeze
 
   track_event :show,
     name: 'i_search_total',
@@ -38,10 +37,6 @@ class SearchController < ApplicationController
     search_term_present && !params[:project_id].present?
   end
   before_action :check_search_rate_limit!, only: search_rate_limited_endpoints
-
-  before_action only: :show do
-    update_scope_for_code_search
-  end
 
   before_action only: :show do
     push_frontend_feature_flag(:work_item_scope_frontend, current_user)
@@ -186,15 +181,6 @@ class SearchController < ApplicationController
         search_scope: @scope
       )
     end
-  end
-
-  def update_scope_for_code_search
-    return if params[:scope] == 'blobs'
-    return unless params[:search].present?
-
-    return unless CODE_SEARCH_LITERALS.any? { |literal| literal.in? params[:search] }
-
-    redirect_to search_path(safe_params.except(:controller, :action).merge(scope: 'blobs'))
   end
 
   # overridden in EE

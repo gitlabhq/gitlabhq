@@ -8,6 +8,19 @@ RSpec.describe HooksHelper, feature_category: :integrations do
   let(:service_hook) { build_stubbed(:service_hook, integration: build_stubbed(:drone_ci_integration)) }
   let(:system_hook) { build_stubbed(:system_hook) }
 
+  let(:expected_triggers) do
+    triggers = project_hook.class.triggers.values.index_with do |event_type|
+      project_hook.public_send(event_type)
+    end
+
+    branch_filter_settings = {
+      push_events_branch_filter: project_hook.push_events_branch_filter,
+      branch_filter_strategy: project_hook.branch_filter_strategy
+    }
+
+    Gitlab::Json.dump(triggers.merge(branch_filter_settings))
+  end
+
   describe '#webhook_form_data' do
     subject { helper.webhook_form_data(project_hook) }
 
@@ -19,7 +32,9 @@ RSpec.describe HooksHelper, feature_category: :integrations do
           secret_token: nil,
           url: project_hook.url,
           url_variables: "[]",
-          custom_headers: "[]"
+          custom_headers: "[]",
+          is_new_hook: "false",
+          triggers: expected_triggers
         )
       end
     end
@@ -34,7 +49,9 @@ RSpec.describe HooksHelper, feature_category: :integrations do
           secret_token: WebHook::SECRET_MASK,
           url: project_hook.url,
           url_variables: Gitlab::Json.dump([{ key: 'abc' }, { key: 'def' }]),
-          custom_headers: "[]"
+          custom_headers: "[]",
+          is_new_hook: "false",
+          triggers: expected_triggers
         )
       end
     end
@@ -49,7 +66,9 @@ RSpec.describe HooksHelper, feature_category: :integrations do
           secret_token: WebHook::SECRET_MASK,
           url: project_hook.url,
           url_variables: "[]",
-          custom_headers: Gitlab::Json.dump([{ key: 'test', value: WebHook::SECRET_MASK }])
+          custom_headers: Gitlab::Json.dump([{ key: 'test', value: WebHook::SECRET_MASK }]),
+          is_new_hook: "false",
+          triggers: expected_triggers
         )
       end
     end

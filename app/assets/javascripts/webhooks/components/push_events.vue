@@ -9,6 +9,7 @@ import {
 } from '~/webhooks/constants';
 
 export default {
+  name: 'PushEvents',
   components: {
     GlFormCheckbox,
     GlFormRadio,
@@ -16,7 +17,28 @@ export default {
     GlFormInput,
     GlSprintf,
   },
-  inject: ['pushEvents', 'strategy', 'isNewHook', 'pushEventsBranchFilter'],
+  props: {
+    pushEvents: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    strategy: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    isNewHook: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    pushEventsBranchFilter: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
   data() {
     return {
       pushEventsData: !this.isNewHook && this.pushEvents,

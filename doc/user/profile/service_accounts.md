@@ -162,8 +162,8 @@ a target group namespace.
 
 Prerequisites:
 
-- The service account must be added as a member to the target group with at least the Developer role.
-- The service account must have the `api` scope enabled on its personal access token.
+- The service account has the Developer role and is a member of the target group.
+- The `api` scope is turned on for the service account's personal access token.
 
 To fork a project using a service account:
 

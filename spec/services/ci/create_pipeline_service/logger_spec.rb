@@ -35,6 +35,8 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
         'pipeline_seed_build_errors_duration_s' => counters,
         'pipeline_seed_build_to_resource_duration_s' => counters,
         'pipeline_seed_stage_seeds_duration_s' => counters,
+        'pipeline_seed_context_build_variables_duration_s' => counters,
+        'pipeline_seed_context_build_variables_sort_and_expand_all_duration_s' => counters,
         'pipeline_builds_tags_count' => a_kind_of(Numeric),
         'pipeline_builds_distinct_tags_count' => a_kind_of(Numeric)
       }

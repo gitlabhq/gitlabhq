@@ -513,4 +513,43 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
       })
     end
   end
+
+  describe '#default_search_scope_options_for_select' do
+    it 'returns options formatted for options_for_select' do
+      options = helper.default_search_scope_options_for_select
+
+      expect(options).to be_an(Array)
+      expect(options).to all(be_an(Array))
+      expect(options).to all(have_attributes(size: 2))
+    end
+
+    it 'includes System default option as first element' do
+      options = helper.default_search_scope_options_for_select
+
+      expect(options.first).to match_array(['System default (automatic)', 'system default'])
+    end
+
+    it 'includes all scope definitions in sorted order' do
+      options = helper.default_search_scope_options_for_select
+
+      # Extract values (second element of each pair), excluding the first "system default"
+      values = options[1..].map(&:last)
+
+      expected_order = %w[projects blobs epics issues merge_requests wiki_blobs commits notes milestones users
+        snippet_titles]
+      expected_order.delete('epics') unless Gitlab.ee?
+
+      expect(values).to eq(expected_order)
+    end
+
+    it 'returns human-readable labels' do
+      options = helper.default_search_scope_options_for_select
+
+      projects_option = options.find { |_label, value| value == 'projects' }
+      expect(projects_option.first).to eq('Projects')
+
+      issues_option = options.find { |_label, value| value == 'issues' }
+      expect(issues_option.first).to eq('Issues')
+    end
+  end
 end

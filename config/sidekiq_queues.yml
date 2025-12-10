@@ -37,6 +37,8 @@
   - 1
 - - ai_active_context_code_mark_repository_as_ready_event
   - 1
+- - ai_active_context_code_process_invalid_enabled_namespace_event
+  - 1
 - - ai_active_context_code_process_pending_enabled_namespace_event
   - 1
 - - ai_active_context_code_repository_delete
@@ -44,6 +46,8 @@
 - - ai_active_context_code_repository_index
   - 1
 - - ai_active_context_code_saas_initial_indexing_event
+  - 1
+- - ai_catalog_flows_cascade_sync_foundational_flows
   - 1
 - - ai_duo_workflows_code_review_timeout
   - 1

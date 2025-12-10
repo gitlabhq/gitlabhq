@@ -197,7 +197,7 @@ Merge request pipelines from forked repositories cannot access these protected r
 
 Prerequisites:
 
-- You must have the Maintainer role in the project.
+- Have the Maintainer or Owner role in the project.
 
 To control access to protected variables and runners:
 

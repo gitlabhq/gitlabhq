@@ -161,8 +161,8 @@ Use group or application settings to enable automatic reviews for multiple proje
 
 Prerequisites:
 
-- To enable automatic reviews for groups, you must have the Owner role for the group.
-- To enable automatic reviews for all projects, you must be an administrator.
+- To turn on automatic reviews for groups, have the Owner role for the group.
+- To turn on automatic reviews for all projects, be an administrator.
 
 To enable automatic reviews for groups:
 

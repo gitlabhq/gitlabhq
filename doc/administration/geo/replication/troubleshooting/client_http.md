@@ -156,3 +156,14 @@ To resolve this issue:
   using IPv6 to send its status to the **primary** site. If it is, add an entry to
   the **primary** site using IPv4 in the `/etc/hosts` file. Alternatively, you should
   [enable IPv6 on the **primary** site](https://docs.gitlab.com/omnibus/settings/nginx.html#setting-the-nginx-listen-address-or-addresses).
+
+## WebSocket requests fail on Geo secondary sites
+
+When using features that rely on WebSockets (such as GitLab Duo Chat, live issue updates, or other real-time features), connections may fail with 404 errors on Geo secondary sites.
+
+This occurs because WebSocket requests are proxied from the secondary to the primary. On the primary site, ActionCable must be configured to allow WebSocket requests from all Geo sites. By default, ActionCable only allows requests from the local site.
+
+To fix this issue, configure `action_cable_allowed_origins` according to your installation type:
+
+- [Geo documentation for the Linux package](../configuration.md#add-primary-and-secondary-urls-as-allowed-actioncable-origins)
+- [Geo documentation for the Helm chart](https://docs.gitlab.com/charts/advanced/geo/#configure-primary-database)

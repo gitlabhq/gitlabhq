@@ -253,14 +253,22 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
 
     context 'when the rules are being evaluated at job level' do
       let(:pipeline) { build(:ci_pipeline, project: project, sha: project.commit.sha, user: user) }
-      let(:context) { Gitlab::Ci::Build::Context::Build.new(pipeline) }
+      let(:logger) { instance_double(Gitlab::Ci::Pipeline::Logger) }
+      let(:context) do
+        allow(logger).to receive(:instrument).and_yield
+        Gitlab::Ci::Build::Context::Build.new(pipeline, {}, logger: logger)
+      end
 
       it_behaves_like 'a rules:exists with a context'
     end
 
     context 'when the rules are being evaluated for an entire pipeline' do
       let(:pipeline) { build(:ci_pipeline, project: project, sha: project.commit.sha, user: user) }
-      let(:context) { Gitlab::Ci::Build::Context::Global.new(pipeline, yaml_variables: {}) }
+      let(:logger) { instance_double(Gitlab::Ci::Pipeline::Logger) }
+      let(:context) do
+        allow(logger).to receive(:instrument).and_yield
+        Gitlab::Ci::Build::Context::Global.new(pipeline, yaml_variables: {}, logger: logger)
+      end
 
       it_behaves_like 'a rules:exists with a context'
     end

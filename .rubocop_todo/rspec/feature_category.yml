@@ -3967,7 +3967,6 @@ RSpec/FeatureCategory:
     - 'spec/views/projects/settings/ci_cd/_autodevops_form.html.haml_spec.rb'
     - 'spec/views/projects/settings/integrations/edit.html.haml_spec.rb'
     - 'spec/views/projects/settings/operations/show.html.haml_spec.rb'
-    - 'spec/views/shared/_beta_badge.html.haml_spec.rb'
     - 'spec/views/shared/_label_row.html.haml_spec.rb'
     - 'spec/views/shared/_milestones_sort_dropdown.html.haml_spec.rb'
     - 'spec/views/shared/gitlab_version/_security_patch_upgrade_alert.html.haml_spec.rb'

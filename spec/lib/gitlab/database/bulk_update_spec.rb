@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BulkUpdate do
+RSpec.describe Gitlab::Database::BulkUpdate, feature_category: :database do
   describe 'error states' do
     let(:columns) { %i[title] }
 

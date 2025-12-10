@@ -173,30 +173,6 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
             .to change { Ci::Tag.all.pluck(:name) }.from([]).to(%w[docker ruby])
             .and not_change { build_tags.reload.count }.from(0)
         end
-
-        context 'when ci_build_uses_job_definition_tag_list feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_build_uses_job_definition_tag_list: false)
-          end
-
-          it 'does not upsert tags from job_definition.config[:tag_list]' do
-            expect { upsert_from_build }
-              .to not_change { Ci::Tag.all.pluck(:name) }.from([])
-              .and not_change { build_tags.reload.count }.from(0)
-          end
-        end
-      end
-
-      context 'when ci_build_uses_job_definition_tag_list feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_build_uses_job_definition_tag_list: false)
-        end
-
-        it 'falls back to build.tags_ids' do
-          upsert_from_build
-
-          expect(ci_pending_build.tag_ids).to eq(build.tags_ids)
-        end
       end
 
       context 'when build has job definition without tag_list' do

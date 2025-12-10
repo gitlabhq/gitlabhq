@@ -112,7 +112,6 @@ To restrict global search to authenticated users only:
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -138,6 +137,33 @@ To disable one or more global search scopes:
 1. Expand **Visibility and access controls**.
 1. Clear the checkboxes for the scopes you want to disable.
 1. Select **Save changes**.
+
+## Configure a default search scope
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+By default, when users do not select a search scope,
+a scope is selected automatically based on context and availability.
+To configure a default search scope instead:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Search**.
+1. Expand **Visibility and access controls**.
+1. From the **Default search scope** dropdown list, select a scope.
+   For automatic selection, select **System default (automatic)**.
+1. Select **Save changes**.
+
+Users can override the default scope by selecting another scope.
+If the default scope is not available (for example, code in global search),
+a scope is selected automatically.
 
 ## Global search validation
 

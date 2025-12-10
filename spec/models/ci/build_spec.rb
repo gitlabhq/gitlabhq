@@ -2295,23 +2295,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         it 'parses job_definition tags correctly' do
           expect(tag_list).to match_array(expected_tags)
         end
-
-        context 'when ci_build_uses_job_definition_tag_list FF is disabled' do
-          before do
-            stub_feature_flags(ci_build_uses_job_definition_tag_list: false)
-          end
-
-          it 'parses job_definition tags correctly' do
-            expect(tag_list).to match_array(expected_tags)
-          end
-        end
       end
     end
 
     context 'when tags are preloaded' do
       it 'does not trigger queries' do
         build_with_tags = described_class.eager_load_tags.id_in([build]).to_a.first
-        build_with_tags.project # Preload project being used in ci_build_uses_job_definition_tag_list FF check
 
         expect { build_with_tags.tag_list }.not_to exceed_all_query_limit(0)
         expect(build_with_tags.tag_list).to eq(['tag'])
@@ -2331,16 +2320,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it 'returns tag_list from job_definition config' do
         is_expected.to eq(job_definition_tags)
-      end
-
-      context 'when ci_build_uses_job_definition_tag_list FF is disabled' do
-        before do
-          stub_feature_flags(ci_build_uses_job_definition_tag_list: false)
-        end
-
-        it 'returns tag_list from tags relation' do
-          is_expected.to contain_exactly('tag')
-        end
       end
     end
 
@@ -5916,27 +5895,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             [build_without_tags.id, build_without_tags_in_job_def.id],
             match_array([build_with_tags.id, other_build_with_tags.id])
           )
-        end
-      end
-
-      context 'when ci_build_uses_job_definition_tag_list feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_build_uses_job_definition_tag_list: false)
-        end
-
-        context 'when builds have job_definition with tag_list' do
-          let!(:build_with_job_def_tags) do
-            create(:ci_build, tag_list: %w[tag1 tag2], pipeline: pipeline).tap do |build|
-              stub_ci_job_definition(build, tag_list: %w[docker ruby])
-            end
-          end
-
-          it 'ignores job_definition and uses tags table' do
-            expect(matchers.map(&:build_ids)).to contain_exactly(
-              [build_without_tags.id],
-              match_array([build_with_tags.id, other_build_with_tags.id, build_with_job_def_tags.id])
-            )
-          end
         end
       end
     end

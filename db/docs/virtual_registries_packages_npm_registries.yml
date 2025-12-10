@@ -1,0 +1,13 @@
+---
+table_name: virtual_registries_packages_npm_registries
+classes:
+- VirtualRegistries::Packages::Npm::Registry
+feature_categories:
+- virtual_registry
+description: A virtual registry object for a packages of kind Npm.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213405
+milestone: '18.7'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  group_id: namespaces
+table_size: small

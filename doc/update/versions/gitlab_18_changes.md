@@ -65,6 +65,21 @@ required upgrade stops occur at versions:
   Rails.cache.delete_matched("pipeline:*:create_persistent_ref_service")
   ```
 
+## 18.7.0
+
+### Geo installations 18.7.0
+
+- Added a new `action_cable_allowed_origins` setting to configure allowed origins for ActionCable websocket requests.
+  Specify the allowed URLs when configuring the primary site to ensure proper cross-site WebSocket connectivity:
+
+  - [Geo documentation for the Linux package](../../administration/geo/replication/configuration.md#add-primary-and-secondary-urls-as-allowed-actioncable-origins)
+  - [Geo documentation for the Helm chart](https://docs.gitlab.com/charts/advanced/geo/#configure-primary-database)
+
+### Duo Agent Platform
+
+- Some [runner restrictions](../../user/duo_agent_platform/flows/execution.md#configure-runners)
+  have been introduced relating to which runners can be used with Duo Agent Platform.
+
 ## Geo installations 18.5.2
 
 - The missing Geo [migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210512) that prevents Geo log cursor on the secondary site to start is fixed.

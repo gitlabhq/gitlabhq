@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BatchCount do
+RSpec.describe Gitlab::Database::BatchCount, feature_category: :database do
   let_it_be(:fallback) { ::Gitlab::Database::BatchCounter::FALLBACK }
   let_it_be(:small_batch_size) { calculate_batch_size(::Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE) }
   let_it_be(:max_allowed_loops) { ::Gitlab::Database::BatchCounter::MAX_ALLOWED_LOOPS }

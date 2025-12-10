@@ -3,8 +3,10 @@ import { GlFormGroup, GlFormInput, GlFormTextarea, GlSprintf } from '@gitlab/ui'
 
 import FormUrlApp from './form_url_app.vue';
 import FormCustomHeaders from './form_custom_headers.vue';
+import WebhookFormTriggerList from './webhook_form_trigger_list.vue';
 
 export default {
+  name: 'WebhookFormApp',
   components: {
     GlFormGroup,
     GlFormInput,
@@ -12,6 +14,7 @@ export default {
     GlSprintf,
     FormUrlApp,
     FormCustomHeaders,
+    WebhookFormTriggerList,
   },
   props: {
     initialUrl: {
@@ -43,6 +46,20 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    initialTriggers: {
+      type: Object,
+      required: true,
+    },
+    hasGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isNewHook: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -105,6 +122,12 @@ export default {
         data-testid="webhook-secret-token"
       />
     </gl-form-group>
+
+    <webhook-form-trigger-list
+      :initial-triggers="initialTriggers"
+      :has-group="hasGroup"
+      :is-new-hook="isNewHook"
+    />
 
     <form-custom-headers :initial-custom-headers="initialCustomHeaders" />
   </div>

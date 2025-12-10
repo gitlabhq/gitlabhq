@@ -718,7 +718,7 @@ of your instance only.
 
 Prerequisites:
 
-- You must have administrator access to the instance.
+- Be an administrator of the instance.
 - You must enable Access Control first for the setting to show in the Admin area.
 
 To disable public access to all Pages sites:
@@ -814,7 +814,7 @@ The certificate's Common Name field is ignored.
 
 Prerequisites:
 
-- Your instance must use the Linux package installation method.
+- Your instance uses the Linux package installation method.
 
 To configure the certificates in your GitLab Pages server:
 
@@ -1075,7 +1075,7 @@ To set the maximum number of GitLab Pages custom domains for a project:
 
 Prerequisites:
 
-- You must have administrator access to the instance.
+- Be an administrator of the instance.
 
 To configure the default duration for the instance after which
 [parallel deployments](../../user/project/pages/_index.md#parallel-deployments)

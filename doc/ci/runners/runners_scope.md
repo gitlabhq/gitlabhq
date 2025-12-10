@@ -571,7 +571,7 @@ Prerequisites:
 To create a project runner:
 
 1. [Install GitLab Runner](https://docs.gitlab.com/runner/install/).
-1. On the top bar, select **Search or go to**.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. In the **Project runners** section, note the URL and token.
@@ -588,7 +588,7 @@ Prerequisites:
 You can pause a project runner so that it does not accept jobs from projects it's assigned to
 in the GitLab instance.
 
-1. On the top bar, select **Search or go to**.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. In the **Assigned project runners** section, find the runner.
@@ -612,7 +612,7 @@ If the deleted runner's configuration is still present in this file, the runner 
 To prevent unnecessary API traffic, you must also
 [unregister the deleted runner](https://docs.gitlab.com/runner/commands/#gitlab-runner-unregister).
 
-1. On the top bar, select **Search or go to**.
+1. On the top bar, select **Search or go to** and find the project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. In the **Assigned project runners** section, find the runner.
@@ -632,7 +632,7 @@ You must have at least the Maintainer role for:
 
 To enable a project runner for a project:
 
-1. On the top bar, select **Search or go to**.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. In the **Project runners** area, by the runner you want, select **Enable for this project**.
@@ -651,7 +651,7 @@ but can also be changed later.
 
 To lock or unlock a project runner:
 
-1. On the top bar, select **Search or go to**.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. Find the project runner you want to lock or unlock. Make sure it's enabled. You cannot lock instance or group runners.

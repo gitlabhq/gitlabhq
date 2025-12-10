@@ -133,9 +133,26 @@ RSpec.describe SearchController, type: :request, feature_category: :global_searc
     context 'for code search' do
       let(:params_for_code_search) { { search: 'blob: hello' } }
 
-      it 'sets scope to blobs if code search literals are used' do
+      it 'does not auto-redirect to blobs scope for code search literals' do
         send_search_request(params_for_code_search)
-        expect(response).to redirect_to(search_path(params_for_code_search.merge({ scope: 'blobs' })))
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).not_to redirect_to(anything)
+        # Should render search results in default scope (projects)
+        expect(response.body).to include('any projects matching')
+      end
+
+      it 'falls back to projects scope when blobs scope is selected without project context' do
+        send_search_request(params_for_code_search.merge({ scope: 'blobs' }))
+        expect(response).to have_gitlab_http_status(:ok)
+        # Blobs scope requires project context; without project_id it falls back to projects scope
+        expect(response.body).to include('any projects matching')
+      end
+
+      it 'respects explicit blobs scope selection with code search literals in project context' do
+        send_search_request(params_for_code_search.merge({ scope: 'blobs', project_id: project.id }))
+        expect(response).to have_gitlab_http_status(:ok)
+        # Should render blobs scope results when project_id is provided
+        expect(response.body).to include('any code results matching')
       end
     end
 

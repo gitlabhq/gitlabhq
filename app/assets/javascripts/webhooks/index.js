@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import WebhookFormApp from './components/webhook_form_app.vue';
 import TestDropdown from './components/test_dropdown.vue';
 
@@ -16,6 +17,9 @@ export default () => {
     urlVariables,
     secretToken: initialSecretToken,
     customHeaders,
+    hasGroup,
+    triggers: initialTriggers,
+    isNewHook,
   } = el.dataset;
 
   return new Vue({
@@ -30,6 +34,9 @@ export default () => {
           initialUrl,
           initialUrlVariables: JSON.parse(urlVariables),
           initialCustomHeaders: JSON.parse(customHeaders),
+          initialTriggers: convertObjectPropsToCamelCase(JSON.parse(initialTriggers)),
+          hasGroup: parseBoolean(hasGroup),
+          isNewHook: parseBoolean(isNewHook),
         },
       });
     },

@@ -111,6 +111,15 @@ module ApplicationSettingsHelper
     ]
   end
 
+  def default_search_scope_options_for_select
+    options = Search::Scopes.scope_definitions.map do |scope, definition|
+      [definition[:label].call, scope.to_s]
+    end
+
+    sorted_options = options.sort_by { |_label, value| Search::Scopes.scope_definitions[value.to_sym][:sort] }
+    sorted_options.prepend([_('System default (automatic)'), 'system default'])
+  end
+
   def restricted_level_checkboxes(form)
     restricted_visibility_levels_help_text = {
       Gitlab::VisibilityLevel::PUBLIC => s_(

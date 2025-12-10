@@ -47,11 +47,9 @@ For an overview, see [GitLab Duo Self-Hosted: AI in your private environment](ht
 
 ## Prerequisites
 
-To use GitLab Duo Self-Hosted you must have:
-
-- A cloud-based or on-premise supported model
-- A cloud-based or on-premise supported serving platform
-- A locally hosted AI Gateway
+- Have a cloud-based or on-premise supported model.
+- Have a cloud-based or on-premise supported serving platform.
+- Have a locally hosted AI Gateway.
 
 ## Supported GitLab Duo features
 

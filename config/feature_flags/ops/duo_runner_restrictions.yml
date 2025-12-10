@@ -7,4 +7,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/580765
 milestone: '18.7'
 group: group::agent foundations
 type: ops
-default_enabled: false
+default_enabled: true

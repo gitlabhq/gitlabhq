@@ -19,14 +19,14 @@ GitLab Pages publishes static websites directly from a repository in GitLab.
 These websites:
 
 - Deploy automatically with GitLab CI/CD pipelines.
-- Support any static site generator (like Hugo, Jekyll, or Gatsby) or plain HTML, CSS, and JavaScript.
+- Support any static site generator (like Hugo, Jekyll, or Gatsby) or plain HTML, CSS, JavaScript, and Wasm.
 - Run on GitLab-provided infrastructure at no additional cost.
 - Connect with custom domains and SSL/TLS certificates.
 - Control access through built-in authentication.
 - Scale reliably for personal, business, or project documentation sites.
 
 To publish a website with Pages, use any static site generator like Gatsby, Jekyll, Hugo, Middleman, Harp, Hexo, or Brunch.
-Pages also supports websites written directly in plain HTML, CSS, and JavaScript.
+Pages also supports websites written directly in plain HTML, CSS, JavaScript, and Wasm.
 Dynamic server-side processing (like `.php` and `.asp`) is not supported.
 For more information, see [Static vs dynamic websites](https://about.gitlab.com/blog/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/).
 

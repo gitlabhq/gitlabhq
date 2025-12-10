@@ -251,6 +251,8 @@ The user can stop a session.
 
 One or more AI agents can be part of a [**flow**](#flows), where they are orchestrated to work together on a problem.
 
+Different types of agents exist, including [foundational agents](#foundational-agent).
+
 ## AI Catalog
 
 Use title case for **AI Catalog**. Do not use **AI catalog** (lowercase), and do not hyphenate.
@@ -1128,7 +1130,9 @@ Filtering is different from [searching](#search).
 
 GitLab provides multiple **flows** that are run by [agents](#ai-agent).
 
-Use lowercase for **flow** on its own. Use title case for the flow name, for example, **Convert to CI/CD Pipeline Flow**.
+Use lowercase for **flow** on its own.
+
+Use title case for the flow name, for example, **Convert to CI/CD Pipeline Flow**.
 
 Do not use **agent flow**.
 
@@ -1148,6 +1152,15 @@ The **upstream project** (also known as the **source project**) and the **fork**
 
 If the **fork relationship** is removed, the
 **fork** is **unlinked** from the **upstream project**.
+
+## foundational agent
+
+Foundational agents are a type of [agent](#ai-agent).
+
+Use lowercase for **foundational agents** in general.
+
+- In the documentation, use title case for the agent name, for example, **the Planner Agent**.
+- In the UI, use title case, but do not include the word **Agent**. For example, **Planner**.
 
 ## Free
 

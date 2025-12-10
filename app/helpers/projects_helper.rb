@@ -557,7 +557,6 @@ module ProjectsHelper
       admin_path: admin_path,
       can_read_project: can?(current_user, :read_project, project).to_s,
       cicd_catalog_path: cicd_catalog_path,
-      is_project_archived: project.archived.to_s,
       is_project_empty: project.empty_repo?.to_s,
       is_project_marked_for_deletion: project.self_deletion_scheduled?.to_s,
       project_avatar: project.avatar_url,

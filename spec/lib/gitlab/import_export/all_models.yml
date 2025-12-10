@@ -990,6 +990,7 @@ project:
 - security_scan_profiles
 - security_scan_profiles_projects
 - enabled_foundational_flows
+- enabled_foundational_flow_records
 award_emoji:
 - awardable
 - user

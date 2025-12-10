@@ -24,7 +24,7 @@ Prerequisites:
 
 To view the list of agents:
 
-1. On the top bar, select **Search or go to**.
+1. On the top bar, select **Search or go to** and find the project that contains your agent configuration file.
    You cannot view registered agents from a project that does not contain the agent configuration file.
 1. Select **Operate** > **Kubernetes clusters**.
 1. Select **Agent** tab to view clusters connected to GitLab through the agent.
@@ -92,7 +92,7 @@ The activity logs help you to identify problems and get the information
 you need for troubleshooting. You can see events from a week before the
 current date. To view an agent's activity:
 
-1. On the top bar, select **Search or go to**.
+1. On the top bar, select **Search or go to** and find the project that contains your agent configuration file.
 1. Select **Operate** > **Kubernetes clusters**.
 1. Select the agent you want to see activity for.
 
@@ -179,7 +179,7 @@ clean up those resources manually.
 
 To remove an agent from the UI:
 
-1. On the top bar, select **Search or go to**.
+1. On the top bar, select **Search or go to** and find the project that contains your agent configuration file.
 1. Select **Operate** > **Kubernetes clusters**.
 1. In the table, in the row for your agent, in the **Options** column, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Delete agent**.

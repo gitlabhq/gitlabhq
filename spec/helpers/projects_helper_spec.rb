@@ -1263,7 +1263,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
           admin_path: (admin_project_path(project) if has_admin_path),
           can_read_project: can_read_project.to_s,
           cicd_catalog_path: nil,
-          is_project_archived: "false",
           project_avatar: nil,
           is_project_empty: is_empty_repo.to_s,
           project_id: project.id,

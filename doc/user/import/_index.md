@@ -79,9 +79,7 @@ GitLab uses [import repository by URL](../project/import/repo_by_url.md) to crea
 
 To view project import history:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
-   If you've turned on the new navigation, this button is
-   in the upper-right corner.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project**.
 1. In the upper-right corner, select the **History** link.
 1. If there are any errors for a particular import, select **Details** to see them.
