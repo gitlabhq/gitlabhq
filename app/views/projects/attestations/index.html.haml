@@ -1,0 +1,44 @@
+- page_title s_('Attestations|Attestations')
+- empty_state_button_text = s_('Attestations|View SLSA Component documentation')
+- empty_state_button_link = 'https://gitlab.com/components/slsa#slsa-supply-chain-levels-for-software-artifacts'
+- download_button_options = { rel: 'nofollow', data: { method: :get }}
+
+- if @attestations.empty?
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-search-md.svg',
+    title: s_('Attestations|No attestations found for this project'),
+    primary_button_text: empty_state_button_text,
+    primary_button_link: empty_state_button_link) do |c|
+    - c.with_description do
+      = s_('Attestations|Sign and verify SLSA provenance with a CI/CD Component.')
+
+- else
+  %h1.page-title.gl-text-size-h-display.gl-py-5
+    = s_("Attestations|Attestations")
+  .gl-col-md-12
+    %table.gl-table.gl-w-full.gl-border-separate.gl-border-t{ 'data-testid': 'attestations-table' }
+      %thead
+        %tr
+          %th= _('Subject')
+          %th.gl-text-center= _('Actions')
+      %tbody
+      - @attestations.each do |attestation|
+        %tr{ 'data-testid': "attestation-#{attestation.iid}" }
+          %td
+            %div
+              - if attestation.status === 'success'
+                = render Pajamas::BadgeComponent.new(attestation.status, icon_only: true, icon: 'status-success', variant: 'success')
+              - else
+                = render Pajamas::BadgeComponent.new(attestation.status, icon_only: true, icon: 'error', variant: 'danger')
+              -# TODO: add link to show view (gitlab.com/gitlab-org/gitlab/-/issues/566595)
+              = render Pajamas::ButtonComponent.new(href: '/', variant: :link, block: false, button_options: { class: 'gl-mb-3' }) do
+                = attestation.file.filename
+            .gl-text-subtle.gl-mt-2
+              - build = attestation.build
+              = link_to "##{build.id}", project_job_path(@project, build)
+              = attestation.predicate_type
+              &ndash;
+              = l(attestation.created_at.to_date, format: :long)
+          %td{ class: 'gl-text-center !gl-align-middle' }
+            - download_link = download_namespace_project_attestation_path({ namespace_id: @project.namespace, project_id: @project, id: attestation.iid})
+            = render Pajamas::ButtonComponent.new(href: download_link, icon: 'download', button_options: download_button_options)
+    = keyset_paginate @attestations, without_first_and_last_pages: true

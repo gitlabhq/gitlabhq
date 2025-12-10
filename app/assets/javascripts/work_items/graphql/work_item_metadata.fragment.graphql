@@ -28,7 +28,14 @@ fragment WorkItemLinkPaths on NamespacesLinkPaths {
   quickActionsHelpPath
   calendarPath
   rssPath
+  autocompleteAwardEmojisPath
+  newTrialPath
+  newIssuePath
+  groupPath
   ... on ProjectNamespaceLinks {
     newWorkItemEmailAddress
+    releasesPath
+    projectImportJiraPath
+    exportCsvPath
   }
 }

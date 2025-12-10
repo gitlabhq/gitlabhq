@@ -2137,7 +2137,6 @@ Layout/LineLength:
     - 'qa/qa/git/repository.rb'
     - 'qa/qa/page/dashboard/snippet/index.rb'
     - 'qa/qa/page/group/settings/package_registries.rb'
-    - 'qa/qa/page/merge_request/new.rb'
     - 'qa/qa/page/project/registry/show.rb'
     - 'qa/qa/page/project/settings/protected_branches.rb'
     - 'qa/qa/resource/file.rb'

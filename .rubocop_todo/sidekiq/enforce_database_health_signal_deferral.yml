@@ -102,7 +102,6 @@ Sidekiq/EnforceDatabaseHealthSignalDeferral:
     - 'app/workers/propagate_integration_inherit_worker.rb'
     - 'app/workers/propagate_integration_project_worker.rb'
     - 'app/workers/propagate_integration_worker.rb'
-    - 'app/workers/reactive_caching_worker.rb'
     - 'app/workers/remove_unaccepted_member_invites_worker.rb'
     - 'app/workers/terraform/states/destroy_worker.rb'
     - 'app/workers/update_container_registry_info_worker.rb'

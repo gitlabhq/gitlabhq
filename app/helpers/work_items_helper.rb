@@ -18,9 +18,7 @@ module WorkItemsHelper
   def work_item_views_only_data(resource_parent, current_user)
     group = extract_group(resource_parent)
 
-    base_data_legacy_only(resource_parent, current_user, group).tap do |data|
-      add_project_specific_data(data, resource_parent, current_user)
-    end
+    base_data_legacy_only(resource_parent, current_user, group)
   end
 
   # overridden in EE
@@ -92,13 +90,8 @@ module WorkItemsHelper
 
   def base_data_legacy_only(resource_parent, current_user, group)
     {
-      autocomplete_award_emojis_path: autocomplete_award_emojis_path,
-      can_bulk_update: can?(current_user, :admin_issue, resource_parent).to_s,
-      can_edit: can?(current_user, :admin_project, resource_parent).to_s,
       full_path: resource_parent.full_path,
-      group_path: group&.full_path,
       issues_list_path: issues_path_for(resource_parent),
-      new_trial_path: instance_type_new_trial_path(group),
       default_branch: resource_parent.is_a?(Project) ? resource_parent.default_branch_or_main : nil,
       initial_sort: current_user&.user_preference&.issues_sort,
       is_signed_in: current_user.present?.to_s,

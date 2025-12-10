@@ -229,7 +229,6 @@ RSpec/RedundantMetatagType:
     - 'ee/spec/views/vulnerabilities/issue_description.md_spec.rb'
     - 'ee/spec/workers/ai/active_context/bulk_process_worker_spec.rb'
     - 'ee/spec/workers/ai/active_context/migration_worker_spec.rb'
-    - 'ee/spec/workers/ai/knowledge_graph/indexing_task_worker_spec.rb'
     - 'ee/spec/workers/ai/repository_xray/scan_dependencies_worker_spec.rb'
     - 'ee/spec/workers/app_config/cascade_duo_features_enabled_worker_spec.rb'
     - 'ee/spec/workers/cloud_connector/sync_service_token_worker_spec.rb'

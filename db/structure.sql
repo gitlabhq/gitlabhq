@@ -6154,47 +6154,6 @@ CREATE TABLE p_generated_ref_commits (
 )
 PARTITION BY RANGE (project_id);
 
-CREATE TABLE p_knowledge_graph_enabled_namespaces (
-    id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    state smallint DEFAULT 0 NOT NULL
-)
-PARTITION BY RANGE (namespace_id);
-
-CREATE TABLE p_knowledge_graph_replicas (
-    id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    knowledge_graph_enabled_namespace_id bigint,
-    zoekt_node_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    state smallint DEFAULT 0 NOT NULL,
-    retries_left smallint NOT NULL,
-    reserved_storage_bytes bigint DEFAULT 10485760 NOT NULL,
-    indexed_at timestamp with time zone,
-    schema_version smallint DEFAULT 0 NOT NULL,
-    CONSTRAINT c_p_knowledge_graph_replicas_retries_status CHECK (((retries_left > 0) OR ((retries_left = 0) AND (state >= 200))))
-)
-PARTITION BY RANGE (namespace_id);
-
-CREATE TABLE p_knowledge_graph_tasks (
-    id bigint NOT NULL,
-    partition_id bigint DEFAULT 1 NOT NULL,
-    zoekt_node_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    knowledge_graph_replica_id bigint NOT NULL,
-    perform_at timestamp with time zone DEFAULT now() NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    state smallint DEFAULT 0 NOT NULL,
-    task_type smallint NOT NULL,
-    retries_left smallint NOT NULL,
-    CONSTRAINT c_p_knowledge_graph_tasks_on_retries_left CHECK (((retries_left > 0) OR ((retries_left = 0) AND (state = 255))))
-)
-PARTITION BY LIST (partition_id);
-
 CREATE SEQUENCE sent_notifications_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -22632,6 +22591,15 @@ CREATE SEQUENCE p_generated_ref_commits_id_seq
 
 ALTER SEQUENCE p_generated_ref_commits_id_seq OWNED BY p_generated_ref_commits.id;
 
+CREATE TABLE p_knowledge_graph_enabled_namespaces (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    state smallint DEFAULT 0 NOT NULL
+)
+PARTITION BY RANGE (namespace_id);
+
 CREATE SEQUENCE p_knowledge_graph_enabled_namespaces_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -22641,6 +22609,22 @@ CREATE SEQUENCE p_knowledge_graph_enabled_namespaces_id_seq
 
 ALTER SEQUENCE p_knowledge_graph_enabled_namespaces_id_seq OWNED BY p_knowledge_graph_enabled_namespaces.id;
 
+CREATE TABLE p_knowledge_graph_replicas (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    knowledge_graph_enabled_namespace_id bigint,
+    zoekt_node_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    state smallint DEFAULT 0 NOT NULL,
+    retries_left smallint NOT NULL,
+    reserved_storage_bytes bigint DEFAULT 10485760 NOT NULL,
+    indexed_at timestamp with time zone,
+    schema_version smallint DEFAULT 0 NOT NULL,
+    CONSTRAINT c_p_knowledge_graph_replicas_retries_status CHECK (((retries_left > 0) OR ((retries_left = 0) AND (state >= 200))))
+)
+PARTITION BY RANGE (namespace_id);
+
 CREATE SEQUENCE p_knowledge_graph_replicas_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -22649,6 +22633,22 @@ CREATE SEQUENCE p_knowledge_graph_replicas_id_seq
     CACHE 1;
 
 ALTER SEQUENCE p_knowledge_graph_replicas_id_seq OWNED BY p_knowledge_graph_replicas.id;
+
+CREATE TABLE p_knowledge_graph_tasks (
+    id bigint NOT NULL,
+    partition_id bigint DEFAULT 1 NOT NULL,
+    zoekt_node_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    knowledge_graph_replica_id bigint NOT NULL,
+    perform_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    state smallint DEFAULT 0 NOT NULL,
+    task_type smallint NOT NULL,
+    retries_left smallint NOT NULL,
+    CONSTRAINT c_p_knowledge_graph_tasks_on_retries_left CHECK (((retries_left > 0) OR ((retries_left = 0) AND (state = 255))))
+)
+PARTITION BY LIST (partition_id);
 
 CREATE SEQUENCE p_knowledge_graph_tasks_id_seq
     START WITH 1
@@ -44553,9 +44553,11 @@ CREATE INDEX index_sprints_on_title ON sprints USING btree (title);
 
 CREATE INDEX index_sprints_on_title_trigram ON sprints USING gin (title gin_trgm_ops);
 
+CREATE UNIQUE INDEX index_ssh_signatures_on_commit_sha ON ssh_signatures USING btree (commit_sha);
+
 CREATE INDEX index_ssh_signatures_on_key_id ON ssh_signatures USING btree (key_id);
 
-CREATE UNIQUE INDEX index_ssh_signatures_on_project_id_and_commit_sha ON ssh_signatures USING btree (project_id, commit_sha);
+CREATE INDEX index_ssh_signatures_on_project_id ON ssh_signatures USING btree (project_id);
 
 CREATE INDEX index_ssh_signatures_on_user_id ON ssh_signatures USING btree (user_id);
 

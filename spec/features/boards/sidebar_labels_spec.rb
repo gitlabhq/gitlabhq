@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :portfolio_management do
   include BoardHelpers
+  include WorkItemsHelpers
 
   let_it_be(:group)       { create(:group, :public) }
   let_it_be(:user)        { create(:user) }
@@ -63,9 +64,7 @@ RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :po
       expect(page).to have_content(bug.title)
     end
 
-    find_by_testid('close-icon').click
-
-    wait_for_requests
+    close_drawer
 
     # 'Development' label does not show since the card is in a 'Development' list label
     expect(card).to have_selector('.gl-label', count: 2)
@@ -120,9 +119,7 @@ RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :po
       wait_for_requests
     end
 
-    find_by_testid('close-icon').click
-
-    wait_for_requests
+    close_drawer
 
     # Card is moved to the 'Backlog' list
     page.within(backlog_list) do
@@ -152,9 +149,7 @@ RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :po
       wait_for_requests
     end
 
-    find_by_testid('close-icon').click
-
-    wait_for_requests
+    close_drawer
 
     # Card is removed from backlog
     page.within(backlog_list) do

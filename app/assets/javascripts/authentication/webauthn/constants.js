@@ -39,5 +39,5 @@ export const WEBAUTHN_AUTHENTICATE = 'authenticate';
 export const WEBAUTHN_REGISTER = 'register';
 export const WEBAUTHN_DOCUMENTATION_PATH = helpPagePath(
   'user/profile/account/two_factor_authentication',
-  { anchor: 'set-up-a-webauthn-device' },
+  { anchor: 'register-a-webauthn-device' },
 );

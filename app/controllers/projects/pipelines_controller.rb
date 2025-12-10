@@ -25,6 +25,9 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:destroy]
   before_action :push_pipelines_graphql_ff, only: [:index]
   before_action :push_pipeline_statuses_updated_ff, only: [:index]
+  before_action only: [:index, :show] do
+    push_frontend_feature_flag(:ci_show_pipeline_name_instead_of_commit_title, @project)
+  end
 
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }

@@ -14,6 +14,7 @@ class AddKnowledgeGraphTask < Gitlab::Database::Migration[2.3]
   SQL
 
   def change
+    # rubocop:disable Migration/EnsureFactoryForTable -- https://gitlab.com/gitlab-org/gitlab/-/work_items/581020
     create_table :p_knowledge_graph_tasks, **OPTIONS do |t|
       t.bigserial :id, null: false
       t.bigint :partition_id, null: false, default: 1
@@ -31,5 +32,6 @@ class AddKnowledgeGraphTask < Gitlab::Database::Migration[2.3]
         name: 'index_p_knowledge_graph_tasks_on_node_state_and_perform_at', using: :btree
       t.check_constraint CONSTRAINT_QUERY, name: 'c_p_knowledge_graph_tasks_on_retries_left'
     end
+    # rubocop:enable Migration/EnsureFactoryForTable
   end
 end

@@ -507,7 +507,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :attestations, only: [] do
+        resources :attestations, only: [:index] do
           member do
             get :download
           end

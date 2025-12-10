@@ -87,9 +87,6 @@ Gitlab::Application.config.to_prepare do
         Vulnerabilities::Backups::VulnerabilityUserMention,
         Ai::ActiveContext::Code::EnabledNamespace,
         Ai::ActiveContext::Code::Repository,
-        Ai::KnowledgeGraph::EnabledNamespace,
-        Ai::KnowledgeGraph::Replica,
-        Ai::KnowledgeGraph::Task,
         Ai::DuoWorkflows::Checkpoint
       ])
   else

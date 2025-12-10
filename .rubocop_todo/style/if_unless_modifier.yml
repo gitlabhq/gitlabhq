@@ -230,7 +230,6 @@ Style/IfUnlessModifier:
     - 'ee/app/models/ee/project_team.rb'
     - 'ee/app/models/ee/user.rb'
     - 'ee/app/models/geo/tracking_base.rb'
-    - 'ee/app/models/incident_management/escalation_rule.rb'
     - 'ee/app/models/ip_restriction.rb'
     - 'ee/app/models/iteration.rb'
     - 'ee/app/models/merge_requests/external_status_check.rb'

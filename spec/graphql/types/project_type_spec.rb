@@ -939,6 +939,8 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       subject.dig('data', 'project', 'branchRules', 'nodes')
     end
 
+    let(:field) { described_class.fields['branchRules'] }
+
     subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
 
     context 'when a user can read protected branches' do
@@ -961,6 +963,16 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       it 'is empty' do
         expect(branch_rules_data.count).to eq(0)
       end
+    end
+
+    it 'has forward-only pagination extension' do
+      expect(field.extensions).to include(
+        an_instance_of(Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension)
+      )
+    end
+
+    it 'has correct pagination settings' do
+      expect(field.max_page_size).to eq(100)
     end
   end
 

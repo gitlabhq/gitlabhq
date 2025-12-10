@@ -127,6 +127,36 @@ Example response:
 }
 ```
 
+For Markdown content with special characters and diagrams,
+use `--data-urlencode` with a file reference to handle encoding automatically.
+
+For example, create a file named `content.md` with your wiki content, then run:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data-urlencode "title=Page with Complex Content" \
+  --data-urlencode "content@content.md" \
+  --url "https://gitlab.example.com/api/v4/projects/1/wikis"
+```
+
+The `--data-urlencode "content@content.md"` option URL-encodes the contents of the Markdown file
+and assigns it to the `content` attribute.
+This encoding handles special characters, line breaks, and complex Markdown syntax that might
+otherwise cause errors.
+
+Example response:
+
+```json
+{
+"content": "<contents of content.md>",
+"format": "markdown",
+"slug": "Page-with-Complex-Content",
+"title": "Page with Complex Content",
+"encoding": "UTF-8"
+}
+```
+
 ## Edit an existing wiki page
 
 Updates an existing wiki page. At least one parameter is required to update the wiki page.

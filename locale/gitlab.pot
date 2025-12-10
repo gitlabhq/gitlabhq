@@ -9878,6 +9878,18 @@ msgstr ""
 msgid "Attempted to update the pipeline trigger token but failed"
 msgstr ""
 
+msgid "Attestations|Attestations"
+msgstr ""
+
+msgid "Attestations|No attestations found for this project"
+msgstr ""
+
+msgid "Attestations|Sign and verify SLSA provenance with a CI/CD Component."
+msgstr ""
+
+msgid "Attestations|View SLSA Component documentation"
+msgstr ""
+
 msgid "Attribute 'container-overrides' is not yet supported"
 msgstr ""
 
@@ -65882,6 +65894,9 @@ msgstr ""
 msgid "Subgroups and projects"
 msgstr ""
 
+msgid "Subject"
+msgstr ""
+
 msgid "Subject Key Identifier:"
 msgstr ""
 
@@ -66837,6 +66852,9 @@ msgid "TargetedMessages|Edit targeted message"
 msgstr ""
 
 msgid "TargetedMessages|Failed to assign namespaces due to error processing CSV: %{error_message}"
+msgstr ""
+
+msgid "TargetedMessages|Namespace IDs"
 msgstr ""
 
 msgid "TargetedMessages|New targeted message"
@@ -71764,6 +71782,9 @@ msgid_plural "UsageBilling|%{poolCreditsRemaining} credits remaining"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "UsageBilling|Accept on-demand billing"
+msgstr ""
+
 msgid "UsageBilling|Action"
 msgstr ""
 
@@ -71776,13 +71797,13 @@ msgstr ""
 msgid "UsageBilling|Credits"
 msgstr ""
 
+msgid "UsageBilling|Credits consumed beyond your users included credits, charged at standard on-demand rates."
+msgstr ""
+
 msgid "UsageBilling|Credits used after all included user credits and monthly commitment pool have been exhausted. Learn about %{linkStart}GitLab Credit pricing%{linkEnd}."
 msgstr ""
 
 msgid "UsageBilling|Date/Time"
-msgstr ""
-
-msgid "UsageBilling|Enable on-demand billing"
 msgstr ""
 
 msgid "UsageBilling|Enable on-demand billing to keep GitLab Duo features active when monthly GitLab Credits run out. Without these terms, users lose GitLab Duo access after exhausting their included GitLab Credits. Learn about %{linkStart}overage billing%{linkEnd}."
@@ -71854,9 +71875,6 @@ msgstr ""
 msgid "UsageBilling|Save on GitLab Credits with monthly commitment"
 msgstr ""
 
-msgid "UsageBilling|These are credits consumed beyond your users included credits, charged at standard on-demand rates."
-msgstr ""
-
 msgid "UsageBilling|This dashboard may not display all current subscription data. For complete visibility, please upgrade to the latest version of GitLab or visit the %{linkStart}Customer Portal%{linkEnd}."
 msgstr ""
 
@@ -71885,6 +71903,9 @@ msgid "UsageBilling|Used this month, resets in %{days} day"
 msgid_plural "UsageBilling|Used this month, resets in %{days} days"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "UsageBilling|You won't be billed for this usage until you accept the on-demand billing terms."
+msgstr ""
 
 msgid "UsageQuotas|(of %{totalStorageSize})"
 msgstr ""
@@ -80306,6 +80327,9 @@ msgid "expired on %{timebox_due_date}"
 msgstr ""
 
 msgid "expires on %{timebox_due_date}"
+msgstr ""
+
+msgid "expires_at is missing"
 msgstr ""
 
 msgid "external diffs"

@@ -101,13 +101,11 @@ module API
             values: ::Gitlab::Auth.resource_bot_scopes.map(&:to_s),
             desc: "The permissions of the token",
             documentation: { example: %w[api read_repository] }
-          requires :expires_at,
+          optional :expires_at,
             type: Date,
-            desc: "The expiration date of the token",
-            default: PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now,
+            desc: "The expiration date of the token. If 'Require personal access token expiry' is enabled, you must provide a valid value, if not, the token will never expire.",
             documentation: {
-              example: '2026-02-14T17:26:19.810Z',
-              default: "As default, the current time + #{PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS} days will be calculated"
+              example: '2026-02-14T17:26:19.810Z'
             }
           optional :access_level,
             type: Integer,
@@ -122,7 +120,7 @@ module API
           token_response = ::ResourceAccessTokens::CreateService.new(
             current_user,
             resource,
-            declared_params
+            declared(params, include_missing: false)
           ).execute
 
           if token_response.success?

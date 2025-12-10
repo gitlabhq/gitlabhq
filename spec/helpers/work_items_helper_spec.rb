@@ -275,11 +275,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
       it 'returns minimal server data' do
         expect(helper.work_item_views_only_data(project, current_user)).to include(
           {
-            autocomplete_award_emojis_path: autocomplete_award_emojis_path,
-            can_bulk_update: 'true',
-            can_edit: 'true',
             full_path: project.full_path,
-            group_path: nil,
             issues_list_path: project_issues_path(project),
             project_namespace_full_path: project.namespace.full_path,
             default_branch: project.default_branch_or_main,
@@ -288,12 +284,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             is_issue_repositioning_disabled: 'false',
             time_tracking_limit_to_hours: "false",
             can_read_crm_organization: 'true',
-            releases_path: project_releases_path(project, format: :json),
-            project_import_jira_path: project_import_jira_path(project),
             can_read_crm_contact: 'true',
-            can_import_work_items: "true",
-            export_csv_path: export_csv_project_issues_path(project),
-            new_issue_path: new_project_issue_path(project),
             has_projects: 'false'
           }
         )

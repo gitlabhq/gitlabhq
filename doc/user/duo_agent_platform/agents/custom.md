@@ -16,13 +16,14 @@ title: Custom agents
 
 {{< collapsible title="Model information" >}}
 
-- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md): No
+- Not available on GitLab Duo with self-hosted models
 
 {{< /collapsible >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/549914) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `global_ai_catalog`. Enabled on GitLab.com.
+- Enabling in groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/580307) in GitLab 18.7 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_agents`. Enabled on GitLab.com.
 
 {{< /history >}}
 
@@ -133,34 +134,59 @@ The agent appears in the AI Catalog. To use the agent with Chat, enable it in a 
 
 ## Enable an agent
 
-Enable an agent in a project to use it with Chat.
+Enable an agent to use it with Chat. To enable an agent, you must:
+
+1. Enable it in a top-level group.
+1. Enable it in the project you want to use it in.
+
+### Enable in a top-level group
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Owner role for the group.
+
+To enable an agent in a top-level group:
 
 1. On the top bar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**, then select the **Agents** tab.
 1. Select the agent you want to enable.
-1. In the upper-right corner, select **Enable in project**.
-1. From the **Project** dropdown list, select your project.
+1. In the upper-right corner, select **Enable in group**.
+1. From the dropdown list, select the group you want to enable the agent in.
+1. Select **Enable**.
+
+The agent appears in the group's **Automate** > **Agents** page.
+
+### Enable in a project
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+- The agent must be enabled in a top-level group.
+
+To enable an agent in a project:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Automate** > **Agents**.
+1. In the upper-right corner, select **Enable agent from group**.
+1. From the dropdown list, select the agent you want to enable.
 1. Select **Enable**.
 
 The agent appears on the project's **Automate** > **Agents** page.
 In the project, you can start a new chat with the agent.
 For more information, see [select an agent](../../gitlab_duo_chat/agentic_chat.md#select-an-agent).
 
-### Disable an agent for a project
+### Disable an agent
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- For groups, you must have the Owner role.
+- For projects, you must have at least the Maintainer role.
 
 To disable an agent:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. On the top bar, select **Search or go to** and find your group or project.
 1. Select **Automate** > **Agents**.
-1. Find the agent you want to disable and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Disable**.
+1. Find the agent you want to remove and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Disable**.
 1. On the confirmation dialog, select **Disable**.
 
 The agent no longer appears in the project, and is not available in Chat.

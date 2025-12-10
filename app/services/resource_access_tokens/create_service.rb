@@ -20,6 +20,8 @@ module ResourceAccessTokens
 
       return error(s_('AccessTokens|Access token limit reached')) if reached_access_token_limit?
 
+      return error(s_("expires_at is missing")) unless validate_expires_at_field(params)
+
       response = create_user
 
       return error(response.message) if response.error?
@@ -32,7 +34,9 @@ module ResourceAccessTokens
 
       unless member.persisted?
         delete_failed_user(user)
-        return error("Could not provision #{Gitlab::Access.human_access(access_level.to_i).downcase} access to the access token. ERROR: #{member.errors.full_messages.to_sentence}")
+        return error(
+          "Could not provision #{Gitlab::Access.human_access(access_level.to_i).downcase} access to the access token. ERROR: #{member.errors.full_messages.to_sentence}"
+        )
       end
 
       token_response = create_personal_access_token(user)
@@ -54,12 +58,25 @@ module ResourceAccessTokens
       false
     end
 
+    def validate_expires_at_field(params)
+      expires_at = params[:expires_at]
+
+      if Feature.enabled?(:allow_resource_access_token_creation_without_expiry_date, resource)
+        return false if Gitlab::CurrentSettings.require_personal_access_token_expiry? && expires_at.blank?
+
+        return true
+      end
+
+      params.key?(:expires_at)
+    end
+
     def username_and_email_generator
       Gitlab::Utils::UsernameAndEmailGenerator.new(
         username_prefix: "#{resource_type}_#{resource.id}_bot",
         email_domain: "noreply.#{Gitlab.config.gitlab.host}"
       )
     end
+
     strong_memoize_attr :username_and_email_generator
 
     def has_permission_to_create?
@@ -76,7 +93,13 @@ module ResourceAccessTokens
     end
 
     def delete_failed_user(user)
-      DeleteUserWorker.perform_async(current_user.id, user.id, hard_delete: true, skip_authorization: true, reason_for_deletion: "Access token creation failed")
+      DeleteUserWorker.perform_async(
+        current_user.id,
+        user.id,
+        hard_delete: true,
+        skip_authorization: true,
+        reason_for_deletion: "Access token creation failed"
+      )
     end
 
     def default_user_params
@@ -85,7 +108,8 @@ module ResourceAccessTokens
         email: username_and_email_generator.email,
         username: username_and_email_generator.username,
         user_type: :project_bot,
-        skip_confirmation: true, # Bot users should always have their emails confirmed.
+        # Bot users should always have their emails confirmed.
+        skip_confirmation: true,
         organization_id: resource.organization_id,
         bot_namespace: bot_namespace
       }
@@ -93,9 +117,14 @@ module ResourceAccessTokens
 
     def create_personal_access_token(user)
       organization_id = resource.organization_id || params[:organization_id]
-      PersonalAccessTokens::CreateService.new(
-        current_user: user, target_user: user, organization_id: organization_id, params: personal_access_token_params
-      ).execute
+      PersonalAccessTokens::CreateService
+        .new(
+          current_user: user,
+          target_user: user,
+          organization_id: organization_id,
+          params: personal_access_token_params
+        )
+        .execute
     end
 
     def personal_access_token_params
@@ -127,13 +156,15 @@ module ResourceAccessTokens
     end
 
     def bot_namespace
-      return resource if resource_type == 'group'
+      return resource if resource_type == "group"
 
       resource.project_namespace
     end
 
     def log_event(token)
-      ::Gitlab::AppLogger.info "PROJECT ACCESS TOKEN CREATION: created_by: #{current_user.username}, project_id: #{resource.id}, token_user: #{token.user.name}, token_id: #{token.id}"
+      ::Gitlab::AppLogger.info(
+        "PROJECT ACCESS TOKEN CREATION: created_by: #{current_user.username}, project_id: #{resource.id}, token_user: #{token.user.name}, token_id: #{token.id}"
+      )
     end
 
     def error(message)

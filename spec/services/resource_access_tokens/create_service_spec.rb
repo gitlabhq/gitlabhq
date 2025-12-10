@@ -9,7 +9,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private, organization: organization) }
   let_it_be(:group) { create(:group, :private, organization: organization) }
-  let_it_be(:params) { {} }
+  let_it_be(:params) { { expires_at: Date.today + 1.month } }
   let_it_be(:max_pat_access_token_lifetime) do
     PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now.to_date.freeze
   end
@@ -106,7 +106,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         end
 
         context 'when user provides name' do
-          let_it_be(:params) { { name: 'Random bot' } }
+          let_it_be(:params) { { name: 'Random bot', expires_at: Date.today + 1.month } }
 
           it 'overrides the default name value' do
             response = subject
@@ -125,7 +125,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         end
 
         context 'when description is passed' do
-          let_it_be(:params) { { description: 'Test token' } }
+          let_it_be(:params) { { description: 'Test token', expires_at: Date.today + 1.month } }
 
           it 'set the description value' do
             expect(subject.payload[:access_token].description).to eq("Test token")
@@ -172,13 +172,13 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         end
 
         context 'when user specifies an access level' do
-          let_it_be(:params) { { access_level: Gitlab::Access::DEVELOPER } }
+          let_it_be(:params) { { access_level: Gitlab::Access::DEVELOPER, expires_at: Date.today + 1.month } }
 
           it_behaves_like 'bot with access level'
         end
 
         context 'with DEVELOPER access_level, in string format' do
-          let_it_be(:params) { { access_level: Gitlab::Access::DEVELOPER.to_s } }
+          let_it_be(:params) { { access_level: Gitlab::Access::DEVELOPER.to_s, expires_at: Date.today + 1.month } }
 
           it_behaves_like 'bot with access level'
         end
@@ -207,7 +207,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         end
 
         context 'when user provides scope explicitly' do
-          let_it_be(:params) { { scopes: Gitlab::Auth::REPOSITORY_SCOPES } }
+          let_it_be(:params) { { scopes: Gitlab::Auth::REPOSITORY_SCOPES, expires_at: Date.today + 1.month } }
 
           it 'overrides the default scope value' do
             response = subject
@@ -219,35 +219,73 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
 
         context 'expires_at' do
           context 'when no expiration value is passed' do
-            it 'defaults to PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS' do
-              freeze_time do
-                response = subject
-                access_token = response.payload[:access_token]
+            let_it_be(:params) { { expires_at: nil } }
 
-                expect(access_token.expires_at).to eq(
-                  max_pat_access_token_lifetime.to_date
-                )
-              end
-            end
-
-            it 'project bot membership does not expire when PAT expires' do
-              response = subject
-              access_token = response.payload[:access_token]
-              project_bot = access_token.user
-
-              expect(resource.members.find_by(user_id: project_bot.id).expires_at).to be_nil
-            end
-
-            context 'when require_personal_access_token_expiry is set to false' do
+            context 'when allow_resource_access_token_creation_without_expiry_date is disabled' do
               before do
-                stub_application_setting(require_personal_access_token_expiry: false)
+                stub_feature_flags(allow_resource_access_token_creation_without_expiry_date: false)
               end
 
-              it 'returns a nil expiration date' do
+              it 'defaults to PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS' do
+                freeze_time do
+                  response = subject
+                  access_token = response.payload[:access_token]
+
+                  expect(access_token.expires_at).to eq(
+                    max_pat_access_token_lifetime.to_date
+                  )
+                end
+              end
+
+              it 'project bot membership does not expire when PAT expires' do
                 response = subject
                 access_token = response.payload[:access_token]
+                project_bot = access_token.user
 
-                expect(access_token.expires_at).to be_nil
+                expect(resource.members.find_by(user_id: project_bot.id).expires_at).to be_nil
+              end
+
+              context 'when require_personal_access_token_expiry is set to false' do
+                before do
+                  stub_application_setting(require_personal_access_token_expiry: false)
+                end
+
+                it 'returns a nil expiration date' do
+                  response = subject
+                  access_token = response.payload[:access_token]
+
+                  expect(access_token.expires_at).to be_nil
+                end
+              end
+            end
+
+            context 'when allow_resource_access_token_creation_without_expiry_date is enabled' do
+              before do
+                stub_feature_flags(allow_resource_access_token_creation_without_expiry_date: true)
+              end
+
+              context 'when require_personal_access_token_expiry is true' do
+                before do
+                  stub_application_setting(require_personal_access_token_expiry: true)
+                end
+
+                it 'returns an error' do
+                  response = subject
+                  expect(response.error?).to be true
+                  expect(response.message).to eq('expires_at is missing')
+                end
+              end
+
+              context 'when require_personal_access_token_expiry is false' do
+                before do
+                  stub_application_setting(require_personal_access_token_expiry: false)
+                end
+
+                it 'returns a nil expiration date' do
+                  response = subject
+                  access_token = response.payload[:access_token]
+                  expect(access_token.expires_at).to be_nil
+                end
               end
             end
           end
@@ -271,44 +309,61 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
             end
           end
 
-          context 'when invalid scope is passed' do
-            let(:error_message) { 'Scopes can only contain available scopes' }
-            let_it_be(:params) { { scopes: [:invalid_scope] } }
+          context 'when expires_at key is missing' do
+            let(:params) { { scopes: ['api'] } }
 
-            it_behaves_like 'token creation fails'
-            it_behaves_like 'correct error message'
-            it_behaves_like 'deletes failed project bot'
+            context 'when flag is enabled and setting requires expiry' do
+              before do
+                stub_feature_flags(allow_resource_access_token_creation_without_expiry_date: resource)
+                stub_application_setting(require_personal_access_token_expiry: true)
+              end
+
+              it 'returns an error' do
+                response = subject
+                expect(response.error?).to be true
+                expect(response.message).to eq('expires_at is missing')
+              end
+            end
           end
         end
 
-        context "when access provisioning fails" do
-          let(:unpersisted_member) { build(:project_member, source: resource) }
-          let(:error_message) { 'Could not provision maintainer access to the access token. ERROR: error message' }
+        context 'when invalid scope is passed' do
+          let(:error_message) { 'Scopes can only contain available scopes' }
+          let_it_be(:params) { { scopes: [:invalid_scope], expires_at: Date.today + 1.month } }
 
-          before do
-            allow_next_instance_of(ResourceAccessTokens::CreateService) do |service|
-              allow(service).to receive(:create_membership).and_return(unpersisted_member)
-            end
+          it_behaves_like 'token creation fails'
+          it_behaves_like 'correct error message'
+          it_behaves_like 'deletes failed project bot'
+        end
+      end
 
-            allow(unpersisted_member).to receive_message_chain(:errors, :full_messages, :to_sentence)
-              .and_return('error message')
+      context "when access provisioning fails" do
+        let(:unpersisted_member) { build(:project_member, source: resource) }
+        let(:error_message) { 'Could not provision maintainer access to the access token. ERROR: error message' }
+
+        before do
+          allow_next_instance_of(ResourceAccessTokens::CreateService) do |service|
+            allow(service).to receive(:create_membership).and_return(unpersisted_member)
           end
 
-          context 'with MAINTAINER access_level, in integer format' do
-            let_it_be(:params) { { access_level: Gitlab::Access::MAINTAINER } }
+          allow(unpersisted_member).to receive_message_chain(:errors, :full_messages, :to_sentence)
+            .and_return('error message')
+        end
 
-            it_behaves_like 'token creation fails'
-            it_behaves_like 'correct error message'
-            it_behaves_like 'deletes failed project bot'
-          end
+        context 'with MAINTAINER access_level, in integer format' do
+          let_it_be(:params) { { access_level: Gitlab::Access::MAINTAINER, expires_at: Date.today + 1.month } }
 
-          context 'with MAINTAINER access_level, in string format' do
-            let_it_be(:params) { { access_level: Gitlab::Access::MAINTAINER.to_s } }
+          it_behaves_like 'token creation fails'
+          it_behaves_like 'correct error message'
+          it_behaves_like 'deletes failed project bot'
+        end
 
-            it_behaves_like 'token creation fails'
-            it_behaves_like 'correct error message'
-            it_behaves_like 'deletes failed project bot'
-          end
+        context 'with MAINTAINER access_level, in string format' do
+          let_it_be(:params) { { access_level: Gitlab::Access::MAINTAINER.to_s, expires_at: Date.today + 1.month } }
+
+          it_behaves_like 'token creation fails'
+          it_behaves_like 'correct error message'
+          it_behaves_like 'deletes failed project bot'
         end
       end
 
@@ -351,7 +406,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         end
 
         context 'when user specifies an access level of OWNER for the bot' do
-          let_it_be(:params) { { access_level: Gitlab::Access::OWNER } }
+          let_it_be(:params) { { access_level: Gitlab::Access::OWNER, expires_at: Date.today + 1.month } }
 
           context 'when the executor is a MAINTAINER' do
             let(:error_message) { 'Access level of the token contains permissions not held by the creating user' }
@@ -362,7 +417,8 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
             end
 
             context 'with OWNER access_level, in string format' do
-              let_it_be(:params) { { access_level: Gitlab::Access::OWNER.to_s } }
+              let(:error_message) { 'Access level of the token contains permissions not held by the creating user' }
+              let_it_be(:params) { { access_level: Gitlab::Access::OWNER.to_s, expires_at: Date.today + 1.month } }
 
               it_behaves_like 'token creation fails'
               it_behaves_like 'correct error message'
@@ -399,7 +455,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         it_behaves_like 'allows creation of bot with valid params'
 
         context 'when user specifies an access level of OWNER for the bot' do
-          let_it_be(:params) { { access_level: Gitlab::Access::OWNER } }
+          let_it_be(:params) { { access_level: Gitlab::Access::OWNER, expires_at: Date.today + 1.month } }
 
           it 'adds the bot user with the specified access level in the resource' do
             response = subject

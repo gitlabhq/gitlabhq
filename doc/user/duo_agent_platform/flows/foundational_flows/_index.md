@@ -30,6 +30,7 @@ The following foundational flows are available:
 - [Developer](developer.md): Create actionable merge requests from issues.
 - [Fix CI/CD Pipeline](fix_pipeline.md): Diagnose and repair failed jobs.
 - [Convert to GitLab CI/CD](convert_to_gitlab_ci.md): Migrate Jenkins pipelines to CI/CD.
+- [Code Review](code_review.md): Automate code review with AI-native analysis and feedback.
 
 ## Supported APIs and permissions
 

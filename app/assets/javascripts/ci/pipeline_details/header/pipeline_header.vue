@@ -11,6 +11,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { FIX_PIPELINE_AGENT_PRIVILEGES } from '~/duo_agent_platform/constants';
 import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
 import { LOAD_FAILURE, POST_FAILURE, DELETE_FAILURE, DEFAULT } from '../constants';
@@ -58,6 +59,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
     graphqlResourceEtag: {
       default: '',
@@ -189,6 +191,13 @@ export default {
           };
       }
     },
+    pipelineId() {
+      const id = getIdFromGraphQLId(this.pipeline?.id);
+      if (id) {
+        return `#${id}`;
+      }
+      return '';
+    },
     user() {
       return this.pipeline?.user;
     },
@@ -318,6 +327,10 @@ export default {
         },
       ];
     },
+    ciShowPipelineNameInsteadOfCommitTitle() {
+      // ci_show_pipeline_name_instead_of_commit_title feature flag
+      return this.glFeatures?.ciShowPipelineNameInsteadOfCommitTitle;
+    },
   },
   beforeDestroy() {
     resetFavicon();
@@ -417,10 +430,15 @@ export default {
 
     <page-heading v-else inline-actions class="gl-mb-0">
       <template #heading>
-        <span v-if="pipelineName" data-testid="pipeline-name">
+        <span
+          v-if="pipelineId && ciShowPipelineNameInsteadOfCommitTitle"
+          data-testid="pipeline-id"
+          >{{ pipelineId }}</span
+        >
+        <span v-if="pipelineName" data-testid="pipeline-title">
           {{ pipelineName }}
         </span>
-        <span v-else data-testid="pipeline-commit-title">
+        <span v-else-if="!ciShowPipelineNameInsteadOfCommitTitle" data-testid="pipeline-title">
           {{ commitTitle }}
         </span>
       </template>
@@ -452,6 +470,7 @@ export default {
           <gl-sprintf :message="s__('Pipeline|For commit %{link}')">
             <template #link>
               <gl-link
+                v-if="commitPath"
                 :href="commitPath"
                 class="commit-sha-container"
                 data-testid="commit-link"
@@ -467,6 +486,11 @@ export default {
             data-testid="commit-copy-sha"
             size="small"
           />
+          <span
+            v-if="ciShowPipelineNameInsteadOfCommitTitle && commitTitle"
+            data-testid="commit-title"
+            >{{ commitTitle }}</span
+          >
         </div>
 
         <div

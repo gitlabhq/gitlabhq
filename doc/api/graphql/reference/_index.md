@@ -25510,7 +25510,6 @@ Requires ClickHouse. Premium and Ultimate only.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aimetricsagentplatform"></a>`agentPlatform` | [`agentPlatformMetrics`](#agentplatformmetrics) | Agent platform metrics. |
 | <a id="aimetricscodecontributorscount"></a>`codeContributorsCount` | [`Int`](#int) | Number of code contributors. |
 | <a id="aimetricscodereview"></a>`codeReview` | [`codeReviewMetrics`](#codereviewmetrics) | Code review metrics. |
 | <a id="aimetricscodesuggestionsacceptedcount"></a>`codeSuggestionsAcceptedCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated** in GitLab 18.0. moved to codeSuggestions field. |
@@ -25522,6 +25521,19 @@ Requires ClickHouse. Premium and Ultimate only.
 | <a id="aimetricsrootcauseanalysisuserscount"></a>`rootCauseAnalysisUsersCount` | [`Int`](#int) | Number of users using troubleshoot within a failed pipeline. |
 
 #### Fields with arguments
+
+##### `AiMetrics.agentPlatform`
+
+Duo Agent Platform metrics.
+
+Returns [`agentPlatformMetrics`](#agentplatformmetrics).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aimetricsagentplatformflowtypes"></a>`flowTypes` | [`[String!]`](#string) | List of flow types to filter. |
+| <a id="aimetricsagentplatformnot"></a>`not` | [`AgentPlatformMetricsNotInput`](#agentplatformmetricsnotinput) | Negation filters. |
 
 ##### `AiMetrics.codeSuggestions`
 
@@ -49982,7 +49994,13 @@ Requires ClickHouse. Premium and Ultimate only.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="agentplatformmetricsflowmetrics"></a>`flowMetrics` | [`[AgentPlatformFlowMetric!]`](#agentplatformflowmetric) | Aggregated flow metrics for agent platform. |
+| <a id="agentplatformmetricscreatedsessioneventcount"></a>`createdSessionEventCount` | [`Int`](#int) | Total count of `agent_platform_session_created` event. |
+| <a id="agentplatformmetricsdroppedsessioneventcount"></a>`droppedSessionEventCount` | [`Int`](#int) | Total count of `agent_platform_session_dropped` event. |
+| <a id="agentplatformmetricsfinishedsessioneventcount"></a>`finishedSessionEventCount` | [`Int`](#int) | Total count of `agent_platform_session_finished` event. |
+| <a id="agentplatformmetricsflowmetrics"></a>`flowMetrics` | [`[AgentPlatformFlowMetric!]`](#agentplatformflowmetric) | Aggregated flow metrics for Duo Agent Platform. |
+| <a id="agentplatformmetricsresumedsessioneventcount"></a>`resumedSessionEventCount` | [`Int`](#int) | Total count of `agent_platform_session_resumed` event. |
+| <a id="agentplatformmetricsstartedsessioneventcount"></a>`startedSessionEventCount` | [`Int`](#int) | Total count of `agent_platform_session_started` event. |
+| <a id="agentplatformmetricsstoppedsessioneventcount"></a>`stoppedSessionEventCount` | [`Int`](#int) | Total count of `agent_platform_session_stopped` event. |
 
 ### `agentPlatformUserMetrics`
 
@@ -57847,6 +57865,14 @@ be used as arguments).
 
 Only general use input types are listed here. For mutation input types,
 see the associated mutation type above.
+
+### `AgentPlatformMetricsNotInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentplatformmetricsnotinputflowtypes"></a>`flowTypes` | [`[String!]`](#string) | List of flow types to exclude. |
 
 ### `AiAdditionalContextInput`
 

@@ -53,8 +53,6 @@
   - 1
 - - ai_duo_workflows_update_workflow_status_event
   - 1
-- - ai_knowledge_graph_indexing_task
-  - 1
 - - ai_repository_xray_scan_dependencies
   - 1
 - - analytics_ai_usage_events_backfill
@@ -962,6 +960,8 @@
 - - secrets_management_deprovision_group_secrets_manager
   - 1
 - - secrets_management_deprovision_project_secrets_manager
+  - 1
+- - secrets_management_deprovision_project_secrets_manager_by_path
   - 1
 - - secrets_management_provision_group_secrets_manager
   - 1

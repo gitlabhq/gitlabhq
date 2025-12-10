@@ -30,23 +30,7 @@ RSpec.describe CommitSignatures::SshSignature, feature_category: :source_code_ma
   end
 
   it_behaves_like 'having unique enum values'
-
-  it_behaves_like 'commit signature' do
-    let(:signature_attributes) { { commit_sha: commit_sha, project: signature.project } }
-
-    it 'creates separate signatures for the same commit_sha in different projects' do
-      project2 = create(:project, :repository)
-
-      signature1 = described_class.safe_create!(attributes.merge(project: project))
-      signature2 = described_class.safe_create!(attributes.merge(project: project2))
-
-      expect(signature1).not_to eq(signature2)
-      expect(signature1.project_id).to eq(project.id)
-      expect(signature2.project_id).to eq(project2.id)
-      expect(signature1.commit_sha).to eq(signature2.commit_sha)
-    end
-  end
-
+  it_behaves_like 'commit signature'
   it_behaves_like 'signature with type checking', :ssh
 
   describe 'associations' do

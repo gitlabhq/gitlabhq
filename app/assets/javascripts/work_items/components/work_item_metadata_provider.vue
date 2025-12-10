@@ -49,6 +49,16 @@ export default normalizeRender({
       isGroup: computed(() => this.metadata.id?.includes(TYPENAME_GROUP) || false),
       calendarPath: computed(() => this.metadata.calendarPath),
       rssPath: computed(() => this.metadata.rssPath),
+      autocompleteAwardEmojisPath: computed(() => this.metadata.autocompleteAwardEmojisPath),
+      newTrialPath: computed(() => this.metadata.newTrialPath),
+      newIssuePath: computed(() => this.metadata.newIssuePath),
+      groupPath: computed(() => this.metadata.groupPath),
+      releasesPath: computed(() => this.metadata.releasesPath),
+      projectImportJiraPath: computed(() => this.metadata.projectImportJiraPath),
+      exportCsvPath: computed(() => this.metadata.exportCsvPath),
+      canBulkUpdate: computed(() => Boolean(this.metadata?.adminIssue)),
+      canEdit: computed(() => Boolean(this.metadata?.adminProject)),
+      canImportWorkItems: computed(() => Boolean(this.metadata?.importWorkItems)),
     };
   },
   props: {

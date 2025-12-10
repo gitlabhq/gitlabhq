@@ -219,7 +219,6 @@ Style/GuardClause:
     - 'ee/app/models/ee/project_member.rb'
     - 'ee/app/models/ee/user.rb'
     - 'ee/app/models/epic_issue.rb'
-    - 'ee/app/models/incident_management/escalation_rule.rb'
     - 'ee/app/models/incident_management/oncall_rotation.rb'
     - 'ee/app/models/ip_restriction.rb'
     - 'ee/app/models/iteration.rb'

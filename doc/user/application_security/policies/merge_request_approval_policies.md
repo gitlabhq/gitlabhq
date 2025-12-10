@@ -460,6 +460,7 @@ When warn mode is enabled (`enforcement_type: warn`) and a merge request trigger
 - Optional approvals: Approvals are optional if the user bypasses the policy and provides the reasoning for the dismissal.
 - Enhanced auditing: After the merge request is merged with a bypassed security policy, audit events are created.
 - Vulnerability report integration: If a vulnerability was introduced by a merge request with a bypassed policy, the bypass details are visible in the vulnerability report.
+- Dependency list integration: If a merge request that bypasses a policy introduces a license, the dependency list displays a policy violation badge beside the license. Policy violation badges are available only on the dependency list for projects.
 - Disabled approval settings: Approval setting overrides are not enforced.
 
 ### Configuring warn mode

@@ -19,5 +19,5 @@ unauthorized access and potential data breaches.
 You should rotate the secrets of all third-party integrations at least yearly.
 An incomplete list of such secrets:
 
-- [FortiAuthenticator](../user/profile/account/two_factor_authentication.md#enable-a-one-time-password-authenticator-using-fortiauthenticator)
-- [FortiToken Cloud](../user/profile/account/two_factor_authentication.md#enable-a-one-time-password-authenticator-using-fortitoken-cloud)
+- [FortiAuthenticator](../user/profile/account/two_factor_authentication.md#add-a-fortiauthenticator-authenticator)
+- [FortiToken Cloud](../user/profile/account/two_factor_authentication.md#add-a-fortitoken-cloud-authenticator)

@@ -17,7 +17,7 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
         branchRules(first: $n, after: $cursor) {
           pageInfo {
             hasNextPage
-            hasPreviousPage
+            endCursor
           }
           edges {
             cursor
@@ -176,11 +176,9 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
         it 'returns pagination information' do
           expect(branch_rules_data.size).to eq(branch_rule_limit)
           expect(has_next_page).to be_truthy
-          expect(has_prev_page).to be_falsey
           post_graphql(query, current_user: current_user, variables: next_variables)
           expect(branch_rules_data.size).to eq(1)
           expect(has_next_page).to be_falsey
-          expect(has_prev_page).to be_truthy
         end
 
         context 'when no limit is provided' do
@@ -215,6 +213,6 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
   end
 
   def last_cursor
-    branch_rules_data.last['cursor']
+    pagination_info['endCursor']
   end
 end

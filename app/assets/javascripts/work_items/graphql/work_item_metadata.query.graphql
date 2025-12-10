@@ -14,6 +14,9 @@ query workItemMetadata($fullPath: ID!) {
       createWorkItem
       adminLabel
       createProjects
+      adminIssue
+      adminProject
+      importWorkItems
     }
   }
 }

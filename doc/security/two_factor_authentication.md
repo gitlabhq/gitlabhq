@@ -306,7 +306,7 @@ Then authenticate by either:
 
 - Entering the correct OTP.
 - Responding to a device push notification if
-  [FortiAuthenticator is enabled](../user/profile/account/two_factor_authentication.md#enable-a-one-time-password-authenticator-using-fortiauthenticator).
+  [FortiAuthenticator is enabled](../user/profile/account/two_factor_authentication.md#add-a-fortiauthenticator-authenticator).
 
 After successful authentication, you can perform Git over SSH operations for 15 minutes (default) with the associated
 SSH key.
