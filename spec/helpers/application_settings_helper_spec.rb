@@ -94,6 +94,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
           runner_jobs_request_api_limit
           runner_jobs_patch_trace_api_limit
           runner_jobs_endpoints_api_limit
+          pipeline_limit_per_user
         ])
     end
 

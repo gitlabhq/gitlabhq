@@ -70,6 +70,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['max_decompressed_archive_size']).to eq(25600)
       expect(json_response['max_terraform_state_size_bytes']).to eq(0)
       expect(json_response['pipeline_limit_per_project_user_sha']).to eq(0)
+      expect(json_response['pipeline_limit_per_user']).to eq(0)
       expect(json_response['delete_inactive_projects']).to be(false)
       expect(json_response['inactive_resource_access_tokens_delete_after_days']).to eq(30)
       expect(json_response['inactive_projects_delete_after_months']).to eq(2)
@@ -1038,6 +1039,40 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']['pipeline_limit_per_project_user_sha'])
+          .to include(a_string_matching('is not a number'))
+      end
+    end
+
+    context 'with pipeline_limit_per_user' do
+      it 'updates the settings' do
+        put api("/application/settings", admin), params: {
+          pipeline_limit_per_user: 30
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'pipeline_limit_per_user' => 30
+        )
+      end
+
+      it 'updates the settings with zero value' do
+        put api("/application/settings", admin), params: {
+          pipeline_limit_per_user: 0
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'pipeline_limit_per_user' => 0
+        )
+      end
+
+      it 'does not allow null values' do
+        put api("/application/settings", admin), params: {
+          pipeline_limit_per_user: nil
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['pipeline_limit_per_user'])
           .to include(a_string_matching('is not a number'))
       end
     end

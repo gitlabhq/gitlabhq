@@ -29,12 +29,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
     count.times { step.perform! }
   end
 
-  context 'when the limit is exceeded' do
-    before do
-      stub_application_setting(pipeline_limit_per_project_user_sha: 1)
-      stub_feature_flags(ci_enforce_throttle_pipelines_creation_override: false)
-    end
-
+  shared_examples 'exceeded rate limit' do
     it 'does not persist the pipeline' do
       perform
 
@@ -56,7 +51,8 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
           subscription_plan: project.actual_plan_name,
           commit_sha: command.sha,
           throttled: true,
-          throttle_override: false
+          throttle_override: false,
+          message: message
         )
       )
 
@@ -98,7 +94,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
       it_behaves_like 'excluded from rate limits'
     end
 
-    context 'when saving incompleted pipelines' do
+    context 'when saving incomplete pipelines' do
       let(:save_incompleted) { true }
 
       it 'does not persist the pipeline' do
@@ -145,6 +141,46 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
         )
 
         perform
+      end
+    end
+  end
+
+  context 'when pipeline_limit_per_project_user_sha is exceeded' do
+    before do
+      stub_application_setting(pipeline_limit_per_project_user_sha: 1)
+      stub_feature_flags(ci_enforce_throttle_pipelines_creation_override: false)
+    end
+
+    it_behaves_like 'exceeded rate limit' do
+      let(:message) do
+        'Pipeline rate limit exceeded for pipelines_create'
+      end
+    end
+  end
+
+  context 'when pipelines_created_per_user is exceeded' do
+    before do
+      stub_application_setting(pipeline_limit_per_user: 1)
+      stub_feature_flags(ci_enforce_throttle_pipelines_creation_override: false)
+    end
+
+    it_behaves_like 'exceeded rate limit' do
+      let(:message) do
+        'Pipeline rate limit exceeded for pipelines_created_per_user'
+      end
+    end
+  end
+
+  context 'when pipelines_created_per_user and pipelines_create are exceeded' do
+    before do
+      stub_application_setting(pipeline_limit_per_user: 1)
+      stub_application_setting(pipeline_limit_per_project_user_sha: 1)
+      stub_feature_flags(ci_enforce_throttle_pipelines_creation_override: false)
+    end
+
+    it_behaves_like 'exceeded rate limit' do
+      let(:message) do
+        'Pipeline rate limit exceeded for pipelines_create and pipelines_created_per_user'
       end
     end
   end

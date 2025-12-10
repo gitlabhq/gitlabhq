@@ -312,7 +312,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN,
         whats_new_variant: 'all_tiers', # changed from 0 to "all_tiers" due to enum conversion
         wiki_asciidoc_allow_uri_includes: false,
-        wiki_page_max_content_bytes: 5.megabytes
+        wiki_page_max_content_bytes: 5.megabytes,
+        pipeline_limit_per_user: 0
       )
     end
   end
@@ -574,6 +575,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           users_api_limit_gpg_keys
           users_api_limit_gpg_key
           git_push_pipeline_limit
+          pipeline_limit_per_user
         ]
       end
 

@@ -65,6 +65,7 @@ module Gitlab
           phone_verification_send_code: { threshold: 5, interval: 1.day },
           phone_verification_verify_code: { threshold: 5, interval: 1.day },
           pipelines_create: { threshold: -> { application_settings.pipeline_limit_per_project_user_sha }, interval: 1.minute },
+          pipelines_created_per_user: { threshold: -> { application_settings.pipeline_limit_per_user }, interval: 1.minute },
           play_pipeline_schedule: { threshold: 1, interval: 1.minute },
           profile_add_new_email: { threshold: 5, interval: 1.minute },
           profile_resend_email_confirmation: { threshold: 5, interval: 1.minute },

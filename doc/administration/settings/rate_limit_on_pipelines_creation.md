@@ -19,25 +19,35 @@ title: Rate limits on pipeline creation
 
 {{< /history >}}
 
-You can set a limit so that users and processes can't request more than a certain number of pipelines each minute. This limit can help save resources and improve stability.
+You can set limits so that users and processes can't request more than a certain number of pipelines each minute. These limits can help save resources and improve stability.
 
-For example, if you set a limit of `10`, and `11` requests are sent to the [trigger API](../../ci/triggers/_index.md) within one minute,
-the eleventh request is blocked. Access to the endpoint is allowed again after one minute.
+GitLab enforces two types of rate limits for pipeline creation:
 
-This limit is:
+- **Per project, commit, and user**: Limits pipelines created for the same combination of project, commit SHA, and user. Disabled by default.
+- **Per user**: Limits total pipelines created by a user across all projects. Disabled by default.
 
-- Applied to the number of pipelines created for the same combination of project, commit, and user.
-- Not applied per IP address.
-- Disabled by default.
+For example, if you set a per-user limit of `100`, and a user sends `101` pipeline creation requests to the [trigger API](../../ci/triggers/_index.md) within one minute across different projects,
+the 101st request is blocked. Access to the endpoint is allowed again after one minute.
 
-Requests that exceed the limit are logged in the `application_json.log` file.
+These limits are not applied per IP address.
 
-## Set a pipeline request limit
+Requests that exceed the limits are logged in the `application_json.log` file.
+
+## Set pipeline request limits
 
 To limit the number of pipeline requests:
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Pipelines Rate Limits**.
-1. Under **Max requests per minute**, enter a value greater than `0`.
+1. Under **Max requests per minute per project, user, and commit**, enter a value greater than `0` to limit pipelines for the same project, commit, and user combination.
+1. Under **Max requests per minute per user**, enter a value greater than `0` to limit total pipelines created by each user. Set to 0 for unlimited requests per minute.
 1. Select **Save changes**.
+
+## How the limits work together
+
+Both rate limits are evaluated independently:
+
+- A user creating multiple pipelines for the same commit SHA in a project is subject to the **per project, user, and commit** limit.
+- A user creating pipelines across different projects or commits is subject to the **per user** limit.
+- If either limit is exceeded, the pipeline creation request is blocked.

@@ -3,7 +3,12 @@
 
   %fieldset
     .form-group
-      = f.label :pipeline_limit_per_project_user_sha,  _('Maximum number of requests per minute')
+      = f.label :pipeline_limit_per_project_user_sha,  _('Maximum number of requests per project, sha and user. Resets after 1 minute.')
       = f.number_field :pipeline_limit_per_project_user_sha, class: 'form-control gl-form-input'
+
+  %fieldset
+    .form-group
+      = f.label :pipeline_limit_per_user,  _('Maximum number of requests for a user. Resets after 1 minute.')
+      = f.number_field :pipeline_limit_per_user, class: 'form-control gl-form-input'
 
   = f.submit _('Save changes'), pajamas_button: true

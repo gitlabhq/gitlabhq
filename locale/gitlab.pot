@@ -40297,6 +40297,9 @@ msgstr ""
 msgid "Maximum number of protection rules have been reached."
 msgstr ""
 
+msgid "Maximum number of requests for a user. Resets after 1 minute."
+msgstr ""
+
 msgid "Maximum number of requests per minute"
 msgstr ""
 
@@ -40307,6 +40310,9 @@ msgid "Maximum number of requests per minute for an unauthenticated IP address"
 msgstr ""
 
 msgid "Maximum number of requests per minute for each raw path (default is 300). Set to 0 to disable throttling."
+msgstr ""
+
+msgid "Maximum number of requests per project, sha and user. Resets after 1 minute."
 msgstr ""
 
 msgid "Maximum number of scan execution policies allowed per security policy configuration"
