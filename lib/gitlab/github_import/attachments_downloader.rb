@@ -14,6 +14,7 @@ module Gitlab
       DEFAULT_FILE_SIZE_LIMIT = Gitlab::CurrentSettings.max_attachment_size.megabytes
       TMP_DIR = File.join(Dir.tmpdir, 'github_attachments').freeze
       SUPPORTED_VIDEO_MEDIA_TYPES = %w[mov mp4 webm].freeze
+      ALLOWED_FILENAME_CHARACTERS = /[^a-zA-Z0-9\-_.]/
 
       REDIRECT_STATUS_CODES = [301, 302, 303, 307, 308].freeze
       NON_RETRIABLE_ERROR_CODES = [403, 404, 410].freeze
@@ -32,6 +33,12 @@ module Gitlab
         @web_endpoint = web_endpoint
 
         filename = URI(file_url).path.split('/').last
+        filename = CGI.unescape(filename) # Decode URL-encoded characters
+
+        # Check for path traversal before sanitization
+        Gitlab::PathTraversal.check_path_traversal!(File.join(TMP_DIR, filename))
+
+        filename = sanitize_filename(filename)
         @filename = ensure_filename_size(filename)
       end
 
@@ -44,6 +51,7 @@ module Gitlab
         return file_url if download_url.include?("login?return_to=")
 
         parsed_file_name = File.basename(URI.parse(download_url).path)
+        parsed_file_name = sanitize_filename(parsed_file_name)
 
         # if the file has a video filetype extension, we update both the @filename and @filepath with the filetype ext.
         if parsed_file_name.end_with?(*SUPPORTED_VIDEO_MEDIA_TYPES.map { |ext| ".#{ext}" })
@@ -62,6 +70,15 @@ module Gitlab
       end
 
       private
+
+      def sanitize_filename(filename)
+        # Replace any character that's not alphanumeric, hyphen, underscore, or dot
+        sanitized = filename.gsub(ALLOWED_FILENAME_CHARACTERS, '_')
+        # Remove leading dots to prevent hidden files
+        sanitized = sanitized.sub(/^\.+/, '')
+        # Provide fallback if empty or only underscore characters
+        sanitized.empty? || sanitized.match?(/\A_+\z/) ? 'attachment' : sanitized
+      end
 
       def raise_error(message)
         raise DownloadError, message

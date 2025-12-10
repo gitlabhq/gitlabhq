@@ -876,5 +876,22 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
         })
       end
     end
+
+    context 'when record is an unsupported type' do
+      let(:record) { create(:issue, project: project, description: text) }
+      let(:note_text) do
+        Gitlab::GithubImport::Representation::NoteText.new(
+          record_db_id: record.id,
+          record_type: 'UnsupportedModel',
+          text: text
+        )
+      end
+
+      let(:importer) { described_class.new(note_text, project, client) }
+
+      it 'returns nil' do
+        expect(importer.send(:external_identifiers)).to be_nil
+      end
+    end
   end
 end

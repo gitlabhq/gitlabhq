@@ -6,6 +6,8 @@ module Gitlab
       class LfsObjectsImporter
         include ParallelScheduling
 
+        RETRY_DELAY = 120
+
         def importer_class
           LfsObjectImporter
         end
@@ -30,16 +32,28 @@ module Gitlab
           download_service = Projects::LfsPointers::LfsObjectDownloadListService.new(project)
 
           download_service.each_list_item do |object|
+            next if already_imported?(object)
+
             Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
 
             yield object
+
+            mark_as_imported(object)
           end
+        rescue Projects::LfsPointers::LfsObjectDownloadListService::LfsObjectDownloadListError => e
+          raise e unless e.message.include?('TooManyRequests')
+
+          raise Gitlab::GithubImport::RateLimitError.new('Rate Limit exceeded', RETRY_DELAY)
         rescue StandardError => e
           Gitlab::Import::ImportFailureService.track(
             project_id: project.id,
             error_source: importer_class.name,
             exception: e
           )
+        end
+
+        def id_for_already_imported_cache(object)
+          object.oid
         end
       end
     end

@@ -68,7 +68,8 @@ module Gitlab
       rescue RateLimitError, UserFinder::FailedToObtainLockError => e
         info(project.id, message: "stage retrying", exception_class: e.class.name)
 
-        self.class.perform_in(client.rate_limit_resets_in, project.id)
+        rate_limit_resets_in = e.try(:reset_in) || client.rate_limit_resets_in
+        self.class.perform_in(rate_limit_resets_in, project.id)
       end
 
       def info(project_id, extra = {})
