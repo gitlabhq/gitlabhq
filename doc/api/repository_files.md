@@ -280,12 +280,24 @@ Like [Get file from repository](repository_files.md#get-file-from-repository), y
 
 ## Create new file in repository
 
+{{< history >}}
+
+- Request size and rate limits introduced in GitLab 18.7.
+
+{{< /history >}}
+
 Allows you to create a single file. For creating multiple files with a single request,
 see the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
 
 ```plaintext
 POST /projects/:id/repository/files/:file_path
 ```
+
+{{< alert type="note" >}}
+
+This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
+
+{{< /alert >}}
 
 Supported attributes:
 
@@ -330,12 +342,24 @@ Example response:
 
 ## Update existing file in repository
 
+{{< history >}}
+
+- Request size and rate limits introduced in GitLab 18.7.
+
+{{< /history >}}
+
 Allows you to update a single file. For updating multiple files with a single request,
 refer to the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
 
 ```plaintext
 PUT /projects/:id/repository/files/:file_path
 ```
+
+{{< alert type="note" >}}
+
+This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
+
+{{< /alert >}}
 
 Supported attributes:
 

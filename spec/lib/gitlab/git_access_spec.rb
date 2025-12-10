@@ -1451,12 +1451,12 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
 
   def raise_forbidden_by_job_token(target_project)
     raise_error(described_class::ForbiddenError, format(described_class::ERROR_MESSAGES[:auth_by_job_token_forbidden],
-      target_project_path: target_project.path))
+      target_project_id: target_project.id))
   end
 
   def raise_forbidden_by_job_token_allowlist(source_project, target_project)
     raise_error(described_class::ForbiddenError, format(described_class::ERROR_MESSAGES[:auth_by_job_token_project_not_in_allowlist],
-      source_project_path: source_project.path, target_project_path: target_project.path))
+      source_project_path: source_project.path, target_project_id: target_project.id))
   end
 
   def build_authentication_abilities

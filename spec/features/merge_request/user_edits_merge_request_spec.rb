@@ -110,4 +110,17 @@ RSpec.describe 'User edits a merge request', :js, feature_category: :code_review
   end
 
   it_behaves_like 'rich text editor - common'
+
+  describe 'when deleting merge request' do
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project, title: '<img src="https://example.com/auth/test.svg">') }
+    let(:user) { project.owner }
+
+    it 'safely renders merge request title' do
+      click_link 'Delete'
+
+      page.within find_by_testid('confirmation-modal') do
+        expect(page).to have_text('<img src="https://example.com/auth/test.svg">')
+      end
+    end
+  end
 end

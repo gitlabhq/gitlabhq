@@ -117,7 +117,7 @@ module Banzai
           end
         end
 
-        def object_link_text(object, matches)
+        def object_link_content_html(object, matches)
           reference = nil
           parent = project || group
 

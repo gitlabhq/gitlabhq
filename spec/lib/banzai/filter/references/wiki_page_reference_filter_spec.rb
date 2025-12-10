@@ -37,13 +37,20 @@ RSpec.describe Banzai::Filter::References::WikiPageReferenceFilter, feature_cate
     end
 
     it 'escapes the title attribute' do
-      allow_next_instance_of(ProjectWiki) do |instance|
-        allow(instance).to receive(:title).and_return(%("></a>whatever<a title="))
+      title = %("></a>whatever<a title=")
+      allow_next_instance_of(WikiPage) do |instance|
+        allow(instance).to receive(:title).and_return(title)
       end
 
       doc = reference_filter("Created #{written_reference}")
 
-      expect(doc.text).not_to include 'whatever'
+      # The full title text should appear in the visible textual content of the page.
+      # If it doesn't, it suggests it has affected the parse.
+      expect(doc.text).to include title
+
+      # There should be no indication that any of the text has escaped into HTML.
+      expect(doc.to_html).not_to include('"></a')
+      expect(doc.to_html).not_to include('whatever<a')
     end
 
     it 'renders non-HTML tooltips' do

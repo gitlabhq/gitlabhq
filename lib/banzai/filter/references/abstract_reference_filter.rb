@@ -217,7 +217,12 @@ module Banzai
 
             url.chomp!(matches[:format]) if matches.names.include?("format")
 
-            content = context[:link_text] || link_content_html || object_link_text(object, matches)
+            content =
+              if context[:link_text]
+                CGI.escapeHTML(context[:link_text])
+              else
+                link_content_html || object_link_content_html(object, matches)
+              end
 
             link = write_opening_tag("a", {
               "href" => url,
@@ -254,32 +259,39 @@ module Banzai
           }.merge(parent_id)
         end
 
-        def object_link_text_extras(object, matches)
+        # Provides the default content of the created link, if there was no original content to use.
+        #
+        # Returns a HTML String.  If you override this, ensure you return HTML by escaping any text.
+        def object_link_content_html(object, matches)
+          parent = project || group || user
+          html = CGI.escapeHTML(object.reference_link_text(parent))
+
+          extras = object_link_content_html_extras(object, matches)
+          html += " (#{extras.join(', ')})" if extras.any?
+
+          html
+        end
+
+        # Provides extra content for the default content of the created link, used by
+        # the default implementation of #object_link_content_html.
+        #
+        # Returns an Array of HTML Strings.  If you override this, ensure you return HTML by escaping any text.
+        def object_link_content_html_extras(object, matches)
           extras = []
 
           if matches.names.include?("anchor") && matches[:anchor] && matches[:anchor] =~ /\A\#note_(\d+)\z/
-            extras << "comment #{Regexp.last_match(1)}"
+            extras << CGI.escapeHTML("comment #{Regexp.last_match(1)}")
           end
 
           extension = matches[:extension] if matches.names.include?("extension")
 
-          extras << extension if extension
+          extras << CGI.escapeHTML(extension) if extension
 
           extras
         end
 
         def object_link_title(object, matches)
           object.title
-        end
-
-        def object_link_text(object, matches)
-          parent = project || group || user
-          text = object.reference_link_text(parent)
-
-          extras = object_link_text_extras(object, matches)
-          text += " (#{extras.join(', ')})" if extras.any?
-
-          text
         end
 
         def parent_type
