@@ -41,8 +41,16 @@ module AuthenticatesWithTwoFactor
 
   def authenticate_with_two_factor
     user = self.resource = find_user
+
+    # If user does not complete two-factor authentication and authenticates as
+    # another user within the same session, we should reset-two factor data
+    # in the session, see
+    #   - https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14900
+    #   - https://gitlab.com/gitlab-org/gitlab/-/issues/20302
+    clear_two_factor_attempt! if session[:otp_user_id] != user.id
+
     return handle_locked_user(user) unless user.can?(:log_in)
-    return handle_changed_user(user) if user_password_changed?(user)
+    return handle_changed_user_password(user) if user_password_changed?(user)
 
     if user_params[:otp_attempt].present? && session[:otp_user_id]
       authenticate_with_two_factor_via_otp(user)
@@ -143,7 +151,7 @@ module AuthenticatesWithTwoFactor
     # overridden in EE
   end
 
-  def handle_changed_user(user)
+  def handle_changed_user_password(user)
     clear_two_factor_attempt!
 
     redirect_to new_user_session_path, alert: _('An error occurred. Please sign in again.')

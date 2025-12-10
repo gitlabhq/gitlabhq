@@ -92,6 +92,7 @@ module Gitlab
           temporary_email_failure: { threshold: 300, interval: 1.day },
           update_environment_canary_ingress: { threshold: 1, interval: 1.minute },
           update_namespace_name: { threshold: -> { application_settings.update_namespace_name_rate_limit }, interval: 1.hour },
+          user_large_commit_request: { threshold: 3, interval: 30.seconds },
           user_contributed_projects_api: { threshold: -> { application_settings.user_contributed_projects_api_limit }, interval: 1.minute },
           user_followers: { threshold: -> { application_settings.users_api_limit_followers }, interval: 1.minute },
           user_following: { threshold: -> { application_settings.users_api_limit_following }, interval: 1.minute },

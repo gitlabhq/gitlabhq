@@ -135,11 +135,23 @@ Example response:
 
 ## Create a commit with multiple files and actions
 
+{{< history >}}
+
+- Request size and rate limits introduced in GitLab 18.7.
+
+{{< /history >}}
+
 Create a commit by posting a JSON payload
 
 ```plaintext
 POST /projects/:id/repository/commits
 ```
+
+{{< alert type="note" >}}
+
+This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
+
+{{< /alert >}}
 
 | Attribute        | Type           | Required | Description |
 |------------------|----------------|----------|-------------|
@@ -154,6 +166,12 @@ POST /projects/:id/repository/commits
 | `start_project`  | integer or string | No       | The project ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) to start the new branch from. Defaults to the value of `id`. |
 | `start_sha`      | string         | No       | SHA of the commit to start the new branch from. |
 | `stats`          | boolean        | No       | Include commit stats. Default is `true`. |
+
+{{< alert type="note" >}}
+
+Large requests with many actions may be subject to size limits. For more information, see [Commits API limits](../administration/instance_limits.md#commits-and-files-api-limits).
+
+{{< /alert >}}
 
 | `actions[]` Attribute | Type    | Required | Description |
 |-----------------------|---------|----------|-------------|

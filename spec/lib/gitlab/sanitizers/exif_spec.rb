@@ -74,15 +74,17 @@ RSpec.describe Gitlab::Sanitizers::Exif do
         uploader.store!(fixture_file_upload('spec/fixtures/rails_sample.jpg'))
 
         original_upload = uploader.upload
-        expected_args = ["exiftool", "-all=", "-tagsFromFile", "@", *Gitlab::Sanitizers::Exif::EXCLUDE_PARAMS, "--IPTC:all", "--XMP-iptcExt:all", kind_of(String)]
-
-        expect(sanitizer).to receive(:extra_tags).and_return(["", 0])
         expect(sanitizer).to receive(:exec_remove_exif!).once.and_call_original
         expect(uploader).to receive(:store!).and_call_original
-        expect(Gitlab::Popen).to receive(:popen).with(expected_args) do |args|
+        expect(Gitlab::Popen).to receive(:popen).with(["exiftool", "-IPTC=", "-XMP=", kind_of(String)]) do |args|
           File.write("#{args.last}_original", "foo") if args.last.start_with?(Dir.tmpdir)
 
-          [expected_args, 0]
+          [args, 0]
+        end
+        expect(Gitlab::Popen).to receive(:popen).with(["exiftool", "-all=", "-tagsFromFile", "@", *Gitlab::Sanitizers::Exif::EXCLUDE_PARAMS, kind_of(String)]) do |args|
+          File.write("#{args.last}_original", "foo") if args.last.start_with?(Dir.tmpdir)
+
+          [args, 0]
         end
 
         subject
@@ -91,28 +93,16 @@ RSpec.describe Gitlab::Sanitizers::Exif do
         expect(uploader.upload.path).to eq(original_upload.path)
       end
 
-      it "ignores image without exif" do
-        expected_args = ["exiftool", "-all", "-j", "-sort", "--IPTC:all", "--XMP-iptcExt:all", kind_of(String)]
-
-        expect(Gitlab::Popen).to receive(:popen).with(expected_args).and_return(["[{}]", 0])
-        expect(sanitizer).not_to receive(:exec_remove_exif!)
-        expect(uploader).not_to receive(:store!)
-
-        subject
-      end
-
       it "raises an error if the exiftool fails with an error" do
-        expect(Gitlab::Popen).to receive(:popen).and_return(["error", 1])
+        expect(Gitlab::Popen).to receive(:popen).and_return(["error_message", 1])
 
-        expect { subject }.to raise_exception(RuntimeError, "failed to get exif tags: error")
+        expect { subject }.to raise_exception(RuntimeError, "exiftool return code is 1: error_message")
       end
 
       context 'for files that do not have the correct MIME type' do
         let(:mime_type) { 'text/plain' }
 
         it 'cleans only jpg/tiff images with the correct mime types' do
-          expect(sanitizer).not_to receive(:extra_tags)
-
           expect { subject }.to raise_error(RuntimeError, %r{File type text/plain not supported})
         end
       end
@@ -122,7 +112,6 @@ RSpec.describe Gitlab::Sanitizers::Exif do
       let(:dry_run) { true }
 
       it "doesn't change the image" do
-        expect(sanitizer).to receive(:extra_tags).and_return({ 'foo' => 'bar' })
         expect(sanitizer).not_to receive(:exec_remove_exif!)
         expect(uploader).not_to receive(:store!)
 
@@ -146,40 +135,32 @@ RSpec.describe Gitlab::Sanitizers::Exif do
       end
 
       it "removes exif from the image" do
-        expected_args = ["exiftool", "-all=", "-tagsFromFile", "@", *Gitlab::Sanitizers::Exif::EXCLUDE_PARAMS, "--IPTC:all", "--XMP-iptcExt:all", kind_of(String)]
-
-        expect(sanitizer).to receive(:extra_tags).and_return(["", 0])
         expect(sanitizer).to receive(:exec_remove_exif!).once.and_call_original
-        expect(Gitlab::Popen).to receive(:popen).with(expected_args) do |args|
+        expect(Gitlab::Popen).to receive(:popen).with(["exiftool", "-IPTC=", "-XMP=", kind_of(String)]) do |args|
           File.write("#{args.last}_original", "foo") if args.last.start_with?(Dir.tmpdir)
 
-          [expected_args, 0]
+          [args, 0]
+        end
+
+        expect(Gitlab::Popen).to receive(:popen).with(["exiftool", "-all=", "-tagsFromFile", "@", *Gitlab::Sanitizers::Exif::EXCLUDE_PARAMS, kind_of(String)]) do |args|
+          File.write("#{args.last}_original", "foo") if args.last.start_with?(Dir.tmpdir)
+
+          [args, 0]
         end
 
         subject
       end
 
-      it "ignores image without exif" do
-        expected_args = ["exiftool", "-all", "-j", "-sort", "--IPTC:all", "--XMP-iptcExt:all", kind_of(String)]
-
-        expect(Gitlab::Popen).to receive(:popen).with(expected_args).and_return(["[{}]", 0])
-        expect(sanitizer).not_to receive(:exec_remove_exif!)
-
-        subject
-      end
-
       it "raises an error if the exiftool fails with an error" do
-        expect(Gitlab::Popen).to receive(:popen).and_return(["error", 1])
+        expect(Gitlab::Popen).to receive(:popen).and_return(["error_message", 1])
 
-        expect { subject }.to raise_exception(RuntimeError, "failed to get exif tags: error")
+        expect { subject }.to raise_exception(RuntimeError, "exiftool return code is 1: error_message")
       end
 
       context 'for files that do not have the correct MIME type from file' do
         let(:mime_type) { 'text/plain' }
 
         it 'cleans only jpg/tiff images with the correct mime types' do
-          expect(sanitizer).not_to receive(:extra_tags)
-
           expect { subject }.to raise_error(RuntimeError, %r{File type text/plain not supported})
         end
       end
@@ -189,8 +170,6 @@ RSpec.describe Gitlab::Sanitizers::Exif do
           let(:mime_type) { 'text/plain' }
 
           it 'raises an error if not jpg/tiff images with the correct mime types' do
-            expect(sanitizer).not_to receive(:extra_tags)
-
             expect do
               sanitizer.clean_existing_path(tmp_file.path, content: file_content)
             end.to raise_error(RuntimeError, %r{File type text/plain not supported})
@@ -201,8 +180,6 @@ RSpec.describe Gitlab::Sanitizers::Exif do
           let(:mime_type) { 'text/plain' }
 
           it 'raises an error if not jpg/tiff images with the correct mime types' do
-            expect(sanitizer).not_to receive(:extra_tags)
-
             expect do
               sanitizer.clean_existing_path(tmp_file.path, content: file_content)
             end.to raise_error(RuntimeError, %r{File type text/plain not supported})
@@ -215,8 +192,6 @@ RSpec.describe Gitlab::Sanitizers::Exif do
           let(:mime_type) { 'text/plain' }
 
           it 'cleans only jpg/tiff images with the correct mime types' do
-            expect(sanitizer).not_to receive(:extra_tags)
-
             expect do
               sanitizer.clean_existing_path(tmp_file.path, content: file_content, skip_unallowed_types: true)
             end.not_to raise_error
@@ -227,8 +202,6 @@ RSpec.describe Gitlab::Sanitizers::Exif do
           let(:mime_type) { 'text/plain' }
 
           it 'cleans only jpg/tiff images with the correct mime types' do
-            expect(sanitizer).not_to receive(:extra_tags)
-
             expect do
               sanitizer.clean_existing_path(tmp_file.path, content: file_content, skip_unallowed_types: true)
             end.not_to raise_error
@@ -241,35 +214,10 @@ RSpec.describe Gitlab::Sanitizers::Exif do
       let(:dry_run) { true }
 
       it "doesn't change the image" do
-        expect(sanitizer).to receive(:extra_tags).and_return({ 'foo' => 'bar' })
         expect(sanitizer).not_to receive(:exec_remove_exif!)
 
         subject
       end
-    end
-  end
-
-  describe "#extra_tags" do
-    it "returns a list of keys for exif file" do
-      tags = '[{
-                "DigitalSourceType": "some source",
-                "ImageHeight": 654
-              }]'
-
-      expect(Gitlab::Popen).to receive(:popen).and_return([tags, 0])
-
-      expect(sanitizer.send(:extra_tags, 'filename')).not_to be_empty
-    end
-
-    it "returns an empty list for file with only whitelisted and ignored tags" do
-      tags = '[{
-                "ImageHeight": 654,
-                "Megapixels": 0.641
-              }]'
-
-      expect(Gitlab::Popen).to receive(:popen).and_return([tags, 0])
-
-      expect(sanitizer.send(:extra_tags, 'some file')).to be_empty
     end
   end
 end
