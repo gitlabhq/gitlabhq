@@ -39861,6 +39861,8 @@ CREATE INDEX idx_issues_on_project_work_item_type_closed_at_where_closed ON issu
 
 CREATE INDEX idx_issues_root_namespace_created_at ON issues USING btree ((namespace_traversal_ids[1]), created_at);
 
+CREATE INDEX idx_issues_root_namespace_updated_at ON issues USING btree ((namespace_traversal_ids[1]), updated_at);
+
 CREATE INDEX idx_issues_state_id_namespace_traversal_ids ON issues USING btree (state_id, namespace_traversal_ids);
 
 CREATE UNIQUE INDEX idx_jira_connect_subscriptions_on_installation_id_namespace_id ON jira_connect_subscriptions USING btree (jira_connect_installation_id, namespace_id);

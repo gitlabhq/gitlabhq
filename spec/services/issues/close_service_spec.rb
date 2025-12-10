@@ -316,7 +316,7 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
 
       it 'verifies the number of queries' do
         recorded = ActiveRecord::QueryRecorder.new { close_issue }
-        expected_queries = 40
+        expected_queries = 41
 
         expect(recorded.count).to be <= expected_queries
         expect(recorded.cached_count).to eq(0)
@@ -426,6 +426,8 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
 
         close_issue
       end
+
+      it_behaves_like 'tracks work item event', :issue, :user, ::Gitlab::WorkItems::Instrumentation::EventActions::CLOSE, :close_issue
     end
 
     context 'when issue is not confidential' do

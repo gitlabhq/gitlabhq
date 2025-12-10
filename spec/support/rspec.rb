@@ -9,7 +9,6 @@ require_relative 'helpers/stub_configuration'
 require_relative 'helpers/stub_metrics'
 require_relative 'helpers/stub_object_storage'
 require_relative 'helpers/fast_rails_root'
-require_relative 'helpers/test_metrics_helper'
 
 require 'gitlab/rspec/all'
 require 'gitlab/utils/all'
@@ -84,7 +83,7 @@ RSpec.configure do |config|
     end
   end
 
-  TestMetricsHelper.configure_exporter!(config, 'backend-rspec-tests') do |exporter_config|
+  Gitlab::Rspec::Configurations::TestMetrics.configure!('backend-rspec-tests') do |exporter_config|
     exporter_config.test_retried_proc = ->(_example) { ENV["RSPEC_RETRY_PROCESS"] == "true" }
   end
 end

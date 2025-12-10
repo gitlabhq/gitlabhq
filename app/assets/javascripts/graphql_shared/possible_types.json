@@ -267,6 +267,7 @@
   ],
   "RegistryInterface": [
     "ContainerRegistry",
+    "ContainerRegistryDetails",
     "MavenRegistry",
     "MavenRegistryDetails"
   ],

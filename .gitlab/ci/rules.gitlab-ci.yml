@@ -206,7 +206,7 @@
   if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
 
 .if-missing-clickhouse-coverage-credentials: &if-missing-clickhouse-coverage-credentials
-  if: '$GLCI_CLICKHOUSE_METRICS_URL == null || $GLCI_CLICKHOUSE_TEST_COVERAGE_DB == null || $GLCI_CLICKHOUSE_METRICS_USERNAME == null || $GLCI_CLICKHOUSE_METRICS_PASSWORD == null'
+  if: '$GLCI_DA_CLICKHOUSE_URL == null || $GLCI_CLICKHOUSE_TEST_COVERAGE_DB == null || $GLCI_CLICKHOUSE_METRICS_USERNAME == null || $GLCI_CLICKHOUSE_METRICS_PASSWORD == null'
 
 .if-coverband-enabled: &if-coverband-enabled
   if: '$COVERBAND_ENABLED == "true"'

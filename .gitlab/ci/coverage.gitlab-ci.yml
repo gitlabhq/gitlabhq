@@ -10,7 +10,7 @@
     - !reference [.default-utils-before_script, before_script]
     - eval "bundle install ${BUNDLE_INSTALL_FLAGS}"
   variables:
-    CLICKHOUSE_URL: $GLCI_CLICKHOUSE_METRICS_URL
+    CLICKHOUSE_URL: $GLCI_DA_CLICKHOUSE_URL
     CLICKHOUSE_DATABASE: $GLCI_CLICKHOUSE_TEST_COVERAGE_DB
     CLICKHOUSE_USERNAME: $GLCI_CLICKHOUSE_METRICS_USERNAME
     # Note: GLCI_CLICKHOUSE_METRICS_PASSWORD is read directly from the environment

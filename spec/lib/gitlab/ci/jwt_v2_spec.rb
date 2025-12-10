@@ -114,10 +114,6 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
         end
       end
 
-      before do
-        stub_feature_flags(ci_id_token_environment_sub_claims: true)
-      end
-
       describe 'when project_path and environment_protected provided' do
         let(:sub_components) { [:project_path, :environment_protected] }
 
@@ -158,18 +154,6 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
         let(:sub_components) { [:project_path, :environment_protected, :deployment_tier] }
 
         it 'only includes project_path when environment is not set' do
-          expect(payload[:sub]).to eq("project_path:#{project.full_path}")
-        end
-      end
-
-      describe 'when feature flag is disabled' do
-        let(:sub_components) { [:project_path, :environment_protected, :deployment_tier] }
-
-        before do
-          stub_feature_flags(ci_id_token_environment_sub_claims: false)
-        end
-
-        it 'does not include environment claims in sub' do
           expect(payload[:sub]).to eq("project_path:#{project.full_path}")
         end
       end

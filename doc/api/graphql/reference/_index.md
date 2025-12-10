@@ -2023,6 +2023,23 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryusersusertypes"></a>`userTypes` {{< icon name="warning-solid" >}} | [`[UserType!]`](#usertype) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filter by user type. |
 | <a id="queryusersusernames"></a>`usernames` | [`[String!]`](#string) | List of usernames. |
 
+### `Query.virtualRegistriesContainerRegistry`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Find a container virtual registry. Returns null if the `container_virtual_registries` feature flag is disabled.
+
+Returns [`ContainerRegistryDetails`](#containerregistrydetails).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryvirtualregistriescontainerregistryid"></a>`id` | [`VirtualRegistriesContainerRegistryID!`](#virtualregistriescontainerregistryid) | Global ID of the container virtual registry. |
+
 ### `Query.virtualRegistriesPackagesMavenRegistry`
 
 {{< details >}}
@@ -29031,6 +29048,20 @@ Represents a container virtual registry.
 | <a id="containerregistryname"></a>`name` | [`String!`](#string) | Name of the virtual registry. |
 | <a id="containerregistryupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the virtual registry was updated. |
 
+### `ContainerRegistryDetails`
+
+Represents container virtual registry details.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerregistrydetailsdescription"></a>`description` | [`String`](#string) | Description of the virtual registry. |
+| <a id="containerregistrydetailsid"></a>`id` | [`ID!`](#id) | ID of the virtual registry. |
+| <a id="containerregistrydetailsname"></a>`name` | [`String!`](#string) | Name of the virtual registry. |
+| <a id="containerregistrydetailsregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[ContainerRegistryUpstreamWithUpstream!]!`](#containerregistryupstreamwithupstream) | **Introduced** in GitLab 18.7. **Status**: Experiment. List of registry upstreams for the container virtual registry. |
+| <a id="containerregistrydetailsupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the virtual registry was updated. |
+
 ### `ContainerRegistryProtectionTagRulePermissions`
 
 #### Fields
@@ -29038,6 +29069,18 @@ Represents a container virtual registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="containerregistryprotectiontagrulepermissionsdestroycontainerregistryprotectiontagrule"></a>`destroyContainerRegistryProtectionTagRule` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_container_registry_protection_tag_rule` on this resource. |
+
+### `ContainerRegistryUpstreamWithUpstream`
+
+Represents a container virtual registry upstream and its relationship to the upstream.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerregistryupstreamwithupstreamid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.7. **Status**: Experiment. ID of the registry upstream. |
+| <a id="containerregistryupstreamwithupstreamposition"></a>`position` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Position of the upstream registry in an ordered list. |
+| <a id="containerregistryupstreamwithupstreamupstream"></a>`upstream` {{< icon name="warning-solid" >}} | [`ContainerUpstream!`](#containerupstream) | **Introduced** in GitLab 18.7. **Status**: Experiment. Container upstream associated with the registry upstream. |
 
 ### `ContainerRepository`
 
@@ -55966,6 +56009,12 @@ A `UsersSavedReplyID` is a global ID. It is encoded as a string.
 
 An example `UsersSavedReplyID` is: `"gid://gitlab/Users::SavedReply/1"`.
 
+### `VirtualRegistriesContainerRegistryID`
+
+A `VirtualRegistriesContainerRegistryID` is a global ID. It is encoded as a string.
+
+An example `VirtualRegistriesContainerRegistryID` is: `"gid://gitlab/VirtualRegistries::Container::Registry/1"`.
+
 ### `VirtualRegistriesPackagesMavenRegistryID`
 
 A `VirtualRegistriesPackagesMavenRegistryID` is a global ID. It is encoded as a string.
@@ -57159,6 +57208,7 @@ Implementations:
 Implementations:
 
 - [`ContainerRegistry`](#containerregistry)
+- [`ContainerRegistryDetails`](#containerregistrydetails)
 - [`MavenRegistry`](#mavenregistry)
 - [`MavenRegistryDetails`](#mavenregistrydetails)
 

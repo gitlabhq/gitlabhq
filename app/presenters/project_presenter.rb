@@ -49,7 +49,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       gitlab_ci_anchor_data,
       wiki_anchor_data,
       integrations_anchor_data,
-      pages_anchor_data
+      pages_anchor_data,
+      observability_anchor_data
     ].compact.reject(&:is_link).sort_by.with_index { |item, idx| [item.class_modifier ? 0 : 1, idx] }
   end
 
@@ -67,7 +68,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       contribution_guide_anchor_data,
       gitlab_ci_anchor_data,
       wiki_anchor_data,
-      integrations_anchor_data
+      integrations_anchor_data,
+      observability_anchor_data
     ].compact.reject { |item| item.is_link }
   end
 
@@ -464,6 +466,16 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     AnchorData.new(false, statistic_icon('external-link', 'subtle') + _('GitLab Pages'), pages_url, 'btn-default', nil)
   end
 
+  def observability_anchor_data
+    return unless project.group.present? && can_read_observability? && observability_feature_enabled?
+
+    if observability_settings.present?
+      AnchorData.new(false, statistic_icon('status-health', 'subtle') + s_('Observability|Observability configuration'), group_observability_setup_path(project.group), 'btn-default')
+    else
+      AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + s_('Observability|Enable Observability')), group_observability_setup_path(project.group), nil, nil, nil)
+    end
+  end
+
   private
 
   def integrations_anchor_data
@@ -553,6 +565,18 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         strong_end: '</strong>'.html_safe
       }
     )
+  end
+
+  def observability_settings
+    Observability::GroupO11ySetting.observability_setting_for(project)
+  end
+
+  def can_read_observability?
+    current_user && can?(current_user, :read_observability_portal, project.group)
+  end
+
+  def observability_feature_enabled?
+    ::Feature.enabled?(:observability_sass_features, project.group)
   end
 end
 

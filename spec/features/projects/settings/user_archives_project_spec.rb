@@ -22,7 +22,14 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
       visit edit_project_path(project)
     end
 
-    it 'cannot archive/unarchive project', :aggregate_failures do
+    it 'renders section with no active button', :aggregate_failures do
+      find('[data-testid=cancel-icon]').hover
+
+      expect(page).to have_content(s_('GroupProjectArchiveSettings|Unarchive project'))
+      expect(page).to have_selector('[role="tooltip"]', text: s_(
+        'GroupProjectUnarchiveSettings|To unarchive this project, you must unarchive its parent group.'
+      ))
+
       expect(page).not_to have_button(s_('GroupProjectArchiveSettings|Archive'))
       expect(page).not_to have_button(s_('GroupProjectUnarchiveSettings|Unarchive'))
     end

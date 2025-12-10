@@ -487,14 +487,22 @@ The dependency scanning report is:
 
 ## Optimization
 
-To optimize dependency scanning with SBOM according to your requirements you can:
+To optimize dependency scanning with SBOM, you can use either or
+both of the following methods:
 
-- Exclude files and directories from the scan.
-- Define the max depth to look for files.
+- Exclude files and directories
+- Limit scanning to a maximum directory depth
 
-### Exclude files and directories from the scan
+### Exclude files and directories
 
-To exclude files or directories from being targeted by the scan use `excluded_paths` spec input or `DS_EXCLUDED_PATHS` with a comma-separated list of patterns in your `.gitlab-ci.yml`.
+Exclude files and directories when you want to optimize scanning performance and focus scanning on
+relevant repository content.
+
+To exclude files and directories from scanning, specify the list of patterns in the `.gitlab-ci.yml`
+file:
+
+- If using the dependency scanning template, use the `DS_EXCLUDED_PATHS` CI/CD variable.
+- If using the dependency scanning CI/CD component, use the `excluded_paths` spec input.
 
 #### Exclusion patterns
 
@@ -505,9 +513,35 @@ Exclusion patterns follow these rules:
 - Standard glob wildcards are supported (example: `a/**/b` matches `a/b`, `a/x/b`, `a/x/y/b`).
 - Leading and trailing slashes are ignored (example: `/build` and `build/` work the same as `build`).
 
-### Define the max depth to look for files
+### Limit scanning to a maximum directory depth
 
-To optimize the analyzer behavior you may set a maximum depth value. A value of `-1` scans all directories regardless of depth. The default is `2`. To do so, use either `max_scan_depth` spec input or `DS_MAX_DEPTH` CI/CD variable in your `.gitlab-ci.yml`.
+Limit scanning to a maximum directory depth when you want to optimize scanning performance and
+reduce the number of files analyzed.
+
+The root directory is counted as depth `1`, and each subdirectory increments the depth by 1. The
+default depth is `2`. A value of `-1` scans all directories regardless of depth.
+
+To specify the maximum depth in the `.gitlab-ci.yml` file:
+
+- If using the dependency scanning template, use the `DS_MAX_DEPTH` CI/CD variable.
+- If using the dependency scanning CI/CD component, use the `max_scan_depth` spec input.
+
+In the following example, with `DS_MAX_DEPTH` set to `3`, subdirectories of the `common` directory
+are not scanned.
+
+```plaintext
+timer
+├── integration
+│   ├── doc
+│   └── modules
+└── source
+    ├── common
+    │   ├── cplusplus
+    │   └── go
+    ├── linux
+    ├── macos
+    └── windows
+```
 
 ## Roll out
 

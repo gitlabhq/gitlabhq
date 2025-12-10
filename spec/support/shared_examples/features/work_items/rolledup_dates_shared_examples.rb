@@ -245,8 +245,12 @@ RSpec.shared_examples 'work items rolled up dates' do
               fill_in 'milestone_start_date', with: '2016-11-16'
               fill_in 'milestone_due_date', with: '2016-12-16'
               click_button "Save changes"
-              wait_for_all_requests
             end
+
+            # Wait for redirection after milestone edit
+            # form submission to complete and assert URL
+            expect(page).to have_current_path(group_milestone_path(group, milestone))
+            expect(page).to have_content(milestone.title)
 
             visit work_items_path
             wait_for_all_requests

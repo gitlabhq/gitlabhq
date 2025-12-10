@@ -24,7 +24,11 @@ module Groups
       return render_404 unless VALID_PATHS.include?(path)
 
       @data = ::Observability::ObservabilityPresenter.new(group, path)
-      render
+
+      respond_to do |format|
+        format.html { render }
+        format.json { render json: @data.to_h }
+      end
     end
 
     private

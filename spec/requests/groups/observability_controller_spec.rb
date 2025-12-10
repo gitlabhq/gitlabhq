@@ -95,10 +95,81 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
         end
       end
 
-      context 'with an invalid path parameter' do
-        subject { get group_observability_path(group, 'invalid-path') }
+      context 'with JSON format' do
+        let!(:observability_setting) do
+          create(:observability_group_o11y_setting, group: group, o11y_service_url: 'https://observability.example.com')
+        end
 
-        it_behaves_like 'redirects to 404'
+        context 'when JSON is requested' do
+          subject(:get_json) { get group_observability_path(group, 'services', format: :json) }
+
+          it 'returns JSON response' do
+            get_json
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.content_type).to include('application/json')
+          end
+
+          it 'returns the correct JSON structure' do
+            get_json
+
+            expect(json_response).to include(
+              'o11y_url' => 'https://observability.example.com',
+              'path' => 'services',
+              'title' => 'Observability|Services'
+            )
+            expect(json_response).to have_key('auth_tokens')
+            expect(json_response['auth_tokens']).to eq({ 'test_token' => 'value' })
+          end
+        end
+
+        context 'when group has no observability settings' do
+          let!(:observability_setting) { nil }
+
+          subject(:get_json) { get group_observability_path(group, 'services', format: :json) }
+
+          it 'returns JSON with nil o11y_url' do
+            get_json
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to include(
+              'o11y_url' => nil,
+              'path' => 'services',
+              'title' => 'Observability|Services'
+            )
+          end
+        end
+
+        context 'with different valid paths' do
+          Groups::ObservabilityController::VALID_PATHS.each do |path|
+            context "with path=#{path}" do
+              subject(:get_json) { get group_observability_path(group, path, format: :json) }
+
+              it 'returns JSON with correct path and title' do
+                get_json
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(json_response['path']).to eq(path)
+                expect(json_response['title']).to eq(Observability::ObservabilityPresenter::PATHS.fetch(path,
+                  'Observability'))
+              end
+            end
+          end
+        end
+      end
+
+      context 'with an invalid path parameter' do
+        context 'with HTML format' do
+          subject { get group_observability_path(group, 'invalid-path') }
+
+          it_behaves_like 'redirects to 404'
+        end
+
+        context 'with JSON format' do
+          subject { get group_observability_path(group, 'invalid-path', format: :json) }
+
+          it_behaves_like 'redirects to 404'
+        end
       end
     end
 

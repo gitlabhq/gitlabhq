@@ -50,16 +50,15 @@ WORKDIR /home/gitlab/qa
 COPY qa/Gemfile* /home/gitlab/qa/
 COPY vendor/gems/ /home/gitlab/vendor/gems/
 COPY gems/gitlab-utils /home/gitlab/gems/gitlab-utils
+COPY gems/gitlab-rspec /home/gitlab/gems/gitlab-rspec
 COPY qa/gems /home/gitlab/qa/gems
-RUN ls -la && bundle config set --local without development \
-    && bundle install --retry=3
+RUN bundle config set --local without development && bundle install --retry=3
 
 COPY ./config/initializers/0_inject_enterprise_edition_module.rb /home/gitlab/config/initializers/
 COPY ./config/feature_flags /home/gitlab/config/feature_flags
 COPY ./config/bundler_setup.rb /home/gitlab/config/
 COPY ./lib/gitlab_edition.rb /home/gitlab/lib/
 COPY ./spec/support/fast_quarantine.rb /home/gitlab/spec/support/
-COPY ./spec/support/helpers/test_metrics_helper.rb /home/gitlab/spec/support/helpers/
 COPY ./tooling/lib/tooling/fast_quarantine.rb /home/gitlab/tooling/lib/tooling/
 COPY ./INSTALLATION_TYPE ./VERSION /home/gitlab/
 

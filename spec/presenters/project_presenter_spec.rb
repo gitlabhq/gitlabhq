@@ -803,6 +803,93 @@ RSpec.describe ProjectPresenter do
         it { expect(presenter.pages_anchor_data).to match(expected_result) }
       end
     end
+
+    describe '#observability_anchor_data' do
+      let(:observability_setting) { nil }
+      let(:can_read_observability) { true }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project_with_group) { create(:project, group: group) }
+
+      before do
+        stub_feature_flags(observability_sass_features: group)
+        allow(presenter).to receive(:can?).with(user, :read_observability_portal,
+          group).and_return(can_read_observability)
+
+        allow(Observability::GroupO11ySetting).to receive(:observability_setting_for)
+          .with(project)
+          .and_return(observability_setting)
+      end
+
+      context 'when project has no group' do
+        it 'returns nil' do
+          expect(presenter.send(:observability_anchor_data)).to be_nil
+        end
+      end
+
+      context 'when current_user is nil' do
+        let(:presenter_without_user) { described_class.new(project_with_group, current_user: nil) }
+
+        it 'returns nil' do
+          expect(presenter_without_user.send(:observability_anchor_data)).to be_nil
+        end
+      end
+
+      context 'when user cannot read observability' do
+        let(:can_read_observability) { false }
+
+        it 'returns nil' do
+          expect(presenter.observability_anchor_data).to be_nil
+        end
+      end
+
+      context 'when observability feature is not enabled' do
+        before do
+          stub_feature_flags(observability_sass_features: false)
+        end
+
+        it 'returns nil' do
+          expect(presenter.observability_anchor_data).to be_nil
+        end
+      end
+
+      context 'when all conditions are met' do
+        let(:presenter) { described_class.new(project_with_group, current_user: user) }
+        let(:expected_link) { presenter.group_observability_setup_path(project_with_group.group) }
+
+        before do
+          allow(presenter).to receive(:can?).with(user, :read_observability_portal,
+            group).and_return(can_read_observability)
+
+          allow(Observability::GroupO11ySetting).to receive(:observability_setting_for)
+            .with(project_with_group)
+            .and_return(observability_setting)
+        end
+
+        context 'when observability settings are present' do
+          let(:observability_setting) { instance_double(Observability::GroupO11ySetting) }
+
+          it 'returns anchor data with configuration label and btn-default class' do
+            expect(presenter.observability_anchor_data).to have_attributes(
+              is_link: false,
+              label: a_string_including('Observability configuration'),
+              link: expected_link,
+              class_modifier: 'btn-default'
+            )
+          end
+        end
+
+        context 'when observability settings are not present' do
+          it 'returns anchor data with enable label and no class modifier' do
+            expect(presenter.observability_anchor_data).to have_attributes(
+              is_link: false,
+              label: a_string_including('Enable Observability'),
+              link: expected_link,
+              class_modifier: nil
+            )
+          end
+        end
+      end
+    end
   end
 
   describe '#statistics_buttons' do

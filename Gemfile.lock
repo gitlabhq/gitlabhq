@@ -101,6 +101,7 @@ PATH
     gitlab-rspec (0.1.0)
       activerecord (>= 6.1, < 8)
       activesupport (>= 6.1, < 8)
+      gitlab_quality-test_tooling (>= 3.1, < 4)
       rspec (~> 3.0)
 
 PATH

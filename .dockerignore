@@ -45,7 +45,6 @@
 !/lib/gitlab_edition.rb
 !/lib/gitlab/utils.rb
 !/spec/support/fast_quarantine.rb
-!/spec/support/helpers/test_metrics_helper.rb
 !/tooling/lib/tooling/fast_quarantine.rb
 !/INSTALLATION_TYPE
 !/VERSION

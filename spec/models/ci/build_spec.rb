@@ -6362,7 +6362,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     before do
       stub_application_setting(ci_jwt_signing_key: OpenSSL::PKey::RSA.generate(3072).to_s)
-      stub_feature_flags(ci_id_token_environment_sub_claims: true)
 
       project.ci_cd_settings.update!(
         id_token_sub_claim_components: %w[project_path environment_protected deployment_tier]

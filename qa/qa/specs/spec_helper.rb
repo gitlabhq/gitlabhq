@@ -4,6 +4,7 @@ require 'active_support'
 require 'active_support/testing/time_helpers'
 require 'factory_bot'
 require 'gitlab_quality/test_tooling'
+require 'gitlab/rspec/configurations/test_metrics'
 
 require_relative '../../qa'
 
@@ -68,7 +69,7 @@ RSpec.configure do |config|
   unless QA::Runtime::Env.dry_run || config.dry_run?
     config.add_formatter QA::Support::Formatters::CoverbandFormatter if QA::Runtime::Env.coverband_enabled?
 
-    TestMetricsHelper.configure_exporter!(config, QA::Runtime::Env.run_type) do |exporter_config|
+    Gitlab::Rspec::Configurations::TestMetrics.configure!(QA::Runtime::Env.run_type) do |exporter_config|
       exporter_config.test_retried_proc = ->(_example) { QA::Runtime::Env.rspec_retried? }
       exporter_config.logger = QA::Runtime::Logger.logger
       exporter_config.spec_file_path_prefix = "qa/"

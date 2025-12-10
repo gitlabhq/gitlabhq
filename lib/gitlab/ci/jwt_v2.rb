@@ -8,7 +8,7 @@ module Gitlab
 
       GITLAB_HOSTED_RUNNER = 'gitlab-hosted'
       SELF_HOSTED_RUNNER = 'self-hosted'
-      ADDITIONAL_SUBJECT_CLAIMS = [:environment_protected, :deployment_tier].freeze
+      ADDITIONAL_SUBJECT_CLAIMS = [:ref_type, :ref, :project_path, :environment_protected, :deployment_tier].freeze
 
       def self.for_build(
         build, aud:, sub_components: [:project_path, :ref_type,
@@ -38,12 +38,6 @@ module Gitlab
         }.compact)
       end
 
-      def custom_claims
-        { project_path: source_project.full_path,
-          ref_type: ref_type,
-          ref: source_ref }
-      end
-
       def subject_value(sub_components)
         selected_claims = sub_components
           .select { |claim_name| sub_claims[claim_name] }
@@ -59,9 +53,7 @@ module Gitlab
       end
 
       def sub_claims
-        return custom_claims if Feature.disabled?(:ci_id_token_environment_sub_claims, project)
-
-        ci_claims.slice(*ADDITIONAL_SUBJECT_CLAIMS).merge(custom_claims)
+        ci_claims.merge(project_path: source_project.full_path).slice(*ADDITIONAL_SUBJECT_CLAIMS)
       end
       strong_memoize_attr :sub_claims
 

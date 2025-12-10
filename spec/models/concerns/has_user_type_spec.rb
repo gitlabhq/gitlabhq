@@ -75,6 +75,35 @@ RSpec.describe User, feature_category: :system_access do
       end
     end
 
+    describe '.service_accounts_without_composite_identity' do
+      let_it_be(:sa_without_composite) do
+        create(:user, :service_account, composite_identity_enforced: false)
+      end
+
+      let_it_be(:sa_with_composite) do
+        create(:user, :service_account, composite_identity_enforced: true)
+      end
+
+      it 'includes service accounts with composite_identity_enforced false' do
+        result = described_class.service_accounts_without_composite_identity
+
+        expect(result).to include(sa_without_composite)
+      end
+
+      it 'excludes service accounts with composite_identity_enforced true' do
+        result = described_class.service_accounts_without_composite_identity
+
+        expect(result).not_to include(sa_with_composite)
+      end
+
+      it 'excludes non-service account users' do
+        result = described_class.service_accounts_without_composite_identity
+
+        expect(result).not_to include(human)
+        expect(result).not_to include(project_bot)
+      end
+    end
+
     describe '.without_placeholders' do
       it 'includes everyone except placeholder users' do
         expect(described_class.without_placeholders).to match_array(everyone - [placeholder])
