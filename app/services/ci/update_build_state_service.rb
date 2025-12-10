@@ -20,12 +20,6 @@ module Ci
     end
 
     def execute
-      # Handle two-phase commit workflow for jobs waiting for runner acknowledgment
-      if build.runner_ack_wait_status == :waiting
-        result = handle_runner_ack_workflow
-        return result unless result.nil? # Continue processing if nil returned
-      end
-
       unless accept_available?
         return update_build_state!
       end
@@ -116,65 +110,6 @@ module Ci
 
         Result.new(status: 200)
       else
-        Result.new(status: 400)
-      end
-    end
-
-    def handle_runner_ack_workflow
-      case build_state
-      when 'pending'
-        if build.runner_manager.present?
-          return Result.new(status: 409) # Conflict: Job is already assigned to a runner
-        end
-
-        # Keep-alive signal during runner preparation
-        # The runner is still preparing and confirming it can handle the job
-        if build.heartbeat_runner_ack_wait(build.runner_manager_id_waiting_for_ack)
-          Result.new(status: 200)
-        else
-          logger.error(
-            message: 'Runner manager not found when performing heartbeat during wait for runner acknowledgement',
-            job_id: build.id, runner_id: build.runner_id
-          )
-
-          Result.new(status: 400) # Bad request: Job is not in pending state or not assigned to a runner
-        end
-      when 'running'
-        # Runner is ready to start execution and has accepted the job - transition job to running state after
-        # atomically removing the key from the Redis cache
-        runner_manager = ::Ci::RunnerManager.find_by_id(build.cancel_wait_for_runner_ack)
-        if runner_manager.nil?
-          logger.error(
-            message: "Runner manager not found when transitioning job to #{build_state}",
-            job_id: build.id, runner_id: build.runner_id
-          )
-
-          return Result.new(status: 409) # Conflict: Job is not in pending state or not assigned to a runner
-        end
-
-        # Transition job to running state and assign the runner manager
-        build.run!
-        build.runner_manager = runner_manager
-
-        nil # Continue processing
-      when 'failed'
-        # Cancel the wait for runner ack before dropping the job
-        # NOTE: Even though the wait is canceled indirectly by UpdateBuildQueueService#pop, we cancel it
-        # as soon as we know that the build has failed, to allow a concurrent call to immediately return HTTP 400
-        runner_manager_id = build.cancel_wait_for_runner_ack
-
-        if runner_manager_id.nil?
-          logger.error(
-            message: "Runner manager not found when transitioning job to #{build_state}",
-            job_id: build.id, runner_id: build.runner_id
-          )
-
-          return Result.new(status: 409) # Conflict
-        end
-
-        update_build_state!
-      else
-        # Invalid state for two-phase commit workflow
         Result.new(status: 400)
       end
     end

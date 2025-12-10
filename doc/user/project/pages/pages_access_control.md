@@ -29,7 +29,7 @@ on your GitLab instance. When enabled, only authenticated
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v=tSPAr5mQYc8).
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. To enable the access control, toggle **Pages**  If you don't see the toggle button,
@@ -60,6 +60,11 @@ can access the website.
 When [SAML SSO](../../group/saml_sso/_index.md) is configured for the associated group
 and the access control is enabled, users must authenticate using SSO before accessing the website.
 
+When public access is disabled at the [instance](../../../administration/pages/_index.md#disable-public-access-to-all-pages-sites)
+or [group](#remove-public-access-for-group-pages) level, projects lose the **Everyone**
+visibility level option and are restricted to project members or everyone with access,
+depending on the project's visibility setting.
+
 ## Remove public access for group Pages
 
 {{< history >}}
@@ -79,7 +84,7 @@ Prerequisites
 
 To do this:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Pages public access**, select the **Remove public access** checkbox.
@@ -118,7 +123,7 @@ For invalid or unauthorized access tokens, returns [`404`](../../../api/rest/tro
 To sign out of your GitLab Pages website, revoke the application access token
 for GitLab Pages:
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../interface_redesign.md), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. Select **Applications**.
 1. In the **Authorized applications** section, find the **GitLab Pages**

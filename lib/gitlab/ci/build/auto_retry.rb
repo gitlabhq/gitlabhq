@@ -4,8 +4,7 @@ class Gitlab::Ci::Build::AutoRetry
   include Gitlab::Utils::StrongMemoize
 
   DEFAULT_RETRIES = {
-    scheduler_failure: 2,
-    runner_provisioning_timeout: 2
+    scheduler_failure: 2
   }.freeze
 
   RETRY_OVERRIDES = {

@@ -4559,54 +4559,6 @@ Input type: `CiJobTokenScopeAddProjectInput`
 | <a id="mutationcijobtokenscopeaddprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcijobtokenscopeaddprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
-### `Mutation.ciJobTokenScopeAutopopulateAllowlist`
-
-{{< details >}}
-**Introduced** in GitLab 17.9.
-**Status**: Experiment.
-{{< /details >}}
-
-Input type: `CiJobTokenScopeAutopopulateAllowlistInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationcijobtokenscopeautopopulateallowlistclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcijobtokenscopeautopopulateallowlistprojectpath"></a>`projectPath` | [`ID!`](#id) | Project in which to autopopulate the allowlist. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationcijobtokenscopeautopopulateallowlistclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcijobtokenscopeautopopulateallowlisterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationcijobtokenscopeautopopulateallowliststatus"></a>`status` | [`String!`](#string) | Status of the autopopulation process. |
-
-### `Mutation.ciJobTokenScopeClearAllowlistAutopopulations`
-
-{{< details >}}
-**Introduced** in GitLab 17.9.
-**Status**: Experiment.
-{{< /details >}}
-
-Input type: `CiJobTokenScopeClearAllowlistAutopopulationsInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationcijobtokenscopeclearallowlistautopopulationsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcijobtokenscopeclearallowlistautopopulationsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project in which to autopopulate the allowlist. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationcijobtokenscopeclearallowlistautopopulationsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcijobtokenscopeclearallowlistautopopulationserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationcijobtokenscopeclearallowlistautopopulationsstatus"></a>`status` | [`String!`](#string) | Status of the autopopulation process. |
-
 ### `Mutation.ciJobTokenScopeRemoveGroup`
 
 Input type: `CiJobTokenScopeRemoveGroupInput`
@@ -50865,7 +50817,6 @@ Values for sorting CI/CD job analytics.
 | <a id="cijobfailurereasonreached_downstream_pipeline_trigger_rate_limit"></a>`REACHED_DOWNSTREAM_PIPELINE_TRIGGER_RATE_LIMIT` | A job that failed due to reached downstream pipeline trigger rate limit. |
 | <a id="cijobfailurereasonreached_max_descendant_pipelines_depth"></a>`REACHED_MAX_DESCENDANT_PIPELINES_DEPTH` | A job that failed due to reached max descendant pipelines depth. |
 | <a id="cijobfailurereasonreached_max_pipeline_hierarchy_size"></a>`REACHED_MAX_PIPELINE_HIERARCHY_SIZE` | A job that failed due to reached max pipeline hierarchy size. |
-| <a id="cijobfailurereasonrunner_provisioning_timeout"></a>`RUNNER_PROVISIONING_TIMEOUT` | A job that failed due to runner provisioning timeout. |
 | <a id="cijobfailurereasonrunner_system_failure"></a>`RUNNER_SYSTEM_FAILURE` | A job that failed due to runner system failure. |
 | <a id="cijobfailurereasonrunner_unsupported"></a>`RUNNER_UNSUPPORTED` | A job that failed due to runner unsupported. |
 | <a id="cijobfailurereasonscheduler_failure"></a>`SCHEDULER_FAILURE` | A job that failed due to scheduler failure. |

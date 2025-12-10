@@ -81,7 +81,7 @@ The change cannot be undone.
 
 To delete your pages:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Pages**.
 1. Select **Delete pages**.
 

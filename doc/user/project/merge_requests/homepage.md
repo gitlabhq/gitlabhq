@@ -66,7 +66,8 @@ For more information, see the history.
 
 {{< /alert >}}
 
-GitLab shows the total number of **Active** merge requests in the left sidebar on all pages. If you've [turned on the new navigation](../../interface_redesign.md), this information is in the upper-right corner. For example, this user has:
+GitLab shows the total number of **Active** merge requests in the upper-right corner on all pages.
+For example, this user has:
 
 ![Upper-right corner displaying user activity summary.](img/homepage_totals_v18_7.png)
 
@@ -81,7 +82,7 @@ use any of these methods:
 
 - Use the <kbd>Shift</kbd>+<kbd>m</kbd> [keyboard shortcut](../../shortcuts.md).
 - On the left sidebar, select **Merge requests** ({{< icon name="merge-request-open">}}).
-- On the left sidebar, select **Search or go to**, then from the dropdown list, select **Merge requests**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+- On the top bar, select **Search or go to**, then, from the dropdown list, select **Merge requests**.
 
 To help you focus on what needs your attention right now, GitLab organizes your merge request homepage
 into three tabs:

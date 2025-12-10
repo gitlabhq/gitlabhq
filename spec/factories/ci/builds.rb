@@ -62,30 +62,6 @@ FactoryBot.define do
       end
     end
 
-    trait :waiting_for_runner_ack do
-      pending
-
-      transient do
-        ack_runner_manager { nil }
-      end
-
-      after(:create) do |build, evaluator|
-        # Use provided runner_manager or create one
-        runner_manager =
-          evaluator.ack_runner_manager || begin
-            # Ensure build has a runner
-            runner = build.runner || create(:ci_runner, :with_runner_manager)
-            build.update!(runner: runner) unless build.runner
-
-            # Create a runner_manager for the runner, if needed
-            runner.runner_managers.first || create(:ci_runner_machine, runner: runner)
-          end
-
-        # Set waiting for runner ack
-        build.set_waiting_for_runner_ack(runner_manager.id)
-      end
-    end
-
     trait :with_build_name do
       after(:create) do |build, _|
         create(:ci_build_name, build: build)

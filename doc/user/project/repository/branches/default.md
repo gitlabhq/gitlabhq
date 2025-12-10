@@ -46,7 +46,7 @@ Prerequisites:
 
 To update the default branch for an individual [project](../../_index.md):
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch defaults**. For **Default branch**, select a new default branch.
 1. Optional. Select the **Auto-close referenced issues on default branch** checkbox to close
@@ -70,7 +70,7 @@ API users can also use the `default_branch` attribute of the
 customize the initial branch for projects hosted on that instance. Individual
 groups and subgroups can override the instance default for their projects.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Repository**.
 1. Expand **Default branch**.
 1. For **Initial default branch name**, select a new default branch.
@@ -88,7 +88,7 @@ Prerequisites:
 
 To change the default branch name for new projects in a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Repository**.
 1. Expand **Default branch**.
 1. For **Initial default branch name**, select a new default branch.
@@ -150,7 +150,7 @@ you must either:
 Administrators of GitLab Self-Managed instances can customize the initial default branch protection for projects hosted on that instance. Individual
 groups and subgroups can override the instance default setting for their projects.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Repository**.
 1. Expand **Default branch**.
 1. Select [**Initial default branch protection**](#protect-initial-default-branches).
@@ -172,7 +172,7 @@ on a per-group basis. In
 [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), GitLab administrators can
 disable this privilege for group owners, enforcing the protection rule set for the instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Repository**.
 1. Expand the **Default branch** section.
 1. Clear the **Allow owners to manage default branch protection per group** checkbox.
@@ -199,7 +199,7 @@ on a per-group basis. In
 [enforce protection of initial default branches](#prevent-overrides-of-default-branch-protection)
 which locks this setting for group owners.
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Repository**.
 1. Expand **Default branch**.
 1. Select [**Initial default branch protection**](#protect-initial-default-branches).

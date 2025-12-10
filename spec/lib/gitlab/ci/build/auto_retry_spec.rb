@@ -23,8 +23,6 @@ RSpec.describe Gitlab::Ci::Build::AutoRetry, feature_category: :pipeline_composi
       "not matching with always" | 0 | { when: %w[always], max: 2 } | :api_failure | nil | true
       "not matching reason" | 0 | { when: %w[script_error], max: 2 } | :api_failure | nil | false
       "scheduler failure override" | 1 | { when: %w[scheduler_failure], max: 1 } | :scheduler_failure | nil | false
-      "runner provisioning timeout override" | 1 | { when: %w[runner_provisioning_timeout], max: 1 } |
-        :runner_provisioning_timeout | nil | false
       # retry:exit_codes
       "matching exit code" | 0 | { exit_codes: [255, 137], max: 2 } | nil | 137 | true
       "matching exit code simple" | 0 | { exit_codes: [255], max: 2 } | nil | 255 | true
@@ -39,7 +37,6 @@ RSpec.describe Gitlab::Ci::Build::AutoRetry, feature_category: :pipeline_composi
       "not matching EC & FR" | 0 | { exit_codes: [1], when: %w[script_failure], max: 2 } | :api_failure | 137 | false
       # other
       "default for scheduler failure" | 1 | {} | :scheduler_failure | nil | true
-      "default for runner provisioning timeout" | 1 | {} | :runner_provisioning_timeout | nil | true
       "quota is exceeded" | 0 | { max: 2 } | :ci_quota_exceeded | nil | false
       "no matching runner" | 0 | { max: 2 } | :no_matching_runner | nil | false
       "missing dependencies" | 0 | { max: 2 } | :missing_dependency_failure | nil | false

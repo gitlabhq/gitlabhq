@@ -8,12 +8,6 @@ title: GitLab Duo Chat best practices
 When prompting GitLab Duo Chat with questions, apply the following best practices
 to receive concrete examples and specific guidance.
 
-{{< alert type="note" >}}
-
-Unless stated otherwise, the following best practices apply to both [GitLab Duo Chat (Classic)](_index.md) and [GitLab Duo Chat (Agentic)](agentic_chat.md).
-
-{{< /alert >}}
-
 ## Have a conversation
 
 Treat chats like conversations, not search forms. Start with a search-like question,
@@ -31,6 +25,12 @@ Then follow up with:
 Please show the project structure for the C# project.
 ```
 
+With GitLab Duo Chat (Agentic), you can have a conversation that includes multiple projects.
+
+```plaintext
+Tell me the difference between project A and project B.
+```
+
 ## Refine the prompt
 
 For better responses, provide more context up front.
@@ -39,6 +39,14 @@ Think through the full scope of what you need help with and include it in one pr
 ```plaintext
 How can I get started creating an empty C# console application in VS Code?
 Please show a .gitignore and .gitlab-ci.yml configuration with steps for C#,
+and add security scanning for GitLab.
+```
+
+Or, with GitLab Duo Chat (Agentic):
+
+```plaintext
+Create an empty C# console application.
+Show a .gitignore and .gitlab-ci.yml configuration with steps for C#,
 and add security scanning for GitLab.
 ```
 
@@ -55,6 +63,14 @@ Then ask:
 
 ```plaintext
 Please show an example for Codeowners with different teams: backend, frontend, release managers.
+```
+
+Or, with GitLab Duo Chat (Agentic):
+
+```plaintext
+Create Codeowners with different teams: backend, frontend, release managers.
+
+The group names are "backend-dev," "frontend-dev," and "release-man."
 ```
 
 ## Use low-context communication
@@ -85,6 +101,12 @@ Follow up with:
 How can I get started creating an empty C# console application in VS Code?
 ```
 
+Or, with GitLab Duo Chat (Agentic):
+
+```plaintext
+Create an empty C# console application in my test project.
+```
+
 ## Be patient
 
 Avoid yes/no questions. Start general, then provide specifics as needed.
@@ -99,7 +121,7 @@ Use `/reset` if Chat gets stuck on a wrong track.
 
 ## Refine slash command prompts
 
-Go beyond the basic slash command. Use them with more specific suggestions.
+Go beyond the basic slash command. Use slash commands with more specific suggestions.
 
 ```plaintext
 /refactor into a multi-line written string. Show different approaches for all C++ standards.
@@ -111,18 +133,10 @@ Or:
 /explain why this code has multiple vulnerabilities
 ```
 
-Although slash commands still work for GitLab Duo Chat (Agentic), they are less important because
-you can use [agentic capabilities](agentic_chat.md#gitlab-duo-chat-capabilities)
-such as autonomous project search and file access, and multi-source analysis.
-
-## Use GitLab Duo Chat (Agentic) capabilities
-
-Use the [GitLab Duo Chat (Agentic)-specific capabilities](agentic_chat.md#gitlab-duo-chat-capabilities)
-to help answer complex questions more comprehensively and efficiently, such as:
-
-- Searching across projects.
-- Creating and editing files.
-- Analyzing information from multiple sources simultaneously.
+Although slash commands still work for GitLab Duo Chat (Agentic), they are not as critical
+as they are in GitLab Duo Chat (Classic).
+You can ask Chat to explain or refactor code and it can search across projects,
+create and edit files, and analyze information from multiple sources simultaneously.
 
 ## Related topics
 

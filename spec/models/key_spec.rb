@@ -9,7 +9,7 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
     subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
     subject_key: :organization_id,
     source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_KEYS,
-    claiming_attributes: [:key, :fingerprint_sha256]
+    claiming_attributes: [:key]
 
   describe "Associations" do
     it { is_expected.to belong_to(:user) }

@@ -756,6 +756,33 @@ describe('Tree List', () => {
         expect(findTreeItems().at(0).attributes('tabindex')).toBe('0');
       });
     });
+
+    describe('letter navigation', () => {
+      it.each([
+        ['f', 'file.txt', 'moves to next match'],
+        ['F', 'file.txt', 'is case-insensitive'],
+      ])('pressing "%s" %s', async (key, expectedName) => {
+        await createComponent();
+
+        findTree().trigger('keydown', { key });
+        await nextTick();
+
+        const focusedItem = findTreeItems().wrappers.find((w) => w.attributes('tabindex') === '0');
+        expect(focusedItem.findComponent(FileRow).props('file').name).toBe(expectedName);
+      });
+
+      it('wraps around to find match from beginning', async () => {
+        await createComponent();
+
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        await nextTick();
+        findTree().trigger('keydown', { key: 'd' });
+        await nextTick();
+
+        const focusedItem = findTreeItems().wrappers.find((w) => w.attributes('tabindex') === '0');
+        expect(focusedItem.findComponent(FileRow).props('file').name).toBe('dir_2');
+      });
+    });
   });
 
   describe('Tree toggle', () => {

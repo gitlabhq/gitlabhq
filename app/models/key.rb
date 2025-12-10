@@ -11,7 +11,6 @@ class Key < ApplicationRecord
   include Cells::Claimable
 
   cells_claims_attribute :key, type: CLAIMS_BUCKET_TYPE::SSH_KEYS
-  cells_claims_attribute :fingerprint_sha256, type: CLAIMS_BUCKET_TYPE::SSH_KEY_FINGERPRINTS
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 

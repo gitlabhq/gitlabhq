@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::UpdateAssigneesService, feature_category: :code_review_workflow do
+RSpec.describe MergeRequests::UpdateAssigneesService, :request_store, feature_category: :code_review_workflow do
   include AfterNextHelpers
 
   let_it_be(:group) { create(:group, :public) }
@@ -10,6 +10,7 @@ RSpec.describe MergeRequests::UpdateAssigneesService, feature_category: :code_re
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
+  let_it_be(:service_account) { create(:user, :service_account, composite_identity_enforced: true) }
 
   let_it_be_with_reload(:merge_request) do
     create(
@@ -32,6 +33,7 @@ RSpec.describe MergeRequests::UpdateAssigneesService, feature_category: :code_re
     project.add_maintainer(user)
     project.add_developer(user2)
     project.add_developer(user3)
+    project.add_developer(service_account)
     merge_request.errors.clear
   end
 
@@ -126,6 +128,34 @@ RSpec.describe MergeRequests::UpdateAssigneesService, feature_category: :code_re
 
         expect { service.execute(merge_request) }
           .to issue_fewer_queries_than { update_service.execute(other_mr) }
+      end
+    end
+
+    context 'when assigning to a service account with composite identity enforced' do
+      let(:opts) { { assignee_ids: [service_account.id] } }
+
+      it 'adds the service account as an assignee' do
+        expect(::Gitlab::Auth::Identity).to receive(:link_from_scoped_user).and_call_original
+
+        update_merge_request
+        expect(merge_request.reload.assignees).to eq([service_account])
+      end
+    end
+
+    context 'when assigning to a regular account with composite identity enforced' do
+      let_it_be(:user_with_composite_identity_enforced) { create(:user, developer_of: project) }
+
+      let(:opts) { { assignee_ids: [user_with_composite_identity_enforced.id] } }
+
+      before do
+        user_with_composite_identity_enforced.composite_identity_enforced!
+        allow(User).to receive(:id_in).and_return([user_with_composite_identity_enforced])
+      end
+
+      it 'does not link identities' do
+        expect(::Gitlab::Auth::Identity).not_to receive(:link_from_scoped_user)
+
+        update_merge_request
       end
     end
 

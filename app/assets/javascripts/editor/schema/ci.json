@@ -477,14 +477,19 @@
                       "if": {
                         "properties": {
                           "type": {
-                            "enum": ["string"]
+                            "enum": [
+                              "string"
+                            ]
                           }
                         }
                       },
                       "then": {
                         "properties": {
                           "default": {
-                            "type": ["string", "null"]
+                            "type": [
+                              "string",
+                              "null"
+                            ]
                           }
                         }
                       }
@@ -493,14 +498,19 @@
                       "if": {
                         "properties": {
                           "type": {
-                            "enum": ["number"]
+                            "enum": [
+                              "number"
+                            ]
                           }
                         }
                       },
                       "then": {
                         "properties": {
                           "default": {
-                            "type": ["number", "null"]
+                            "type": [
+                              "number",
+                              "null"
+                            ]
                           }
                         }
                       }
@@ -509,14 +519,19 @@
                       "if": {
                         "properties": {
                           "type": {
-                            "enum": ["boolean"]
+                            "enum": [
+                              "boolean"
+                            ]
                           }
                         }
                       },
                       "then": {
                         "properties": {
                           "default": {
-                            "type": ["boolean", "null"]
+                            "type": [
+                              "boolean",
+                              "null"
+                            ]
                           }
                         }
                       }
@@ -525,7 +540,9 @@
                       "if": {
                         "properties": {
                           "type": {
-                            "enum": ["array"]
+                            "enum": [
+                              "array"
+                            ]
                           }
                         }
                       },
@@ -566,7 +583,9 @@
               "$ref": "#/definitions/baseInput"
             },
             {
-              "required": ["default"]
+              "required": [
+                "default"
+              ]
             },
             {
               "allOf": [
@@ -574,7 +593,9 @@
                   "if": {
                     "properties": {
                       "type": {
-                        "enum": ["string"]
+                        "enum": [
+                          "string"
+                        ]
                       }
                     }
                   },
@@ -590,7 +611,9 @@
                   "if": {
                     "properties": {
                       "type": {
-                        "enum": ["number"]
+                        "enum": [
+                          "number"
+                        ]
                       }
                     }
                   },
@@ -606,7 +629,9 @@
                   "if": {
                     "properties": {
                       "type": {
-                        "enum": ["boolean"]
+                        "enum": [
+                          "boolean"
+                        ]
                       }
                     }
                   },
@@ -622,7 +647,9 @@
                   "if": {
                     "properties": {
                       "type": {
-                        "enum": ["array"]
+                        "enum": [
+                          "array"
+                        ]
                       }
                     }
                   },
@@ -2064,10 +2091,6 @@
         {
           "const": "data_integrity_failure",
           "description": "Retry if there is an unknown job problem."
-        },
-        {
-          "const": "runner_provisioning_timeout",
-          "description": "Retry if the runner manager did not provision a runner to pick up the job in time."
         }
       ]
     },

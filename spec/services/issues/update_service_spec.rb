@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning do
+RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
@@ -1266,6 +1266,32 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
         update_issue(assignee_ids: [create(:user).id])
 
         expect(issue.reload.assignees).to eq([user3])
+      end
+
+      context 'when assignee is a service account with composite_identity_enforced' do
+        let_it_be(:new_assignee) { create(:user, :service_account, composite_identity_enforced: true, developer_of: project) }
+
+        it 'assigns the user' do
+          expect(::Gitlab::Auth::Identity).to receive(:link_from_scoped_user).and_call_original
+
+          update_issue(assignee_ids: [new_assignee.id])
+
+          expect(issue.reload.assignees).to eq([new_assignee])
+        end
+      end
+
+      context 'when assignee is a regular user account with composite_identity_enforced' do
+        let_it_be(:new_assignee) { create(:user, developer_of: project) }
+
+        before do
+          new_assignee.composite_identity_enforced!
+          allow(User).to receive(:id_in).and_return([new_assignee])
+        end
+
+        it 'does not link the identities' do
+          expect(::Gitlab::Auth::Identity).not_to receive(:link_from_scoped_user)
+          update_issue(assignee_ids: [new_assignee.id])
+        end
       end
 
       context "when issuable feature is private" do

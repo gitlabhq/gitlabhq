@@ -37,6 +37,10 @@ module Gitlab
 
         return unless scoped_user
 
+        ::Gitlab::Auth::Identity.link_from_scoped_user(user, scoped_user)
+      end
+
+      def self.link_from_scoped_user(user, scoped_user)
         ::Gitlab::Auth::Identity.fabricate(user).tap do |identity|
           identity.link!(scoped_user) if identity&.composite?
         end

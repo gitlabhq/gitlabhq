@@ -45,7 +45,7 @@ This guide explains how to use the Pages UI to deploy a static site or framework
 
 To complete the setup and generate a GitLab Pages deployment:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Pages**.
 
    A **Get Started with Pages** form appears. If this form is not available,
@@ -74,9 +74,7 @@ and on the right side, select **Download artifacts**.
 
 After your pipeline completes successfully:
 
-1. On the left sidebar, select **Search or go to** and find your project.
-   If you've [turned on the new navigation](../../../interface_redesign.md),
-   this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Pages**.
 1. In **Deployments**, you can view your active deployment URL.
 1. To visit your deployed GitLab Pages site, select the URL.

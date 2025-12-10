@@ -35,7 +35,7 @@ gitGraph
 
 ## Configure a project's merge method
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. Select your desired **Merge method** from these options:
    - Merge commit

@@ -83,7 +83,7 @@ Prerequisites:
 
 To create global push rules:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Push rules**.
 1. Expand **Push rules**.
 1. Set the rule you want.
@@ -96,7 +96,7 @@ When you set push rules for a project, those rules replace any previously config
 
 To set push rules for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Set the rule you want.
@@ -379,7 +379,7 @@ Commits with invalid or corrupt signatures are rejected.
 
 To enable the **Reject unsigned commits** push rule:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Select **Reject unsigned commits**.

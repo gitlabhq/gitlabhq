@@ -1261,36 +1261,28 @@ When documenting how to navigate the GitLab UI:
   - Do: To view the changes, in the merge request, select the link.
   - Do not: Select the link in the merge request to view the changes.
 
-### Names for menus
-
-Use these terms when referring to the main GitLab user interface
-elements:
-
-- **Left sidebar**: This is the navigation sidebar on the left of the user
-  interface.
-  - Do not use the phrase `context switcher` or `switch contexts`. Instead, try to direct the user to the exact location with a set of repeatable steps.
-  - Do not use the phrase `the **Explore** menu` or `the **Your work** sidebar`. Instead, use `the left sidebar`.
-- **Right sidebar**: This is the navigation sidebar on the right of the user
-  interface, specific to the open issue, merge request, or epic.
-
 ### Names for UI elements
-
-All UI elements [should be **bold**](#bold). The `>` in the navigation path should not be bold.
-
-Guidance for individual UI elements is in [the word list](word_list.md).
 
 In the [redesigned](../../../user/interface_redesign.md) GitLab UI, use the following names:
 
 ![Wireframe of a typical GitLab application page composition.](img/layout_external_names_v18_6.svg)
 
 1. **Top bar**
-1. **Left sidebar**
-1. **... panel** based on the primary context. For example, if the context is a merge request, refer to it as the **merge request panel**.
-1. **Details panel** supports the primary context
+1. **Left sidebar**: The navigation sidebar on the left of the user interface.
+   - Do not use the phrase `the **Explore** menu` or `the **Your work** sidebar`. Instead, use `the left sidebar`.
+1. **... panel**: Based on the primary context. For example, if the context is a merge request, refer to it as the **merge request panel**.
+1. **Details panel**: Supports the primary context. Specific to the selected issue or epic.
 1. **GitLab Duo panel**
 1. **GitLab Duo sidebar**
 
+The **right sidebar** is the navigation sidebar on the right of the user interface,
+specific to an open issue, merge request, or epic.
+
 With the exception of **GitLab Duo**, use lowercase for all above terms.
+
+All UI elements [should be **bold**](#bold). The `>` in the navigation path should not be bold.
+
+Additional guidance for individual UI elements is in [the word list](word_list.md).
 
 ### How to write navigation task steps
 

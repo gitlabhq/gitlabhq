@@ -9,7 +9,7 @@ RSpec.describe GpgKey, feature_category: :source_code_management do
     subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::USER,
     subject_key: :user_id,
     source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_GPG_KEYS,
-    claiming_attributes: [:key, :fingerprint, :primary_keyid]
+    claiming_attributes: [:key]
 
   describe "associations" do
     it { is_expected.to belong_to(:user) }

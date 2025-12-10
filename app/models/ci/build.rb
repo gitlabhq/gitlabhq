@@ -162,10 +162,6 @@ module Ci
 
     delegate :name, to: :project, prefix: true
 
-    delegate :set_waiting_for_runner_ack,
-      :heartbeat_runner_ack_wait, :cancel_wait_for_runner_ack, :runner_manager_id_waiting_for_ack,
-      to: :runner_ack_queue
-
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
 
@@ -1289,23 +1285,6 @@ module Ci
       super
     end
 
-    # Returns the current status of the runner acknowledgement wait process for two-phase job acceptance.
-    #
-    # @return [Symbol] One of:
-    #   - `:waiting` - Pending job has been assigned to a runner and is actively waiting for the runner to acknowledge
-    #                  that it has picked up the job. The runner manager ID is present in Redis.
-    #   - `:not_waiting` - Job is not in a waiting state. This occurs when either the job is not in pending
-    #                      status, or the job has not been assigned to a runner yet (no `runner_id``).
-    #   - `:wait_expired` - Job was previously assigned to a runner and was waiting for acknowledgement,
-    #                       but the wait period has expired. The runner manager ID is no longer present in Redis,
-    #                       indicating the runner failed to acknowledge within the expected timeframe.
-    def runner_ack_wait_status
-      return :not_waiting unless pending? && runner_id.present?
-      return :waiting if runner_manager_id_waiting_for_ack.present?
-
-      :wait_expired
-    end
-
     def uses_protected_cache?
       return false unless user
       return false unless project.ci_separated_caches
@@ -1511,10 +1490,6 @@ module Ci
 
     def prefix_and_partition_for_token
       ::Ci::Builds::TokenPrefix.encode(self)
-    end
-
-    def runner_ack_queue
-      @runner_ack_queue ||= Gitlab::Ci::Build::RunnerAckQueue.new(self)
     end
 
     def project_integrations

@@ -83,14 +83,13 @@ module Ci
           .with_source(@source_project)
       end
 
-      def bulk_add_projects!(target_projects, user:, autopopulated: false, policies: [])
+      def bulk_add_projects!(target_projects, user:, policies: [])
         now = Time.zone.now
 
         projects = target_projects.map do |target_project|
           Ci::JobToken::ProjectScopeLink.new(
             source_project_id: @source_project.id,
             target_project: target_project,
-            autopopulated: autopopulated,
             added_by: user,
             job_token_policies: policies,
             direction: @direction,
@@ -101,14 +100,13 @@ module Ci
         Ci::JobToken::ProjectScopeLink.bulk_insert!(projects)
       end
 
-      def bulk_add_groups!(target_groups, user:, autopopulated: false, policies: [])
+      def bulk_add_groups!(target_groups, user:, policies: [])
         now = Time.zone.now
 
         groups = target_groups.map do |target_group|
           Ci::JobToken::GroupScopeLink.new(
             source_project_id: @source_project.id,
             target_group: target_group,
-            autopopulated: autopopulated,
             added_by: user,
             job_token_policies: policies,
             created_at: now

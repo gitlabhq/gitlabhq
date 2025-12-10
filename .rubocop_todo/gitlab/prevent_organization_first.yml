@@ -7,5 +7,5 @@ Gitlab/PreventOrganizationFirst:
     - 'ee/app/workers/sync_seat_link_request_worker.rb'
     - 'ee/lib/api/scim/instance_scim.rb'
     - 'lib/banzai/filter/references/user_reference_filter.rb'
-    - 'lib/tasks/ci/allowlist_migration.rake'
+    - 'lib/gitlab/background_migration/backfill_organization_id_on_fork_networks.rb'
     - 'lib/users/internal.rb'

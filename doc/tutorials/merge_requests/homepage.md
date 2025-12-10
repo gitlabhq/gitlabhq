@@ -56,7 +56,8 @@ still giving you access to other recent work:
 - **Merged**: These merge requests merged in the last 14 days, and you were an assignee or a reviewer.
 - **Search**: Search all merge requests, and filter them as needed.
 
-GitLab shows the total number of **Active** merge requests in the left sidebar on all pages. If you've [turned on the new navigation](../../user/interface_redesign.md), this information is in the upper-right corner. For example, this user has:
+GitLab shows the total number of **Active** merge requests in the upper-right corner on all pages.
+For example, this user has:
 
 ![The upper-right corner showing the number of active merge requests.](img/homepage_totals_v18_7.png)
 

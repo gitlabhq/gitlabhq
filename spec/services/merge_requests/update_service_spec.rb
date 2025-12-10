@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_review_workflow do
+RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_category: :code_review_workflow do
   include ProjectForksHelper
 
   let_it_be(:group) { create(:group, :public) }
@@ -10,6 +10,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
+  let_it_be(:service_account) { create(:user, :service_account, composite_identity_enforced: true) }
   let_it_be(:label) { create(:label, title: 'a', project: project) }
   let_it_be(:label2) { create(:label) }
   let_it_be(:milestone) { create(:milestone, project: project) }
@@ -33,6 +34,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
     project.add_maintainer(user)
     project.add_developer(user2)
     project.add_developer(user3)
+    project.add_developer(service_account)
   end
 
   describe 'execute' do
@@ -314,6 +316,32 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           update_merge_request(reviewer_ids: [user.id])
 
           expect(merge_request.find_reviewer(user)).to be_approved
+        end
+
+        context 'when the reviewer is a service account with composite_identity_enforced' do
+          it 'assigns the reviewer' do
+            expect(::Gitlab::Auth::Identity).to receive(:link_from_scoped_user).and_call_original
+
+            update_merge_request(reviewer_ids: [service_account.id], use_specialized_service: true)
+            expect(merge_request.reviewers).to eq([service_account])
+          end
+        end
+
+        context 'when the reviewer is not a service account but has composite_identity_enforced set' do
+          let_it_be(:new_assignee) do
+            create(:user, developer_of: project)
+          end
+
+          before do
+            new_assignee.composite_identity_enforced!
+            allow(User).to receive(:id_in).and_return([new_assignee])
+          end
+
+          it 'does not call ::Gitlab::Auth::Identity' do
+            expect(::Gitlab::Auth::Identity).not_to receive(:link_from_scoped_user)
+
+            update_merge_request(reviewer_ids: [new_assignee.id], use_specialized_service: true)
+          end
         end
       end
 

@@ -4572,9 +4572,6 @@ msgstr ""
 msgid "Add email participants that don't have a GitLab account."
 msgstr ""
 
-msgid "Add entries"
-msgstr ""
-
 msgid "Add environment"
 msgstr ""
 
@@ -7663,9 +7660,6 @@ msgid "All projects in %{groupsLength} group:"
 msgid_plural "All projects in %{groupsLength} groups:"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "All projects in authentication log"
-msgstr ""
 
 msgid "All projects selected"
 msgstr ""
@@ -13005,19 +12999,7 @@ msgstr ""
 msgid "CICD|Add a %{kubernetes_cluster_link_start}Kubernetes cluster integration%{link_end} with a domain, or create an AUTO_DEVOPS_PLATFORM_TARGET CI variable."
 msgstr ""
 
-msgid "CICD|Add all authentication log entries to the allowlist"
-msgstr ""
-
 msgid "CICD|Add an existing project to the scope"
-msgstr ""
-
-msgid "CICD|Add log entries and compact the allowlist"
-msgstr ""
-
-msgid "CICD|Added from log."
-msgstr ""
-
-msgid "CICD|Adding all entries from the authentication log would exceed this limit. GitLab can compact the allowlist with common groups until the entries are within the limit. %{linkStart}What is the compaction algorithm?%{linkEnd}"
 msgstr ""
 
 msgid "CICD|Additional permissions"
@@ -13032,12 +13014,6 @@ msgstr ""
 msgid "CICD|Allow pipeline variables by default"
 msgstr ""
 
-msgid "CICD|An error occurred while adding the authentication log entries. Please try again."
-msgstr ""
-
-msgid "CICD|An error occurred while removing the auto-added log entries. Please try again."
-msgstr ""
-
 msgid "CICD|Are you sure you want to remove %{namespace} from the job token allowlist?"
 msgstr ""
 
@@ -13050,19 +13026,10 @@ msgstr ""
 msgid "CICD|Authentication log"
 msgstr ""
 
-msgid "CICD|Authentication log entries were successfully added to the allowlist."
-msgstr ""
-
-msgid "CICD|Authentication log entries were successfully removed from the allowlist."
-msgstr ""
-
 msgid "CICD|Authorized groups and projects"
 msgstr ""
 
 msgid "CICD|Auto DevOps"
-msgstr ""
-
-msgid "CICD|Auto-populating allowlist entries. Please wait while the action completes."
 msgstr ""
 
 msgid "CICD|Automatic deployment to staging, manual deployment to production"
@@ -13119,9 +13086,6 @@ msgstr ""
 msgid "CICD|Group or project"
 msgstr ""
 
-msgid "CICD|Groups and projects on the allowlist are authorized to use a CI/CD job token to authenticate requests to this project. Entries added from the authentication log can be removed later if needed."
-msgstr ""
-
 msgid "CICD|Job logs"
 msgstr ""
 
@@ -13164,16 +13128,7 @@ msgstr ""
 msgid "CICD|Prevent CI/CD job tokens from this project from being used to access other projects unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "CICD|Remove all auto-added allowlist entries"
-msgstr ""
-
 msgid "CICD|Remove group or project"
-msgstr ""
-
-msgid "CICD|Removing auto-added allowlist entries. Please wait while the action completes."
-msgstr ""
-
-msgid "CICD|Removing these entries could cause authentication failures or disrupt pipelines."
 msgstr ""
 
 msgid "CICD|Run pipelines triggered by AI agents automatically"
@@ -13194,12 +13149,6 @@ msgstr ""
 msgid "CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr ""
 
-msgid "CICD|The allowlist can contain a maximum of %{projectAllowlistLimit} groups and projects."
-msgstr ""
-
-msgid "CICD|The process might take a moment to complete for large authentication logs or allowlists."
-msgstr ""
-
 msgid "CICD|There are several CI/CD limits in place."
 msgstr ""
 
@@ -13207,12 +13156,6 @@ msgid "CICD|There are too many entries to display. Download the CSV file to view
 msgstr ""
 
 msgid "CICD|There was a problem fetching authentication logs."
-msgstr ""
-
-msgid "CICD|There was a problem fetching authorization logs count."
-msgstr ""
-
-msgid "CICD|This action removes all groups and projects that were auto-added from the authentication log."
 msgstr ""
 
 msgid "CICD|Turn on incremental logging"
@@ -13234,9 +13177,6 @@ msgid "CICD|When enabled, all projects must use their allowlist to control CI/CD
 msgstr ""
 
 msgid "CICD|When turned on, archived job logs are incrementally uploaded to object storage. %{link_start}Learn more.%{link_end}"
-msgstr ""
-
-msgid "CICD|You're about to add all entries from the authentication log to the allowlist for %{projectName}. This will also update the Job Token setting to %{codeStart}This project and any groups and projects in the allowlist%{codeEnd}, if not already set. Duplicate entries will be ignored."
 msgstr ""
 
 msgid "CICD|group enabled"
@@ -55409,9 +55349,6 @@ msgstr ""
 msgid "Remove email participants"
 msgstr ""
 
-msgid "Remove entries"
-msgstr ""
-
 msgid "Remove favicon"
 msgstr ""
 
@@ -62256,10 +62193,16 @@ msgstr ""
 msgid "SecurityReports|All tools"
 msgstr ""
 
+msgid "SecurityReports|All tracked refs"
+msgstr ""
+
 msgid "SecurityReports|Attach to existing issue"
 msgstr ""
 
 msgid "SecurityReports|Attach to new issue"
+msgstr ""
+
+msgid "SecurityReports|Branches"
 msgstr ""
 
 msgid "SecurityReports|CVSS v%{version}:"
@@ -62707,6 +62650,9 @@ msgstr ""
 msgid "SecurityReports|Submit vulnerability"
 msgstr ""
 
+msgid "SecurityReports|Tags"
+msgstr ""
+
 msgid "SecurityReports|The Activity filter now defaults to showing only vulnerabilities that are \"still detected\". To see vulnerabilities regardless of their detection status, remove this filter."
 msgstr ""
 
@@ -62783,6 +62729,9 @@ msgid "SecurityReports|Total number of %{boldStart}open%{boldEnd} %{severity} vu
 msgstr ""
 
 msgid "SecurityReports|Total number of %{boldStart}open%{boldEnd} %{severity} vulnerabilities. Select the number to see the open vulnerabilities in the vulnerability report."
+msgstr ""
+
+msgid "SecurityReports|Tracked ref"
 msgstr ""
 
 msgid "SecurityReports|Unable to add %{invalidProjectsMessage}: %{errorMessage}"

@@ -358,6 +358,35 @@ RSpec.describe RuboCop::Formatter::TodoFormatter, feature_category: :tooling do
           YAML
         end
       end
+
+      context 'with empty rule config' do
+        let(:yaml) do
+          <<~YAML
+            ---
+            A/Cop:
+          YAML
+        end
+
+        it 'does not output anything' do
+          expect(stdout.string).to eq('')
+        end
+
+        it 'does not write any YAML files' do
+          expect(rubocop_todo_dir_listing).to be_empty
+        end
+      end
+
+      context 'with empty file' do
+        let(:yaml) { '' }
+
+        it 'does not output anything' do
+          expect(stdout.string).to eq('')
+        end
+
+        it 'does not write any YAML files' do
+          expect(rubocop_todo_dir_listing).to be_empty
+        end
+      end
     end
   end
 

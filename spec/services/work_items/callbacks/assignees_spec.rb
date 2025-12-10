@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Callbacks::Assignees, :freeze_time, feature_category: :portfolio_management do
+RSpec.describe WorkItems::Callbacks::Assignees, :request_store, :freeze_time, feature_category: :portfolio_management do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:project) { create(:project, :private, reporters: reporter) }
   let_it_be(:new_assignee) { create(:user, guest_of: project) }
@@ -107,6 +107,37 @@ RSpec.describe WorkItems::Callbacks::Assignees, :freeze_time, feature_category: 
         assignees_callback
 
         expect(work_item.assignee_ids).to contain_exactly(new_assignee.id)
+      end
+    end
+
+    context 'when assignee is a service account with composite_identity_enforced' do
+      let_it_be(:new_assignee) do
+        create(:user, :service_account, composite_identity_enforced: true, developer_of: project)
+      end
+
+      it 'sets the service account as an assignee' do
+        expect(::Gitlab::Auth::Identity).to receive(:link_from_scoped_user).and_call_original
+
+        assignees_callback
+
+        expect(work_item.assignee_ids).to contain_exactly(new_assignee.id)
+      end
+    end
+
+    context 'when assignee is a regular user with composite_identity_enforced' do
+      let_it_be(:new_assignee) do
+        create(:user, developer_of: project)
+      end
+
+      before do
+        new_assignee.composite_identity_enforced!
+        allow(User).to receive(:id_in).and_return([new_assignee])
+      end
+
+      it 'does not link the identities' do
+        expect(::Gitlab::Auth::Identity).not_to receive(:link_from_scoped_user)
+
+        assignees_callback
       end
     end
 

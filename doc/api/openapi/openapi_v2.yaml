@@ -68624,7 +68624,7 @@ definitions:
         description: Job's authentication token
       state:
         type: string
-        description: 'Job''s status: pending, running, success, failed'
+        description: 'Job''s status: running, success, failed'
       checksum:
         type: string
         description: Job's trace CRC32 checksum

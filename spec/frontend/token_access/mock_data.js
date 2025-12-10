@@ -78,7 +78,6 @@ export const mockGroups = [
     webUrl: 'http://localhost/some-group',
     defaultPermissions: false,
     jobTokenPolicies: ['READ_JOBS', 'ADMIN_DEPLOYMENTS'],
-    autopopulated: true,
     __typename: 'CiJobTokenAccessibleGroup',
   },
   {
@@ -88,7 +87,6 @@ export const mockGroups = [
     webUrl: 'http://localhost/another-group',
     defaultPermissions: true,
     jobTokenPolicies: [],
-    autopopulated: true,
     __typename: 'CiJobTokenAccessibleGroup',
   },
   {
@@ -98,7 +96,6 @@ export const mockGroups = [
     webUrl: 'http://localhost/a-sub-group',
     defaultPermissions: false,
     jobTokenPolicies: [],
-    autopopulated: false,
     __typename: 'CiJobTokenAccessibleGroup',
   },
 ];
@@ -116,7 +113,6 @@ export const mockProjects = [
     defaultPermissions: false,
     jobTokenPolicies: ['READ_JOBS'],
     isLocked: false,
-    autopopulated: true,
     __typename: 'Project',
   },
   {
@@ -131,7 +127,6 @@ export const mockProjects = [
     defaultPermissions: true,
     jobTokenPolicies: [],
     isLocked: true,
-    autopopulated: false,
     __typename: 'Project',
   },
 ];
@@ -229,7 +224,7 @@ export const mockAuthLogsCountResponse = (count) => ({
   },
 });
 
-export const mockCiJobTokenScopeAllowlistResponse = (hasAutopopulatedEntries = true) => ({
+export const mockCiJobTokenScopeAllowlistResponse = () => ({
   data: {
     project: {
       id: 'gid://gitlab/Project/26',
@@ -243,7 +238,6 @@ export const mockCiJobTokenScopeAllowlistResponse = (hasAutopopulatedEntries = t
             {
               defaultPermissions: true,
               jobTokenPolicies: [],
-              autopopulated: hasAutopopulatedEntries,
               target: {
                 id: 'gid://gitlab/Group/4',
                 name: 'zed',
@@ -261,7 +255,6 @@ export const mockCiJobTokenScopeAllowlistResponse = (hasAutopopulatedEntries = t
             {
               defaultPermissions: true,
               jobTokenPolicies: [],
-              autopopulated: hasAutopopulatedEntries,
               target: {
                 id: 'gid://gitlab/Project/23',
                 name: 'your-repo',
@@ -275,7 +268,6 @@ export const mockCiJobTokenScopeAllowlistResponse = (hasAutopopulatedEntries = t
             {
               defaultPermissions: true,
               jobTokenPolicies: [],
-              autopopulated: hasAutopopulatedEntries,
               target: {
                 id: 'gid://gitlab/Project/14',
                 name: 'abc123',
@@ -321,26 +313,6 @@ export const mockAuthLogsResponse = (hasNextPage = false) => ({
           hasNextPage,
         },
       },
-    },
-  },
-});
-
-export const mockAutopopulateAllowlistResponse = ({ errorMessage } = {}) => ({
-  data: {
-    ciJobTokenScopeAutopopulateAllowlist: {
-      status: 'complete',
-      errors: errorMessage ? [{ message: errorMessage }] : [],
-      __typename: 'CiJobTokenScopeAutopopulateAllowlistPayload',
-    },
-  },
-});
-
-export const mockRemoveAutopopulatedEntriesResponse = ({ errorMessage } = {}) => ({
-  data: {
-    ciJobTokenScopeClearAllowlistAutopopulations: {
-      status: 'complete',
-      errors: errorMessage ? [{ message: errorMessage }] : [],
-      __typename: 'CiJobTokenScopeClearAllowlistAutopopulationsPayload',
     },
   },
 });

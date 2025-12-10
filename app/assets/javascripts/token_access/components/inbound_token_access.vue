@@ -3,7 +3,6 @@ import {
   GlAlert,
   GlButton,
   GlCollapsibleListbox,
-  GlDisclosureDropdown,
   GlIcon,
   GlLoadingIcon,
   GlSprintf,
@@ -19,19 +18,10 @@ import inboundRemoveProjectCIJobTokenScopeMutation from '../graphql/mutations/in
 import inboundRemoveGroupCIJobTokenScopeMutation from '../graphql/mutations/inbound_remove_group_ci_job_token_scope.mutation.graphql';
 import inboundUpdateCIJobTokenScopeMutation from '../graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
 import inboundGetCIJobTokenScopeQuery from '../graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
-import autopopulateAllowlistMutation from '../graphql/mutations/autopopulate_allowlist.mutation.graphql';
 import getCiJobTokenScopeAllowlistQuery from '../graphql/queries/get_ci_job_token_scope_allowlist.query.graphql';
-import getAuthLogCountQuery from '../graphql/queries/get_auth_log_count.query.graphql';
-import removeAutopopulatedEntriesMutation from '../graphql/mutations/remove_autopopulated_entries.mutation.graphql';
-import {
-  JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT,
-  JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG,
-  JOB_TOKEN_REMOVE_AUTOPOPULATED_ENTRIES_MODAL,
-} from '../constants';
+import { JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT } from '../constants';
 import TokenAccessTable from './token_access_table.vue';
 import NamespaceForm from './namespace_form.vue';
-import AutopopulateAllowlistModal from './autopopulate_allowlist_modal.vue';
-import RemoveAutopopulatedEntriesModal from './remove_autopopulated_entries_modal.vue';
 
 export default {
   i18n: {
@@ -51,7 +41,6 @@ export default {
       'CICD|Are you sure you want to remove %{namespace} from the job token allowlist?',
     ),
     removeNamespaceModalActionText: s__('CICD|Remove group or project'),
-    removeAutopopulatedEntries: s__('CICD|Remove all auto-added allowlist entries'),
   },
   inboundJobTokenScopeOptions: [
     {
@@ -64,16 +53,13 @@ export default {
     },
   ],
   components: {
-    AutopopulateAllowlistModal,
     GlAlert,
     GlButton,
     GlCollapsibleListbox,
-    GlDisclosureDropdown,
     GlIcon,
     GlLoadingIcon,
     GlSprintf,
     CrudComponent,
-    RemoveAutopopulatedEntriesModal,
     TokenAccessTable,
     GlFormRadioGroup,
     NamespaceForm,
@@ -84,22 +70,6 @@ export default {
   },
   inject: ['enforceAllowlist', 'fullPath', 'projectAllowlistLimit'],
   apollo: {
-    authLogCount: {
-      query: getAuthLogCountQuery,
-      variables() {
-        return {
-          fullPath: this.fullPath,
-        };
-      },
-      update({ project }) {
-        return project.ciJobTokenAuthLogs?.count;
-      },
-      error() {
-        createAlert({
-          message: s__('CICD|There was a problem fetching authorization logs count.'),
-        });
-      },
-    },
     inboundJobTokenScopeEnabled: {
       query: inboundGetCIJobTokenScopeQuery,
       variables() {
@@ -141,12 +111,10 @@ export default {
   },
   data() {
     return {
-      authLogCount: 0,
       allowlistLoadingMessage: '',
       inboundJobTokenScopeEnabled: null,
       isUpdatingJobTokenScope: false,
       groupsAndProjectsWithAccess: { groups: [], projects: [] },
-      autopopulationErrorMessage: null,
       projectName: '',
       namespaceToEdit: null,
       namespaceToRemove: null,
@@ -154,9 +122,6 @@ export default {
     };
   },
   computed: {
-    authLogExceedsLimit() {
-      return this.projectCount + this.groupCount + this.authLogCount > this.projectAllowlistLimit;
-    },
     isAllowlistLoading() {
       return (
         this.$apollo.queries.groupsAndProjectsWithAccess.loading ||
@@ -171,13 +136,6 @@ export default {
         },
       ];
 
-      if (this.authLogCount > 0) {
-        actions.push({
-          text: __('All projects in authentication log'),
-          value: JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG,
-        });
-      }
-
       return actions;
     },
     allowlist() {
@@ -189,20 +147,6 @@ export default {
         .filter((item) => item !== currentProject)
         .sort((a, b) => a.fullPath.localeCompare(b.fullPath));
       return currentProject ? [currentProject, ...otherItems] : otherItems;
-    },
-    disclosureDropdownOptions() {
-      return [
-        {
-          text: this.$options.i18n.removeAutopopulatedEntries,
-          variant: 'danger',
-          action: () => {
-            this.selectedAction = JOB_TOKEN_REMOVE_AUTOPOPULATED_ENTRIES_MODAL;
-          },
-        },
-      ];
-    },
-    hasAutoPopulatedEntries() {
-      return this.allowlist.filter((entry) => entry.autopopulated).length > 0;
     },
     groupCount() {
       return this.groupsAndProjectsWithAccess.groups.length;
@@ -221,12 +165,6 @@ export default {
         namespace: this.namespaceToRemove?.fullPath,
       });
     },
-    showRemoveAutopopulatedEntriesModal() {
-      return this.selectedAction === JOB_TOKEN_REMOVE_AUTOPOPULATED_ENTRIES_MODAL;
-    },
-    showAutopopulateModal() {
-      return this.selectedAction === JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG;
-    },
   },
   methods: {
     hideSelectedAction() {
@@ -240,7 +178,6 @@ export default {
         ...node.target,
         defaultPermissions: node.defaultPermissions,
         jobTokenPolicies: node.jobTokenPolicies,
-        autopopulated: node.autopopulated,
       }));
     },
     async updateCIJobTokenScope() {
@@ -297,83 +234,6 @@ export default {
       this.refetchGroupsAndProjects();
       return Promise.resolve();
     },
-    async autopopulateAllowlist() {
-      this.hideSelectedAction();
-      this.autopopulationErrorMessage = null;
-      this.allowlistLoadingMessage = s__(
-        'CICD|Auto-populating allowlist entries. Please wait while the action completes.',
-      );
-
-      try {
-        const {
-          data: {
-            ciJobTokenScopeAutopopulateAllowlist: { errors },
-          },
-        } = await this.$apollo.mutate({
-          mutation: autopopulateAllowlistMutation,
-          variables: {
-            projectPath: this.fullPath,
-          },
-        });
-
-        if (errors.length) {
-          this.autopopulationErrorMessage = errors[0].message;
-          return;
-        }
-
-        this.$apollo.queries.inboundJobTokenScopeEnabled.refetch();
-        this.refetchAllowlist();
-        this.$toast.show(
-          s__('CICD|Authentication log entries were successfully added to the allowlist.'),
-        );
-      } catch {
-        this.autopopulationErrorMessage = s__(
-          'CICD|An error occurred while adding the authentication log entries. Please try again.',
-        );
-      } finally {
-        this.allowlistLoadingMessage = '';
-      }
-    },
-    async removeAutopopulatedEntries() {
-      this.hideSelectedAction();
-      this.autopopulationErrorMessage = null;
-      this.allowlistLoadingMessage = s__(
-        'CICD|Removing auto-added allowlist entries. Please wait while the action completes.',
-      );
-
-      try {
-        const {
-          data: {
-            ciJobTokenScopeClearAllowlistAutopopulations: { errors },
-          },
-        } = await this.$apollo.mutate({
-          mutation: removeAutopopulatedEntriesMutation,
-          variables: {
-            projectPath: this.fullPath,
-          },
-        });
-
-        if (errors.length) {
-          this.autopopulationErrorMessage = errors[0].message;
-          return;
-        }
-
-        this.refetchAllowlist();
-        this.$toast.show(
-          s__('CICD|Authentication log entries were successfully removed from the allowlist.'),
-        );
-      } catch (error) {
-        this.autopopulationErrorMessage = s__(
-          'CICD|An error occurred while removing the auto-added log entries. Please try again.',
-        );
-      } finally {
-        this.allowlistLoadingMessage = '';
-      }
-    },
-    refetchAllowlist() {
-      this.$apollo.queries.groupsAndProjectsWithAccess.refetch();
-      this.hideSelectedAction();
-    },
     refetchGroupsAndProjects() {
       this.$apollo.queries.groupsAndProjectsWithAccess.refetch();
     },
@@ -393,19 +253,6 @@ export default {
 
 <template>
   <div class="gl-mt-5">
-    <autopopulate-allowlist-modal
-      :auth-log-exceeds-limit="authLogExceedsLimit"
-      :project-allowlist-limit="projectAllowlistLimit"
-      :project-name="projectName"
-      :show-modal="showAutopopulateModal"
-      @hide="hideSelectedAction"
-      @autopopulate-allowlist="autopopulateAllowlist"
-    />
-    <remove-autopopulated-entries-modal
-      :show-modal="showRemoveAutopopulatedEntriesModal"
-      @hide="hideSelectedAction"
-      @remove-entries="removeAutopopulatedEntries"
-    />
     <gl-form-radio-group
       v-if="!enforceAllowlist"
       v-model="inboundJobTokenScopeEnabled"
@@ -430,15 +277,6 @@ export default {
     >
       {{ $options.i18n.saveButtonTitle }}
     </gl-button>
-    <gl-alert
-      v-if="autopopulationErrorMessage"
-      variant="danger"
-      class="gl-my-5"
-      :dismissible="false"
-      data-testid="autopopulation-alert"
-    >
-      {{ autopopulationErrorMessage }}
-    </gl-alert>
     <crud-component
       :title="$options.i18n.cardHeaderTitle"
       class="gl-mt-5"
@@ -453,13 +291,6 @@ export default {
           size="small"
           placement="bottom-end"
           @select="selectAction($event, showForm)"
-        />
-        <gl-disclosure-dropdown
-          v-if="hasAutoPopulatedEntries"
-          category="tertiary"
-          icon="ellipsis_v"
-          no-caret
-          :items="disclosureDropdownOptions"
         />
       </template>
       <template #count>

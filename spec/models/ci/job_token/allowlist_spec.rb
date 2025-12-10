@@ -277,8 +277,7 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
     let_it_be(:policies) { %w[read_deployments read_packages] }
 
     subject(:add_projects) do
-      allowlist.bulk_add_projects!([added_project1, added_project2], policies: policies, user: user,
-        autopopulated: true)
+      allowlist.bulk_add_projects!([added_project1, added_project2], policies: policies, user: user)
     end
 
     it 'adds the project scope links' do
@@ -302,7 +301,7 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
     let_it_be(:policies) { %w[read_deployments read_packages] }
 
     subject(:add_groups) do
-      allowlist.bulk_add_groups!([added_group1, added_group2], policies: policies, user: user, autopopulated: true)
+      allowlist.bulk_add_groups!([added_group1, added_group2], policies: policies, user: user)
     end
 
     it 'adds the group scope links' do
@@ -316,51 +315,6 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
       expect(group_link.source_project_id).to eq(source_project.id)
       expect(group_link.target_group_id).to eq(added_group1.id)
       expect(group_link.job_token_policies).to eq(policies)
-      expect(group_link.autopopulated).to be true
-    end
-  end
-
-  describe '#autopopulated_project_global_ids' do
-    let!(:project_link1) do
-      create(:ci_job_token_project_scope_link, source_project: source_project, autopopulated: true)
-    end
-
-    let!(:project_link2) do
-      create(:ci_job_token_project_scope_link, source_project: source_project, autopopulated: true)
-    end
-
-    let!(:project_link3) do
-      create(:ci_job_token_project_scope_link, source_project: source_project)
-    end
-
-    it 'returns an array of autopopulated project global ids only' do
-      project_global_ids = allowlist.autopopulated_project_global_ids
-
-      expect(project_global_ids.size).to eq 2
-      expect(project_global_ids).to contain_exactly(project_link1.target_project.to_global_id,
-        project_link2.target_project.to_global_id)
-    end
-  end
-
-  describe '#autopopulated_group_global_ids' do
-    let!(:group_link1) do
-      create(:ci_job_token_group_scope_link, source_project: source_project, autopopulated: true)
-    end
-
-    let!(:group_link2) do
-      create(:ci_job_token_group_scope_link, source_project: source_project, autopopulated: true)
-    end
-
-    let!(:group_link3) do
-      create(:ci_job_token_group_scope_link, source_project: source_project)
-    end
-
-    it 'returns an array of autopopulated group global ids only' do
-      group_global_ids = allowlist.autopopulated_group_global_ids
-
-      expect(group_global_ids.size).to eq 2
-      expect(group_global_ids).to contain_exactly(group_link1.target_group.to_global_id,
-        group_link2.target_group.to_global_id)
     end
   end
 end

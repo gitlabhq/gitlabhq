@@ -205,6 +205,8 @@ module MergeRequests
       end
 
       reviewer_ids = User.id_in(params[:reviewer_ids]).select do |reviewer|
+        link_composite_identity(reviewer) if reviewer.composite_identity_enforced? && reviewer.service_account?
+
         user_can_read?(merge_request, reviewer)
       end.map(&:id)
 

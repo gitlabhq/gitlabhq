@@ -52,20 +52,22 @@ perform actions on your behalf, to help you answer complex questions more compre
 
 While the classic Chat answers questions based on a single context, the agentic Chat searches,
 retrieves, and combines information from multiple sources across your GitLab projects
-to provide more thorough and relevant answers. The agentic Chat can also create and edit
-files for you.
+to provide more thorough and relevant answers.
 
-"Agentic" means that Chat:
+GitLab Duo Chat (Agentic) can:
 
-- Autonomously uses a large language model to determine what information is needed.
-- Executes a sequence of operations to gather that information.
-- Formulates a response to your questions.
-- Can create and change local files.
+- Search projects to find relevant issues, merge requests, and other artifacts using keyword-based search (not semantic search).
+- Access files in your local project without manually specifying file paths.
+- Create and edit files in multiple locations.
+- Retrieve resources like issues, merge requests, and CI/CD pipelines.
+- Analyze multiple sources to provide complete answers.
+  Use [Model Context Protocol](../gitlab_duo/model_context_protocol/_index.md) to
+  connect to external data sources and tools.
+- Provide customized responses by using your customized rules.
+- Create commits, when you use Chat in the GitLab UI.
 
 For larger problems, like understanding a codebase or generating an implementation
 plan, use the [software development flow of the GitLab Duo Agent Platform](../duo_agent_platform/_index.md).
-
-For examples of how you can use Chat, see [Ask GitLab Duo Chat](examples.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [GitLab Duo Chat (Agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ).
@@ -178,7 +180,7 @@ Then, to use GitLab Duo Chat:
 1. Select **Extensions** > **GitLab** > **Open Agentic Chat**.
 1. In the message box, enter your question and press **Enter**.
 
-### View the chat history
+## View the chat history
 
 {{< history >}}
 
@@ -199,7 +201,7 @@ In the GitLab UI, all of the conversations in your chat history are visible.
 
 In your IDE, the last 20 conversations are visible. [Issue 1308](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/1308) proposes to change this.
 
-### Have multiple conversations
+## Have multiple conversations
 
 {{< history >}}
 
@@ -233,7 +235,7 @@ Your conversations synchronize across GitLab Duo Chat in the GitLab UI and your 
 Because of LLM context window limits, conversations are truncated to 200,000 tokens
 (roughly 800,000 characters) each.
 
-### Delete a conversation
+## Delete a conversation
 
 {{< history >}}
 
@@ -246,7 +248,7 @@ Because of LLM context window limits, conversations are truncated to 200,000 tok
 
 Individual conversations expire and are automatically deleted after 30 days of inactivity.
 
-### Create custom rules
+## Create custom rules
 
 {{< history >}}
 
@@ -277,7 +279,7 @@ Conversations that existed before you created any custom rules do not follow tho
 
 {{< /alert >}}
 
-#### Create user-level custom rules
+### Create user-level custom rules
 
 User-level custom rules apply to all of your projects and workspaces.
 
@@ -300,7 +302,7 @@ User-level custom rules apply to all of your projects and workspaces.
 
    You must do this every time you change the custom rules.
 
-#### Create workspace-level custom rules
+### Create workspace-level custom rules
 
 Workspace-level custom rules apply only to a specific project or workspace.
 
@@ -320,7 +322,7 @@ Workspace-level custom rules apply only to a specific project or workspace.
 
 For more information, see the [Custom rules in GitLab Duo Agentic Chat blog](https://about.gitlab.com/blog/custom-rules-duo-agentic-chat-deep-dive/).
 
-#### Update custom rules
+### Update custom rules
 
 To update your custom rules, edit and save the custom rules file. Then, start a new GitLab Duo
 conversation to apply the updated rules.
@@ -329,7 +331,7 @@ You cannot use Chat to edit your custom rules file directly.
 
 To manage who must approve any changes to custom rules, use [Code Owners](../project/codeowners/_index.md).
 
-### Select a model
+## Select a model
 
 {{< details >}}
 
@@ -391,7 +393,7 @@ To select a model:
   1. Select the **Chat** tab.
   1. Select a model from the dropdown list.
 
-### Select an agent
+## Select an agent
 
 {{< history >}}
 
@@ -444,26 +446,7 @@ You can [turn off prompt caching](../project/repository/code_suggestions/_index.
 for top-level groups in the GitLab Duo settings.
 This also turns off prompt caching for Code Suggestions.
 
-## GitLab Duo Chat capabilities
-
-GitLab Duo Chat (Agentic) extends GitLab Duo Chat (Classic) capabilities with the following features:
-
-- **Project search**: Can search through your projects to find relevant
-  issues, merge requests, and other artifacts using keyword-based search. Agentic
-  Chat does not have semantic search capability.
-- **File access**: Can read and list files in your local project without you
-  needing to manually specify file paths.
-- **Create and edit files**: Can create files and edit multiple files in multiple locations.
-  This affects the local files.
-- **Resource retrieval**: Can automatically retrieve detailed information about
-  issues, merge requests, and pipeline logs of your current project.
-- **Multi-source analysis**: Can combine information from multiple sources to
-  provide more complete answers to complex questions. You can use [Model Context Protocol](../gitlab_duo/model_context_protocol/_index.md) to connect GitLab Duo Chat (Agentic) to
-  external data sources and tools.
-- **Custom rules**: Conversations can follow any customized rules that you specify.
-- GitLab Duo Chat (Agentic) in the GitLab UI only - **Commit creation**: Can create and push commits.
-
-### Chat feature comparison
+## Chat feature comparison
 
 | Capability                                              | GitLab Duo Chat (Classic) |                                                         GitLab Duo Chat (Agentic)                                                                                                          |
 | ------------                                            |------|                                                         -------------                                                                                                          |
@@ -482,72 +465,6 @@ GitLab Duo Chat (Agentic) extends GitLab Duo Chat (Classic) capabilities with th
 | Use Git write commands |                                                 No |                                                            Yes, UI only                                                  |
 | Run Shell commands |                                      No |                                                            Yes, IDEs only                                                                                                        |
 | Run MCP tools |                                      No |                                                            Yes, IDEs only                                                                                                          |
-
-## Use cases
-
-You might find GitLab Duo Chat particularly helpful when you:
-
-- Need answers that require information from multiple files or GitLab resources.
-- Want to ask questions about your codebase without having to specify exact file paths.
-- Are trying to understand the status of issues or merge requests across a project.
-- Want to have files created or edited for you.
-
-### Example prompts
-
-GitLab Duo Chat works best with natural language questions. Here are some examples:
-
-- `Read the project structure and explain it to me`, or `Explain the project`.
-- `Find the API endpoints that handle user authentication in this codebase`.
-- `Please explain the authorization flow for <application name>`.
-- `How do I add a GraphQL mutation in this repository?`
-- `Show me how error handling is implemented across our application`.
-- `Component <component name> has methods for <x> and <y>. Could you split it up into two components?`
-- `Could you add in-line documentation for all Java files in <directory>?`
-- `Do merge request <MR URL> and merge request <MR URL> fully address this issue <issue URL>?`
-
-### Security
-
-{{< details >}}
-
-- Tier: Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Dedicated
-
-{{< /details >}}
-
-You can use GitLab Duo Chat (Agentic) to triage, manage, and remediate vulnerabilities through natural language commands.
-
-You can use the following security tools in GitLab Duo Chat (Agentic):
-
-Vulnerability information and analysis:
-
-- List all vulnerabilities in a project with filtering by severity and report types.
-- Get detailed vulnerability information including CVE data, EPSS scores, and reachability analysis.
-
-Vulnerability management actions:
-
-- Confirm vulnerabilities when verified as genuine security issues.
-- Dismiss false positives or acceptable risks with proper reasoning.
-- Update vulnerability severity levels based on security review.
-- Revert vulnerability status back to detected for re-assessment.
-
-Issue management integration:
-
-- Create GitLab issues automatically linked to vulnerabilities.
-- Link existing issues to vulnerabilities for tracking.
-
-#### Security example prompts
-
-- `Show me all critical vulnerabilities in my project`
-- `List vulnerabilities with EPSS scores above 0.7 that are reachable`
-- `Dismiss all dependency scanning vulnerabilities marked as false positives with unreachable code`
-- `Create issues for all confirmed high-severity SAST vulnerabilities and assign them to recent committers`
-- `Update severity to HIGH for all vulnerabilities that cross trust boundaries`
-- `Show me vulnerabilities dismissed in the past week with their reasoning`
-- `Confirm all container scanning vulnerabilities with known exploits`
-- `Link vulnerability 123 to issue 456 for tracking remediation`
-
-For more information about these security capabilities, see [epic 19639](https://gitlab.com/groups/gitlab-org/-/epics/19639).
 
 ## Troubleshooting
 

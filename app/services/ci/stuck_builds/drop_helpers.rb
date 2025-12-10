@@ -19,18 +19,6 @@ module Ci
         end
       end
 
-      def drop_waiting_for_ack(builds, failure_reason:)
-        builds.each_batch(of: BATCH_SIZE) do |batch|
-          batch.each do |build|
-            next if build.runner_manager_id_waiting_for_ack.present?
-
-            Gitlab::ApplicationContext.with_context(project: build.project) do
-              drop_build :waiting_for_ack, build, failure_reason
-            end
-          end
-        end
-      end
-
       # rubocop: disable CodeReuse/ActiveRecord
       def fetch(builds)
         loop do
