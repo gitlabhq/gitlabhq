@@ -130,7 +130,7 @@ For JetBrains IDEs, or to manually create the file in VS Code, use this location
 
 ### Configuration format
 
-Both configuration files use the same JSON format:
+Both configuration files use the same JSON format, with the details in the `mcpServers` key:
 
 ```json
 {
@@ -156,6 +156,13 @@ Both configuration files use the same JSON format:
   }
 }
 ```
+
+{{< alert type="note" >}}
+
+For other MCP clients, the Atlassian documentation uses `mcp.servers` in the sample configuration file.
+For GitLab, use `mcpServers` instead.
+
+{{< /alert >}}
 
 ### Configure tool approval
 
@@ -321,6 +328,17 @@ To open your MCP configuration files:
    - For user configuration, type `GitLab MCP: Open User Settings (JSON)` and press <kbd>Enter</kbd>.
    - For workspace configuration, type `GitLab MCP: Open Workspace Settings (JSON)` and press <kbd>Enter</kbd>.
 
+## Re-authenticate with MCP servers
+
+After you update authentication details in an MCP configuration file, you must re-authenticate
+with the related MCP server.
+
+To trigger re-authentication:
+
+- Ask GitLab Duo a question that requires data from that MCP server
+  (for example, `What are the issues in my Jira project?` for Atlassian).
+  The authentication flow starts automatically.
+
 ## Use GitLab Duo features with MCP
 
 {{< history >}}
@@ -363,6 +381,15 @@ you must review that tool unless you've approved it for the entire session:
 - [Demo - Agentic Chat MCP Tool Call Approval](https://www.youtube.com/watch?v=_cHoTmG8Yj8)
 
 ## Troubleshooting
+
+### Delete the MCP authentication cache
+
+GitLab caches MCP authentication locally under `~/.mcp-auth/`.
+To prevent false positives while troubleshooting, delete the cache directory:
+
+```shell
+rm -rf ~/.mcp-auth/
+```
 
 ### `Error starting server filesystem: Error: spawn ... ENOENT`
 

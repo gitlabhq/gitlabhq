@@ -16019,6 +16019,12 @@ msgstr ""
 msgid "CodeReviewRequestsByRoleChart|Tracks users who initiated GitLab Duo Code Review. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "CodeSuggestionsAcceptanceByIdeChart|Failed to load code suggestions data by IDE."
+msgstr ""
+
+msgid "CodeSuggestionsAcceptanceByIdeChart|Failed to load metrics for: %{ideNames}"
+msgstr ""
+
 msgid "CodeSuggestionsAcceptanceByLanguageChart|Acceptance rate"
 msgstr ""
 
@@ -66351,6 +66357,9 @@ msgid "Suggestion(s)"
 msgstr ""
 
 msgid "Suggestions"
+msgstr ""
+
+msgid "Suggestions accepted"
 msgstr ""
 
 msgid "Suggestions are not applicable as one or more suggestions were not found."

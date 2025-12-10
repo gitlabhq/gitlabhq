@@ -791,7 +791,7 @@ tests = [
       spec/lib/gitlab/database/dictionary_spec.rb
       ee/spec/lib/gitlab/database/inclusion_of_tables_with_gitlab_sec_schema_spec.rb
       spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb
-      spec/lib/gitlab/database/sharding_key_spec.rb
+      spec/lib/gitlab/organizations/sharding_key_spec.rb
     ]
   },
   {

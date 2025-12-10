@@ -269,8 +269,6 @@ echo "DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY=\"$(cat duo_workflow_jwt.key)\""
 Now create a `docker-compose.yaml` file.
 
 ```yaml
-version: '3.8'
-
 services:
   nginx-proxy:
     image: nginx:alpine
@@ -326,7 +324,7 @@ To deploy and validate the solution:
 1. Start the `nginx` and `AIGW` containers and verify that they're running:
 
    ```shell
-   docker-compose up
+   docker compose up
    docker ps
    ```
 

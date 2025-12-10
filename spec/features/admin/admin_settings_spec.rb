@@ -296,8 +296,9 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           click_button 'Save changes'
         end
 
-        expect(current_settings.enforce_terms).to be(true)
-        expect(current_settings.terms).to eq 'Be nice!'
+        within_testid('terms-content') do
+          expect(page).to have_content('Be nice!')
+        end
 
         click_button 'Accept terms'
 

@@ -561,6 +561,30 @@ There is no way to download a specific version of the state using the UI.
 
 {{< /tabs >}}
 
+#### Protect sensitive data in Terraform state files
+
+Terraform state files might contain sensitive information such as passwords private keys, API tokens, and database connection strings.
+In GitLab, any user with the Developer role or higher can download and view Terraform state files for projects where they are members.
+
+To reduce exposure of sensitive data:
+
+- GitLab Ultimate customers: Create a custom role that replicates the Developer role but excludes the `admin_terraform_state` permission. This action allows team members to contribute to the Infrastructure as Code (IaC) projects without accessing the Terraform state files that contain sensitive data.
+
+  {{< alert type="note" >}}
+
+  Custom roles are only available on GitLab Ultimate. Customers on Premium or lower tiers do not have access to this mitigation option and should focus on other strategies described previously.
+
+  {{< /alert >}}
+
+- OpenTofu users: Turn on state and plan encryption to protect sensitive data at rest. GitLab supports this natively through the [OpenTofu CI/CD component](https://gitlab.com/components/opentofu), which provides encryption configuration. Even if unauthorized users access the state file, encrypted content remains protected.
+
+- All users:
+  - Restrict project membership to users who require access to the infrastructure state.
+  - Use a separate project to store states, adding only necessary users as members.
+  - Use external secret management solutions like HashiCorp Vault or AWS Secrets Manager to reference secrets dynamically rather than storing them in the Terraform configuration.
+  - Mark sensitive values using the Terraform [`sensitive`](https://developer.hashicorp.com/terraform/language/values/variables#suppressing-values-in-cli-output) parameter in variable definitions. This action prevents values from appearing in the CLI output and plan files, though they remain in the state file.
+  - Regularly audit project members with Developer role and review state file contents for inadvertently exposed secrets.
+
 ## Related topics
 
 - [Troubleshooting GitLab-managed Terraform state](troubleshooting.md)

@@ -317,7 +317,7 @@ In this case we have to add async validation before we can add the sharding key.
 1. Create the MR with label `pipeline:skip-check-migrations` as reverting this migration is intended to be `#no-op`.
 
 {{< alert type="note" >}}
-Pipelines might complain about a missing FK. You must add the FK to `allowed_to_be_missing_foreign_key` in [sharding_key_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/database/sharding_key_spec.rb?ref_type=heads#L81).
+Pipelines might complain about a missing FK. You must add the FK to `allowed_to_be_missing_foreign_key` in [sharding_key_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/organizations/sharding_key_spec.rb?ref_type=heads#L81).
 {{< /alert >}}
 
 ### 4. Debug Failures

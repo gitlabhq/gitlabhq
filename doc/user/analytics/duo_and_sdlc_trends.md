@@ -147,6 +147,23 @@ The **Code Suggestions acceptance rate by language** chart displays the acceptan
 
 The acceptance rate for each language is calculated as the number of accepted code suggestions divided by the total number of code suggestions shown.
 
+## GitLab Duo Code Suggestions acceptance by IDE
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/550064) in GitLab 18.7.
+
+{{< /history >}}
+
+The **GitLab Duo Code Suggestions acceptance by IDE** chart displays the number of Code Suggestions accepted by IDE for the last 30 days.
+
+Hover over a bar to view for each IDE:
+
+- **Suggestions accepted**: Number of suggestions accepted by users.
+- **Suggestions shown**: Number of suggestions shown to users.
+- **Acceptance rate**: Percentage of suggestions accepted.
+  Calculated as the number of accepted code suggestions divided by the total number of code suggestions shown.
+
 ## Code generation volume trends
 
 {{< history >}}
