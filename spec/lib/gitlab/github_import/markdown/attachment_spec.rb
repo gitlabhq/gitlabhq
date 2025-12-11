@@ -8,6 +8,44 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
   let(:import_source) { 'nickname/public-test-repo' }
   let(:web_endpoint) { 'https://github.com' }
 
+  shared_examples 'rejects base user-attachments URLs' do
+    context 'when URL is base user-attachments path with trailing slash' do
+      let(:test_url) { "#{web_endpoint}/user-attachments/" }
+
+      it 'returns nil' do
+        node = case markdown_node.type
+               when :text
+                 instance_double(CommonMarker::Node, to_plaintext: test_url, type: :text)
+               when :inline_html
+                 img_tag = "<img width=\"248\" alt=\"#{name}\" src=\"#{test_url}\">"
+                 instance_double(CommonMarker::Node, string_content: img_tag, type: :inline_html)
+               else
+                 instance_double(CommonMarker::Node, url: test_url, to_plaintext: name, type: markdown_node.type)
+               end
+
+        expect(described_class.from_markdown(node, web_endpoint)).to be_nil
+      end
+    end
+
+    context 'when URL is base user-attachments path without trailing slash' do
+      let(:test_url) { "#{web_endpoint}/user-attachments" }
+
+      it 'returns nil' do
+        node = case markdown_node.type
+               when :text
+                 instance_double(CommonMarker::Node, to_plaintext: test_url, type: :text)
+               when :inline_html
+                 img_tag = "<img width=\"248\" alt=\"#{name}\" src=\"#{test_url}\">"
+                 instance_double(CommonMarker::Node, string_content: img_tag, type: :inline_html)
+               else
+                 instance_double(CommonMarker::Node, url: test_url, to_plaintext: name, type: markdown_node.type)
+               end
+
+        expect(described_class.from_markdown(node, web_endpoint)).to be_nil
+      end
+    end
+  end
+
   describe '.from_markdown' do
     context "when it's a doc attachment" do
       let(:doc_extension) { Gitlab::GithubImport::Markdown::Attachment::DOC_TYPES.sample }
@@ -22,6 +60,16 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
 
         expect(attachment.name).to eq name
         expect(attachment.url).to eq url
+      end
+
+      it_behaves_like 'rejects base user-attachments URLs'
+
+      context 'when URL is invalid user-attachments base path' do
+        let(:url) { "#{web_endpoint}/user-attachments/" }
+
+        it 'returns nil' do
+          expect(described_class.from_markdown(markdown_node, web_endpoint)).to be_nil
+        end
       end
 
       context "when it's a doc attachment from GHE" do
@@ -75,6 +123,8 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
         expect(attachment.name).to eq name
         expect(attachment.url).to eq url
       end
+
+      it_behaves_like 'rejects base user-attachments URLs'
 
       context "when type is not in whitelist" do
         let(:image_extension) { 'mkv' }
@@ -140,6 +190,8 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
         expect(attachment.url).to eq url
       end
 
+      it_behaves_like 'rejects base user-attachments URLs'
+
       context 'when image src is not present' do
         let(:img) { "<img width=\"248\" alt=\"#{name}\">" }
 
@@ -159,6 +211,8 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
         expect(attachment.name).to be("media_attachment")
         expect(attachment.url).to eq media_attachment_url
       end
+
+      it_behaves_like 'rejects base user-attachments URLs'
     end
   end
 

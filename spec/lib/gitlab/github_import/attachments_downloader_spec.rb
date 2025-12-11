@@ -285,6 +285,85 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
         end
       end
     end
+
+    context 'when filename contains special characters' do
+      let(:file_url) { 'https://example.com/C%2B%2B.Coding.Style.Guide.pdf' }
+
+      it 'sanitizes the filename' do
+        file = downloader.perform
+
+        expect(File.exist?(file.path)).to eq(true)
+        expect(File.basename(file.path)).to eq('C__.Coding.Style.Guide.pdf')
+        expect(File.basename(file.path)).not_to include('+')
+      end
+    end
+
+    context 'when filename contains URL-encoded special characters' do
+      let(:file_url) { 'https://example.com/file%20with%20spaces.txt' }
+
+      it 'sanitizes spaces to underscores' do
+        file = downloader.perform
+
+        expect(File.exist?(file.path)).to eq(true)
+        expect(File.basename(file.path)).to match(/file_with_spaces\.txt/)
+      end
+    end
+
+    context 'when filename contains path separators' do
+      let(:file_url) { 'https://example.com/file%2Fwith%2Fslashes.txt' }
+
+      it 'sanitizes path separators' do
+        file = downloader.perform
+
+        expect(File.exist?(file.path)).to eq(true)
+        expect(File.basename(file.path)).to eq('file_with_slashes.txt')
+      end
+    end
+
+    context 'when filename contains multiple special characters' do
+      let(:file_url) { 'https://example.com/file@%23$%25name-2.pdf' }
+
+      it 'sanitizes all special characters' do
+        file = downloader.perform
+
+        expect(File.exist?(file.path)).to eq(true)
+        expect(File.basename(file.path)).to eq('file____name-2.pdf')
+        expect(File.basename(file.path)).not_to include('@', '#', '$', '%')
+      end
+    end
+
+    context 'when filename starts with dots' do
+      let(:file_url) { 'https://example.com/..hidden-file.txt' }
+
+      it 'removes leading dots' do
+        file = downloader.perform
+
+        expect(File.exist?(file.path)).to eq(true)
+        expect(File.basename(file.path)).to eq('hidden-file.txt')
+      end
+    end
+
+    context 'when filename becomes empty after sanitization' do
+      let(:file_url) { 'https://example.com/@%23$%25' }
+
+      it 'provides a fallback filename' do
+        file = downloader.perform
+
+        expect(File.exist?(file.path)).to eq(true)
+        expect(File.basename(file.path)).to eq('attachment')
+      end
+    end
+
+    context 'when filename is only special characters that get sanitized away' do
+      let(:file_url) { 'https://example.com/%2F' }
+
+      it 'uses attachment as fallback filename' do
+        file = downloader.perform
+
+        expect(File.exist?(file.path)).to eq(true)
+        expect(File.basename(file.path)).to eq('attachment')
+      end
+    end
   end
 
   describe '#delete' do
