@@ -15019,6 +15019,176 @@ Input type: `WorkItemRemoveLinkedItemsInput`
 | <a id="mutationworkitemremovelinkeditemsmessage"></a>`message` | [`String`](#string) | Linked items update result message. |
 | <a id="mutationworkitemremovelinkeditemsworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
 
+### `Mutation.workItemSavedViewCreate`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Creates a saved view.
+
+Input type: `WorkItemSavedViewCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsavedviewcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsavedviewcreatedescription"></a>`description` | [`String`](#string) | Description of the saved view. |
+| <a id="mutationworkitemsavedviewcreatedisplaysettings"></a>`displaySettings` | [`JSON!`](#json) | Display settings associated with the saved view. |
+| <a id="mutationworkitemsavedviewcreatefilters"></a>`filters` | [`WorkItemSavedViewFilterInput!`](#workitemsavedviewfilterinput) | Filters associated with the saved view. |
+| <a id="mutationworkitemsavedviewcreatename"></a>`name` | [`String!`](#string) | Name of the saved view. |
+| <a id="mutationworkitemsavedviewcreatenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace to create the saved view in. |
+| <a id="mutationworkitemsavedviewcreateprivate"></a>`private` | [`Boolean`](#boolean) | Whether the saved view is private. Default is true. |
+| <a id="mutationworkitemsavedviewcreatesort"></a>`sort` | [`WorkItemSort!`](#workitemsort) | Sort option associated with the saved view. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsavedviewcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsavedviewcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationworkitemsavedviewcreatesavedview"></a>`savedView` | [`WorkItemSavedViewType`](#workitemsavedviewtype) | Created saved view. |
+
+### `Mutation.workItemSavedViewDelete`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Deletes a saved view.
+
+Input type: `WorkItemSavedViewDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsavedviewdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsavedviewdeleteid"></a>`id` | [`WorkItemsSavedViewsSavedViewID!`](#workitemssavedviewssavedviewid) | Global ID of the saved view. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsavedviewdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsavedviewdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationworkitemsavedviewdeletesavedview"></a>`savedView` | [`WorkItemSavedViewType`](#workitemsavedviewtype) | Deleted saved view. |
+
+### `Mutation.workItemSavedViewReorder`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Reorders a saved view for the current user.
+
+Input type: `WorkItemSavedViewReorderInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsavedviewreorderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsavedviewreorderid"></a>`id` | [`WorkItemsSavedViewsSavedViewID!`](#workitemssavedviewssavedviewid) | Global ID of the saved view to be reordered. |
+| <a id="mutationworkitemsavedviewreordermoveafterid"></a>`moveAfterId` | [`WorkItemsSavedViewsSavedViewID`](#workitemssavedviewssavedviewid) | Global ID of a saved view that should be placed after the saved view. |
+| <a id="mutationworkitemsavedviewreordermovebeforeid"></a>`moveBeforeId` | [`WorkItemsSavedViewsSavedViewID`](#workitemssavedviewssavedviewid) | Global ID of a saved view that should be placed before the saved view. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsavedviewreorderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsavedviewreordererrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationworkitemsavedviewreordersavedview"></a>`savedView` | [`WorkItemSavedViewType`](#workitemsavedviewtype) | Reordered saved view. |
+
+### `Mutation.workItemSavedViewSubscribe`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Subscribes the current user to a saved view.
+
+Input type: `WorkItemSavedViewSubscribeInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsavedviewsubscribeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsavedviewsubscribeid"></a>`id` | [`WorkItemsSavedViewsSavedViewID!`](#workitemssavedviewssavedviewid) | Global ID of the saved view to subscribe to. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsavedviewsubscribeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsavedviewsubscribeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationworkitemsavedviewsubscribesavedview"></a>`savedView` | [`WorkItemSavedViewType`](#workitemsavedviewtype) | Subscribed saved view. |
+
+### `Mutation.workItemSavedViewUnsubscribe`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Unsubscribes the current user to a saved view.
+
+Input type: `WorkItemSavedViewUnsubscribeInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsavedviewunsubscribeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsavedviewunsubscribeid"></a>`id` | [`WorkItemsSavedViewsSavedViewID!`](#workitemssavedviewssavedviewid) | Global ID of the saved view to unsubscribe to. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsavedviewunsubscribeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsavedviewunsubscribeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationworkitemsavedviewunsubscribesavedview"></a>`savedView` | [`WorkItemSavedViewType`](#workitemsavedviewtype) | Unsubscribed saved view. |
+
+### `Mutation.workItemSavedViewUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Updates a saved view.
+
+Input type: `WorkItemSavedViewUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsavedviewupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsavedviewupdatedescription"></a>`description` | [`String`](#string) | Description of the saved view. |
+| <a id="mutationworkitemsavedviewupdatedisplaysettings"></a>`displaySettings` | [`JSON`](#json) | Display settings associated with the saved view. |
+| <a id="mutationworkitemsavedviewupdatefilters"></a>`filters` | [`WorkItemSavedViewFilterInput`](#workitemsavedviewfilterinput) | Filters associated with the saved view. |
+| <a id="mutationworkitemsavedviewupdateid"></a>`id` | [`WorkItemsSavedViewsSavedViewID!`](#workitemssavedviewssavedviewid) | Global ID of the saved view. |
+| <a id="mutationworkitemsavedviewupdatename"></a>`name` | [`String`](#string) | Name of the saved view. |
+| <a id="mutationworkitemsavedviewupdateprivate"></a>`private` | [`Boolean`](#boolean) | Whether the saved view is private. |
+| <a id="mutationworkitemsavedviewupdatesort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sorting option associated with the saved view. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemsavedviewupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemsavedviewupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationworkitemsavedviewupdatesavedview"></a>`savedView` | [`WorkItemSavedViewType`](#workitemsavedviewtype) | Updated saved view. |
+
 ### `Mutation.workItemSubscribe`
 
 {{< details >}}
@@ -24155,6 +24325,29 @@ The edge type for [`WorkItemRelatedBranch`](#workitemrelatedbranch).
 | <a id="workitemrelatedbranchedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="workitemrelatedbranchedgenode"></a>`node` | [`WorkItemRelatedBranch`](#workitemrelatedbranch) | The item at the end of the edge. |
 
+#### `WorkItemSavedViewTypeConnection`
+
+The connection type for [`WorkItemSavedViewType`](#workitemsavedviewtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemsavedviewtypeconnectionedges"></a>`edges` | [`[WorkItemSavedViewTypeEdge]`](#workitemsavedviewtypeedge) | A list of edges. |
+| <a id="workitemsavedviewtypeconnectionnodes"></a>`nodes` | [`[WorkItemSavedViewType]`](#workitemsavedviewtype) | A list of nodes. |
+| <a id="workitemsavedviewtypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemSavedViewTypeEdge`
+
+The edge type for [`WorkItemSavedViewType`](#workitemsavedviewtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemsavedviewtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemsavedviewtypeedgenode"></a>`node` | [`WorkItemSavedViewType`](#workitemsavedviewtype) | The item at the end of the edge. |
+
 #### `WorkItemStatusConnection`
 
 The connection type for [`WorkItemStatus`](#workitemstatus).
@@ -33239,6 +33432,7 @@ Returns [`[ScanProfileType!]`](#scanprofiletype).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupavailablesecurityscanprofilesgitlabrecommended"></a>`gitlabRecommended` | [`Boolean`](#boolean) | Filter scan profiles by GitLab Recommended. |
 | <a id="groupavailablesecurityscanprofilestype"></a>`type` | [`SecurityScanProfileType`](#securityscanprofiletype) | Filter scan profiles by type. |
 
 ##### `Group.billableMembersCount`
@@ -34426,6 +34620,30 @@ Returns [`GroupSavedReply`](#groupsavedreply).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupsavedreplyid"></a>`id` | [`GroupsSavedReplyID!`](#groupssavedreplyid) | Global ID of a saved reply. |
+
+##### `Group.savedViews`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Saved views associated with the namespace.
+
+Returns [`WorkItemSavedViewTypeConnection`](#workitemsavedviewtypeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsavedviewsid"></a>`id` | [`WorkItemsSavedViewsSavedViewID`](#workitemssavedviewssavedviewid) | ID of the saved view. |
+| <a id="groupsavedviewssearch"></a>`search` | [`String`](#string) | Search query for saved view name or description. |
+| <a id="groupsavedviewssort"></a>`sort` | [`WorkItemsSavedViewsSort`](#workitemssavedviewssort) | Sort work items by criteria. Default is ID. |
+| <a id="groupsavedviewssubscribedonly"></a>`subscribedOnly` | [`Boolean`](#boolean) | Whether to return only saved views subscribed to by the current user. |
 
 ##### `Group.scanExecutionPolicies`
 
@@ -39517,6 +39735,30 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="namespaceremotedevelopmentclusteragentsfilter"></a>`filter` | [`NamespaceClusterAgentFilter!`](#namespaceclusteragentfilter) | Filter the types of cluster agents to return. |
+
+##### `Namespace.savedViews`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Saved views associated with the namespace.
+
+Returns [`WorkItemSavedViewTypeConnection`](#workitemsavedviewtypeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespacesavedviewsid"></a>`id` | [`WorkItemsSavedViewsSavedViewID`](#workitemssavedviewssavedviewid) | ID of the saved view. |
+| <a id="namespacesavedviewssearch"></a>`search` | [`String`](#string) | Search query for saved view name or description. |
+| <a id="namespacesavedviewssort"></a>`sort` | [`WorkItemsSavedViewsSort`](#workitemssavedviewssort) | Sort work items by criteria. Default is ID. |
+| <a id="namespacesavedviewssubscribedonly"></a>`subscribedOnly` | [`Boolean`](#boolean) | Whether to return only saved views subscribed to by the current user. |
 
 ##### `Namespace.scanExecutionPolicies`
 
@@ -49133,6 +49375,33 @@ Check permissions for the current user on a work item.
 | <a id="workitemrelatedbranchname"></a>`name` | [`String!`](#string) | Name of the branch. |
 | <a id="workitemrelatedbranchpipelinestatus"></a>`pipelineStatus` | [`DetailedStatus`](#detailedstatus) | Status of pipeline for the branch. |
 
+### `WorkItemSavedViewFilterWarningType`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemsavedviewfilterwarningtypefield"></a>`field` | [`String!`](#string) | Name of the field associated with the warning. |
+| <a id="workitemsavedviewfilterwarningtypemessage"></a>`message` | [`String!`](#string) | Message associated with the warning. |
+
+### `WorkItemSavedViewType`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemsavedviewtypedescription"></a>`description` | [`String`](#string) | Description of the saved view. |
+| <a id="workitemsavedviewtypedisplaysettings"></a>`displaySettings` | [`JSON`](#json) | Display settings associated with the saved view. |
+| <a id="workitemsavedviewtypefilterwarnings"></a>`filterWarnings` | [`[WorkItemSavedViewFilterWarningType!]`](#workitemsavedviewfilterwarningtype) | Warnings associated with the filter values. |
+| <a id="workitemsavedviewtypefilters"></a>`filters` | [`JSON`](#json) | Filters associated with the saved view. |
+| <a id="workitemsavedviewtypeid"></a>`id` | [`WorkItemsSavedViewsSavedViewID!`](#workitemssavedviewssavedviewid) | ID of the saved view. |
+| <a id="workitemsavedviewtypename"></a>`name` | [`String!`](#string) | Name of the saved view. |
+| <a id="workitemsavedviewtypenamespaceid"></a>`namespaceId` | [`TypesNamespaceID!`](#typesnamespaceid) | ID of the namespace of the saved view. |
+| <a id="workitemsavedviewtypeprivate"></a>`private` | [`Boolean!`](#boolean) | Whether the saved view is private. |
+| <a id="workitemsavedviewtypeshareurl"></a>`shareUrl` | [`String!`](#string) | URL to auto subscribe users to the view. |
+| <a id="workitemsavedviewtypesort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort option associated with the saved view. |
+| <a id="workitemsavedviewtypeworkitems"></a>`workItems` {{< icon name="warning-solid" >}} | [`WorkItemConnection`](#workitemconnection) | **Introduced** in GitLab 18.7. **Status**: Experiment. Work items associated with the saved view. |
+
 ### `WorkItemSelectFieldValue`
 
 #### Fields
@@ -54680,6 +54949,23 @@ Type of a work item widget.
 | <a id="workitemwidgettypevulnerabilities"></a>`VULNERABILITIES` | Vulnerabilities widget. |
 | <a id="workitemwidgettypeweight"></a>`WEIGHT` | Weight widget. |
 
+### `WorkItemsSavedViewsSort`
+
+Values for sorting saved views.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workitemssavedviewssortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
+| <a id="workitemssavedviewssortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
+| <a id="workitemssavedviewssortid"></a>`ID` | Ordered by id. |
+| <a id="workitemssavedviewssortrelative_position"></a>`RELATIVE_POSITION` | Relative position by ascending order. If user is logged out, or explicitly subscribed is not passed, falls back to id sort. |
+| <a id="workitemssavedviewssortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
+| <a id="workitemssavedviewssortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
+| <a id="workitemssavedviewssortcreated_asc"></a>`created_asc` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="workitemssavedviewssortcreated_desc"></a>`created_desc` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="workitemssavedviewssortupdated_asc"></a>`updated_asc` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="workitemssavedviewssortupdated_desc"></a>`updated_desc` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
+
 ### `WorkflowEnvironment`
 
 The environment of a workflow.
@@ -56064,6 +56350,12 @@ While we transition from Issues into Work Items this type will temporarily suppo
 A `WorkItemsRelatedWorkItemLinkID` is a global ID. It is encoded as a string.
 
 An example `WorkItemsRelatedWorkItemLinkID` is: `"gid://gitlab/WorkItems::RelatedWorkItemLink/1"`.
+
+### `WorkItemsSavedViewsSavedViewID`
+
+A `WorkItemsSavedViewsSavedViewID` is a global ID. It is encoded as a string.
+
+An example `WorkItemsSavedViewsSavedViewID` is: `"gid://gitlab/WorkItems::SavedViews::SavedView/1"`.
 
 ### `WorkItemsStatusesLifecycleID`
 
@@ -59072,6 +59364,87 @@ Input type for filtering projects by vulnerability count and severity.
 | ---- | ---- | ----------- |
 | <a id="workitemresolvediscussionsinputdiscussionid"></a>`discussionId` | [`String`](#string) | ID of a discussion to resolve. |
 | <a id="workitemresolvediscussionsinputnoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the noteable where discussions will be resolved when the work item is created. Only `MergeRequestID` is supported at the moment. |
+
+### `WorkItemSavedViewFilterInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemsavedviewfilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Filter values for assignee usernames filter(maximum is 100 usernames). |
+| <a id="workitemsavedviewfilterinputassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter values for assignee wildcard id filter. Incompatible with `assigneeUsernames`. |
+| <a id="workitemsavedviewfilterinputauthorusername"></a>`authorUsername` | [`String`](#string) | Filter value for author username filter. |
+| <a id="workitemsavedviewfilterinputclosedafter"></a>`closedAfter` | [`Time`](#time) | Filter value for closed after filter. |
+| <a id="workitemsavedviewfilterinputclosedbefore"></a>`closedBefore` | [`Time`](#time) | Filter value for closed before filter. |
+| <a id="workitemsavedviewfilterinputconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter value for confidential filter. |
+| <a id="workitemsavedviewfilterinputcreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter value for created after filter. |
+| <a id="workitemsavedviewfilterinputcreatedbefore"></a>`createdBefore` | [`Time`](#time) | Filter value for created before filter. |
+| <a id="workitemsavedviewfilterinputcrmcontactid"></a>`crmContactId` | [`String`](#string) | Filter value for crm contact id filter. |
+| <a id="workitemsavedviewfilterinputcrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | Filter value for crm organization id filter. |
+| <a id="workitemsavedviewfilterinputcustomfield"></a>`customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Filter value for custom field filter. (maximum is 100 fields). |
+| <a id="workitemsavedviewfilterinputdueafter"></a>`dueAfter` | [`Time`](#time) | Filter value for due after filter. |
+| <a id="workitemsavedviewfilterinputduebefore"></a>`dueBefore` | [`Time`](#time) | Filter value for due before filter. |
+| <a id="workitemsavedviewfilterinputexcludegroupworkitems"></a>`excludeGroupWorkItems` | [`Boolean`](#boolean) | Filter value for exclude group work items filter. |
+| <a id="workitemsavedviewfilterinputexcludeprojects"></a>`excludeProjects` | [`Boolean`](#boolean) | Filter value for exclude projects filter. |
+| <a id="workitemsavedviewfilterinputfullpath"></a>`fullPath` | [`ID`](#id) | Filter value for full path filter. |
+| <a id="workitemsavedviewfilterinputhealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Filter value for health status filter. |
+| <a id="workitemsavedviewfilterinputhierarchyfilters"></a>`hierarchyFilters` | [`HierarchyFilterInput`](#hierarchyfilterinput) | Filter value for hierarchy filter. |
+| <a id="workitemsavedviewfilterinputiid"></a>`iid` | [`String`](#string) | Filter value for IID filter. |
+| <a id="workitemsavedviewfilterinputin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | "Filter value for in filter. |
+| <a id="workitemsavedviewfilterinputincludedescendantworkitems"></a>`includeDescendantWorkItems` | [`Boolean`](#boolean) | Filter value for include descendant work items filter. |
+| <a id="workitemsavedviewfilterinputincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Filter value for include descendants filter. |
+| <a id="workitemsavedviewfilterinputiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter value for iteration cadence id filter. (maximum is 100 IDs). |
+| <a id="workitemsavedviewfilterinputiterationid"></a>`iterationId` | [`[ID!]`](#id) | Filter value for iteration id filter. |
+| <a id="workitemsavedviewfilterinputiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter value for iteration wildcard id filter. |
+| <a id="workitemsavedviewfilterinputlabelname"></a>`labelName` | [`[String!]`](#string) | Filter value for label name filter. (maximum is 100 labels). |
+| <a id="workitemsavedviewfilterinputmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Filter value for milestone title filter. (maximum is 100 milestones). |
+| <a id="workitemsavedviewfilterinputmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter value for milestone wildcard id filter. Incompatible with `milestoneTitle`. |
+| <a id="workitemsavedviewfilterinputmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter value for my reaction emoji filter. |
+| <a id="workitemsavedviewfilterinputnot"></a>`not` | [`WorkItemSavedViewNegatedFilterInput`](#workitemsavedviewnegatedfilterinput) | Filter value for not filter. |
+| <a id="workitemsavedviewfilterinputor"></a>`or` | [`WorkItemSavedViewUnionedFilterInput`](#workitemsavedviewunionedfilterinput) | Filter values for or filter. |
+| <a id="workitemsavedviewfilterinputreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Filter value for release tag filter (maximum is 100 tags). |
+| <a id="workitemsavedviewfilterinputreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter value for release tag wildcard id filter. |
+| <a id="workitemsavedviewfilterinputsearch"></a>`search` | [`String`](#string) | Filter value for search filter. |
+| <a id="workitemsavedviewfilterinputstate"></a>`state` | [`IssuableState`](#issuablestate) | Filter value for state filter. |
+| <a id="workitemsavedviewfilterinputstatus"></a>`status` | [`WorkItemWidgetStatusFilterInput`](#workitemwidgetstatusfilterinput) | Filter value for status filter. |
+| <a id="workitemsavedviewfilterinputsubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Filter value for subscribed filter. |
+| <a id="workitemsavedviewfilterinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter value for types filter. |
+| <a id="workitemsavedviewfilterinputupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Filter value for updated after filter. |
+| <a id="workitemsavedviewfilterinputupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Filter value for updated before filter. |
+| <a id="workitemsavedviewfilterinputweight"></a>`weight` | [`String`](#string) | Filter value for weight filter. |
+| <a id="workitemsavedviewfilterinputweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter value for weight wildcard id filter. |
+
+### `WorkItemSavedViewNegatedFilterInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemsavedviewnegatedfilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Filter value for not assignee username filter. (maximum is 100 usernames). |
+| <a id="workitemsavedviewnegatedfilterinputauthorusername"></a>`authorUsername` | [`[String!]`](#string) | Filter value for not author username filter. (maximum is 100 usernames). |
+| <a id="workitemsavedviewnegatedfilterinputcustomfield"></a>`customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Filter value for not custom field filter. |
+| <a id="workitemsavedviewnegatedfilterinputhealthstatusfilter"></a>`healthStatusFilter` | [`[HealthStatus!]`](#healthstatus) | Filter values for not health status filter. |
+| <a id="workitemsavedviewnegatedfilterinputiterationid"></a>`iterationId` | [`[ID!]`](#id) | Filter values for not iteration id filter. (maximum is 100 IDs). |
+| <a id="workitemsavedviewnegatedfilterinputiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter value for not iteration wildcard id filter. |
+| <a id="workitemsavedviewnegatedfilterinputlabelname"></a>`labelName` | [`[String!]`](#string) | Filter value for not label name filter. (maximum is 100 labels). |
+| <a id="workitemsavedviewnegatedfilterinputmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Filter value for not milestone title filter.(maximum is 100 milestones). |
+| <a id="workitemsavedviewnegatedfilterinputmilestonewildcardid"></a>`milestoneWildcardId` | [`NegatedMilestoneWildcardId`](#negatedmilestonewildcardid) | Filter value for not milestone wildcard id filter. |
+| <a id="workitemsavedviewnegatedfilterinputmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter value for not my reaction emoji filter. |
+| <a id="workitemsavedviewnegatedfilterinputparentids"></a>`parentIds` | [`[WorkItemID!]`](#workitemid) | Filter work items by global IDs who don't belong to parent items (maximum is 100 IDs). |
+| <a id="workitemsavedviewnegatedfilterinputreleasetag"></a>`releaseTag` | [`[String!]`](#string) | File value for not release tag filter. (maximum is 100 tags). |
+| <a id="workitemsavedviewnegatedfilterinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter value for not types filter. |
+| <a id="workitemsavedviewnegatedfilterinputweight"></a>`weight` | [`String`](#string) | Filter values for not weight filter. |
+
+### `WorkItemSavedViewUnionedFilterInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemsavedviewunionedfilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Filter value for unioned assignee usernames filter. (maximum is 100 usernames). |
+| <a id="workitemsavedviewunionedfilterinputauthorusernames"></a>`authorUsernames` | [`[String!]`](#string) | Filter value for unioned author usernames filter. (maximum is 100 usernames). |
+| <a id="workitemsavedviewunionedfilterinputcustomfield"></a>`customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Filter value for unioned custom field filter. |
+| <a id="workitemsavedviewunionedfilterinputlabelnames"></a>`labelNames` | [`[String!]`](#string) | Filter value for unioned label names filter.(maximum is 100 labels). |
 
 ### `WorkItemStatusInput`
 

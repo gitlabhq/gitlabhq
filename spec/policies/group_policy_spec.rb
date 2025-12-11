@@ -2130,4 +2130,29 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
     end
   end
+
+  describe 'create_saved_view' do
+    context 'when user can read the group' do
+      let(:current_user) { create(:user) }
+
+      before do
+        group.add_guest(current_user)
+      end
+
+      it { is_expected.to be_allowed(:create_saved_view) }
+    end
+
+    context 'when user cannot read the group' do
+      let(:group) { create(:group, :private) }
+      let(:current_user) { create(:user) }
+
+      it { is_expected.to be_disallowed(:create_saved_view) }
+    end
+
+    context 'when user is anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:create_saved_view) }
+    end
+  end
 end

@@ -28,7 +28,7 @@ module QA
         default_branch = response_body[:default_branch].to_s.empty? ? Runtime::Env.default_branch : response_body[:default_branch]
 
         create_file_request = Runtime::API::Request.new(api_client, "/projects/#{sanitized_project_path}/repository/files/#{file_path}")
-        response = Support::API.post(create_file_request.url, { branch: default_branch, content: 'Hello world', commit_message: 'Add README.md' }.to_json)
+        response = Support::API.post(create_file_request.url, { branch: default_branch, content: 'Hello world', commit_message: 'Add README.md' })
         response_body = parse_body(response)
 
         aggregate_failures do
@@ -103,7 +103,7 @@ module QA
           default_branch = response_body[:default_branch].to_s.empty? ? Runtime::Env.default_branch : response_body[:default_branch]
 
           create_file_request = Runtime::API::Request.new(api_client, "/projects/#{sanitized_project_path}/repository/files/test.svg")
-          response = Support::API.post(create_file_request.url, { branch: default_branch, content: svg_file, commit_message: 'Add test.svg' }.to_json)
+          response = Support::API.post(create_file_request.url, { branch: default_branch, content: svg_file, commit_message: 'Add test.svg' })
 
           get_file_request = Runtime::API::Request.new(api_client, "/projects/#{sanitized_project_path}/repository/files/test.svg/raw", ref: default_branch)
 

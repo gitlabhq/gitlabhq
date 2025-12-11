@@ -4265,6 +4265,31 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'create_saved_view' do
+    context 'when user can read the project' do
+      let(:current_user) { create(:user) }
+
+      before do
+        project.add_guest(current_user)
+      end
+
+      it { is_expected.to be_allowed(:create_saved_view) }
+    end
+
+    context 'when user cannot read the project' do
+      let(:project) { private_project }
+      let(:current_user) { create(:user) }
+
+      it { is_expected.to be_disallowed(:create_saved_view) }
+    end
+
+    context 'when user is anonymous' do
+      let(:current_user) { anonymous }
+
+      it { is_expected.to be_disallowed(:create_saved_view) }
+    end
+  end
+
   describe 'set_new_issue_metadata and set_new_work_item_metadata abilities' do
     %w[guest planner reporter developer maintainer owner].each do |role|
       context "when user is #{role}" do

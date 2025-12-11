@@ -7,5 +7,6 @@ FactoryBot.define do
     namespace { association(:group) }
     author { association(:user) }
     private { false }
+    version { 1 }
   end
 end

@@ -1,7 +1,6 @@
 import { get } from 'lodash';
 import groupsEmptyStateIllustration from '@gitlab/svgs/dist/illustrations/empty-state/empty-groups-md.svg?url';
 import { s__, __ } from '~/locale';
-import { joinPaths } from '~/lib/utils/url_utility';
 import {
   SORT_LABEL_NAME,
   SORT_LABEL_CREATED,
@@ -44,12 +43,11 @@ export const SORT_OPTIONS = [
 const baseTab = {
   formatter: (groups) =>
     formatGraphQLGroups(groups, (group) => {
-      const adminPath = joinPaths('/', gon.relative_url_root, '/admin/groups/', group.fullPath);
       const canAdminAllResources = get(group.userPermissions, 'adminAllResources', true);
 
       return {
-        avatarLabelLink: adminPath,
-        editPath: `${adminPath}/edit`,
+        avatarLabelLink: group.adminShowPath,
+        editPath: group.adminEditPath,
         availableActions: canAdminAllResources ? group.availableActions : [],
       };
     }),
@@ -97,7 +95,7 @@ export const INACTIVE_TAB = {
 
 export const ADMIN_GROUPS_TABS = [ACTIVE_TAB, INACTIVE_TAB];
 
-export const BASE_ROUTE = '/admin/groups';
+export const BASE_ROUTE = '/';
 
 export const ADMIN_GROUPS_ROUTE_NAME = 'admin-groups';
 

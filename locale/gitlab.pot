@@ -3088,6 +3088,12 @@ msgstr ""
 msgid "AICatalog|Update to %{version}"
 msgstr ""
 
+msgid "AICatalog|Updating a flow in this group does not update the flows enabled in this group's projects."
+msgstr ""
+
+msgid "AICatalog|Updating an agent in this group does not update the agents enabled in this group's projects."
+msgstr ""
+
 msgid "AICatalog|Use agents in your %{namespaceType}."
 msgstr ""
 
@@ -51240,10 +51246,10 @@ msgstr ""
 msgid "ProfilesAuthentication|You currently use passkeys for secure and faster sign in. %{link_start}Manage passkeys%{link_end}."
 msgstr ""
 
-msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, your account cannot be recovered."
+msgid "Profiles| You are about to permanently delete %{strongStart}your account%{strongEnd}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{strongStart}Delete account%{strongEnd}, your account cannot be recovered."
 msgstr ""
 
-msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, your account cannot be recovered. It might take up to seven days before you can create a new account with the same username or email."
+msgid "Profiles| You are about to permanently delete %{strongStart}your account%{strongEnd}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{strongStart}Delete account%{strongEnd}, your account cannot be recovered. It might take up to seven days before you can create a new account with the same username or email."
 msgstr ""
 
 msgid "Profiles| You are going to change the username %{currentUsernameBold} to %{newUsernameBold}. Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group. Please update your Git repository remotes as soon as possible."
@@ -51720,7 +51726,10 @@ msgstr ""
 msgid "Profiles|Two-factor authentication"
 msgstr ""
 
-msgid "Profiles|Type your %{confirmationValue} to confirm:"
+msgid "Profiles|Type your %{codeStart}password%{codeEnd} to confirm:"
+msgstr ""
+
+msgid "Profiles|Type your %{codeStart}username%{codeEnd} to confirm:"
 msgstr ""
 
 msgid "Profiles|Unverified secondary email addresses are automatically deleted after three days"
@@ -51862,9 +51871,6 @@ msgid "Profiles|username"
 msgstr ""
 
 msgid "Profiles|what information is hidden?"
-msgstr ""
-
-msgid "Profiles|your account"
 msgstr ""
 
 msgid "Profile|%{job_title} at %{organization}"
@@ -60521,7 +60527,7 @@ msgstr ""
 msgid "SecurityOrchestration|API request"
 msgstr ""
 
-msgid "SecurityOrchestration|Acceptable Risk"
+msgid "SecurityOrchestration|Acceptable risk"
 msgstr ""
 
 msgid "SecurityOrchestration|Access tokens (%{count})"
@@ -61100,7 +61106,7 @@ msgstr ""
 msgid "SecurityOrchestration|Merge request pipeline"
 msgstr ""
 
-msgid "SecurityOrchestration|Mitigating Control"
+msgid "SecurityOrchestration|Mitigating control"
 msgstr ""
 
 msgid "SecurityOrchestration|Never"
@@ -81465,9 +81471,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "parent already has maximum number of children."
-msgstr ""
-
-msgid "password"
 msgstr ""
 
 msgid "past due"

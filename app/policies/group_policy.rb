@@ -253,6 +253,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_design_activity
   end
 
+  rule { can?(:read_group) & ~anonymous }.policy do
+    enable :create_saved_view
+  end
+
   rule { public_group }.policy do
     enable :read_group
     enable :read_package

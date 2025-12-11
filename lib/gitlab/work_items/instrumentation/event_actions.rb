@@ -6,6 +6,9 @@ module Gitlab
       module EventActions
         CLONE = 'work_item_clone'
         CLOSE = 'work_item_close'
+        DESIGN_CREATE = 'work_item_design_create'
+        DESIGN_DESTROY = 'work_item_design_destroy'
+        DESIGN_UPDATE = 'work_item_design_update'
         DESIGN_NOTE_CREATE = 'work_item_design_note_create'
         DESIGN_NOTE_DESTROY = 'work_item_design_note_destroy'
         MOVE = 'work_item_move'
@@ -17,6 +20,9 @@ module Gitlab
         ALL_EVENTS = [
           CLONE,
           CLOSE,
+          DESIGN_CREATE,
+          DESIGN_DESTROY,
+          DESIGN_UPDATE,
           DESIGN_NOTE_CREATE,
           DESIGN_NOTE_DESTROY,
           MOVE,

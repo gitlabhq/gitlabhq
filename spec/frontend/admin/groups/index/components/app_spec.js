@@ -94,9 +94,7 @@ describe('AdminGroupsApp', () => {
     });
   });
 
-  it('renders relative URL that supports relative_url_root', async () => {
-    window.gon = { relative_url_root: '/gitlab' };
-
+  it('uses adminShowPath for avatar link', async () => {
     await createComponent({
       mountFn: mountExtended,
       handlers: [[adminGroupsQuery, jest.fn().mockResolvedValue(adminGroupsGraphQlResponse)]],
@@ -112,7 +110,29 @@ describe('AdminGroupsApp', () => {
     } = adminGroupsGraphQlResponse;
 
     expect(wrapper.findByRole('link', { name: expectedGroup.fullName }).attributes('href')).toBe(
-      `/gitlab/admin/groups/${expectedGroup.fullPath}`,
+      expectedGroup.adminShowPath,
+    );
+  });
+
+  it('uses adminEditPath for edit link', async () => {
+    await createComponent({
+      mountFn: mountExtended,
+      handlers: [[adminGroupsQuery, jest.fn().mockResolvedValue(adminGroupsGraphQlResponse)]],
+    });
+    await waitForPromises();
+
+    const {
+      data: {
+        groups: {
+          nodes: [expectedGroup],
+        },
+      },
+    } = adminGroupsGraphQlResponse;
+
+    await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
+
+    expect(wrapper.findByRole('link', { name: 'Edit' }).attributes('href')).toBe(
+      expectedGroup.adminEditPath,
     );
   });
 

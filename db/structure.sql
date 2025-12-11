@@ -27623,21 +27623,6 @@ CREATE SEQUENCE software_license_policies_id_seq
 
 ALTER SEQUENCE software_license_policies_id_seq OWNED BY software_license_policies.id;
 
-CREATE TABLE software_licenses (
-    id bigint NOT NULL,
-    name character varying NOT NULL,
-    spdx_identifier character varying(255)
-);
-
-CREATE SEQUENCE software_licenses_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE software_licenses_id_seq OWNED BY software_licenses.id;
-
 CREATE TABLE spam_logs (
     id bigint NOT NULL,
     user_id bigint,
@@ -33234,8 +33219,6 @@ ALTER TABLE ONLY snippets ALTER COLUMN id SET DEFAULT nextval('snippets_id_seq':
 
 ALTER TABLE ONLY software_license_policies ALTER COLUMN id SET DEFAULT nextval('software_license_policies_id_seq'::regclass);
 
-ALTER TABLE ONLY software_licenses ALTER COLUMN id SET DEFAULT nextval('software_licenses_id_seq'::regclass);
-
 ALTER TABLE ONLY spam_logs ALTER COLUMN id SET DEFAULT nextval('spam_logs_id_seq'::regclass);
 
 ALTER TABLE ONLY sprints ALTER COLUMN id SET DEFAULT nextval('sprints_id_seq'::regclass);
@@ -37088,9 +37071,6 @@ ALTER TABLE ONLY snippets
 ALTER TABLE ONLY software_license_policies
     ADD CONSTRAINT software_license_policies_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY software_licenses
-    ADD CONSTRAINT software_licenses_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY spam_logs
     ADD CONSTRAINT spam_logs_pkey PRIMARY KEY (id);
 
@@ -40246,8 +40226,6 @@ CREATE INDEX idx_security_scans_on_scan_type ON security_scans USING btree (scan
 CREATE INDEX idx_slack_integrations_scopes_on_slack_api_scope_id ON slack_integrations_scopes USING btree (slack_api_scope_id);
 
 CREATE UNIQUE INDEX idx_software_license_policies_unique_on_custom_license_project ON software_license_policies USING btree (project_id, custom_software_license_id, scan_result_policy_id);
-
-CREATE INDEX idx_software_licenses_lower_name ON software_licenses USING btree (lower((name)::text));
 
 CREATE INDEX idx_status_check_responses_on_id_and_status ON status_check_responses USING btree (id, status);
 
@@ -44526,10 +44504,6 @@ CREATE INDEX index_snippets_on_visibility_level_and_secret ON snippets USING btr
 CREATE INDEX index_software_license_policies_on_approval_policy_rule_id ON software_license_policies USING btree (approval_policy_rule_id);
 
 CREATE INDEX index_software_license_policies_on_scan_result_policy_id ON software_license_policies USING btree (scan_result_policy_id);
-
-CREATE INDEX index_software_licenses_on_spdx_identifier ON software_licenses USING btree (spdx_identifier);
-
-CREATE UNIQUE INDEX index_software_licenses_on_unique_name ON software_licenses USING btree (name);
 
 CREATE INDEX index_sop_configurations_project_id_policy_project_id ON security_orchestration_policy_configurations USING btree (security_policy_management_project_id, project_id);
 

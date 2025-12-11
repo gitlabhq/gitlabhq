@@ -20,13 +20,12 @@ module Gitlab
         # - Also, PostgreSQL will currently ignore NOT VALID constraints on partitions
         #   when adding a valid FK to the partitioned table, so they have to
         #   also be validated before we can add the final FK.
+        #
         # Solution:
         # - Add the foreign key first to each partition by using
         #   add_concurrent_foreign_key and validating it
         # - Once all partitions have a foreign key, add it also to the partitioned
         #   table (there will be no need for a validation at that level)
-        # For those reasons, this method does not include an option to delay the
-        # validation, we have to force validate: true.
         #
         # source - The source (partitioned) table containing the foreign key.
         # target - The target table the key points to.
@@ -36,16 +35,21 @@ module Gitlab
         # on_update - The action to perform when associated data is updated,
         #             no default value is set.
         # name - The name of the foreign key.
-        # validate - Flag that controls whether the new foreign key will be
-        #            validated after creation and if it will be added on the parent table.
-        #            If the flag is not set, the constraint will only be enforced for new data
-        #            in the existing partitions. The helper will need to be called again
-        #            with the flag set to `true` to add the foreign key on the parent table
-        #            after validating it on all partitions.
-        #            `validate: false` should be paired with `prepare_partitioned_async_foreign_key_validation`
-        # reverse_lock_order - Flag that controls whether we should attempt to acquire locks in the reverse
-        #                      order of the ALTER TABLE. This can be useful in situations where the foreign
-        #                      key creation could deadlock with another process.
+        # validate - Flag that controls whether the new foreign key will be validated
+        #            after creation and added to the parent table.
+        #            When true (default): The FK is validated on all partitions and then
+        #            added to the parent partitioned table.
+        #            When false: The FK is added to existing partitions as NOT VALID and
+        #            will only be enforced for new data. The FK will NOT be added to the
+        #            parent table. To complete the process, you must:
+        #            1. Call `prepare_partitioned_async_foreign_key_validation` to schedule
+        #               async validation on all partitions
+        #            2. Call this helper again with `validate: true` after validation completes
+        #               to add the FK to the parent table
+        # reverse_lock_order - Flag that controls whether we should attempt to acquire locks
+        #                      in the reverse order of the ALTER TABLE. This can be useful in
+        #                      situations where the foreign key creation could deadlock with
+        #                      another process.
         #
         def add_concurrent_partitioned_foreign_key(source, target, column:, **options)
           assert_not_in_transaction_block(scope: ERROR_SCOPE)

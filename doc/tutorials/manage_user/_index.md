@@ -56,7 +56,7 @@ software development organization.
 To create the Development group:
 
 1. Open GitLab Self-Managed.
-1. In the upper-right corner, select **Create new** ({{< icon name=\"plus\" >}}) and **New group**.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. Select **Create group**.
 1. In **Group name**, enter `Development`.
 1. Under **Group URL**, enter `development-group`. You'll see a message

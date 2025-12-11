@@ -1,0 +1,4 @@
+---
+name: read_saved_view
+description: Grants the ability to read a saved view
+feature_category: portfolio_management

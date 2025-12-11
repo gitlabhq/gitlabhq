@@ -1,0 +1,4 @@
+---
+name: delete_saved_view
+description: Grants the ability to delete a saved view
+feature_category: portfolio_management

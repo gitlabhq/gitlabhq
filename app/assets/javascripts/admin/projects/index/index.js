@@ -8,11 +8,11 @@ import routes from './routes';
 
 Vue.use(VueRouter);
 
-export const createRouter = () => {
+export const createRouter = (basePath) => {
   const router = new VueRouter({
     routes,
     mode: 'history',
-    base: gon.relative_url_root || '/',
+    base: basePath,
   });
 
   return router;
@@ -27,7 +27,7 @@ export const initAdminProjects = () => {
     dataset: { appData },
   } = el;
 
-  const { programmingLanguages } = convertObjectPropsToCamelCase(JSON.parse(appData));
+  const { programmingLanguages, basePath } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -35,7 +35,7 @@ export const initAdminProjects = () => {
 
   return new Vue({
     el,
-    router: createRouter(),
+    router: createRouter(basePath),
     apolloProvider,
     name: 'AdminProjectsRoot',
     render(createElement) {

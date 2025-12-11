@@ -218,6 +218,13 @@ module Types
       scopes: [:api, :read_api, :ai_workflows],
       description: 'URL of the namespace.'
 
+    field :saved_views,
+      null: true,
+      scopes: [:api, :read_api],
+      description: 'Saved views associated with the namespace.',
+      experiment: { milestone: '18.7' },
+      resolver: ::Resolvers::WorkItems::SavedViews::SavedViewsResolver
+
     markdown_field :description_html, null: true, &:namespace_details
 
     def achievements_path

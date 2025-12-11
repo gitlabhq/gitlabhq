@@ -26,26 +26,27 @@ describe('DeleteAccountModal component', () => {
   const findUsernameInput = () => wrapper.findByTestId('username-confirmation-field');
 
   it.each`
-    delayUserAccountSelfDeletion | expectedMessage
-    ${false}                     | ${'You are about to permanently delete your account, and all of the issues, merge requests, and groups linked to your account. Once you confirm Delete account, your account cannot be recovered.'}
-    ${true}                      | ${'You are about to permanently delete your account, and all of the issues, merge requests, and groups linked to your account. Once you confirm Delete account, your account cannot be recovered. It might take up to seven days before you can create a new account with the same username or email.'}
+    delayUserAccountSelfDeletion | message
+    ${false}                     | ${'You are about to permanently delete <strong>your account</strong>, and all of the issues, merge requests, and groups linked to your account. Once you confirm <strong>Delete account</strong>, your account cannot be recovered.'}
+    ${true}                      | ${'You are about to permanently delete <strong>your account</strong>, and all of the issues, merge requests, and groups linked to your account. Once you confirm <strong>Delete account</strong>, your account cannot be recovered. It might take up to seven days before you can create a new account with the same username or email.'}
   `(
     'shows delete message in modal body when delayUserAccountSelfDeletion is $delayUserAccountSelfDeletion',
-    ({ delayUserAccountSelfDeletion, expectedMessage }) => {
+    ({ delayUserAccountSelfDeletion, message }) => {
       createWrapper({ delayUserAccountSelfDeletion });
 
-      expect(findModal().find('p').text()).toBe(expectedMessage);
+      const content = findModal().find('p').html();
+      expect(content).toContain(message);
     },
   );
 
   describe.each`
-    type          | confirmWithPassword | findExpectedField    | findOtherField       | invalidFieldValue  | validFieldValue
-    ${'password'} | ${true}             | ${findPasswordInput} | ${findUsernameInput} | ${''}              | ${'anything'}
-    ${'username'} | ${false}            | ${findUsernameInput} | ${findPasswordInput} | ${'this is wrong'} | ${'hasnoname'}
+    message                                          | confirmWithPassword | findExpectedField    | findOtherField       | invalidFieldValue  | validFieldValue
+    ${'Type your <code>password</code> to confirm:'} | ${true}             | ${findPasswordInput} | ${findUsernameInput} | ${''}              | ${'anything'}
+    ${'Type your <code>username</code> to confirm:'} | ${false}            | ${findUsernameInput} | ${findPasswordInput} | ${'this is wrong'} | ${'hasnoname'}
   `(
     'with $type confirmation',
     ({
-      type,
+      message,
       confirmWithPassword,
       findExpectedField,
       findOtherField,
@@ -68,7 +69,8 @@ describe('DeleteAccountModal component', () => {
       });
 
       it('shows confirmation message in form', () => {
-        expect(findForm().find('p').text()).toBe(`Type your ${type} to confirm:`);
+        const content = findForm().find('p').html();
+        expect(content).toContain(message);
       });
 
       describe('when the field has an invalid value', () => {

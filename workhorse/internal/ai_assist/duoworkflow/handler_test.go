@@ -52,7 +52,7 @@ func TestHandler_SuccessfulWorkflowExecution(t *testing.T) {
 	}`)
 	defer apiServer.Close()
 
-	httpServer := httptest.NewServer(NewHandler(apiClient, initRdb(t)).Build())
+	httpServer := httptest.NewServer(NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {})).Build())
 	defer httpServer.Close()
 
 	wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
@@ -88,7 +88,7 @@ func TestHandler_UnauthorizedRequest(t *testing.T) {
 
 	apiClient := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
 
-	server := httptest.NewServer(NewHandler(apiClient, initRdb(t)).Build())
+	server := httptest.NewServer(NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {})).Build())
 	defer server.Close()
 
 	wsURL := "ws" + strings.TrimPrefix(server.URL, "http") + "/duo"
@@ -119,7 +119,7 @@ func TestHandler_GrpcServerError(t *testing.T) {
 	}`)
 	defer apiServer.Close()
 
-	httpServer := httptest.NewServer(NewHandler(apiClient, initRdb(t)).Build())
+	httpServer := httptest.NewServer(NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {})).Build())
 	defer httpServer.Close()
 
 	wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
@@ -152,7 +152,7 @@ func TestHandler_InvalidServiceURL(t *testing.T) {
 	}`)
 	defer apiServer.Close()
 
-	httpServer := httptest.NewServer(NewHandler(apiClient, initRdb(t)).Build())
+	httpServer := httptest.NewServer(NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {})).Build())
 	defer httpServer.Close()
 
 	wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
@@ -175,7 +175,7 @@ func TestHandler_ShutdownWithNoActiveRunners(t *testing.T) {
 	testhelper.ConfigureSecret()
 
 	apiClient := api.NewAPI(nil, "test-version", http.DefaultTransport)
-	handler := NewHandler(apiClient, initRdb(t))
+	handler := NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}))
 
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
@@ -215,7 +215,7 @@ func TestHandler_ShutdownWithActiveRunners(t *testing.T) {
 	}`)
 	defer apiServer.Close()
 
-	handler := NewHandler(apiClient, initRdb(t))
+	handler := NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}))
 
 	httpServer := httptest.NewServer(handler.Build())
 	defer httpServer.Close()
@@ -262,7 +262,7 @@ func TestHandler_FailedToAcquireLock(t *testing.T) {
 	// Simulate the lock already being acquired
 	rdb.Set(context.Background(), workflowLockPrefix+"id-123", "1", time.Minute)
 
-	httpServer := httptest.NewServer(NewHandler(apiClient, rdb).Build())
+	httpServer := httptest.NewServer(NewHandler(apiClient, rdb, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {})).Build())
 	defer httpServer.Close()
 
 	wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
@@ -304,7 +304,7 @@ func TestHandler_IgnoresLockWhenLockConcurrentFlowDisabled(t *testing.T) {
 	// Simulate the lock already being acquired
 	rdb.Set(context.Background(), workflowLockPrefix+"id-123", "1", time.Minute)
 
-	httpServer := httptest.NewServer(NewHandler(apiClient, rdb).Build())
+	httpServer := httptest.NewServer(NewHandler(apiClient, rdb, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {})).Build())
 	defer httpServer.Close()
 
 	wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
@@ -342,7 +342,7 @@ func TestHandler_UsageQuotaExceeded(t *testing.T) {
 	}`)
 	defer apiServer.Close()
 
-	httpServer := httptest.NewServer(NewHandler(apiClient, initRdb(t)).Build())
+	httpServer := httptest.NewServer(NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {})).Build())
 	defer httpServer.Close()
 
 	wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"

@@ -1243,6 +1243,10 @@ class ProjectPolicy < BasePolicy
     enable :read_project_metadata
   end
 
+  rule { can?(:read_project) & ~anonymous }.policy do
+    enable :create_saved_view
+  end
+
   rule { public_project & model_registry_enabled }.policy do
     enable :read_model_registry
   end

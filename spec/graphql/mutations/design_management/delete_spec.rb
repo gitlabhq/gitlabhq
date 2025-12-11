@@ -91,6 +91,14 @@ RSpec.describe Mutations::DesignManagement::Delete, feature_category: :api do
           allow(Gitlab::Tracking).to receive(:event) # rubocop:disable RSpec/ExpectGitlabTracking
           allow(Gitlab::InternalEvents).to receive(:track_event)
 
+          tracking_service_double = instance_double(
+            Gitlab::WorkItems::Instrumentation::TrackingService,
+            execute: true
+          )
+
+          allow(Gitlab::WorkItems::Instrumentation::TrackingService).to receive(:new).and_return(
+            tracking_service_double)
+
           filenames.each(&:present?) # ignore setup
           # Queries: as of 2022-12-01
           # -------------

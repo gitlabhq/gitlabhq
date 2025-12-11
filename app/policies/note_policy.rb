@@ -107,21 +107,4 @@ class NotePolicy < BasePolicy
       @subject.project
     end
   end
-
-  def access_level
-    return -1 if @user.nil?
-    return -1 unless parent_namespace
-
-    lookup_access_level!
-  end
-
-  def lookup_access_level!
-    return ::Gitlab::Access::REPORTER if alert_bot?
-
-    if parent_namespace.is_a?(Project)
-      parent_namespace.team.max_member_access(@user.id)
-    else
-      parent_namespace.max_member_access_for_user(@user)
-    end
-  end
 end

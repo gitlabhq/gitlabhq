@@ -1,13 +1,14 @@
 ---
 table_name: software_licenses
 classes:
-- SoftwareLicense
+  - SoftwareLicense
 feature_categories:
-- security_policy_management
+  - security_policy_management
 description: Normalized software licenses to use in conjunction with License Compliance
-  features (like software license policies)
+  features (like software license policies). Scheduled for removal in https://gitlab.com/gitlab-org/gitlab/-/issues/497969
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6246
 milestone: '11.2'
 gitlab_schema: gitlab_main_org
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497969
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214129
+removed_in_milestone: '18.7'

@@ -37,7 +37,9 @@ export default {
       return csrf.token;
     },
     confirmationValue() {
-      return this.confirmWithPassword ? __('password') : __('username');
+      return this.confirmWithPassword
+        ? s__('Profiles|Type your %{codeStart}password%{codeEnd} to confirm:')
+        : s__('Profiles|Type your %{codeStart}username%{codeEnd} to confirm:');
     },
     primaryProps() {
       return {
@@ -77,12 +79,11 @@ export default {
   },
   i18n: {
     textdelay: s__(`Profiles|
-You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account.
-Once you confirm %{deleteAccount}, your account cannot be recovered. It might take up to seven days before you can create a new account with the same username or email.`),
+You are about to permanently delete %{strongStart}your account%{strongEnd}, and all of the issues, merge requests, and groups linked to your account.
+Once you confirm %{strongStart}Delete account%{strongEnd}, your account cannot be recovered. It might take up to seven days before you can create a new account with the same username or email.`),
     text: s__(`Profiles|
-You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account.
-Once you confirm %{deleteAccount}, your account cannot be recovered.`),
-    inputLabel: s__('Profiles|Type your %{confirmationValue} to confirm:'),
+You are about to permanently delete %{strongStart}your account%{strongEnd}, and all of the issues, merge requests, and groups linked to your account.
+Once you confirm %{strongStart}Delete account%{strongEnd}, your account cannot be recovered.`),
   },
 };
 </script>
@@ -97,12 +98,8 @@ Once you confirm %{deleteAccount}, your account cannot be recovered.`),
   >
     <p>
       <gl-sprintf :message="deleteMessage">
-        <template #yourAccount>
-          <strong>{{ s__('Profiles|your account') }}</strong>
-        </template>
-
-        <template #deleteAccount>
-          <strong>{{ s__('Profiles|Delete account') }}</strong>
+        <template #strong="{ content }">
+          <strong>{{ content }}</strong>
         </template>
       </gl-sprintf>
     </p>
@@ -112,9 +109,9 @@ Once you confirm %{deleteAccount}, your account cannot be recovered.`),
       <input :value="csrfToken" type="hidden" name="authenticity_token" />
 
       <p id="input-label">
-        <gl-sprintf :message="$options.i18n.inputLabel">
-          <template #confirmationValue>
-            <code>{{ confirmationValue }}</code>
+        <gl-sprintf :message="confirmationValue">
+          <template #code="{ content }">
+            <code>{{ content }}</code>
           </template>
         </gl-sprintf>
       </p>

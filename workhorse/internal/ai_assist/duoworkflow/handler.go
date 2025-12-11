@@ -24,6 +24,7 @@ import (
 type Handler struct {
 	rails    *api.API
 	rdb      *redis.Client
+	backend  http.Handler
 	upgrader websocket.Upgrader
 	runners  sync.Map // map[*runner]bool
 }
@@ -31,9 +32,10 @@ type Handler struct {
 // NewHandler creates a new Handler for managing Duo Workflow WebSocket connections.
 // The handler maintains a registry of active runners to support graceful shutdown
 // of WebSocket connections during server termination.
-func NewHandler(rails *api.API, rdb *redis.Client) *Handler {
+func NewHandler(rails *api.API, rdb *redis.Client, backend http.Handler) *Handler {
 	return &Handler{
 		rails:    rails,
+		backend:  backend,
 		rdb:      rdb,
 		upgrader: websocket.Upgrader{},
 	}
@@ -65,7 +67,7 @@ func (h *Handler) Build() http.Handler {
 			return
 		}
 
-		runner, err := newRunner(conn, h.rails, r, a.DuoWorkflow, h.rdb)
+		runner, err := newRunner(conn, h.rails, h.backend, r, a.DuoWorkflow, h.rdb)
 		if err != nil {
 			fail.Request(w, r, fmt.Errorf("failed to initialize agent platform client: %v", err))
 			if closeErr := conn.Close(); closeErr != nil {

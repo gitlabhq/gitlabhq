@@ -293,11 +293,6 @@ func configureRoutes(u *upstream) {
 	api := u.APIClient
 	static := &staticpages.Static{DocumentRoot: u.DocumentRoot, Exclude: staticExclude, API: u.APIClient}
 	dependencyProxyInjector := dependencyproxy.NewInjector()
-	dwHandler := duoworkflow.NewHandler(api, u.rdb)
-
-	if u.upgradedConnsManager != nil {
-		u.upgradedConnsManager.Register(dwHandler)
-	}
 
 	// Build proxy with optional success tracking
 	var proxyOpts []ProxyOption
@@ -307,6 +302,11 @@ func configureRoutes(u *upstream) {
 
 	proxy := buildProxy(u.Backend, u.Version, u.RoundTripper, u.Config, dependencyProxyInjector, proxyOpts...)
 	cableProxy := proxypkg.NewProxy(u.CableBackend, u.Version, u.CableRoundTripper)
+
+	dwHandler := duoworkflow.NewHandler(api, u.rdb, u)
+	if u.upgradedConnsManager != nil {
+		u.upgradedConnsManager.Register(dwHandler)
+	}
 
 	assetsNotFoundHandler := NotFoundUnless(u.DevelopmentMode, proxy)
 	if u.AltDocumentRoot != "" {

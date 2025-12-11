@@ -207,7 +207,7 @@ func Test_newRunner(t *testing.T) {
 		LockConcurrentFlow: true,
 	}
 
-	runner, err := newRunner(mockConn, apiClient, req, cfg, initRdb(t))
+	runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), req, cfg, initRdb(t))
 
 	require.NoError(t, err)
 	require.NotNil(t, runner)
@@ -243,7 +243,7 @@ func Test_newRunner_WithoutRedis(t *testing.T) {
 		LockConcurrentFlow: true,
 	}
 
-	runner, err := newRunner(mockConn, apiClient, req, cfg, nil)
+	runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), req, cfg, nil)
 
 	require.NoError(t, err)
 	require.False(t, runner.lockFlow)
@@ -733,6 +733,7 @@ func TestRunner_handleAgentAction(t *testing.T) {
 					Client: server.Client(),
 					URL:    serverURL,
 				},
+				backend:     createBackendHandler(server.Client()),
 				token:       "test-token",
 				originalReq: &http.Request{},
 				conn:        mockConn,

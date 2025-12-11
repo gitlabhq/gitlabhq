@@ -360,6 +360,13 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         get :work_items, to: 'work_items#calendar', constraints: ->(req) { req.format == :ics }
         get :work_items, to: 'work_items#rss', constraints: ->(req) { req.format == :atom }
+
+        resources :saved_views, only: [], path: 'work_items/saved_views' do
+          member do
+            get :subscribe
+          end
+        end
+
         resources :work_items, only: [:show, :index, :edit], param: :iid do
           collection do
             post :import_csv
