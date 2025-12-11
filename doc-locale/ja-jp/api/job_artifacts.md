@@ -14,26 +14,6 @@ title: ジョブアーティファクトAPI
 
 このAPIを使用して、[ジョブアーティファクト](../ci/jobs/job_artifacts.md)をダウンロード、保持、削除します。
 
-## CI/CDジョブトークンで認証する {#authenticate-with-a-cicd-job-token}
-
-{{< details >}}
-
-- プラン: Premium、Ultimate
-- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
-
-{{< /details >}}
-
-CI/CDジョブで[ジョブアーティファクト](../ci/jobs/ci_job_token.md)をダウンロードする際に、マルチプロジェクトパイプラインの[CI/CDジョブトークン](../ci/jobs/ci_job_token.md)を使用して認証できます。これは、`.gitlab-ci.yml`ファイルで定義されたCI/CDジョブでのみ使用してください。
-
-`$CI_JOB_TOKEN`に関連付けられているジョブは、このトークンの使用時に実行されている必要があります。
-
-以下のいずれかを使用します。
-
-- `CI_JOB_TOKEN`定義済み変数による`job_token`パラメータ。
-- `CI_JOB_TOKEN`定義済み変数による`JOB-TOKEN`ヘッダー。
-
-詳細については、[REST API authentication](rest/authentication.md)を参照してください。
-
 ## ジョブIDでジョブアーティファクトをダウンロードする {#download-job-artifacts-by-job-id}
 
 ジョブIDを使用して、ジョブのアーティファクトアーカイブをダウンロードします。
@@ -44,13 +24,13 @@ cURLを使用してGitLab.comからアーティファクトをダウンロード
 GET /projects/:id/jobs/:job_id/artifacts
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
-| 属性   | 型           | 必須 | 説明 |
-| ----------- | -------------- | -------- | ----------- |
-| `id`        | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `job_id`    | 整数        | はい      | ジョブのID。 |
-| `job_token` | 文字列         | いいえ       | マルチプロジェクトパイプライン用のCI/CDジョブトークン。PremiumおよびUltimateのみです。 |
+| 属性   | 型              | 必須 | 説明 |
+| ----------- | ----------------- | -------- | ----------- |
+| `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `job_id`    | 整数           | はい      | ジョブのID。 |
+| `job_token` | 文字列            | いいえ       | マルチプロジェクトパイプライン用のCI/CDジョブトークン。PremiumおよびUltimateのみです。 |
 
 成功した場合は、[`200`](rest/troubleshooting.md#status-codes)を返し、アーティファクトファイルを提供します。
 
@@ -84,7 +64,7 @@ artifact_download:
 前提要件:
 
 - `success`ステータスで完了したパイプラインが必要です。
-- パイプラインに手動ジョブが含まれている場合は、これらのジョブが次のいずれかである必要があります。
+- パイプラインに手動ジョブが含まれている場合は、これらのジョブが次のいずれかである必要があります:
   - 正常に完了している。
   - `allow_failure: true`が設定されている。
 
@@ -94,14 +74,14 @@ cURLを使用してGitLab.comからアーティファクトをダウンロード
 GET /projects/:id/jobs/artifacts/:ref_name/download?job=name
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
-| 属性   | 型           | 必須 | 説明 |
-| ----------- | -------------- | -------- | ----------- |
-| `id`        | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `job`       | 文字列         | はい      | ジョブの名前。 |
-| `ref_name`  | 文字列         | はい      | リポジトリ内のブランチ名またはタグ名。参照またはSHA参照はサポートされていません。マージリクエストパイプラインの場合は、ソースブランチ名の代わりに`ref/merge-requests/:iid/head`を使用します。 |
-| `job_token` | 文字列         | いいえ       | マルチプロジェクトパイプライン用のCI/CDジョブトークン。PremiumおよびUltimateのみです。 |
+| 属性   | 型              | 必須 | 説明 |
+| ----------- | ----------------- | -------- | ----------- |
+| `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `job`       | 文字列            | はい      | ジョブの名前。 |
+| `ref_name`  | 文字列            | はい      | リポジトリ内のブランチ名またはタグ名。参照またはSHA参照はサポートされていません。マージリクエストパイプラインの場合は、ソースブランチ名の代わりに`refs/merge-requests/:iid/head`を使用します。 |
+| `job_token` | 文字列            | いいえ       | マルチプロジェクトパイプライン用のCI/CDジョブトークン。PremiumおよびUltimateのみです。 |
 
 成功した場合は、[`200`](rest/troubleshooting.md#status-codes)を返し、アーティファクトファイルを提供します。
 
@@ -134,14 +114,14 @@ cURLを使用してGitLab.comからアーティファクトをダウンロード
 GET /projects/:id/jobs/:job_id/artifacts/*artifact_path
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
-| 属性       | 型           | 必須 | 説明 |
-| --------------- | -------------- | -------- | ----------- |
-| `artifact_path` | 文字列         | はい      | アーティファクトアーカイブ内のファイルのパス。 |
-| `id`            | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `job_id`        | 整数        | はい      | 一意のジョブ識別子。 |
-| `job_token`     | 文字列         | いいえ       | マルチプロジェクトパイプライン用のCI/CDジョブトークン。PremiumおよびUltimateのみです。 |
+| 属性       | 型              | 必須 | 説明 |
+| --------------- | ----------------- | -------- | ----------- |
+| `artifact_path` | 文字列            | はい      | アーティファクトアーカイブ内のファイルのパス。 |
+| `id`            | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `job_id`        | 整数           | はい      | 一意のジョブ識別子。 |
+| `job_token`     | 文字列            | いいえ       | マルチプロジェクトパイプライン用のCI/CDジョブトークン。PremiumおよびUltimateのみです。 |
 
 成功した場合は、[`200`](rest/troubleshooting.md#status-codes)を返し、単一のアーティファクトファイルを送信します。
 
@@ -164,7 +144,7 @@ curl --location \
 前提要件:
 
 - `success`ステータスで完了したパイプラインが必要です。
-- パイプラインに手動ジョブが含まれている場合は、これらのジョブが次のいずれかである必要があります。
+- パイプラインに手動ジョブが含まれている場合は、これらのジョブが次のいずれかである必要があります:
   - 正常に完了している。
   - `allow_failure: true`が設定されている。
 
@@ -174,15 +154,15 @@ cURLを使用してGitLab.comからアーティファクトをダウンロード
 GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
-| 属性       | 型           | 必須 | 説明 |
-| --------------- | -------------- | -------- | ----------- |
-| `artifact_path` | 文字列         | はい      | アーティファクトアーカイブ内のファイルのパス。 |
-| `id`            | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `job`           | 文字列         | はい      | ジョブの名前。 |
-| `ref_name`      | 文字列         | はい      | リポジトリ内のブランチ名またはタグ名。`HEAD`参照と`SHA`参照はサポートされていません。マージリクエストパイプラインの場合は、ソースブランチ名の代わりに`ref/merge-requests/:iid/head`を使用します。 |
-| `job_token`     | 文字列         | いいえ       | マルチプロジェクトパイプライン用のCI/CDジョブトークン。PremiumおよびUltimateのみです。 |
+| 属性       | 型              | 必須 | 説明 |
+| --------------- | ----------------- | -------- | ----------- |
+| `artifact_path` | 文字列            | はい      | アーティファクトアーカイブ内のファイルのパス。 |
+| `id`            | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `job`           | 文字列            | はい      | ジョブの名前。 |
+| `ref_name`      | 文字列            | はい      | リポジトリ内のブランチ名またはタグ名。`HEAD`参照と`SHA`参照はサポートされていません。マージリクエストパイプラインの場合は、ソースブランチ名の代わりに`refs/merge-requests/:iid/head`を使用します。 |
+| `job_token`     | 文字列            | いいえ       | マルチプロジェクトパイプライン用のCI/CDジョブトークン。PremiumおよびUltimateのみです。 |
 
 成功した場合は、[`200`](rest/troubleshooting.md#status-codes)を返し、単一のアーティファクトファイルを送信します。
 
@@ -202,12 +182,12 @@ curl --location \
 POST /projects/:id/jobs/:job_id/artifacts/keep
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
-| 属性 | 型           | 必須 | 説明 |
-|-----------|----------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `job_id`  | 整数        | はい      | ジョブのID。 |
+| 属性 | 型              | 必須 | 説明 |
+| --------- | ----------------- | -------- | ----------- |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `job_id`  | 整数           | はい      | ジョブのID。 |
 
 成功した場合は、[`200`](rest/troubleshooting.md#status-codes)とジョブの詳細を返します。
 
@@ -219,7 +199,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/1/artifacts/keep"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -265,12 +245,12 @@ curl --request POST \
 DELETE /projects/:id/jobs/:job_id/artifacts
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
-| 属性 | 型           | 必須 | 説明 |
-|-----------|----------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `job_id`  | 整数        | はい      | ジョブのID。 |
+| 属性 | 型              | 必須 | 説明 |
+| --------- | ----------------- | -------- | ----------- |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `job_id`  | 整数           | はい      | ジョブのID。 |
 
 成功すると、[`204 No Content`](rest/troubleshooting.md#status-codes)を返します。
 
@@ -300,11 +280,11 @@ curl --request DELETE \
 DELETE /projects/:id/artifacts
 ```
 
-サポートされている属性は以下のとおりです。
+サポートされている属性は以下のとおりです:
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
 成功すると、[`202 Accepted`](rest/troubleshooting.md#status-codes)を返します。
 
@@ -324,14 +304,14 @@ curl --request DELETE \
 
 この問題は、マージリクエストパイプラインが、ブランチパイプラインとは異なる参照形式を使用するために発生します。マージリクエストパイプラインは、ソースブランチに直接ではなく、`refs/merge-requests/:iid/head`上で実行されます。
 
-マージリクエストパイプラインのジョブアーティファクトをダウンロードするには、ブランチ名の代わりに`ref_name`として`ref/merge-requests/:iid/head`を使用します。`:iid`はマージリクエストIDです。
+マージリクエストパイプラインのジョブアーティファクトをダウンロードするには、ブランチ名の代わりに`ref_name`として`refs/merge-requests/:iid/head`を使用します。`:iid`はマージリクエストIDです。マージリクエストパイプラインでは、IDは`$CI_MERGE_REQUEST_IID`変数から、完全な`ref_name`は`$CI_MERGE_REQUEST_REF_PATH`変数から利用できます。
 
-たとえば、マージリクエスト`!123`の場合は以下のようになります。
+たとえば、マージリクエスト`!123`の場合は以下のようになります:
 
 ```shell
 curl --location \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/ref/merge-requests/123/head/raw/file.txt?job=test"
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/refs/merge-requests/123/head/raw/file.txt?job=test"
 ```
 
 ### `artifacts:reports`ファイルのダウンロード {#downloading-artifactsreports-files}

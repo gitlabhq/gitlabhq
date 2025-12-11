@@ -1210,7 +1210,7 @@ spec:
 
 ---
 
-##### `spec:include`
+#### `spec:include`
 
 {{< history >}}
 
@@ -1275,7 +1275,7 @@ deploy:
 
 ---
 
-##### `spec:component`
+#### `spec:component`
 
 {{< history >}}
 

@@ -182,12 +182,11 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
     end
 
     context 'when build is nil' do
-      let(:limited_relation) { instance_spy(ActiveRecord::Relation, first: nil) }
       let(:builds_relation) { instance_spy(ActiveRecord::Relation) }
 
       before do
         allow(pipeline).to receive(:builds).and_return(builds_relation)
-        allow(builds_relation).to receive(:limit).with(1).and_return(limited_relation)
+        allow(builds_relation).to receive(:first).and_return(nil)
       end
 
       it 'returns empty array' do

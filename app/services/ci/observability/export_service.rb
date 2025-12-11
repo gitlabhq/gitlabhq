@@ -44,7 +44,7 @@ module Ci
       strong_memoize_attr :observability_settings
 
       def export_types
-        build = pipeline.builds.limit(1).first
+        build = pipeline.builds.first
         return [] unless build
 
         variables = pipeline.variables_builder.scoped_variables(
@@ -53,10 +53,10 @@ module Ci
           dependencies: false
         )
 
-        export_variables = variables.find { |var| var.key == OBSERVABILITY_VARIABLE }
-        return [] unless export_variables.present?
+        export_variable = variables.find { |var| var.key == OBSERVABILITY_VARIABLE }
+        return [] unless export_variable.present?
 
-        export_variables.value.to_s.downcase.split(',').map(&:strip) & VALID_VARIABLE_VALUES
+        export_variable.value.to_s.downcase.split(',').map(&:strip) & VALID_VARIABLE_VALUES
       end
       strong_memoize_attr :export_types
 

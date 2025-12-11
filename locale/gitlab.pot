@@ -49306,6 +49306,9 @@ msgid_plural "Pipelines|%{counterLabel} more downstream pipelines"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Pipelines|%{jobName} job"
+msgstr ""
+
 msgid "Pipelines|Access GitLab University"
 msgstr ""
 

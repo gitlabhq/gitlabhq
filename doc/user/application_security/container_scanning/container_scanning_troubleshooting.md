@@ -78,10 +78,18 @@ by default which may result in an empty report when the image does not have any
 vulnerable operating system dependencies. To enable language-specific findings,
 follow the steps in the linked documentation and re-run the scan.
 
-## Container scanning v6.x: outdated vulnerability database error
+## Warning: `vulnerability database was built X days ago (max allowed age is Y days)`
 
-Using container scanning with `registry.gitlab.com/security-products/container-scanning/grype:6` and `registry.gitlab.com/security-products/container-scanning/grype:6-fips` analyzer images may fail with an outdated vulnerability database error, for example:
+You might get an error message like the following:
 
-`1 error occurred: * the vulnerability database was built 6 days ago (max allowed age is 5 days)`
+```plaintext
+1 error occurred: * the vulnerability database was built 6 days ago (max allowed age is 5 days)
+```
 
-This happens when one of the container scanning images above is copied to a user's own repository and not updated to the image (images are rebuilt daily).
+Container scanning fails when the container scanning image is older than 5 days. GitLab updates
+the image daily, but it can become outdated if you use a copy of the image, for example
+in an offline environment. A current image ensures the Trivy database (stored in the image) is
+up to date.
+
+To resolve this issue, update the container scanning image. For details, see
+[update local container image](_index.md#update-local-container-image).

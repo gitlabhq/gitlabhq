@@ -16,9 +16,9 @@ KubernetesクラスターをGitLabに接続するには、クラスターにエ�
 
 ## 前提要件 {#prerequisites}
 
-クラスターにエージェントをインストールする前に必要な項目は以下のとおりです。
+クラスターにエージェントをインストールする前に必要な項目は以下のとおりです:
 
-- [ローカルターミナルから接続できる既存のKubernetesクラスター](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/)。クラスターがない場合は、以下のようなクラウドプロバイダーで作成できます。
+- [ローカルターミナルから接続できる既存のKubernetesクラスター](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/)。クラスターがない場合は、以下のようなクラウドプロバイダーで作成できます:
   - [Amazon Elastic Kubernetes Service（EKS）](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
   - [Azure Kubernetes Service（AKS）](https://learn.microsoft.com/en-us/azure/aks/what-is-aks)
   - [Digital Ocean](https://docs.digitalocean.com/products/kubernetes/getting-started/quickstart/)
@@ -33,9 +33,9 @@ KubernetesクラスターをGitLabに接続するには、クラスターにエ�
 
 [GitLab CLI（`glab`）](../../../../editor_extensions/gitlab_cli/_index.md)とFluxでブートストラップすることにより、エージェントをインストールできます。
 
-前提要件: 
+前提要件:
 
-- 以下のコマンドラインツールがインストールされている必要があります。
+- 以下のコマンドラインツールがインストールされている必要があります:
   - `glab`
   - `kubectl`
   - `flux`
@@ -43,21 +43,21 @@ KubernetesクラスターをGitLabに接続するには、クラスターにエ�
 - 事前に`flux bootstrap`で[Fluxをクラスターにブートストラップ](https://fluxcd.io/flux/installation/bootstrap/gitlab/)しておく必要があります。
   - 互換性のあるディレクトリにFluxとエージェントをブートストラップしてください。`--path`オプションでFluxをブートストラップした場合は、`glab cluster agent bootstrap`コマンドの`--manifest-path`オプションに同じ値を渡す必要があります。
 
-エージェントをインストールするには、次のいずれかの方法を実行します。
+エージェントをインストールするには、次のいずれかの方法を実行します:
 
-- `glab cluster agent bootstrap`を対象プロジェクトのGitリポジトリのディレクトリ内で実行します:
+- `glab cluster agent bootstrap`を対象プロジェクトのGitリポジトリのディレクトリ内で実行します: 
 
   ```shell
   glab cluster agent bootstrap <agent-name> --manifest-path <same_path_used_in_flux_bootstrap>
   ```
 
-- コマンドを対象プロジェクトのGitリポジトリ外で実行する必要がある場合は、`glab -R path-with-namespace cluster agent bootstrap`を実行します:
+- コマンドを対象プロジェクトのGitリポジトリ外で実行する必要がある場合は、`glab -R path-with-namespace cluster agent bootstrap`を実行します: 
 
   ```shell
   glab -R <full/path/to/project> cluster agent bootstrap <agent-name> --manifest-path <same_path_used_in_flux_bootstrap>
   ```
 
-デフォルトでは、コマンドは以下の動作を行います。
+デフォルトでは、コマンドは以下の動作を行います:
 
 1. エージェントを登録します。
 1. エージェントを設定します。
@@ -71,9 +71,9 @@ KubernetesクラスターをGitLabに接続するには、クラスターにエ�
 
 ## 手動でエージェントをインストールする {#install-the-agent-manually}
 
-クラスターにエージェントをインストールするには、3つのステップが必要です。
+クラスターにエージェントをインストールするには、3つのステップが必要です:
 
-1. オプション: [エージェント設定ファイルを作成します](#create-an-agent-configuration-file)。
+1. オプション。[エージェント設定ファイルを作成します](#create-an-agent-configuration-file)。
 1. [GitLab](#register-the-agent-with-gitlab)にエージェントを登録します。
 1. [クラスターにエージェントをインストールします](#install-the-agent-in-the-cluster)。
 
@@ -82,14 +82,14 @@ KubernetesクラスターをGitLabに接続するには、クラスターにエ�
 
 ### エージェント設定ファイルを作成する {#create-an-agent-configuration-file}
 
-設定については、エージェントはGitLabプロジェクトのYAMLファイルを使用します。エージェント設定ファイルの追加は任意です。このファイルは、以下の場合に作成する必要があります。
+設定については、エージェントはGitLabプロジェクトのYAMLファイルを使用します。エージェント設定ファイルの追加は任意です。このファイルは、以下の場合に作成する必要があります:
 
 - [GitLab CI/CDワークフロー](../ci_cd_workflow.md#use-gitlab-cicd-with-your-cluster)を使用していて、別のプロジェクトまたはグループにエージェントへのアクセスを承認する場合。
 - [特定のプロジェクトまたはグループメンバーにKubernetesへのアクセスを許可する](../user_access.md)場合。
 
 エージェント設定ファイルを作成するには: 
 
-1. エージェントの名前を選択します。エージェント名は、[RFC 1123のDNSラベル標準](https://www.rfc-editor.org/rfc/rfc1123)に従います。名前は以下の条件を満たすす必要があります。
+1. エージェントの名前を選択します。エージェント名は、[RFC 1123のDNSラベル標準](https://www.rfc-editor.org/rfc/rfc1123)に従います。名前は以下の条件を満たす必要があります:
 
    - プロジェクト内で一意である。
    - 含める文字は最大63字である。
@@ -97,7 +97,7 @@ KubernetesクラスターをGitLabに接続するには、クラスターにエ�
    - 英数字で始まる。
    - 英数字で終わる。
 
-1. リポジトリのデフォルトブランチで、次の場所にエージェント設定ファイルを作成します。
+1. リポジトリのデフォルトブランチで、次の場所にエージェント設定ファイルを作成します:
 
    ```plaintext
    .gitlab/agents/<agent-name>/config.yaml
@@ -111,12 +111,12 @@ KubernetesクラスターをGitLabに接続するには、クラスターにエ�
 
 GitLab UIから直接新しいエージェントレコードを作成できます。エージェント設定ファイルを作成せずにエージェントを登録できます。
 
-クラスターにエージェントをインストールする前に、エージェントを登録する必要があります。エージェントを登録するには、次の手順に従います。
+クラスターにエージェントをインストールする前に、エージェントを登録する必要があります。エージェントを登録するには、次の手順に従います:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[エージェント設定ファイル](#create-an-agent-configuration-file)がある場合、このプロジェクトに存在する必要があります。クラスターマニフェストファイルもこのプロジェクトに存在する必要があります。
-1. **操作 > Kubernetesクラスター**を選択します。
-1. **クラスター（エージェント）に接続**を選択します。
-1. **新新しいエージェント名**フィールドに、エージェントの一意の名前を入力します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオン](../../../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。[エージェント設定ファイル](#create-an-agent-configuration-file)がある場合、このプロジェクトに存在する必要があります。クラスターマニフェストファイルもこのプロジェクトに存在する必要があります。
+1. **操作** > **Kubernetesクラスター**を選択します。
+1. **クラスターに接続(エージェント)**を選択します。
+1. **新しいエージェント名**フィールドに、エージェントの一意の名前を入力します。
    - この名前の[エージェント設定ファイル](#create-an-agent-configuration-file)がすでに存在する場合、その名前が使用されます。
    - この名前の設定が存在しない場合は、デフォルトの設定で新しいエージェントが作成されます。
 1. **作成して登録**を選択します。
@@ -128,7 +128,7 @@ GitLab UIから直接新しいエージェントレコードを作成できま�
 
    {{< /alert >}}
 
-1. **推奨されるインストール方法**の下にあるコマンドをコピーします。これは、ワンライナーインストールメソッドを使用してクラスターにエージェントをインストールする場合に必要になります。
+1. **Recommended installation method**（推奨されるインストール方法）の下にあるコマンドをコピーします。これは、ワンライナーインストールメソッドを使用してクラスターにエージェントをインストールする場合に必要になります。
 
 #### オプション2: GitLabがエージェント（受容エージェント）に接続する {#option-2-gitlab-connects-to-agent-receptive-agent}
 
@@ -156,13 +156,13 @@ GitLabエージェントHelmチャートのリリースは、mTLS認証を完全
 1. オプション1の手順に従って、クラスターにエージェントを登録します。エージェントトークンとインストールコマンドを後で使用するために保存します。ただし、まだエージェントはインストールしないでください。
 1. 認証方法を準備します。
 
-   GitLabからエージェントへの接続には、プレーンテキストのgRPC（`grpc://`）または暗号化されたgRPC（`grpcs://`、推奨）を使用できます。GitLabは、次の方法を使用してクラスター内のエージェントを認証できます。
+   GitLabからエージェントへの接続には、プレーンテキストのgRPC（`grpc://`）または暗号化されたgRPC（`grpcs://`、推奨）を使用できます。GitLabは、次の方法を使用してクラスター内のエージェントを認証できます:
    - JWTトークン。`grpc://`と`grpcs://`の両方の設定で使用できます。この方法では、クライアント証明書を生成する必要はありません。
 1. [クラスターエージェントAPI](../../../../api/cluster_agents.md#create-an-agent-url-configuration)を使用して、エージェントにURL設定を追加します。URL設定を削除すると、受容エージェントは通常のエージェントになります。受容エージェントは、一度に1つのURL設定のみに関連付けることができます。
 
 1. エージェントをクラスターにインストールします。エージェントの登録時にコピーしたコマンドを使用しますが、`--set config.kasAddress=...`パラメータは削除します。
 
-   JWTトークン認証の例を示します。追加された`config.receptive.enabled=true`および`config.api.jwt`の設定に注意してください。
+   JWTトークン認証の例を示します。追加された`config.receptive.enabled=true`および`config.api.jwt`の設定に注意してください:
 
    ```shell
    helm repo add gitlab https://charts.gitlab.io
@@ -201,7 +201,7 @@ Helmを使用してクラスターにエージェントをインストールす�
 
 1. [Helm CLIをインストールします](https://helm.sh/docs/intro/install/)。
 1. コンピューターでターミナルを開き、[クラスターに接続します](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/)。
-1. [GitLabへのエージェント登録](#register-the-agent-with-gitlab)時にコピーしたコマンドを実行します。コマンドは次のようになります。
+1. [GitLabへのエージェント登録](#register-the-agent-with-gitlab)時にコピーしたコマンドを実行します。コマンドは次のようになります:
 
    ```shell
    helm repo add gitlab https://charts.gitlab.io
@@ -214,14 +214,14 @@ Helmを使用してクラスターにエージェントをインストールす�
        --set config.kasAddress=<address_to_GitLab_KAS_instance>
    ```
 
-1. オプション: [Helmインストールをカスタマイズします](#customize-the-helm-installation)。本番環境システムにエージェントをインストールする場合は、Helmインストールをカスタマイズして、サービスアカウントの権限を制限する必要があります。以下で関連するカスタマイズオプションについて説明します。
+1. オプション。[Helmインストールをカスタマイズします](#customize-the-helm-installation)。本番環境システムにエージェントをインストールする場合は、Helmインストールをカスタマイズして、サービスアカウントの権限を制限する必要があります。以下で関連するカスタマイズオプションについて説明します。
 
 ##### Helmインストールをカスタマイズする {#customize-the-helm-installation}
 
-デフォルトでは、GitLabによって生成されたHelmインストールコマンドになります。
+デフォルトでは、GitLabによって生成されたHelmインストールコマンドになります:
 
 - デプロイメント用のネームスペース`gitlab-agent`を作成します（`--namespace gitlab-agent`）。`--create-namespace`フラグを省略すると、ネームスペースの作成をスキップできます。
-- エージェントのサービスアカウントを設定し、`cluster-admin`ロールを割り当てます。次のコマンドを実行できます。
+- エージェントのサービスアカウントを設定し、`cluster-admin`ロールを割り当てます。次のコマンドを実行できます:
   - `--set serviceAccount.create=false`を`helm install`コマンドに追加して、サービスアカウントの作成をスキップします。この場合、`serviceAccount.name`を既存のサービスアカウントに設定する必要があります。
   - `--set rbac.useExistingRole <your role name>`を`helm install`コマンドに追加して、サービスアカウントに割り当てられたロールをカスタマイズします。この場合、サービスアカウントで使用可能な制限付き権限を持つ、事前作成済みのロールが必要です。
   - `--set rbac.create=false`を`helm install`コマンドに追加して、ロールの割り当てをすべてスキップします。この場合、`ClusterRoleBinding`を手動で作成する必要があります。
@@ -232,7 +232,7 @@ Helmを使用してクラスターにエージェントをインストールす�
 
 ##### KASが自己署名証明書の背後にあるときにエージェントを使用する {#use-the-agent-when-kas-is-behind-a-self-signed-certificate}
 
-[KAS](../../../../administration/clusters/kas.md)が自己署名証明書の背後にある場合、`config.kasCaCert`の値を証明書に設定できます。次に例を示します。
+[KAS](../../../../administration/clusters/kas.md)が自己署名証明書の背後にある場合、`config.kasCaCert`の値を証明書に設定できます。例:
 
 ```shell
 helm upgrade --install gitlab-agent gitlab/gitlab-agent \
@@ -251,9 +251,9 @@ GitLabチャートでKASをインストールする場合、チャートが[自�
 
 {{< /history >}}
 
-Helmチャートの使用時にHTTPプロキシを設定する際には、環境変数 `HTTP_PROXY`、`HTTPS_PROXY`、および`NO_PROXY`を使用できます。大文字と小文字の両方を使用できます。
+Helmチャートの使用時にHTTPプロキシを設定する際には、環境変数`HTTP_PROXY`、`HTTPS_PROXY`、および`NO_PROXY`を使用できます。大文字と小文字の両方を使用できます。
 
-これらの変数は、`extraEnv`値を`name`および`value`のキーを持つオブジェクトのリストとして使用することで設定できます。たとえば、環境変数`HTTPS_PROXY`の値のみを`https://example.com/proxy`に設定するには、次のコマンドを実行します。
+これらの変数は、`extraEnv`値を`name`および`value`のキーを持つオブジェクトのリストとして使用することで設定できます。たとえば、環境変数`HTTPS_PROXY`の値のみを`https://example.com/proxy`に設定するには、次のコマンドを実行します:
 
 ```shell
 helm upgrade --install gitlab-agent gitlab/gitlab-agent \
@@ -276,15 +276,15 @@ helm upgrade --install gitlab-agent gitlab/gitlab-agent \
 
 {{< /alert >}}
 
-クラスターに2番目のエージェントをインストールするには、[前の手順](#register-the-agent-with-gitlab)を再度実行します。クラスター内のリソース名の衝突を回避するには、次のいずれかを実行する必要があります。
+クラスターに2番目のエージェントをインストールするには、[前の手順](#register-the-agent-with-gitlab)を再度実行します。クラスター内のリソース名の衝突を回避するには、次のいずれかを実行する必要があります:
 
-- エージェントに別のリリース名を使用します（例: `second-gitlab-agent`）。
+- エージェントに別のリリース名を使用します（例: `second-gitlab-agent`）:
 
   ```shell
   helm upgrade --install second-gitlab-agent gitlab/gitlab-agent ...
   ```
 
-- または、エージェントを別のネームスペースにインストールします（例: `different-namespace`）。
+- または、エージェントを別のネームスペースにインストールします（例: `different-namespace`）:
 
   ```shell
   helm upgrade --install gitlab-agent gitlab/gitlab-agent \
@@ -294,7 +294,7 @@ helm upgrade --install gitlab-agent gitlab/gitlab-agent \
 
 クラスター内の各エージェントは独立して実行されるため、Fluxモジュールが有効になっているすべてのエージェントが調整をトリガーします。[イシュー357516](https://gitlab.com/gitlab-org/gitlab/-/issues/357516)では、この動作を変更することを提案しています。
 
-次の回避策を取ることができます。
+次の回避策を取ることができます:
 
 - エージェントでRBACを設定し、エージェントに必要なFluxリソースのみにアクセスするようにします。
 - Fluxモジュールを使用しないエージェントのFluxモジュールを無効化します。
@@ -321,7 +321,7 @@ GitLabは、エージェントのリストページで、クラスターにイ�
 
 {{< /alert >}}
 
-エージェントを最新バージョンに更新するには、次のコマンドを実行します。
+エージェントを最新バージョンに更新するには、次のコマンドを実行します:
 
 ```shell
 helm repo update
@@ -329,7 +329,7 @@ helm upgrade --install gitlab-agent gitlab/gitlab-agent \
   --namespace gitlab-agent
 ```
 
-特定のバージョンを設定する場合、`image.tag`値をオーバーライドできます。たとえば、バージョン`v14.9.1`をインストールする場合は、次のコマンドを実行します。
+特定のバージョンを設定する場合、`image.tag`値をオーバーライドできます。たとえば、バージョン`v14.9.1`をインストールする場合は、次のコマンドを実行します:
 
 ```shell
 helm upgrade gitlab-agent gitlab/gitlab-agent \
@@ -343,7 +343,7 @@ Kubernetes用エージェントの最新リリースを使用するには、イ�
 
 ## エージェントをアンインストールする {#uninstall-the-agent}
 
-[Helmでエージェントをインストールした](#install-the-agent-with-helm)場合、Helmでアンインストールすることもできます。たとえば、リリースとネームスペースがいずれも`gitlab-agent`という名前の場合、次のコマンドでエージェントをアンインストールできます。
+[Helmでエージェントをインストールした](#install-the-agent-with-helm)場合、Helmでアンインストールすることもできます。たとえば、リリースとネームスペースがいずれも`gitlab-agent`という名前の場合、次のコマンドでエージェントをアンインストールできます:
 
 ```shell
 helm uninstall gitlab-agent \
@@ -356,9 +356,9 @@ Kubernetes用エージェントのインストール時に、次のイシュー�
 
 ### エラー: `failed to reconcile the GitLab Agent` {#error-failed-to-reconcile-the-gitlab-agent}
 
-`glab cluster agent bootstrap`コマンドが失敗し、`failed to reconcile the GitLab Agent`というメッセージが表示された場合、これは`glab`エージェントとFluxを調整できなかったことを意味します。
+`glab cluster agent bootstrap`コマンドが失敗し、`failed to reconcile the GitLab Agent`というメッセージが表示された場合、これは`glab`がFluxでエージェントを調整できなかったことを意味します。
 
-このエラーについては次のような原因が考えられます。
+このエラーについては次のような原因が考えられます:
 
 - Fluxのセットアップで、`glab`がエージェント用のFluxマニフェストを配置したディレクトリを指していない。`--path`オプションでFluxをブートストラップした場合は、`glab cluster agent bootstrap`コマンドの`--manifest-path`オプションに同じ値を渡す必要があります。
 - Fluxが`kustomization.yaml`のないプロジェクトのルートディレクトリを指しているため、サブディレクトリを走査してYAMLファイルを検索している。エージェントを使用するには、`.gitlab/agents/<agent-name>/config.yaml`にエージェント設定ファイルが必要ですが、これは有効なKubernetesmanifestではありません。そのためFluxはこのファイルの適用に失敗し、エラーが発生します。これを解決するには、Fluxにルートではなくサブディレクトリを指定する必要があります。

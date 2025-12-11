@@ -18,20 +18,20 @@ Code Qualityは複数のプログラミング言語に対応しており、一�
 
 ## プランごとの機能 {#features-per-tier}
 
-次の表に示すように、利用できる機能は[GitLabのプラン](https://about.gitlab.com/pricing/)によって異なります。
+次の表に示すように、利用できる機能は[GitLabのプラン](https://about.gitlab.com/pricing/)によって異なります:
 
 | 機能                                                                                     | Free                              | Premium                           | Ultimate |
 |:--------------------------------------------------------------------------------------------|:-------------------------------------|:-------------------------------------|:------------|
-| [CI/CDジョブからCode Qualityの結果をインポートする](#import-code-quality-results-from-a-cicd-job) | {{< icon name="check-circle" >}}利用可 | {{< icon name="check-circle" >}}利用可 | {{< icon name="check-circle" >}}利用可 |
-| [CodeClimateベースのスキャンを使用する](#use-the-built-in-code-quality-cicd-template-deprecated)   | {{< icon name="check-circle" >}}利用可 | {{< icon name="check-circle" >}}利用可 | {{< icon name="check-circle" >}}利用可 |
-| [マージリクエストウィジェットで検出結果を確認する](#merge-request-widget)                             | {{< icon name="check-circle" >}}利用可 | {{< icon name="check-circle" >}}利用可 | {{< icon name="check-circle" >}}利用可 |
-| [パイプラインレポートで検出結果を確認する](#pipeline-details-view)                                 | {{< icon name="dotted-circle" >}}不可 | {{< icon name="check-circle" >}}利用可 | {{< icon name="check-circle" >}}利用可 |
-| [マージリクエストの変更ビューで検出結果を確認する](#merge-request-changes-view)               | {{< icon name="dotted-circle" >}}不可 | {{< icon name="dotted-circle" >}}不可 | {{< icon name="check-circle" >}}利用可 |
-| [プロジェクトの品質サマリービューで全体的な健全性を分析する](#project-quality-view)           | {{< icon name="dotted-circle" >}}不可 | {{< icon name="dotted-circle" >}}不可 | {{< icon name="check-circle" >}}利用可 |
+| [CI/CDジョブからCode Qualityの結果をインポートする](#import-code-quality-results-from-a-cicd-job) | {{< icon name="check-circle" >}}はい | {{< icon name="check-circle" >}}はい | {{< icon name="check-circle" >}}はい |
+| [CodeClimateベースのスキャンを使用する](#use-the-built-in-code-quality-cicd-template-deprecated)   | {{< icon name="check-circle" >}}はい | {{< icon name="check-circle" >}}はい | {{< icon name="check-circle" >}}はい |
+| [マージリクエストウィジェットで検出結果を確認する](#merge-request-widget)                             | {{< icon name="check-circle" >}}はい | {{< icon name="check-circle" >}}はい | {{< icon name="check-circle" >}}はい |
+| [パイプラインレポートで検出結果を確認する](#pipeline-details-view)                                 | {{< icon name="dotted-circle" >}}いいえ | {{< icon name="check-circle" >}}はい | {{< icon name="check-circle" >}}はい |
+| [マージリクエストの変更ビューで検出結果を確認する](#merge-request-changes-view)               | {{< icon name="dotted-circle" >}}いいえ | {{< icon name="dotted-circle" >}}いいえ | {{< icon name="check-circle" >}}はい |
+| [プロジェクトの品質サマリービューで全体的な健全性を分析する](#project-quality-view)           | {{< icon name="dotted-circle" >}}いいえ | {{< icon name="dotted-circle" >}}いいえ | {{< icon name="check-circle" >}}はい |
 
 ## コードをスキャンして品質違反を検出する {#scan-code-for-quality-violations}
 
-Code Qualityは、多くのスキャンツールからの結果のインポートをサポートするオープンシステムです。違反を見つけて表示するには、以下の手順を実行します。
+Code Qualityは、多くのスキャンツールからの結果のインポートをサポートするオープンシステムです。違反を見つけて表示するには、以下の手順を実行します:
 
 - スキャンツールを直接使用して、[結果をインポート](#import-code-quality-results-from-a-cicd-job)する。_（推奨）_
 - [組み込みのCI/CDテンプレートを使用](#use-the-built-in-code-quality-cicd-template-deprecated)してスキャンを有効にする。このテンプレートでは、一般的なオープンソースツールをラップするCodeClimateエンジンを使用しています。_（非推奨）_
@@ -44,7 +44,7 @@ Code Qualityは、多くのスキャンツールからの結果のインポー�
 
 お使いのツールにドキュメント化された統合が存在するかを確認するには、[一般的なツールをCode Qualityと統合する](#integrate-common-tools-with-code-quality)を参照してください。
 
-別のツールをCode Qualityと統合するには、以下を実行します。
+別のツールをCode Qualityと統合するには、以下を実行します:
 
 1. CI/CDパイプラインにツールを追加します。
 1. レポートをファイルとして出力するようにツールを設定します。
@@ -65,7 +65,7 @@ Code Qualityは、多くのスキャンツールからの結果のインポー�
 
 Code Qualityには、組み込みのCI/CDテンプレート`Code-Quality.gitlab-ci.yaml`も含まれています。このテンプレートは、オープンソースのCodeClimateスキャンエンジンに基づいてスキャンを実行します。
 
-CodeClimateエンジンは以下を実行します。
+CodeClimateエンジンは以下を実行します:
 
 - [サポート対象の言語セット](https://docs.codeclimate.com/docs/supported-languages-for-maintainability)の基本的な保守性チェック。
 - ソースコードを分析するための、オープンソーススキャナーをラップした設定可能な[プラグイン](https://docs.codeclimate.com/docs/list-of-engines)のセット。
@@ -74,7 +74,7 @@ CodeClimateエンジンは以下を実行します。
 
 #### CodeClimateベースのスキャンから移行する {#migrate-from-codeclimate-based-scanning}
 
-CodeClimateエンジンは、カスタマイズ可能な[分析プラグイン](code_quality_codeclimate_scanning.md#configure-codeclimate-analysis-plugins)のセットを使用します。一部はデフォルトで有効になっていますが、それ以外は明示的に有効にする必要があります。組み込みのプラグインを置き換えるために、次の統合を利用できます。
+CodeClimateエンジンは、カスタマイズ可能な[分析プラグイン](code_quality_codeclimate_scanning.md#configure-codeclimate-analysis-plugins)のセットを使用します。一部はデフォルトで有効になっていますが、それ以外は明示的に有効にする必要があります。組み込みのプラグインを置き換えるために、次の統合を利用できます:
 
 | プラグイン       | デフォルトで有効                                              | 置換 |
 |--------------|------------------------------------------------------------|-------------|
@@ -84,15 +84,15 @@ CodeClimateエンジンは、カスタマイズ可能な[分析プラグイン](
 | golint       | {{< icon name="dotted-circle" >}}いいえ                       | [golangci-lintを統合](#golangci-lint)し、golintを置き換える付属のLinterのいずれかを有効にします。golintは[非推奨となり凍結](https://github.com/golang/go/issues/38968)されました。 |
 | govet        | {{< icon name="dotted-circle" >}}いいえ                       | [golangci-lintを統合](#golangci-lint)します。golangci-lintには、[デフォルトでgovetが含まれます](https://golangci-lint.run/usage/linters#enabled-by-default)。 |
 | markdownlint | {{< icon name="dotted-circle" >}}いいえ（コミュニティサポート型） | [markdownlint-cli2](#markdownlint-cli2)を統合します。 |
-| pep8         | {{< icon name="dotted-circle" >}}いいえ                       | [Flake8](#flake8)、[Pylint](#pylint)、[Ruff](#ruff)などの代替Python Linterを統合します。 |
+| pep8         | {{< icon name="dotted-circle" >}}いいえ                       | [Flake8](#flake8) 、[Pylint](#pylint) 、[Ruff](#ruff)などの代替Python Linterを統合します。 |
 | RuboCop      | {{< icon name="dotted-circle" >}}はい                      | [RuboCopを統合します](#rubocop)。 |
-| SonarPython  | {{< icon name="dotted-circle" >}}いいえ                       | [Flake8](#flake8)、[Pylint](#pylint)、[Ruff](#ruff)などの代替Python Linterを統合します。 |
+| SonarPython  | {{< icon name="dotted-circle" >}}いいえ                       | [Flake8](#flake8) 、[Pylint](#pylint) 、[Ruff](#ruff)などの代替Python Linterを統合します。 |
 | Stylelint    | {{< icon name="dotted-circle" >}}いいえ（コミュニティサポート型） | [Stylelintを統合します](#stylelint)。 |
 | SwiftLint    | {{< icon name="dotted-circle" >}}いいえ                       | [SwiftLintを統合します](#swiftlint)。 |
 
 ## Code Qualityの結果を表示する {#view-code-quality-results}
 
-Code Qualityの結果は次の場所に表示されます。
+Code Qualityの結果は次の場所に表示されます:
 
 - [マージリクエストウィジェット](#merge-request-widget)
 - [マージリクエストの変更ビュー](#merge-request-changes-view)
@@ -147,7 +147,7 @@ Code Qualityの結果は、マージリクエストの**変更**ビューに表�
 
 {{< /history >}}
 
-プロジェクトの品質ビューに、コード品質の検出結果の概要が表示されます。このビューは**分析 > CI/CDの分析**で確認できますが、対象となる特定のプロジェクトに対して[`project_quality_summary_page`](../../administration/feature_flags/_index.md)機能フラグを有効にする必要があります。
+プロジェクトの品質ビューに、コード品質の検出結果の概要が表示されます。このビューは**分析** > **CI/CD分析**で確認できます。また、特定のプロジェクトに対して[`project_quality_summary_page`](../../administration/feature_flags/_index.md)機能フラグを有効にする必要があります。
 
 ![検出結果に、違反と呼ばれる問題の総数と、重大度ごとの問題の数が示されている](img/code_quality_summary_v15_9.png)
 
@@ -155,7 +155,7 @@ Code Qualityの結果は、マージリクエストの**変更**ビューに表�
 
 次の形式でレポートを出力できる任意のツールから、[Code Qualityの結果をインポート](#import-code-quality-results-from-a-cicd-job)できます。この形式は、[CodeClimateレポート形式](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types)の一種で、フィールド数が少なくなっています。
 
-[Code Qualityレポートアーティファクト](../yaml/artifacts_reports.md#artifactsreportscodequality)として提供するファイルには、単一のJSON配列を含める必要があります。その配列内の各オブジェクトには、少なくとも次のプロパティが必要です。
+[Code Qualityレポートアーティファクト](../yaml/artifacts_reports.md#artifactsreportscodequality)として提供するファイルには、単一のJSON配列を含める必要があります。その配列内の各オブジェクトには、少なくとも次のプロパティが必要です:
 
 | 名前                                                      | 型    | 説明 |
 |-----------------------------------------------------------|---------|-------------|
@@ -166,12 +166,12 @@ Code Qualityの結果は、マージリクエストの**変更**ビューに表�
 | `location.lines.begin`または`location.positions.begin.line` | 整数 | コード品質違反が発生した行。 |
 | `severity`                                                | 文字列  | 違反の重大度。`info`、`minor`、`major`、`critical`、`blocker`のいずれかになります。 |
 
-この形式は、次の点で[CodeClimateレポート形式](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types)と異なります。
+この形式は、次の点で[CodeClimateレポート形式](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types)と異なります:
 
 - [CodeClimateレポート形式](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types)は、より多くのプロパティをサポートしていますが、Code Qualityは前述のフィールドのみを処理します。
 - GitLabパーサーは、先頭に[バイトオーダーマーク（BOM）](https://en.wikipedia.org/wiki/Byte_order_mark)があるファイルを処理できません。
 
-以下に、準拠した形式のレポートの例を示します。
+以下に、準拠した形式のレポートの例を示します:
 
 ```json
 [
@@ -204,7 +204,7 @@ CI/CDパイプラインですでにツールを使用している場合は、既
 
 #### ESLint {#eslint}
 
-CI/CDパイプラインにすでに[ESLint](https://eslint.org/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します。
+CI/CDパイプラインにすでに[ESLint](https://eslint.org/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します:
 
 1. プロジェクトに開発依存関係として[`eslint-formatter-gitlab`](https://www.npmjs.com/package/eslint-formatter-gitlab)を追加します。
 1. ESLintの実行に使用するコマンドに`--format gitlab`オプションを追加します。
@@ -215,7 +215,7 @@ CI/CDパイプラインにすでに[ESLint](https://eslint.org/)ジョブがあ�
 
 #### Stylelint {#stylelint}
 
-CI/CDパイプラインにすでに[Stylelint](https://stylelint.io/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します。
+CI/CDパイプラインにすでに[Stylelint](https://stylelint.io/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します:
 
 1. プロジェクトに開発依存関係として[`@studiometa/stylelint-formatter-gitlab`](https://www.npmjs.com/package/@studiometa/stylelint-formatter-gitlab)を追加します。
 1. Stylelintの実行に使用するコマンドに`--custom-formatter=@studiometa/stylelint-formatter-gitlab`オプションを追加します。
@@ -226,11 +226,11 @@ CI/CDパイプラインにすでに[Stylelint](https://stylelint.io/)ジョブ�
 
 #### MyPy {#mypy}
 
-CI/CDパイプラインにすでに[MyPy](https://mypy-lang.org/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します。
+CI/CDパイプラインにすでに[MyPy](https://mypy-lang.org/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します:
 
 1. プロジェクトに依存関係として[`mypy-gitlab-code-quality`](https://pypi.org/project/mypy-gitlab-code-quality/)をインストールします。
 1. `mypy`コマンドを変更して、その出力をファイルに送信します。
-1. ジョブ`script`にステップを追加し、`mypy-gitlab-code-quality`を使用してファイルを必要な形式に再処理します。次に例を示します。
+1. ジョブ`script`にステップを追加し、`mypy-gitlab-code-quality`を使用してファイルを必要な形式に再処理します。例:
 
    ```yaml
    - mypy $(find -type f -name "*.py" ! -path "**/.venv/**") --no-error-summary > mypy-out.txt || true  # "|| true" is used for preventing job failure when mypy find errors
@@ -243,7 +243,7 @@ CI/CDパイプラインにすでに[MyPy](https://mypy-lang.org/)ジョブがあ
 
 #### Flake8 {#flake8}
 
-CI/CDパイプラインにすでに[Flake8](https://flake8.pycqa.org/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します。
+CI/CDパイプラインにすでに[Flake8](https://flake8.pycqa.org/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します:
 
 1. プロジェクトに依存関係として[`flake8-gl-codeclimate`](https://github.com/awelzel/flake8-gl-codeclimate)をインストールします。
 1. Flake8の実行に使用するコマンドに引数`--format gl-codeclimate --output-file gl-code-quality-report.json`を追加します。
@@ -253,7 +253,7 @@ CI/CDパイプラインにすでに[Flake8](https://flake8.pycqa.org/)ジョブ�
 
 #### Pylint {#pylint}
 
-CI/CDパイプラインにすでに[Pylint](https://pypi.org/project/pylint/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します。
+CI/CDパイプラインにすでに[Pylint](https://pypi.org/project/pylint/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します:
 
 1. プロジェクトに依存関係として[`pylint-gitlab`](https://pypi.org/project/pylint-gitlab/)をインストールします。
 1. Pylintの実行に使用するコマンドに引数`--output-format=pylint_gitlab.GitlabCodeClimateReporter`を追加します。
@@ -264,7 +264,7 @@ CI/CDパイプラインにすでに[Pylint](https://pypi.org/project/pylint/)ジ
 
 #### Ruff {#ruff}
 
-CI/CDパイプラインにすでに[Ruff](https://docs.astral.sh/ruff/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します。
+CI/CDパイプラインにすでに[Ruff](https://docs.astral.sh/ruff/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します:
 
 1. Ruffの実行に使用するコマンドに引数`--output-format=gitlab`を追加します。
 1. `ruff check`コマンドを変更して、その出力をファイルに送信します。
@@ -274,13 +274,12 @@ CI/CDパイプラインにすでに[Ruff](https://docs.astral.sh/ruff/)ジョブ
 
 #### golangci-lint {#golangci-lint}
 
-CI/CDパイプラインにすでに[`golangci-lint`](https://golangci-lint.run/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します。
+CI/CDパイプラインにすでに[`golangci-lint`](https://golangci-lint.run/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します:
 
 1. `golangci-lint`の実行に使用するコマンドに引数を追加します。
 
-   v1の場合は、`--out-format code-climate:gl-code-quality-report.json,line-number`を追加します。
-
-   v2の場合は、`--output.code-climate.path=gl-code-quality-report.json`を追加します。
+   - v1の場合は、`--out-format code-climate:gl-code-quality-report.json,line-number`を追加します。
+   - v2の場合は、`--output.code-climate.path=gl-code-quality-report.json`を追加します。
 
 1. レポートファイルの場所を指す[`codequality`レポートアーティファクト](../yaml/artifacts_reports.md#artifactsreportscodequality)を宣言します。
 
@@ -316,7 +315,7 @@ Code Qualityを使用すると、コード以外でも、リポジトリに保�
 
 #### Vale {#vale}
 
-CI/CDパイプラインにすでに[Vale](https://vale.sh/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します。
+CI/CDパイプラインにすでに[Vale](https://vale.sh/)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します:
 
 1. 必要な形式を定義するValeテンプレートファイルをリポジトリ内に作成します。
    - [GitLabドキュメントのチェックに使用するオープンソースのテンプレート](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/vale-json.tmpl)をコピーできます。
@@ -325,18 +324,18 @@ CI/CDパイプラインにすでに[Vale](https://vale.sh/)ジョブがある場
 1. `vale`コマンドを変更して、その出力をファイルに送信します。
 1. レポートファイルの場所を指す[`codequality`レポートアーティファクト](../yaml/artifacts_reports.md#artifactsreportscodequality)を宣言します。
 
-オープンソースのジョブ定義を使用または調整してスキャンを実行し、その出力をCode Qualityと統合することもできます。たとえば、次のようなジョブ定義があります。
+オープンソースのジョブ定義を使用または調整してスキャンを実行し、その出力をCode Qualityと統合することもできます。たとえば、次のようなジョブ定義があります:
 
 - GitLabドキュメントのチェックに使用される[Vale Lintのステップ](https://gitlab.com/gitlab-org/gitlab/-/blob/94f870b8e4b965a41dd2ad576d50f7eeb271f117/.gitlab/ci/docs.gitlab-ci.yml#L71-87)。
 - コミュニティの[`gitlab-ci-utils` Valeプロジェクト](https://gitlab.com/gitlab-ci-utils/container-images/vale#usage)。
 
 #### markdownlint-cli2 {#markdownlint-cli2}
 
-CI/CDパイプラインにすでに[markdownlint-cli2](https://github.com/DavidAnson/markdownlint-cli2)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します。
+CI/CDパイプラインにすでに[markdownlint-cli2](https://github.com/DavidAnson/markdownlint-cli2)ジョブがある場合は、その出力をCode Qualityに送信するためにレポートを追加する必要があります。出力を統合するには、以下を実行します:
 
 1. プロジェクトに開発依存関係として[`markdownlint-cli2-formatter-codequality`](https://www.npmjs.com/package/markdownlint-cli2-formatter-codequality)を追加します。
 1. まだない場合は、リポジトリの最上位に`.markdownlint-cli2.jsonc`ファイルを作成します。
-1. `outputFormatters`ディレクティブを`.markdownlint-cli2.jsonc`に追加します。
+1. `outputFormatters`ディレクティブを`.markdownlint-cli2.jsonc`に追加します:
 
    ```json
    {

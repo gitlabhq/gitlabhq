@@ -26,8 +26,28 @@ class CreatePipelineWorker # rubocop:disable Scalability/IdempotentWorker
     execute_options = execute_options.deep_symbolize_keys
     creation_params = creation_params.symbolize_keys.merge(ref: ref)
 
-    Ci::CreatePipelineService
+    response = Ci::CreatePipelineService
       .new(project, user, **creation_params)
       .execute(source, **execute_options)
+
+    log_pipeline_errors(response.message, project, **creation_params) if response.error?
+  end
+
+  def log_pipeline_errors(error_message, project, **creation_params)
+    data = {
+      class: self.class.name,
+      correlation_id: Labkit::Correlation::CorrelationId.current_id.to_s,
+      project_id: project.id,
+      project_path: project.full_path,
+      message: "Error creating pipeline",
+      errors: error_message,
+      pipeline_params: sanitized_pipeline_params(**creation_params)
+    }
+
+    Sidekiq.logger.warn(data)
+  end
+
+  def sanitized_pipeline_params(**creation_params)
+    creation_params.except(:push_options, :pipeline_creation_request)
   end
 end
