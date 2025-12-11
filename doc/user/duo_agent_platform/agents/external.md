@@ -279,7 +279,7 @@ Prerequisites:
 
 To enable an external agent in a top-level group:
 
-1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**, then select the **Agents** tab.
 1. Select the external agent you want to enable.
 1. In the upper-right corner, select **Enable in group**.
@@ -297,7 +297,7 @@ Prerequisites:
 
 To enable an external agent in a project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Agents**.
 1. In the upper-right corner, select **Enable agent from group**.
 1. From the dropdown list, select the external agent you want to enable.

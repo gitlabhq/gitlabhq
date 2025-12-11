@@ -3448,10 +3448,13 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     let(:kwargs) do
-      { start_sha: sample_commit.id,
+      {
+        start_sha: sample_commit.id,
         end_sha: another_sample_commit.id,
         author: user,
-        message: 'squashed message' }
+        message: 'squashed message',
+        sign: true
+      }
     end
 
     it 'delegates to OperationService' do

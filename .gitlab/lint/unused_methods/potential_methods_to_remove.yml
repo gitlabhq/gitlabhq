@@ -269,8 +269,6 @@ enabled_in_gitlab_config:
   file: app/models/concerns/integrations/base/issue_tracker.rb
 has_multiple_assignees?:
   file: app/models/concerns/issuable.rb
-referenced_project_users:
-  file: app/models/concerns/mentionable.rb
 referenced_group_users:
   file: app/models/concerns/mentionable.rb
 total_merge_requests_count:

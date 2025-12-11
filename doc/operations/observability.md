@@ -434,6 +434,61 @@ GitLab provides pre-built dashboard templates to help you get started with obser
 1. Configure your applications to send telemetry data using standard OpenTelemetry libraries as described in the [Instrument your application](#instrument-your-application) section.
 1. The dashboards are now available with your application's telemetry data in GitLab O11y.
 
+## Automatic CI/CD Pipeline Instrumentation
+
+GitLab Observability automatically instruments your CI/CD pipelines when enabled, providing visibility into pipeline performance, job durations, and execution flow without any code changes.
+
+### Enable pipeline instrumentation
+
+To enable automatic pipeline instrumentation, add the `GITLAB_OBSERVABILITY_EXPORT` CI/CD variable to your project or group:
+
+1. On the top bar, select **Search or go to** and find your project or group.
+1. Select **Settings > CI/CD**.
+1. Expand **Variables**.
+1. Select **Add variable**.
+1. Configure the variable:
+   - **Key**: `GITLAB_OBSERVABILITY_EXPORT`
+   - **Value**: One or more of `traces`, `metrics`, `logs` (comma-separated for multiple values)
+   - **Type**: Variable
+   - **Environment scope**: All (or specific environments)
+1. Select **Add variable**.
+
+### Instrumentation types
+
+The `GITLAB_OBSERVABILITY_EXPORT` variable accepts the following values:
+
+- `traces`: Exports distributed traces showing pipeline execution flow, job dependencies, and timing
+- `metrics`: Exports metrics about pipeline duration, job success rates, and resource usage
+- `logs`: Exports structured logs from pipeline execution
+
+You can enable multiple types by separating them with commas:
+
+```plaintext
+traces,metrics,logs
+```
+
+### How it works
+
+Once the variable is set, GitLab automatically:
+
+1. Captures pipeline execution data after each pipeline completes
+1. Converts the data to OpenTelemetry format based on your configuration
+1. Exports the telemetry data to your GitLab Observability instance
+1. Makes the data available in your observability dashboards
+
+No changes to your `.gitlab-ci.yml` file are required. The instrumentation happens automatically in the background.
+
+### View pipeline telemetry
+
+After running pipelines with instrumentation enabled:
+
+1. On the top bar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Observability**.
+1. Select **Services** to see your `gitlab-ci` service.
+1. Select the service to view traces, metrics, and logs from your pipeline executions.
+
+The CI/CD dashboard template from [Experimental Observability O11y Templates](https://gitlab.com/gitlab-org/embody-team/experimental-observability/o11y-templates/) provides pre-built visualizations for pipeline performance analysis.
+
 ## Troubleshooting
 
 ### GitLab Observability instance issues

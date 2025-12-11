@@ -1192,7 +1192,8 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         end_sha: end_sha,
         author: gitaly_user,
         commit_message: commit_message,
-        timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i)
+        timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i),
+        sign: true
       )
     end
 

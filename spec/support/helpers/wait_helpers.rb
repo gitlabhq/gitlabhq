@@ -11,9 +11,9 @@ module WaitHelpers
       result = yield
       break result if result
 
-      page.refresh if reload
-
       raise "Condition not met: #{condition_name}" if ::Gitlab::Metrics::System.monotonic_time > wait_until
+
+      page.refresh if reload
 
       sleep(polling_interval)
     end

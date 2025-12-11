@@ -540,50 +540,61 @@ RSpec.describe UserDetail, feature_category: :system_access do
   end
 
   describe '#sanitize_attrs' do
-    shared_examples 'sanitizes html' do |attr|
-      it 'sanitizes html tags' do
-        details = build_stubbed(:user_detail, attr => '<a href="//evil.com">https://example.com<a>')
-        expect { details.sanitize_attrs }.to change { details[attr] }.to('https://example.com')
-      end
+    using RSpec::Parameterized::TableSyntax
 
-      it 'sanitizes iframe scripts' do
-        details = build_stubbed(:user_detail, attr => '<iframe src=javascript:alert()><iframe>')
-        expect { details.sanitize_attrs }.to change { details[attr] }.to('')
-      end
+    subject { build(:user_detail, field => input).tap(&:validate) }
 
-      it 'sanitizes js scripts' do
-        details = build_stubbed(:user_detail, attr => '<script>alert("Test")</script>')
-        expect { details.sanitize_attrs }.to change { details[attr] }.to('')
-      end
+    where(:field, :input, :expected) do
+      # HTML tags sanitization - all fields
+      :bluesky      | '<a href="//evil.com">did:plc:ewvi7nxzyoun6zhxrhs64oiz<a>'   | 'did:plc:ewvi7nxzyoun6zhxrhs64oiz'
+      :discord      | '<a href="//evil.com">1234567890987654321<a>'                | '1234567890987654321'
+      :linkedin     | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
+      :mastodon     | '<a href="//evil.com">@robin@example.com<a>'                 | '@robin@example.com'
+      :orcid        | '<a href="//evil.com">1234-1234-1234-1234<a>'                | '1234-1234-1234-1234'
+      :twitter      | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
+      :website_url  | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
+      :github       | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
+      :location     | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
+      :organization | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
+
+      # iframe scripts sanitization
+      :bluesky      | '<iframe src=javascript:alert()><iframe>'                    | ''
+      :discord      | '<iframe src=javascript:alert()><iframe>'                    | ''
+      :linkedin     | '<iframe src=javascript:alert()><iframe>'                    | ''
+      :mastodon     | '<iframe src=javascript:alert()><iframe>'                    | ''
+      :orcid        | '<iframe src=javascript:alert()>1234-1234-1234-1234<iframe>' | ''
+      :twitter      | '<iframe src=javascript:alert()><iframe>'                    | ''
+      :website_url  | '<iframe src=javascript:alert()><iframe>'                    | ''
+      :github       | '<iframe src=javascript:alert()><iframe>'                    | ''
+      :location     | '<iframe src=javascript:alert()><iframe>'                    | ''
+      :organization | '<iframe src=javascript:alert()><iframe>'                    | ''
+
+      # js scripts sanitization
+      :bluesky      | '<script>alert("Test")</script>'                             | ''
+      :discord      | '<script>alert("Test")</script>'                             | ''
+      :linkedin     | '<script>alert("Test")</script>'                             | ''
+      :mastodon     | '<script>alert("Test")</script>'                             | ''
+      :orcid        | '<script>alert("Test")1234-1234-1234-1234</script>'          | ''
+      :twitter      | '<script>alert("Test")</script>'                             | ''
+      :website_url  | '<script>alert("Test")</script>'                             | ''
+      :github       | '<script>alert("Test")</script>'                             | ''
+      :location     | '<script>alert("Test")</script>'                             | ''
+      :organization | '<script>alert("Test")</script>'                             | ''
+
+      # HTML entities encoding - fields that encode & to &amp;
+      :linkedin     | 'test&attr'                                                  | 'test&amp;attr'
+      :twitter      | 'test&attr'                                                  | 'test&amp;attr'
+      :website_url  | 'http://example.com?test&attr'                               | 'http://example.com?test&amp;attr'
+      :github       | 'test&attr'                                                  | 'test&amp;attr'
+
+      # HTML entities NOT encoded - location, organization preserve &
+      :location     | 'test&attr'                                                  | 'test&attr'
+      :organization | 'test&attr'                                                  | 'test&attr'
     end
 
-    %i[linkedin twitter website_url].each do |attr|
-      it_behaves_like 'sanitizes html', attr
-
-      it 'encodes HTML entities' do
-        details = build_stubbed(:user_detail, attr => 'test&attr')
-        expect { details.sanitize_attrs }.to change { details[attr] }.to('test&amp;attr')
-      end
-    end
-
-    %i[location organization].each do |attr|
-      it_behaves_like 'sanitizes html', attr
-
-      it 'does not encode HTML entities' do
-        details = build_stubbed(:user_detail, attr => 'test&attr')
-        expect { details.sanitize_attrs }.not_to change { details[attr] }
-      end
-    end
-
-    it 'sanitizes on validation' do
-      details = build(:user_detail)
-
-      expect(details)
-        .to receive(:sanitize_attrs)
-        .at_least(:once)
-        .and_call_original
-
-      details.valid?
+    with_them do
+      it { is_expected.to be_valid }
+      it { is_expected.to have_attributes field => expected }
     end
   end
 

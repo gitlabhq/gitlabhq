@@ -49,6 +49,21 @@ To view a list of sessions you've triggered:
 1. Select any session to view more details.
 1. Optional. Filter the details to show all logs or a concise subset only.
 
+## Cancel a running session
+
+You can cancel a session that is running or waiting for input. To cancel a session:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Automate** > **Sessions**.
+1. On the **Details** tab, scroll to the bottom.
+1. Select **Cancel session**.
+1. In the confirmation dialog, select **Cancel session** to confirm.
+
+After cancellation:
+
+- The session status changes to **Stopped**.
+- The session cannot be resumed or restarted.
+
 ## Session retention
 
 Sessions are automatically deleted 30 days after the last activity.

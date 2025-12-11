@@ -5031,10 +5031,33 @@ RSpec.describe Repository, feature_category: :source_code_management do
         start_sha: merge_request.diff_start_sha,
         end_sha: merge_request.diff_head_sha,
         author: merge_request.author,
-        message: message
+        message: message,
+        sign: true
       })
 
       squash
+    end
+
+    describe 'delegating to Repositories::WebBasedCommitSigningSetting for sign' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:expected_sign) { [true, false] }
+
+      with_them do
+        before do
+          allow_next_instance_of(Repositories::WebBasedCommitSigningSetting) do |instance|
+            allow(instance).to receive(:sign_commits?).and_return(expected_sign)
+          end
+        end
+
+        it 'calls UserSquash with the expected value for sign' do
+          expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
+            expect(client).to receive(:user_squash).with(user, a_hash_including(sign: expected_sign))
+          end
+
+          subject
+        end
+      end
     end
   end
 end

@@ -1489,10 +1489,10 @@
   dependencies:
     "@vue/devtools-api" "^6.0.0-beta.11"
 
-"@gitlab/web-ide@^0.0.1-dev-20251124181521":
-  version "0.0.1-dev-20251124181521"
-  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20251124181521.tgz#c4ca56465e052444b6c8efc7c3effdb3b55522e2"
-  integrity sha512-CUf+guLl0dwjOc+Bq8AanjPLzxPnVdkT5I/iS+F3cmC2koUbcTnaL/IE2M82BUJdrTcOwZQLIRggmLsCuuMSYA==
+"@gitlab/web-ide@^0.0.1-dev-20251210140521":
+  version "0.0.1-dev-20251210140521"
+  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20251210140521.tgz#806272e636f5a3b1ea07595a164d9e79b20f8c7e"
+  integrity sha512-eW6VeJbYUgEJ1XCAEowPKHdIeUt+0GbEyLjsST2xxw49+QdR2A0KKhTf+O+qcvPDgZLpaOoaBaiK1Z7jMfQBeA==
 
 "@gleam-lang/highlight.js-gleam@^1.5.0":
   version "1.5.0"

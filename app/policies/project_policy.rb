@@ -341,10 +341,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:read_all_resources) }.enable :read_confidential_issues
 
-  rule { guest }.policy do
-    enable :member_access
-    enable :guest_access
-  end
+  rule { guest }.enable :guest_access
   rule { planner }.enable :planner_access
   rule { reporter }.enable :reporter_access
   rule { developer }.enable :developer_access
@@ -352,8 +349,6 @@ class ProjectPolicy < BasePolicy
   rule { owner | admin | organization_owner }.enable :owner_access
 
   rule { project_pipeline_override_role_owner & ~can?(:owner_access) }.prevent :change_restrict_user_defined_variables
-
-  rule { ~can?(:guest_access) }.prevent :member_access
 
   rule { can?(:owner_access) }.policy do
     enable :guest_access

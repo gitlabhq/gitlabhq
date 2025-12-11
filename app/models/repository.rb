@@ -1232,7 +1232,8 @@ class Repository
       start_sha: merge_request.diff_start_sha,
       end_sha: merge_request.diff_head_sha,
       author: merge_request.author,
-      message: message
+      message: message,
+      sign: sign_commits?
     )
   end
 

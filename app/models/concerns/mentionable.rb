@@ -88,10 +88,6 @@ module Mentionable
     Project.where(id: user_mentions.select("unnest(mentioned_projects_ids)")).public_or_visible_to_user(current_user)
   end
 
-  def referenced_project_users(current_user = nil)
-    User.joins(:project_members).where(members: { source_id: referenced_projects(current_user) }).distinct
-  end
-
   def referenced_groups(current_user = nil)
     # TODO: IMPORTANT: Revisit before using it.
     # Check DB data for max mentioned groups per mentionable:

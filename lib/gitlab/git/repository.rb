@@ -993,9 +993,9 @@ module Gitlab
         end
       end
 
-      def squash(user, start_sha:, end_sha:, author:, message:)
+      def squash(user, start_sha:, end_sha:, author:, message:, sign: true)
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_squash(user, start_sha: start_sha, end_sha: end_sha, author: author, message: message)
+          gitaly_operation_client.user_squash(user, start_sha: start_sha, end_sha: end_sha, author: author, message: message, sign: sign)
         end
       end
 

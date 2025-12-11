@@ -455,7 +455,7 @@ module Gitlab
         response.commit_id
       end
 
-      def user_squash(user, start_sha:, end_sha:, author:, message:, time: Time.now.utc)
+      def user_squash(user, start_sha:, end_sha:, author:, message:, time: Time.now.utc, sign: true)
         request = Gitaly::UserSquashRequest.new(
           repository: @gitaly_repo,
           user: gitaly_user(user),
@@ -463,7 +463,8 @@ module Gitlab
           end_sha: end_sha,
           author: Gitlab::Git::User.from_gitlab(author).to_gitaly,
           commit_message: encode_binary(message),
-          timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i)
+          timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i),
+          sign: sign
         )
 
         response = gitaly_client_call(
