@@ -239,8 +239,6 @@ update_available?:
   file: app/models/clusters/concerns/application_version.rb
 x509_commit:
   file: app/models/commit_signatures/x509_commit_signature.rb
-matches_with_stage_params?:
-  file: app/models/concerns/analytics/cycle_analytics/stageable.rb
 user_authored?:
   file: app/models/concerns/awardable.rb
 degenerate!:

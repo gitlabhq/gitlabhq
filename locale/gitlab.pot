@@ -2494,6 +2494,9 @@ msgstr ""
 msgid "AICatalog|A public %{itemType}:"
 msgstr ""
 
+msgid "AICatalog|A service account will be added to the project and assigned the Developer role."
+msgstr ""
+
 msgid "AICatalog|AI Catalog"
 msgstr ""
 
@@ -2552,6 +2555,9 @@ msgid "AICatalog|Agent updated."
 msgstr ""
 
 msgid "AICatalog|Agents"
+msgstr ""
+
+msgid "AICatalog|All project members will be able to use it."
 msgstr ""
 
 msgid "AICatalog|Anyone can see your prompts and settings. Don't include sensitive data or reference internal systems."
@@ -2743,10 +2749,19 @@ msgstr ""
 msgid "AICatalog|Enable %{itemType} in a %{targetType}"
 msgstr ""
 
+msgid "AICatalog|Enable %{itemType} in your project"
+msgstr ""
+
 msgid "AICatalog|Enable agent from group"
 msgstr ""
 
+msgid "AICatalog|Enable agent in your project"
+msgstr ""
+
 msgid "AICatalog|Enable flow from group"
+msgstr ""
+
+msgid "AICatalog|Enable flow in your project"
 msgstr ""
 
 msgid "AICatalog|Enable in group"
@@ -2878,10 +2893,16 @@ msgstr ""
 msgid "AICatalog|Is visible to all users."
 msgstr ""
 
+msgid "AICatalog|Learn more"
+msgstr ""
+
 msgid "AICatalog|Learn more about foundational agents"
 msgstr ""
 
 msgid "AICatalog|Learn more about foundational flows"
+msgstr ""
+
+msgid "AICatalog|Learn more about permissions"
 msgstr ""
 
 msgid "AICatalog|Manage agent settings."
@@ -2900,12 +2921,6 @@ msgid "AICatalog|Managed by a private project you don't have access to."
 msgstr ""
 
 msgid "AICatalog|Name is required."
-msgstr ""
-
-msgid "AICatalog|Name your agent."
-msgstr ""
-
-msgid "AICatalog|Name your flow."
 msgstr ""
 
 msgid "AICatalog|New agent"
@@ -2971,9 +2986,6 @@ msgstr ""
 msgid "AICatalog|Project-specific automation."
 msgstr ""
 
-msgid "AICatalog|Provide a brief description."
-msgstr ""
-
 msgid "AICatalog|Public %{itemTypePlural} are best for:"
 msgstr ""
 
@@ -3028,10 +3040,22 @@ msgstr ""
 msgid "AICatalog|System prompt is required."
 msgstr ""
 
+msgid "AICatalog|That it's been enabled for. These are the projects the service account was added to."
+msgstr ""
+
+msgid "AICatalog|That the user who runs it has access to."
+msgstr ""
+
 msgid "AICatalog|The item consumer must belong to only one organization, group, or project"
 msgstr ""
 
 msgid "AICatalog|The item will be hidden from the catalog but remain functional for projects and groups already using it."
+msgstr ""
+
+msgid "AICatalog|The service account is part of a composite identity that runs the agent. This identity combines the user's role with the service account's role and uses the more restrictive of the two."
+msgstr ""
+
+msgid "AICatalog|The service account is part of a composite identity that runs the flow. This identity combines the user's role with the service account's role and uses the more restrictive of the two."
 msgstr ""
 
 msgid "AICatalog|There was a problem fetching agents."
@@ -3058,6 +3082,9 @@ msgstr ""
 msgid "AICatalog|This agent specializes in... It can help you with... Best suited for..."
 msgstr ""
 
+msgid "AICatalog|This catalog contains third-party content that may be subject to additional terms. GitLab does not control or assume liability for third-party content."
+msgstr ""
+
 msgid "AICatalog|This flow can be viewed only by members of this project, or by users with the Owner role for the top-level group. This flow can't be shared with other projects."
 msgstr ""
 
@@ -3068,6 +3095,9 @@ msgid "AICatalog|This key dashboard provides visibility into SDLC metrics in the
 msgstr ""
 
 msgid "AICatalog|Tools"
+msgstr ""
+
+msgid "AICatalog|Triage Issue, Generate Release Notes, Update Docs"
 msgstr ""
 
 msgid "AICatalog|Trigger this %{itemType} when the service account user is assigned as a reviewer to a merge request."
@@ -3103,6 +3133,9 @@ msgstr ""
 msgid "AICatalog|Use agents with GitLab Duo Chat to complete tasks and answer complex questions."
 msgstr ""
 
+msgid "AICatalog|Use caution when enabling."
+msgstr ""
+
 msgid "AICatalog|Use flows in your %{namespaceType}."
 msgstr ""
 
@@ -3119,6 +3152,18 @@ msgid "AICatalog|Visibility & access"
 msgstr ""
 
 msgid "AICatalog|Wasting compute or causing performance issues."
+msgstr ""
+
+msgid "AICatalog|When this agent runs, it will have access to the projects:"
+msgstr ""
+
+msgid "AICatalog|When this flow runs, it will have access to the projects:"
+msgstr ""
+
+msgid "AICatalog|When you enable this agent:"
+msgstr ""
+
+msgid "AICatalog|When you enable this flow:"
 msgstr ""
 
 msgid "AICatalog|Why are you reporting this %{itemType}?"
@@ -5047,6 +5092,9 @@ msgstr ""
 msgid "AdminArea|%{billable_users_link_start}Learn more%{billable_users_link_end} about what defines a billable user"
 msgstr ""
 
+msgid "AdminArea|Active subscription"
+msgstr ""
+
 msgid "AdminArea|Active users"
 msgstr ""
 
@@ -5054,6 +5102,9 @@ msgid "AdminArea|Add new message"
 msgstr ""
 
 msgid "AdminArea|Are you sure?"
+msgstr ""
+
+msgid "AdminArea|Basic CI/CD features for individual developers. Bring your own runners and storage."
 msgstr ""
 
 msgid "AdminArea|Blocked users"
@@ -5089,13 +5140,22 @@ msgstr ""
 msgid "AdminArea|Edit OAuth configuration"
 msgstr ""
 
+msgid "AdminArea|Explore plans"
+msgstr ""
+
 msgid "AdminArea|Failed to fetch version from KAS"
 msgstr ""
 
 msgid "AdminArea|Features"
 msgstr ""
 
+msgid "AdminArea|For teams who need advanced CI/CD and productivity features."
+msgstr ""
+
 msgid "AdminArea|Get security updates from GitLab and stay up to date"
+msgstr ""
+
+msgid "AdminArea|GitLab Free"
 msgstr ""
 
 msgid "AdminArea|Groups"
@@ -5155,6 +5215,9 @@ msgstr ""
 msgid "AdminArea|Sign up for the GitLab newsletter"
 msgstr ""
 
+msgid "AdminArea|Start free trial"
+msgstr ""
+
 msgid "AdminArea|The Web IDE OAuth application doesn't have a redirect URL with the domain that you are using to visit GitLab. This issue will prevent Web IDE users from authenticating and often occurs when using a reverse proxy."
 msgstr ""
 
@@ -5171,6 +5234,9 @@ msgid "AdminArea|Total users"
 msgstr ""
 
 msgid "AdminArea|Totals"
+msgstr ""
+
+msgid "AdminArea|Try a 30 day free trial of Ultimate"
 msgstr ""
 
 msgid "AdminArea|Unknown"
@@ -5509,6 +5575,9 @@ msgstr ""
 msgid "AdminSettings|By default, set a limit to 0 to have no limit."
 msgstr ""
 
+msgid "AdminSettings|CI/CD Catalog publishing allowlist"
+msgstr ""
+
 msgid "AdminSettings|CI/CD limits"
 msgstr ""
 
@@ -5531,6 +5600,9 @@ msgid "AdminSettings|Configure the Web IDE extension host domain."
 msgstr ""
 
 msgid "AdminSettings|Configure when dormant projects should be automatically deleted. %{linkStart}What are dormant projects?%{linkEnd}"
+msgstr ""
+
+msgid "AdminSettings|Control which projects can publish components to the CI/CD Catalog. Enter one project path or regular expression pattern per line.  For example: %{code_start}gitlab-org/my-project%{code_end}, %{code_start}gitlab-org/.*%{code_end}, or %{code_start}gitlab-org/security-.*%{code_end}. If empty, any project can publish."
 msgstr ""
 
 msgid "AdminSettings|Could not update extension host domain"
@@ -6880,6 +6952,12 @@ msgstr ""
 msgid "AiPowered|AI logs"
 msgstr ""
 
+msgid "AiPowered|After the conversation was created"
+msgstr ""
+
+msgid "AiPowered|After the conversation was last updated"
+msgstr ""
+
 msgid "AiPowered|Agent & Flow Permissions"
 msgstr ""
 
@@ -6934,6 +7012,9 @@ msgstr ""
 msgid "AiPowered|Change configuration"
 msgstr ""
 
+msgid "AiPowered|Chat conversations expire:"
+msgstr ""
+
 msgid "AiPowered|Composite identity for GitLab Duo Agent Platform has successfully been turned off."
 msgstr ""
 
@@ -6956,9 +7037,6 @@ msgid "AiPowered|Configure GitLab Duo Self-Hosted"
 msgstr ""
 
 msgid "AiPowered|Configure features"
-msgstr ""
-
-msgid "AiPowered|Configure how long GitLab Duo Chat conversations persist before they expire:"
 msgstr ""
 
 msgid "AiPowered|Configure models for GitLab Duo"
@@ -7015,12 +7093,6 @@ msgstr ""
 msgid "AiPowered|Experiment and beta features"
 msgstr ""
 
-msgid "AiPowered|Expire conversation based on time conversation was created."
-msgstr ""
-
-msgid "AiPowered|Expire conversation based on time conversation was last updated."
-msgstr ""
-
 msgid "AiPowered|Explore GitLab Duo Core"
 msgstr ""
 
@@ -7051,7 +7123,7 @@ msgstr ""
 msgid "AiPowered|GitLab Duo Agent Platform is an AI-native coding agent."
 msgstr ""
 
-msgid "AiPowered|GitLab Duo Chat conversation expiration"
+msgid "AiPowered|GitLab Duo Chat conversations"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Core available to all users"
@@ -7075,10 +7147,7 @@ msgstr ""
 msgid "AiPowered|Help make the next releases of GitLab better. As a member of the GitLab Early Access Program, you can take part in shaping GitLab by letting us know what you think of GitLab Duo experimental and beta features. How does this program work?"
 msgstr ""
 
-msgid "AiPowered|Ideal for lowest latency. An IDE must be able to connect to https://gitlab.com:443."
-msgstr ""
-
-msgid "AiPowered|Indirect connections through GitLab self-managed instance"
+msgid "AiPowered|Indirect connections through GitLab Self-Managed"
 msgstr ""
 
 msgid "AiPowered|Local AI Gateway URL"
@@ -7097,9 +7166,6 @@ msgid "AiPowered|Manage"
 msgstr ""
 
 msgid "AiPowered|Maximum time in seconds to wait for responses from the AI Gateway (up to 600 seconds).%{br}Increasing this value might result in degraded user experience."
-msgstr ""
-
-msgid "AiPowered|Might result in requests having higher latency."
 msgstr ""
 
 msgid "AiPowered|Minimum role required to create, duplicate, edit, delete, and show agents and flows."
@@ -7183,9 +7249,6 @@ msgstr ""
 msgid "AiPowered|Turn on prompt caching"
 msgstr ""
 
-msgid "AiPowered|Turn on prompt caching to improve Duo performance. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
 msgid "AiPowered|Unlock advanced AI-native capabilities with the Premium or Ultimate tier designed for your development needs."
 msgstr ""
 
@@ -7193,6 +7256,15 @@ msgid "AiPowered|Upgrade to"
 msgstr ""
 
 msgid "AiPowered|Use beta models and features in GitLab Duo Self-Hosted"
+msgstr ""
+
+msgid "AiPowered|Use prompt caching to improve GitLab Duo performance. %{linkStart}What is prompt caching%{linkEnd}?"
+msgstr ""
+
+msgid "AiPowered|Use this setting to disable direct connections for all users. This setting might result in higher latency."
+msgstr ""
+
+msgid "AiPowered|Use this setting to minimize latency. An IDE must connect to https://gitlab.com:443."
 msgstr ""
 
 msgid "AiPowered|View configuration"
@@ -18647,6 +18719,9 @@ msgstr ""
 msgid "Configure CAPTCHAs, IP address limits, and other anti-spam measures."
 msgstr ""
 
+msgid "Configure CI/CD Catalog settings, including publishing restrictions."
+msgstr ""
+
 msgid "Configure Container Scanning in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings) to customize Container Scanning settings."
 msgstr ""
 
@@ -23282,6 +23357,9 @@ msgstr ""
 msgid "Dependencies|Packager"
 msgstr ""
 
+msgid "Dependencies|Policy violation"
+msgstr ""
+
 msgid "Dependencies|Projects"
 msgstr ""
 
@@ -26042,16 +26120,16 @@ msgstr ""
 msgid "DuoSAST|SAST False Positive Detection"
 msgstr ""
 
-msgid "DuoSAST|Turn on False Positive Detection for Vulnerabilities on default branch"
+msgid "DuoSAST|Turn on GitLab Duo SAST False Positive Detection"
 msgstr ""
 
-msgid "DuoSAST|Turn on False Positive Detection for Vulnerabilities on default branch for the instance."
+msgid "DuoSAST|Use false positive detection for vulnerabilities on the default branch"
 msgstr ""
 
-msgid "DuoSAST|Turn on False Positive Detection for Vulnerabilities on default branch in this group and its subgroups and projects."
+msgid "DuoSAST|Use false positive detection for vulnerabilities on the default branch for the instance."
 msgstr ""
 
-msgid "DuoSAST|Use Duo SAST False Positive Detection"
+msgid "DuoSAST|Use false positive detection for vulnerabilities on the default branch in this group, its subgroups, and its projects."
 msgstr ""
 
 msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."
@@ -29706,7 +29784,7 @@ msgstr ""
 msgid "FoundationalAgents|Availability Configuration"
 msgstr ""
 
-msgid "FoundationalAgents|Control availability of %{linkStart}GitLab Duo Foundational agents%{linkEnd}"
+msgid "FoundationalAgents|Control whether %{linkStart}GitLab Duo foundational agents%{linkEnd} are available."
 msgstr ""
 
 msgid "FoundationalAgents|Default Availability"
@@ -29730,10 +29808,10 @@ msgstr ""
 msgid "FoundationalAgents|Foundational agents"
 msgstr ""
 
-msgid "FoundationalAgents|Foundational agents are disabled by default."
+msgid "FoundationalAgents|Foundational agents are available for projects in this group."
 msgstr ""
 
-msgid "FoundationalAgents|New foundational agents are automatically enabled for projects in this group."
+msgid "FoundationalAgents|Foundational agents are not available."
 msgstr ""
 
 msgid "FoundationalAgents|Off by default"
@@ -53921,7 +53999,7 @@ msgstr ""
 msgid "Promotions|You can restrict access to protected branches by choosing a role (Maintainers, Developers) as well as certain users."
 msgstr ""
 
-msgid "Prompt Cache"
+msgid "Prompt cache"
 msgstr ""
 
 msgid "Prompt users to upload SSH keys"

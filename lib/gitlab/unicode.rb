@@ -15,6 +15,21 @@ module Gitlab
     # spaces which may be misleading
     SPACE_REGEXP = /\p{Space_Separator}/
 
+    DANGEROUS_CHARS = Regexp.union(
+      /[\p{Cc}&&[^\t\n\r]]/, # All control chars except tab, LF, CR
+      /\u00AD/,              # Soft hyphen
+      /\u200B/,              # ZWSP
+      /[\u202A-\u202E]/,     # Bidi overrides
+      /\u2060/,              # Word joiner
+      /[\u2066-\u2069]/,     # Bidi isolates
+      /\uFEFF/,              # BOM
+      /[\uFFF9-\uFFFB]/,     # Annotations
+      /\uFFFC/,              # Object replacement
+      /[\u2062-\u2064]/,     # Invisible math operators
+      /[\u{E0000}-\u{E01EF}]/, # Tag characters + Variation Selectors Supplement
+      /[\u2028-\u2029]/ # Line/paragraph separators
+    ).freeze
+
     class << self
       # Warning message used to highlight bidi characters in the GUI
       def bidi_warning

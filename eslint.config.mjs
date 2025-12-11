@@ -467,6 +467,7 @@ export default [
       'vue/custom-event-name-casing': ['error', 'kebab-case'],
       'vue/no-deprecated-v-on-native-modifier': 'error',
       'vue/require-explicit-emits': 'error',
+      'vue/no-deprecated-data-object-declaration': 'error',
       'no-restricted-syntax': [
         'error',
         ...baseNoRestrictedSyntax,

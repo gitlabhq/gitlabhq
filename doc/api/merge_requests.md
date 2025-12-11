@@ -2720,7 +2720,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `remove_labels`            | string            | No       | Comma-separated label names to remove from a merge request. |
 | `remove_source_branch`     | boolean           | No       | Flag indicating if a merge request should remove the source branch when merging. |
 | `reviewer_ids`             | integer array     | No       | The ID of the users set as a reviewer to the merge request. Set the value to `0` or provide an empty value to unset all reviewers. |
-| `squash`                   | boolean           | No       | If `true`, squash all commits into a single commit on merge. [Project settings](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project) might override this value. |
+| `squash`                   | boolean           | No       | If `true`, squash all commits into a single commit on merge. When not provided, defaults to the [project's squash option setting](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project). If the project is configured to **Require** or **Do not allow** squashing, that setting takes precedence at merge time. |
 | `state_event`              | string            | No       | New state (close/reopen). |
 | `target_branch`            | string            | No       | The target branch. |
 | `title`                    | string            | No       | Title of MR. |

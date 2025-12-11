@@ -1266,4 +1266,67 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
       expect(no_preview?).to eq(true)
     end
   end
+
+  describe '#expand_to_full!' do
+    context 'when blob is text' do
+      let(:commit) { project.commit_by(oid: '570e7b2abdd848b95f2f578043fc23bd6f6fd24d') }
+      let(:diff_file) { commit.diffs(expanded: true).diff_file_with_new_path('files/ruby/popen.rb') }
+
+      it 'expands to show full blob content' do
+        original_diff_lines_count = diff_file.diff_lines.count
+        diff_file.expand_to_full!
+        expanded_lines_count = diff_file.highlighted_diff_lines.count
+
+        expect(expanded_lines_count).to be > original_diff_lines_count
+      end
+
+      it 'includes deleted lines in the expanded output' do
+        diff_file.expand_to_full!
+
+        deleted_lines = diff_file.highlighted_diff_lines.select { |line| line.type == 'old' }
+        expect(deleted_lines).not_to be_empty
+      end
+
+      it 'positions deletions correctly' do
+        diff_file.expand_to_full!
+
+        lines = diff_file.highlighted_diff_lines
+        old_lines = lines.select { |l| l.type == 'old' && l.old_pos }
+        old_positions = old_lines.map(&:old_pos)
+
+        expect(old_positions).to eq(old_positions.sort)
+      end
+
+      it 'preserves line codes on changed lines for commenting' do
+        diff_file.expand_to_full!
+
+        expanded_lines = diff_file.highlighted_diff_lines
+        changed_lines = expanded_lines.select { |l| l.added? || l.removed? }
+
+        # All changed lines should have line codes for commenting
+        expect(changed_lines).to all(have_attributes(line_code: be_present))
+      end
+
+      it 'returns true after expand_to_full is called' do
+        diff_file.expand_to_full!
+
+        expect(diff_file.manually_expanded?).to eq(true)
+      end
+
+      it 'returns false before expand_to_ful is called' do
+        expect(diff_file.manually_expanded?).to eq(false)
+      end
+    end
+
+    context 'when blob is binary' do
+      let(:commit) { project.commit_by(oid: '913c66a37b4a45b9769037c55c2d238bd0942d2e') }
+      let(:diff_file) { commit.diffs.diff_files.find(&:binary?) }
+
+      it 'does not expand the diff file' do
+        expect(diff_file).not_to receive(:highlighted_diff_lines=)
+
+        diff_file.expand_to_full!
+      end
+    end
+  end
 end

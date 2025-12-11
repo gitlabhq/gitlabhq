@@ -27,6 +27,7 @@
 
 .admin-dashboard.gl-mt-3{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_dashboard_pageload' } }
   %h2.gl-heading-2= _('Instance overview')
+  = render_if_exists 'admin/dashboard/subscription_summary', license: @license
   .gl-grid.gl-gap-5{ class: "@md/panel:gl-grid-cols-2 @lg/panel:gl-grid-cols-3" }
     - component_params = { options: { class: 'gl-flex gl-flex-col gl-h-full' }, body_options: { class: 'gl-h-full gl-mt-0' } }
     - if current_user.can_admin_all_resources?

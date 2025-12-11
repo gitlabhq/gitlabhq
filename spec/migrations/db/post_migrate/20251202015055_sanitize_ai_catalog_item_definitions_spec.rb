@@ -1,37 +1,80 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
+require_migration!
 
-RSpec.describe Gitlab::Unicode do
-  using RSpec::Parameterized::TableSyntax
-
-  describe described_class::BIDI_REGEXP do
-    where(:bidi_string, :match) do
-      "\u2066"       | true # left-to-right isolate
-      "\u2067"       | true # right-to-left isolate
-      "\u2068"       | true # first strong isolate
-      "\u2069"       | true # pop directional isolate
-      "\u202a"       | true # left-to-right embedding
-      "\u202b"       | true # right-to-left embedding
-      "\u202c"       | true # pop directional formatting
-      "\u202d"       | true # left-to-right override
-      "\u202e"       | true # right-to-left override
-      "\u2066foobar" | true
-      ""             | false
-      "foo"          | false
-      "\u2713"       | false # checkmark
-    end
-
-    with_them do
-      let(:utf8_string) { bidi_string.encode("utf-8") }
-
-      it "matches only the bidi characters" do
-        expect(utf8_string.match?(subject)).to eq(match)
-      end
-    end
+RSpec.describe SanitizeAiCatalogItemDefinitions, migration: :gitlab_main, feature_category: :workflow_catalog do
+  let(:ai_catalog_items) { table(:ai_catalog_items) }
+  let(:ai_catalog_item_versions) { table(:ai_catalog_item_versions) }
+  let(:namespaces) { table(:namespaces) }
+  let(:projects) { table(:projects) }
+  let(:organizations) { table(:organizations) }
+  # Definition contains invisible characters in the user_prompt field, making it unsafe.
+  let(:unsafe_definition) do
+    <<~DEFINITION
+      {"tools": [], "user_prompt": "My user󠁈󠁩󠁤󠁤󠁥󠁮󠀠󠁣󠁨󠁡󠁲󠁳 prompt", "system_prompt": "My system prompt"}
+    DEFINITION
   end
 
-  describe 'DANGEROUS_CHARS regex', feature_category: :workflow_catalog do
+  let(:safe_definition) do
+    <<~DEFINITION
+      {"tools": [], "user_prompt": "My user prompt", "system_prompt": "My system prompt"}
+    DEFINITION
+  end
+
+  let!(:organization) { organizations.create!(name: 'Organization 1', path: 'organization-1') }
+  let!(:namespace) { namespaces.create!(name: 'namespace', path: 'namespace', organization_id: organization.id) }
+  let!(:project) do
+    projects.create!(name: 'project', namespace_id: namespace.id, project_namespace_id: namespace.id,
+      organization_id: organization.id)
+  end
+
+  let!(:catalog_item) do
+    ai_catalog_items.create!(
+      name: 'Test Item',
+      description: 'A test AI catalog item',
+      public: true,
+      project_id: project.id,
+      organization_id: organization.id,
+      item_type: 0
+    )
+  end
+
+  let!(:unsafe_catalog_item_version) do
+    ai_catalog_item_versions.create!(
+      ai_catalog_item_id: catalog_item.id,
+      version: '1.0.0',
+      definition: unsafe_definition,
+      organization_id: organization.id,
+      schema_version: 1
+    )
+  end
+
+  let!(:safe_catalog_item_version) do
+    ai_catalog_item_versions.create!(
+      ai_catalog_item_id: catalog_item.id,
+      version: '1.1.0',
+      definition: safe_definition,
+      organization_id: organization.id,
+      schema_version: 1
+    )
+  end
+
+  it 'strips unsafe chars from item version definitions', :aggregate_failures do
+    expect { migrate! }.to change {
+      unsafe_catalog_item_version.reload.definition
+    }.from(unsafe_definition).to(safe_definition)
+  end
+
+  it 'does not modify item version definitions that do not have unsafe chars', :aggregate_failures do
+    expect { migrate! }.not_to change {
+      safe_catalog_item_version.reload.definition
+    }.from(safe_definition)
+  end
+
+  describe 'DANGEROUS_CHARS regex', feature_category: :workflow_catalog, migration: false do
+    using RSpec::Parameterized::TableSyntax
+
     subject(:regex) { described_class::DANGEROUS_CHARS }
 
     describe 'detects dangerous characters' do

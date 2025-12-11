@@ -33,6 +33,8 @@
   - c.with_body do
     = render 'ci_cd'
 
+= render_if_exists 'admin/application_settings/ci_cd_catalog', expanded: expanded_by_default?
+
 = render_if_exists 'admin/application_settings/required_instance_ci_setting', expanded: expanded_by_default?
 
 = render_if_exists 'admin/application_settings/package_registry', expanded: expanded_by_default?

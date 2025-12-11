@@ -115,24 +115,6 @@ RSpec.shared_examples 'value stream analytics stage' do
     end
   end
 
-  describe '#matches_with_stage_params?' do
-    let(:params) { Gitlab::Analytics::CycleAnalytics::DefaultStages.params_for_test_stage }
-
-    it 'matches with default stage params' do
-      stage = described_class.new(params)
-
-      expect(stage).to be_default_stage
-      expect(stage).to be_matches_with_stage_params(params)
-    end
-
-    it "mismatches when the stage is custom" do
-      stage = described_class.new(params.merge(custom: true))
-
-      expect(stage).not_to be_default_stage
-      expect(stage).not_to be_matches_with_stage_params(params)
-    end
-  end
-
   describe '#parent_id' do
     it "delegates to 'parent_name'_id attribute" do
       stage = described_class.new(parent: parent)

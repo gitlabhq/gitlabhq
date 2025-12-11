@@ -46,7 +46,7 @@ To create a new queue:
     end
     ```
 
-1. Make sure the queue is registered by adding it to the `queue_classes` configuration.
+1. Register the queue class by adding it to `config.queue_classes` in `config/initializers/active_context.rb`.
 
     ```ruby
     ActiveContext.configure do |config|

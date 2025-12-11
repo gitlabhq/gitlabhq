@@ -61,7 +61,7 @@ for example after revoking it, re-run the `secret_detection` CI/CD job.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16890) support for external service tokens in GitLab 18.7 [with a flag](../../../api/feature_flags.md) named `secret_detection_partner_token_verification`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16890) support for external service tokens in GitLab 18.7 [with a flag](../../../api/feature_flags.md) named `secret_detection_partner_token_verification`. Enabled by default.
 
 {{< /history >}}
 

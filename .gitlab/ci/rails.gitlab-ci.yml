@@ -1288,6 +1288,8 @@ rspec-ee system pg18:
 # and the actual PG production version (PG16)
 
 rspec-ee unit pg16 es9:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
     - .rspec-base-pg16
     - .rspec-ee-base-pg16-es9
@@ -1302,15 +1304,18 @@ rspec-ee integration pg16 es9:
     - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
 
 rspec-ee system pg16 es9:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
     - .rspec-base-pg16
     - .rspec-ee-base-pg16-es9
     - .rspec-ee-system-parallel
   rules:
-    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:default-branch-schedule-weekly--code-backstage-ee-only", rules]
 
 rspec-ee unit pg16 opensearch-latest:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
     - .rspec-base-pg16
     - .rspec-ee-base-pg16-opensearch-latest
@@ -1325,12 +1330,13 @@ rspec-ee integration pg16 opensearch-latest:
     - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
 
 rspec-ee system pg16 opensearch-latest:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
     - .rspec-base-pg16
     - .rspec-ee-base-pg16-opensearch-latest
     - .rspec-ee-system-parallel
   rules:
-    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:default-branch-schedule-weekly--code-backstage-ee-only", rules]
 
 # EE: default branch weekly scheduled jobs #

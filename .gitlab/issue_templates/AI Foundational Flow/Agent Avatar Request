@@ -1,0 +1,40 @@
+<!--Please update the issue title to follow this format:
+[Avatar Request] Agent Name - Brief Description
+Examples:
+
+[Avatar Request] Code Review Agent - Security vulnerability scanning
+[Avatar Request] Pipeline Monitor Flow - CI/CD status tracking
+[Avatar Request] Merge Request Assistant - Automated code review-->
+
+### Agent/Flow Name:
+
+<!--Provide the exact name of the Agentic Flow or Agent-->
+
+#### Type:
+
+* [ ] Agent
+* [ ] Flow
+
+#### Avatar Suggested Icon:
+
+<!--Optional: Describe or link to an icon in our icon library (that might work well with this agent (e.g., "code review icon", "security shield", "pipeline symbol"). You can find all available icons here https://design.gitlab.com/svgs/-->
+
+#### Preferred Color:
+
+<!--Optional: Specify a color preference if needed from our brand colors -->
+
+#### Agent Purpose/Function:
+
+<!--Brief description of what this agent does to help inform avatar design-->
+
+#### Target Audience:
+
+<!--Who will primarily interact with this agent? (e.g., developers, security teams, DevOps engineers)-->
+
+#### Additional Notes
+
+<!--Any other relevant information or special considerations for the avatar design-->
+
+
+/assign @emilybauman
+/label ~"AI-UX" ~UX ~"Agentic Features" 

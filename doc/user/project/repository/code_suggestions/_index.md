@@ -234,7 +234,7 @@ On GitLab Self-Managed:
 1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Change Configuration**.
-1. Under **Prompt Cache**, clear the **Turn on prompt caching** checkbox.
+1. Under **Prompt cache**, clear the **Turn on prompt caching** checkbox.
 1. Select **Save changes**.
 
 ## Response time
@@ -284,7 +284,7 @@ Prerequisites:
 1. Expand **GitLab Duo features**.
 1. Under **Connection method**, choose an option:
    - To minimize latency for code completion requests, select **Direct connections**.
-   - To disable direct connections for all users, select **Indirect connections through the GitLab Self-Managed instance**.
+   - To disable direct connections for all users, select **Indirect connections through GitLab Self-Managed**.
 1. Select **Save changes**.
 
 {{< /tab >}}

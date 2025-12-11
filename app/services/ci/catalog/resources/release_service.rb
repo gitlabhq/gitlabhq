@@ -14,7 +14,8 @@ module Ci
 
         def execute
           resource_version = track_release_duration do
-            check_access
+            check_user_access
+            check_project_access
             validate_catalog_resource
             create_version
           end
@@ -46,10 +47,15 @@ module Ci
           result
         end
 
-        def check_access
+        def check_user_access
           return if Ability.allowed?(user, :publish_catalog_version, release)
 
           errors << 'You are not authorized to publish a version to the CI/CD catalog'
+        end
+
+        # overridden in EE
+        def check_project_access
+          # noop
         end
 
         def validate_catalog_resource
@@ -75,3 +81,5 @@ module Ci
     end
   end
 end
+
+Ci::Catalog::Resources::ReleaseService.prepend_mod

@@ -172,6 +172,9 @@ module Gitlab
 
       def highlighted_diff_lines=(value)
         clear_memoization(:diff_lines_for_serializer)
+
+        # Clear match tail cache as highlighted lines have changed
+        clear_memoization(:diff_lines_with_match_tail)
         @highlighted_diff_lines = value
       end
 
@@ -419,6 +422,46 @@ module Gitlab
         return false if different_type? || external_storage_error?
 
         DiffViewer::Image.can_render?(self, verify_binary: !stored_externally?)
+      end
+
+      # Expands the diff to show the complete file content with changes merged in.
+      # This replicates the frontend convertExpandLines behavior from legacy diffs,
+      # but performs the merging on the backend for rapid diffs rendering.
+      def expand_to_full!
+        return if blob.binary_in_repo?
+
+        presenter = Blobs::UnfoldPresenter.new(blob, { full: true })
+        blob_lines = presenter.diff_lines(with_positions_and_indent: true).to_a
+
+        merged_lines = []
+
+        diff_lines_with_match_tail.each_with_index do |line, index|
+          if line.type == 'match'
+            prev_line = index == 0 ? nil : diff_lines_with_match_tail[index - 1]
+            next_line = diff_lines_with_match_tail[index + 1]
+            start_index = prev_line ? prev_line.new_pos : 0
+            end_index = next_line ? next_line.new_pos - 1 : blob_lines.count
+            expanded_lines = blob_lines[start_index..end_index]
+            if prev_line
+              expanded_lines.each_with_index do |expanded_line, line_index|
+                expanded_line.old_pos = prev_line.old_pos + 1 + line_index
+                expanded_line.new_pos = prev_line.new_pos + 1 + line_index
+              end
+            end
+
+            merged_lines.concat(expanded_lines)
+          else
+            merged_lines << line
+          end
+        end
+
+        self.highlighted_diff_lines = merged_lines
+
+        @expanded_to_full = true
+      end
+
+      def manually_expanded?
+        @expanded_to_full || false
       end
 
       private

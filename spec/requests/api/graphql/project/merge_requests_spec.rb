@@ -57,6 +57,7 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
     end
 
     before do
+      Ai::Setting.instance
       # We cannot disable SQL query limiting here, since the transaction does not
       # begin until we enter the controller.
       headers = {

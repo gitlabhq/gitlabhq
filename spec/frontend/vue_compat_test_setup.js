@@ -56,7 +56,7 @@ if (global.document) {
     CUSTOM_DIR: 'suppress-warning',
     OPTIONS_BEFORE_DESTROY: 'suppress-warning',
     OPTIONS_DATA_MERGE: 'suppress-warning',
-    OPTIONS_DATA_FN: 'suppress-warning',
+    OPTIONS_DATA_FN: false,
     OPTIONS_DESTROYED: 'suppress-warning',
     ATTR_FALSE_VALUE: 'suppress-warning',
 

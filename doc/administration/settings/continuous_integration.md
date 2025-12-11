@@ -605,6 +605,56 @@ To turn on incremental logging for all projects:
 1. Under **Incremental logging configuration**, select the **Turn on incremental logging** checkbox.
 1. Select **Save changes**.
 
+## CI/CD Catalog settings
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/582044) in GitLab 17.8.
+
+{{< /history >}}
+
+Control which projects can publish components to the [CI/CD Catalog](../../ci/components/_index.md).
+
+To access these settings:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **CI/CD**.
+1. Expand **Catalog**.
+
+### Restrict CI/CD Catalog publishing
+
+By default, any project can publish components to the CI/CD Catalog.
+You can restrict publishing to specific projects by configuring an allowlist.
+
+When the allowlist is:
+
+- Empty (default): All projects can publish to the Catalog.
+- Populated with any number of projects: Only projects matching an entry in the allowlist can publish.
+
+You can define entries in the allowlist with:
+
+- Exact project paths, for example `my-group/my-project`.
+- Regular expressions: for example:
+  - `my-group/.*`: all projects in the group.
+  - `my-group/security-.*`: Projects starting with `security-`.
+
+To configure the CI/CD Catalog publishing allowlist:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings** > **CI/CD**.
+1. Expand **Catalog**.
+1. In the **CI/CD Catalog publishing allowlist** text area, enter one path pattern per line.
+1. Select **Save changes**.
+
+Projects not in the allowlist receive a `not authorized to publish` error when attempting to publish a component version.
+
 ## Required pipeline configuration (deprecated)
 
 {{< details >}}

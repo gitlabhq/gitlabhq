@@ -204,7 +204,6 @@ export default {
   provide() {
     return {
       showExportButton: computed(() => this.showImportExportButtons && this.workItems.length > 0),
-      projectImportJiraPath: this.projectImportJiraPath,
     };
   },
   inject: [
@@ -232,7 +231,6 @@ export default {
     'canReadCrmContact',
     'releasesPath',
     'metadataLoading',
-    'projectImportJiraPath',
     'newWorkItemEmailAddress',
     'isGroupIssuesList',
     'groupId',
