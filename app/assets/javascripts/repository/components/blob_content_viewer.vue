@@ -289,6 +289,10 @@ export default {
       if (query?.blame === '1') this.setShowBlame(true);
       else this.setShowBlame(false); // Always hide blame panel by default
     },
+    path() {
+      this.legacyRichViewer = null;
+      this.legacySimpleViewer = null;
+    },
   },
   methods: {
     onError() {

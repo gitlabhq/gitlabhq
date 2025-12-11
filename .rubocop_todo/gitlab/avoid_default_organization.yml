@@ -1,0 +1,15 @@
+---
+Gitlab/AvoidDefaultOrganization:
+  Details: grace period
+  Exclude:
+    - 'ee/app/helpers/ee/application_settings_helper.rb'
+    - 'ee/db/fixtures/development/30_customizable_cycle_analytics.rb'
+    - 'ee/db/fixtures/development/90_productivity_analytics.rb'
+    - 'ee/db/fixtures/development/98_pipeline_metrics.rb'
+    - 'ee/lib/api/admin/security/compliance_policy_settings.rb'
+    - 'ee/lib/security/security_orchestration_policies/policy_sync_state.rb'
+    - 'ee/spec/features/admin/admin_settings_spec.rb'
+    - 'lib/gitlab/current/organization.rb'
+    - 'lib/gitlab/database_importers/default_organization_importer.rb'
+    - 'spec/models/personal_access_token_spec.rb'
+    - 'spec/models/user_spec.rb'

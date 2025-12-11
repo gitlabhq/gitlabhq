@@ -48,6 +48,8 @@ import {
   getWorkItemWidgets,
   updateDraftWorkItemType,
   getDraftWorkItemType,
+  setLastUsedWorkItemTypeIdForNamespace,
+  getLastUsedWorkItemTypeIdForNamespace,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
@@ -728,6 +730,35 @@ describe('createMR', () => {
 
     expect(path).toBe(
       '/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bissue_iid%5D=12&merge_request%5Bsource_branch%5D=source-branch%231&merge_request%5Btarget_branch%5D=target-branch%231',
+    );
+  });
+});
+
+describe('getLastUsedWorkItemTypeIdForNamespace', () => {
+  useLocalStorageSpy();
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it('calls getItem on localStorage with the correct key', () => {
+    getLastUsedWorkItemTypeIdForNamespace('gitlab-org/gitlab');
+    expect(localStorage.getItem).toHaveBeenCalledWith('freq-wi-type:gitlab-org/gitlab');
+  });
+});
+
+describe('setLastUsedWorkItemTypeIdForNamespace', () => {
+  useLocalStorageSpy();
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it('calls setItem on localStorage with the correct key and value', () => {
+    setLastUsedWorkItemTypeIdForNamespace('gid://gitlab/WorkItems::Type/1', 'gitlab-org/gitlab');
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'freq-wi-type:gitlab-org/gitlab',
+      'gid://gitlab/WorkItems::Type/1',
     );
   });
 });

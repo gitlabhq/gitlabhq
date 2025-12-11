@@ -53,7 +53,7 @@ module Gitlab
       'fil_PH' => 0,
       'fr' => 95,
       'gl_ES' => 0,
-      'ga_IE' => 99,
+      'ga_IE' => 100,
       'id_ID' => 0,
       'it' => 87,
       'ja' => 98,
@@ -69,7 +69,7 @@ module Gitlab
       'uk' => 29,
       'zh_CN' => 84,
       'zh_HK' => 0,
-      'zh_TW' => 80
+      'zh_TW' => 83
     }.freeze
     private_constant :TRANSLATION_LEVELS
 

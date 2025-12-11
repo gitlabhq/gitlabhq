@@ -111,7 +111,7 @@ The merge conflict resolution editor helps you resolve these conflicts in GitLab
 If your merge request is stuck with a `Checking ability to merge automatically`
 message, you can:
 
-- In a comment in the merge request, run the `/rebase` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
+- In a comment in the merge request, run the `/rebase` [quick action](../quick_actions.md#rebase).
 - In the merge widget, select **Rebase source branch**.
 - [Rebase with Git](../../../topics/git/git_rebase.md#rebase).
 

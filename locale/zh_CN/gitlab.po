@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-11-27 11:01\n"
+"PO-Revision-Date: 2025-12-02 11:01\n"
 
 msgid " %{start} to %{end}"
 msgstr "从%{start}到%{end}"
@@ -986,6 +986,9 @@ msgstr "%{label_name} 已锁定且未被删除"
 
 msgid "%{label_name} was removed"
 msgstr "已删除 %{label_name}"
+
+msgid "%{label}:"
+msgstr ""
 
 msgid "%{lessThan} 1 hour"
 msgstr "%{lessThan} 1小时"
@@ -2384,25 +2387,16 @@ msgstr ""
 msgid "AICatalog|Are you sure you want to delete flow %{name}?"
 msgstr ""
 
-msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent and any associated flows and triggers will no longer work in this project."
-msgstr ""
-
-msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent and any associated flows, triggers, and service accounts will no longer work in this project."
-msgstr ""
-
 msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent will also be disabled from any projects in this group."
 msgstr ""
 
-msgid "AICatalog|Are you sure you want to disable flow %{name}?"
-msgstr ""
-
-msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow and associated triggers and service account will no longer work in this project."
+msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent will no longer work in this project."
 msgstr ""
 
 msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow will also be disabled from any projects in this group."
 msgstr ""
 
-msgid "AICatalog|Available tools"
+msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow, its service account, and any associated triggers will no longer work in this project."
 msgstr ""
 
 msgid "AICatalog|Basic information"
@@ -2462,22 +2456,16 @@ msgstr ""
 msgid "AICatalog|Could not create flow in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
+msgid "AICatalog|Could not enable agent"
+msgstr ""
+
 msgid "AICatalog|Could not enable agent in the %{target}. Check that the %{target} meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
-msgid "AICatalog|Could not enable agent in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
-msgstr ""
-
-msgid "AICatalog|Could not enable agent: %{agentName}"
+msgid "AICatalog|Could not enable flow"
 msgstr ""
 
 msgid "AICatalog|Could not enable flow in the %{target}. Check that the %{target} meets the %{linkStart}prerequisites%{linkEnd} and try again."
-msgstr ""
-
-msgid "AICatalog|Could not enable flow in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
-msgstr ""
-
-msgid "AICatalog|Could not enable flow: %{flowName}"
 msgstr ""
 
 msgid "AICatalog|Could not update agent. Try again."
@@ -2568,6 +2556,9 @@ msgid "AICatalog|Excessive resource usage"
 msgstr ""
 
 msgid "AICatalog|Explore the AI Catalog"
+msgstr ""
+
+msgid "AICatalog|Explore your GitLab Duo and SDLC trends"
 msgstr ""
 
 msgid "AICatalog|External"
@@ -2729,7 +2720,7 @@ msgstr ""
 msgid "AICatalog|Other"
 msgstr ""
 
-msgid "AICatalog|Permanently deletes the item from the catalog. This action cannot be undone."
+msgid "AICatalog|Permanently deletes the item from the catalog. This action cannot be undone. You must be in %{linkStart}Admin Mode%{linkEnd}."
 msgstr ""
 
 msgid "AICatalog|Please describe below."
@@ -2757,9 +2748,6 @@ msgid "AICatalog|Project members can use this flow. You must have at least the M
 msgstr ""
 
 msgid "AICatalog|Project-specific automation."
-msgstr ""
-
-msgid "AICatalog|Prompts"
 msgstr ""
 
 msgid "AICatalog|Provide a brief description."
@@ -7960,9 +7948,6 @@ msgstr "创建议题时出错。请重试。"
 msgid "An error occurred while decoding the file."
 msgstr "解码文件时发生了错误。"
 
-msgid "An error occurred while deleting an issuable."
-msgstr "删除议题时出错。"
-
 msgid "An error occurred while deleting the approvers group"
 msgstr "删除核准人群组时发生错误"
 
@@ -9920,8 +9905,8 @@ msgstr "验证方式"
 msgid "Authentication method updated"
 msgstr "身份验证方法已更新"
 
-msgid "Authentication via WebAuthn device failed."
-msgstr "通过WebAuthn设备的身份验证失败。"
+msgid "Authentication via WebAuthn device failed. Use another 2FA method or %{two_factor_recovery_hyperlink} your account."
+msgstr ""
 
 msgid "Authentication with the AI gateway services failed: %{error}"
 msgstr "与 AI 网关服务的认证失败：%{error}"
@@ -10433,9 +10418,6 @@ msgstr "需要遵守极狐GitLab 测试协议。"
 msgid "BetaBadge|Are supported on a commercially-reasonable effort basis."
 msgstr "在商业合理的努力基础上提供支持。"
 
-msgid "BetaBadge|Beta"
-msgstr "Beta"
-
 msgid "BetaBadge|Beta features:"
 msgstr "测试版功能："
 
@@ -10927,6 +10909,9 @@ msgid "Billings|To view subscription details and manage billing, select a group.
 msgstr ""
 
 msgid "Billings|Unlimited licensed users"
+msgstr ""
+
+msgid "Billings|Upgrade before your trial ends to maintain access to these Premium features."
 msgstr ""
 
 msgid "Billings|Upgrade to Premium"
@@ -11837,6 +11822,9 @@ msgstr ""
 msgid "BranchRules|Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests. %{linkStart}What is squashing?%{linkEnd}"
 msgstr "在合并请求中设置此选项的默认行为。对这些更改也应用于现有合并请求。 %{linkStart}什么是压缩？%{linkEnd}"
 
+msgid "BranchRules|Setting blocked by security policy"
+msgstr ""
+
 msgid "BranchRules|Setting inherited"
 msgstr ""
 
@@ -11871,6 +11859,12 @@ msgid "BranchRules|Target branch"
 msgstr "目标分支"
 
 msgid "BranchRules|This branch rule is inherited from the group Protected branches settings."
+msgstr ""
+
+msgid "BranchRules|This setting is blocked by a security policy. To make changes, go to the %{linkStart}security policies%{linkEnd}. %{learnMoreStart}Learn more.%{learnMoreEnd}"
+msgstr ""
+
+msgid "BranchRules|This setting is blocked by a security policy. To make changes, go to the security policies. Learn more."
 msgstr ""
 
 msgid "BranchRules|This setting is configured for the group. To make changes, contact a user with required %{linkStart}permissions%{linkEnd}."
@@ -15816,6 +15810,9 @@ msgstr "AI 网关 URL 必须设置为环境变量。"
 
 msgid "CodeSuggestions|The Code Suggestions feature is available."
 msgstr "代码建议功能可用。"
+
+msgid "CodeSuggestions|The GitLab Duo Agent Platform service must be accessible for agentic workflows."
+msgstr ""
 
 msgid "CodeSuggestions|The active subscription must sync with customers.gitlab.com every 72 hours."
 msgstr "活跃的订阅必须每 72 小时与 customers.gitlab.com 同步。"
@@ -20194,9 +20191,6 @@ msgstr "创建里程碑"
 msgid "Create new"
 msgstr "创建新的"
 
-msgid "Create new %{name} by email"
-msgstr "通过电子邮件创建新的 %{name}"
-
 msgid "Create new domain"
 msgstr "创建新域名"
 
@@ -23757,6 +23751,9 @@ msgstr "您想在这里看到什么？"
 msgid "Deployment|You"
 msgstr "您"
 
+msgid "Deployment|You are not authorized to trigger this deployment."
+msgstr ""
+
 msgid "Deprecated"
 msgstr "已弃用"
 
@@ -24898,9 +24895,6 @@ msgstr "由于不活跃，计划于 %{deletion_date} 删除 %{project_name} (%{p
 msgid "Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. %{link_start}Why is this scheduled?%{link_end}"
 msgstr "由于不活跃，此项目计划于 %{deletion_date} 删除。%{link_start}为什么要这样安排？%{link_end}"
 
-msgid "Duo Agent Platform Service URL %{host} is not reachable.."
-msgstr ""
-
 msgid "Duo Agent Platform|Duo Agent Platform Settings have been saved"
 msgstr ""
 
@@ -24982,6 +24976,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Session ID"
 msgstr ""
 
+msgid "DuoAgentPlatform|Session information"
+msgstr ""
+
 msgid "DuoAgentPlatform|Session triggered"
 msgstr ""
 
@@ -25004,6 +25001,9 @@ msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
 msgstr ""
 
 msgid "DuoAgenticChat|The agent associated with this conversation is no longer available. You can view the conversation history but cannot send new messages."
+msgstr ""
+
+msgid "DuoAgenticChat|This chat was deleted."
 msgstr ""
 
 msgid "DuoAgentsPlatform|AI Catalog"
@@ -26039,9 +26039,6 @@ msgstr "Elasticsearch 重建索引尚未开始：%{errors}"
 msgid "Email"
 msgstr "电子邮件"
 
-msgid "Email %{name} to this project"
-msgstr ""
-
 msgid "Email %{number}"
 msgstr "电子邮件%{number}"
 
@@ -26572,12 +26569,6 @@ msgstr ""
 
 msgid "Enter text"
 msgstr "输入文本"
-
-msgid "Enter the %{name} description"
-msgstr "输入 %{name} 的描述"
-
-msgid "Enter the %{name} title"
-msgstr "输入 %{name} 标题"
 
 msgid "Enter the code from your two-factor authenticator app. If you've lost your device, you can enter one of your recovery codes."
 msgstr "输入来自双重身份验证应用程序的验证码，如果您丢失了您的设备，您可以输入一个恢复码。"
@@ -28154,7 +28145,7 @@ msgstr "将与合并请求相关的议题指派给您的操作失败"
 msgid "Failed to authenticate due to a configuration issue. Try again later or contact support."
 msgstr ""
 
-msgid "Failed to authenticate passkey. Log in with your username and password to add a passkey for your account. Learn more about %{passkey_docs_hyperlink}."
+msgid "Failed to authenticate passkey. Sign in with your username and password to add a passkey for your account. Learn more about %{link_start}setting up passkeys%{link_end}."
 msgstr ""
 
 msgid "Failed to authenticate. Verify your identity with your device."
@@ -30441,6 +30432,9 @@ msgstr ""
 msgid "Geo|Verified"
 msgstr "已验证"
 
+msgid "Geo|Verifies data integrity on the primary site by calculating a checksum of the model's data. This can later be used to ensure replicated data matches between primary and secondary Geo sites, helping detect corruption during replication."
+msgstr ""
+
 msgid "Geo|Verifying"
 msgstr ""
 
@@ -30654,6 +30648,9 @@ msgstr "GitLab 社区版"
 msgid "GitLab Duo"
 msgstr "极狐GitLab Duo"
 
+msgid "GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "GitLab Duo Agentic Chat"
 msgstr ""
 
@@ -30670,6 +30667,12 @@ msgid "GitLab Duo Core"
 msgstr ""
 
 msgid "GitLab Duo Core is on"
+msgstr ""
+
+msgid "GitLab Duo Workflow Service at %{host} is not operational."
+msgstr ""
+
+msgid "GitLab Duo Workflow Service at %{host} is operational."
 msgstr ""
 
 msgid "GitLab Duo code features"
@@ -36517,9 +36520,6 @@ msgstr "问题或合并请求 ID 是必需的"
 msgid "Issue published on status page."
 msgstr "议题发布在状态页面上。"
 
-msgid "Issue type"
-msgstr "议题类型"
-
 msgid "Issue types"
 msgstr "议题类型"
 
@@ -40378,6 +40378,9 @@ msgstr "最大项目数量。"
 msgid "Maximum number of protection rules have been reached."
 msgstr "保护规则已达到的最大数量。"
 
+msgid "Maximum number of requests for a user. Resets after 1 minute."
+msgstr ""
+
 msgid "Maximum number of requests per minute"
 msgstr "每分钟最大请求数"
 
@@ -40389,6 +40392,9 @@ msgstr "未经身份验证的 IP 地址每分钟的最大请求数"
 
 msgid "Maximum number of requests per minute for each raw path (default is 300). Set to 0 to disable throttling."
 msgstr "每个原始路径每分钟的最大请求数（默认为 300）。设置为 0 以禁用节流。"
+
+msgid "Maximum number of requests per project, sha and user. Resets after 1 minute."
+msgstr ""
 
 msgid "Maximum number of scan execution policies allowed per security policy configuration"
 msgstr ""
@@ -46555,9 +46561,6 @@ msgstr "如果您继续进行此更改，您将失去对此组织的所有者权
 msgid "Organization|Internal - The organization can be accessed by any signed in user except external users."
 msgstr "内部 - 组织可以被任何已登录用户访问，外部用户除外。"
 
-msgid "Organization|Learn more about visibility levels"
-msgstr "了解更多关于可见性级别的信息"
-
 msgid "Organization|Manage"
 msgstr "管理"
 
@@ -46697,9 +46700,6 @@ msgstr ""
 
 msgid "Organization|View all"
 msgstr "查看全部"
-
-msgid "Organization|Who can see this organization?"
-msgstr "谁可以看到此组织？"
 
 msgid "Organization|You can now start using your new organization."
 msgstr "您现在可以开始使用您的新组织。"
@@ -47867,7 +47867,7 @@ msgstr ""
 msgid "PasskeyAuthentication|Passkeys only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
-msgid "PasskeyAuthentication|Sign in with Passkeys"
+msgid "PasskeyAuthentication|Sign in with passkeys"
 msgstr ""
 
 msgid "PasskeyAuthentication|We heard back from your device. Authenticating..."
@@ -54336,7 +54336,7 @@ msgstr ""
 msgid "RapidDiffs|View controls"
 msgstr "查看控制"
 
-msgid "RapidDiffs|View file at %{commitId}"
+msgid "RapidDiffs|View file at %{codeStart}%{commit}%{codeEnd}"
 msgstr ""
 
 msgid "Rate Limits"
@@ -54353,6 +54353,9 @@ msgstr "速率限制周期（秒）"
 
 msgid "Rate limits can help reduce request volume (like from crawlers or abusive bots)."
 msgstr "速率限制有助于减少请求量（例如来自爬虫或滥用机器人的请求）。"
+
+msgid "Rate limits for specific Users API endpoints."
+msgstr ""
 
 msgid "Rate the review"
 msgstr "评估评审"
@@ -60034,6 +60037,9 @@ msgstr "添加新操作"
 msgid "SecurityOrchestration|Add new approver"
 msgstr "添加新的核准人"
 
+msgid "SecurityOrchestration|Add new criteria"
+msgstr ""
+
 msgid "SecurityOrchestration|Add new rule"
 msgstr "添加新规则"
 
@@ -60120,6 +60126,18 @@ msgstr "将该策略应用于 %{projectScopeType}命名的 %{frameworkSelector}"
 
 msgid "SecurityOrchestration|Apply this policy to current project."
 msgstr "将该策略应用于当前项目。"
+
+msgid "SecurityOrchestration|Approval settings might be affected by rules in the following policies if the policies change from warn mode to strictly enforced:"
+msgstr ""
+
+msgid "SecurityOrchestration|Approval settings might be affected by rules in the following policies:"
+msgstr ""
+
+msgid "SecurityOrchestration|Approval settings might be affected by the rules in policy %{policyName} if the policy changes from warn mode to strictly enforced."
+msgstr ""
+
+msgid "SecurityOrchestration|Approval settings might be affected by the rules in policy %{policyName}."
+msgstr ""
 
 msgid "SecurityOrchestration|Are you sure you want to change the compliance and security policy group?"
 msgstr ""
@@ -60465,6 +60483,9 @@ msgstr "如果任何扫描器在针对主分支的开放 %{strongStart}合并请
 
 msgid "SecurityOrchestration|If any scanner finds a %{strongStart}vulnerability%{strongEnd} that was %{strongStart}previously detected but no longer found%{strongEnd} in a subsequent scan, then automatically %{strongStart}set the status to Resolved%{strongEnd}."
 msgstr "如果任何扫描器发现一个 %{strongStart}漏洞%{strongEnd}，该漏洞在后续扫描中 %{strongStart}不再被发现%{strongEnd}，则自动将状态 %{strongStart}设置为已解决%{strongEnd}。"
+
+msgid "SecurityOrchestration|If vulnerabilities are automatically dismissed when found under following criteria:"
+msgstr ""
 
 msgid "SecurityOrchestration|In each pipeline, a %{boldStart}maximum of 1000%{boldEnd} vulnerabilities that are %{italicStart}no longer detected%{italicEnd} will be set to status %{italicStart}Resolved%{italicEnd} until all have been auto-resolved."
 msgstr "在每个流水线中，最多有%{boldStart}1000%{boldEnd}个漏洞将被设置为状态%{italicStart}已解决%{italicEnd}，直到所有漏洞都被自动解决。"
@@ -60908,6 +60929,9 @@ msgstr "选择一个变量"
 msgid "SecurityOrchestration|Select bypass reasons"
 msgstr ""
 
+msgid "SecurityOrchestration|Select criteria"
+msgstr ""
+
 msgid "SecurityOrchestration|Select date"
 msgstr "选择日期"
 
@@ -61289,6 +61313,9 @@ msgstr "您已达到了最大数量 %{maximumAllowed} %{policyType} %{instance}�
 msgid "SecurityOrchestration|You can add a maximum of %{rulesCount} %{rules}."
 msgstr "您最多可以添加 %{rulesCount} 个 %{rules}。"
 
+msgid "SecurityOrchestration|You can add a maximum of 3 criteria."
+msgstr ""
+
 msgid "SecurityOrchestration|You can select this option only once."
 msgstr "您只能选择此选项一次。"
 
@@ -61424,6 +61451,9 @@ msgstr "默认"
 msgid "SecurityOrchestration|denylist"
 msgstr "拒绝列表"
 
+msgid "SecurityOrchestration|directory"
+msgstr ""
+
 msgid "SecurityOrchestration|except for:"
 msgstr "除了："
 
@@ -61442,6 +61472,9 @@ msgstr ""
 msgid "SecurityOrchestration|exceptions: %{exceptions}"
 msgstr "例外： %{exceptions}"
 
+msgid "SecurityOrchestration|file path"
+msgstr ""
+
 msgid "SecurityOrchestration|for %{branchType}"
 msgstr "对于 %{branchType}"
 
@@ -61456,6 +61489,9 @@ msgstr "有可用的修复"
 
 msgid "SecurityOrchestration|have no fix available"
 msgstr "没有可用的修复"
+
+msgid "SecurityOrchestration|identifier"
+msgstr ""
 
 msgid "SecurityOrchestration|in timezone %{timezone}"
 msgstr "在时区 %{timezone}"
@@ -62634,9 +62670,6 @@ msgstr "发送"
 
 msgid "Send a single email notification to Owners and Maintainers for new alerts."
 msgstr "向所有者和维护者发送一封电子邮件通知以获取新警报。"
-
-msgid "Send email"
-msgstr "发送电子邮件"
 
 msgid "Send email in multipart format (HTML and plain text). Uncheck to send email messages in plain text only."
 msgstr "以多部分格式（HTML 和纯文本）发送电子邮件。取消选中仅以纯文本形式发送电子邮件。"
@@ -67434,9 +67467,6 @@ msgstr "开始日期必须早于结束日期。"
 msgid "The subdomain setting."
 msgstr "子域设置。"
 
-msgid "The subject will be used as the title of the new %{name}, and the message will be the description. %{quickActionsLinkStart}Quick actions%{quickActionsLinkEnd} and styling with %{markdownLinkStart}Markdown%{markdownLinkEnd} are supported."
-msgstr "主题将用作新 %{name} 的标题，消息将是描述。支持 %{quickActionsLinkStart}快速操作%{quickActionsLinkEnd} 和使用 %{markdownLinkStart}Markdown%{markdownLinkEnd} 进行样式设置。"
-
 msgid "The tag name can't be changed for an existing release."
 msgstr "对于现有发布，不能更改标签名称。"
 
@@ -67836,9 +67866,6 @@ msgstr "更新您的显示偏好时出错。"
 msgid "There was an error updating your show drafts preference."
 msgstr ""
 
-msgid "There was an error when reseting email token."
-msgstr "重置电子邮件令牌时出错。"
-
 msgid "There was an error when subscribing to this label."
 msgstr "订阅此标记时出错。"
 
@@ -68204,9 +68231,6 @@ msgstr "这是一个将在%{remainingTime}后运行的延时作业。"
 
 msgid "This is a list of devices that have logged into your account. Revoke any sessions that you do not recognize."
 msgstr "这是已登录到您帐户的设备列表。您可以删除任何您无法识别的会话。"
-
-msgid "This is a private email address %{helpIcon} generated just for you. Anyone who has it can create issues or merge requests as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}."
-msgstr "这是专为您生成的私人电子邮件地址 %{helpIcon} 任何拥有它的人都可以像您一样创建问题或合并请求。如果发生这种情况， %{resetLinkStart}重置这个令牌%{resetLinkEnd}。"
 
 msgid "This is a security log of authentication events involving your account."
 msgstr "这是涉及您帐户的身份验证事件的安全日志。"
@@ -73247,6 +73271,12 @@ msgstr ""
 msgid "VirtualRegistry|Cache cleanup completed for %{group_name}"
 msgstr ""
 
+msgid "VirtualRegistry|Cache cleanup disabled. Next run is not scheduled."
+msgstr ""
+
+msgid "VirtualRegistry|Cache cleanup enabled. Next run scheduled for %{nextRun}."
+msgstr ""
+
 msgid "VirtualRegistry|Cache cleanup failed for %{group_name}"
 msgstr ""
 
@@ -73571,6 +73601,9 @@ msgstr "上游"
 
 msgid "VirtualRegistry|Use the arrow buttons to reorder upstreams. Artifacts are resolved from top to bottom."
 msgstr "使用箭头按钮重新排序上游。产物从上到下解析。"
+
+msgid "VirtualRegistry|Used by registries"
+msgstr ""
 
 msgid "VirtualRegistry|Username (optional)"
 msgstr "用户名（可选）"
@@ -74263,6 +74296,9 @@ msgstr "位置"
 msgid "Vulnerability|Namespace:"
 msgstr "命名空间："
 
+msgid "Vulnerability|Policy violation detected"
+msgstr ""
+
 msgid "Vulnerability|Possible FP"
 msgstr ""
 
@@ -74561,6 +74597,9 @@ msgid "WebAuthn device deleted"
 msgstr ""
 
 msgid "WebAuthn device registered"
+msgstr ""
+
+msgid "WebAuthn device successfully authenticated."
 msgstr ""
 
 msgid "WebAuthn devices"
@@ -76732,6 +76771,9 @@ msgstr "待办事项"
 msgid "WorkItem|Toggle details"
 msgstr "切换详情"
 
+msgid "WorkItem|Track bugs, plan features, and organize your efforts with work items"
+msgstr ""
+
 msgid "WorkItem|Triage"
 msgstr ""
 
@@ -76793,6 +76835,9 @@ msgid "WorkItem|Use for items that have been completed. Applying a done status w
 msgstr ""
 
 msgid "WorkItem|Use for planned work that is not actively being worked on."
+msgstr ""
+
+msgid "WorkItem|Use work items (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project."
 msgstr ""
 
 msgid "WorkItem|View current version"
@@ -77452,9 +77497,6 @@ msgstr "您可以在您的个人访问令牌设置 %{pat_link} 中检查您的�
 
 msgid "You can create a new %{link}."
 msgstr "您可以创建一个新的%{link}。"
-
-msgid "You can create a new %{name} inside this project by sending an email to the following email address:"
-msgstr "您可以通过向以下电子邮件地址发送电子邮件来在此项目中创建一个新的 %{name}"
 
 msgid "You can create a new SSH key by visiting %{link}"
 msgstr "您可以通过访问%{link}创建一个新的SSH密钥"
@@ -78216,9 +78258,6 @@ msgstr "您的极狐GitLab 版本"
 msgid "Your Groups"
 msgstr "您的群组"
 
-msgid "Your Passkey did not send a valid JSON response."
-msgstr ""
-
 msgid "Your Personal Access Token was revoked"
 msgstr "您的个人访问令牌已被吊销。"
 
@@ -78541,6 +78580,9 @@ msgstr "您的更新失败。当拖放到现有设计时，您必须上传具有
 
 msgid "Your username is %{username}."
 msgstr "您的用户名是%{username}。"
+
+msgid "Your webauthn device did not send a valid JSON response."
+msgstr ""
 
 msgid "Your work"
 msgstr "你的工作"
@@ -80745,6 +80787,9 @@ msgstr "达到最大深度"
 msgid "read-only"
 msgstr "只读"
 
+msgid "recover"
+msgstr ""
+
 msgid "register"
 msgstr "注册"
 
@@ -80867,9 +80912,6 @@ msgstr ""
 
 msgid "service accounts"
 msgstr "服务账户"
-
-msgid "setting up passkeys"
-msgstr ""
 
 msgid "severity|Blocker"
 msgstr "阻塞"

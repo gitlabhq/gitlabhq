@@ -82,8 +82,8 @@ To do this:
 {{< /history >}}
 
 When you've finished preparing your changes, it's time to request a review. To assign a reviewer to
-your merge request, either use the `/assign_reviewer @user`
-[quick action](../../quick_actions.md#issues-merge-requests-and-epics) in any text field, or:
+your merge request, either use the
+[`/assign_reviewer` quick action](../../quick_actions.md#assign_reviewer) in any text field, or:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests** and find your merge request.

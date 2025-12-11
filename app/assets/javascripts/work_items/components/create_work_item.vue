@@ -32,6 +32,8 @@ import {
   getNewWorkItemWidgetsAutoSaveKey,
   updateDraftWorkItemType,
   newWorkItemFullPath,
+  getLastUsedWorkItemTypeIdForNamespace,
+  setLastUsedWorkItemTypeIdForNamespace,
 } from '~/work_items/utils';
 import { TYPENAME_MERGE_REQUEST, TYPENAME_VULNERABILITY } from '~/graphql_shared/constants';
 import {
@@ -311,7 +313,11 @@ export default {
           });
         }
 
-        const selectedWorkItemType = this.findWorkItemType(this.preselectedWorkItemType);
+        const persistedTypeId = getLastUsedWorkItemTypeIdForNamespace(this.inputNamespacePath);
+
+        const selectedWorkItemType = persistedTypeId
+          ? this.findWorkItemTypeById(persistedTypeId)
+          : this.findWorkItemType(this.preselectedWorkItemType);
 
         if (selectedWorkItemType) {
           updateDraftWorkItemType({
@@ -679,6 +685,9 @@ export default {
     findWorkItemType(workItemTypeName) {
       return this.workItemTypes?.find((workItemType) => workItemType.name === workItemTypeName);
     },
+    findWorkItemTypeById(workItemTypeId) {
+      return this.workItemTypes?.find((workItemType) => workItemType.id === workItemTypeId);
+    },
     initialSelectedProject() {
       if (this.relatedItem) {
         return this.relatedItem.reference.substring(0, this.relatedItem.reference.lastIndexOf('#'));
@@ -930,6 +939,8 @@ export default {
         if (data.workItemCreate.errors.length) {
           throw new Error(data.workItemCreate.errors);
         }
+
+        setLastUsedWorkItemTypeIdForNamespace(this.selectedWorkItemTypeId, this.inputNamespacePath);
 
         this.$emit('workItemCreated', {
           workItem: data.workItemCreate.workItem,

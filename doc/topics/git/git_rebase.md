@@ -311,8 +311,8 @@ For CI/CD pipeline troubleshooting information, see [Debugging CI/CD pipelines](
 
 The `/rebase` command schedules a background task. The task attempts to rebase
 the changes in the source branch on the latest commit of the target branch.
-If, after using the `/rebase`
-[quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics),
+If, after using the
+[`/rebase` quick action](../../user/project/quick_actions.md#rebase),
 you see this error, a rebase cannot be scheduled:
 
 ```plaintext

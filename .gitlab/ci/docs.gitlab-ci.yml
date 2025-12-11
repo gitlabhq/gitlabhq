@@ -24,22 +24,6 @@ review-docs-deploy:
   script:
     - ./scripts/trigger-build.rb docs deploy
 
-# Deploy documentation review app with localization enabled
-review-docs-deploy-localization:
-  extends:
-    - .review-docs
-    - .docs:rules:docs-i18n-lint
-  when: manual
-  allow_failure: true
-  variables:
-    # Use the Hugo translation environment
-    # https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/config/translation/hugo.yaml
-    HUGO_ENVIRONMENT: "translation"
-  script:
-    - wget https://gitlab.com/gitlab-org/gitlab/-/raw/0c781e15ac3ee3de2efcfc0fa1254c0905203fb5/scripts/trigger-build.rb
-    - chmod 755 trigger-build.rb
-    - ./trigger-build.rb docs deploy
-
 # Cleanup remote environment of gitlab-org/technical-writing/docs-gitlab-com
 review-docs-cleanup:
   extends: .review-docs

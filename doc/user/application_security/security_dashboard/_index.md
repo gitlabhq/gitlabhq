@@ -16,6 +16,7 @@ description: Security dashboards, vulnerability trends, project ratings, and met
 {{< history >}}
 
 - New dashboard with Elasticsearch integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/570504) in GitLab 18.6 [with flags](../../../administration/feature_flags/_index.md) named `project_security_dashboard_new` and `group_security_dashboard_new`. The flags are disabled by default.
+- New dashboard with Elasticsearch integration [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215574) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -135,18 +136,10 @@ To view group security dashboard:
 
 ## New security dashboards
 
-{{< details >}}
-
-- Tier: Ultimate
-- Offering: GitLab.com
-- Status: Beta
-
-{{< /details >}}
-
 {{< history >}}
 
 - New dashboard that uses [advanced vulnerability management](../vulnerability_report/_index.md#advanced-vulnerability-management) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/570504) in GitLab 18.6 [with flags](../../../administration/feature_flags/_index.md) named `project_security_dashboard_new` and `group_security_dashboard_new`. The flags are disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/571978) in GitLab 18.6.
+- New dashboard [enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215574) in GitLab 18.7.
 
 {{< /history >}}
 

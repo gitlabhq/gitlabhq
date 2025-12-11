@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-11-27 11:03\n"
+"PO-Revision-Date: 2025-12-02 11:03\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} по %{end}"
@@ -1361,6 +1361,9 @@ msgstr "%{label_name} заблокирована и не был удалена"
 
 msgid "%{label_name} was removed"
 msgstr "%{label_name} удалена"
+
+msgid "%{label}:"
+msgstr ""
 
 msgid "%{lessThan} 1 hour"
 msgstr "%{lessThan} 1 часа"
@@ -2918,26 +2921,17 @@ msgstr ""
 msgid "AICatalog|Are you sure you want to delete flow %{name}?"
 msgstr ""
 
-msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent and any associated flows and triggers will no longer work in this project."
-msgstr ""
-
-msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent and any associated flows, triggers, and service accounts will no longer work in this project."
-msgstr ""
-
 msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent will also be disabled from any projects in this group."
 msgstr ""
 
-msgid "AICatalog|Are you sure you want to disable flow %{name}?"
-msgstr ""
-
-msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow and associated triggers and service account will no longer work in this project."
+msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent will no longer work in this project."
 msgstr ""
 
 msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow will also be disabled from any projects in this group."
 msgstr ""
 
-msgid "AICatalog|Available tools"
-msgstr "Доступные инструменты"
+msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow, its service account, and any associated triggers will no longer work in this project."
+msgstr ""
 
 msgid "AICatalog|Basic information"
 msgstr "Основная информация"
@@ -2996,22 +2990,16 @@ msgstr ""
 msgid "AICatalog|Could not create flow in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
+msgid "AICatalog|Could not enable agent"
+msgstr ""
+
 msgid "AICatalog|Could not enable agent in the %{target}. Check that the %{target} meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
-msgid "AICatalog|Could not enable agent in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
-msgstr ""
-
-msgid "AICatalog|Could not enable agent: %{agentName}"
+msgid "AICatalog|Could not enable flow"
 msgstr ""
 
 msgid "AICatalog|Could not enable flow in the %{target}. Check that the %{target} meets the %{linkStart}prerequisites%{linkEnd} and try again."
-msgstr ""
-
-msgid "AICatalog|Could not enable flow in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
-msgstr ""
-
-msgid "AICatalog|Could not enable flow: %{flowName}"
 msgstr ""
 
 msgid "AICatalog|Could not update agent. Try again."
@@ -3102,6 +3090,9 @@ msgid "AICatalog|Excessive resource usage"
 msgstr ""
 
 msgid "AICatalog|Explore the AI Catalog"
+msgstr ""
+
+msgid "AICatalog|Explore your GitLab Duo and SDLC trends"
 msgstr ""
 
 msgid "AICatalog|External"
@@ -3263,7 +3254,7 @@ msgstr ""
 msgid "AICatalog|Other"
 msgstr ""
 
-msgid "AICatalog|Permanently deletes the item from the catalog. This action cannot be undone."
+msgid "AICatalog|Permanently deletes the item from the catalog. This action cannot be undone. You must be in %{linkStart}Admin Mode%{linkEnd}."
 msgstr ""
 
 msgid "AICatalog|Please describe below."
@@ -3291,9 +3282,6 @@ msgid "AICatalog|Project members can use this flow. You must have at least the M
 msgstr ""
 
 msgid "AICatalog|Project-specific automation."
-msgstr ""
-
-msgid "AICatalog|Prompts"
 msgstr ""
 
 msgid "AICatalog|Provide a brief description."
@@ -8509,9 +8497,6 @@ msgstr ""
 msgid "An error occurred while decoding the file."
 msgstr "Произошла ошибка при декодировании файла."
 
-msgid "An error occurred while deleting an issuable."
-msgstr ""
-
 msgid "An error occurred while deleting the approvers group"
 msgstr "Произошла ошибка при удалении группы одобряющих"
 
@@ -10526,8 +10511,8 @@ msgstr "Метод аутентификации"
 msgid "Authentication method updated"
 msgstr "Метод аутентификации обновлён"
 
-msgid "Authentication via WebAuthn device failed."
-msgstr "Ошибка аутентификации через устройство WebAuthn."
+msgid "Authentication via WebAuthn device failed. Use another 2FA method or %{two_factor_recovery_hyperlink} your account."
+msgstr ""
 
 msgid "Authentication with the AI gateway services failed: %{error}"
 msgstr "Аутентификация в службе шлюза ИИ не удалась: %{error}"
@@ -11039,9 +11024,6 @@ msgstr "Являются предметом Соглашения о тестир
 msgid "BetaBadge|Are supported on a commercially-reasonable effort basis."
 msgstr "Поддерживаются на основе коммерчески обоснованных усилий."
 
-msgid "BetaBadge|Beta"
-msgstr "Бета"
-
 msgid "BetaBadge|Beta features:"
 msgstr "Бета-функции:"
 
@@ -11536,6 +11518,9 @@ msgid "Billings|To view subscription details and manage billing, select a group.
 msgstr ""
 
 msgid "Billings|Unlimited licensed users"
+msgstr ""
+
+msgid "Billings|Upgrade before your trial ends to maintain access to these Premium features."
 msgstr ""
 
 msgid "Billings|Upgrade to Premium"
@@ -12461,6 +12446,9 @@ msgstr ""
 msgid "BranchRules|Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests. %{linkStart}What is squashing?%{linkEnd}"
 msgstr "Установите поведение по умолчанию для этой опции в запросах на слияние. Изменения этого параметра также применяются к существующим запросам на слияние. %{linkStart}Что такое сжатие?%{linkEnd}"
 
+msgid "BranchRules|Setting blocked by security policy"
+msgstr ""
+
 msgid "BranchRules|Setting inherited"
 msgstr ""
 
@@ -12495,6 +12483,12 @@ msgid "BranchRules|Target branch"
 msgstr "Целевая ветка"
 
 msgid "BranchRules|This branch rule is inherited from the group Protected branches settings."
+msgstr ""
+
+msgid "BranchRules|This setting is blocked by a security policy. To make changes, go to the %{linkStart}security policies%{linkEnd}. %{learnMoreStart}Learn more.%{learnMoreEnd}"
+msgstr ""
+
+msgid "BranchRules|This setting is blocked by a security policy. To make changes, go to the security policies. Learn more."
 msgstr ""
 
 msgid "BranchRules|This setting is configured for the group. To make changes, contact a user with required %{linkStart}permissions%{linkEnd}."
@@ -16464,6 +16458,9 @@ msgstr "URL шлюза ИИ должен быть настроен в виде �
 
 msgid "CodeSuggestions|The Code Suggestions feature is available."
 msgstr "Доступна функция предложений кода."
+
+msgid "CodeSuggestions|The GitLab Duo Agent Platform service must be accessible for agentic workflows."
+msgstr ""
 
 msgid "CodeSuggestions|The active subscription must sync with customers.gitlab.com every 72 hours."
 msgstr "Активная подписка должна синхронизироваться с customers.gitlab.com каждые 72 часа."
@@ -20860,9 +20857,6 @@ msgstr "Создать этап"
 msgid "Create new"
 msgstr "Создать новый"
 
-msgid "Create new %{name} by email"
-msgstr "Создать новое %{name} по электронной почте"
-
 msgid "Create new domain"
 msgstr "Создать новый домен"
 
@@ -24474,6 +24468,9 @@ msgstr ""
 msgid "Deployment|You"
 msgstr "Вы"
 
+msgid "Deployment|You are not authorized to trigger this deployment."
+msgstr ""
+
 msgid "Deprecated"
 msgstr ""
 
@@ -25636,9 +25633,6 @@ msgstr ""
 msgid "Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. %{link_start}Why is this scheduled?%{link_end}"
 msgstr ""
 
-msgid "Duo Agent Platform Service URL %{host} is not reachable.."
-msgstr ""
-
 msgid "Duo Agent Platform|Duo Agent Platform Settings have been saved"
 msgstr ""
 
@@ -25720,6 +25714,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Session ID"
 msgstr ""
 
+msgid "DuoAgentPlatform|Session information"
+msgstr ""
+
 msgid "DuoAgentPlatform|Session triggered"
 msgstr ""
 
@@ -25742,6 +25739,9 @@ msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
 msgstr ""
 
 msgid "DuoAgenticChat|The agent associated with this conversation is no longer available. You can view the conversation history but cannot send new messages."
+msgstr ""
+
+msgid "DuoAgenticChat|This chat was deleted."
 msgstr ""
 
 msgid "DuoAgentsPlatform|AI Catalog"
@@ -26798,9 +26798,6 @@ msgstr "Переиндексация Elasticsearch не начата: %{errors}"
 msgid "Email"
 msgstr "Электронная почта"
 
-msgid "Email %{name} to this project"
-msgstr ""
-
 msgid "Email %{number}"
 msgstr "Электронная почта %{number}"
 
@@ -27330,12 +27327,6 @@ msgid "Enter recovery code"
 msgstr ""
 
 msgid "Enter text"
-msgstr ""
-
-msgid "Enter the %{name} description"
-msgstr ""
-
-msgid "Enter the %{name} title"
 msgstr ""
 
 msgid "Enter the code from your two-factor authenticator app. If you've lost your device, you can enter one of your recovery codes."
@@ -28931,7 +28922,7 @@ msgstr "Не удалось назначить вам обсуждения, св
 msgid "Failed to authenticate due to a configuration issue. Try again later or contact support."
 msgstr ""
 
-msgid "Failed to authenticate passkey. Log in with your username and password to add a passkey for your account. Learn more about %{passkey_docs_hyperlink}."
+msgid "Failed to authenticate passkey. Sign in with your username and password to add a passkey for your account. Learn more about %{link_start}setting up passkeys%{link_end}."
 msgstr ""
 
 msgid "Failed to authenticate. Verify your identity with your device."
@@ -31239,6 +31230,9 @@ msgstr ""
 msgid "Geo|Verified"
 msgstr ""
 
+msgid "Geo|Verifies data integrity on the primary site by calculating a checksum of the model's data. This can later be used to ensure replicated data matches between primary and secondary Geo sites, helping detect corruption during replication."
+msgstr ""
+
 msgid "Geo|Verifying"
 msgstr ""
 
@@ -31452,6 +31446,9 @@ msgstr ""
 msgid "GitLab Duo"
 msgstr ""
 
+msgid "GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "GitLab Duo Agentic Chat"
 msgstr ""
 
@@ -31468,6 +31465,12 @@ msgid "GitLab Duo Core"
 msgstr ""
 
 msgid "GitLab Duo Core is on"
+msgstr ""
+
+msgid "GitLab Duo Workflow Service at %{host} is not operational."
+msgstr ""
+
+msgid "GitLab Duo Workflow Service at %{host} is operational."
 msgstr ""
 
 msgid "GitLab Duo code features"
@@ -37363,9 +37366,6 @@ msgstr "Требуется ID обсуждения или ID запроса на
 msgid "Issue published on status page."
 msgstr ""
 
-msgid "Issue type"
-msgstr ""
-
 msgid "Issue types"
 msgstr ""
 
@@ -41269,6 +41269,9 @@ msgstr ""
 msgid "Maximum number of protection rules have been reached."
 msgstr "Достигнуто максимальное количество правил защиты."
 
+msgid "Maximum number of requests for a user. Resets after 1 minute."
+msgstr ""
+
 msgid "Maximum number of requests per minute"
 msgstr "Максимальное количество запросов в минуту"
 
@@ -41280,6 +41283,9 @@ msgstr "Максимальное количество запросов в мин
 
 msgid "Maximum number of requests per minute for each raw path (default is 300). Set to 0 to disable throttling."
 msgstr "Максимальное количество запросов в минуту для каждого исходного пути (по умолчанию 300). Установите 0 для отключения ограничения частоты."
+
+msgid "Maximum number of requests per project, sha and user. Resets after 1 minute."
+msgstr ""
 
 msgid "Maximum number of scan execution policies allowed per security policy configuration"
 msgstr ""
@@ -47500,9 +47506,6 @@ msgstr "Если вы продолжите это изменение, вы по�
 msgid "Organization|Internal - The organization can be accessed by any signed in user except external users."
 msgstr "Внутренний — организация доступна любому вошедшему пользователю, кроме внешних пользователей."
 
-msgid "Organization|Learn more about visibility levels"
-msgstr "Подробнее об уровнях видимости"
-
 msgid "Organization|Manage"
 msgstr ""
 
@@ -47648,9 +47651,6 @@ msgstr "Обновите название, описание и аватар ор
 
 msgid "Organization|View all"
 msgstr ""
-
-msgid "Organization|Who can see this organization?"
-msgstr "Кто может видеть эту организацию?"
 
 msgid "Organization|You can now start using your new organization."
 msgstr "Теперь вы можете начать использовать вашу новую организацию."
@@ -48824,7 +48824,7 @@ msgstr ""
 msgid "PasskeyAuthentication|Passkeys only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
-msgid "PasskeyAuthentication|Sign in with Passkeys"
+msgid "PasskeyAuthentication|Sign in with passkeys"
 msgstr ""
 
 msgid "PasskeyAuthentication|We heard back from your device. Authenticating..."
@@ -55314,7 +55314,7 @@ msgstr ""
 msgid "RapidDiffs|View controls"
 msgstr ""
 
-msgid "RapidDiffs|View file at %{commitId}"
+msgid "RapidDiffs|View file at %{codeStart}%{commit}%{codeEnd}"
 msgstr ""
 
 msgid "Rate Limits"
@@ -55331,6 +55331,9 @@ msgstr "Период ограничения частоты запросов (в 
 
 msgid "Rate limits can help reduce request volume (like from crawlers or abusive bots)."
 msgstr "Ограничения на частоту запросов могут помочь уменьшить объём запросов (например, от поисковых роботов или злоумышленников)."
+
+msgid "Rate limits for specific Users API endpoints."
+msgstr ""
 
 msgid "Rate the review"
 msgstr "Оценить рецензию"
@@ -61150,6 +61153,9 @@ msgstr "Добавить новое действие"
 msgid "SecurityOrchestration|Add new approver"
 msgstr "Добавить нового одобряющего"
 
+msgid "SecurityOrchestration|Add new criteria"
+msgstr ""
+
 msgid "SecurityOrchestration|Add new rule"
 msgstr "Добавить новое правило"
 
@@ -61236,6 +61242,18 @@ msgstr "Применить эту политику к %{projectScopeType} с и�
 
 msgid "SecurityOrchestration|Apply this policy to current project."
 msgstr "Применить эту политику к текущему проекту."
+
+msgid "SecurityOrchestration|Approval settings might be affected by rules in the following policies if the policies change from warn mode to strictly enforced:"
+msgstr ""
+
+msgid "SecurityOrchestration|Approval settings might be affected by rules in the following policies:"
+msgstr ""
+
+msgid "SecurityOrchestration|Approval settings might be affected by the rules in policy %{policyName} if the policy changes from warn mode to strictly enforced."
+msgstr ""
+
+msgid "SecurityOrchestration|Approval settings might be affected by the rules in policy %{policyName}."
+msgstr ""
 
 msgid "SecurityOrchestration|Are you sure you want to change the compliance and security policy group?"
 msgstr ""
@@ -61580,6 +61598,9 @@ msgid "SecurityOrchestration|If any scanner finds a %{strongStart}newly detected
 msgstr "Если любой сканер обнаружит %{strongStart}новую критическую уязвимость%{strongEnd} в открытом %{strongStart}запросе на слияние%{strongEnd}, нацеленном на основную ветку, то %{strongStart}требовать два одобрения от любых двух участников%{strongEnd} команды по безопасности приложения."
 
 msgid "SecurityOrchestration|If any scanner finds a %{strongStart}vulnerability%{strongEnd} that was %{strongStart}previously detected but no longer found%{strongEnd} in a subsequent scan, then automatically %{strongStart}set the status to Resolved%{strongEnd}."
+msgstr ""
+
+msgid "SecurityOrchestration|If vulnerabilities are automatically dismissed when found under following criteria:"
 msgstr ""
 
 msgid "SecurityOrchestration|In each pipeline, a %{boldStart}maximum of 1000%{boldEnd} vulnerabilities that are %{italicStart}no longer detected%{italicEnd} will be set to status %{italicStart}Resolved%{italicEnd} until all have been auto-resolved."
@@ -62027,6 +62048,9 @@ msgstr ""
 msgid "SecurityOrchestration|Select bypass reasons"
 msgstr ""
 
+msgid "SecurityOrchestration|Select criteria"
+msgstr ""
+
 msgid "SecurityOrchestration|Select date"
 msgstr ""
 
@@ -62408,6 +62432,9 @@ msgstr ""
 msgid "SecurityOrchestration|You can add a maximum of %{rulesCount} %{rules}."
 msgstr ""
 
+msgid "SecurityOrchestration|You can add a maximum of 3 criteria."
+msgstr ""
+
 msgid "SecurityOrchestration|You can select this option only once."
 msgstr ""
 
@@ -62543,6 +62570,9 @@ msgstr "по умолчанию"
 msgid "SecurityOrchestration|denylist"
 msgstr ""
 
+msgid "SecurityOrchestration|directory"
+msgstr ""
+
 msgid "SecurityOrchestration|except for:"
 msgstr ""
 
@@ -62561,6 +62591,9 @@ msgstr ""
 msgid "SecurityOrchestration|exceptions: %{exceptions}"
 msgstr "исключения: %{exceptions}"
 
+msgid "SecurityOrchestration|file path"
+msgstr ""
+
 msgid "SecurityOrchestration|for %{branchType}"
 msgstr ""
 
@@ -62575,6 +62608,9 @@ msgstr "доступно исправление"
 
 msgid "SecurityOrchestration|have no fix available"
 msgstr "исправление недоступно"
+
+msgid "SecurityOrchestration|identifier"
+msgstr ""
 
 msgid "SecurityOrchestration|in timezone %{timezone}"
 msgstr ""
@@ -63768,9 +63804,6 @@ msgstr ""
 
 msgid "Send a single email notification to Owners and Maintainers for new alerts."
 msgstr ""
-
-msgid "Send email"
-msgstr "Отправить электронное письмо"
 
 msgid "Send email in multipart format (HTML and plain text). Uncheck to send email messages in plain text only."
 msgstr "Отправлять электронные письма в составном формате (HTML и обычный текст). Снимите флажок, чтобы отправлять письма только в обычном тексте."
@@ -68601,9 +68634,6 @@ msgstr ""
 msgid "The subdomain setting."
 msgstr ""
 
-msgid "The subject will be used as the title of the new %{name}, and the message will be the description. %{quickActionsLinkStart}Quick actions%{quickActionsLinkEnd} and styling with %{markdownLinkStart}Markdown%{markdownLinkEnd} are supported."
-msgstr ""
-
 msgid "The tag name can't be changed for an existing release."
 msgstr ""
 
@@ -69003,9 +69033,6 @@ msgstr "Произошла ошибка при обновлении настро
 msgid "There was an error updating your show drafts preference."
 msgstr ""
 
-msgid "There was an error when reseting email token."
-msgstr "При сбросе токена электронной почты произошла ошибка."
-
 msgid "There was an error when subscribing to this label."
 msgstr "При подписке на эту метку произошла ошибка."
 
@@ -69371,9 +69398,6 @@ msgstr "Это отложенное задание, которое будет в
 
 msgid "This is a list of devices that have logged into your account. Revoke any sessions that you do not recognize."
 msgstr "Это список устройств, которые вошли в вашу учётную запись. Отмените доступ для любых сессий, которые вам не знакомы."
-
-msgid "This is a private email address %{helpIcon} generated just for you. Anyone who has it can create issues or merge requests as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}."
-msgstr "Это приватная электронная почта %{helpIcon}, созданная специально для вас. Любой, кто её получит, сможет создавать обсуждения или запросы на слияние от вашего имени. Если это произойдёт, %{resetLinkStart}сбросьте этот токен%{resetLinkEnd}."
 
 msgid "This is a security log of authentication events involving your account."
 msgstr "Это журнал безопасности событий аутентификации, связанных с вашей учетной записью."
@@ -74573,6 +74597,12 @@ msgstr ""
 msgid "VirtualRegistry|Cache cleanup completed for %{group_name}"
 msgstr ""
 
+msgid "VirtualRegistry|Cache cleanup disabled. Next run is not scheduled."
+msgstr ""
+
+msgid "VirtualRegistry|Cache cleanup enabled. Next run scheduled for %{nextRun}."
+msgstr ""
+
 msgid "VirtualRegistry|Cache cleanup failed for %{group_name}"
 msgstr ""
 
@@ -74900,6 +74930,9 @@ msgstr "Исходные реестры"
 
 msgid "VirtualRegistry|Use the arrow buttons to reorder upstreams. Artifacts are resolved from top to bottom."
 msgstr "Используйте кнопки со стрелками, чтобы изменить порядок источников. Артефакты ищутся сверху вниз."
+
+msgid "VirtualRegistry|Used by registries"
+msgstr ""
 
 msgid "VirtualRegistry|Username (optional)"
 msgstr "Имя пользователя (необязательно)"
@@ -75595,6 +75628,9 @@ msgstr ""
 msgid "Vulnerability|Namespace:"
 msgstr ""
 
+msgid "Vulnerability|Policy violation detected"
+msgstr ""
+
 msgid "Vulnerability|Possible FP"
 msgstr ""
 
@@ -75893,6 +75929,9 @@ msgid "WebAuthn device deleted"
 msgstr ""
 
 msgid "WebAuthn device registered"
+msgstr ""
+
+msgid "WebAuthn device successfully authenticated."
 msgstr ""
 
 msgid "WebAuthn devices"
@@ -78091,6 +78130,9 @@ msgstr "Напоминание"
 msgid "WorkItem|Toggle details"
 msgstr ""
 
+msgid "WorkItem|Track bugs, plan features, and organize your efforts with work items"
+msgstr ""
+
 msgid "WorkItem|Triage"
 msgstr ""
 
@@ -78152,6 +78194,9 @@ msgid "WorkItem|Use for items that have been completed. Applying a done status w
 msgstr ""
 
 msgid "WorkItem|Use for planned work that is not actively being worked on."
+msgstr ""
+
+msgid "WorkItem|Use work items (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project."
 msgstr ""
 
 msgid "WorkItem|View current version"
@@ -78814,9 +78859,6 @@ msgstr "Вы можете посмотреть свои токены или со
 
 msgid "You can create a new %{link}."
 msgstr ""
-
-msgid "You can create a new %{name} inside this project by sending an email to the following email address:"
-msgstr "Вы можете создать %{name} в этом проекте, отправив письмо на следующий адрес электронной почты:"
 
 msgid "You can create a new SSH key by visiting %{link}"
 msgstr ""
@@ -79581,9 +79623,6 @@ msgstr "Ваша версия GitLab"
 msgid "Your Groups"
 msgstr "Ваши группы"
 
-msgid "Your Passkey did not send a valid JSON response."
-msgstr ""
-
 msgid "Your Personal Access Token was revoked"
 msgstr "Ваш личный токен доступа был отозван"
 
@@ -79911,6 +79950,9 @@ msgid "Your update failed. You must upload a file with the same file name when d
 msgstr "Попытка обновления не удалась. Вы должны загрузить файл с тем же именем, перетаскивая его на существующий дизайн."
 
 msgid "Your username is %{username}."
+msgstr ""
+
+msgid "Your webauthn device did not send a valid JSON response."
 msgstr ""
 
 msgid "Your work"
@@ -82218,6 +82260,9 @@ msgstr ""
 msgid "read-only"
 msgstr "только для чтения"
 
+msgid "recover"
+msgstr ""
+
 msgid "register"
 msgstr ""
 
@@ -82349,9 +82394,6 @@ msgstr ""
 
 msgid "service accounts"
 msgstr "учётные записи служб"
-
-msgid "setting up passkeys"
-msgstr ""
 
 msgid "severity|Blocker"
 msgstr "Блокирующий"

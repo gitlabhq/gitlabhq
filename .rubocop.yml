@@ -1505,3 +1505,6 @@ Gitlab/NoHelpersInPresenters:
 
 Gitlab/PreventOrganizationFirst:
   Enabled: true
+
+Gitlab/AvoidDefaultOrganization:
+  Enabled: true

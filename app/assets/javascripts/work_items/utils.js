@@ -509,3 +509,20 @@ export function trackCrudCollapse(action) {
 
   Tracking.event(category, action);
 }
+
+const LAST_USED_WORK_ITEM_TYPE_PREFIX = 'freq-wi-type';
+
+export function setLastUsedWorkItemTypeIdForNamespace(workItemTypeId, namespaceFullPath) {
+  if (AccessorUtilities.canUseLocalStorage()) {
+    const storageKey = `${LAST_USED_WORK_ITEM_TYPE_PREFIX}:${namespaceFullPath}`;
+    localStorage.setItem(storageKey, workItemTypeId.toString());
+  }
+}
+
+export function getLastUsedWorkItemTypeIdForNamespace(namespaceFullPath) {
+  if (AccessorUtilities.canUseLocalStorage()) {
+    const storageKey = `${LAST_USED_WORK_ITEM_TYPE_PREFIX}:${namespaceFullPath}`;
+    return localStorage.getItem(storageKey);
+  }
+  return null;
+}

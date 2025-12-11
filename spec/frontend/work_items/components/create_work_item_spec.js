@@ -1194,4 +1194,37 @@ describe('Create work item component', () => {
       });
     });
   });
+
+  describe('last used work item type persistence', () => {
+    describe('when the form is submitted', () => {
+      it('stores the last used work item type against the selected namespace on submit', async () => {
+        createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE } });
+        await waitForPromises();
+        await updateWorkItemTitle();
+        await submitCreateForm();
+
+        expect(localStorage.setItem).toHaveBeenCalledWith(
+          'freq-wi-type:full-path',
+          'gid://gitlab/WorkItems::Type/1',
+        );
+      });
+    });
+    describe('loading the last used work item type', () => {
+      beforeEach(async () => {
+        createComponent({
+          props: { isGroup: true },
+          provide: { workItemPlanningViewEnabled: true, hasEpicsFeature: true },
+        });
+        await waitForPromises();
+      });
+      it('when the form loads', () => {
+        expect(localStorage.getItem).toHaveBeenCalledWith('freq-wi-type:full-path');
+      });
+      it('when selecting a different namespace', async () => {
+        findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
+        await waitForPromises();
+        expect(localStorage.getItem).toHaveBeenCalledWith('freq-wi-type:other-namespace/path');
+      });
+    });
+  });
 });

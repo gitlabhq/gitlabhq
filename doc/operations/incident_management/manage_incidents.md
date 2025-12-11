@@ -42,7 +42,7 @@ To add an incident to an [iteration](../../user/group/iterations/_index.md):
 1. From the dropdown list, select the iteration to add this incident to.
 1. Select any area outside the dropdown list.
 
-Alternatively, you can use the `/iteration` [quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics).
+Alternatively, you can use the [`/iteration` quick action](../../user/project/quick_actions.md#iteration).
 
 ### From the Incidents page
 

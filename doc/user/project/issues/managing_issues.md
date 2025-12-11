@@ -616,11 +616,11 @@ To promote an issue to an epic:
 1. From the **Type** dropdown list select **Epic**.
 1. Select **Change type**.
 
-Alternatively, you can use the `/promote_to Epic` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
+Alternatively, you can use the [`/promote_to Epic` quick action](../quick_actions.md#promote_to).
 
 ### Promote an issue to an incident
 
-You can use the `/promote_to Incident` [quick action](../quick_actions.md) to promote the issue to an [incident](../../../operations/incident_management/incidents.md).
+You can use the [`/promote_to Incident` quick action](../quick_actions.md#promote_to) to promote the issue to an [incident](../../../operations/incident_management/incidents.md).
 
 ## Add an issue to an iteration
 
@@ -641,7 +641,7 @@ To add an issue to an [iteration](../../group/iterations/_index.md):
 
 To add an issue to an iteration, you can also:
 
-- Use the `/iteration` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
+- Use the [`/iteration` quick action](../quick_actions.md#iteration).
 - Drag an issue into an iteration list in a board.
 - Bulk edit issues from the issues list.
 
@@ -913,8 +913,8 @@ You can see the issue's health status in:
 After an issue is closed, its health status can't be edited and the **Edit** button becomes disabled
 until the issue is reopened.
 
-You can also set and clear health statuses using the `/health_status` and `/clear_health_status`
-[quick actions](../quick_actions.md#issues-merge-requests-and-epics).
+You can also set and clear health statuses using the [`/health_status`](../quick_actions.md#health_status) and [`/clear_health_status`](../quick_actions.md#clear_health_status)
+quick actions.
 
 ## Status
 
@@ -964,7 +964,7 @@ You can view the issue's status in:
 - An epic's **Child items** section
 - Cards on issue boards
 
-You can also set the status by using the `/status` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
+You can also set the status by using the [`/status` quick action](../quick_actions.md#status).
 
 ## Publish an issue
 
@@ -982,13 +982,13 @@ For more information, see [GitLab Status Page](../../../operations/incident_mana
 
 ## Issue-related quick actions
 
-You can also use [quick actions](../quick_actions.md#issues-merge-requests-and-epics) to manage issues.
+You can also use quick actions to manage issues.
 
 Some actions don't have corresponding UI buttons yet.
 You can do the following **only by using quick actions**:
 
-- [Add or remove a Zoom meeting](associate_zoom_meeting.md) (`/zoom` and `/remove_zoom`).
-- [Publish an issue](#publish-an-issue) (`/publish`).
-- Clone an issue to the same or another project (`/clone`).
-- Close an issue and mark as a duplicate of another issue (`/duplicate`).
-- Copy labels and milestone from another merge request or issue in the project (`/copy_metadata`).
+- [Add or remove a Zoom meeting](associate_zoom_meeting.md) ([`/zoom` and `/remove_zoom`](../quick_actions.md#zoom)).
+- [Publish an issue](#publish-an-issue) ([`/publish`](../quick_actions.md#publish)).
+- Clone an issue to the same or another project ([`/clone`](../quick_actions.md#clone)).
+- Close an issue and mark as a duplicate of another issue ([`/duplicate`](../quick_actions.md#duplicate)).
+- Copy labels and milestone from another merge request or issue in the project ([`/copy_metadata`](../quick_actions.md#copy_metadata)).

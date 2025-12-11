@@ -649,7 +649,7 @@ To change the health status of an epic:
 
 The epic's health status is updated.
 
-You can also set and clear health statuses using the `/health_status` and `/clear_health_status` [quick actions](../../project/quick_actions.md#issues-merge-requests-and-epics).
+You can also set and clear health statuses using the [`/health_status`](../../project/quick_actions.md#health_status) and [`/clear_health_status`](../../project/quick_actions.md#clear_health_status) quick actions.
 
 ### Add an issue to an epic
 

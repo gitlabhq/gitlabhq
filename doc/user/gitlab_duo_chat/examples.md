@@ -13,6 +13,15 @@ title: Ask GitLab Duo Chat
 
 {{< /details >}}
 
+{{< collapsible title="Model information" >}}
+
+Unless stated otherwise, the default LLM for:
+
+- Chat (Agentic) is Anthropic [Claude Haiku 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-haiku-4-5).
+- Chat (Classic) is Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5).
+
+{{< /collapsible >}}
+
 {{< history >}}
 
 - Updated default LLM to Claude Sonnet 4.5 for Chat (Classic) and Chat (Agentic) in GitLab 18.6.
@@ -20,7 +29,7 @@ title: Ask GitLab Duo Chat
 
 {{< /history >}}
 
-GitLab Duo Chat helps you:
+GitLab Duo Chat can help you perform a variety of tasks, including:
 
 - Get explanations of code, errors, and GitLab features.
 - Generate or refactor code, write tests, and fix issues.
@@ -28,24 +37,12 @@ GitLab Duo Chat helps you:
 - Summarize issues, epics, and merge requests.
 - Resolve security vulnerabilities.
 
-The following examples provide more information on Chat capabilities.
+The examples on this page, including the [slash commands](#gitlab-duo-chat-slash-commands), are deliberately generic.
+You might receive more useful responses from Chat by asking questions that are specific to your current goal.
+For example, `How does the clean_missing_data function in data_cleaning.py decide which rows to drop?`.
 
-{{< alert type="note" >}}
-
-Unless stated otherwise, the default LLM for:
-
-- Chat (Agentic) is Anthropic [Claude Haiku 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-haiku-4-5).
-- Chat (Classic) is Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5).
-
-{{< /alert >}}
-
-For additional practical examples, see the [GitLab Duo use cases](../gitlab_duo/use_cases.md).
-
-{{< alert type="note" >}}
-
-The example questions on this page, including the [slash commands](#gitlab-duo-chat-slash-commands), are deliberately generic. You might receive more useful responses from Chat by asking questions that are specific to your current goal. For example, "How does the `clean_missing_data` function in `data_cleaning.py` decide which rows to drop?".
-
-{{< /alert >}}
+For additional practical examples, see the [GitLab Duo use cases](../gitlab_duo/use_cases.md)
+and [prompt examples](example_prompts.md).
 
 ## Ask about GitLab
 

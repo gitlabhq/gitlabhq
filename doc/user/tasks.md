@@ -240,7 +240,7 @@ To convert a task into another item type:
 1. Select the desired item type.
 1. If all conditions are met, select **Change type**.
 
-Alternatively, you can use the `/type` [quick action](project/quick_actions.md#work-items), followed
+Alternatively, you can use the [`/type` quick action](project/quick_actions.md#type), followed
 by `issue`, `objective` or `key result` in a comment.
 
 ## Remove a task from an issue
@@ -341,7 +341,7 @@ To change the status of a task:
 
 The task's status updates immediately.
 
-You can also set the status by using the `/status` [quick action](project/quick_actions.md#issues-merge-requests-and-epics).
+You can also set the status by using the [`/status` quick action](project/quick_actions.md#status).
 
 ## Assign users to a task
 

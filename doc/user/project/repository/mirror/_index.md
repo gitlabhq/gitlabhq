@@ -236,7 +236,7 @@ for you to check:
 - [Codeberg](https://docs.codeberg.org/security/ssh-fingerprint/)
 - [GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints)
 - [GitLab.com](../../../gitlab_com/_index.md#ssh-host-keys-fingerprints)
-- [Launchpad](https://help.launchpad.net/SSHFingerprints)
+- [Launchpad](https://documentation.ubuntu.com/launchpad/user/reference/ssh-fingerprints/)
 - [Savannah](https://savannah.gnu.org/maintenance/SshAccess/)
 - [SourceForge](https://sourceforge.net/p/forge/documentation/SSH%20Key%20Fingerprints/)
 

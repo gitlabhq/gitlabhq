@@ -364,7 +364,7 @@ To convert an OKR into another item type:
 1. Select the desired item type.
 1. If all conditions are met, select **Change type**.
 
-Alternatively, you can use the `/type` [quick action](project/quick_actions.md#work-items), followed
+Alternatively, you can use the [`/type` quick action](project/quick_actions.md#type), followed
 by `issue`, `task`, `objective` or `key result` in a comment.
 
 ## Copy objective or key result reference
@@ -549,26 +549,8 @@ Prerequisites:
   Scheduling a check-in reminder for child objectives has no effect.
   The setting from the top-level objective is inherited to all child objectives.
 
-To schedule a recurring reminder for an objective, in a new comment use the `/checkin_reminder <cadence>`
-[quick action](project/quick_actions.md#work-items).
-The options for `<cadence>` are:
-
-- `weekly`
-- `twice-monthly`
-- `monthly`
-- `never` (default)
-
-For example, to schedule a weekly check-in reminder, enter:
-
-```plaintext
-/checkin_reminder weekly
-```
-
-To turn off a check-in reminder, enter:
-
-```plaintext
-/checkin_reminder never
-```
+To schedule a recurring reminder for an objective, in a new comment use the
+[`/checkin_reminder` quick action](project/quick_actions.md#checkin_reminder).
 
 ## Set an objective as a parent
 
