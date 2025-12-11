@@ -83,7 +83,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     it_behaves_like 'including partition key for relation', :inputs
     it_behaves_like 'including partition key for relation', :trace_chunks
-    it_behaves_like 'including partition key for relation', :build_source
+    it_behaves_like 'including partition key for relation', :job_source
     it_behaves_like 'including partition key for relation', :job_artifacts
     it_behaves_like 'including partition key for relation', :job_annotations
     it_behaves_like 'including partition key for relation', :runner_manager_build

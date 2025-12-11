@@ -12,11 +12,11 @@ RSpec.describe Ci::BuildSourceFinder, feature_category: :continuous_integration 
   let_it_be(:middle_new_build) { create(:ci_build, pipeline: pipeline, name: "build4") }
   let_it_be(:new_build) { create(:ci_build, pipeline: pipeline, name: "build5") }
 
-  let_it_be(:old_build_source) { create(:ci_build_source, build: old_build, source: :scan_execution_policy) }
-  let_it_be(:old_middle_build_source) { create(:ci_build_source, build: old_middle_build, source: :trigger) }
-  let_it_be(:middle_build_source) { create(:ci_build_source, build: middle_build, source: :scan_execution_policy) }
-  let_it_be(:middle_new_build_source) { create(:ci_build_source, build: middle_new_build, source: :push) }
-  let_it_be(:new_build_source) { create(:ci_build_source, build: new_build, source: :scan_execution_policy) }
+  let_it_be(:old_build_source) { create(:ci_build_source, job: old_build, source: :scan_execution_policy) }
+  let_it_be(:old_middle_build_source) { create(:ci_build_source, job: old_middle_build, source: :trigger) }
+  let_it_be(:middle_build_source) { create(:ci_build_source, job: middle_build, source: :scan_execution_policy) }
+  let_it_be(:middle_new_build_source) { create(:ci_build_source, job: middle_new_build, source: :push) }
+  let_it_be(:new_build_source) { create(:ci_build_source, job: new_build, source: :scan_execution_policy) }
 
   describe "#execute" do
     let(:main_relation) { Ci::Build.all }

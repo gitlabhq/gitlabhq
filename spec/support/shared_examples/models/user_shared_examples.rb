@@ -121,7 +121,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       deploy_tokens
       design_management_action_uploads
       import_export_upload_uploads
-      ml_experiments
       merge_requests_merge_data
       namespace_uploads
       organization_detail_uploads
@@ -145,8 +144,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       cluster_agent_url_configurations
       incident_management_timeline_events
       merge_trains
-      ml_candidates
-      ml_models
       resource_iteration_events
       resource_link_events
       resource_milestone_events

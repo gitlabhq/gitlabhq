@@ -123,13 +123,12 @@ Secret push protection does not block a secret when:
 - You used the skip secret push protection option when you pushed
   the commits.
 - The secret is excluded from secret push protection.
-- The secret is in a path defined as an exclusion.
+- The secret is in a path defined as an [exclusion](../exclusions.md).
 
 Secret push protection does not check a file in a commit when:
 
 - The file is a binary file.
-- The file is larger than 1 MiB.
-- The diff patch for the file is larger than 1 MiB (if you use diff scanning).
+- The file or diff patch is larger than 1 MiB.
 - The file was renamed, deleted, or moved without changes to the content.
 - The content of the file is identical to the content of another file in the source code.
 - The file is contained in the initial push that created the repository.
@@ -192,11 +191,12 @@ False positives can significantly impact developer productivity and lead to secu
 
 To reduce false positives:
 
-- Configure exclusions strategically:
+- [Configure exclusions](../exclusions.md) strategically:
   - Create path-based exclusions for test directories, documentation, and third party dependencies.
   - Use pattern-based exclusions for known false positive patterns specific to your codebase.
   - Document your exclusion rules and review them regularly.
-- Create standards for placeholder values and test credentials.
+- Create standards for placeholder values and test credentials,
+  which should match your exclusion rules, but not the [default ruleset](../detected_secrets.md).
 - Monitor false positive rates and continue to adjust exclusions accordingly.
 
 ### Optimize performance
@@ -206,9 +206,8 @@ Large repositories or frequent pushes can have performance impacts.
 To optimize the performance of secret push protection:
 
 - Monitor push times and establish baseline metrics before deployment.
-- Use diff scanning to reduce the amount of content scanned on each push.
 - Consider file size limits for repositories with large binary assets.
-- Implement exclusions for directories that are unlikely to contain secrets.
+- [Implement exclusions](../exclusions.md#add-an-exclusion) for directories that are unlikely to contain secrets.
 
 ### Integration with existing workflows
 
@@ -311,11 +310,11 @@ Before GitLab 17.11, secret push protection scanned the contents of all modified
 This can cause a push to be unexpectedly blocked if a modified file contains a secret,
 even if the secret is not part of the diff.
 
-On GitLab 17.11 and earlier, enable the `spp_scan_diffs` feature flag
+On GitLab 17.10 and earlier, enable the `spp_scan_diffs` feature flag
 to ensure that only newly committed changes are scanned. To push a Web IDE change to a
 file that contains a secret, you need to additionally enable the
 `secret_checks_for_web_requests` feature flag.
 
 ### File was not scanned
 
-Some files are excluded from scanning. For details, see the coverage.
+Some files are excluded from scanning. For details, see the [coverage](#coverage).

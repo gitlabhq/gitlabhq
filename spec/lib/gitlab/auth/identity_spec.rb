@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system_access do
   let_it_be_with_reload(:primary_user) { create(:user, :service_account) }
-  let_it_be(:scoped_user) { create(:user) }
+  # We need to refind so that @composite_identity_enforced_override is reset
+  let_it_be_with_refind(:scoped_user) { create(:user) }
 
   describe '.link_from_oauth_token' do
     let_it_be(:token_scopes) { [:api, :"user:#{scoped_user.id}"] }

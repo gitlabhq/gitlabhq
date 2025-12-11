@@ -270,6 +270,7 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
     context 'when scoping by organization' do
       let_it_be(:different_organization) { create(:organization, name: "different org") }
       let_it_be(:different_group) { create(:group, organization: different_organization, name: 'a different public owner') }
+      let_it_be(:organization_user) { create(:organization_user, user: user, organization: different_organization) }
       let_it_be(:arguments) { { organization: different_organization } }
 
       before_all do

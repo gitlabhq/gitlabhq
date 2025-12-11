@@ -510,8 +510,7 @@ Reproducing a job failure in CI always helps with troubleshooting why and how a 
 
 ### Top slow tests
 
-We collect information about tests duration in [`rspec_profiling_stats`](https://gitlab.com/gitlab-org/rspec_profiling_stats) project. The data is showed using GitLab Pages in this
-[UI](https://gitlab-org.gitlab.io/rspec_profiling_stats/)
+We collect information about tests duration in ClickHouse database. The data is visualized using following [Grafana dashboard](https://dashboards.devex.gitlab.net/d/acv8mwl/test-file-runtime-overview).
 
 In this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/375983), we defined thresholds for tests duration that can act as a guide.
 

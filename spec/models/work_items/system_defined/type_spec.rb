@@ -361,6 +361,168 @@ RSpec.describe WorkItems::SystemDefined::Type, feature_category: :team_planning 
     end
   end
 
+  describe '#widget_definitions' do
+    let(:type) { build(:work_item_system_defined_type) } # Issue type
+
+    it 'returns only widget definitions associated with this type' do
+      expect(type.widget_definitions.map(&:work_item_type_id).uniq).to eq([type.id])
+    end
+  end
+
+  describe '#widgets' do
+    let(:type) { build(:work_item_system_defined_type) } # Issue type
+    let(:resource_parent) { build(:project) }
+
+    it 'returns a not empty array' do
+      widgets = type.widgets(resource_parent)
+
+      expect(widgets).to be_a(Array)
+      expect(widgets).not_to be_empty
+    end
+
+    it 'returns only widget definitions associated with this type' do
+      expect(type.widgets(resource_parent).map(&:work_item_type_id).uniq).to eq([type.id])
+    end
+
+    it 'accepts resource_parent parameter but does not use it' do
+      expect { type.widgets(resource_parent) }.not_to raise_error
+    end
+  end
+
+  describe '#widget_classes' do
+    let(:type) { build(:work_item_system_defined_type) } # Issue type
+    let(:resource_parent) { build(:project) }
+    let(:description_widget_class) { WorkItems::Widgets::Description }
+    let(:assignees_widget_class) { WorkItems::Widgets::Assignees }
+
+    it 'returns an array of widget classes' do
+      widget_classes = type.widget_classes(resource_parent)
+
+      expect(widget_classes).to include(description_widget_class, assignees_widget_class)
+    end
+  end
+
+  describe '#unavailable_widgets_on_conversion' do
+    let(:resource_parent) { nil }
+    let(:source_type) { build(:work_item_system_defined_type, :issue) }
+    let(:target_type) { build(:work_item_system_defined_type, :task) }
+
+    let(:widget_1) { instance_double(WorkItems::SystemDefined::WidgetDefinition, widget_type: :assignees) }
+    let(:widget_2) { instance_double(WorkItems::SystemDefined::WidgetDefinition, widget_type: :labels) }
+    let(:widget_3) { instance_double(WorkItems::SystemDefined::WidgetDefinition, widget_type: :description) }
+    let(:widget_4) { instance_double(WorkItems::SystemDefined::WidgetDefinition, widget_type: :milestone) }
+
+    before do
+      allow(source_type).to receive(:widgets).with(resource_parent).and_return(source_widgets)
+      allow(target_type).to receive(:widgets).with(resource_parent).and_return(target_widgets)
+    end
+
+    context 'when source has widgets that target does not have' do
+      let(:source_widgets) { [widget_1, widget_2, widget_3] }
+      let(:target_widgets) { [widget_1, widget_3] }
+
+      it 'returns the widgets unavailable in target type' do
+        result = source_type.unavailable_widgets_on_conversion(target_type, resource_parent)
+
+        expect(result).to contain_exactly(widget_2)
+      end
+    end
+
+    context 'when target has all source widgets' do
+      let(:source_widgets) { [widget_1, widget_2] }
+      let(:target_widgets) { [widget_1, widget_2, widget_3] }
+
+      it 'returns an empty array' do
+        result = source_type.unavailable_widgets_on_conversion(target_type, resource_parent)
+
+        expect(result).to be_empty
+      end
+    end
+
+    context 'when target has exactly the same widgets as source' do
+      let(:source_widgets) { [widget_1, widget_2] }
+      let(:target_widgets) { [widget_1, widget_2] }
+
+      it 'returns an empty array' do
+        result = source_type.unavailable_widgets_on_conversion(target_type, resource_parent)
+
+        expect(result).to be_empty
+      end
+    end
+
+    context 'when target has no common widgets with source' do
+      let(:source_widgets) { [widget_1, widget_2] }
+      let(:target_widgets) { [widget_3, widget_4] }
+
+      it 'returns all source widgets' do
+        result = source_type.unavailable_widgets_on_conversion(target_type, resource_parent)
+
+        expect(result).to contain_exactly(widget_1, widget_2)
+      end
+    end
+  end
+
+  describe '#supports_widget?' do
+    let(:type) { build(:work_item_system_defined_type, :task) }
+    let(:resource_parent) { build(:project) }
+
+    context 'when the widget class is supported' do
+      let(:supported_widget_class) { WorkItems::Widgets::Description }
+
+      it 'returns true' do
+        expect(type.supports_widget?(resource_parent, supported_widget_class)).to be true
+      end
+    end
+
+    context 'when the widget class is not supported' do
+      let(:unsupported_widget_class) { WorkItems::Widgets::EmailParticipants }
+
+      it 'returns false' do
+        expect(type.supports_widget?(resource_parent, unsupported_widget_class)).to be false
+      end
+    end
+  end
+
+  describe '#supports_assignee?' do
+    let(:type) { build(:work_item_system_defined_type) }
+    let(:resource_parent) { build(:project) }
+
+    subject { type.supports_assignee?(resource_parent) }
+
+    context 'when the type includes the Assignees widget' do
+      it { is_expected.to be true }
+    end
+
+    context 'when the type does not include the Assignees widget' do
+      before do
+        allow(type).to receive(:widget_classes).with(resource_parent)
+          .and_return([::WorkItems::Widgets::Description, ::WorkItems::Widgets::TimeTracking])
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#supports_time_tracking?' do
+    let(:type) { build(:work_item_system_defined_type) }
+    let(:resource_parent) { build(:project) }
+
+    subject { type.supports_time_tracking?(resource_parent) }
+
+    context 'when the type includes the TimeTracking widget' do
+      it { is_expected.to be true }
+    end
+
+    context 'when the type does not include the TimeTracking widget' do
+      before do
+        allow(type).to receive(:widget_classes).with(resource_parent)
+          .and_return([::WorkItems::Widgets::Description, ::WorkItems::Widgets::Assignees])
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
   describe 'hierarchy methods' do
     let(:issue_type) { described_class.find_by_type(:issue) }
     let(:task_type) { described_class.find_by_type(:task) }
@@ -423,14 +585,6 @@ RSpec.describe WorkItems::SystemDefined::Type, feature_category: :team_planning 
         let(:project) { build(:project) }
         let(:user) { build(:user) }
 
-        it 'calls authorized_types with correct parameters' do
-          expect(issue_type).to receive(:authorized_types)
-            .with(anything, project, :child)
-            .and_call_original
-
-          issue_type.allowed_child_types(authorize: true, resource_parent: project)
-        end
-
         it 'returns authorized child types' do
           children = issue_type.allowed_child_types(
             authorize: true,
@@ -459,14 +613,6 @@ RSpec.describe WorkItems::SystemDefined::Type, feature_category: :team_planning 
 
       context 'when authorize is true' do
         let(:project) { build(:project) }
-
-        it 'calls authorized_types with correct parameters' do
-          expect(task_type).to receive(:authorized_types)
-            .with(anything, project, :parent)
-            .and_call_original
-
-          task_type.allowed_parent_types(authorize: true, resource_parent: project)
-        end
 
         it 'returns authorized parent types' do
           parents = task_type.allowed_parent_types(

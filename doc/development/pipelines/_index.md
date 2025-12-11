@@ -645,6 +645,8 @@ test causing the failure:
 
 If these commands return `undercover: ✅ No coverage is missing in latest changes` then you can apply `pipeline:skip-undercoverage` to bypass pipeline failures.
 
+If you have to use `pipeline:skip-undercoverage` to bypass unrelated pipeline failures, please open a follow up MR to add the required test coverage. This leaves the system in a better state for others.
+
 ### `pajamas_adoption` job
 
 {{< history >}}

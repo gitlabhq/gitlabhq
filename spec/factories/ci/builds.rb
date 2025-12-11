@@ -68,9 +68,9 @@ FactoryBot.define do
       end
     end
 
-    trait :with_build_source do
+    trait :with_job_source do
       after(:create) do |build, _|
-        create(:ci_build_source, build: build)
+        create(:ci_build_source, job: build)
       end
     end
 

@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module FileStoreMounter
-  ALLOWED_FILE_FIELDS = %i[file signed_file].freeze
+  ALLOWED_FILE_FIELDS = %i[
+    file
+    signed_file
+    predicate_file
+  ].freeze
 
   extend ActiveSupport::Concern
 

@@ -152,4 +152,25 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
     it_behaves_like 'an erroneous service response without side effects',
       message: 'Unauthorized to create a container registry protection rule'
   end
+
+  context 'when tracking internal events' do
+    it 'tracks the create_container_repository_protection_rule event' do
+      expect { service_execute }
+        .to trigger_internal_events('create_container_repository_protection_rule')
+        .with(
+          project: project,
+          namespace: project.namespace,
+          user: current_user
+        )
+        .once
+    end
+
+    context 'when rule creation fails' do
+      let(:params) { super().merge(repository_path_pattern: 'invalid!') }
+
+      it 'does not track the event' do
+        expect { service_execute }.not_to trigger_internal_events('create_container_repository_protection_rule')
+      end
+    end
+  end
 end

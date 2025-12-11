@@ -27391,6 +27391,7 @@ ALTER SEQUENCE shards_id_seq OWNED BY shards.id;
 CREATE TABLE slack_api_scopes (
     id bigint NOT NULL,
     name text NOT NULL,
+    organization_id bigint,
     CONSTRAINT check_738678187a CHECK ((char_length(name) <= 100))
 );
 
@@ -27434,7 +27435,10 @@ ALTER SEQUENCE slack_integrations_id_seq OWNED BY slack_integrations.id;
 CREATE TABLE slack_integrations_scopes (
     id bigint NOT NULL,
     slack_api_scope_id bigint NOT NULL,
-    slack_integration_id bigint NOT NULL
+    slack_integration_id bigint NOT NULL,
+    project_id bigint,
+    group_id bigint,
+    organization_id bigint
 );
 
 CREATE SEQUENCE slack_integrations_scopes_id_seq
@@ -27460,9 +27464,12 @@ CREATE TABLE slsa_attestations (
     file text,
     file_store smallint DEFAULT 1,
     iid integer,
+    predicate_file text,
+    predicate_file_store smallint DEFAULT 1 NOT NULL,
     CONSTRAINT check_3575e9121e CHECK ((char_length(file) <= 255)),
     CONSTRAINT check_dec11b603a CHECK ((char_length(subject_digest) <= 255)),
-    CONSTRAINT check_ea0d61030d CHECK ((char_length(predicate_type) <= 255))
+    CONSTRAINT check_ea0d61030d CHECK ((char_length(predicate_type) <= 255)),
+    CONSTRAINT check_ed09edea1d CHECK ((char_length(predicate_file) <= 1024))
 );
 
 CREATE SEQUENCE slsa_attestations_id_seq
@@ -35082,8 +35089,14 @@ ALTER TABLE merge_request_context_commit_diff_files
 ALTER TABLE system_note_metadata
     ADD CONSTRAINT check_9135b6f0b6 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE slack_api_scopes
+    ADD CONSTRAINT check_930d89be0d CHECK ((organization_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE related_epic_links
     ADD CONSTRAINT check_a6d9d7c276 CHECK ((issue_link_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE slack_integrations_scopes
+    ADD CONSTRAINT check_c5ff08a699 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;
@@ -40251,6 +40264,8 @@ CREATE UNIQUE INDEX idx_unique_ai_code_repository_connection_namespace_id ON ONL
 
 CREATE UNIQUE INDEX idx_unique_ai_code_repository_connection_project_id ON ONLY p_ai_active_context_code_repositories USING btree (connection_id, project_id);
 
+CREATE UNIQUE INDEX idx_unique_slack_api_scopes_on_organization_id_and_name ON slack_api_scopes USING btree (organization_id, name);
+
 CREATE UNIQUE INDEX idx_usages_on_cmpt_used_by_project_cmpt_and_last_used_date ON catalog_resource_component_last_usages USING btree (component_id, used_by_project_id, last_used_date);
 
 CREATE INDEX idx_user_add_on_assignment_versions_on_item_id ON subscription_user_add_on_assignment_versions USING btree (item_id);
@@ -44405,8 +44420,6 @@ CREATE UNIQUE INDEX index_shards_on_name ON shards USING btree (name);
 
 CREATE UNIQUE INDEX index_site_profile_secret_variables_on_site_profile_id_and_key ON dast_site_profile_secret_variables USING btree (dast_site_profile_id, key);
 
-CREATE UNIQUE INDEX index_slack_api_scopes_on_name ON slack_api_scopes USING btree (name);
-
 CREATE UNIQUE INDEX index_slack_api_scopes_on_name_and_integration ON slack_integrations_scopes USING btree (slack_integration_id, slack_api_scope_id);
 
 CREATE INDEX index_slack_integrations_on_group_id ON slack_integrations USING btree (group_id);
@@ -44418,6 +44431,12 @@ CREATE INDEX index_slack_integrations_on_organization_id ON slack_integrations U
 CREATE INDEX index_slack_integrations_on_project_id ON slack_integrations USING btree (project_id);
 
 CREATE UNIQUE INDEX index_slack_integrations_on_team_id_and_alias ON slack_integrations USING btree (team_id, alias);
+
+CREATE INDEX index_slack_integrations_scopes_on_group_id ON slack_integrations_scopes USING btree (group_id);
+
+CREATE INDEX index_slack_integrations_scopes_on_organization_id ON slack_integrations_scopes USING btree (organization_id);
+
+CREATE INDEX index_slack_integrations_scopes_on_project_id ON slack_integrations_scopes USING btree (project_id);
 
 CREATE INDEX index_slsa_attestations_on_build_id ON slsa_attestations USING btree (build_id);
 
@@ -50899,6 +50918,9 @@ ALTER TABLE ONLY duo_workflows_events
 ALTER TABLE ONLY routes
     ADD CONSTRAINT fk_679ff8213d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY slack_integrations_scopes
+    ADD CONSTRAINT fk_67e0ce7a40 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_67f2498cc9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -51640,6 +51662,9 @@ ALTER TABLE ONLY sbom_occurrences
 ALTER TABLE ONLY work_item_text_field_values
     ADD CONSTRAINT fk_b22fe079a2 FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY slack_integrations_scopes
+    ADD CONSTRAINT fk_b2353bd86b FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY enabled_foundational_flows
     ADD CONSTRAINT fk_b273edc28f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -51708,6 +51733,9 @@ ALTER TABLE ONLY compliance_management_frameworks
 
 ALTER TABLE ONLY ml_experiment_metadata
     ADD CONSTRAINT fk_b764e76c6c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY slack_integrations_scopes
+    ADD CONSTRAINT fk_b7bd6dc444 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_conan_package_references
     ADD CONSTRAINT fk_b7c05e1b1c FOREIGN KEY (recipe_revision_id) REFERENCES packages_conan_recipe_revisions(id) ON DELETE CASCADE;
@@ -52224,6 +52252,9 @@ ALTER TABLE ONLY events
 
 ALTER TABLE ONLY workspace_agentk_states
     ADD CONSTRAINT fk_eeddb6a618 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY slack_api_scopes
+    ADD CONSTRAINT fk_eee7de10f6 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY notes
     ADD CONSTRAINT fk_eef74d5cc8 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

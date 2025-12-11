@@ -8,12 +8,12 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
   let_it_be_with_reload(:user) { create(:user) }
   let_it_be_with_reload(:member) { create(:user) }
   let_it_be(:user_invited_by_id) { create(:user) }
-  let_it_be(:user_id) { member.id.to_s }
   let_it_be(:access_level) { Gitlab::Access::GUEST }
 
   let(:additional_params) { { invite_source: '_invite_source_' } }
   let(:params) { { user_id: user_id, access_level: access_level }.merge(additional_params) }
   let(:current_user) { user }
+  let(:user_id) { member.id.to_s }
 
   subject(:execute_service) { described_class.new(current_user, params.merge({ source: source })).execute }
 
@@ -340,6 +340,17 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
           user: user
         )
       end
+    end
+  end
+
+  context 'when inviting from a different organization' do
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:other_member) { create(:user, organization: other_organization) }
+    let(:user_id) { other_member.id.to_s }
+
+    it 'does not add the member' do
+      expect(execute_service[:status]).to eq(:error)
+      expect(source.users).not_to include other_member
     end
   end
 

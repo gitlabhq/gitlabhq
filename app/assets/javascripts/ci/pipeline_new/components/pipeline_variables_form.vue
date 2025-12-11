@@ -51,10 +51,6 @@ export default {
       required: false,
       default: () => ({}),
     },
-    pipelineVariables: {
-      type: Array,
-      required: true,
-    },
   },
   emits: ['validity-change', 'variables-updated'],
   data() {
@@ -122,14 +118,6 @@ export default {
 
       this.mergeParams(variables, CI_VARIABLE_TYPE_ENV_VAR, this.variableParams);
       this.mergeParams(variables, CI_VARIABLE_TYPE_FILE, this.fileParams);
-
-      const existingKeys = new Set(variables.map((v) => v.key));
-
-      this.pipelineVariables.forEach((variable) => {
-        if (!existingKeys.has(variable.key)) {
-          this.mergeParams(variables, variable.variableType, { [variable.key]: variable.value });
-        }
-      });
 
       this.currentRefVariables = variables;
     },

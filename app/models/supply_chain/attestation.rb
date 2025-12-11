@@ -29,8 +29,10 @@ module SupplyChain
     scope :with_iid, ->(iid) { where(iid: iid) }
 
     attribute :file_store, default: -> { AttestationUploader.default_store }
+    attribute :predicate_file_store, default: -> { AttestationUploader.default_store }
 
     mount_file_store_uploader AttestationUploader
+    mount_file_store_uploader AttestationUploader, file_field: :predicate_file
 
     enum :status, {
       success: 0,

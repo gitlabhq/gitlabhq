@@ -268,10 +268,9 @@ build-with-custom-certs:
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
   before_script:
-    - |
-      echo "-----BEGIN CERTIFICATE-----
-      ...
-      -----END CERTIFICATE-----" >> /etc/ssl/certs/ca-certificates.crt
+    - export SSL_CERT_FILE="$HOME/ca_chain.pem"
+    - cat /etc/ssl/certs/ca-certificates.crt > "$SSL_CERT_FILE"
+    - echo "$MY_CA_CERT" >> "$SSL_CERT_FILE"
     - mkdir -p ~/.docker
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > ~/.docker/config.json
   script:
@@ -283,7 +282,7 @@ build-with-custom-certs:
         --output type=image,name=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA,push=true
 ```
 
-In this example, replace the certificate placeholder with your actual certificate content.
+In this example, populate the `MY_CA_CERT` variable with the full contents of your CA certificate, including both the root and any intermediate certificates.
 
 ## Migrate from Kaniko to BuildKit
 

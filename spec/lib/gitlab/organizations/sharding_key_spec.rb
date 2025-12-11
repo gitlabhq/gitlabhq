@@ -312,7 +312,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "diff_note_positions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550693",
       'award_emoji' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/514604',
       "oauth_applications" => "https://gitlab.com/gitlab-org/gitlab/-/issues/579291",
-      "scim_oauth_access_tokens" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553107"
+      "scim_oauth_access_tokens" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553107",
+      "slack_integrations_scopes" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/583011",
+      "slack_api_scopes" => "https://gitlab.com/gitlab-org/gitlab/-/issues/583701"
     }
 
     columns_to_check = organization_id_columns.reject { |column| work_in_progress[column[0]] }

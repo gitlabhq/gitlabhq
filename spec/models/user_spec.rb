@@ -293,6 +293,9 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to have_many(:early_access_program_tracking_events).class_name('EarlyAccessProgram::TrackingEvent') }
     it { is_expected.to have_many(:protected_tag_create_access_levels).class_name('ProtectedTag::CreateAccessLevel').dependent(:delete_all) }
     it { is_expected.to have_many(:lfs_file_locks).dependent(:delete_all) }
+    it { is_expected.to have_many(:ml_candidates).class_name('Ml::Candidate').with_foreign_key(:user_id).inverse_of(:user).dependent(:nullify) }
+    it { is_expected.to have_many(:ml_experiments).class_name('Ml::Experiment').with_foreign_key(:user_id).inverse_of(:user).dependent(:nullify) }
+    it { is_expected.to have_many(:ml_models).class_name('Ml::Model').with_foreign_key(:user_id).inverse_of(:user).dependent(:nullify) }
 
     describe '#triggers' do
       let_it_be_with_refind(:user) { create(:user) }
@@ -2227,6 +2230,24 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       it 'returns empty relation when no match found' do
         expect(described_class.with_feed_token('nonexistent')).to be_empty
       end
+    end
+
+    describe '.member_of_organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:user) { create(:user, organization: other_organization) }
+
+      it 'includes the user' do
+        expect(described_class.member_of_organization(other_organization)).to contain_exactly(user)
+      end
+    end
+  end
+
+  describe '.member_of_organization?' do
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:user) { create(:user, organization: other_organization) }
+
+    it 'includes the user' do
+      expect(user.member_of_organization?(other_organization)).to eq(true)
     end
   end
 

@@ -6,6 +6,7 @@ RSpec.describe SupplyChain::Attestation, feature_category: :artifact_security do
   subject(:attestation) { create(:supply_chain_attestation) }
 
   let(:sample_file) { fixture_file('supply_chain/attestation.json') }
+  let(:sample_predicate_file) { fixture_file('supply_chain/predicate.json') }
 
   describe "validations" do
     it { is_expected.to belong_to(:project) }
@@ -19,8 +20,6 @@ RSpec.describe SupplyChain::Attestation, feature_category: :artifact_security do
     it { is_expected.to validate_uniqueness_of(:subject_digest).scoped_to([:project_id, :predicate_kind]) }
   end
 
-  it { is_expected.to be_a FileStoreMounter }
-
   describe 'default attributes' do
     before do
       allow(SupplyChain::AttestationUploader).to receive(:default_store).and_return(5)
@@ -28,11 +27,19 @@ RSpec.describe SupplyChain::Attestation, feature_category: :artifact_security do
 
     it { expect(described_class.new.file_store).to eq(5) }
     it { expect(described_class.new(file_store: 3).file_store).to eq(3) }
+    it { expect(described_class.new.predicate_file_store).to eq(5) }
+    it { expect(described_class.new(predicate_file_store: 3).predicate_file_store).to eq(3) }
   end
 
   describe '#file' do
     it 'returns the saved file' do
       expect(attestation.file.read).to eq(sample_file)
+    end
+  end
+
+  describe '#predicate_file' do
+    it 'returns the saved file' do
+      expect(attestation.predicate_file.read).to eq(sample_predicate_file)
     end
   end
 
@@ -83,6 +90,28 @@ RSpec.describe SupplyChain::Attestation, feature_category: :artifact_security do
       let(:scope) { :project }
       let(:scope_attrs) { { project: project } }
       let(:usage) { :slsa_attestations }
+    end
+  end
+
+  it_behaves_like 'object storable' do
+    let(:locally_stored) do
+      object = create(:supply_chain_attestation)
+
+      if object.file_store == ObjectStorage::Store::REMOTE
+        object.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::LOCAL)
+      end
+
+      object
+    end
+
+    let(:remotely_stored) do
+      object = create(:supply_chain_attestation)
+
+      if object.file_store == ObjectStorage::Store::LOCAL
+        object.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::REMOTE)
+      end
+
+      object
     end
   end
 end

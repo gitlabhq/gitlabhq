@@ -7537,6 +7537,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it { is_expected.to be_falsy }
     end
 
+    context 'when pipeline is creating' do
+      before do
+        allow(merge_request).to receive(:pipeline_creating?).and_return(true)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
     context 'when there is a pipeline' do
       before do
         merge_request.head_pipeline = build(:ci_pipeline, sha: merge_request.diff_head_sha, status: pipeline_status)

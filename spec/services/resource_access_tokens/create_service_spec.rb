@@ -6,7 +6,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
   subject { described_class.new(user, resource, params).execute }
 
   let_it_be(:organization) { create(:organization) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, organization: organization) }
   let_it_be(:project) { create(:project, :private, organization: organization) }
   let_it_be(:group) { create(:group, :private, organization: organization) }
   let_it_be(:params) { { expires_at: Date.today + 1.month } }

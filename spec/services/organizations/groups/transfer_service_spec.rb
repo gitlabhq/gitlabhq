@@ -694,7 +694,9 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
     context 'when users belong to different organizations' do
       let_it_be(:other_organization) { create(:organization) }
       let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
-      let_it_be_with_refind(:user2) { create(:user, organization: other_organization) }
+      let_it_be_with_refind(:user2) do
+        create(:user, organization: other_organization, organizations: [old_organization, other_organization])
+      end
 
       before_all do
         group.add_maintainer(user1)

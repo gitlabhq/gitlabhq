@@ -2599,6 +2599,8 @@ class MergeRequest < ApplicationRecord
   end
 
   def diff_head_pipeline_considered_in_progress?
+    return true if pipeline_creating?
+
     pipeline = diff_head_pipeline
     return false unless pipeline
 

@@ -15,15 +15,6 @@ class GitLabPatchedVue extends VueCompatOriginal {
       originalEl.parentNode.replaceChild(config.el, originalEl);
     }
   }
-
-  static use(plugin, ...options) {
-    if (plugin && typeof plugin.install === 'function') {
-      plugin.install(this, ...options);
-    } else if (typeof plugin === 'function') {
-      plugin(this, ...options);
-    }
-    return this;
-  }
 }
 
 GitLabPatchedVue.configureCompat({

@@ -71,10 +71,15 @@ module Integrations
         scopes = integration.slack_integration.slack_api_scopes
 
         items_to_insert = scopes.flat_map do |scope|
-          inserted_slack_ids.map do |record_id|
+          # TODO: Get sharding key values directly from insert query
+          # https://gitlab.com/gitlab-org/gitlab/-/work_items/582748
+          SlackIntegration.id_in(inserted_slack_ids).preloaded_integration.map do |slack_integration|
             {
-              'slack_integration_id' => record_id,
-              'slack_api_scope_id' => scope.id
+              'slack_integration_id' => slack_integration.id,
+              'slack_api_scope_id' => scope.id,
+              'project_id' => slack_integration.integration.project_id,
+              'group_id' => slack_integration.integration.group_id,
+              'organization_id' => slack_integration.integration.organization_id
             }
           end
         end

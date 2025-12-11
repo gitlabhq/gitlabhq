@@ -99,7 +99,7 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :organizati
     end
 
     describe 'organization groups' do
-      let_it_be_with_reload(:current_user) { create(:user, organization: organization, organizations: []) }
+      let_it_be_with_reload(:current_user) { create(:user, organization: organization, organizations: [organization]) }
 
       before_all do
         group.add_owner(current_user)

@@ -53,6 +53,8 @@
 
     = render_if_exists 'admin/application_settings/globally_allowed_ips', form: f
 
+    = render_if_exists 'admin/application_settings/display_gitlab_credits_user_data', form: f
+
     -# This is added for Jihu edition in https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/1112
     = render_if_exists 'admin/application_settings/disable_download_button', f: f
 

@@ -93,7 +93,7 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         queuing_entry runtime_metadata trace_metadata
         dast_site_profile dast_scanner_profile stage_id dast_site_profiles_build
         dast_scanner_profiles_build auto_canceled_by_partition_id execution_config_id execution_config
-        build_source id_value inputs error_job_messages
+        job_source id_value inputs error_job_messages
         job_definition job_definition_instance job_messages temp_job_definition interruptible].freeze
     end
 

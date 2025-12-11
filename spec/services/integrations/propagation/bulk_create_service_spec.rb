@@ -163,6 +163,16 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
           expect(created_integration.slack_integration.group_id).to be_nil
           expect(created_integration.slack_integration.organization_id).to be_nil
         end
+
+        it 'sets project_id on the new slack_integrations_scopes records' do
+          execute_service
+
+          slack_integration_scopes = created_integration.slack_integration.slack_integrations_scopes
+
+          expect(slack_integration_scopes).to all(
+            have_attributes(project_id: project.id, group_id: nil, organization_id: nil)
+          )
+        end
       end
     end
 
@@ -184,6 +194,16 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
           expect(created_integration.slack_integration.project_id).to be_nil
           expect(created_integration.slack_integration.group_id).to eq(group.id)
           expect(created_integration.slack_integration.organization_id).to be_nil
+        end
+
+        it 'sets group_id on the new slack_integrations_scopes records' do
+          execute_service
+
+          slack_integration_scopes = created_integration.slack_integration.slack_integrations_scopes
+
+          expect(slack_integration_scopes).to all(
+            have_attributes(project_id: nil, group_id: group.id, organization_id: nil)
+          )
         end
       end
     end

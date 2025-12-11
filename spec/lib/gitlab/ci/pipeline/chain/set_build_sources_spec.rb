@@ -68,8 +68,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::SetBuildSources, feature_category: :
       builds = command.pipeline_seed.stages.flat_map(&:statuses)
       expect(builds.size).to eq(4)
       builds.each do |build|
-        expect(build.build_source.project_id).to eq(project.id)
-        expect(build.build_source.source).to eq('push')
+        expect(build.job_source.project_id).to eq(project.id)
+        expect(build.job_source.source).to eq('push')
       end
     end
   end

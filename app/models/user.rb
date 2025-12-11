@@ -774,6 +774,10 @@ class User < ApplicationRecord
     where(feed_token: Array.wrap(token_values))
   end
 
+  scope :member_of_organization, ->(organization) do
+    joins(:organization_users).where(organization_users: { organization: organization })
+  end
+
   def self.supported_keyset_orderings
     {
       id: [:asc, :desc],
@@ -2461,11 +2465,13 @@ class User < ApplicationRecord
 
   def owns_organization?(organization)
     strong_memoize_with(:owns_organization, organization) do
-      break false unless organization
+      organization_membership_exists?(organization, :owner)
+    end
+  end
 
-      organization_id = organization.is_a?(Integer) ? organization : organization.id
-
-      organization_users.where(organization_id: organization_id).owner.exists?
+  def member_of_organization?(organization)
+    strong_memoize_with(:in_organization, organization) do
+      organization_membership_exists?(organization)
     end
   end
 
@@ -3113,6 +3119,15 @@ class User < ApplicationRecord
 
   def groups_allowing_project_creation
     Groups::AcceptingProjectCreationsFinder.new(self).execute
+  end
+
+  def organization_membership_exists?(organization, scope = nil)
+    return false unless organization
+
+    organization_id = organization.is_a?(Integer) ? organization : organization.id
+    query = organization_users.where(organization_id: organization_id)
+    query = query.try(scope) if scope
+    query.exists?
   end
 end
 

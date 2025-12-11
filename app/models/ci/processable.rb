@@ -48,11 +48,11 @@ module Ci
 
     belongs_to :resource_group, class_name: 'Ci::ResourceGroup', inverse_of: :processables
 
-    has_one :build_source,
-      ->(build) { in_partition(build) },
+    has_one :job_source,
+      ->(job) { in_partition(job) },
       class_name: 'Ci::BuildSource',
       foreign_key: :build_id,
-      inverse_of: :build,
+      inverse_of: :job,
       partition_foreign_key: :partition_id
 
     accepts_nested_attributes_for :needs
@@ -348,7 +348,7 @@ module Ci
     end
 
     def source
-      build_source&.source || pipeline.source
+      job_source&.source || pipeline.source
     end
     strong_memoize_attr :source
 

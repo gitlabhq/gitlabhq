@@ -1,0 +1,32 @@
+{
+  "_type": "https://in-toto.io/Statement/v0.1",
+  "predicateType": "https://slsa.dev/provenance/v1",
+  "subject": [
+    {
+      "name": "example.txt",
+      "digest": {
+        "sha256": "[digest]"
+      }
+    }
+  ],
+  "predicate": {
+    "buildDefinition": {
+      "buildType": "...",
+      "externalParameters": {
+        "entryPoint": "build_artifact"
+      },
+      "internalParameters": {
+        "architecture": "amd64",
+        "executor": "docker+machine",
+        "job": "1234567890"
+      }
+    },
+    "runDetails": {
+      "metadata": {
+        "invocationId": "aRrEdsfdfdRwWdfdfdecEnwdg",
+        "startedOn": "2024-11-26T09:37:18.000Z",
+        "finishedOn": "2024-11-26T09:37:18.000Z"
+      }
+    }
+  }
+}

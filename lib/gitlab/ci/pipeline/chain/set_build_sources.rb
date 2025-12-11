@@ -7,17 +7,16 @@ module Gitlab
         class SetBuildSources < Chain::Base
           def perform!
             command.pipeline_seed.stages.each do |stage|
-              stage.statuses.each do |build|
-                build_source = if pipeline_execution_policy_build?(build)
-                                 'pipeline_execution_policy'
-                               elsif scan_execution_policy_build?(build)
-                                 'scan_execution_policy'
-                               else
-                                 pipeline.source
-                               end
+              stage.statuses.each do |job|
+                job_source = if pipeline_execution_policy_build?(job)
+                               'pipeline_execution_policy'
+                             elsif scan_execution_policy_build?(job)
+                               'scan_execution_policy'
+                             else
+                               pipeline.source
+                             end
 
-                build.build_build_source(source: build_source,
-                  project_id: project.id)
+                job.build_job_source(source: job_source, project_id: project.id)
               end
             end
           end

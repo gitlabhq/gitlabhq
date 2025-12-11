@@ -5,7 +5,12 @@ module Members
     extend ActiveSupport::Concern
 
     def invite_search
-      users = Members::InviteUsersFinder.new(current_user, source, search: invite_search_params[:search]).execute
+      users = Members::InviteUsersFinder.new(
+        current_user,
+        source,
+        organization_id: Current.organization.id,
+        search: invite_search_params[:search]
+      ).execute
         .page(1)
         .per(invite_search_per_page)
 

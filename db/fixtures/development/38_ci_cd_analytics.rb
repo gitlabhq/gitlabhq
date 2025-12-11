@@ -36,10 +36,13 @@ class Gitlab::Seeder::CiAnalytics # rubocop:disable Style/ClassAndModuleChildren
   end
 
   def create_new_project
+    organization = admin.organization
+
     namespace = FactoryBot.create(
       :group,
       name: "CICD analytics Group #{suffix}",
-      path: "cicd-#{suffix}"
+      path: "cicd-#{suffix}",
+      organization: organization
     )
     project = FactoryBot.create(
       :project,
@@ -47,7 +50,8 @@ class Gitlab::Seeder::CiAnalytics # rubocop:disable Style/ClassAndModuleChildren
       name: "CICD analytics Project #{suffix}",
       path: "cicd-#{suffix}",
       creator: admin,
-      namespace: namespace
+      namespace: namespace,
+      organization: organization
     )
 
     namespace.add_owner(admin)

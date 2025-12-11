@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe FinderWithGroupHierarchy do
+RSpec.describe FinderWithGroupHierarchy, feature_category: :groups_and_projects do
   let(:finder_class) do
     Class.new do
       include FinderWithGroupHierarchy
@@ -35,7 +35,7 @@ RSpec.describe FinderWithGroupHierarchy do
     end
   end
 
-  let_it_be(:organization) { create(:organization) }
+  let_it_be(:organization) { create(:common_organization) }
   let_it_be(:parent_group) { create(:group, organization: organization) }
   let_it_be(:group) { create(:group, parent: parent_group, organization: organization) }
   let_it_be(:private_group) { create(:group, :private, organization: organization) }

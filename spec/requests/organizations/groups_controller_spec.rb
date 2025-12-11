@@ -115,7 +115,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       end
 
       context 'when the user is signed in' do
-        let_it_be(:user) { create(:user) }
+        let_it_be(:user) { create(:user, organization: organization) }
 
         before do
           sign_in(user)
@@ -233,7 +233,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       end
 
       context 'when the user is signed in' do
-        let_it_be(:user) { create(:user) }
+        let_it_be(:user) { create(:user, organization: organization) }
 
         before do
           sign_in(user)

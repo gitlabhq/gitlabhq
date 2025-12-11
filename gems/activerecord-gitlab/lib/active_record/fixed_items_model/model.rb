@@ -51,6 +51,14 @@ module ActiveRecord
       include ActiveModel::Attributes
 
       class_methods do
+        def auto_generate_ids!
+          @auto_generate_ids = true
+        end
+
+        def auto_generate_ids?
+          @auto_generate_ids || false
+        end
+
         def all
           load_items! if storage.empty?
 
@@ -97,7 +105,9 @@ module ActiveRecord
         def load_items!
           validate_items_definition!
 
-          raw_items.each do |item_definition|
+          items = auto_generate_ids? ? items_with_generated_ids : raw_items
+
+          items.each do |item_definition|
             item = new(item_definition)
             unless item.valid?
               raise "Static definition in ITEMS or .fixed_items is invalid! #{item.errors.full_messages.join(', ')}"
@@ -107,7 +117,15 @@ module ActiveRecord
           end
         end
 
+        def items_with_generated_ids
+          raw_items.each_with_index.map do |item_definition, index|
+            item_definition.merge(id: index + 1)
+          end
+        end
+
         def validate_items_definition!
+          return if auto_generate_ids?
+
           unique_ids = raw_items.map { |item| item[:id] }.uniq
 
           return if unique_ids.size == raw_items.size

@@ -49,6 +49,8 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
         end
 
         it 'raises an error' do
+          skip if TestStaticModel.auto_generate_ids?
+
           expect do
             TestStaticModel.all
           end.to raise_error("Static definition ITEMS or .fixed_items has 2 duplicated IDs!")
@@ -65,6 +67,8 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
         end
 
         it 'raises an error' do
+          skip if TestStaticModel.auto_generate_ids?
+
           expect do
             TestStaticModel.all
           end.to raise_error("Static definition in ITEMS or .fixed_items is invalid! Id must be greater than 0")
@@ -130,6 +134,8 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
       let(:new_item) { subclass.new(id: 2, name: 'foo') }
 
       it 'creates new storage instance for each subclass' do
+        skip if TestStaticModel.auto_generate_ids?
+
         subclass.storage[new_item.id] = new_item
 
         expect(subclass.find(2)).to eq(new_item)
@@ -449,6 +455,101 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
         RuntimeError,
         "No .fixed_items method or ITEMS constant defined for model TestStaticModel!"
       )
+    end
+  end
+
+  describe '.auto_generate_ids!' do
+    context 'when auto_generate_ids! is called' do
+      before do
+        stub_const('TestStaticModel', Class.new do
+          include ActiveRecord::FixedItemsModel::Model
+          auto_generate_ids!
+
+          attribute :name, :string
+          attribute :category
+        end)
+
+        stub_const('TestStaticModel::ITEMS', [
+          { name: 'Item 1', category: :a },
+          { name: 'Item 2', category: :b },
+          { name: 'Item 3', category: :a }
+        ].freeze)
+      end
+
+      it_behaves_like "fixed item model"
+
+      it 'sets auto_generate_ids? to true' do
+        expect(TestStaticModel.auto_generate_ids?).to be true
+      end
+
+      it 'generates sequential IDs starting from 1' do
+        expect(TestStaticModel.all.map(&:id)).to eq([1, 2, 3])
+      end
+
+      it 'does not require id in item definitions' do
+        expect(TestStaticModel.all).to all(have_attributes(id: be_present))
+      end
+
+      it 'skips validation for duplicate IDs' do
+        expect { TestStaticModel.all }.not_to raise_error
+      end
+    end
+
+    context 'when auto_generate_ids! is not called' do
+      before do
+        stub_const('TestStaticModel', Class.new do
+          include ActiveRecord::FixedItemsModel::Model
+
+          attribute :name, :string
+          attribute :category
+        end)
+
+        stub_const('TestStaticModel::ITEMS', [
+          { name: 'Item 1', category: :a },
+          { name: 'Item 2', category: :b },
+          { name: 'Item 3', category: :a }
+        ].freeze)
+      end
+
+      it 'returns false for auto_generate_ids?' do
+        expect(TestStaticModel.auto_generate_ids?).to be false
+      end
+
+      it 'raises and error when the IDs are not defined' do
+        expect do
+          TestStaticModel.all
+        end.to raise_error("Static definition ITEMS or .fixed_items has 2 duplicated IDs!")
+      end
+    end
+
+    context 'when items have explicit IDs that should be ignored' do
+      before do
+        stub_const('TestStaticModel', Class.new do
+          include ActiveRecord::FixedItemsModel::Model
+
+          auto_generate_ids!
+
+          attribute :name, :string
+          attribute :category
+        end)
+
+        stub_const('TestStaticModel::ITEMS', [
+          { id: 10, name: 'Item 1', category: :a },
+          { id: 30, name: 'Item 2', category: :b },
+          { name: 'Item 3', category: :a }
+        ].freeze)
+      end
+
+      it 'overrides explicit IDs with generated ones' do
+        expect(TestStaticModel.all.map(&:id)).to eq([1, 2, 3])
+      end
+
+      it 'ignores the original IDs in definitions' do
+        first_item = TestStaticModel.find(1)
+
+        expect(first_item.name).to eq('Item 1')
+        expect { TestStaticModel.find(10) }.to raise_error(ActiveRecord::FixedItemsModel::RecordNotFound)
+      end
     end
   end
 end

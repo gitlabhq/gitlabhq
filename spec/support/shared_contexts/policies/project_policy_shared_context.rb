@@ -12,7 +12,7 @@ RSpec.shared_context 'ProjectPolicy context' do
   let_it_be_with_reload(:inherited_reporter) { create(:user) }
   let_it_be_with_reload(:inherited_developer) { create(:user) }
   let_it_be_with_reload(:inherited_maintainer) { create(:user) }
-  let_it_be_with_reload(:organization) { create(:organization) }
+  let_it_be_with_reload(:organization) { create(:common_organization) }
   let_it_be_with_reload(:owner) { create(:user, namespace: create(:user_namespace, organization: organization)) }
   let_it_be_with_reload(:organization_owner) { create(:user, :organization_owner, organizations: [organization]) }
   let_it_be_with_reload(:admin) { create(:admin) }

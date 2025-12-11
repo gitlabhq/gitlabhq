@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :ci_build_source, class: 'Ci::BuildSource' do
-    build factory: :ci_build, scheduling_type: :dag
-    project_id { build.project_id }
+    job factory: :ci_build, scheduling_type: :dag
+    project_id { job.project_id }
     source { :scan_execution_policy }
   end
 end

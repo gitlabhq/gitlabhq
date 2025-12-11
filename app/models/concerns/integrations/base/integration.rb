@@ -579,6 +579,10 @@ module Integrations
         self.class.fields.dup
       end
 
+      def organization_id_from_parent
+        project&.organization_id || group&.organization_id || organization_id
+      end
+
       # Hook for integrations to configure associations after duplication.
       # Override in subclasses when associations need the parent context.
       def after_build_from_integration(new_integration)

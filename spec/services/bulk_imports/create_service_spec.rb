@@ -279,10 +279,6 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
         end
 
         context 'when different destination namespaces belonging to different organizations are provided' do
-          before do
-            second_org_group.add_owner(user)
-          end
-
           let_it_be(:second_organization) { create(:organization, path: 'second-org') }
           let_it_be(:second_org_group) { create(:group, organization: second_organization, path: 'second-org') }
 
@@ -305,6 +301,11 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             ]
           end
 
+          before do
+            create(:organization_user, user: user, organization: second_org_group.organization)
+            second_org_group.add_owner(user)
+          end
+
           it 'returns unsuccessful ServiceResponse' do
             result = subject.execute
 
@@ -315,10 +316,6 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
         end
 
         context 'when different destination namespaces belonging to the same organization are provided' do
-          before do
-            second_group.add_owner(user)
-          end
-
           let(:second_group) { create(:group, path: 'second-group', organization: fallback_organization) }
 
           let(:params) do
@@ -338,6 +335,11 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
                 migrate_projects: migrate_projects
               }
             ]
+          end
+
+          before do
+            create(:organization_user, user: user, organization: second_group.organization)
+            second_group.add_owner(user)
           end
 
           it 'returns success ServiceResponse' do

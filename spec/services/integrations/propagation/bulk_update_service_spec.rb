@@ -236,6 +236,25 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
       )
     end
 
+    it 'sets the correct sharding key on updated records' do
+      execute_service
+
+      expect(subgroup_integration.reload.slack_integration.slack_integrations_scopes).to contain_exactly(
+        have_attributes(
+          organization_id: nil,
+          group_id: subgroup.id,
+          project_id: nil
+        )
+      )
+      expect(integration.reload.slack_integration.slack_integrations_scopes).to contain_exactly(
+        have_attributes(
+          organization_id: nil,
+          group_id: nil,
+          project_id: project.id
+        )
+      )
+    end
+
     context 'when integration is disabled' do
       before do
         group_integration.update!(active: false)

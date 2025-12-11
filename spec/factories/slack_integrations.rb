@@ -21,12 +21,14 @@ FactoryBot.define do
       organization { association :common_organization }
       group { nil }
       project { nil }
+      integration { association :gitlab_slack_application_integration, :instance, slack_integration: instance }
     end
 
     trait :group do
       organization { nil }
       group
       project { nil }
+      integration { association :gitlab_slack_application_integration, :group, slack_integration: instance }
     end
 
     trait :project do

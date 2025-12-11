@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'GroupPolicy context' do
-  let_it_be(:organization) { create(:organization) }
+  let_it_be(:organization) { create(:common_organization) }
   let_it_be(:group, refind: true) do
     create(:group, :private, :owner_subgroup_creation_only, :allow_runner_registration_token,
       organization: organization)

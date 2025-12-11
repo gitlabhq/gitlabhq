@@ -1,0 +1,8 @@
+---
+migration_job_name: DeleteOrphanedSbomOccurrences
+description: Delete sbom_occurrences that have a project_id pointing to a non-existent project
+feature_category: dependency_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215040
+milestone: '18.7'
+queued_migration_version: 20251201000001
+finalized_by:

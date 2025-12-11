@@ -97,7 +97,7 @@ RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category:
                 expect(page).to have_content('Admin mode enabled')
               end
 
-              it 'invalidates the used code' do
+              it 'invalidates the used code', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/10589' do
                 expect { enter_code(codes.sample) }
                   .to change { user.reload.otp_backup_codes.size }.by(-1)
               end

@@ -44,6 +44,8 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
     let_it_be(:internal_user) { Users::Internal.alert_bot }
     let_it_be(:project_bot_user) { create(:user, :project_bot) }
     let_it_be(:service_account_user) { create(:user, :service_account) }
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:other_organization_user) { create(:user, organization: other_organization) }
 
     let(:searchable_users) do
       [

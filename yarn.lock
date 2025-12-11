@@ -1300,7 +1300,7 @@
   dependencies:
     "@types/json-schema" "^7.0.15"
 
-"@eslint/eslintrc@^3.2.0", "@eslint/eslintrc@^3.3.1":
+"@eslint/eslintrc@^3.3.1":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-3.3.1.tgz#e55f7f1dd400600dd066dbba349c4c0bac916964"
   integrity sha512-gtF186CXhIl1p4pJNGZw8Yc6RlshoePRvE0X91oPGb3vZ8pM3qOS9W9NGPat9LziaBV7XrJWGylNQXkGcnM3IQ==
@@ -1315,7 +1315,7 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@eslint/js@9.39.1", "@eslint/js@^9.15.0":
+"@eslint/js@9.39.1", "@eslint/js@^9.39.1":
   version "9.39.1"
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-9.39.1.tgz#0dd59c3a9f40e3f1882975c321470969243e0164"
   integrity sha512-S26Stp4zCy88tH94QbBv3XCuzRQiZ9yXofEILmglYTh/Ug/a9/umqvgFtYBAo3Lp0nsI/5/qH1CCrbdK3AP1Tw==
@@ -1460,10 +1460,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.152.0.tgz#7b46f31051d764cbc3c9b370d9113f4a79dc046b"
   integrity sha512-k26K51TXOw8vae3GdFe84iKWZsXjTlDFGuJmBo0okf1hU/8xPfD4p/rjjrJVlwmqyQKUZLLbt3C5KcFcX+kjFQ==
 
-"@gitlab/ui@126.3.2":
-  version "126.3.2"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-126.3.2.tgz#17526d0c010507861cb76b8b79779316cf630834"
-  integrity sha512-vVE+B6ZByFh+h/ScAGUhEts+0i68aHAHZRXFBhmWH4zoZWd6LOrO1m2NyljrHbNfsoL/iBQgq8DJO9P11e5hpA==
+"@gitlab/ui@126.3.3":
+  version "126.3.3"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-126.3.3.tgz#80abd7f4dcbfec83bea56cc6fdc827a2308ae320"
+  integrity sha512-E7IshcQf+Y9b4S50u92gzD8d5y/i0osYCtw8TIwPQAH449NLD9y39zpzM6R6q/u0oGlh/VwVISOuXDh9qyZG8w==
   dependencies:
     "@floating-ui/dom" "1.7.4"
     echarts "^5.6.0"

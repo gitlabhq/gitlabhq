@@ -38,6 +38,7 @@ class SlackIntegration < ApplicationRecord
     class_name: '::Integrations::SlackWorkspace::ApiScope',
     through: :slack_integrations_scopes
 
+  scope :preloaded_integration, -> { preload(:integration) }
   scope :with_bot, -> { where.not(bot_user_id: nil) }
   scope :by_team, ->(team_id) { where(team_id: team_id) }
   scope :by_integration, ->(integration_ids) { where(integration_id: integration_ids) }
@@ -76,7 +77,12 @@ class SlackIntegration < ApplicationRecord
   def authorized_scope_names=(names)
     names = Array.wrap(names).flat_map { |name| name.split(',') }.map(&:strip)
 
-    scopes = ::Integrations::SlackWorkspace::ApiScope.find_or_initialize_by_names(names)
+    # TODO: get `organization_id_from_parent` directly from SlackIntegration.
+    # The `organization_id_from_parent` should be moved to this model when sharding key is finalized
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/582748
+    scopes = ::Integrations::SlackWorkspace::ApiScope.find_or_initialize_by_names(
+      names, organization_id: integration.organization_id_from_parent
+    )
     self.slack_api_scopes = scopes
   end
 

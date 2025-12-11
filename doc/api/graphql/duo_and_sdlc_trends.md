@@ -31,11 +31,17 @@ Use the GraphQL API to retrieve and export GitLab Duo data.
 
 {{< /history >}}
 
-The `AiUsageData` endpoint provides raw event data. It exposes Code Suggestions-specific events through `codeSuggestionEvents` and all raw event data through `all`:
+The `AiUsageData` endpoint provides raw event data. It exposes Code Suggestions-specific events through `codeSuggestionEvents` and all raw event data through `all`.
 
 You can use this endpoint to import events into a BI tool or write scripts that aggregate the data, acceptance rates, and per-user metrics for all GitLab Duo events.
 
 Data is retained for three months for customers without ClickHouse installed. For customers with ClickHouse configured, there is currently no data retention policy.
+
+The `all` attribute is filterable by `startDate`, `endDate`, `events`, `userIds`, and standard pagination values.
+
+To see which events are being tracked, you can examine the events declared in the [`ai_tracking.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/tracking/ai_tracking.rb) file.
+
+### For projects and groups
 
 For example, to retrieve usage data for all Code Suggestions events for the `gitlab-org` group:
 
@@ -161,9 +167,75 @@ The query returns the following output:
 }
 ```
 
-The `all` attribute is filterable by `startDate`, `endDate`, `events`, `userIds`, and standard pagination values.
+### For instances
 
-To see which events are being tracked, you can examine the events declared in the [`ai_tracking.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/tracking/ai_tracking.rb) file.
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/582153) in GitLab 18.7. This feature is an [experiment](../../policy/development_stages_support.md).
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must be an administrator for the instance.
+
+For example, to retrieve all GitLab Duo usage events for the entire instance:
+
+```graphql
+query {
+  aiUsageData {
+    all(startDate: "2025-09-26", endDate: "2025-09-30") {
+      nodes {
+        event
+        timestamp
+        user {
+          username
+        }
+        extras
+      }
+    }
+  }
+}
+```
+
+The query returns the following output:
+
+```json
+{
+  "data": {
+    "aiUsageData": {
+      "all": {
+        "nodes": [
+          {
+            "event": "CODE_SUGGESTION_SHOWN_IN_IDE",
+            "timestamp": "2025-09-26T18:17:25Z",
+            "user": {
+              "username": "jasbourne"
+            },
+            "extras": {}
+          },
+          {
+            "event": "AGENT_PLATFORM_SESSION_STARTED",
+            "timestamp": "2025-09-26T18:13:44Z",
+            "user": {
+              "username": "johndoe"
+            },
+            "extras": {
+              "session_id": "abc123"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+```
 
 ## Retrieve AI user metrics
 

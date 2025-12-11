@@ -206,6 +206,16 @@ RSpec.describe UsersFinder do
           expect(users).not_to include(project_user)
         end
       end
+
+      context 'when filtering by organization' do
+        let_it_be(:other_organization) { create(:organization) }
+        let_it_be(:user) { create(:user, organizations: [other_organization]) }
+
+        it 'returns correct user' do
+          users = described_class.new(user, organization_id: other_organization.id).execute
+          expect(users).to contain_exactly(user)
+        end
+      end
     end
 
     shared_examples 'executes users finder as admin' do

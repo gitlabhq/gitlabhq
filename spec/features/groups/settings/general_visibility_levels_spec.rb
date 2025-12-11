@@ -171,7 +171,7 @@ RSpec.describe 'General settings visibility levels', :js, :aggregate_failures, f
 
   context 'with public organization' do
     let_it_be(:public_organization) { create(:organization, :public) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user) { create(:user, organization: public_organization) }
     let_it_be(:group) { create(:group, organization: public_organization, owners: user) }
 
     it 'shows each visibility level in correct field state' do
@@ -187,7 +187,7 @@ RSpec.describe 'General settings visibility levels', :js, :aggregate_failures, f
 
   context 'with private organization' do
     let_it_be(:private_organization) { create(:organization, :private) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user) { create(:user, organization: private_organization) }
     let_it_be(:group) { create(:group, :private, organization: private_organization, owners: user) }
 
     it 'shows each visibility level in correct field state' do

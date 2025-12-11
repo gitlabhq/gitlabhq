@@ -524,7 +524,7 @@ builds:
 - job_annotations
 - job_artifacts_annotations
 - project_mirror
-- build_source
+- job_source
 bridges:
 - user
 - pipeline
@@ -544,7 +544,7 @@ bridges:
 - trigger
 - downstream_pipeline
 - upstream_pipeline
-- build_source
+- job_source
 generic_commit_statuses:
 - user
 - pipeline

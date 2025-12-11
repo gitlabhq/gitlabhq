@@ -16,13 +16,13 @@ module Ci
     }.merge(::Enums::Ci::Pipeline.sources)
 
     query_constraints :build_id, :partition_id
-    partitionable scope: :build, partitioned: true
+    partitionable scope: :job, partitioned: true
 
-    belongs_to :build, ->(build_name) { in_partition(build_name) },
+    belongs_to :job, ->(job_name) { in_partition(job_name) },
       class_name: 'Ci::Processable', partition_foreign_key: :partition_id,
       foreign_key: :build_id,
-      inverse_of: :build_source
+      inverse_of: :job_source
 
-    validates :build, presence: true
+    validates :job, presence: true
   end
 end
