@@ -337,7 +337,7 @@ To close an epic:
 
 - In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}), then **Close epic**.
 
-You can also use the `/close` [quick action](../../project/quick_actions.md).
+You can also use the [`/close` quick action](../../project/quick_actions.md#close).
 
 ## Reopen a closed epic
 
@@ -356,7 +356,7 @@ Prerequisites:
 To do so, either:
 
 - In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) and then **Reopen epic**.
-- Use the `/reopen` [quick action](../../project/quick_actions.md).
+- Use the [`/reopen` quick action](../../project/quick_actions.md#reopen).
 
 You can also create an epic by
 [promoting an issue](../../project/issues/managing_issues.md#promote-an-issue-to-an-epic).
@@ -549,7 +549,7 @@ To make an epic confidential:
 - **When creating an epic**: Select the checkbox next to **Turn on confidentiality**.
 - **In an existing epic**: In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}). Then select **Turn on confidentiality**.
 
-You can also use the `/confidential` [quick action](../../project/quick_actions.md).
+You can also use the [`/confidential` quick action](../../project/quick_actions.md#confidential).
 
 ## Manage issues assigned to an epic
 

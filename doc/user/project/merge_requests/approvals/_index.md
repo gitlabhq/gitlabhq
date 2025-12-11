@@ -152,8 +152,8 @@ To [re-request a review](../reviews/_index.md#re-request-a-review), select the *
 
 Eligible approvers can approve merge requests in two ways:
 
-1. In the merge request widget, select **Approve**.
-1. Use the `/approve` [quick action](../../quick_actions.md) in a comment.
+- In the merge request widget, select **Approve**.
+- Use the [`/approve` quick action](../../quick_actions.md#approve) in a comment.
 
 Approved merge requests display a green check mark ({{< icon name="check-circle-filled" >}}) next to the user's name in the reviewer list.
 After a merge request receives the required approvals, it is ready to merge, unless it's blocked due to:

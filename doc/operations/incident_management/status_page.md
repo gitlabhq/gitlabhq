@@ -141,7 +141,7 @@ To publish an incident:
 
 1. Create an incident in the project you enabled the GitLab Status Page settings in.
 1. A [project or group owner](../../user/permissions.md) must use the
-   `/publish` [quick action](../../user/project/quick_actions.md) to publish the
+   [`/publish` quick action](../../user/project/quick_actions.md#publish) to publish the
    incident to the GitLab Status Page. [Confidential incidents](../../user/project/issues/confidential_issues.md) can't be published.
 
 A background worker publishes the incident onto the Status Page using the credentials

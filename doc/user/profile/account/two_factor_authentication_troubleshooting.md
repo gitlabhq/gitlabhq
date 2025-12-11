@@ -76,6 +76,24 @@ This issue occurs if you are using a non-default SSH key pair file path and atte
 
 To resolve this, [configure SSH to point to a different directory](../../ssh.md#configure-ssh-to-point-to-a-different-directory) using `ssh-agent`.
 
+## Email OTP troubleshooting
+
+### Didn't receive email verification code or code has expired
+
+Check your spam folder. On GitLab.com, emails are sent from `gitlab@mg.gitlab.com`
+and can be [verified as genuine](https://handbook.gitlab.com/handbook/security/corporate/systems/google/mail/verification/#verify-an-email-from-gitlabcom-is-genuine).
+
+If your code expires, you can request a new code. From the sign-in page, select **Resend code**.
+
+### Unable to access your email address
+
+If you cannot access your primary email address, try a verified secondary email address associated
+to your account. From the sign-in page, select **Send a code to another address associated with
+this account**.
+
+On GitLab Self-Managed, if you are unable to access your primary or secondary email addresses,
+contact your GitLab administrator.
+
 ## Recovery options and 2FA reset
 
 ### Use a recovery code

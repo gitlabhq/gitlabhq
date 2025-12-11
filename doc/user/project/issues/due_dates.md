@@ -79,10 +79,10 @@ To do this:
 
 ### With a quick action
 
-To set a due date from a [quick action](../quick_actions.md) in an issue's description or comment:
+To set a due date with quick actions in an issue's description or comment:
 
-- `/due <date>`: Set the due date. Examples of valid `<date>` include `in 2 days`, `this Friday`, and `December 31st`.
-- `/remove_due_date`: Remove an existing due date.
+- [`/due`](../quick_actions.md#due): Set the due date.
+- [`/remove_due_date`](../quick_actions.md#remove_due_date): Remove an existing due date.
 
 ## Export issue due dates to a calendar
 

@@ -51,5 +51,7 @@ Similarly to adding a Zoom meeting, you can remove it with a quick action:
 /remove_zoom
 ```
 
+You can also use the [`/remove_zoom` quick action](../quick_actions.md#remove_zoom).
+
 If you have at least the Reporter role,
 a system alert notifies you that the meeting URL was successfully removed.

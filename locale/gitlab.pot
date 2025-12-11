@@ -29778,40 +29778,22 @@ msgstr ""
 msgid "ForksDivergence|View merge request"
 msgstr ""
 
-msgid "FoundationalAgents| Managed by GitLab. When enabled here, these items will be enabled for every project. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
 msgid "FoundationalAgents|Agent"
-msgstr ""
-
-msgid "FoundationalAgents|Applied to all foundational agents unless explicitly configured."
 msgstr ""
 
 msgid "FoundationalAgents|Availability"
 msgstr ""
 
-msgid "FoundationalAgents|Availability Configuration"
+msgid "FoundationalAgents|Availability settings"
 msgstr ""
 
 msgid "FoundationalAgents|Control whether %{linkStart}GitLab Duo foundational agents%{linkEnd} are available."
 msgstr ""
 
-msgid "FoundationalAgents|Default Availability"
+msgid "FoundationalAgents|Control whether foundational agents are available."
 msgstr ""
 
-msgid "FoundationalAgents|Disabled"
-msgstr ""
-
-msgid "FoundationalAgents|Disabled (using default)"
-msgstr ""
-
-msgid "FoundationalAgents|Enabled"
-msgstr ""
-
-msgid "FoundationalAgents|Enabled (using default)"
-msgstr ""
-
-msgid "FoundationalAgents|Foundational Agents"
+msgid "FoundationalAgents|Default availability"
 msgstr ""
 
 msgid "FoundationalAgents|Foundational agents"
@@ -29823,10 +29805,25 @@ msgstr ""
 msgid "FoundationalAgents|Foundational agents are not available."
 msgstr ""
 
+msgid "FoundationalAgents|Off"
+msgstr ""
+
+msgid "FoundationalAgents|Off (default)"
+msgstr ""
+
 msgid "FoundationalAgents|Off by default"
 msgstr ""
 
+msgid "FoundationalAgents|On"
+msgstr ""
+
+msgid "FoundationalAgents|On (default)"
+msgstr ""
+
 msgid "FoundationalAgents|On by default"
+msgstr ""
+
+msgid "FoundationalAgents|When turned on, foundational agents are available for projects in this group. %{linkStart}What are foundational agents%{linkEnd}?"
 msgstr ""
 
 msgid "Framework id(s) %{missing_ids} are invalid."

@@ -161,7 +161,7 @@ To move an issue:
 1. Search for a project to move the issue to.
 1. Select **Move**.
 
-You can also use the `/move` [quick action](../quick_actions.md) in a comment or description.
+You can also use the [`/move` quick action](../quick_actions.md#move) in a comment or description.
 
 ### Moving child items when the parent issue is moved
 
@@ -319,7 +319,7 @@ To close an issue, you can either:
   1. Select **Plan** > **Issues**, then select your issue to view it.
   1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) and then **Close issue**.
 
-You can also use the `/close` [quick action](../quick_actions.md) in a comment or description.
+You can also use the [`/close` quick action](../quick_actions.md#close) in a comment or description.
 
 ### Reopen a closed issue
 
@@ -336,7 +336,7 @@ Prerequisites:
 To reopen a closed issue, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) and then **Reopen issue**.
 A reopened issue is no different from any other open issue.
 
-You can also use the `/reopen` [quick action](../quick_actions.md) in a comment or description.
+You can also use the [`/reopen` quick action](../quick_actions.md#reopen) in a comment or description.
 
 ### Closing issues automatically
 
@@ -975,8 +975,7 @@ You can also set the status by using the [`/status` quick action](../quick_actio
 
 {{< /details >}}
 
-If a status page application is associated with the project, you can use the `/publish`
-[quick action](../quick_actions.md) to publish the issue.
+If a status page application is associated with the project, you can use the [`/publish` quick action](../quick_actions.md#publish) to publish the issue.
 
 For more information, see [GitLab Status Page](../../../operations/incident_management/status_page.md).
 

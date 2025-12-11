@@ -30,7 +30,7 @@ You can flag a merge request as a draft in several ways:
   - Select **Mark as draft** below the **Title** field
 - Commenting in an existing merge request: Add the
   [`/draft` quick action](../quick_actions.md#draft)
-  in a comment. To mark a merge request as ready, use `/ready`.
+  in a comment. To mark a merge request as ready, use the [`/ready`](../quick_actions.md#ready) quick action.
 - Creating a commit: Add `draft:`, `Draft:`, `fixup!`, or `Fixup!` to the
   beginning of a commit message targeting the merge request's source branch. This
   method is not a toggle. Adding this text again in a later commit doesn't mark the

@@ -451,7 +451,7 @@ Parameters:
 | `merge_request_iid`           | integer           | yes      | The IID of a project merge request |
 | `created_at`                  | string            | no       | Date time string, ISO 8601 formatted. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 | `internal`                    | boolean           | no       | The internal flag of a note. Default is false. |
-| `merge_request_diff_head_sha` | string            | no       | Required for the `/merge` [quick action](../user/project/quick_actions.md). The SHA of the head commit, which ensures the merge request wasn't updated after the API request was sent. |
+| `merge_request_diff_head_sha` | string            | no       | Required for the [`/merge` quick action](../user/project/quick_actions.md#merge). The SHA of the head commit, which ensures the merge request wasn't updated after the API request was sent. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \

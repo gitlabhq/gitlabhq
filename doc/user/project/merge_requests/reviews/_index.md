@@ -214,7 +214,7 @@ When you submit a review, GitLab:
 To submit your review of a merge request quickly:
 
 - Go to the merge request widget and select **Approve**. The merge request is also approved by you.
-- Use the `/submit_review` [quick action](../../quick_actions.md) in the text of a non-review comment.
+- Use the [`/submit_review` quick action](../../quick_actions.md#submit_review) in the text of a non-review comment.
 
 To read through and edit your review comments when you submit your review:
 

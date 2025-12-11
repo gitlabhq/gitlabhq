@@ -69,7 +69,7 @@ To create a timeline event:
 
 {{< /history >}}
 
-You can create a timeline event using the `/timeline` [quick action](../../user/project/quick_actions.md).
+You can create a timeline event using the [`/timeline` quick action](../../user/project/quick_actions.md#timeline).
 
 ### From a comment on the incident
 

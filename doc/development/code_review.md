@@ -722,7 +722,7 @@ the process explained in the [code owners approvals handbook section](https://ha
 
 Some actions, such as rebasing locally or applying suggestions, are considered
 the same as adding a commit and could reset existing approvals. Approvals are not removed
-when rebasing from the UI or with the [`/rebase` quick action](../user/project/quick_actions.md).
+when rebasing from the UI or with the [`/rebase` quick action](../user/project/quick_actions.md#rebase).
 
 When ready to merge:
 

@@ -113,7 +113,7 @@ To make a test case confidential:
 - When you [create a test case](#create-a-test-case): under **Confidentiality**, select the **This test case is confidential** checkbox.
 - When you [edit a test case](#edit-a-test-case): on the right sidebar, next to **Confidentiality**, select **Edit**, then select **Turn on**.
 
-You can also use the `/confidential` [quick action](../../user/project/quick_actions.md) when both creating a new test case
+You can also use the [`/confidential` quick action](../../user/project/quick_actions.md#confidential) when both creating a new test case
 or editing an existing one.
 
 ## Archive a test case

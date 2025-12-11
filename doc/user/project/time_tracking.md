@@ -63,7 +63,7 @@ Prerequisites:
 - In tasks, you must have at least the Planner role for the project.
 - In merge requests, you must have at least the Developer role for the project.
 
-To enter an estimate, use the `/estimate` [quick action](quick_actions.md), followed by the time.
+To enter an estimate, use the [`/estimate` quick action](quick_actions.md#estimate), followed by the time.
 
 For example, if you need to enter an estimate of 1 month, 2 weeks, 3 days, 4 hours, and 5 minutes,
 type `/estimate 1mo 2w 3d 4h 5m`.
@@ -80,7 +80,7 @@ Prerequisites:
 - In tasks, you must have at least the Planner role for the project.
 - In merge requests, you must have at least the Developer role for the project.
 
-To remove an estimate entirely, use the `/remove_estimate` [quick action](quick_actions.md).
+To remove an estimate entirely, use the [`/remove_estimate` quick action](quick_actions.md#remove_estimate).
 
 ## Time spent
 
@@ -121,7 +121,7 @@ The **Spent** total in the sidebar is updated and you can view all entries in a 
 
 #### Using a quick action
 
-To enter time spent, use the `/spend` [quick action](quick_actions.md), followed by the time.
+To enter time spent, use the [`/spend` quick action](quick_actions.md#spend), followed by the time.
 
 For example, if you need
 to log 1 month, 2 weeks, 3 days, 4 hours, and 5 minutes, type `/spend 1mo 2w 3d 4h 5m`.
@@ -254,7 +254,7 @@ Prerequisites:
 
 - You must have at least the Planner role for the project.
 
-To delete all the time spent at once, use the `/remove_time_spent` [quick action](quick_actions.md).
+To delete all the time spent at once, use the [`/remove_time_spent` quick action](quick_actions.md#remove_time_spent).
 
 ## View an item's time tracking report
 

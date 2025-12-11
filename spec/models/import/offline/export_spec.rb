@@ -30,4 +30,27 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
       it { is_expected.not_to allow_value('https://gitea.com').for(:source_hostname) }
     end
   end
+
+  describe 'scopes' do
+    describe '.order_by_created_at' do
+      let_it_be(:export_1) { create(:offline_export, created_at: 3.days.ago) }
+      let_it_be(:export_2) { create(:offline_export, created_at: 2.days.ago) }
+      let_it_be(:export_3) { create(:offline_export, created_at: 1.day.ago) }
+
+      it 'orders exports by created_at in ascending order' do
+        expect(described_class.order_by_created_at(:asc)).to eq([export_1, export_2, export_3])
+      end
+
+      it 'orders exports by created_at in descending order' do
+        expect(described_class.order_by_created_at(:desc)).to eq([export_3, export_2, export_1])
+      end
+    end
+  end
+
+  describe '.all_human_statuses' do
+    it 'returns all human readable entity statuses' do
+      expect(described_class.all_human_statuses)
+        .to contain_exactly('created', 'started', 'finished', 'failed')
+    end
+  end
 end

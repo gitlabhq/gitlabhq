@@ -653,6 +653,11 @@
       height: calc(100% - var(--system-header-height) - var(--performance-bar-height) - var(--header-height) - var(--ai-panel-height) + 0.5rem); // 0.5rem is to balance the -0.25rem top margin
       z-index: 999;
     }
+
+    @include media-breakpoint-down(xs) {
+      @apply gl-left-3 #{!important};
+      width: calc(100% - #{$gl-spacing-scale-3 * 2});
+    }
   }
 
   .content-wrapper.paneled-view {

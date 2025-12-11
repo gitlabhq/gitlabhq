@@ -259,8 +259,7 @@ Prerequisites:
 
 - You must have at least the Planner role for the group.
 
-To add [active](#change-the-state-of-a-contact) contacts to an issue use the `/add_contacts [contact:address@example.com]`
-[quick action](../project/quick_actions.md).
+To add [active](#change-the-state-of-a-contact) contacts to an issue use the [`/add_contacts` quick action](../project/quick_actions.md#add_contacts) with `[contact:address@example.com]`.
 
 You can also add, remove, or replace issue contacts using the
 [GraphQL](../../api/graphql/reference/_index.md#mutationissuesetcrmcontacts)
@@ -272,8 +271,7 @@ Prerequisites:
 
 - You must have at least the Planner role for the group.
 
-To remove contacts from an issue use the `/remove_contacts [contact:address@example.com]`
-[quick action](../project/quick_actions.md).
+To remove contacts from an issue use the [`/remove_contacts` quick action](../project/quick_actions.md#remove_contacts) with `[contact:address@example.com]`.
 
 You can also add, remove, or replace issue contacts using the
 [GraphQL](../../api/graphql/reference/_index.md#mutationissuesetcrmcontacts)

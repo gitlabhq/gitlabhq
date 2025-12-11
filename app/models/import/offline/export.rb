@@ -17,6 +17,8 @@ module Import
       validates :source_hostname, :status, presence: true
       validate :validate_source_hostname
 
+      scope :order_by_created_at, ->(direction) { order(created_at: direction) }
+
       state_machine :status, initial: :created do
         state :created, value: 0
         state :started, value: 1
@@ -34,6 +36,10 @@ module Import
         event :fail_op do
           transition any => :failed
         end
+      end
+
+      def self.all_human_statuses
+        state_machine.states.map(&:human_name)
       end
 
       def validate_source_hostname

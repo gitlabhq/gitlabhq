@@ -18,22 +18,22 @@ Markdown fields. When you start typing a word in a Markdown field with one of
 the following characters, GitLab progressively autocompletes against a set of
 matching values. The string matching is not case-sensitive.
 
-| Character | Autocompletes | Relevant matches shown |
-| :-------- | :------------ | :---- |
-| `~`       | Labels | 20 |
-| `%`       | Milestones | 5 |
-| `@`       | Users and groups | 10 |
-| `#`       | Issues | 5 |
-| `!`       | Merge requests | 5 |
-| `&`       | Epics | 5 |
-| `$`       | Snippets | 5 |
-| `:`       | Emoji | 5 |
-| `/`       | Quick Actions | 100 |
+| Character | Autocompletes    | Relevant matches shown |
+| --------- | ---------------- | ---------------------- |
+| `~`       | Labels           | 20                     |
+| `%`       | Milestones       | 5                      |
+| `@`       | Users and groups | 10                     |
+| `#`       | Issues           | 5                      |
+| `!`       | Merge requests   | 5                      |
+| `&`       | Epics            | 5                      |
+| `$`       | Snippets         | 5                      |
+| `:`       | Emoji            | 5                      |
+| `/`       | Quick actions    | 100                    |
 
 When you select an item from the list, the value is entered in the field.
 The more characters you enter, the more precise the matches are.
 
-You can use autocomplete characters in combination with [Quick Actions](quick_actions.md).
+You can use autocomplete characters in combination with [quick actions](quick_actions.md).
 
 ## User autocomplete
 

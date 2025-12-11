@@ -144,3 +144,7 @@ You can refine user search with `simple_query_string`.
   ```
 
 - Search results show only the first match in a file.
+
+## Related topics
+
+- [Locate security vulnerabilities](../application_security/vulnerability_report/_index.md#advanced-vulnerability-management)

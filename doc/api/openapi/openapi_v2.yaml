@@ -109,6 +109,8 @@ tags:
   description: Operations about markdowns
 - name: namespaces
   description: Operations about namespaces
+- name: offline_exports
+  description: Operations about offline_exports
 - name: organizations
   description: Operations about organizations
 - name: snippets
@@ -45351,6 +45353,72 @@ paths:
       tags:
       - namespaces
       operationId: getApiV4NamespacesIdExists
+  "/api/v4/offline_exports":
+    get:
+      description: List all offline transfer exports
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
+      - in: query
+        name: sort
+        description: Return offline transfer exports sorted in created by `asc` or
+          `desc` order.
+        type: string
+        default: desc
+        enum:
+        - asc
+        - desc
+        required: false
+      - in: query
+        name: status
+        description: Return offline transfer exports with specified status
+        type: string
+        enum:
+        - created
+        - started
+        - finished
+        - failed
+        required: false
+      responses:
+        '200':
+          description: List all offline transfer exports
+      tags:
+      - offline_exports
+      operationId: getApiV4OfflineExports
+  "/api/v4/offline_exports/{id}":
+    get:
+      description: Get offline transfer export details
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of user's offline transfer export
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '200':
+          description: Get offline transfer export details
+      tags:
+      - offline_exports
+      operationId: getApiV4OfflineExportsId
   "/api/v4/organizations":
     post:
       summary: Create an organization

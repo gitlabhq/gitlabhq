@@ -65,11 +65,11 @@ To assign or unassign a label:
 
 Alternatively, to unassign a label, select the **X** on the label you want to unassign.
 
-You can also assign and unassign labels with [quick actions](quick_actions.md):
+You can also assign and unassign labels with quick actions:
 
-- Assign labels with `/label`.
-- Remove labels with `/unlabel`.
-- Remove all labels and assign new ones with `/relabel`.
+- Assign labels with [`/label`](quick_actions.md#label).
+- Remove labels with [`/unlabel`](quick_actions.md#unlabel).
+- Remove all labels and assign new ones with [`/relabel`](quick_actions.md#relabel).
 
 ## View available labels
 

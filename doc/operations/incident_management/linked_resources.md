@@ -67,8 +67,7 @@ To add a linked resource:
 
 {{< /history >}}
 
-To add multiple links to an incident, use the `/link`
-[quick action](../../user/project/quick_actions.md):
+To add multiple links to an incident, use the [`/link` quick action](../../user/project/quick_actions.md#link):
 
 ```plaintext
 /link https://example.link.us/j/123456789
@@ -89,7 +88,7 @@ The description shows instead of the URL in the **Linked resources** section of 
 
 {{< /history >}}
 
-Use the `/zoom` [quick action](../../user/project/quick_actions.md) to add multiple Zoom links to an incident:
+Use the [`/zoom` quick action](../../user/project/quick_actions.md#zoom) to add multiple Zoom links to an incident:
 
 ```plaintext
 /zoom https://example.zoom.us/j/123456789

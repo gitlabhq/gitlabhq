@@ -8,6 +8,7 @@ module Gitlab
     # This will make sure the connection pool is initialized on application boot in
     # config/initializers/7_redis.rb, instrumented, and used in health- & readiness checks.
     ALL_CLASSES = [
+      Gitlab::Redis::ActionCable,
       Gitlab::Redis::Cache,
       Gitlab::Redis::DbLoadBalancing,
       Gitlab::Redis::FeatureFlag,

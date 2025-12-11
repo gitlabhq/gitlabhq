@@ -2581,8 +2581,8 @@ Create a Git tag pointing to the commented commit.
   /tag v2.1.1 Security patch release
   ```
 
-This comment creates a Git tag named `v2.1.1` pointing to the commit, with the
-message "Security patch release".
+  This comment creates a Git tag named `v2.1.1` pointing to the commit, with the
+  message "Security patch release".
 
 ## Troubleshooting
 

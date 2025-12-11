@@ -138,7 +138,7 @@ The availability of this feature is controlled by a feature flag. For more infor
 
 {{< /alert >}}
 
-Add an external participant using the `/add_email` [quick action](../quick_actions.md) when you want
+Add an external participant using the [`/add_email` quick action](../quick_actions.md#add_email) when you want
 to include them in the conversation at any time.
 
 When added, the external participant starts receiving notifications using Service Desk emails.
@@ -175,8 +175,9 @@ The availability of this feature is controlled by a feature flag. For more infor
 
 {{< /alert >}}
 
-Remove an external participant from an issue or Service Desk ticket using the `/remove_email`
-[quick action](../quick_actions.md) when they should stop receiving notifications.
+Remove an external participant from an issue or Service Desk ticket using the
+[`/remove_email` quick action](../quick_actions.md#remove_email)
+when they should stop receiving notifications.
 
 After removing them from the issue or ticket they don't receive new notifications.
 But they can still reply to emails they received before and create a new comment on the issue or ticket.

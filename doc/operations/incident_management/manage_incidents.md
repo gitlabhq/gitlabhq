@@ -185,7 +185,7 @@ To change an incident's severity:
 1. In an incident, on the right sidebar, next to **Severity**, select **Edit**.
 1. From the dropdown list, select the new severity.
 
-You can also change the severity using the `/severity` [quick action](../../user/project/quick_actions.md).
+You can also change the severity using the [`/severity` quick action](../../user/project/quick_actions.md#severity).
 
 ## Change status
 

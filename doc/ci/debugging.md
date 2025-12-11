@@ -379,7 +379,7 @@ message that does not disappear after a few minutes, you can try one of these wo
 
 - Refresh the merge request page.
 - Close & Re-open the merge request.
-- Rebase the merge request with the `/rebase` [quick action](../user/project/quick_actions.md).
+- Rebase the merge request with the [`/rebase` quick action](../user/project/quick_actions.md#rebase).
 - If you have already confirmed the merge request is ready to be merged, you can merge
   it with the `/merge` quick action.
 

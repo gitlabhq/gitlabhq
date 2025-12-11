@@ -45,7 +45,7 @@ To import the Jira issue data from a CSV file into your GitLab project:
    1. Export the project data as a CSV file.
    1. Edit your CSV file to match the [column names required for the GitLab CSV importer](../issues/csv_import.md).
       - Only `title`, `description`, `due_date`, and `milestone` are imported.
-      - You can [add quick actions to the description field](../quick_actions.md) to set other issue metadata automatically during the import process.
+      - You can add [quick actions](../quick_actions.md) to the description field to set other issue metadata automatically during the import process.
 1. Create a new GitLab group and project:
    1. Sign in to your GitLab account and [create a group](../../group/_index.md#create-a-group) to host your migrated projects.
    1. In the new group, [create a new project](../_index.md#create-a-blank-project) to hold the migrated Jira issues.
