@@ -11,7 +11,8 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
-    Ai::Setting.instance
+    # create AI Setting singleton record to prevent N+1
+    Ai::Setting.instance if Gitlab.ee?
   end
 
   # Override simple_sanitize for our testing purposes

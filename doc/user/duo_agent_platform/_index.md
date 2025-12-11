@@ -5,6 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Duo Agent Platform
 ---
 
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
 {{< collapsible title="Model information" >}}
 
 - LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)

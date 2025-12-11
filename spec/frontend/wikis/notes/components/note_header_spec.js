@@ -21,6 +21,7 @@ describe('NoteHeader', () => {
 
   const findAuthorNameLink = () => wrapper.findByTestId('wiki-note-author-name-link');
   const findAuthorUsernameLink = () => wrapper.findByTestId('wiki-note-author-username-link');
+  const findTimestampLink = () => wrapper.findByTestId('wiki-note-timestamp-link');
 
   describe('renders correctly', () => {
     const shouldNotDisplayExternalParticipantText = () => {
@@ -134,6 +135,15 @@ describe('NoteHeader', () => {
         const toolTip = wrapper.findComponent(TimeAgoTooltip);
 
         expect(toolTip.exists()).toBe(true);
+      });
+
+      it('has an anchor href link', () => {
+        wrapper = createWrapper({
+          createdAt: '2017-08-02T10:51:58.559Z',
+          noteId: 123,
+        });
+
+        expect(findTimestampLink().attributes('href')).toBe('#note_123');
       });
     });
 

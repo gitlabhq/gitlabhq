@@ -40,6 +40,11 @@ export default {
       required: false,
       default: '',
     },
+    noteId: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -72,6 +77,13 @@ export default {
           'text-underline': this.isUsernameLinkHovered,
         },
       };
+    },
+    noteTimestampLink() {
+      if (this.noteId) {
+        return `#note_${this.noteId}`;
+      }
+
+      return undefined;
     },
   },
   methods: {
@@ -133,7 +145,16 @@ export default {
     <span class="note-headline-light note-healine-meta">
       <span class="gl-hidden @sm/panel:gl-inline">·</span>
       <template v-if="createdAt">
-        <time-ago-tooltip ref="noteTimestamp" :time="createdAt" tooltip-placement="bottom" />
+        <time-ago-tooltip
+          v-if="noteTimestampLink"
+          ref="noteTimestampLink"
+          :href="noteTimestampLink"
+          class="note-timestamp system-note-separator"
+          data-testid="wiki-note-timestamp-link"
+          :time="createdAt"
+          tooltip-placement="bottom"
+        />
+        <time-ago-tooltip v-else ref="noteTimestamp" :time="createdAt" tooltip-placement="bottom" />
       </template>
 
       <gl-badge

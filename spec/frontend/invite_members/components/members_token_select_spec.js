@@ -172,6 +172,23 @@ describe('MembersTokenSelect', () => {
 
         expect(handleEnterSpy).toHaveBeenCalled();
       });
+
+      it('emits tokenization-state-change with true when text is typed', async () => {
+        tokenSelector.vm.$emit('text-input', 'test');
+        await nextTick();
+
+        expect(wrapper.emitted('tokenization-state-change')).toEqual([[true]]);
+      });
+
+      it('emits tokenization-state-change with false when typed text is cleared', async () => {
+        tokenSelector.vm.$emit('text-input', 'test');
+        await nextTick();
+
+        tokenSelector.vm.$emit('text-input', '');
+        await nextTick();
+
+        expect(wrapper.emitted('tokenization-state-change')).toEqual([[true], [false]]);
+      });
     });
 
     describe('when user is selected', () => {

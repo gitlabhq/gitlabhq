@@ -100,6 +100,11 @@ export default {
     displayedTodos() {
       return this.todos.slice(0, N_TODOS);
     },
+    todosPath() {
+      // Safe access to global `gon` which may be undefined in some environments
+      const root = typeof gon !== 'undefined' && gon.relative_url_root ? gon.relative_url_root : '';
+      return `${root}/dashboard/todos`;
+    },
   },
   apollo: {
     todos: {
@@ -213,7 +218,7 @@ export default {
       </ol>
 
       <div class="gl-pt-3">
-        <a href="/dashboard/todos" @click="handleViewAllClick">{{ __('All to-do items') }}</a>
+        <a :href="todosPath" @click="handleViewAllClick">{{ __('All to-do items') }}</a>
       </div>
     </template>
   </base-widget>

@@ -67,17 +67,15 @@ For a click-through demo, see [GitLab Duo Agent Platform with Amazon Q](https://
 ## Prerequisites
 
 Before you can create an agent and integrate it with an external AI model
-provider, you must meet the [prerequisites](../_index.md#prerequisites).
+provider, you must meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
 
-## AI model provider credentials
-
-To integrate your agent with an external AI model provider, you must have access credentials.
-You can use either an API key for that model provider or GitLab-managed credentials.
+To integrate your agent with an external AI model provider, you must also have access credentials.
+You can use either an API key for the model provider or GitLab-managed credentials.
 
 ### API keys
 
 To integrate your agent with an external AI model provider,
-you can use an API key for that model provider:
+you can use an API key for the model provider:
 
 - For Anthropic Claude and Opencode, use an [Anthropic API key](https://docs.anthropic.com/en/api/admin-api/apikeys/get-api-key).
 - For OpenAI Codex, use an [OpenAI API key](https://platform.openai.com/docs/api-reference/authentication).
@@ -105,7 +103,7 @@ The following environment variables are automatically injected when `injectGatew
 - `AI_FLOW_AI_GATEWAY_TOKEN`: the authentication token for AI Gateway
 - `AI_FLOW_AI_GATEWAY_HEADERS`: formatted headers for API requests
 
-GitLab-managed credentials are available only for Anthropic Claude and OpenAI Codex.
+GitLab-managed credentials are available for Anthropic Claude and OpenAI Codex only.
 
 #### Supported models
 
@@ -127,62 +125,14 @@ OpenAI Codex:
 - `gpt-5`
 - `gpt-5-codex`
 
-## Create a service account
-
-Prerequisites:
-
-- On GitLab.com, you must have the Owner role for the top-level group the project belongs to.
-- On GitLab Self-Managed and GitLab Dedicated, you must have one of the following:
-  - Administrator access to the instance.
-  - The Owner role for a top-level group and
-    [permission to create service accounts](../../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
-
-Each project that mentions an external agent must have a unique [group service account](../../../user/profile/service_accounts.md).
-Mention the service account username when you assign tasks to the external agent.
-
-If you create an external agent from the AI Catalog and enable it in a top-level group, a service account is automatically created with the name `ai-<agent>-<group>`. For example, if you enable an agent named `Claude code agent` in the `GitLab Duo` group, the service account name is `ai-claude-code-agent-gitlab-duo`.
-
-{{< alert type="warning" >}}
-
-If you use the same service account across multiple projects, that gives the external agent attached to that service account access to all of those projects.
-
-{{< /alert >}}
-
-To set up the service account, take the following actions. If you do not have sufficient
-permissions, ask your instance administrator or top-level group Owner for help.
-
-1. For the top-level group, [create a service account](../../../user/profile/service_accounts.md#create-a-service-account).
-   Service accounts created for the instance are not supported.
-1. [Create a personal access token for the service account](../../../user/profile/service_accounts.md#create-a-personal-access-token-for-a-service-account) with the following [scopes](../../../user/profile/personal_access_tokens.md#personal-access-token-scopes):
-   - `write_repository`
-   - `api`
-   - `ai_features`
-1. [Add the service account to your project](../../../user/project/members/_index.md#add-users-to-a-project)
-   with the Developer role. This ensures the service account has the minimum permissions necessary.
-
-When adding the service account to your project, you must enter the exact name
-of the service account. If you enter the wrong name, the external agent does not work.
-
 ## Configure CI/CD variables
+
+Start by adding variables to your project. These variables determine
+how GitLab connects to the third-party provider.
 
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
-
-Add the following CI/CD variables to your project's settings:
-
-| Integration                | Environment variable         | Description |
-|----------------------------|------------------------------|-------------|
-| All                        | `GITLAB_TOKEN_<integration>` | Personal access token for the service account user. |
-| All                        | `GITLAB_HOST`                | GitLab instance hostname (for example, `gitlab.com`). |
-| Anthropic Claude, Opencode | `ANTHROPIC_API_KEY`          | Anthropic API key (optional when `injectGatewayToken: true` is set). |
-| OpenAI Codex               | `OPENAI_API_KEY`             | OpenAI API key. |
-| Amazon Q                   | `AWS_SECRET_NAME`            | AWS Secret Manager secret name. |
-| Amazon Q                   | `AWS_REGION_NAME`            | AWS region name. |
-| Amazon Q                   | `AMAZON_Q_SIGV4`             | Amazon Q Sig V4 credentials. |
-| Google Gemini CLI          | `GOOGLE_CREDENTIALS`         | JSON credentials file contents. |
-| Google Gemini CLI          | `GOOGLE_CLOUD_PROJECT`       | Google Cloud project ID. |
-| Google Gemini CLI          | `GOOGLE_CLOUD_LOCATION`      | Google Cloud project location. |
 
 To add or update a variable in the project settings:
 
@@ -206,11 +156,40 @@ To add or update a variable in the project settings:
 
 For more information, see how to [add CI/CD variables to a project's settings](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui).
 
+### CI/CD variables for external agents
+
+The following CI/CD variables are available:
+
+| Integration                | Environment variable         | Description |
+|----------------------------|------------------------------|-------------|
+| All                        | `GITLAB_TOKEN_<integration>` | Personal access token for the service account user. |
+| All                        | `GITLAB_HOST`                | GitLab instance hostname (for example, `gitlab.com`). |
+| Anthropic Claude, Opencode | `ANTHROPIC_API_KEY`          | Anthropic API key (optional when `injectGatewayToken: true` is set). |
+| OpenAI Codex               | `OPENAI_API_KEY`             | OpenAI API key. |
+| Amazon Q                   | `AWS_SECRET_NAME`            | AWS Secret Manager secret name. |
+| Amazon Q                   | `AWS_REGION_NAME`            | AWS region name. |
+| Amazon Q                   | `AMAZON_Q_SIGV4`             | Amazon Q Sig V4 credentials. |
+| Google Gemini CLI          | `GOOGLE_CREDENTIALS`         | JSON credentials file contents. |
+| Google Gemini CLI          | `GOOGLE_CLOUD_PROJECT`       | Google Cloud project ID. |
+| Google Gemini CLI          | `GOOGLE_CLOUD_LOCATION`      | Google Cloud project location. |
+
 ## Create an external agent
 
-Create an external agent and configure it to run on your environment.
+Now create an external agent and configure it to run in your environment.
 
-### By using the UI
+The preferred workflow is:
+
+1. Create the agent in the AI Catalog.
+1. Enable the agent for the top-level group.
+1. Add the agent to your project and specify a trigger that determines how you call the agent.
+
+In this case, a service account is created for you.
+When the agent runs, it uses a combination of the user's memberships and the service account memberships.
+This combination is called a [composite identity](../security.md).
+
+If you'd prefer, you can [create an external agent manually](#create-an-external-agent-manually).
+
+### Create the agent in the AI Catalog
 
 {{< details >}}
 
@@ -231,9 +210,13 @@ For more information, see the history.
 
 {{< /alert >}}
 
+Start by creating the external agent in the AI Catalog.
+
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
+
+To create an external agent:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Agents**.
@@ -250,28 +233,9 @@ Prerequisites:
 
 The external agent appears in the AI Catalog.
 
-### By using a configuration file
+### Enable the agent in a top-level group
 
-If you create external agents by manually adding configuration files,
-you must create a different configuration file for each external agent.
-
-Prerequisites:
-
-- You must have at least the Developer role for the project.
-
-To create a configuration file:
-
-1. In your project, create a YAML file, for example: `.gitlab/duo/flows/claude.yaml`
-1. Populate the file by using [one of the configuration file examples](external_examples.md).
-
-## Enable an external agent
-
-If you create an external agent from the AI Catalog, to use it, you must:
-
-1. Enable it in a top-level group.
-1. Enable it in the project you want to use it in.
-
-### Enable in a top-level group
+Now enable the agent in a top-level group.
 
 Prerequisites:
 
@@ -287,6 +251,9 @@ To enable an external agent in a top-level group:
 1. Select **Enable**.
 
 The external agent appears in the group's **Automate** > **Agents** page.
+
+A service account is created in the group. The name of the account
+follows this naming convention: `ai-<agent>-<group>`.
 
 ### Enable in a project
 
@@ -312,14 +279,8 @@ To enable an external agent in a project:
 
 The external agent appears in the project's **Automate** > **Agents** list.
 
-## Create a trigger
-
-You must now [create a trigger](../triggers/_index.md), which determines when the external agent runs.
-
-For example, you can specify the agent to be triggered when you mention a service account
-in a discussion, or when you assign the service account as a reviewer.
-
-If you create an external agent from the AI Catalog, when you enable the agent in a project you also create triggers.
+The top-level group's service account is added to the project.
+This account is assigned the Developer role.
 
 ## Use an external agent
 
@@ -339,3 +300,53 @@ Prerequisites:
 
 1. After the external agent has completed the task, you see a confirmation, and either a
    ready-to-merge change or an inline comment.
+
+## Create an external agent manually
+
+If you prefer to not follow the UI flow, you can create an external agent manually:
+
+1. Create a configuration file in your project.
+1. Create a service account.
+1. Create a trigger that determines how you call the agent.
+1. Use the agent.
+
+In this case, you manually create the service account that is used to run the agent.
+
+### Create a configuration file
+
+If you create external agents by manually adding configuration files,
+you must create a different configuration file for each external agent.
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+To create a configuration file:
+
+1. In your project, create a YAML file, for example: `.gitlab/duo/flows/claude.yaml`
+1. Populate the file by using [one of the configuration file examples](external_examples.md).
+
+### Create a service account
+
+You must create [a service account](../../../user/profile/service_accounts.md) that has access to
+the projects where you expect to use an external agent.
+
+When the agent runs, it uses a combination of the user's memberships and the service account memberships.
+This combination is called a [composite identity](../security.md).
+
+Prerequisites:
+
+- On GitLab.com, you must have the Owner role for the top-level group the project belongs to.
+- On GitLab Self-Managed and GitLab Dedicated, you must have one of the following:
+  - Administrator access to the instance.
+  - The Owner role for a top-level group and
+    [permission to create service accounts](../../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
+
+To create and assign the service account:
+
+### Create a trigger
+
+You must now [create a trigger](../triggers/_index.md), which determines when the external agent runs.
+
+For example, you can specify the agent to be triggered when you mention a service account
+in a discussion, or when you assign the service account as a reviewer.

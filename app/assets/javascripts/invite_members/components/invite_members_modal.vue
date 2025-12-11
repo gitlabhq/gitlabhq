@@ -128,6 +128,7 @@ export default {
       errorsLimit: 2,
       isErrorsSectionExpanded: false,
       shouldShowEmptyInvitesAlert: false,
+      hasIncompleteMemberInput: false,
     };
   },
   computed: {
@@ -148,8 +149,11 @@ export default {
         ? helpPagePath('user/project/members/_index', { anchor: 'add-users-to-a-project' })
         : helpPagePath('user/group/_index', { anchor: 'add-users-to-a-group' });
     },
-    isEmptyInvites() {
+    hasInvites() {
       return Boolean(this.newUsersToInvite.length);
+    },
+    hasEmptyOrIncompleteInvites() {
+      return !this.hasInvites || this.hasIncompleteMemberInput;
     },
     hasUsersWithWarning() {
       return !isEmpty(this.usersWithWarning);
@@ -210,15 +214,10 @@ export default {
     },
   },
   watch: {
-    isEmptyInvites: {
-      handler(updatedValue) {
-        // nothing to do if the invites are **still** empty and the emptyInvites were never set from submit
-        if (!updatedValue && !this.shouldShowEmptyInvitesAlert) {
-          return;
-        }
-
+    hasEmptyOrIncompleteInvites(hasEmptyOrIncomplete) {
+      if (!hasEmptyOrIncomplete && this.shouldShowEmptyInvitesAlert) {
         this.clearEmptyInviteError();
-      },
+      }
     },
   },
   mounted() {
@@ -231,6 +230,9 @@ export default {
     });
   },
   methods: {
+    handleTokenizationStateChange(hasPendingInput) {
+      this.hasIncompleteMemberInput = hasPendingInput;
+    },
     showInvalidFeedbackMessage(response) {
       this.invalidFeedbackMessage = getInvalidFeedbackMessage(response);
     },
@@ -277,13 +279,14 @@ export default {
       };
     },
     async sendInvite({ accessLevel, expiresAt, memberRoleId }) {
-      this.isLoading = true;
       this.clearValidation();
 
-      if (!this.isEmptyInvites) {
+      if (this.hasEmptyOrIncompleteInvites) {
         this.showEmptyInvitesAlert();
         return;
       }
+
+      this.isLoading = true;
 
       const apiAddByInvite = this.isProject
         ? Api.inviteProjectMembers.bind(Api)
@@ -335,6 +338,7 @@ export default {
       this.isLoading = false;
       this.shouldShowEmptyInvitesAlert = false;
       this.newUsersToInvite = [];
+      this.hasIncompleteMemberInput = false;
     },
     onInviteSuccess() {
       this.track('invite_successful', { label: this.source });
@@ -390,6 +394,7 @@ export default {
     :label-search-field="$options.labels.searchField"
     :form-group-description="formGroupDescription"
     :invalid-feedback-message="invalidFeedbackMessage"
+    :has-incomplete-member-input="hasIncompleteMemberInput"
     :is-loading="isLoading"
     :is-project="isProject"
     :new-users-to-invite="newUsersToInvite"
@@ -497,6 +502,7 @@ export default {
         :invalid-members="invalidMembers"
         @clear="clearValidation"
         @token-remove="removeToken"
+        @tokenization-state-change="handleTokenizationStateChange"
       />
     </template>
 

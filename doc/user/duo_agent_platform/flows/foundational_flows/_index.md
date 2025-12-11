@@ -32,7 +32,7 @@ The following foundational flows are available:
 - [Convert to GitLab CI/CD](convert_to_gitlab_ci.md): Migrate Jenkins pipelines to CI/CD.
 - [Code Review](code_review.md): Automate code review with AI-native analysis and feedback.
 
-## Supported APIs and permissions
+## Security for foundational flows
 
 In the GitLab UI, foundational flows have access to the following GitLab APIs:
 
@@ -48,4 +48,5 @@ In the GitLab UI, foundational flows have access to the following GitLab APIs:
 - [Notes API](../../../../api/notes.md)
 - [Search API](../../../../api/search.md)
 
-Foundational flows use each user's permissions and respect all project access controls and security policies.
+In addition, foundational flows use a service account to complete tasks.
+For more information, see [the composite identity workflow](../../security.md#composite-identity-workflow).

@@ -114,6 +114,9 @@ To enable a flow in a top-level group:
 
 The flow appears in the group's **Automate** > **Flows** page.
 
+A service account is created in the group. The name of the account
+follows this naming convention: `ai-<flow>-<group>`.
+
 ### Enable in a project
 
 Prerequisites:
@@ -137,6 +140,9 @@ To enable a flow in a project:
 1. Select **Enable**.
 
 The flow appears in the project's **Automate** > **Flows** list.
+
+The top-level group's service account is added to the project.
+This account is assigned the Developer role.
 
 ### Disable a flow
 
@@ -177,6 +183,14 @@ To use a flow:
 
    For example, if you enable a flow called `Code review flow` in the `GitLab Duo` group, the service account user is `ai-code-review-flow-gitlab-duo`.
 1. After the flow has completed the task, you see a confirmation, and either a ready-to-merge change or an inline comment.
+
+{{< alert type="warning" >}}
+The service account can access all projects that both:
+
+- You have access to.
+- The flow has been added to.
+
+{{< /alert >}}
 
 ## Duplicate a flow
 

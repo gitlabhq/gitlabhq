@@ -23,30 +23,34 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
   describe 'invalid type' do
     it 'registers an offense for and corrects symbol type' do
       expect_offense(<<~RUBY)
-        expose :relation, documentation: { type: :string, example: 'label' }
-                                                 ^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+        expose :relation, documentation: { type: :dateTime, example: 'label' }
+                                                 ^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
       RUBY
 
       expect_correction(<<~RUBY)
-        expose :relation, documentation: { type: 'String', example: 'label' }
+        expose :relation, documentation: { type: 'DateTime', example: 'label' }
       RUBY
     end
 
     it 'registers an offense for and corrects a lowercase string type' do
       expect_offense(<<~RUBY)
-        expose :relation, documentation: { type: 'string', example: 'label' }
-                                                 ^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+        expose :relation, documentation: { type: 'dateTime', example: 'label' }
+                                                 ^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        expose :relation, documentation: { type: 'DateTime', example: 'label' }
       RUBY
     end
 
     it 'registers an offense for and corrects a primitive constant type' do
       expect_offense(<<~RUBY)
-        expose :relation, documentation: { type: String, example: 'label' }
-                                                 ^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+        expose :relation, documentation: { type: DateTime, example: 'label' }
+                                                 ^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
       RUBY
 
       expect_correction(<<~RUBY)
-        expose :relation, documentation: { type: 'String', example: 'label' }
+        expose :relation, documentation: { type: 'DateTime', example: 'label' }
       RUBY
     end
 

@@ -433,6 +433,36 @@ information to GitLab. To enable or customize telemetry in Visual Studio Code:
    - `off`: Disables all telemetry data in Visual Studio Code.
 1. Save your changes.
 
+## Use the extension in a Dev Container
+
+The GitLab Workflow extension is compatible with [VS Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers). For added security, you should set up the extension and use GitLab Duo in a containerized development environment.
+
+### Prerequisites
+
+- [Docker](https://www.docker.com/products/docker-desktop/) installed and running
+- [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) installed in VS Code
+
+### Install the extension in a Dev Container
+
+Add the GitLab Workflow extension to your Dev Container configuration file:
+
+```json
+// .devcontainer/devcontainer.json
+{
+  "name": "My Project",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "GitLab.gitlab-workflow"
+      ]
+    }
+  }
+}
+```
+
+When you open your project in a Dev Container, VS Code automatically installs the extension inside the container.
+
 ## Related topics
 
 - [Troubleshooting the GitLab Workflow extension for VS Code](troubleshooting.md)

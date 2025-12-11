@@ -215,7 +215,8 @@ export default {
         v-if="!isFlyout"
         class="gl-flex gl-h-6 gl-w-6 gl-shrink-0"
         :class="{
-          'gl-w-6 gl-self-start gl-rounded-base gl-bg-default': hasAvatar,
+          'gl-w-6 gl-self-start': hasAvatar,
+          'gl-rounded-base gl-bg-default': hasAvatar && avatarShape === 'rect',
           '-gl-mr-2': hasAvatar && isIconOnly,
         }"
       >

@@ -115,12 +115,12 @@ module RuboCop
         def corrected_type_value(node)
           case node.type
           when :str
-            # Handle lowercase string like 'string' -> 'String'
-            capitalized = node.value.capitalize
+            # Handle lowercase string like 'dateTime' -> 'DateTime'
+            capitalized = upcase_first(node.value)
             return capitalized if VALID_TYPES.include?(capitalized)
           when :sym
-            # Handle symbol like :string -> 'String'
-            capitalized = node.value.to_s.capitalize
+            # Handle symbol like :dateTime -> 'DateTime'
+            capitalized = upcase_first(node.value.to_s)
             return capitalized if VALID_TYPES.include?(capitalized)
           when :const
             # Handle constant like String -> 'String'
@@ -138,6 +138,11 @@ module RuboCop
           return node.value if node.str_type? && node.value.match?(/\A(::)?API::Entities::/)
 
           nil
+        end
+
+        def upcase_first(str)
+          str[0] = str[0].capitalize
+          str
         end
       end
     end

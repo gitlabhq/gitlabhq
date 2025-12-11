@@ -7126,6 +7126,9 @@ msgstr ""
 msgid "AiPowered|GitLab Credits dashboard"
 msgstr ""
 
+msgid "AiPowered|GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "AiPowered|GitLab Duo Agent Platform composite identity"
 msgstr ""
 
@@ -7244,6 +7247,9 @@ msgid "AiPowered|Turn off composite identity"
 msgstr ""
 
 msgid "AiPowered|Turn off composite identity for GitLab Duo Agent Platform"
+msgstr ""
+
+msgid "AiPowered|Turn on GitLab Duo Chat (Agentic), agents, and flows"
 msgstr ""
 
 msgid "AiPowered|Turn on composite identity for GitLab Duo Agent Platform"
