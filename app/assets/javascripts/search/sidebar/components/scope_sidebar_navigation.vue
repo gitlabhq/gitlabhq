@@ -11,6 +11,7 @@ import NavItem from '~/super_sidebar/components/nav_item.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import getBlobSearchCountQuery from '~/search/graphql/blob_search_zoekt_count_only.query.graphql';
 import { DEFAULT_FETCH_CHUNKS } from '~/search/results/constants';
+// eslint-disable-next-line no-restricted-imports
 import { RECEIVE_NAVIGATION_COUNT } from '../../store/mutation_types';
 import { NAV_LINK_DEFAULT_CLASSES, NAV_LINK_COUNT_DEFAULT_CLASSES, SCOPE_BLOB } from '../constants';
 

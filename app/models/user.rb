@@ -1863,11 +1863,6 @@ class User < ApplicationRecord
     organization_users.many?
   end
 
-  def can_leave_project?(project)
-    project.namespace != namespace &&
-      project.member(self)
-  end
-
   def full_website_url
     return "http://#{website_url}" unless %r{\Ahttps?://}.match?(website_url)
 

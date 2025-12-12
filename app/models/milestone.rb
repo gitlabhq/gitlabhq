@@ -227,10 +227,6 @@ class Milestone < ApplicationRecord
     self
   end
 
-  def can_be_closed?
-    active? && issues.opened.count == 0
-  end
-
   def author_id
     nil
   end

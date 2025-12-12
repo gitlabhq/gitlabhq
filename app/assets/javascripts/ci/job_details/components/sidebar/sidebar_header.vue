@@ -7,6 +7,7 @@ import { TYPENAME_COMMIT_STATUS } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
 import { JOB_GRAPHQL_ERRORS, forwardDeploymentFailureModalId, PASSED_STATUS } from '~/ci/constants';
+// eslint-disable-next-line no-restricted-imports
 import GetJob from '../../graphql/queries/get_job.query.graphql';
 import JobSidebarRetryButton from './job_sidebar_retry_button.vue';
 

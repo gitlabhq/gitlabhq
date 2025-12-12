@@ -327,13 +327,54 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 ### Post data using cURL's `--data`
 
 Instead of using `--request POST` and appending the parameters to the URI, you
-can use cURL's `--data` option. The example below will create a new project
+can use cURL's `--data` option. The example below creates a new project
 `foo` under the authenticated user's namespace.
 
 ```shell
 curl --data "name=foo" \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects"
+```
+
+### Post data using cURL's `--data-urlencode`
+
+Use `--data-urlencode` when the data contains special characters that require URL encoding.
+
+You can use this option for:
+
+- Markdown content with code blocks or special formatting.
+- Regular expressions containing `+`, `.`, or `*`.
+- Text with quotes, ampersands, or other reserved URL characters.
+- File content that might contain special characters.
+
+For alphanumeric data without special characters, use [`--data`](#post-data-using-curls---data) instead.
+
+For an attribute with special characters:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data-urlencode "description=Fix issue with 'quotes' & ampersands" \
+  --url "https://gitlab.example.com/api/v4/projects/1/issues"
+```
+
+For content with regular expression patterns:
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data-urlencode "name_regex_delete=dev-.+" \
+  --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+```
+
+For content from a file, use `attribute@filename`:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data-urlencode "title=API documentation update" \
+  --data-urlencode "content@content.md" \
+  --url "https://gitlab.example.com/api/v4/projects/1/wikis"
 ```
 
 ### Post data using JSON content

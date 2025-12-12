@@ -248,28 +248,6 @@ RSpec.describe Milestone, feature_category: :team_planning do
     end
   end
 
-  describe '#can_be_closed?' do
-    let_it_be(:milestone) { build(:milestone, project: project) }
-
-    before do
-      milestone = create :milestone, project: project
-      create :closed_issue, milestone: milestone, project: project
-
-      create :issue, project: project
-    end
-
-    it 'returns true if milestone active and all nested issues closed' do
-      expect(milestone.can_be_closed?).to be_truthy
-    end
-
-    it 'returns false if milestone active and not all nested issues closed' do
-      issue.milestone = milestone
-      issue.save!
-
-      expect(milestone.can_be_closed?).to be_falsey
-    end
-  end
-
   describe '#to_ability_name' do
     it 'returns milestone' do
       milestone = build(:milestone)

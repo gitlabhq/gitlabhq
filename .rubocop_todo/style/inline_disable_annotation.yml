@@ -1972,7 +1972,6 @@ Style/InlineDisableAnnotation:
     - 'scripts/feature_flags/used-feature-flags'
     - 'scripts/generate-message-to-run-e2e-pipeline.rb'
     - 'scripts/generate_rspec_pipeline.rb'
-    - 'scripts/insert-rspec-profiling-data'
     - 'scripts/internal_events/monitor.rb'
     - 'scripts/lib/gitlab.rb'
     - 'scripts/perf/gc/print_gc_stats.rb'

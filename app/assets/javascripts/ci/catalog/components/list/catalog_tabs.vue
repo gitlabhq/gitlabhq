@@ -1,6 +1,7 @@
 <script>
 import { GlBadge, GlTab, GlTabs, GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
+// eslint-disable-next-line no-restricted-imports
 import { SCOPE } from '../../constants';
 
 export default {

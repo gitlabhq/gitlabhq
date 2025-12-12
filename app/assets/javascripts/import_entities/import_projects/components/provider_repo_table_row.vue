@@ -15,8 +15,11 @@ import { __, s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
+// eslint-disable-next-line no-restricted-imports
 import ImportTargetDropdown from '../../components/import_target_dropdown.vue';
+// eslint-disable-next-line no-restricted-imports
 import ImportStatus from '../../components/import_status.vue';
+// eslint-disable-next-line no-restricted-imports
 import { STATUSES } from '../../constants';
 import { isProjectImportable, isImporting, isIncompatible, getImportStatus } from '../utils';
 

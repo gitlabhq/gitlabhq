@@ -5,6 +5,7 @@ import { mapState, mapActions } from 'vuex';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { parseBoolean } from '~/lib/utils/common_utils';
+// eslint-disable-next-line no-restricted-imports
 import {
   ARCHIVED_TRACKING_NAMESPACE,
   ARCHIVED_TRACKING_LABEL_CHECKBOX,

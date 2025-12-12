@@ -411,6 +411,11 @@ export default [
                 'We do not allow usage of React in our codebase except for the graphql_explorer',
             },
             restrictedImportsPatterns.gitlabUiDist,
+            {
+              group: ['../../*'],
+              message:
+                'Avoid relative imports two or more levels up. Use absolute imports instead.',
+            },
           ],
         },
       ],

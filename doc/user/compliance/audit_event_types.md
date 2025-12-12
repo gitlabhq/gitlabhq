@@ -226,6 +226,12 @@ Audit event types belong to the following product categories.
 | [`update_status_check`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84624) | An external status check is updated | {{< yes >}} | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) | Project |
 | [`updated_compliance_requirement_control`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177557) | Compliance requirement control updated. | {{< yes >}} | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/512381) | Group |
 
+### Consumables cost management
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`usage_billing_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216009) | The namespace owner changes GitLab Credits dashboard settings | {{< yes >}} | GitLab [18.7](https://gitlab.com/gitlab-org/gitlab/-/issues/580868) | Group |
+
 ### Container registry
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |

@@ -347,8 +347,6 @@ find_assignee:
   file: app/models/merge_request.rb
 migrate_files_to_database!:
   file: app/models/merge_request_diff.rb
-can_be_closed?:
-  file: app/models/milestone.rb
 count_for_project:
   file: app/models/ml/experiment.rb
 find_or_create!:
@@ -426,8 +424,6 @@ inactive_message:
 find_by_private_commit_email:
   file: app/models/user.rb
 will_save_change_to_login?:
-  file: app/models/user.rb
-can_leave_project?:
   file: app/models/user.rb
 render_items_list:
   file: ee/app/helpers/ee/merge_requests_helper.rb

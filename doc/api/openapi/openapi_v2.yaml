@@ -48451,6 +48451,9 @@ definitions:
         type: object
         description: AI-related settings
         properties:
+          duo_agent_platform_enabled:
+            type: boolean
+            description: Whether Duo Agent Platform features are enabled
           duo_workflow_mcp_enabled:
             type: boolean
             description: Enable MCP support for Duo Agent Platform
@@ -48714,6 +48717,9 @@ definitions:
         type: object
         description: AI-related settings
         properties:
+          duo_agent_platform_enabled:
+            type: boolean
+            description: Whether Duo Agent Platform features are enabled
           duo_workflow_mcp_enabled:
             type: boolean
             description: Enable MCP support for Duo Agent Platform
