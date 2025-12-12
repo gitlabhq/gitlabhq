@@ -31,10 +31,10 @@ RSpec.describe Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter, :cle
   subject { described_class.track_unique_action(quickaction_name, args: args, user: user, project: project) }
 
   describe '.track_unique_action' do
-    let(:quickaction_name) { 'approve' }
+    let(:quickaction_name) { 'award' }
 
     it_behaves_like 'a tracked quick action unique event' do
-      let(:action) { 'i_quickactions_approve' }
+      let(:action) { 'i_quickactions_award' }
     end
   end
 

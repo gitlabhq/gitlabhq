@@ -17,6 +17,7 @@ module Gitlab
           ship
           run_pipeline
           approve
+          unapprove
         ].freeze
 
         # Tracks the quick action with name `name`.

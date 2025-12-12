@@ -462,12 +462,25 @@ export default [
         },
       ],
 
-      // Vue 3 events compatibility rules
+      // Vue 3 events compatibility
       'vue/v-on-event-hyphenation': 'error',
       'vue/custom-event-name-casing': ['error', 'kebab-case'],
-      'vue/no-deprecated-v-on-native-modifier': 'error',
       'vue/require-explicit-emits': 'error',
+
+      // Vue 3 deprecated features
       'vue/no-deprecated-data-object-declaration': 'error',
+      'vue/no-deprecated-html-element-is': 'error',
+      'vue/no-deprecated-inline-template': 'error',
+      'vue/no-deprecated-props-default-this': 'error',
+      'vue/no-deprecated-router-link-tag-prop': 'error',
+      'vue/no-deprecated-slot-attribute': 'error',
+      'vue/no-deprecated-v-bind-sync': 'error',
+      'vue/no-deprecated-v-is': 'error',
+      'vue/no-deprecated-v-on-native-modifier': 'error',
+      'vue/no-deprecated-v-on-number-modifiers': 'error',
+      'vue/no-deprecated-vue-config-keycodes': 'error',
+
+      // Vue 3 components with render()
       'no-restricted-syntax': [
         'error',
         ...baseNoRestrictedSyntax,

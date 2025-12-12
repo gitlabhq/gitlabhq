@@ -216,7 +216,6 @@
 - i_package_terraform_module_user
 - i_quickactions_add_child
 - i_quickactions_add_contacts
-- i_quickactions_approve
 - i_quickactions_assign_multiple
 - i_quickactions_assign_reviewer
 - i_quickactions_assign_self
@@ -292,7 +291,6 @@
 - i_quickactions_title
 - i_quickactions_todo
 - i_quickactions_type
-- i_quickactions_unapprove
 - i_quickactions_unassign_all
 - i_quickactions_unassign_reviewer
 - i_quickactions_unassign_specific

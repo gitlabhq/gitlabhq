@@ -295,6 +295,10 @@ module Gitlab
 
           next unless success
 
+          @additional_properties[:unapprove] = {
+            is_reviewer: quick_action_target.find_reviewer(current_user).present?.to_s
+          }
+
           @execution_message[:unapprove] = _('Unapproved the current merge request.')
         end
 

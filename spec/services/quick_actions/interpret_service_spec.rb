@@ -3378,6 +3378,21 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         expect(merge_request.approved_by_users).to be_empty
       end
 
+      it 'sends additional properties to internal tracking' do
+        merge_request.reviewers << developer
+
+        expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
+          .to receive(:track_unique_action)
+          .with(
+            'unapprove',
+            args: nil,
+            user: developer,
+            project: project,
+            additional_properties: { is_reviewer: 'true' })
+
+        service.execute(content, merge_request)
+      end
+
       it 'calls MergeRequests::UpdateReviewerStateService' do
         expect_next_instance_of(
           MergeRequests::UpdateReviewerStateService,

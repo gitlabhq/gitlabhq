@@ -10,11 +10,10 @@ status: active
 milestone: "14.3"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55069
 time_frame: 28d
-data_source: redis_hll
-instrumentation_class: RedisHLLMetric
-options:
-  events:
-    - i_quickactions_unapprove
+data_source: internal_events
+events:
+  - name: i_quickactions_unapprove
+    unique: user.id
 tiers:
   - free
   - premium
