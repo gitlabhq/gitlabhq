@@ -2,10 +2,6 @@
 
 app = Rails.application
 
-# Disable Sendfile for Sidekiq Web assets since Workhorse won't
-# always have access to these files.
-app.config.middleware.insert_before(Rack::Sendfile, Gitlab::Middleware::SidekiqWebStatic)
-
 if app.config.public_file_server.enabled
   # The `ActionDispatch::Static` middleware intercepts requests for static files
   # by checking if they exist in the `/public` directory.

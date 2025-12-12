@@ -203,6 +203,8 @@ export const AI_METRICS = {
   DUO_USED_COUNT: 'duo_used_count',
   DUO_REVIEW_REQUESTS_COUNT: 'duo_review_requests_count',
   DUO_REVIEW_COMMENT_COUNT: 'duo_review_comment_count',
+  DUO_AGENT_PLATFORM_FLOWS: 'duo_agent_platform_flows',
+  DUO_AGENT_PLATFORM_CHATS: 'duo_agent_platform_chats',
 };
 
 export const VALUE_STREAM_METRIC_DISPLAY_UNITS = {
@@ -426,6 +428,22 @@ export const VALUE_STREAM_METRIC_METADATA = {
   },
   [AI_METRICS.DUO_REVIEW_COMMENT_COUNT]: {
     description: s__('AiImpactAnalytics|Number of Duo Code Review comments.'),
+    groupLink: '',
+    projectLink: '',
+    docsLink: helpPagePath('user/gitlab_duo/feature_summary'),
+  },
+  [AI_METRICS.DUO_AGENT_PLATFORM_CHATS]: {
+    description: s__(
+      'AiImpactAnalytics|Number of chat sessions initiated through GitLab Duo Agent Platform.',
+    ),
+    groupLink: '',
+    projectLink: '',
+    docsLink: helpPagePath('user/gitlab_duo/feature_summary'),
+  },
+  [AI_METRICS.DUO_AGENT_PLATFORM_FLOWS]: {
+    description: s__(
+      'AiImpactAnalytics|Number of agent flows (excluding chats) executed through GitLab Duo Agent Platform.',
+    ),
     groupLink: '',
     projectLink: '',
     docsLink: helpPagePath('user/gitlab_duo/feature_summary'),

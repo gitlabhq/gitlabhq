@@ -47951,6 +47951,8 @@ Returns [`String`](#string).
 | ---- | ---- | ----------- |
 | <a id="userstatusavailability"></a>`availability` | [`AvailabilityEnum!`](#availabilityenum) | User availability status. |
 | <a id="userstatusclearstatusat"></a>`clearStatusAt` | [`Time`](#time) | Timestamp when the status should be automatically cleared. |
+| <a id="userstatusdisabledforduousage"></a>`disabledForDuoUsage` | [`Boolean!`](#boolean) | Indicates if the user is disabled for assignment in Duo features. |
+| <a id="userstatusdisabledforduousagereason"></a>`disabledForDuoUsageReason` | [`String`](#string) | Reason why the user is disabled for assignment in Duo features. |
 | <a id="userstatusemoji"></a>`emoji` | [`String`](#string) | String representation of emoji. |
 | <a id="userstatusmessage"></a>`message` | [`String`](#string) | User status message. |
 | <a id="userstatusmessagehtml"></a>`messageHtml` | [`String`](#string) | HTML of the user status message. |

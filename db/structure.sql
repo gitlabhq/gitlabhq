@@ -5809,6 +5809,19 @@ CREATE TABLE p_ci_job_messages (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE p_ci_pipeline_artifact_states (
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    pipeline_artifact_id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint DEFAULT 0,
+    verification_checksum bytea,
+    verification_failure text
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_pipeline_variables (
     key character varying NOT NULL,
     value text,
@@ -22540,20 +22553,6 @@ CREATE SEQUENCE p_ci_job_messages_id_seq
     CACHE 1;
 
 ALTER SEQUENCE p_ci_job_messages_id_seq OWNED BY p_ci_job_messages.id;
-
-CREATE TABLE p_ci_pipeline_artifact_states (
-    verification_started_at timestamp with time zone,
-    verification_retry_at timestamp with time zone,
-    verified_at timestamp with time zone,
-    pipeline_artifact_id bigint NOT NULL,
-    partition_id bigint NOT NULL,
-    verification_state smallint DEFAULT 0 NOT NULL,
-    verification_retry_count smallint DEFAULT 0,
-    verification_checksum bytea,
-    verification_failure text,
-    CONSTRAINT check_ee83b93f85 CHECK ((char_length(verification_failure) <= 255))
-)
-PARTITION BY LIST (partition_id);
 
 CREATE SEQUENCE p_ci_workload_variable_inclusions_id_seq
     START WITH 1

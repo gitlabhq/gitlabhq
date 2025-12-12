@@ -534,7 +534,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/middleware/query_analyzer_spec.rb'
     - 'spec/lib/gitlab/middleware/rails_queue_duration_spec.rb'
     - 'spec/lib/gitlab/middleware/release_env_spec.rb'
-    - 'spec/lib/gitlab/middleware/sidekiq_web_static_spec.rb'
     - 'spec/lib/gitlab/middleware/speedscope_spec.rb'
     - 'spec/lib/gitlab/middleware/webhook_recursion_detection_spec.rb'
     - 'spec/lib/gitlab/optimistic_locking_spec.rb'

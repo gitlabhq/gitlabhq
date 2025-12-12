@@ -8,6 +8,7 @@ module API
         SUPPORTED_PROTOCOL_VERSIONS = %w[
           2025-06-18
           2025-03-26
+          2025-11-25
         ].freeze
 
         def invoke

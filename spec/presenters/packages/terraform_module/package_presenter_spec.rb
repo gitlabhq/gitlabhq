@@ -35,10 +35,11 @@ RSpec.describe ::Packages::TerraformModule::PackagePresenter, feature_category: 
       package.as_json.merge(
         'terraform_module_metadatum' => package.terraform_module_metadatum.as_json,
         'package_files' => [
-          package_file.as_json.merge(
-            'download_path' => package_file.download_path,
-            'pipelines' => [pipeline_hash]
-          )
+          package_file.as_json(only: [:id, :file_name])
+            .merge(
+              'download_path' => package_file.download_path,
+              'pipelines' => [pipeline_hash]
+            )
         ],
         'pipeline' => pipeline_hash,
         'pipelines' => [pipeline_hash]

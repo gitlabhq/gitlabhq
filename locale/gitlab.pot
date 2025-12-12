@@ -6901,6 +6901,15 @@ msgstr ""
 msgid "AiImpactAnalytics|Data available after upgrade to GitLab 18.3. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "AiImpactAnalytics|Data available after upgrade to GitLab 18.7. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "AiImpactAnalytics|Duo Agent Platform chats"
+msgstr ""
+
+msgid "AiImpactAnalytics|Duo Agent Platform flows"
+msgstr ""
+
 msgid "AiImpactAnalytics|Duo Chat usage"
 msgstr ""
 
@@ -6920,6 +6929,12 @@ msgid "AiImpactAnalytics|Number of Duo Code Review comments."
 msgstr ""
 
 msgid "AiImpactAnalytics|Number of Duo Code Review requests."
+msgstr ""
+
+msgid "AiImpactAnalytics|Number of agent flows (excluding chats) executed through GitLab Duo Agent Platform."
+msgstr ""
+
+msgid "AiImpactAnalytics|Number of chat sessions initiated through GitLab Duo Agent Platform."
 msgstr ""
 
 msgid "AiImpactAnalytics|Number of contributors who used any GitLab Duo feature."
@@ -25430,10 +25445,19 @@ msgstr ""
 msgid "DuoAgentsPlatform|An error occurred while fetching users."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Are you sure you want to cancel this session? This action cannot be undone."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Are you sure you want to delete this trigger? This action cannot be undone."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Automate"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Cancel session"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Cancel session?"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Concise view"
@@ -25500,6 +25524,9 @@ msgid "DuoAgentsPlatform|Event Type"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Event types"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Failed to cancel session. Please try again."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Failed to delete trigger."
@@ -25607,6 +25634,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Service account user"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Session has been cancelled successfully."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Sessions"
 msgstr ""
 
@@ -25650,6 +25680,9 @@ msgid "DuoAgentsPlatform|Unknown"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Write file"
+msgstr ""
+
+msgid "DuoAgentsPlatform|You do not have permission to cancel this session."
 msgstr ""
 
 msgid "DuoAgentsPlatform|⚠️ Create a unique service account for each project."
@@ -60593,6 +60626,9 @@ msgstr ""
 msgid "SecurityOrchestration|%{strongStart}Run customized GitLab security templates%{strongEnd} across my projects."
 msgstr ""
 
+msgid "SecurityOrchestration|%{type}: %{boldStart}%{value}%{boldEnd}"
+msgstr ""
+
 msgid "SecurityOrchestration|(%{groups})"
 msgstr ""
 
@@ -60785,6 +60821,12 @@ msgstr ""
 msgid "SecurityOrchestration|Automate %{strongStart}vulnerability management%{strongEnd} workflows."
 msgstr ""
 
+msgid "SecurityOrchestration|Automatically dismiss vulnerabilities when they match all of the following criteria:"
+msgstr ""
+
+msgid "SecurityOrchestration|Automatically dismiss vulnerabilities with a risk level of %{risk} when they match all of the following criteria:"
+msgstr ""
+
 msgid "SecurityOrchestration|Automatically selected runners"
 msgstr ""
 
@@ -60891,6 +60933,9 @@ msgid "SecurityOrchestration|Create new project with the new policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Create security policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Criteria were not saved in correct format."
 msgstr ""
 
 msgid "SecurityOrchestration|Critical business deadline"
@@ -61140,6 +61185,9 @@ msgid "SecurityOrchestration|Invalid Compliance Framework ID(s)"
 msgstr ""
 
 msgid "SecurityOrchestration|Invalid branch type detected - rule will not be applied."
+msgstr ""
+
+msgid "SecurityOrchestration|Invalid criteria format"
 msgstr ""
 
 msgid "SecurityOrchestration|Invalid policy"
@@ -61433,6 +61481,9 @@ msgid "SecurityOrchestration|Roles"
 msgstr ""
 
 msgid "SecurityOrchestration|Roles (%{count})"
+msgstr ""
+
+msgid "SecurityOrchestration|Rule %{number}"
 msgstr ""
 
 msgid "SecurityOrchestration|Rule mode"

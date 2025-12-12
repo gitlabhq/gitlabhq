@@ -2133,6 +2133,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       let!(:pipeline) { create(:ci_empty_pipeline, project: project, user: user, ref: merge_request.source_branch, sha: merge_request.diff_head_sha) }
       let!(:pipeline2) { create(:ci_empty_pipeline, project: project) }
 
+      it_behaves_like 'authorizing granular token permissions', :read_merge_request_pipeline do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines", personal_access_token: pat)
+        end
+      end
+
       it 'returns a paginated array of corresponding pipelines' do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines")
 
@@ -2231,6 +2238,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect { request }.to change(Ci::Pipeline, :count).by(1)
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_a Hash
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :create_merge_request_pipeline do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines", personal_access_token: pat)
+        end
       end
 
       context 'when async is requested', :sidekiq_inline do

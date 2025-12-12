@@ -95,6 +95,7 @@ RSpec.describe API::Mcp, 'Initialize request', feature_category: :mcp_server do
         expect(json_response['error']['code']).to eq(-32602)
         expect(json_response['error']['message']).to eq('Invalid params')
         expect(json_response['error']['data']['params']).to include('Unsupported protocol version')
+        expect(json_response['error']['data']['params']).to include('2025-11-25')
         expect(json_response['error']['data']['params']).to include('2025-06-18')
         expect(json_response['error']['data']['params']).to include('2025-03-26')
         expect(json_response['error']['data']['params']).to include('2024-11-05')
@@ -116,6 +117,7 @@ RSpec.describe API::Mcp, 'Initialize request', feature_category: :mcp_server do
         expect(json_response['error']['data']['params']).to include('protocolVersion')
         expect(json_response['error']['data']['params']).to include('2025-06-18')
         expect(json_response['error']['data']['params']).to include('2025-03-26')
+        expect(json_response['error']['data']['params']).to include('2025-11-25')
       end
     end
   end

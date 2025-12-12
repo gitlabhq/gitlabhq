@@ -2,6 +2,9 @@
 #   scripts/lint/unused_methods.rb, however subsequent research shows
 #   them to be false positives, and should be ignored when running that script.
 #
+x509_commit:
+  file: app/models/commit_signatures/x509_commit_signature.rb
+  reason: Accessed from lib/tasks/gitlab/x509/update.rake
 sort_value_stars_desc:
   file: app/helpers/sorting_titles_values_helper.rb
   reason: Used to build sorting dropdowns in app/helpers/sorting_helper.rb

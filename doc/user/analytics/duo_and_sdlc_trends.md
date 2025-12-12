@@ -75,6 +75,7 @@ The **Metric trends** table displays metrics for the last six months, with month
 - Duo RCA usage [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/556726) in GitLab 18.4. Feature flag `duo_rca_usage_rate` removed.
 - Duo features usage [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207562) in GitLab 18.6.
 - Duo Code Review requests and GitLab Duo Code Review comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573979) in GitLab 18.7.
+- Duo Agent Platform chats and flows [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/583375) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -116,6 +117,16 @@ The **Metric trends** table displays metrics for the last six months, with month
   Usage data for Duo Code Review requests and comments is calculated with data starting from GitLab 18.3.
 
   {{< /alert >}}
+
+- **Duo Agent Platform chats**: Number of chat sessions initiated through GitLab Duo Agent Platform.
+
+- **Duo Agent Platform flows**: Number of agent flows (excluding chats) executed through GitLab Duo Agent Platform.
+
+{{< alert type="note" >}}
+
+Usage data for Duo Agent Platform chats and flows is calculated with data starting from GitLab 18.7.
+
+{{< /alert >}}
 
 ### Development metrics
 

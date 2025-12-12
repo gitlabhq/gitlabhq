@@ -749,6 +749,108 @@ Example response:
 }
 ```
 
+### Test connection to an upstream registry with override parameters
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/565897) in GitLab 18.7 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+
+{{< /history >}}
+
+Tests the connection to an existing Maven upstream registry with optional parameter overrides.
+
+This way, you can test changes to the URL, username, or password before updating the upstream registry configuration.
+
+```plaintext
+POST /virtual_registries/packages/maven/upstreams/:id/test
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | Yes | The ID of the upstream registry. |
+| `password` | string | No | The override password for testing. |
+| `url` | string | No | The override URL for testing. If provided, tests connection to this URL instead of the upstream's configured URL. |
+| `username` | string | No | The override username for testing. |
+
+#### How the test works
+
+The endpoint performs a HEAD request to the upstream URL
+using the test path to validate connectivity and authentication.
+If the upstream has a cached artifact, the relative path of the
+upstream is used for testing. Otherwise, a placeholder path is used.
+
+The test behavior depends on the parameters provided:
+
+- No parameters: Tests the upstream with its current configuration (existing URL, username, and password)
+- URL override: Tests connectivity to the new URL, username and password must be provided together or not at all
+- Credential override: Tests the existing URL with new credentials
+
+The response received from the HEAD request is interpreted as follows:
+
+| Upstream Response | Meaning | Result |
+|:------------------|:--------|:-------|
+| 2XX | Success. Upstream accessible | `{ "success": true }` |
+| 404 | Success. Upstream accessible, but test artifact not found | `{ "success": true }` |
+| 401 | Authentication failed | `{ "success": false, "result": "Error: 401 - Unauthorized" }` |
+| 403 | Access forbidden | `{ "success": false, "result": "Error: 403 - Forbidden" }` |
+| 5XX | Upstream server error | `{ "success": false, "result": "Error: 5XX - Server Error" }` |
+| Network errors | Connection or timeout issues | `{ "success": false, "result": "Error: Connection timeout" }` |
+
+{{< alert type="note" >}}
+
+Both `2XX` (found) and `404` (not found) responses indicate successful connectivity and authentication to the upstream registry. The test does not validate whether a specific artifact exists.
+
+{{< /alert >}}
+
+Example request (test existing configuration):
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/upstreams/1/test"
+```
+
+Example request (test with URL override and no credentials):
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"url": "<https://new-repo.example.com/maven2>"}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/upstreams/1/test"
+```
+
+Example request (test with URL and credential override):
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"url": "<https://new-repo.example.com/maven2>", "username": "<newuser>", "password": "<newpass>"}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/upstreams/1/test"
+```
+
+Example request (test with credential override):
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"username": "<newuser>", "password": "<newpass>"}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/upstreams/1/test"
+```
+
+Example response:
+
+```json
+{
+  "success": true
+}
+```
+
 ## Manage cache entries
 
 Use the following endpoints to manage cache entries for a Maven virtual registry.

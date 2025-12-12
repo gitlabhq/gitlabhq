@@ -46,7 +46,7 @@ GitLab Duo features (like GitLab Duo Chat) as well.
 [GitLab Duo Core](feature_summary.md) is included with Premium and Ultimate subscriptions.
 
 - If you are an existing customer from GitLab 17.11 or earlier, you must turn on features for GitLab Duo Core.
-- If you are a new customer in GitLab 18.0 or later, GitLab Core is automatically turned on and no further action is needed.
+- If you are a new customer in GitLab 18.0 or later, GitLab Duo Core is automatically turned on and no further action is needed.
 
 If you were an existing customer with a Premium or Ultimate subscription before May 15, 2025,
 when you upgrade to GitLab 18.0 or later, to use GitLab Duo Core, you must turn it on.

@@ -67,6 +67,7 @@ Gitlab::Application.config.to_prepare do
         Search::Zoekt::Task,
         Ai::EventsCount,
         Ai::UsageEvent,
+        Geo::PipelineArtifactState,
         Vulnerabilities::Archive,
         Vulnerabilities::ArchivedRecord,
         Vulnerabilities::ArchiveExport,

@@ -2181,6 +2181,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/graphql/ee/types/todo_target_enum.rb'
     - 'ee/app/graphql/ee/types/todoable_interface.rb'
     - 'ee/app/graphql/ee/types/user_merge_request_interaction_type.rb'
+    - 'ee/app/graphql/ee/types/user_status_type.rb'
     - 'ee/app/graphql/ee/types/user_type.rb'
     - 'ee/app/graphql/mutations/app_sec/dast/site_profiles/shared_arguments.rb'
     - 'ee/app/graphql/mutations/app_sec/fuzzing/coverage/corpus/create.rb'

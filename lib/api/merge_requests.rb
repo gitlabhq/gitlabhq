@@ -655,6 +655,7 @@ module API
         requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request.'
       end
       route_setting :mcp, tool_name: :get_merge_request_pipelines, params: [:id, :merge_request_iid, :per_page, :page]
+      route_setting :authorization, permissions: :read_merge_request_pipeline, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/pipelines', urgency: :low, feature_category: :pipeline_composition do
         pipelines = merge_request_pipelines_with_access
         present paginate(pipelines), with: Entities::Ci::PipelineBasic
@@ -674,6 +675,7 @@ module API
         optional :async, type: Boolean, default: false,
           desc: 'Indicates if the merge request pipeline creation should be performed asynchronously. If set to `true`, the pipeline will be created outside of the API request and the endpoint will return an empty response with a `202` status code. When the response is `202`, the creation can still fail outside of this request.'
       end
+      route_setting :authorization, permissions: :create_merge_request_pipeline, boundary_type: :project
       post ':id/merge_requests/:merge_request_iid/pipelines', urgency: :low, feature_category: :pipeline_composition do
         pipeline = nil
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
