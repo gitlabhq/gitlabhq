@@ -53,12 +53,14 @@ the resulting commits will show they were created by the service account on your
 
 ## Where composite identity is used
 
-Composite identity is used for:
+Composite identity is used when flows and agents execute on runners. This list includes:
 
 - Foundational flows.
 - Custom flows.
 - External agents.
 - Any flow started through the endpoint `api/v4/ai/duo_workflows/workflows`.
+
+Composite identity does not apply to GitLab Duo Chat (Agentic) in the UI and IDE.
 
 ## How composite identity works
 
@@ -71,7 +73,7 @@ The token that authenticates requests is a composite of two identities:
 
 This composite identity ensures that any activities authored by the GitLab Duo Agent Platform are
 correctly attributed to the service account, while preventing
-[privilege escalation](https://en.wikipedia.org/wiki/Privilege_escalation) for the human user.
+[privilege escalation](https://en.wikipedia.org/wiki/Privilege_escalation) by either the human user or the service account.
 
 ## Composite identity workflow
 
@@ -81,7 +83,7 @@ The composite identity is part of the workflow.
    - No composite identity-related changes occur.
 1. Enable the flow for the top-level group.
    - You must be an Owner to enable it.
-   - A service account is automatically created. (The name is similar to `ai-flowname-groupname`.)
+   - A service account is created in the top-level group. (The name is similar to `ai-flowname-groupname`.)
 1. Enable the flow for your project.
    - The flow must be enabled in the top-level group.
    - You must be a Maintainer to enable it in the project.

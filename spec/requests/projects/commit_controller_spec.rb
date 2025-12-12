@@ -111,6 +111,234 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
     end
   end
 
+  describe 'POST #create_discussions' do
+    let_it_be(:sha) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
+    let_it_be(:commit) { project.commit_by(oid: sha) }
+
+    let(:params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: sha
+      }
+    end
+
+    let(:send_request) { post discussions_namespace_project_commit_path(params), params: request_params }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(rapid_diffs_on_commit_show: false)
+      end
+
+      let(:request_params) { { note: { note: 'Test note' } } }
+
+      it 'returns 404' do
+        send_request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when user cannot create notes' do
+      let(:request_params) { { note: { note: 'Test note' } } }
+
+      before do
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?).with(user, :create_note, anything).and_return(false)
+      end
+
+      it 'does not allow note creation' do
+        expect { send_request }.not_to change { Note.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when creating a timeline discussion' do
+      let(:request_params) do
+        {
+          note: {
+            note: 'This is a timeline discussion',
+            type: 'DiscussionNote'
+          }
+        }
+      end
+
+      it 'creates a new discussion successfully' do
+        expect { send_request }.to change { Note.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.content_type).to eq('application/json; charset=utf-8')
+
+        json_response = Gitlab::Json.parse(response.body)
+        expect(json_response).to have_key('discussion')
+
+        discussion = json_response['discussion']
+        expect(discussion).to have_key('id')
+        expect(discussion).to have_key('notes')
+        expect(discussion['notes'].first['note']).to eq('This is a timeline discussion')
+      end
+    end
+
+    context 'when creating a positioned discussion' do
+      let(:diff_file) { commit.diffs.diff_files.find { |f| f.new_path == 'files/ruby/popen.rb' } }
+      let(:position_data) do
+        {
+          old_line: nil,
+          new_line: 14,
+          new_path: diff_file.new_path,
+          old_path: diff_file.old_path
+        }
+      end
+
+      let(:request_params) do
+        {
+          note: {
+            note: 'This is a positioned discussion',
+            position: position_data
+          }
+        }
+      end
+
+      it 'creates a positioned discussion successfully' do
+        expect { send_request }.to change { Note.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        json_response = Gitlab::Json.parse(response.body)
+
+        discussion = json_response['discussion']
+        expect(discussion['diff_discussion']).to be true
+        expect(discussion['notes'].first['note']).to eq('This is a positioned discussion')
+      end
+
+      context 'on a deleted line' do
+        let_it_be(:sha) { "d59c60028b053793cecfb4022de34602e1a9218e" }
+        let(:diff_file) { commit.diffs.diff_files.find { |f| f.old_path == 'files/js/commit.js.coffee' } }
+
+        let(:position_data) do
+          {
+            old_line: 1,
+            new_line: nil,
+            new_path: diff_file.new_path,
+            old_path: diff_file.old_path
+          }
+        end
+
+        let(:request_params) do
+          {
+            note: {
+              note: 'Comment on deleted line',
+              position: position_data
+            }
+          }
+        end
+
+        it 'creates a positioned discussion on old line' do
+          expect { send_request }.to change { Note.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          json_response = Gitlab::Json.parse(response.body)
+
+          discussion = json_response['discussion']
+          expect(discussion['diff_discussion']).to be true
+          expect(discussion['notes'].first['note']).to eq('Comment on deleted line')
+        end
+      end
+
+      context 'with incomplete position data' do
+        let(:position_data) do
+          {
+            old_path: 'files/ruby/popen.rb'
+          }
+        end
+
+        it 'returns validation error from Notes::CreateService' do
+          send_request
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          json_response = Gitlab::Json.parse(response.body)
+          expect(json_response).to have_key('errors')
+        end
+      end
+
+      context 'with explicit DiffNote type' do
+        let(:request_params) do
+          {
+            note: {
+              note: 'This is a positioned discussion',
+              type: 'DiffNote',
+              position: position_data
+            }
+          }
+        end
+
+        it 'creates a positioned discussion with provided DiffNote type' do
+          expect { send_request }.to change { Note.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          json_response = Gitlab::Json.parse(response.body)
+          expect(json_response['discussion']['diff_discussion']).to be true
+        end
+      end
+    end
+
+    context 'when replying to existing DiffNote discussion' do
+      let!(:existing_note) { create(:diff_note_on_commit, project: project, commit_id: sha) }
+
+      let(:request_params) do
+        {
+          note: {
+            note: 'This is a reply'
+          },
+          in_reply_to_discussion_id: existing_note.discussion_id
+        }
+      end
+
+      it 'creates a reply to existing discussion' do
+        expect { send_request }.to change { Note.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        json_response = Gitlab::Json.parse(response.body)
+
+        discussion = json_response['discussion']
+        expect(discussion['id']).to eq(existing_note.discussion_id)
+        expect(discussion['diff_discussion']).to be true
+        expect(discussion['notes'].length).to eq(2)
+
+        original_note = discussion['notes'].first
+        expect(original_note['id']).to eq(existing_note.id.to_s)
+
+        reply_note = discussion['notes'].second
+        expect(reply_note['note']).to eq('This is a reply')
+        expect(reply_note['discussion_id']).to eq(existing_note.discussion_id)
+      end
+
+      context 'with non-existent discussion ID' do
+        let(:request_params) do
+          {
+            note: {
+              note: 'This is a reply',
+              type: 'DiscussionNote'
+            },
+            in_reply_to_discussion_id: 'non-existent-id'
+          }
+        end
+
+        it 'returns discussion not found error' do
+          send_request
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          json_response = Gitlab::Json.parse(response.body)
+          expect(json_response['errors']).to eq('Discussion not found')
+        end
+      end
+    end
+  end
+
   describe '#rapid_diffs' do
     let_it_be(:sha) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
     let_it_be(:commit) { project.commit_by(oid: sha) }

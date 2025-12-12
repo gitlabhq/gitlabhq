@@ -42,7 +42,7 @@ class UserRecentEventsFinder
 
     event_filter.apply_filter(target_events
       .with_associations
-      .limit_recent(limit, params[:offset])
+      .limit_recent(limit, offset)
       .order_created_desc)
   end
 
@@ -66,7 +66,7 @@ class UserRecentEventsFinder
       .new(**query_builder_params)
       .execute
       .limit(limit)
-      .offset(params[:offset] || 0)
+      .offset(offset)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -77,8 +77,14 @@ class UserRecentEventsFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   def limit
-    return DEFAULT_LIMIT unless params[:limit].present?
+    return DEFAULT_LIMIT unless params[:limit].present? && params[:limit].to_i >= 0
 
     [params[:limit].to_i, MAX_LIMIT].min
+  end
+
+  def offset
+    return 0 unless params[:offset].present? && params[:offset].to_i >= 0
+
+    params[:offset].to_i
   end
 end

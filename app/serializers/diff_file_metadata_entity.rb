@@ -12,4 +12,5 @@ class DiffFileMetadataEntity < Grape::Entity
   expose :submodule?, as: :submodule
   expose :file_identifier_hash
   expose :file_hash
+  expose :code_review_id
 end

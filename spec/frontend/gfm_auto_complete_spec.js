@@ -639,6 +639,30 @@ describe('GfmAutoComplete', () => {
         },
       ]);
     });
+
+    it('should include composite_identity_enforced field', () => {
+      expect(
+        membersBeforeSave([
+          {
+            username: 'my-user',
+            name: 'My User',
+            avatar_url: './users.jpg',
+            type: 'User',
+            composite_identity_enforced: true,
+          },
+        ]),
+      ).toEqual([
+        {
+          username: 'my-user',
+          avatarTag:
+            '<img src="./users.jpg" alt="my-user" class="avatar  avatar-inline s24 gl-mr-2"/>',
+          title: 'My User',
+          search: 'MyUser my-user',
+          icon: '',
+          compositeIdentityEnforced: true,
+        },
+      ]);
+    });
   });
 
   describe('Issues.insertTemplateFunction', () => {
@@ -756,6 +780,37 @@ describe('GfmAutoComplete', () => {
         ).toBe(
           '<li>IMG my-group <small><span class="badge badge-warning badge-pill gl-badge sm gl-ml-2">Busy</span></small> <i class="icon"/></li>',
         );
+      });
+
+      describe('when compositeIdentityEnforced is true', () => {
+        it('should add composite identity enforced badge', () => {
+          const result = GfmAutoComplete.Members.templateFunction({
+            avatarTag: 'IMG',
+            username: 'my-user',
+            title: '',
+            icon: '',
+            availabilityStatus: '',
+            compositeIdentityEnforced: true,
+          });
+          expect(result).toContain('IMG my-user');
+          expect(result).toContain('Agent');
+          expect(result).toContain('gl-badge');
+        });
+      });
+
+      describe('when compositeIdentityEnforced is false', () => {
+        it('should not add composite identity enforced badge if compositeIdentityEnforced is false', () => {
+          expect(
+            GfmAutoComplete.Members.templateFunction({
+              avatarTag: 'IMG',
+              username: 'my-user',
+              title: '',
+              icon: '',
+              availabilityStatus: '',
+              compositeIdentityEnforced: false,
+            }),
+          ).toBe('<li>IMG my-user <small></small> </li>');
+        });
       });
 
       describe('nameOrUsernameStartsWith', () => {

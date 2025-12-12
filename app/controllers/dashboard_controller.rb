@@ -87,10 +87,8 @@ class DashboardController < Dashboard::ApplicationController
         current_user.authorized_projects
       end
 
-    finder_params = {
-      offset: params[:offset].to_i,
-      filter: event_filter
-    }
+    finder_params = { filter: event_filter }
+    finder_params[:offset] = [params[:offset].to_i, 0].max
 
     if params[:limit].present?
       limit = params[:limit].to_i

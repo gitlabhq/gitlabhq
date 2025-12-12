@@ -14,7 +14,8 @@ RSpec.describe UserRecentEventsFinder do
   let_it_be(:issue) { create(:issue, project: public_project) }
 
   let(:limit) { nil }
-  let(:params) { { limit: limit } }
+  let(:offset) { nil }
+  let(:params) { { limit: limit, offset: offset } }
 
   subject(:finder) { described_class.new(current_user, project_owner, nil, params) }
 
@@ -110,6 +111,8 @@ RSpec.describe UserRecentEventsFinder do
 
         where(:limit, :offset, :ordered_expected_events) do
           nil | nil   | lazy { [public_event_second_user, internal_event_second_user, private_event_second_user, public_event, internal_event, private_event] }
+          -1  | 0     | lazy { [public_event_second_user, internal_event_second_user, private_event_second_user, public_event, internal_event, private_event] }
+          1   | -1    | lazy { [public_event_second_user] }
           2   | nil   | lazy { [public_event_second_user, internal_event_second_user] }
           nil | 4     | lazy { [internal_event, private_event] }
           2   | 2     | lazy { [private_event_second_user, public_event] }
@@ -235,6 +238,14 @@ RSpec.describe UserRecentEventsFinder do
         stub_const("#{described_class}::MAX_LIMIT", 3)
       end
 
+      context 'when limit is not present' do
+        let(:params) { { offset: offset } }
+
+        it 'returns events limited to DEFAULT_LIMIT' do
+          expect(finder.execute.size).to eq(described_class::DEFAULT_LIMIT)
+        end
+      end
+
       context 'when limit is not set' do
         it 'returns events limited to DEFAULT_LIMIT' do
           expect(finder.execute.size).to eq(described_class::DEFAULT_LIMIT)
@@ -258,6 +269,66 @@ RSpec.describe UserRecentEventsFinder do
 
         it 'returns events limited to MAX_LIMIT' do
           expect(finder.execute.size).to eq(described_class::MAX_LIMIT)
+        end
+      end
+
+      context 'when limit is set to a negative value' do
+        let(:limit) { -1 }
+
+        it 'returns events limited to MAX_LIMIT' do
+          expect(finder.execute.size).to eq(described_class::DEFAULT_LIMIT)
+        end
+      end
+
+      context 'when limit is set to a non-numeric value' do
+        let(:limit) { 'woof' }
+
+        it 'returns no events' do
+          expect(finder.execute.size).to eq(0)
+        end
+      end
+    end
+
+    context 'offset' do
+      before do
+        stub_const("#{described_class}::DEFAULT_LIMIT", 1)
+      end
+
+      context 'when offset is valid' do
+        let(:offset) { 1 }
+
+        it 'returns events limited to specified offset' do
+          expect(finder.execute).to contain_exactly(internal_event)
+        end
+      end
+
+      context 'when offset is not present' do
+        let(:params) { { limit: limit } }
+
+        it 'returns events starting from the offset 0' do
+          expect(finder.execute).to contain_exactly(public_event)
+        end
+      end
+
+      context 'when offset is not set' do
+        it 'returns events starting from the offset 0' do
+          expect(finder.execute).to contain_exactly(public_event)
+        end
+      end
+
+      context 'when offset is set to a non-numeric value' do
+        let(:offset) { 'woof' }
+
+        it 'returns events starting from the offset 0' do
+          expect(finder.execute).to contain_exactly(public_event)
+        end
+      end
+
+      context 'when offset is set to a negative value' do
+        let(:offset) { -1 }
+
+        it 'returns events starting from the offset 0' do
+          expect(finder.execute).to contain_exactly(public_event)
         end
       end
     end

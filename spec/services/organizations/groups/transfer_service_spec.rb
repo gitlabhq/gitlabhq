@@ -703,7 +703,7 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
         group.add_developer(user2)
       end
 
-      it 'returns error ServiceResponse' do
+      it 'returns error ServiceResponse with appropriate message' do
         result = service.execute
 
         expect(result).to be_error
@@ -730,6 +730,43 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
       end
     end
 
+    context 'when old organization does not exist' do
+      let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
+
+      before_all do
+        group.add_maintainer(user1)
+      end
+
+      before do
+        allow(Organizations::Organization).to receive(:find_by_id).and_return(nil)
+      end
+
+      it 'returns error ServiceResponse with appropriate message' do
+        result = service.execute
+
+        expect(result).to be_error
+        expect(result.message).to eq(
+          format(
+            s_('TransferOrganization|Group organization transfer failed: %{error_message}'),
+            error_message:
+              s_('TransferOrganization|Cannot transfer users because the existing organization could not be found.')
+          )
+        )
+      end
+
+      it 'does not update organization_id' do
+        original_organization_id = group.organization_id
+
+        service.execute
+
+        expect(group.reload.organization_id).to eq(original_organization_id)
+      end
+
+      it 'does not update user organization_id' do
+        expect { service.execute }.not_to change { user1.reload.organization_id }
+      end
+    end
+
     context 'when an exception occurs during transfer' do
       let_it_be_with_refind(:subgroup) { create(:group, parent: group, organization: old_organization) }
       let_it_be_with_refind(:nested_subgroup) { create(:group, parent: subgroup, organization: old_organization) }
@@ -745,8 +782,8 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
       let(:error_message) { 'User transfer failed' }
 
       before do
-        allow_next_instance_of(described_class) do |group_service|
-          allow(group_service).to receive(:transfer_users).and_raise(ActiveRecord::RecordNotUnique, error_message)
+        allow_next_instance_of(Organizations::Users::TransferService) do |user_transfer_service|
+          allow(user_transfer_service).to receive(:execute).and_raise(ActiveRecord::RecordNotUnique, error_message)
         end
       end
 

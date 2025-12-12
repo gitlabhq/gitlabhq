@@ -20,13 +20,12 @@
       %div
         %h2.gl-text-size-h2.gl-mt-0
           = _('Source branch')
-        #js-source-project-dropdown{ data: { current_project: { value: f.object.source_project_id.to_s, text: f.object.source_project.full_path, refsUrl: refs_project_path(f.object.source_project) }.to_json, current_branch: { value: f.object.source_branch.presence, text: f.object.source_branch.presence }.to_json } }
-
+        #js-source-project-dropdown{ data: { current_project: { value: f.object.source_project_id.to_s, text: f.object.source_project.full_path, refsUrl: refs_project_path(f.object.source_project) }.to_json, current_branch: { value: f.object.source_branch.presence, text: f.object.source_branch.presence }.to_json, branch_error_description_id: @merge_request.errors[:base].present? ? 'error_explanation' : nil } }
     .gl-col-lg-6
       %div
         %h2.gl-text-size-h2.gl-mt-0
           = _('Target branch')
-        #js-target-project-dropdown{ data: { target_projects_path: target_projects_project_json_compare_index_path(@project), current_project: { value: f.object.target_project_id.to_s, text: f.object.target_project.full_path, refsUrl: refs_project_path(f.object.target_project) }.to_json, current_branch: { value: f.object.target_branch.presence, text: f.object.target_branch.presence }.to_json } }
+        #js-target-project-dropdown{ data: { target_projects_path: target_projects_project_json_compare_index_path(@project), current_project: { value: f.object.target_project_id.to_s, text: f.object.target_project.full_path, refsUrl: refs_project_path(f.object.target_project) }.to_json, current_branch: { value: f.object.target_branch.presence, text: f.object.target_branch.presence }.to_json, branch_error_description_id: @merge_request.errors[:base].present? ? 'error_explanation' : nil } }
   .row
     .gl-col-12
       = f.submit _('Compare branches and continue'), data: { testid: 'compare-branches-button' }, pajamas_button: true

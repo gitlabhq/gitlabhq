@@ -335,11 +335,12 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
         end
 
         it 'shows author as busy in the assignee dropdown' do
+          expect(page).not_to have_css('[data-testid="busy-badge"]')
+
           within_testid('work-item-assignees') do
             click_button('Edit')
-            select_listbox_item("#{user.name} Busy")
 
-            expect(page).to have_link(user.name)
+            expect(page).to have_css('[data-testid="busy-badge"]')
           end
         end
       end

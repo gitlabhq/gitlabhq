@@ -24,6 +24,8 @@ module Packages
         response = ::Packages::Npm::ProcessTemporaryPackageFileService.new(package_file:, user:, params:).execute
         process_package_error_service_response(package_file: package_file, message: response.message) if response.error?
       rescue StandardError => exception
+        raise exception unless package_file
+
         process_package_file_error(package_file: package_file, exception: exception)
       end
     end

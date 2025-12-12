@@ -170,5 +170,17 @@ RSpec.describe Packages::Helm::ExtractionWorker, type: :worker, feature_category
 
       it_behaves_like 'handling error', error_class: StandardError, error_message: 'Unexpected error: StandardError'
     end
+
+    context 'with the error when fetching a package file' do
+      let(:exception) { ActiveRecord::QueryCanceled.new('ERROR: canceling statement due to statement timeout') }
+
+      before do
+        allow(::Packages::PackageFile).to receive(:find_by_id).with(package_file_id).and_raise(exception)
+      end
+
+      it 'raises the error' do
+        expect { subject }.to raise_error(exception.class)
+      end
+    end
   end
 end

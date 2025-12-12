@@ -163,11 +163,7 @@ export default {
               <span v-if="showPath" class="gl-truncate">{{ itemContent.project.path }}</span
               ><span>{{ itemContent.reference }}</span>
             </span>
-            <item-milestone
-              v-if="milestone"
-              :milestone="milestone"
-              class="gl-hidden gl-cursor-help gl-text-subtle @sm/panel:gl-block"
-            />
+            <item-milestone v-if="milestone" :milestone="milestone" />
           </div>
           <div class="item-attributes-area gl-flex gl-items-center gl-gap-3">
             <div

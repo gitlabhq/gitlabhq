@@ -20076,6 +20076,22 @@ CREATE SEQUENCE keys_id_seq
 
 ALTER SEQUENCE keys_id_seq OWNED BY keys.id;
 
+CREATE TABLE knowledge_graph_enabled_namespaces (
+    id bigint NOT NULL,
+    root_namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE knowledge_graph_enabled_namespaces_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE knowledge_graph_enabled_namespaces_id_seq OWNED BY knowledge_graph_enabled_namespaces.id;
+
 CREATE TABLE label_links (
     id bigint NOT NULL,
     label_id bigint,
@@ -32658,6 +32674,8 @@ ALTER TABLE ONLY job_environments ALTER COLUMN id SET DEFAULT nextval('job_envir
 
 ALTER TABLE ONLY keys ALTER COLUMN id SET DEFAULT nextval('keys_id_seq'::regclass);
 
+ALTER TABLE ONLY knowledge_graph_enabled_namespaces ALTER COLUMN id SET DEFAULT nextval('knowledge_graph_enabled_namespaces_id_seq'::regclass);
+
 ALTER TABLE ONLY label_links ALTER COLUMN id SET DEFAULT nextval('label_links_id_seq'::regclass);
 
 ALTER TABLE ONLY label_priorities ALTER COLUMN id SET DEFAULT nextval('label_priorities_id_seq'::regclass);
@@ -35955,6 +35973,9 @@ ALTER TABLE ONLY job_environments
 
 ALTER TABLE ONLY keys
     ADD CONSTRAINT keys_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY knowledge_graph_enabled_namespaces
+    ADD CONSTRAINT knowledge_graph_enabled_namespaces_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY label_links
     ADD CONSTRAINT label_links_pkey PRIMARY KEY (id);
@@ -42533,6 +42554,8 @@ CREATE INDEX index_keys_on_last_used_at ON keys USING btree (last_used_at DESC N
 CREATE INDEX index_keys_on_organization_id ON keys USING btree (organization_id);
 
 CREATE INDEX index_keys_on_user_id ON keys USING btree (user_id);
+
+CREATE UNIQUE INDEX index_knowledge_graph_enabled_namespaces_on_root_namespace_id ON knowledge_graph_enabled_namespaces USING btree (root_namespace_id);
 
 CREATE UNIQUE INDEX index_kubernetes_namespaces_on_cluster_project_environment_id ON clusters_kubernetes_namespaces USING btree (cluster_id, project_id, environment_id);
 
@@ -50377,6 +50400,9 @@ ALTER TABLE ONLY analytics_cycle_analytics_group_stages
 
 ALTER TABLE ONLY oauth_device_grants
     ADD CONSTRAINT fk_308d5b76fe FOREIGN KEY (application_id) REFERENCES oauth_applications(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY knowledge_graph_enabled_namespaces
+    ADD CONSTRAINT fk_30abbb6db4 FOREIGN KEY (root_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_group_links
     ADD CONSTRAINT fk_30ec712bec FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;

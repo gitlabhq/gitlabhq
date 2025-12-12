@@ -96,6 +96,8 @@ When your merge request is ready to be reviewed, use GitLab Duo Code Review to p
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=SG3bhD1YjeY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW&index=2)
 
+Learn about the new [GitLab Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md).
+
 Provide feedback on this feature in issue [517386](https://gitlab.com/gitlab-org/gitlab/-/issues/517386).
 
 Data usage: When you use this feature, the following data is sent to the large language model:
@@ -150,13 +152,6 @@ To enable `@GitLabDuo` to automatically review merge requests:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
 Use group or application settings to enable automatic reviews for multiple projects.
 
 Prerequisites:
@@ -210,7 +205,7 @@ To configure custom instructions:
          - <glob_pattern_1>
          - <glob_pattern_2>
          - !<exclude_pattern>  # Exclude files matching this pattern
-    instructions: |
+       instructions: |
          <your_custom_review_instructions>
    ```
 

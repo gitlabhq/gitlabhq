@@ -9,11 +9,13 @@ export const LOAD_TEST_DURATION = '50s';
 export const WARMUP_TEST_VUS = 1;
 export const WARMUP_TEST_DURATION = '10s';
 
-let projectId;
+let API_URL;
+
 export function setup() {
   const baseUrl = __ENV.GITLAB_URL || `http://gitlab.${__ENV.AI_GATEWAY_IP}.nip.io`;
   const token = __ENV.GITLAB_QA_ADMIN_ACCESS_TOKEN || '';
   const projectName = 'Test Seed Project';
+  const apiVersion = 'v4';
 
   // Search for the group by name
   const searchUrl = `${baseUrl}/api/v4/projects?search=${encodeURIComponent(projectName)}`;
@@ -32,14 +34,15 @@ export function setup() {
 
     if (targetProject) {
       console.log(`Found project '${projectName}' with ID: ${targetProject.id}`);
-      return { projectId: targetProject.id };
+      const apiUrl = `${apiVersion}/projects/${targetProject.id}/merge_requests`;
+      return { apiUrl };
     }
-    console.error(`Project '${projectName}' not found`);
-    return { projectId: '5' }; // Fallback to default
   }
-  console.error(`Failed to search for groups: ${res.status}`);
-  return { projectId: '1' }; // Fallback to default
+  console.error(`Failed to search for projects: ${res.status}`);
+  const apiUrl = `${apiVersion}/projects/1/merge_requests`; // Fallback to default
+  return { apiUrl };
 }
+
 export const options = {
   scenarios: {
     warmup: {
@@ -68,11 +71,11 @@ export const options = {
 
 export default function projectMergeRequestsTest(data) {
   const baseUrl = __ENV.GITLAB_URL || `http://gitlab.${__ENV.AI_GATEWAY_IP}.nip.io`;
-  const apiVersion = 'v4';
-  projectId = __ENV.PROJECT_ID || data.projectId;
   const token = __ENV.GITLAB_QA_ADMIN_ACCESS_TOKEN || '';
 
-  const url = `${baseUrl}/api/${apiVersion}/projects/${projectId}/merge_requests`;
+  API_URL = data.apiUrl;
+
+  const url = `${baseUrl}/api/${API_URL}`;
 
   const params = {
     headers: {

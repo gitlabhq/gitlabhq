@@ -21,6 +21,8 @@ module Packages
 
         ::Packages::Helm::ProcessFileService.new(channel, package_file).execute
       rescue StandardError => exception
+        raise exception unless package_file
+
         process_package_file_error(
           package_file: package_file,
           exception: exception

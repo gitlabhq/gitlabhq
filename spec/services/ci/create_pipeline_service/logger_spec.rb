@@ -188,6 +188,51 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
           )
         end
       end
+
+      context 'with spec:include reading inputs from project file' do
+        let_it_be(:other_project) { create(:project, :repository) }
+
+        let(:gitlab_ci_yaml) do
+          <<~YAML
+            spec:
+              include:
+                - project: '#{other_project.full_path}'
+                  ref: 'master'
+                  file: '/inputs/common.yml'
+            ---
+
+            test:
+              script: echo "Testing with $[[ inputs.environment ]]"
+          YAML
+        end
+
+        before_all do
+          other_project.repository.create_file(
+            other_project.first_owner,
+            'inputs/common.yml',
+            "inputs:\n  environment:\n    default: production\n",
+            message: 'Add inputs file',
+            branch_name: 'master'
+          )
+
+          other_project.add_developer(user)
+        end
+
+        it 'logs project file access and fetch metrics' do
+          expect(pipeline).to be_created_successfully
+
+          observations = service.logger.observations_hash
+
+          expect(observations).to include(
+            'config_file_project_validate_access_download_code_duration_s' => a_hash_including('count' => 1,
+              'sum' => a_kind_of(Numeric)),
+            'config_file_project_validate_access_duration_s' => a_hash_including('count' => 1,
+              'sum' => a_kind_of(Numeric)),
+            'config_file_fetch_project_content_duration_s' => a_hash_including('count' => 1,
+              'sum' => a_kind_of(Numeric))
+          )
+        end
+      end
     end
 
     context 'when the size exceeds the threshold' do

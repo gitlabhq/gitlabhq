@@ -75,13 +75,6 @@ Before you use a new Elasticsearch cluster in production, see
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-Support for Elasticsearch 7.x was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/583544)
-in GitLab 18.7 and is planned for removal in 18.10.
-
-{{< /alert >}}
-
 Advanced search works with the following versions of Elasticsearch.
 
 | GitLab version        | Elasticsearch version       |
@@ -93,13 +86,6 @@ Advanced search works with the following versions of Elasticsearch.
 Advanced search follows the [Elasticsearch end-of-life policy](https://www.elastic.co/support/eol).
 
 #### OpenSearch
-
-{{< alert type="warning" >}}
-
-Support for OpenSearch 1.x was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/554530)
-in GitLab 18.2 and is planned for removal in 18.10.
-
-{{< /alert >}}
 
 | GitLab version          | OpenSearch version             |
 |-------------------------|--------------------------------|

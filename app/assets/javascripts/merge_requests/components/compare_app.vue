@@ -126,6 +126,7 @@ export default {
           :toggle-class="toggleClass.branch"
           :data-qa-compare-side="compareSide"
           :disabled="disabled"
+          :aria-describedby="inputs.branch.ariaDescribedby"
           data-testid="compare-dropdown"
           @selected="selectBranch"
         />

@@ -265,6 +265,11 @@ module Gitlab
         Digest::SHA1.hexdigest(file_identifier)
       end
 
+      def code_review_id
+        Digest::SHA1.hexdigest("#{file_identifier}-#{blob&.id}")
+      end
+      strong_memoize_attr :code_review_id
+
       def diffable?
         diffable_by_attribute? && !text_with_binary_notice?
       end

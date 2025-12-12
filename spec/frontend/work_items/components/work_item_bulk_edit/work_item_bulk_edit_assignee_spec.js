@@ -152,6 +152,7 @@ describe('WorkItemBulkEditAssignee component', () => {
                     webUrl: 'rookie',
                     webPath: '/rookie',
                     status: null,
+                    compositeIdentityEnforced: false,
                   },
                 ],
               },

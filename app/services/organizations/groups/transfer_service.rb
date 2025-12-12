@@ -4,7 +4,6 @@ module Organizations
   module Groups
     class TransferService
       include Gitlab::Utils::StrongMemoize
-      include Concerns::TransferUsers
 
       TransferError = Class.new(StandardError)
       BATCH_SIZE = 50
@@ -37,7 +36,7 @@ module Organizations
         # Find or create bot users before transaction to avoid exclusive lease errors.
         # If the transaction is rolled back, new bots will still exist
         # but this does not affect data integrity
-        new_organization_bots
+        user_transfer_service.prepare_bots
 
         Group.transaction do
           transfer_namespaces_and_projects
@@ -69,6 +68,17 @@ module Organizations
             visibility_level: Arel.sql('LEAST(?, visibility_level)', new_organization.visibility_level)
           )
         end
+      end
+
+      def transfer_users
+        user_transfer_service.execute
+      end
+
+      def user_transfer_service
+        @user_transfer_service ||= Organizations::Users::TransferService.new(
+          users: users,
+          new_organization: new_organization
+        )
       end
 
       def users
@@ -112,7 +122,7 @@ module Organizations
         error = localized_error_messages[:group_not_root] unless group_is_root?
         error ||= localized_error_messages[:already_transferred] if already_transferred?
         error ||= localized_error_messages[:permission] unless has_permission?
-        error ||= localized_error_messages[:cannot_transfer_users] unless can_transfer_users?
+        error ||= user_transfer_error unless can_transfer_users?
 
         format(
           s_("TransferOrganization|Group organization transfer failed: %{error_message}"),
@@ -135,19 +145,19 @@ module Organizations
         true
       end
 
-      # rubocop:disable CodeReuse/ActiveRecord -- expression that is specific to this service
       def can_transfer_users?
-        !users.where.not(organization_id: group.organization_id).exists?
+        user_transfer_service.can_transfer_users?
       end
-      # rubocop:enable CodeReuse/ActiveRecord
+
+      def user_transfer_error
+        user_transfer_service.transfer_error
+      end
 
       def localized_error_messages
         {
           group_not_root: s_('TransferOrganization|Only root groups can be transferred to a different organization.'),
           already_transferred: s_('TransferOrganization|Group is already in the target organization.'),
-          permission: s_("TransferOrganization|You must be an owner of both the group and new organization."),
-          cannot_transfer_users: s_("TransferOrganization|Cannot transfer users to a different organization " \
-            "if all users do not belong to the same organization as the top-level group.")
+          permission: s_("TransferOrganization|You must be an owner of both the group and new organization.")
         }.freeze
       end
     end

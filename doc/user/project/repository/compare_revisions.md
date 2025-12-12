@@ -68,6 +68,27 @@ To compare revisions:
 
 The comparison page displays the list of commits and files changed between the revisions.
 
+## View on environment
+
+You can preview files directly in their deployed environment when comparing revisions.
+
+Prerequisites:
+
+- Have [route maps](../../../ci/review_apps/_index.md#route-maps) configured for your project.
+- Have the files you want to preview included in your route maps configuration.
+- An accessible environment.
+
+To preview a file in its deployed environment:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Code** > **Compare revisions**.
+1. Select the **Source** and **Target** branches or commits you want to compare.
+1. In the file diff view, locate a file that's included in your route maps configuration.
+1. Select the **More actions** menu ({{< icon name="ellipsis_v" >}}) for the file.
+1. Select **View on [environment name]**.
+
+The file opens in a new tab, displaying how it appears in the deployed environment.
+
 ## Related topics
 
 - [Branches](branches/_index.md)

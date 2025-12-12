@@ -6,11 +6,32 @@ import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import { initNewDiscussionToggle } from '~/rapid_diffs/app/init_new_discussions_toggle';
+import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
+import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 
 class CommitRapidDiffsApp extends RapidDiffsFacade {
   adapterConfig = adapters;
 
-  async initDiscussions() {
+  async init() {
+    super.init();
+    this.#initViewModeResize();
+    await this.#initDiscussions();
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  #initViewModeResize() {
+    useDiffsView().$onAction(({ name }) => {
+      if (name !== 'updateViewType') return;
+      const container = document.querySelector('main .container-fluid');
+      if (!container) return;
+      container.classList.toggle(
+        'container-limited',
+        useDiffsView().viewType !== INLINE_DIFF_VIEW_TYPE,
+      );
+    });
+  }
+
+  async #initDiscussions() {
     try {
       const {
         data: { discussions },

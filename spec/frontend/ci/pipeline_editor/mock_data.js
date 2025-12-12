@@ -136,6 +136,43 @@ export const mockDefaultIncludes = {
   __typename: 'CiConfigInclude',
 };
 
+export const mockSpecIncludeLocal = {
+  location: 'ci/inputs.yml',
+  type: 'local',
+  blob: 'http://gdk.test:3000/root/project/-/blob/main/ci/inputs.yml',
+  raw: 'http://gdk.test:3000/root/project/-/raw/main/ci/inputs.yml',
+  contextProject: null,
+  contextSha: null,
+  __typename: 'CiConfigInclude',
+};
+
+export const mockSpecIncludeRemote = {
+  location:
+    'http://gdk.test:3000/flightjs/ci-commit-ref-name/-/raw/test-external-file-inputs/ci/sample.yml',
+  type: 'remote',
+  blob: null,
+  raw: 'http://gdk.test:3000/flightjs/ci-commit-ref-name/-/raw/test-external-file-inputs/ci/sample.yml',
+  contextProject: null,
+  contextSha: null,
+  __typename: 'CiConfigInclude',
+};
+
+export const mockSpecIncludeProject = {
+  location: 'ci/sample.yml',
+  type: 'file',
+  blob: 'http://gdk.test:3000/flightjs/ci-commit-ref-name/-/blob/test-external-file-inputs/ci/sample.yml',
+  raw: 'http://gdk.test:3000/flightjs/ci-commit-ref-name/-/raw/test-external-file-inputs/ci/sample.yml',
+  contextProject: 'flightjs/ci-commit-ref-name',
+  contextSha: 'test-external-file-inputs',
+  __typename: 'CiConfigInclude',
+};
+
+export const mockSpecIncludes = [
+  mockSpecIncludeLocal,
+  mockSpecIncludeRemote,
+  mockSpecIncludeProject,
+];
+
 export const mockIncludes = [
   mockDefaultIncludes,
   mockIncludesWithBlob,

@@ -5,7 +5,12 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import PipelineEditorFileTreeContainer from '~/ci/pipeline_editor/components/file_tree/container.vue';
 import PipelineEditorFileTreeItem from '~/ci/pipeline_editor/components/file_tree/file_item.vue';
 import { FILE_TREE_TIP_DISMISSED_KEY } from '~/ci/pipeline_editor/constants';
-import { mockCiConfigPath, mockIncludes, mockIncludesHelpPagePath } from '../../mock_data';
+import {
+  mockCiConfigPath,
+  mockIncludes,
+  mockIncludesHelpPagePath,
+  mockSpecIncludes,
+} from '../../mock_data';
 
 describe('Pipeline editor file nav', () => {
   let wrapper;
@@ -127,6 +132,45 @@ describe('Pipeline editor file nav', () => {
 
         expect(findTip().exists()).toBe(true);
         expect(fileTreeItems()).toHaveLength(0);
+      });
+    });
+  });
+
+  describe('when there are spec:include files', () => {
+    beforeEach(() => {
+      createComponent({ includes: mockSpecIncludes });
+    });
+
+    it('does not render alert tip', () => {
+      expect(findTip().exists()).toBe(false);
+    });
+
+    it('renders the list of spec:include files', () => {
+      expect(fileTreeItems()).toHaveLength(mockSpecIncludes.length);
+    });
+
+    it('renders local include from spec:include', () => {
+      const firstItem = fileTreeItems().at(0);
+      expect(firstItem.props('file')).toMatchObject({
+        location: 'ci/inputs.yml',
+        type: 'local',
+      });
+    });
+
+    it('renders remote include from spec:include', () => {
+      const secondItem = fileTreeItems().at(1);
+      expect(secondItem.props('file')).toMatchObject({
+        type: 'remote',
+      });
+      expect(secondItem.props('file').location).toContain('http://');
+    });
+
+    it('renders project include from spec:include', () => {
+      const thirdItem = fileTreeItems().at(2);
+      expect(thirdItem.props('file')).toMatchObject({
+        location: 'ci/sample.yml',
+        type: 'file',
+        contextProject: 'flightjs/ci-commit-ref-name',
       });
     });
   });

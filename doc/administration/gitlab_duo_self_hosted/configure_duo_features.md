@@ -117,6 +117,10 @@ For more information, see the history.
 
 {{< /alert >}}
 
+Prerequisites:
+
+- Self-hosted beta models and features are [turned on](#turn-on-self-hosted-beta-models-and-features).
+
 To access the Agent Platform service from your GitLab instance:
 
 1. In the upper-right corner, select **Admin**.
@@ -180,7 +184,7 @@ Some regions are not supported by cross-region inferencing. For these regions, d
 - The `AWS_REGION` is `eu-west-2`.
 - The model identifier is `bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0`.
 
-## Configure self-hosted beta models and features
+## Turn on self-hosted beta models and features
 
 {{< alert type="note" >}}
 

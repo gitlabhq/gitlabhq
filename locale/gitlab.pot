@@ -6832,6 +6832,9 @@ msgstr ""
 msgid "After you've reviewed these contribution guidelines, you'll be all set to"
 msgstr ""
 
+msgid "Agent"
+msgstr ""
+
 msgid "Agent Information"
 msgstr ""
 
@@ -25394,7 +25397,7 @@ msgstr ""
 msgid "DuoAgentPlatform|User messaged agent"
 msgstr ""
 
-msgid "DuoAgenticChat|Duo Agent"
+msgid "DuoAgenticChat|GitLab Duo"
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
@@ -70950,6 +70953,9 @@ msgstr ""
 msgid "TransferGroup|You don't have enough permissions."
 msgstr ""
 
+msgid "TransferOrganization|Cannot transfer users because the existing organization could not be found."
+msgstr ""
+
 msgid "TransferOrganization|Cannot transfer users to a different organization if all users do not belong to the same organization as the top-level group."
 msgstr ""
 
@@ -73261,6 +73267,9 @@ msgid "UserProfile|About"
 msgstr ""
 
 msgid "UserProfile|Activity"
+msgstr ""
+
+msgid "UserProfile|Agent"
 msgstr ""
 
 msgid "UserProfile|An error occurred loading the activity. Please refresh the page to try again."

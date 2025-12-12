@@ -14,28 +14,27 @@ title: Sessions
 
 {{< /details >}}
 
-Sessions show the status of the agents and flows you've run in GitLab.
+Sessions show the status and execution data for the agents and flows you've run.
 
-## Which actions create sessions
+Sessions are created by GitLab Duo Chat (Agentic) and foundational flows in the IDE or UI. Examples include:
 
-In the Agent Platform, sessions are created when you:
+- Flows that are executed on a runner, like the [Fix your CI/CD Pipeline Flow](../flows/fix_pipeline.md).
+  These sessions are visible in the UI under **Automate** > **Sessions**.
+- Flows that run in the IDE, like the [Software development Flow](../flows/software_development.md).
+  These sessions are visible in the IDE, on the **Flows** tab, under **Sessions**.
+- Sessions created by GitLab Duo Chat. These sessions are visible on the right sidebar
+  by selecting **GitLab Duo Chat history**.
+- Flows that are invoked by triggers. These sessions are visible in the UI under **Automate** > **Sessions**.
 
-- Run an agent or flow in the GitLab UI. This includes:
-  - Flows like the [Fix your CI/CD Pipeline Flow](../flows/fix_pipeline.md).
-  - Any flow invoked with a trigger.
+GitLab Duo Chat (Classic) does not create sessions, because it's not agentic.
 
-Sessions are not created when:
-
-- You use GitLab Duo Chat (Agentic) in VS Code or the GitLab UI.
-- You invoke a custom flow from the GitLab Duo Chat UI.
-
-## View the sessions for your project
+## View sessions for your project
 
 Prerequisites:
 
 - You must have the Developer, Maintainer, or Owner role for the project.
 
-To view the sessions for your project:
+To view sessions for your project:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Sessions**.
@@ -43,11 +42,17 @@ To view the sessions for your project:
 
 ## View sessions you've triggered
 
-To view a list of sessions you've triggered:
+To view sessions you've triggered:
 
 1. On the right sidebar, select **GitLab Duo sessions**.
 1. Select any session to view more details.
 1. Optional. Filter the details to show all logs or a concise subset only.
+
+## GitLab Duo Chat (Agentic) sessions
+
+Because chats are interactive, they require a clearer separation in the UI.
+You can think of the Chat history as a filtered view of sessions that exists
+exclusively for Chats.
 
 ## Cancel a running session
 

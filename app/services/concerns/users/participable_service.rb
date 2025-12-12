@@ -91,7 +91,8 @@ module Users
         username: user.username,
         name: user.name,
         avatar_url: user.avatar_url,
-        availability: lazy_user_availability(user).itself # calling #itself to avoid returning a BatchLoader instance
+        availability: lazy_user_availability(user).itself, # calling #itself to avoid returning a BatchLoader instance
+        composite_identity_enforced: user.composite_identity_enforced
       }
     end
 
@@ -115,7 +116,8 @@ module Users
         avatar_url: user.avatar_url,
         availability: lazy_user_availability(user).itself, # calling #itself to avoid returning a BatchLoader instance
         original_username: user.username,
-        original_displayname: user.name
+        original_displayname: user.name,
+        composite_identity_enforced: user.composite_identity_enforced
       }
     end
 

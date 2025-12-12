@@ -1,0 +1,13 @@
+---
+table_name: knowledge_graph_enabled_namespaces
+classes:
+- Ai::KnowledgeGraph::EnabledNamespace
+feature_categories:
+- knowledge_graph
+description: Represents a root namespace that has Knowledge Graph enabled
+introduced_by_url:
+milestone: '18.7'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  root_namespace_id: namespaces
+table_size: small

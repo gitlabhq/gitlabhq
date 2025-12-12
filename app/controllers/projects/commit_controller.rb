@@ -10,6 +10,7 @@ class Projects::CommitController < Projects::ApplicationController
   include DiffHelper
   include SourcegraphDecorator
   include RapidDiffs::Resource
+  include RapidDiffs::DiscussionActions
 
   # Authorize
   before_action :require_non_empty_project
@@ -20,7 +21,7 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :define_environment,
     only: [:show, :rapid_diffs, :diff_for_path, :diff_files, :pipelines, :merge_requests]
   before_action :define_commit_box_vars, only: [:show, :pipelines, :rapid_diffs]
-  before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files, :discussions]
+  before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files, :discussions, :create_discussions]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
   before_action :rate_limit_for_expanded_diff_files, only: :diff_files
 
@@ -63,6 +64,10 @@ class Projects::CommitController < Projects::ApplicationController
     ).represent(all_discussions)
 
     render json: { discussions: serialized_discussions }
+  end
+
+  def create_discussions
+    create_discussions_for_resource
   end
 
   def diff_for_path
@@ -182,6 +187,65 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   private
+
+  def rapid_diffs_enabled?
+    ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :wip)
+  end
+
+  def noteable
+    @commit
+  end
+
+  def noteable_params
+    {
+      noteable_type: 'Commit',
+      commit_id: @commit.id
+    }
+  end
+
+  def grouped_discussions
+    @grouped_diff_discussions
+  end
+
+  def timeline_discussions
+    @discussions
+  end
+
+  def create_note_params
+    params.require(:note).permit(
+      :type,
+      :note,
+      position: [:old_path, :new_path, :old_line, :new_line]
+    ).tap do |create_params|
+      enrich_note_params(create_params, params[:in_reply_to_discussion_id])
+    end
+  end
+
+  def enrich_note_params(create_params, in_reply_to_discussion_id)
+    if in_reply_to_discussion_id.present?
+      create_params[:in_reply_to_discussion_id] = in_reply_to_discussion_id
+    elsif create_params[:position].present?
+      create_params[:position][:old_line] = create_params[:position][:old_line]&.to_i.presence
+      create_params[:position][:new_line] = create_params[:position][:new_line]&.to_i.presence
+      create_params[:type] = 'DiffNote' if create_params[:type].blank?
+      create_params[:position] = enrich_position_data(create_params[:position])
+    end
+
+    create_params.merge!(noteable_params)
+  end
+
+  def enrich_position_data(position_data)
+    position = position_data.to_h
+
+    position.reverse_merge!(
+      'base_sha' => noteable.diff_refs.base_sha,
+      'start_sha' => noteable.diff_refs.start_sha,
+      'head_sha' => noteable.diff_refs.head_sha,
+      'position_type' => 'text'
+    )
+
+    position
+  end
 
   def pagination_params
     params.permit(:page)

@@ -22,6 +22,7 @@ RSpec.describe DiffFileMetadataEntity, feature_category: :code_review_workflow d
         :submodule,
         :file_identifier_hash,
         :file_hash,
+        :code_review_id,
         :conflict_type
       )
     end

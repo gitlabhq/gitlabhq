@@ -7,8 +7,9 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
   let(:result) { ::Gitlab::Ci::Config::Yaml::Result.new(config: [header, content]) }
   let(:yaml_context) { ::Gitlab::Ci::Config::Yaml::Context.new }
+  let(:external_context) { nil }
 
-  subject { described_class.new(result, arguments, yaml_context) }
+  subject { described_class.new(result, arguments, yaml_context, external_context) }
 
   context 'when input data is valid' do
     let(:header) do
@@ -289,7 +290,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
     end
 
     subject do
-      described_class.new(result, arguments, yaml_context, external_context: external_context)
+      described_class.new(result, arguments, yaml_context, external_context)
     end
 
     before do
@@ -366,8 +367,10 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
         { website: 'example.com' }
       end
 
+      let(:external_context) { nil }
+
       subject do
-        described_class.new(result, arguments, yaml_context, external_context: nil)
+        described_class.new(result, arguments, yaml_context, external_context)
       end
 
       it 'uses inline inputs without processing includes' do

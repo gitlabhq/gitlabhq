@@ -3,13 +3,14 @@ import { merge } from 'lodash';
 import { isCurrentUser } from '~/lib/utils/common_utils';
 
 function addReactiveDiscussionProps(discussion) {
-  return Object.assign(discussion, {
+  return {
+    ...discussion,
     repliesExpanded: true,
     isReplying: false,
     notes: discussion.notes.map((note) => {
-      return Object.assign(note, { isEditing: false, editedNote: null });
+      return { ...note, isEditing: false, editedNote: null };
     }),
-  });
+  };
 }
 
 export const useDiffDiscussions = defineStore('diffDiscussions', {

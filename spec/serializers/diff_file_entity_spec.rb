@@ -90,5 +90,9 @@ RSpec.describe DiffFileEntity, feature_category: :code_review_workflow do
     end
   end
 
+  it 'exposes code_review_id' do
+    expect(subject[:code_review_id]).to match(/\A[0-9a-f]{40}\z/)
+  end
+
   it_behaves_like 'diff file with conflict_type'
 end

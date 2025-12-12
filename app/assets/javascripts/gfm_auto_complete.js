@@ -58,6 +58,21 @@ const busyBadge = memoize(
     ).outerHTML,
 );
 
+const agentBadge = memoize(
+  () =>
+    renderVueComponentForLegacyJS(
+      GlBadge,
+      {
+        class: 'gl-ml-2',
+        props: {
+          variant: 'neutral',
+          size: 'sm',
+        },
+      },
+      s__('UserProfile|Agent'),
+    ).outerHTML,
+);
+
 // Re-export for existing imports elsewhere
 export { sortCommandsAlphaSafe } from '~/editor/quick_action_suggestions';
 // Frequent quick actions prioritization is imported from shared module
@@ -133,6 +148,7 @@ export function membersBeforeSave(members) {
       search: createMemberSearchString(member),
       icon: avatarIcon,
       availability: member?.availability,
+      compositeIdentityEnforced: member?.composite_identity_enforced,
     };
   });
 }
@@ -489,7 +505,7 @@ class GfmAutoComplete {
       maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
-        const { avatarTag, username, title, icon, availability } = value;
+        const { avatarTag, username, title, icon, availability, compositeIdentityEnforced } = value;
         if (username != null) {
           tmpl = GfmAutoComplete.Members.templateFunction({
             avatarTag,
@@ -497,6 +513,7 @@ class GfmAutoComplete {
             title,
             icon,
             availabilityStatus: availability && isUserBusy(availability) ? busyBadge() : '',
+            compositeIdentityEnforced,
           });
         }
         return tmpl;
@@ -1389,10 +1406,18 @@ GfmAutoComplete.Emoji = {
 };
 // Team Members
 GfmAutoComplete.Members = {
-  templateFunction({ avatarTag, username, title, icon, availabilityStatus }) {
+  templateFunction({
+    avatarTag,
+    username,
+    title,
+    icon,
+    availabilityStatus,
+    compositeIdentityEnforced,
+  }) {
+    const compositeIdBadge = compositeIdentityEnforced ? agentBadge() : '';
     return `<li>${avatarTag} ${username} <small>${escape(
       title,
-    )}${availabilityStatus}</small> ${icon}</li>`;
+    )}${availabilityStatus}</small>${compositeIdBadge} ${icon}</li>`;
   },
   nameOrUsernameStartsWith(member, query) {
     // `member.search` is a name:username string like `MargeSimpson msimpson`

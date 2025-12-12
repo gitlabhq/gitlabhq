@@ -186,9 +186,6 @@ Audit event types belong to the following product categories.
 | [`group_saml_provider_create`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111227) | A group SAML provider is created | {{< yes >}} | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/373964) | Group |
 | [`group_saml_provider_update`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111227) | A group SAML provider is updated | {{< yes >}} | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/373964) | Group |
 | [`inactive_project_scheduled_for_deletion`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130699) | An inactive project is scheduled for deletion | {{< yes >}} | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/423263) | Project |
-| [`member_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109711) | A membership is created | {{< yes >}} | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374112) | Group, Project |
-| [`member_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109711) | A membership is destroyed | {{< yes >}} | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374112) | Group, Project |
-| [`member_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109711) | A membership is updated | {{< yes >}} | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374112) | Group, Project |
 | [`merge_request_create`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90911) | A merge request is created | {{< no >}} | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/367239) | Project |
 | [`merge_request_merged`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164846) | A merge request is merged | {{< yes >}} | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/442279) | Project |
 | [`omniauth_login_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123080) | An OmniAuth login fails | {{< yes >}} | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/374107) | User |
@@ -471,9 +468,12 @@ Audit event types belong to the following product categories.
 | [`custom_admin_role_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188367) | A custom admin role is deleted | {{< yes >}} | GitLab [18.0](https://gitlab.com/gitlab-org/gitlab/-/issues/536131) | Instance |
 | [`custom_admin_role_unassigned_from_user`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186570) | A custom admin role is unassigned from a user | {{< yes >}} | GitLab [18.0](https://gitlab.com/gitlab-org/gitlab/-/issues/507958) | User |
 | [`custom_admin_role_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188367) | A custom admin role is updated | {{< yes >}} | GitLab [18.0](https://gitlab.com/gitlab-org/gitlab/-/issues/536131) | Instance |
+| [`member_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109711) | A member is added and assigned a default or custom role | {{< yes >}} | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374112) | Group, Project |
+| [`member_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109711) | A member is removed | {{< yes >}} | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374112) | Group, Project |
 | [`member_role_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137087) | A custom role is created | {{< yes >}} | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/388934) | Group, Instance |
 | [`member_role_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141630) | A custom role is deleted | {{< yes >}} | GitLab [16.9](https://gitlab.com/gitlab-org/gitlab/-/issues/437672) | Group, Instance |
 | [`member_role_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141630) | A custom role is updated | {{< yes >}} | GitLab [16.9](https://gitlab.com/gitlab-org/gitlab/-/issues/437672) | Group, Instance |
+| [`member_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109711) | A member's default or custom role or expiration date is updated | {{< yes >}} | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374112) | Group, Project |
 
 ### Portfolio management
 

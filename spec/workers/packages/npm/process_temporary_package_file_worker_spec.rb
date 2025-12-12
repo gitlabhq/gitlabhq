@@ -153,5 +153,17 @@ RSpec.describe Packages::Npm::ProcessTemporaryPackageFileWorker, feature_categor
         worker.perform(user.id, package_file.id, deprecate)
       end
     end
+
+    context 'with the error when fetching a package file' do
+      let(:exception) { ActiveRecord::QueryCanceled.new('ERROR: canceling statement due to statement timeout') }
+
+      before do
+        allow(::Packages::PackageFile).to receive(:find_by_id).with(package_file.id).and_raise(exception)
+      end
+
+      it 'raises the error' do
+        expect { worker.perform(user.id, package_file.id, deprecate) }.to raise_error(exception.class)
+      end
+    end
   end
 end

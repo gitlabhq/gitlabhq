@@ -9,13 +9,13 @@ export const LOAD_TEST_DURATION = '50s';
 export const WARMUP_TEST_VUS = 1;
 export const WARMUP_TEST_DURATION = '10s';
 
-// Global variable to store the group ID
-let groupId;
+let API_URL;
 
 export function setup() {
   const baseUrl = __ENV.GITLAB_URL || `http://gitlab.${__ENV.AI_GATEWAY_IP}.nip.io`;
   const token = __ENV.GITLAB_QA_ADMIN_ACCESS_TOKEN || '';
   const groupName = 'Test Seed Group';
+  const apiVersion = 'v4';
 
   // Search for the group by name
   const searchUrl = `${baseUrl}/api/v4/groups?search=${encodeURIComponent(groupName)}`;
@@ -33,14 +33,12 @@ export function setup() {
     const targetGroup = groups.find((group) => group.name === groupName);
 
     if (targetGroup) {
-      console.log(`Found group '${groupName}' with ID: ${targetGroup.id}`);
-      return { groupId: targetGroup.id };
+      const apiUrl = `${apiVersion}/groups/${targetGroup.id}/merge_requests`;
+      return { apiUrl };
     }
-    console.error(`Group '${groupName}' not found`);
-    return { groupId: '5' }; // Fallback to default
   }
-  console.error(`Failed to search for groups: ${res.status}`);
-  return { groupId: '5' }; // Fallback to default
+  const apiUrl = `${apiVersion}/groups/1/merge_requests`; // Fallback to default
+  return { apiUrl };
 }
 
 export const options = {
@@ -71,11 +69,10 @@ export const options = {
 
 export default function groupMergeRequestsTest(data) {
   const baseUrl = __ENV.GITLAB_URL || `http://gitlab.${__ENV.AI_GATEWAY_IP}.nip.io`;
-  const apiVersion = 'v4';
-  groupId = __ENV.GROUP_ID || data.groupId;
   const token = __ENV.GITLAB_QA_ADMIN_ACCESS_TOKEN || '';
+  API_URL = data.apiUrl;
 
-  const url = `${baseUrl}/api/${apiVersion}/groups/${groupId}/merge_requests`;
+  const url = `${baseUrl}/api/${API_URL}`;
 
   const params = {
     headers: {

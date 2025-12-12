@@ -1502,3 +1502,21 @@ To resolve this issue, add filters to limit your search scope:
   query: project = "gitlab-org/gitlab" and state = opened and updated > -1m
   ```
   ````
+
+### Error: `Invalid username reference`
+
+You might get an error that states `Invalid username reference` when using the `@` symbol
+with a username that starts with a number in GLQL queries. For example:
+
+```plaintext
+An error occurred when trying to display this embedded view:
+* Error: Invalid username reference @123username
+```
+
+This issue occurs because the GLQL embedded view renderer does not support `@` mentions
+for usernames that start with a number, even though these are valid in GitLab.
+
+The workaround is to remove the `@` symbol and wrap the username in quotes.
+For example, use `assignee = "123username"` instead of `assignee = @123username`.
+
+For more information, see [issue 583119](https://gitlab.com/gitlab-org/gitlab/-/issues/583119).

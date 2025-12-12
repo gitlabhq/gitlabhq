@@ -84,10 +84,10 @@ Prerequisites:
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Foundational agents**, for **Default Availability** select either:
+1. Under **Foundational agents**, for **Default availability**, select one of the following:
    - **On by default**
    - **Off by default**
-1. Under **Availability Configuration**, for each agent, select either:
+1. Under **Availability settings**, for each agent, select one of the following:
    - **On**
    - **Off**
    - **On (default)** or **Off (default)**
@@ -111,10 +111,10 @@ Prerequisites:
 1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Foundational agents**, for **Default Availability** select either:
+1. Under **Foundational agents**, for **Default availability**, select one of the following:
    - **On by default**
    - **Off by default**
-1. Under **Availability Configuration**, for each agent, select either:
+1. Under **Availability settings**, for each agent, select one of the following:
    - **On**
    - **Off**
    - **On (default)** or **Off (default)**

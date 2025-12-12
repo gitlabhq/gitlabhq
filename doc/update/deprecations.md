@@ -328,28 +328,6 @@ With the [upcoming default behavior change to the CI/CD job token](https://docs.
 </div>
 </div>
 
-<div class="milestone-wrapper" data-milestone="18.10">
-
-## GitLab 18.10
-
-<div class="deprecation breaking-change" data-milestone="18.10">
-
-### Elasticsearch 7.x no longer supported for advanced search
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">18.7</span>
-- Removal in GitLab <span class="milestone">18.10</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/583544).
-
-</div>
-
-The [maintenance term for Elasticsearch 7.x](https://www.elastic.co/support/eol) ends on 2026-01-15.
-For GitLab Self-Managed, administrators must upgrade their Elasticsearch instance to use advanced search.
-
-</div>
-</div>
-
 <div class="milestone-wrapper" data-milestone="18.9">
 
 ## GitLab 18.9

@@ -267,6 +267,9 @@ RSpec.describe UsersController, feature_category: :user_management do
       end
 
       context 'when the request originates from the personal homepage' do
+        let(:older_project) { create(:project) }
+        let(:project) { create(:project) }
+
         before do
           stub_feature_flags(personal_homepage: true)
           sign_in(user)
@@ -276,6 +279,99 @@ RSpec.describe UsersController, feature_category: :user_management do
           get user_activity_url user.username, format: :json, is_personal_homepage: '1'
 
           expect(response.body).to eq('')
+        end
+
+        describe 'parameter validation' do
+          before do
+            # Create 2 events, one associated with each project. We need events on 2 separate projects so we can
+            # match the project title in the API HTML response.
+            older_project.add_developer(user)
+            project.add_developer(user)
+
+            stub_const('UserRecentEventsFinder::DEFAULT_LIMIT', 1)
+          end
+
+          shared_examples 'returns the default number of events' do |params|
+            it 'returns the default number of events' do
+              get user_activity_url user.username, params: { is_personal_homepage: '1' }.merge(params), format: :json
+
+              expect(json_response['count']).to be(UserRecentEventsFinder::DEFAULT_LIMIT)
+            end
+          end
+
+          context 'when the limit param value is negative' do
+            it_behaves_like 'returns the default number of events', { limit: -1 }
+          end
+
+          context 'when the limit param value is nil' do
+            it_behaves_like 'returns the default number of events', { limit: nil }
+          end
+
+          context 'when the limit param is not present' do
+            it_behaves_like 'returns the default number of events', {}
+          end
+
+          context 'when the limit param value is non-numeric' do
+            it 'returns no events' do
+              get user_activity_url user.username, params: { is_personal_homepage: '1', limit: 'woof' }, format: :json
+
+              expect(response.body).to eq('')
+            end
+          end
+
+          context 'when the limit param value is zero' do
+            it 'returns zero events' do
+              get user_activity_url user.username, params: { is_personal_homepage: '1', limit: 0 }, format: :json
+
+              expect(response.body).to eq('')
+            end
+          end
+
+          context 'when the limit param value is a valid positive integer' do
+            it 'returns the specified number of events' do
+              get user_activity_url user.username, params: { is_personal_homepage: '1', limit: 2 }, format: :json
+
+              expect(json_response['count']).to be(2)
+            end
+          end
+
+          shared_examples 'returns the first page of events' do |params|
+            it 'returns the first page of events' do
+              get user_activity_url user.username, params: { is_personal_homepage: '1' }.merge(params), format: :json
+
+              expect(json_response['count']).to be(UserRecentEventsFinder::DEFAULT_LIMIT)
+              expect(json_response['html']).to match(/#{project.title}/)
+            end
+          end
+
+          context 'when the offset param value is negative' do
+            it_behaves_like 'returns the first page of events', { offset: -1 }
+          end
+
+          context 'when the offset param value is non-numeric' do
+            it_behaves_like 'returns the first page of events', { offset: 'woof' }
+          end
+
+          context 'when the offset param value is nil' do
+            it_behaves_like 'returns the first page of events', { offset: nil }
+          end
+
+          context 'when the offset param is not present' do
+            it_behaves_like 'returns the first page of events', {}
+          end
+
+          context 'when the offset param value is zero' do
+            it_behaves_like 'returns the first page of events', { offset: 0 }
+          end
+
+          context 'when the offset param value is a valid positive integer' do
+            it 'returns the specified page of events' do
+              get user_activity_url user.username, params: { is_personal_homepage: '1', offset: 1 }, format: :json
+
+              expect(json_response['count']).to be(UserRecentEventsFinder::DEFAULT_LIMIT)
+              expect(json_response['html']).to match(/#{older_project.title}/)
+            end
+          end
         end
       end
     end

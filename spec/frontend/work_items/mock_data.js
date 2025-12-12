@@ -3777,6 +3777,7 @@ export const projectMembersAutocompleteResponseWithCurrentUser = {
           webUrl: 'rookie',
           webPath: '/rookie',
           status: null,
+          compositeIdentityEnforced: false,
         },
         {
           __typename: 'AutocompletedUser',
@@ -3788,6 +3789,7 @@ export const projectMembersAutocompleteResponseWithCurrentUser = {
           webUrl: '/root',
           webPath: '/root',
           status: null,
+          compositeIdentityEnforced: false,
         },
       ],
     },

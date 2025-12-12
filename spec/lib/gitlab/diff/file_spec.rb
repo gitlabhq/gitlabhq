@@ -455,6 +455,12 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
     end
   end
 
+  describe '#code_review_id' do
+    it 'returns a hash' do
+      expect(diff_file.code_review_id).to match(/\A[0-9a-f]{40}\z/)
+    end
+  end
+
   context 'diff file stats' do
     let(:diff_file) do
       described_class.new(diff, diff_refs: commit.diff_refs, repository: project.repository, stats: stats)
