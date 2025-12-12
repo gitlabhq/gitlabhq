@@ -5,6 +5,7 @@ module Gitlab
     class IssueSerializer
       attr_reader :jira_issue, :project, :import_owner_id, :params, :formatter
 
+      MAX_ADF_DEPTH = 10
       def initialize(project, jira_issue, import_owner_id, work_item_type, params = {})
         @jira_issue = jira_issue
         @project = project
@@ -40,10 +41,51 @@ module Gitlab
 
       def description
         body = []
-        body << jira_issue.description
+        desc = jira_issue.fields['description']
+        body << (desc.is_a?(Hash) ? convert_adf_to_markdown(desc) : desc)
         body << MetadataCollector.new(jira_issue).execute
 
         body.join
+      end
+
+      def convert_adf_to_markdown(adf)
+        return '' if adf.blank?
+
+        sanitized_adf = sanitize_adf(adf)
+        adf_json = sanitized_adf.to_json
+        filter = Banzai::Filter::JiraImport::AdfToCommonmarkFilter.new(adf_json)
+        filter.call
+      rescue StandardError => e
+        logger.warn("Failed to convert ADF to markdown: #{e.message}")
+        Gitlab::ErrorTracking.track_exception(e)
+        convert_adf_to_text(adf)
+      end
+
+      def sanitize_adf(node)
+        return node unless node.is_a?(Hash)
+
+        sanitized = node.dup
+
+        sanitized['content'] = [] if sanitized['type'] && !sanitized.key?('content')
+
+        if sanitized['content'].is_a?(Array)
+          sanitized['content'] = sanitized['content'].map { |child| sanitize_adf(child) }
+        end
+
+        sanitized
+      end
+
+      def convert_adf_to_text(adf, depth = 0)
+        return '' if adf.blank? || depth > MAX_ADF_DEPTH
+
+        adf['content']&.filter_map { |node| extract_text(node, depth + 1) }&.join("\n") || ''
+      end
+
+      def extract_text(node, depth = 0)
+        return '' unless node.is_a?(Hash)
+        return '' if depth > MAX_ADF_DEPTH
+
+        node['content']&.filter_map { |n| n['text'] || extract_text(n, depth + 1) }&.join || ''
       end
 
       def map_status(jira_status_category)

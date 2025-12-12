@@ -4517,17 +4517,20 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe 'state transition: pending: :running' do
-    let_it_be_with_reload(:runner) { create(:ci_runner) }
+    let_it_be_with_reload(:runner) { create(:ci_runner, :with_runner_manager) }
     let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
 
     let(:job) { create(:ci_build, :pending, runner: runner, pipeline: pipeline) }
+    let(:runner_manager) { runner.runner_managers.sole }
+
+    subject(:run!) { job.run!(runner_manager) }
 
     before do
       job.project.update_attribute(:build_timeout, 1800)
     end
 
     def run_job_without_exception
-      job.run!
+      run!
     rescue StateMachines::InvalidTransition
     end
 
@@ -4550,11 +4553,48 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     shared_examples 'saves data on transition' do
       it 'saves timeout' do
-        expect { job.run! }.to change { job.reload.timeout_value }.from(nil).to(expected_timeout)
+        expect { run! }.to change { job.reload.timeout_value }.from(nil).to(expected_timeout)
       end
 
-      it 'saves timeout_source' do
-        expect { job.run! }.to change { job.reload.timeout_source_value }.from('unknown_timeout_source').to(expected_timeout_source)
+      it 'saves timeout_source and runner_manager' do
+        expect { run! }
+          .to change { job.reload.timeout_source_value }.from('unknown_timeout_source').to(expected_timeout_source)
+          .and change { job.reload.runner_manager }.from(nil).to(runner.runner_managers.sole)
+      end
+
+      context "when runner doesn't have a runner_manager" do
+        let(:runner_manager) { nil }
+
+        it 'sets job to running and does not save runner_manager' do
+          expect(build).not_to receive(:runner_manager=)
+
+          expect { run! }
+            .to change { job.reload.status }.to('running')
+            .and not_change { job.reload.runner_manager }.from(nil)
+
+          expect(build).to be_valid
+        end
+      end
+
+      context 'when runner_manager_build creation fails' do
+        before do
+          # Stub the runner_manager= setter to raise a validation error
+          allow(job).to receive(:runner_manager=).and_wrap_original do |method, *args|
+            method.call(*args)
+
+            # After the association is set, make the autosave fail
+            job.runner_manager_build.errors.add(:base, 'Simulated validation error')
+            raise ActiveRecord::RecordInvalid, job.runner_manager_build
+          end
+        end
+
+        it 'rolls back the transaction and does not change job status' do
+          expect { run! }.to raise_error(ActiveRecord::RecordInvalid)
+
+          job.reload
+          expect(job.status).to eq('pending')
+          expect(job.runner_manager).to be_nil
+        end
       end
 
       context 'when Ci::Build#update_timeout_state fails update' do

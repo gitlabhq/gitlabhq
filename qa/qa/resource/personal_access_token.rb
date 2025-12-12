@@ -87,7 +87,7 @@ module QA
       def api_post_body
         {
           name: name,
-          scopes: ["api"],
+          scopes: %w[api write_repository],
           expires_at: expires_at.to_s
         }
       end

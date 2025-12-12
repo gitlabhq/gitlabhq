@@ -394,6 +394,14 @@ module Ci
 
       after_transition any => [:running] do |build, transition|
         Ci::UpdateBuildQueueService.new.track(build, transition)
+
+        # The runner_manager join record is created immediately, since it is marked as `autosave: true` to avoid race
+        # conditions when one runner manager is assigned the job, and others are competing for the same job,
+        # which would cause duplicate key constraint failures.
+        # By only assigning the runner manager once the job starts running, we avoid the problem.
+        transition.args.first.try do |runner_manager|
+          build.runner_manager = runner_manager
+        end
       end
 
       after_transition running: any do |build, transition|

@@ -8,7 +8,7 @@ module Gitlab
           private
 
           def load_data
-            query.model.connection.select_all(query.limit(1000).to_sql)
+            query.model.connection.select_all(query.to_sql)
           end
         end
       end

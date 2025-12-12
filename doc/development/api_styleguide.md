@@ -393,6 +393,12 @@ pass `params` to be `{ user_ids: [] }`.
 There is [an open issue in the Grape tracker](https://github.com/ruby-grape/grape/issues/2068)
 to make this easier.
 
+## Workhorse-assisted uploads
+
+All REST API endpoints that accept file content must use Workhorse-assisted uploads.
+
+See the [Workhorse uploads documentation](uploads/_index.md#workhorse-assisted-uploads) for implementation details.
+
 ## Using HTTP status helpers
 
 For non-200 HTTP responses, use the provided helpers in `lib/api/helpers.rb` to ensure correct behavior (like `not_found!` or `no_content!`). These `throw` inside Grape and abort the execution of your endpoint.

@@ -23,6 +23,7 @@ RSpec.describe QA::Git::Repository do
       allow(repository).to receive(:tmp_home_dir).and_return(tmp_netrc_dir)
       allow(QA::Runtime::Logger).to receive(:logger).and_return(logger)
       allow(QA::Runtime::User::Store).to receive(:test_user).and_return(default_user)
+      allow(default_user).to receive(:git_repo_credential).and_return(default_user.password)
     end
 
     around do |example|
@@ -281,7 +282,7 @@ RSpec.describe QA::Git::Repository do
     describe '#use_default_credentials' do
       it 'adds credentials to .netrc' do
         expect(File.read(File.join(tmp_netrc_dir, '.netrc')))
-          .to eq("machine foo login #{default_user.username} password #{default_user.password}\n")
+          .to eq("machine foo login #{default_user.username} password #{default_user.git_repo_credential}\n")
       end
     end
   end

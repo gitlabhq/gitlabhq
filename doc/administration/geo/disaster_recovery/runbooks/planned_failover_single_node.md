@@ -34,21 +34,13 @@ This runbook is an [experiment](../../../../policy/development_stages_support.md
 This runbook guides you through a planned failover of a single-node Geo site
 with one secondary. The following general architecture is assumed:
 
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-graph TD
-  accTitle: Geo planned-failover topology (single-node)
-  accDescr: A single-node Geo deployment for planned failover, with one GitLab node at the primary site and one node at the secondary site.
+Primary Site:
 
-  subgraph main[Geo single-node deployment]
-    subgraph Primary[Primary site]
-      Node_1[(GitLab node)]
-    end
-    subgraph Secondary1[Secondary site]
-      Node_2[(GitLab node)]
-    end
-  end
-```
+- GitLab node
+
+Secondary Site:
+
+- GitLab node
 
 This guide results in the following:
 

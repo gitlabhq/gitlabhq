@@ -68,7 +68,7 @@ module QA
 
             repository.use_lfs = use_lfs
             repository.username = user.username
-            repository.password = user.password
+            repository.password = user.git_repo_credential
 
             repository.gpg_key_id = @gpg_key_id unless @gpg_key_id.nil?
 

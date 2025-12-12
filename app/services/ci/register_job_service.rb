@@ -315,7 +315,9 @@ module Ci
       else
         @metrics.increment_queue_operation(:runner_pre_assign_checks_success)
 
-        assign_job_to_running_state(build, runner_manager)
+        @logger.instrument(:assign_runner_run) do
+          build.run!(runner_manager)
+        end
       end
 
       !failure_reason
@@ -388,18 +390,6 @@ module Ci
         builds_disabled: ->(build, _) { !build.project.builds_enabled? },
         user_blocked: ->(build, _) { build.user&.blocked? }
       }
-    end
-
-    def assign_job_to_running_state(build, runner_manager)
-      @logger.instrument(:assign_runner_run) do
-        build.run!
-      end
-
-      # The runner_manager join record is created immediately, since it is marked as `autosave: true` to avoid race
-      # conditions when one runner manager is assigned the job, and others are competing for the same job,
-      # which would cause duplicate key constraint failures.
-      # By only assigning the runner manager once the job starts running, we avoid the problem.
-      build.runner_manager = runner_manager if runner_manager
     end
   end
 end

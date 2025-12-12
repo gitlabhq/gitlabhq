@@ -11,6 +11,7 @@ class ApplicationRecord < ActiveRecord::Base
   include ResetOnColumnErrors
   include HasCheckConstraints
   include IgnorableColumns
+  include Organizations::Sharding
   include PopulatesShardingKey
   include EachBatch
 
@@ -159,10 +160,6 @@ class ApplicationRecord < ActiveRecord::Base
     relation = current_scope || all
 
     Gitlab::Database::DeleteRelationWithReturning.execute(relation, columns.flatten)
-  end
-
-  def self.sharding_keys
-    @sharding_keys ||= Gitlab::Database::Dictionary.entry(table_name).sharding_key || {}
   end
 
   def readable_by?(user)

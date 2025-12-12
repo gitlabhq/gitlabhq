@@ -57,15 +57,6 @@ module Gitlab
       cache_class.read(self.failed_issues_counter_cache_key(project_id)).to_i
     end
 
-    def self.get_issues_next_start_at(project_id)
-      cache_class.read(self.jira_issues_next_page_cache_key(project_id)).to_i
-    end
-
-    def self.store_issues_next_started_at(project_id, value)
-      cache_key = self.jira_issues_next_page_cache_key(project_id)
-      cache_class.write(cache_key, value)
-    end
-
     def self.get_import_label_id(project_id)
       cache_class.read(JiraImport.import_label_cache_key(project_id))
     end
@@ -78,6 +69,7 @@ module Gitlab
       cache_class.expire(self.import_label_cache_key(project_id), JIRA_IMPORT_CACHE_TIMEOUT)
       cache_class.expire(self.failed_issues_counter_cache_key(project_id), JIRA_IMPORT_CACHE_TIMEOUT)
       cache_class.expire(self.jira_issues_next_page_cache_key(project_id), JIRA_IMPORT_CACHE_TIMEOUT)
+      cache_class.expire(self.jira_issues_pagination_state_cache_key(project_id), JIRA_IMPORT_CACHE_TIMEOUT)
       cache_class.expire(self.already_imported_cache_key(:issues, project_id), JIRA_IMPORT_CACHE_TIMEOUT)
     end
 
@@ -96,6 +88,21 @@ module Gitlab
 
     def self.cache_class
       Gitlab::Cache::Import::Caching
+    end
+
+    def self.jira_issues_pagination_state_cache_key(project_id)
+      "jira-import/pagination-state/#{project_id}/issues"
+    end
+
+    def self.get_pagination_state(project_id)
+      state = cache_class.read(jira_issues_pagination_state_cache_key(project_id))
+      return { is_last: false, next_page_token: nil, page: 1 } unless state
+
+      Gitlab::Json.parse(state).symbolize_keys
+    end
+
+    def self.store_pagination_state(project_id, state)
+      cache_class.write(jira_issues_pagination_state_cache_key(project_id), state.to_json)
     end
   end
 end

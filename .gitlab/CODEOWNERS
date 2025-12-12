@@ -434,6 +434,9 @@ Dangerfile
 /spec/frontend/diffs/
 /spec/frontend/batch_comments/
 
+[Issuable backend] @gitlab-org/plan-stage/product-planning/engineers @gitlab-org/plan-stage/project-management-group/engineers @code-review-be/engineers
+/app/models/concerns/issuable.rb
+
 ^[Analytics Dashboards backend] @gitlab-org/analytics-section/platform-insights/engineers/backend @gitlab-org/plan-stage/optimize-group/engineers/backend
 /ee/app/controllers/projects/settings/analytics_controller.rb
 /ee/app/controllers/projects/analytics/dashboards_controller.rb

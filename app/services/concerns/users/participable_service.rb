@@ -145,3 +145,5 @@ module Users
     end
   end
 end
+
+Users::ParticipableService.prepend_mod

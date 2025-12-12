@@ -41,7 +41,7 @@ module Gitlab
         private
 
         def instance_parameter(param_identifier, configuration)
-          configuration.dig(:parameters, param_identifier)
+          parameters[param_identifier] && configuration.dig(:parameters, param_identifier)
         end
 
         def parameterized?

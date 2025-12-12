@@ -71,6 +71,7 @@ module Gitlab
           @context = context
         end
 
+        # @return [Gitlab::Database::Aggregation::AggregationResult]
         def execute(request)
           plan = QueryPlan.build(request, self)
           run_validations(plan)

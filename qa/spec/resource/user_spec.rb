@@ -35,6 +35,26 @@ RSpec.describe QA::Resource::User do
     end
   end
 
+  describe '#git_repo_password' do
+    context 'when user has a personal access token' do
+      it 'returns the personal access token' do
+        token = 'glpat-test-token-123'
+        allow(subject).to receive(:current_personal_access_token).and_return(token)
+
+        expect(subject.git_repo_credential).to eq(token)
+      end
+    end
+
+    context 'when user does not have a personal access token' do
+      it 'returns the password' do
+        allow(subject).to receive(:current_personal_access_token).and_return(nil)
+        subject.password = 'test-password'
+
+        expect(subject.git_repo_credential).to eq('test-password')
+      end
+    end
+  end
+
   describe '#name' do
     it 'defaults to a name based on the username' do
       expect(subject.name).to match(/#{subject.username.tr('-', ' ')}/i)

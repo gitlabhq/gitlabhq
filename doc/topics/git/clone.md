@@ -56,14 +56,16 @@ the number of times you must manually authenticate, making HTTPS a seamless expe
    git clone <copied URL>
    ```
 
-1. GitLab requests your username and password.
+1. Authenticate your request.
 
-   If you have enabled two-factor authentication (2FA) on your account, you cannot use your account password. Instead, you can do one of the following:
+   {{< alert type="note" >}}
 
-   - [Clone using a token](#clone-using-a-token) with `read_repository` or `write_repository` permissions.
-   - Install an [OAuth credential helper](../../user/profile/account/two_factor_authentication.md#oauth-credential-helpers).
+   If you have enabled two-factor authentication (2FA), you cannot use username and password authentication. Instead:
 
-   If you have not enabled 2FA, use your account password.
+   - [Use a token](#clone-using-a-token) with `read_repository` or `write_repository` permissions.
+   - Install an [OAuth credential helper](../../user/profile/account/two_factor_authentication.md#oauth-credential-helpers)
+
+   {{< /alert >}}
 
 1. To view the files, go to the new directory:
 

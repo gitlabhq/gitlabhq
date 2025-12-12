@@ -6,7 +6,15 @@ RSpec.shared_examples 'cells claimable model' do |subject_type:, subject_key:, s
   end
 
   it 'has the expected subject_key' do
-    expect(described_class.cells_claims_subject_key).to eq(subject_key)
+    be_expected =
+      case subject_key
+      when Class
+        be_a(subject_key)
+      else
+        eq(subject_key)
+      end
+
+    expect(described_class.cells_claims_subject_key).to be_expected
   end
 
   it 'has the expected source_type' do

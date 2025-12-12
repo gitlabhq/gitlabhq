@@ -38,6 +38,23 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       end
     end
 
+    context 'when subject_key is set with a Proc' do
+      let(:subject_key) { -> { 777 } }
+
+      it 'allows a Proc' do
+        expect(test_klass.cells_claims_subject_key).to be_a(Proc)
+      end
+    end
+
+    context 'when subject_key is invalid' do
+      let(:subject_key) { 123 }
+
+      it 'raises an ArgumentError' do
+        expect { instance.send(:cells_claims_subject_key) }
+          .to raise_error(ArgumentError, /subject_key must be a Symbol or a Proc/)
+      end
+    end
+
     it 'derives source_type from table_name when not provided' do
       expect(test_klass.cells_claims_source_type).to eq(
         Gitlab::Cells::TopologyService::Claims::V1::Source::Type::RAILS_TABLE_ORGANIZATIONS
@@ -56,7 +73,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
     describe '#cells_claims_save_changes' do
       context 'when transaction record exists' do
-        context 'when creating a new record' do
+        shared_examples 'creating a new record' do
           it 'creates claims for all configured attributes' do
             instance = test_klass.new
             instance.path = 'newpath'
@@ -72,6 +89,14 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
             instance.save!
           end
+        end
+
+        it_behaves_like 'creating a new record'
+
+        context 'when subject_key is set with a Proc' do
+          let(:subject_key) { -> { path.size } }
+
+          it_behaves_like 'creating a new record'
         end
 
         context 'when updating an existing record' do

@@ -87,13 +87,26 @@ module Cells
         {
           subject: {
             type: self.class.cells_claims_subject_type,
-            id: read_attribute(self.class.cells_claims_subject_key)
+            id: cells_claims_subject_key
           },
           source: {
             type: self.class.cells_claims_source_type,
             rails_primary_key_id: rails_primary_key_id
           }
         }
+      end
+    end
+
+    def cells_claims_subject_key
+      subject_key = self.class.cells_claims_subject_key
+
+      case subject_key
+      when Symbol
+        read_attribute(subject_key)
+      when Proc
+        instance_exec(&subject_key)
+      else
+        raise ArgumentError, "subject_key must be a Symbol or a Proc, but got: #{subject_key.class}"
       end
     end
   end

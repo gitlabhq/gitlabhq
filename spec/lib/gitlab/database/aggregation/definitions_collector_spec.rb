@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Database::Aggregation::DefinitionsCollector, feature_cate
         foo(1, 2, 3)
       end
 
-      expect(collected_definitions.map(&:args)).to eq([[1, 2, 3]])
+      expect(collected_definitions.map(&:args)).to match_array([[1, 2, 3]])
     end
 
     it 'raises NoMethodError for unknown definition' do

@@ -3,7 +3,7 @@
 # Matcher specific to Gitlab::Database::Aggregation::Engine class testing
 RSpec::Matchers.define :execute_aggregation do |request|
   chain :and_return do |expected_data|
-    @expected_data = expected_data.map(&:deep_stringify_keys)
+    @expected_data = expected_data
   end
 
   chain :with_errors do |expected_errors|
@@ -13,7 +13,7 @@ RSpec::Matchers.define :execute_aggregation do |request|
   match do |engine|
     response = engine.execute(request)
 
-    @actual_data = response[:data]&.to_a
+    @actual_data = response[:data]&.to_a&.map(&:with_indifferent_access)
     @actual_errors = response[:errors]&.to_a
 
     if @expected_data

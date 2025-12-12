@@ -34,53 +34,46 @@ RSpec.describe Gitlab::JiraImport::Stage::ImportIssuesWorker, :clean_gitlab_redi
       before do
         jira_import.start!
         allow_next_instance_of(Gitlab::JiraImport::IssuesImporter) do |instance|
-          allow(instance).to receive(:fetch_issues).and_return([])
+          allow(instance).to receive(:execute).and_return(job_waiter)
         end
       end
 
-      it 'uses a custom http client for the issues importer' do
-        jira_integration = project.jira_integration
-        client = instance_double(JIRA::Client)
+      it 'creates issues importer' do
         issue_importer = instance_double(Gitlab::JiraImport::IssuesImporter)
 
         allow(Project).to receive(:find_by_id).with(project.id).and_return(project)
         allow(issue_importer).to receive(:execute).and_return(job_waiter)
 
-        expect(jira_integration).to receive(:client).with(read_timeout: 2.minutes).and_return(client)
-        expect(Gitlab::JiraImport::IssuesImporter).to receive(:new).with(
-          project,
-          client
-        ).and_return(issue_importer)
+        expect(Gitlab::JiraImport::IssuesImporter).to receive(:new).with(project).and_return(issue_importer)
 
         described_class.new.perform(project.id)
       end
 
-      context 'when start_at is nil' do
-        it_behaves_like 'advance to next stage', :attachments
-      end
-
-      context 'when start_at is zero' do
+      context 'when pagination state indicates not last page' do
         before do
-          allow(Gitlab::Cache::Import::Caching).to receive(:read).and_return(0)
+          allow(Gitlab::JiraImport).to receive(:get_pagination_state).with(project.id)
+            .and_return({ is_last: false, next_page_token: 'token123', page: 1 })
         end
 
         it_behaves_like 'advance to next stage', :issues
       end
 
-      context 'when start_at is greater than zero' do
+      context 'when pagination state indicates last page' do
         before do
-          allow(Gitlab::Cache::Import::Caching).to receive(:read).and_return(25)
-        end
-
-        it_behaves_like 'advance to next stage', :issues
-      end
-
-      context 'when start_at is below zero' do
-        before do
-          allow(Gitlab::Cache::Import::Caching).to receive(:read).and_return(-1)
+          allow(Gitlab::JiraImport).to receive(:get_pagination_state).with(project.id)
+            .and_return({ is_last: true, next_page_token: nil, page: 2 })
         end
 
         it_behaves_like 'advance to next stage', :attachments
+      end
+
+      context 'when pagination state is not set' do
+        before do
+          allow(Gitlab::JiraImport).to receive(:get_pagination_state).with(project.id)
+            .and_return({ is_last: false, next_page_token: nil, page: 1 })
+        end
+
+        it_behaves_like 'advance to next stage', :issues
       end
     end
   end

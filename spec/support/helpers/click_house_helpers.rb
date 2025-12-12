@@ -67,7 +67,7 @@ module ClickHouseHelpers
     ActiveRecord.default_timezone
   end
 
-  def clickhouse_fixture(table, data, db = :main)
+  def clickhouse_fixture(table, data, db = :main, &block)
     return if data.empty?
 
     if data.map { |row| row.keys.sort }.uniq.size > 1
@@ -77,15 +77,21 @@ module ClickHouseHelpers
     structure = data.first.keys
 
     rows = data.map do |row|
-      cols = structure.map do |col|
+      structure.map do |col|
         val = row[col].is_a?(Hash) ? row[col].to_json : row[col]
-        ClickHouseHelpers.quote(val)
+        val.is_a?(Arel::Nodes::SqlLiteral) ? val : ClickHouseHelpers.quote(val)
       end
-
-      "(#{cols.join(', ')})"
     end
 
-    query = "INSERT INTO #{table} (#{structure.join(', ')}) VALUES #{rows.join(',')}"
+    query = if block
+              yield(rows, structure)
+            else
+              values_data = rows.map do |cols|
+                "(#{cols.join(', ')})"
+              end.join(',')
+
+              "INSERT INTO #{table} (#{structure.join(', ')}) VALUES #{values_data}"
+            end
 
     ClickHouse::Client.execute(query, db)
   end

@@ -53,9 +53,9 @@ A user is not counted as a billable user if:
 - They are [deactivated](../administration/moderate_users.md#deactivate-a-user),
   [banned](../user/group/moderate_users.md#ban-a-user),
   or [blocked](../administration/moderate_users.md#block-a-user).
-- They are not a member of any projects or groups.
+- They are not a member of any projects or groups (Ultimate subscriptions only).
 - They have only the [Guest role](#free-guest-users) (Ultimate subscriptions only).
-- They have only the [Minimal Access role](../user/permissions.md#users-with-minimal-access).
+- They have only the [Minimal Access role](../user/permissions.md#users-with-minimal-access) for any GitLab.com subscriptions.
 - The account is a GitLab-created service account:
   - [Ghost User](../user/profile/account/delete_account.md#associated-records).
   - Bots:

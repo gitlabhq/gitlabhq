@@ -2473,6 +2473,12 @@ argument :id, Types::GlobalIDType[Discussion],
 
 See also [Deprecate Global IDs](#deprecate-global-ids).
 
+### Workhorse-assisted uploads
+
+All GraphQL API mutations that accept file content must use Workhorse-assisted uploads.
+
+See the [Workhorse uploads documentation](uploads/_index.md#workhorse-assisted-uploads) for implementation details.
+
 ### Sort arguments
 
 Sort arguments should use an [enum type](#enums) whenever possible to describe the set of available sorting values.

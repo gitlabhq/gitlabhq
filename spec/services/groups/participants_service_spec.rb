@@ -58,8 +58,12 @@ RSpec.describe Groups::ParticipantsService, feature_category: :groups_and_projec
       expected_users = (group_hierarchy_users + subproject.users)
         .map { |user| user_to_autocompletable(user) }
 
+      got = service_result.map do |result|
+        result.slice(:type, :name, :username, :avatar_url, :availability)
+      end
+
       expect(expected_users.count).to eq(4)
-      expect(service_result).to include(*expected_users)
+      expect(got).to include(*expected_users)
     end
 
     context 'when shared with a private group' do

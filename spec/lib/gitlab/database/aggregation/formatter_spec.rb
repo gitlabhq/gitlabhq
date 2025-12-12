@@ -33,8 +33,7 @@ RSpec.describe Gitlab::Database::Aggregation::Formatter, feature_category: :data
     end
 
     it 'leaves unknown data untouched' do
-      expect(formatter.format_data([{ 'dummy' => 3 }]))
-            .to eq([{ 'dummy' => 3 }])
+      expect(formatter.format_data([{ 'dummy' => 3 }])).to eq([{ 'dummy' => 3 }])
     end
   end
 end

@@ -38,6 +38,33 @@ For further details on this additional data, see [vulnerability risk assessment 
 If the scanner determined the vulnerability to be a false positive, an alert message is included at
 the top of the vulnerability's page.
 
+## SAST false positive detection
+
+{{< details >}}
+
+- Tier: Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18977) in GitLab 18.7 as a [beta](../../../policy/development_stages_support.md#beta) feature [with feature flags](../../../administration/feature_flags/_index.md) named `enable_vulnerability_fp_detection` and `ai_experiment_sast_fp_detection`. Enabled by default.
+
+{{< /history >}}
+
+GitLab Duo automatically analyzes Critical and High severity SAST vulnerabilities to identify potential false positives. This reduces noise in your vulnerability report by flagging findings that are likely not actual security risks.
+
+For each analyzed vulnerability, GitLab Duo provides:
+
+- A confidence score indicating the likelihood of the assessment
+- An explanation of why the finding might or might not be a true positive
+- Visual indicators that a vulnerability has been identified as a potential false positive in the vulnerability report
+
+For more information, see [SAST false positive detection](false_positive_detection.md).
+
 ## Vulnerability Explanation
 
 {{< details >}}
