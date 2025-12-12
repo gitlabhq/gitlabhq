@@ -963,10 +963,6 @@ class Project < ApplicationRecord
       .where(project_setting: { pages_unique_domain_enabled: false })
   end
 
-  scope :with_api_commit_entity_associations, -> {
-    preload(:project_feature, :route, namespace: [:route, :owner])
-  }
-
   scope :with_group_child_entity_associations, -> {
     with_route.preload(namespace: [:namespace_settings_with_ancestors_inherited_settings])
   }
@@ -1041,11 +1037,20 @@ class Project < ApplicationRecord
   mount_uploader :bfg_object_map, AttachmentUploader
 
   def self.with_api_entity_associations
-    preload(:project_feature, :route, :topics, :group, :timelogs, namespace: [:route, :owner])
+    with_fork_network_associations
+      .preload(:project_feature, :route, :topics, :group, :timelogs, namespace: [:route, :owner])
   end
 
   def self.with_web_entity_associations
     preload(:project_feature, :route, :creator, group: :parent, namespace: [:route, :owner, :namespace_settings, :namespace_settings_with_ancestors_inherited_settings])
+  end
+
+  def self.with_api_commit_entity_associations
+    preload(:ci_pipelines, :project_feature, :route, namespace: [:route, :owner])
+  end
+
+  def self.with_api_blob_entity_associations
+    preload(:project_feature, :route, namespace: [:route, :owner])
   end
 
   def self.with_slack_application_disabled

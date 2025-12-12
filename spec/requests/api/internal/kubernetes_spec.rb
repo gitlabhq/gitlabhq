@@ -541,6 +541,31 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
     end
   end
 
+  describe 'GET /internal/agents/runnerc/agent_info' do
+    def send_request(headers: {}, params: {})
+      get api('/internal/agents/runnerc/agent_info'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
+    end
+
+    include_examples 'authorization'
+    include_examples 'agent authentication'
+
+    context 'a runner controller is found' do
+      let!(:runner_controller_token) { create(:ci_runner_controller_token) }
+
+      let(:runner_controller) { runner_controller_token.runner_controller }
+      let(:agent_token_headers) { { Gitlab::Kas::INTERNAL_API_AGENT_REQUEST_HEADER => runner_controller_token.token } }
+
+      it 'returns expected data' do
+        send_request(headers: agent_token_headers)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(json_response).to match(
+          a_hash_including('agent_id' => runner_controller.id)
+        )
+      end
+    end
+  end
+
   describe 'GET /internal/kubernetes/verify_project_access' do
     def send_request(headers: {}, params: {})
       get api("/internal/kubernetes/verify_project_access"), params: params, headers: headers.reverse_merge(jwt_auth_headers)

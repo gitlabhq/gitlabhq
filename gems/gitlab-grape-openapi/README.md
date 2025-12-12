@@ -14,8 +14,8 @@ Internal gem for generating OpenAPI 3.0 specifications from Grape API definition
        Rails.application.eager_load!
        api_classes = API::Base.descendants
        entity_classes = Grape::Entity.descendants
-       generator = Gitlab::GrapeOpenapi::Generator.new(api_classes: api_classes, entity_classes: entity_classes)
-       File.write(Rails.root.join('tmp', 'myfile.json'), generator.generate.to_json)
+       spec = Gitlab::GrapeOpenapi.generate(api_classes: api_classes, entity_classes: entity_classes)
+       File.write(Rails.root.join('tmp', 'myfile.json'), JSON.pretty_generate(spec))
     ```
   
 - The OpenAPI 3.0 spec will be dumped in `tmp/myfile.json` in the `GDK_ROOT/gitlab` directory.

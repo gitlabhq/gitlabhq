@@ -14,7 +14,7 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
   end
 
   let_it_be(:legacy_token_revoked) { create(:personal_access_token, :revoked, user: user, name: 'Revoked token') }
-  let_it_be(:legacy_token_expired) { create(:personal_access_token, :expired, user:) }
+  let_it_be(:legacy_token_expired) { create(:personal_access_token, :expired, :with_last_used_ips, user:) }
   let_it_be(:granular_token) do
     create(:granular_pat, name: 'Special token', last_used_at: 1.day.ago, permissions: ['read_member_role'],
       user: user, namespace: group)
@@ -43,6 +43,7 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
           }
         }
         active
+        lastUsedIps
         lastUsedAt
         createdAt
         expiresAt
@@ -81,6 +82,7 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
           'revoked' => false,
           'scopes' => [{ 'value' => 'api' }],
           'active' => true,
+          'lastUsedIps' => [],
           'lastUsedAt' => legacy_token.last_used_at.iso8601,
           'createdAt' => legacy_token.created_at.iso8601,
           'expiresAt' => legacy_token.expires_at.iso8601
@@ -97,6 +99,7 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
             'permissions' => [{ 'name' => 'read_member_role' }]
           }],
           'active' => true,
+          'lastUsedIps' => [],
           'lastUsedAt' => granular_token.last_used_at.iso8601,
           'createdAt' => granular_token.created_at.iso8601,
           'expiresAt' => granular_token.expires_at.iso8601
@@ -108,7 +111,8 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
         }),
         a_hash_including({
           'name' => legacy_token_expired.name,
-          'active' => false
+          'active' => false,
+          'lastUsedIps' => legacy_token_expired.last_used_ips.map(&:ip_address)
         })
       )
     end

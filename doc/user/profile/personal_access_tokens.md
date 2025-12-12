@@ -650,6 +650,11 @@ Running the following commands changes data directly. This could be damaging if 
 
 For Git over HTTPS, an alternative to personal access tokens is to use an OAuth credential helper.
 
+For authentication in CI/CD jobs, consider:
+
+- [CI/CD job tokens](../../ci/jobs/ci_job_token.md) with [fine-grained permissions](../../ci/jobs/fine_grained_permissions.md) for pipeline authentication
+- [Project access tokens](../../user/project/settings/project_access_tokens.md) with minimal required permissions for project-specific automation
+
 ## Related topics
 
 - [Group access tokens](../group/settings/group_access_tokens.md)

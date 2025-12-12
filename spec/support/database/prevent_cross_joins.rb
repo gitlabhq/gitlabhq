@@ -52,6 +52,8 @@ module Database
     module SpecHelpers
       def with_cross_joins_prevented
         subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |event|
+          next if event.payload[:cached]
+
           ::Database::PreventCrossJoins.validate_cross_joins!(event.payload[:sql])
         end
 

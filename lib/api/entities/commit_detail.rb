@@ -10,14 +10,18 @@ module API
       expose :project_id, documentation: { type: 'integer', example: 1 }
 
       expose :last_pipeline, documentation: { type: ::API::Entities::Ci::PipelineBasic.to_s } do |commit, options|
-        pipeline = commit.last_pipeline if can_read_pipeline?
+        pipeline = commit.lazy_latest_pipeline if can_read_pipeline?
         ::API::Entities::Ci::PipelineBasic.represent(pipeline, options)
+      end
+
+      def self.execute_batch_counting(commits_relation)
+        commits_relation.each(&:lazy_latest_pipeline)
       end
 
       private
 
       def can_read_pipeline?
-        Ability.allowed?(options[:current_user], :read_pipeline, object.last_pipeline)
+        Ability.allowed?(options[:current_user], :read_pipeline, object.lazy_latest_pipeline)
       end
     end
   end

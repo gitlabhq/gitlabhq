@@ -441,4 +441,11 @@ RSpec.describe SnippetRepository, feature_category: :snippets do
   def first_blob(snippet)
     snippet.repository.blob_at('master', snippet.repository.ls_files(snippet.default_branch).first)
   end
+
+  context 'with loose foreign key on snippet_repositories.shard_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let_it_be(:parent) { create(:shard) }
+      let_it_be(:model) { create(:snippet_repository, shard: parent) }
+    end
+  end
 end

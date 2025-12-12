@@ -23429,6 +23429,9 @@ msgstr ""
 msgid "Dependencies|There was an error fetching the versions for the selected component. Please try again later."
 msgstr ""
 
+msgid "Dependencies|This dependency contains vulnerabilities that violate a security policy. See the vulnerability list for more details."
+msgstr ""
+
 msgid "Dependencies|This link will expire in %{number} days."
 msgstr ""
 
@@ -33227,6 +33230,15 @@ msgid "GroupSelect|Search groups"
 msgstr ""
 
 msgid "GroupSelect|Select a group"
+msgstr ""
+
+msgid "GroupSettingsUsageBilling|Display user data"
+msgstr ""
+
+msgid "GroupSettingsUsageBilling|GitLab Credits dashboard"
+msgstr ""
+
+msgid "GroupSettingsUsageBilling|If selected, individual usernames and their credit usage are visible on the GitLab Credits dashboard. If your organization needs to restrict access to individual user activity for compliance or privacy reasons, clear this checkbox."
 msgstr ""
 
 msgid "GroupSettings|Add additional webhook triggers for group access token expiration"

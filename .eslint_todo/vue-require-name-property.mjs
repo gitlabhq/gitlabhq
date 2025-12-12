@@ -159,7 +159,6 @@ export default {
     'app/assets/javascripts/ci/pipeline_schedules/components/table/cells/pipeline_schedule_actions.vue',
     'app/assets/javascripts/ci/pipeline_schedules/components/table/cells/pipeline_schedule_last_pipeline.vue',
     'app/assets/javascripts/ci/pipeline_schedules/components/table/cells/pipeline_schedule_next_run.vue',
-    'app/assets/javascripts/ci/pipeline_schedules/components/table/cells/pipeline_schedule_owner.vue',
     'app/assets/javascripts/ci/pipeline_schedules/components/table/cells/pipeline_schedule_target.vue',
     'app/assets/javascripts/ci/pipeline_schedules/components/table/pipeline_schedules_table.vue',
     'app/assets/javascripts/ci/pipeline_schedules/components/take_ownership_modal.vue',

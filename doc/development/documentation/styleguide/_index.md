@@ -59,7 +59,7 @@ the documentation helps others efficiently accomplish tasks and solve problems.
 
 ## Writing for localization
 
-The GitLab documentation is not localized, but we follow guidelines that help us write for a global audience.
+We follow guidelines that help us write for a global audience.
 
 [The GitLab voice](#the-gitlab-voice) dictates that we write clearly and directly with translation in mind.
 Our style guide, [word list](word_list.md), and [Vale rules](../testing/_index.md) ensure consistency in the documentation.

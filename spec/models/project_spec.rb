@@ -957,6 +957,17 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(result).not_to include(private_project, internal_project, public_project)
       end
     end
+
+    describe '.with_api_blob_entity_associations' do
+      it 'preloads the expected associations' do
+        expected_array = [:project_feature,
+          :route,
+          { namespace: [:route, :owner] }]
+
+        expected_array << :invited_groups if ::Gitlab.ee?
+        expect(described_class.with_api_blob_entity_associations.preload_values).to match_array(expected_array)
+      end
+    end
   end
 
   describe 'modules' do

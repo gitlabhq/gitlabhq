@@ -40,8 +40,8 @@ module Gitlab
         yield(configuration)
       end
 
-      def generate(api_classes, options = {})
-        Generator.new(api_classes, options).generate
+      def generate(options = {})
+        Generator.new(options).generate
       end
     end
   end

@@ -1578,6 +1578,64 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
   end
 
+  describe '#runner_controller_token_from_authorization_token' do
+    let_it_be_with_reload(:runner_controller_token) { create(:ci_runner_controller_token) }
+
+    subject { runner_controller_token_from_authorization_token }
+
+    context 'when route_setting is empty' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when route_setting does not allow runner controller token' do
+      let(:route_authentication_setting) { { runner_controller_token_allowed: false } }
+
+      context 'Gitlab-Agent-Api-Request header is empty' do
+        it { is_expected.to be_nil }
+      end
+
+      context 'Gitlab-Agent-Api-Request header does not matches the runner controller token' do
+        before do
+          request.headers['Gitlab-Agent-Api-Request'] = 'ABCD'
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'Gitlab-Agent-Api-Request header matches runner controller token' do
+        before do
+          request.headers['Gitlab-Agent-Api-Request'] = runner_controller_token.token
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
+
+    context 'when route_setting allows runner controller token' do
+      let(:route_authentication_setting) { { runner_controller_token_allowed: true } }
+
+      context 'Gitlab-Agent-Api-Request header is empty' do
+        it { is_expected.to be_nil }
+      end
+
+      context 'Gitlab-Agent-Api-Request header does not matches the runner controller token' do
+        before do
+          request.headers['Gitlab-Agent-Api-Request'] = 'ABCD'
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'Gitlab-Agent-Api-Request header matches runner controller token' do
+        before do
+          request.headers['Gitlab-Agent-Api-Request'] = runner_controller_token.token
+        end
+
+        it { is_expected.to eq(runner_controller_token) }
+      end
+    end
+  end
+
   describe '#find_runner_from_token' do
     let_it_be(:runner, freeze: true) { create(:ci_runner) }
 

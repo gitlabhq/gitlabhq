@@ -2120,6 +2120,7 @@ POST /groups/:id/ldap_sync
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16343) in GitLab 18.6 [with a flag](../administration/feature_flags/_index.md) named `manage_pat_by_group_owners_ready`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/578133) in GitLab 18.7. Feature flag `manage_pat_by_group_owners_ready` removed.
 
 {{< /history >}}
 

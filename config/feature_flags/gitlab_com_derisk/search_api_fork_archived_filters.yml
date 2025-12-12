@@ -1,0 +1,10 @@
+---
+name: search_api_fork_archived_filters
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/493281
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215442
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583081
+milestone: '18.7'
+group: group::global search
+type: gitlab_com_derisk
+default_enabled: false

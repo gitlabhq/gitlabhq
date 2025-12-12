@@ -882,6 +882,10 @@ slsa_attestations:
     column: build_id
     on_delete: async_delete
     worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
+snippet_repositories:
+  - table: shards
+    column: shard_id
+    on_delete: async_nullify
 snippets:
   - table: organizations
     column: organization_id

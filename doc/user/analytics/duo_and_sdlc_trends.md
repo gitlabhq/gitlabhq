@@ -216,6 +216,7 @@ The user metrics tables display usage of different GitLab Duo features by indivi
 - **GitLab Duo Code Suggestions usage by user**: Number of code suggestions accepted, and the code suggestions acceptance rate.
 - **GitLab Duo Code Review usage by user**: Number of code reviews requested as the merge request author from GitLab Duo, and number of reactions (:thumbsup: and :thumbsdown:) to code review comments.
 - **GitLab Duo Root Cause Analysis usage by user**: Number of troubleshooting requests from GitLab Duo.
+- **GitLab Duo usage by user**: Number of Duo events made by the user.
 
 {{< alert type="note" >}}
 

@@ -1589,6 +1589,27 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="queryprojectsecretsneedingrotationprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the secrets belong to. |
 
+### `Query.projectSecretsPermissions`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+List project secrets permissions.
+
+Returns [`ProjectSecretsPermissionConnection`](#projectsecretspermissionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryprojectsecretspermissionsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the secrets permissions belong to. |
+
 ### `Query.projects`
 
 Find projects visible to the current user.
@@ -7678,10 +7699,10 @@ Input type: `GroupSecretsPermissionUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationgroupsecretspermissionupdateactions"></a>`actions` | [`[SecretsManagementAction!]!`](#secretsmanagementaction) | Actions that can be performed on secrets. |
 | <a id="mutationgroupsecretspermissionupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationgroupsecretspermissionupdateexpiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
 | <a id="mutationgroupsecretspermissionupdategrouppath"></a>`groupPath` | [`ID!`](#id) | Group to which the permissions are added. |
-| <a id="mutationgroupsecretspermissionupdatepermissions"></a>`permissions` | [`[String!]!`](#string) | Permissions to be provided. ['create', 'update', 'read', 'delete']. |
 | <a id="mutationgroupsecretspermissionupdateprincipal"></a>`principal` | [`PrincipalInput!`](#principalinput) | User/MemberRole/Role/Group that is provided access. |
 
 #### Fields
@@ -10917,6 +10938,48 @@ Input type: `ProjectSecretsManagerInitializeInput`
 | <a id="mutationprojectsecretsmanagerinitializeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprojectsecretsmanagerinitializeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationprojectsecretsmanagerinitializeprojectsecretsmanager"></a>`projectSecretsManager` | [`ProjectSecretsManager`](#projectsecretsmanager) | Project secrets manager. |
+
+### `Mutation.projectSecretsPermissionDelete`
+
+Input type: `ProjectSecretsPermissionDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecretspermissiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecretspermissiondeleteprincipal"></a>`principal` | [`PrincipalInput!`](#principalinput) | User/MemberRole/Role/Group whose access is being removed. |
+| <a id="mutationprojectsecretspermissiondeleteprojectpath"></a>`projectPath` | [`ID!`](#id) | Project from which the permissions are removed. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecretspermissiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecretspermissiondeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationprojectsecretspermissiondeletesecretspermission"></a>`secretsPermission` | [`ProjectSecretsPermission`](#projectsecretspermission) | Secrets Permission that was deleted. |
+
+### `Mutation.projectSecretsPermissionUpdate`
+
+Input type: `ProjectSecretsPermissionUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecretspermissionupdateactions"></a>`actions` | [`[SecretsManagementAction!]!`](#secretsmanagementaction) | Actions that can be performed on secrets. |
+| <a id="mutationprojectsecretspermissionupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecretspermissionupdateexpiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
+| <a id="mutationprojectsecretspermissionupdateprincipal"></a>`principal` | [`PrincipalInput!`](#principalinput) | User/MemberRole/Role/Group that is provided access. |
+| <a id="mutationprojectsecretspermissionupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to which the permissions are added. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecretspermissionupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecretspermissionupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationprojectsecretspermissionupdatesecretspermission"></a>`secretsPermission` | [`ProjectSecretsPermission`](#projectsecretspermission) | Secrets Permission that was created. |
 
 ### `Mutation.projectSecurityExclusionCreate`
 
@@ -22319,6 +22382,29 @@ The edge type for [`ProjectSecret`](#projectsecret).
 | ---- | ---- | ----------- |
 | <a id="projectsecretedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="projectsecretedgenode"></a>`node` | [`ProjectSecret`](#projectsecret) | The item at the end of the edge. |
+
+#### `ProjectSecretsPermissionConnection`
+
+The connection type for [`ProjectSecretsPermission`](#projectsecretspermission).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecretspermissionconnectionedges"></a>`edges` | [`[ProjectSecretsPermissionEdge]`](#projectsecretspermissionedge) | A list of edges. |
+| <a id="projectsecretspermissionconnectionnodes"></a>`nodes` | [`[ProjectSecretsPermission]`](#projectsecretspermission) | A list of nodes. |
+| <a id="projectsecretspermissionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ProjectSecretsPermissionEdge`
+
+The edge type for [`ProjectSecretsPermission`](#projectsecretspermission).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecretspermissionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="projectsecretspermissionedgenode"></a>`node` | [`ProjectSecretsPermission`](#projectsecretspermission) | The item at the end of the edge. |
 
 #### `ProjectSecurityExclusionConnection`
 
@@ -35687,10 +35773,10 @@ Representation of a group secrets permission.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupsecretspermissionactions"></a>`actions` | [`[SecretsManagementAction!]!`](#secretsmanagementaction) | Actions that can be performed on secrets. |
 | <a id="groupsecretspermissionexpiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
 | <a id="groupsecretspermissiongrantedby"></a>`grantedBy` | [`UserCore`](#usercore) | User who created the Secret Permission. |
 | <a id="groupsecretspermissiongroup"></a>`group` | [`Group!`](#group) | Group the secret permission belong to. |
-| <a id="groupsecretspermissionpermissions"></a>`permissions` | [`String!`](#string) | Permissions to be provided. ['create', 'update', 'read', 'delete']. |
 | <a id="groupsecretspermissionprincipal"></a>`principal` | [`Principal!`](#principal) | Who is provided access to. For eg: User/Role/MemberRole/Group. |
 
 ### `GroupSecurityPolicySource`
@@ -41084,6 +41170,7 @@ Personal access token.
 | <a id="personalaccesstokengranular"></a>`granular` | [`Boolean!`](#boolean) | Whether the personal access token is granular. |
 | <a id="personalaccesstokenid"></a>`id` | [`ID!`](#id) | ID of the personal access token. |
 | <a id="personalaccesstokenlastusedat"></a>`lastUsedAt` | [`Time`](#time) | Timestamp of when the personal access token was last used. |
+| <a id="personalaccesstokenlastusedips"></a>`lastUsedIps` | [`[String!]!`](#string) | IP addresses where the personal access token was recently used. |
 | <a id="personalaccesstokenname"></a>`name` | [`String!`](#string) | Name of the personal access token. |
 | <a id="personalaccesstokenrevoked"></a>`revoked` | [`Boolean!`](#boolean) | Whether the personal access token has been revoked. |
 | <a id="personalaccesstokenscopes"></a>`scopes` | [`[PersonalAccessTokenScope!]!`](#personalaccesstokenscope) | List of scopes applied to a personal access token. |
@@ -44917,6 +45004,20 @@ Representation of a project secrets manager.
 | <a id="projectsecretsmanagerproject"></a>`project` | [`Project!`](#project) | Project the secrets manager belong to. |
 | <a id="projectsecretsmanagerstatus"></a>`status` | [`ProjectSecretsManagerStatus`](#projectsecretsmanagerstatus) | Status of the project secrets manager. |
 
+### `ProjectSecretsPermission`
+
+Representation of a project secrets permission.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecretspermissionactions"></a>`actions` | [`[SecretsManagementAction!]!`](#secretsmanagementaction) | Actions that can be performed on secrets. |
+| <a id="projectsecretspermissionexpiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
+| <a id="projectsecretspermissiongrantedby"></a>`grantedBy` | [`UserCore`](#usercore) | User who created the Secret Permission. |
+| <a id="projectsecretspermissionprincipal"></a>`principal` | [`Principal!`](#principal) | Who is provided access to. For eg: User/Role/MemberRole/Group. |
+| <a id="projectsecretspermissionproject"></a>`project` | [`Project!`](#project) | Project the secrets permission belongs to. |
+
 ### `ProjectSecurityExclusion`
 
 Represents a project-level security scanner exclusion.
@@ -46095,6 +46196,7 @@ Representation of a secret permission.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="secretpermissionactions"></a>`actions` | [`[SecretsManagementAction!]!`](#secretsmanagementaction) | Actions that can be performed on secrets. |
 | <a id="secretpermissionexpiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
 | <a id="secretpermissiongrantedby"></a>`grantedBy` | [`UserCore`](#usercore) | User who created the Secret Permission. |
 | <a id="secretpermissionpermissions"></a>`permissions` | [`String!`](#string) | Permissions to be provided. ['create', 'update', 'read', 'delete']. |
@@ -53916,6 +54018,16 @@ Status of secret rotation.
 | <a id="secretrotationstatusapproaching"></a>`APPROACHING` | Rotation is due within 7 days. |
 | <a id="secretrotationstatusok"></a>`OK` | Rotation is not due soon. |
 | <a id="secretrotationstatusoverdue"></a>`OVERDUE` | Rotation is overdue (reminder was sent). |
+
+### `SecretsManagementAction`
+
+Actions that can be performed on secrets.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="secretsmanagementactiondelete"></a>`DELETE` | Delete secrets. |
+| <a id="secretsmanagementactionread"></a>`READ` | Read secrets. |
+| <a id="secretsmanagementactionwrite"></a>`WRITE` | Create and update secrets. |
 
 ### `SecurityAttributeBulkUpdateMode`
 

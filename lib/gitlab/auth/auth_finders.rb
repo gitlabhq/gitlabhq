@@ -181,6 +181,16 @@ module Gitlab
         ::Clusters::AgentToken.active.find_by_token(current_token.to_s)
       end
 
+      def runner_controller_token_from_authorization_token
+        return unless route_authentication_setting[:runner_controller_token_allowed]
+
+        self.current_token = current_request.headers[Gitlab::Kas::INTERNAL_API_AGENT_REQUEST_HEADER]
+
+        return unless current_token.present?
+
+        ::Ci::RunnerControllerToken.find_by_token(current_token.to_s)
+      end
+
       def find_runner_from_token
         return unless api_request?
 

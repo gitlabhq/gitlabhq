@@ -11,6 +11,12 @@ module Gitlab
           Thread.current[self.suppress_key] || @suppress_in_rspec
         end
 
+        # Cached queries are not analyzed by default, even if they'd require tracking.
+        # Override `skip_cached?` in your analyzer to analyze cached queries.
+        def self.skip_cached?(parsed)
+          parsed.cached?
+        end
+
         def self.requires_tracking?(parsed)
           false
         end

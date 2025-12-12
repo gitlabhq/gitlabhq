@@ -36,6 +36,25 @@ module API
               }
             end
           end
+
+          namespace 'runnerc' do
+            helpers ::API::Helpers::RunnerControllerHelpers
+
+            before do
+              check_runner_controller_token!
+            end
+
+            desc 'Gets agent info for runnerc' do
+              detail 'Retrieves agent info for runnerc (Runner Controllers) for the given token'
+            end
+            route_setting :authentication, runner_controller_token_allowed: true
+            get '/agent_info', feature_category: :deployment_management, urgency: :low do
+              status 200
+              {
+                agent_id: runner_controller.id
+              }
+            end
+          end
         end
 
         namespace 'kubernetes' do

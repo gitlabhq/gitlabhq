@@ -256,39 +256,6 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
 
       it { is_expected.to eq expected }
     end
-
-    context 'when exclude_git_http_from_web_rate_limiter is disabled' do
-      where(:path, :throttle_authenticated_web_enabled, :throttle_authenticated_git_lfs_enabled, :expected) do
-        ref(:web_path) | true  | false | true
-        ref(:web_path) | false | false | false
-        ref(:web_path) | true  | true  | true
-        ref(:web_path) | false | true  | false
-
-        # Git HTTP paths are not excluded from web rate limiter
-        ref(:git_info_refs_path) | true  | false | true
-        ref(:git_info_refs_path) | false | false | false
-        ref(:git_info_refs_path) | true  | true  | true
-        ref(:git_info_refs_path) | false | true  | false
-
-        # Git LFS paths are excluded when LFS throttle is enabled
-        ref(:git_lfs_path) | true  | true  | false
-        ref(:git_lfs_path) | false | true  | false
-        ref(:git_lfs_path) | true  | false | true
-        ref(:git_lfs_path) | false | false | false
-      end
-
-      with_them do
-        before do
-          stub_feature_flags(exclude_git_http_from_web_rate_limiter: false)
-          stub_application_setting(
-            throttle_authenticated_web_enabled: throttle_authenticated_web_enabled,
-            throttle_authenticated_git_lfs_enabled: throttle_authenticated_git_lfs_enabled
-          )
-        end
-
-        it { is_expected.to eq expected }
-      end
-    end
   end
 
   describe '#throttle_unauthenticated_git_http?' do
@@ -320,6 +287,30 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
       end
 
       it { is_expected.to eq expected }
+    end
+
+    context 'when falls back for web requests' do
+      where(:git_http_enabled, :web_enabled, :expected) do
+        false | false | false
+        true  | false | true
+        false | true  | true
+        true  | true  | true
+      end
+
+      with_them do
+        before do
+          stub_application_setting(
+            throttle_authenticated_git_http_enabled: git_http_enabled,
+            throttle_authenticated_web_enabled: web_enabled
+          )
+        end
+
+        it 'enables Git HTTP setttings if either web or Git HTTP rate limiter is enabled' do
+          expect(request).to receive(:git_path?).and_return(true)
+
+          expect(request.throttle_authenticated_git_http?).to eq(expected)
+        end
+      end
     end
   end
 

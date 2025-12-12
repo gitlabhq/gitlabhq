@@ -42,6 +42,19 @@ FactoryBot.define do
         personal_access_token.scopes = (personal_access_token.scopes + Gitlab::Auth::REPOSITORY_SCOPES).uniq
       end
     end
+
+    transient do
+      last_used_ips_count { 3 }
+    end
+
+    trait :with_last_used_ips do
+      last_used_ips do
+        Array.new(last_used_ips_count) do
+          association(:personal_access_token_last_used_ip, personal_access_token: instance,
+            organization: instance.organization)
+        end
+      end
+    end
   end
 
   factory :granular_pat, parent: :personal_access_token do

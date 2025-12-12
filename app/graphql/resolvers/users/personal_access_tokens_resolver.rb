@@ -60,7 +60,8 @@ module Resolvers
         {
           scopes: {
             granular_scopes: [:namespace]
-          }
+          },
+          last_used_ips: [:last_used_ips]
         }
       end
 
