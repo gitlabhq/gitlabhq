@@ -12,8 +12,6 @@ module Feature
     Organizations::Organization
   ].freeze
 
-  MAX_OBSERVED_FEATURE_FLAGS = 10
-
   class FlipperRecord < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord -- This class perfectly replaces
     # Flipper::Adapters::ActiveRecord::Model, which inherits ActiveRecord::Base
     include DatabaseReflection
@@ -140,8 +138,6 @@ module Feature
 
       # If we don't filter out this flag here we will enter an infinite loop
       log_feature_flag_state(key, feature_value) if log_feature_flag_states?(key)
-
-      track_feature_flag_in_context(key) if feature_value && observed_feature_flag?(key)
 
       feature_value
     end
@@ -468,19 +464,6 @@ module Feature
       extra = extra.transform_values { |v| v.respond_to?(:flipper_id) ? v.flipper_id : v }
       extra = extra.transform_values(&:to_s)
       logger.info(key: key, action: action, **extra)
-    end
-
-    def observed_feature_flag?(key)
-      definition = Feature::Definition.get(key)
-      definition&.observed == true
-    end
-
-    def track_feature_flag_in_context(key)
-      current_flags = Gitlab::ApplicationContext.current_context_attribute(:feature_flags) || []
-      return if current_flags.size >= MAX_OBSERVED_FEATURE_FLAGS
-      return if current_flags.include?(key.to_s)
-
-      Gitlab::ApplicationContext.push(feature_flags: current_flags + [key.to_s])
     end
   end
 

@@ -1,0 +1,6 @@
+---
+name: create_merge_request_dependency
+description: Grants the ability to create merge request dependencies
+feature_category: code_review_workflow
+boundaries:
+  - project

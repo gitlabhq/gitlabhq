@@ -22,6 +22,8 @@ module Groups
 
           if result.success?
             flash[:success] = s_('Observability|Welcome to GitLab Observability!')
+            redirect_to group_observability_setup_path(group, provisioning: true)
+            return
           else
             flash[:alert] = result.message
           end

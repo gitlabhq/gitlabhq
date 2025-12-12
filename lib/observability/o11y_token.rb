@@ -45,7 +45,11 @@ module Observability
     def generate_tokens
       validate_settings!
 
-      response = authenticate_user
+      account_id = get_account_id
+      return { status: :provisioning } if account_id == :provisioning
+      return {} if account_id.blank?
+
+      response = authenticate_user(account_id)
       parse_response(response)
     rescue ConfigurationError, AuthenticationError, NetworkError => e
       Gitlab::ErrorTracking.log_exception(e)
@@ -69,8 +73,7 @@ module Observability
       raise ConfigurationError, "o11y_service_password is not configured" if o11y_settings.o11y_service_password.blank?
     end
 
-    def authenticate_user
-      account_id = get_account_id
+    def authenticate_user(account_id)
       http_client.post(login_url, build_payload(account_id))
     rescue *Gitlab::HTTP::HTTP_ERRORS => e
       raise NetworkError, "Failed to connect to O11y service (#{e.class.name}): #{e.message}"
@@ -94,6 +97,12 @@ module Observability
 
     def get_account_id
       response = http_client.get(account_id_url, context_payload)
+      if response.code.to_i != 200
+        return :provisioning if response.code.to_i == 500 && new_settings?
+
+        return
+      end
+
       data = Gitlab::Json.parse(response.body)
       data.dig('data', 'orgs', 0, 'id')
     end
@@ -108,8 +117,6 @@ module Observability
 
     def parse_response(response)
       if response.code.to_i != 200
-        return { status: :provisioning } if response.code.to_i == 500 && new_settings?
-
         Gitlab::AppLogger.warn("O11y authentication failed with status #{response.code}")
         return {}
       end

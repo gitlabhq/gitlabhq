@@ -156,11 +156,6 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{config/authz/permissions/*.yml,app/policies/*,rb.ee/app/policies/*.rb}'
       run: bundle exec rake gitlab:permissions:validate
-    observed-feature-flags:
-      tags: backend
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '{config/feature_flags/**/*.yml,ee/config/feature_flags/**/*.yml}'
-      run: scripts/validate_observed_feature_flags
     check-deprecated-files:
       tags: backend frontend view haml
       run: scripts/lint/check_deprecated_files.rb

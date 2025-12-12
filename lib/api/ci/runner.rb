@@ -156,7 +156,7 @@ module API
             ]
           end
           get '/discovery', urgency: :low, feature_category: :runner_core do
-            unless Gitlab::Kas.enabled?
+            unless Gitlab::Kas.enabled? && job_router_enabled?(current_runner_from_header)
               render_api_error!('Job Router is not available. Please contact your administrator.', 501)
             end
 

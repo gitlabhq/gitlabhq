@@ -202,6 +202,14 @@ module API
           too_many_requests!('Executing database migrations. Please retry later.', retry_after: 1.minute)
         end
 
+        def job_router_enabled?(runner)
+          if runner.instance_type?
+            return Feature.enabled?(:job_router_instance_runners, runner) || Feature.enabled?(:job_router, :instance)
+          end
+
+          Feature.enabled?(:job_router, runner.owner&.root_ancestor)
+        end
+
         private
 
         def processing_on_runner?(job)

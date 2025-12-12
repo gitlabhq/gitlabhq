@@ -863,7 +863,8 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         start_repository: repository.gitaly_repository,
         message: revert_message,
         expected_old_oid: nil,
-        timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i)
+        timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i),
+        sign: true
       )
     end
 
@@ -987,7 +988,8 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
           start_repository: repository.gitaly_repository,
           message: revert_message,
           expected_old_oid: target_sha,
-          timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i)
+          timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i),
+          sign: true
         )
       end
 

@@ -38,8 +38,7 @@ module Gitlab
       :auth_fail_requested_scopes,
       :http_router_rule_action,
       :http_router_rule_type,
-      :kubernetes_agent_id,
-      :feature_flags
+      :kubernetes_agent_id
     ].freeze
     private_constant :KNOWN_KEYS
 
@@ -77,8 +76,7 @@ module Gitlab
       Attribute.new(:auth_fail_requested_scopes, String),
       Attribute.new(:http_router_rule_action, String),
       Attribute.new(:http_router_rule_type, String),
-      Attribute.new(:kubernetes_agent, ::Clusters::Agent),
-      Attribute.new(:feature_flags, Array)
+      Attribute.new(:kubernetes_agent, ::Clusters::Agent)
     ].freeze
     private_constant :APPLICATION_ATTRIBUTES
 
@@ -156,7 +154,6 @@ module Gitlab
         assign_hash_if_value(hash, :http_router_rule_action)
         assign_hash_if_value(hash, :http_router_rule_type)
         assign_hash_if_value(hash, :bulk_import_entity_id)
-        assign_hash_if_value(hash, :feature_flags)
 
         hash[:user] = -> { username } if include_user?
         hash[Labkit::Fields::GL_USER_ID] = -> { user_id } if include_user?

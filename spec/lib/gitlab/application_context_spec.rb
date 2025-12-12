@@ -261,14 +261,6 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
         expect(result(context)).to include(kubernetes_agent_id: cluster_agent.id)
       end
     end
-
-    context 'when using feature_flags context' do
-      it 'sets the feature_flags value' do
-        context = described_class.new(feature_flags: %w[flag1 flag2])
-
-        expect(result(context)).to include(feature_flags: %w[flag1 flag2])
-      end
-    end
   end
 
   describe '#use' do

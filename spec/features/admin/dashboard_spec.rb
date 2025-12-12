@@ -45,9 +45,9 @@ RSpec.describe 'admin visits dashboard' do
       expect(page).to have_content('Bots 2')
 
       if Gitlab.ee?
-        expect(page).to have_content('Billable users 53')
+        expect(page).to have_content('Billable users 76')
       else
-        expect(page).not_to have_content('Billable users 53')
+        expect(page).not_to have_content('Billable users 76')
       end
 
       expect(page).to have_content('Blocked users 7')

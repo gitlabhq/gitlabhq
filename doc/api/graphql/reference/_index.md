@@ -2475,7 +2475,6 @@ Input type: `AdminSidekiqQueuesDeleteJobsInput`
 | <a id="mutationadminsidekiqqueuesdeletejobsclientid"></a>`clientId` | [`String`](#string) | Delete jobs matching client_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationadminsidekiqqueuesdeletejobsfeaturecategory"></a>`featureCategory` | [`String`](#string) | Delete jobs matching feature_category in the context metadata. |
-| <a id="mutationadminsidekiqqueuesdeletejobsfeatureflags"></a>`featureFlags` | [`String`](#string) | Delete jobs matching feature_flags in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsgluserid"></a>`glUserId` | [`String`](#string) | Delete jobs matching gl_user_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsjobid"></a>`jobId` | [`String`](#string) | Delete jobs matching job_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobskubernetesagentid"></a>`kubernetesAgentId` | [`String`](#string) | Delete jobs matching kubernetes_agent_id in the context metadata. |

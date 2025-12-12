@@ -752,7 +752,7 @@ GEM
       danger (>= 9.3.0)
       danger-gitlab (>= 8.0.0)
       rake (~> 13.0)
-    gitlab-experiment (1.0.0)
+    gitlab-experiment (1.1.0)
       activesupport (>= 3.0)
       request_store (>= 1.0)
     gitlab-fog-azure-rm (2.4.0)
@@ -2190,7 +2190,7 @@ DEPENDENCIES
   gitlab-crystalball (~> 1.1.0)
   gitlab-dangerfiles (~> 4.10.0)
   gitlab-duo-workflow-service-client (~> 0.6)!
-  gitlab-experiment (~> 1.0.0)
+  gitlab-experiment (~> 1.1.0)
   gitlab-fog-azure-rm (~> 2.4.0)
   gitlab-glfm-markdown (~> 0.0.39)
   gitlab-grape-openapi!

@@ -178,12 +178,13 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
     end
   end
 
-  describe '#within_provisioning_window?' do
+  describe '#provisioning?' do
     let(:setting) { build(:observability_group_o11y_setting, group: group) }
 
-    context 'when record is not persisted' do
-      it 'returns false' do
-        expect(setting.within_provisioning_window?).to be false
+    context 'when record is a new record' do
+      it 'returns true' do
+        expect(setting).to be_new_record
+        expect(setting.provisioning?).to be true
       end
     end
 
@@ -195,7 +196,7 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
       shared_examples 'returns true within window' do |time_offset|
         it "returns true at #{time_offset}" do
           travel_to(setting.created_at + time_offset) do
-            expect(setting.within_provisioning_window?).to be true
+            expect(setting.provisioning?).to be true
           end
         end
       end
@@ -203,7 +204,7 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
       shared_examples 'returns false outside window' do |time_offset|
         it "returns false at #{time_offset}" do
           travel_to(setting.created_at + time_offset) do
-            expect(setting.within_provisioning_window?).to be false
+            expect(setting.provisioning?).to be false
           end
         end
       end
@@ -217,7 +218,7 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
 
       it 'returns true when current time is before creation' do
         travel_to(setting.created_at - 1.second) do
-          expect(setting.within_provisioning_window?).to be true
+          expect(setting.provisioning?).to be true
         end
       end
     end

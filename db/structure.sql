@@ -28269,6 +28269,7 @@ CREATE TABLE terraform_state_versions (
     verification_started_at timestamp with time zone,
     verification_state smallint DEFAULT 0 NOT NULL,
     project_id bigint,
+    is_encrypted boolean DEFAULT true NOT NULL,
     CONSTRAINT check_0824bb7bbd CHECK ((char_length(file) <= 255)),
     CONSTRAINT check_84142902f6 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT tf_state_versions_verification_failure_text_limit CHECK ((char_length(verification_failure) <= 255))

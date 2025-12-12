@@ -51,7 +51,7 @@ module Ci
     end
 
     def execute(params = {})
-      replica_caught_up =
+      @replica_caught_up =
         ::Ci::Runner.sticking.find_caught_up_replica(:runner, runner.id, use_primary_on_failure: false)
 
       @metrics.increment_queue_operation(:queue_attempt)
@@ -64,7 +64,7 @@ module Ci
       # we might still have some CI builds to be picked. Instead we should say to runner:
       # "Hi, we don't have any more builds now,  but not everything is right anyway, so try again".
       # Runner will retry, but again, against replica, and again will check if replication lag did catch-up.
-      if !replica_caught_up && !result.build
+      if !@replica_caught_up && !result.build
         metrics.increment_queue_operation(:queue_replication_lag)
 
         ResultFactory.invalid
@@ -224,6 +224,22 @@ module Ci
 
     def remove_from_queue!(build)
       @metrics.increment_queue_operation(:build_not_pending)
+
+      ##
+      # If the replica is not caught up, we should not remove the build from the queue.
+      # The build might actually be pending on the primary database, and removing it
+      # could cause it to be lost. Instead, we return an invalid result to signal
+      # the runner to retry.
+      #
+      unless @replica_caught_up
+        ::Gitlab::AppJsonLogger.info(message: "build left on pending queue because replica not caught up",
+          build_status: build.status,
+          build_id: build.id,
+          runner_id: runner.id
+        )
+        @metrics.increment_queue_operation(:build_status_stale)
+        return ResultFactory.invalid
+      end
 
       ##
       # If this build can not be picked because we had stale data in

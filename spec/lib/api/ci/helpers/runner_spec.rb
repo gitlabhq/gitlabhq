@@ -270,5 +270,147 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner_core do
         subject
       end
     end
+
+    describe '#job_router_enabled?' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      subject { helper.job_router_enabled?(runner) }
+
+      context 'with instance runner' do
+        let_it_be(:runner) { create(:ci_runner, :instance) }
+
+        it { is_expected.to be true }
+
+        context 'with feature flags' do
+          where(:job_router, :job_router_instance_runners, :expected) do
+            [
+              [true,  true,  true],
+              [true,  false, true],
+              [false, true,  true],
+              [false, false, false]
+            ]
+          end
+
+          with_them do
+            before do
+              stub_feature_flags(
+                job_router: job_router,
+                job_router_instance_runners: job_router_instance_runners
+              )
+            end
+
+            it { is_expected.to be expected }
+          end
+        end
+
+        context 'and feature flag is enabled for specific runner only' do
+          let(:specific_runner) { runner }
+
+          before do
+            stub_feature_flags(job_router_instance_runners: [specific_runner])
+            stub_feature_flags(job_router: false)
+          end
+
+          it { is_expected.to be true }
+
+          context 'when enabled for an unrelated runner' do
+            let(:specific_runner) { create(:ci_runner, :instance) }
+
+            it { is_expected.to be false }
+          end
+        end
+
+        context 'and feature flag is enabled for single top-level group only' do
+          before do
+            stub_feature_flags(job_router_instance_runners: false)
+            stub_feature_flags(job_router: [project.root_ancestor])
+          end
+
+          it { is_expected.to be false }
+        end
+      end
+
+      context 'with group runner' do
+        let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+        it { is_expected.to be true }
+
+        context 'and feature flag is globally disabled' do
+          before do
+            stub_feature_flags(job_router: false)
+          end
+
+          it { is_expected.to be false }
+        end
+
+        context 'and feature flag is enabled for specific group only' do
+          before do
+            stub_feature_flags(job_router: [group])
+          end
+
+          it { is_expected.to be true }
+        end
+      end
+
+      context 'with project runner' do
+        let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+        it { is_expected.to be true }
+
+        context 'and feature flag is globally disabled' do
+          before do
+            stub_feature_flags(job_router: false)
+          end
+
+          it { is_expected.to be false }
+        end
+
+        context 'and feature flag is enabled for group of project' do
+          before do
+            stub_feature_flags(job_router: [group])
+          end
+
+          it { is_expected.to be true }
+        end
+
+        context 'and feature flag is enabled for another project only' do
+          let_it_be(:unrelated_project) { create(:project) }
+
+          before do
+            stub_feature_flags(job_router: [unrelated_project.root_ancestor])
+          end
+
+          it { is_expected.to be false }
+        end
+      end
+
+      context 'with runner without owner' do
+        let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+        before do
+          allow(runner).to receive(:owner).and_return(nil)
+        end
+
+        it { is_expected.to be true }
+
+        context 'when feature flag is enabled for single top-level group only' do
+          before do
+            stub_feature_flags(job_router_instance_runners: false)
+            stub_feature_flags(job_router: [group])
+          end
+
+          it { is_expected.to be false }
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(job_router: false)
+          end
+
+          it { is_expected.to be false }
+        end
+      end
+    end
   end
 end

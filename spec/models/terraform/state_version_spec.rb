@@ -107,6 +107,107 @@ RSpec.describe Terraform::StateVersion, feature_category: :infrastructure_as_cod
     end
   end
 
+  describe '#encryption_enabled?' do
+    let_it_be(:project) { create(:project) }
+    let(:terraform_state) { create(:terraform_state, project: project) }
+    let(:state_version) { build(:terraform_state_version, terraform_state: terraform_state) }
+
+    before do
+      allow(ApplicationSetting).to receive(:current).and_return(ApplicationSetting.new)
+      stub_application_setting(terraform_state_encryption_enabled: encryption_enabled)
+    end
+
+    context 'when encryption is disabled in settings' do
+      let(:encryption_enabled) { false }
+
+      it 'returns false' do
+        expect(state_version.encryption_enabled?).to be false
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(skip_encrypting_terraform_state_file: false)
+        end
+
+        it 'returns true' do
+          expect(state_version.encryption_enabled?).to be true
+        end
+      end
+    end
+
+    context 'when encryption is enabled in settings' do
+      let(:encryption_enabled) { true }
+
+      it 'returns true' do
+        expect(state_version.encryption_enabled?).to be true
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(skip_encrypting_terraform_state_file: false)
+        end
+
+        it 'returns true' do
+          expect(state_version.encryption_enabled?).to be true
+        end
+      end
+    end
+
+    context 'when application setting is nil' do
+      let(:encryption_enabled) { nil }
+
+      it 'returns true' do
+        expect(state_version.encryption_enabled?).to be true
+      end
+    end
+  end
+
+  describe '#set_encrypted_flag' do
+    let_it_be(:project) { create(:project) }
+    let(:terraform_state) { create(:terraform_state, project: project) }
+
+    subject { build(:terraform_state_version, terraform_state: terraform_state) }
+
+    before do
+      allow(ApplicationSetting).to receive(:current).and_return(ApplicationSetting.new)
+      stub_application_setting(terraform_state_encryption_enabled: encryption_enabled)
+    end
+
+    context 'when encryption is enabled' do
+      let(:encryption_enabled) { true }
+
+      it 'sets is_encrypted to true' do
+        subject.save!
+        expect(subject.is_encrypted).to be true
+      end
+    end
+
+    context 'when encryption is disabled' do
+      let(:encryption_enabled) { false }
+
+      it 'sets is_encrypted to false' do
+        subject.save!
+        expect(subject.is_encrypted).to be false
+      end
+    end
+
+    context 'when existing record is updated' do
+      let(:encryption_enabled) { false }
+
+      it 'does not recalculate is_encrypted' do
+        subject.save!
+        expect(subject.is_encrypted).to be false
+
+        allow(ApplicationSetting).to receive(:current).and_return(
+          ApplicationSetting.new(terraform_state_encryption_enabled: true)
+        )
+
+        subject.update!(version: 999)
+        expect(subject.is_encrypted).to be false
+      end
+    end
+  end
+
   it_behaves_like 'cleanup by a loose foreign key' do
     let!(:model) { create(:terraform_state_version) }
     let!(:parent) { model.build }

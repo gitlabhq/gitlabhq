@@ -180,6 +180,7 @@ module Projects
       destroy_ci_records!
       destroy_deployments!
       destroy_mr_diff_relations!
+      destroy_bulk_import_uploads!
 
       destroy_merge_request_diffs!
       delete_environments
@@ -367,6 +368,10 @@ module Projects
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def destroy_bulk_import_uploads!
+      ::Import::BulkImports::RemoveExportUploadsService.new(project).execute
+    end
 
     def remove_registry_tags
       return true unless Gitlab.config.registry.enabled

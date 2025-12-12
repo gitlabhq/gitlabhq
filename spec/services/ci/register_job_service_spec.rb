@@ -47,6 +47,28 @@ module Ci
           expect(subject.build).to be_nil
           expect(subject.build_json).to be_nil
         end
+
+        context 'when a build is not pending and replica is lagging' do
+          let(:runner) { project_runner }
+
+          before do
+            pending_job.update!(status: :created)
+          end
+
+          it 'does not remove the build from queue' do
+            expect_next_instance_of(::Gitlab::Ci::Queue::Metrics) do |metric|
+              allow(metric).to receive(:increment_queue_operation).and_call_original
+              expect(metric).to receive(:increment_queue_operation).with(:build_status_stale).and_call_original
+            end
+
+            expect(ApplicationRecord.sticking).to receive(:find_caught_up_replica)
+              .with(:runner, runner.id, use_primary_on_failure: false)
+              .and_return(false)
+
+            expect(execute).not_to be_valid
+            expect(pending_job.reload.queuing_entry).to be_present
+          end
+        end
       end
 
       shared_examples 'handles runner assignment' do

@@ -21,6 +21,7 @@ module Gitlab
           :build_not_pending,
           :build_queue_push,
           :build_queue_pop,
+          :build_status_stale,
           :build_temporary_locked,
           :build_conflict_lock,
           :build_conflict_exception,

@@ -1,0 +1,2 @@
+include:
+  - template: Jobs/Multi-Container-Scanning.latest.gitlab-ci.yml

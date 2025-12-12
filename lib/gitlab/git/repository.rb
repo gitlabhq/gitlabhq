@@ -707,7 +707,8 @@ module Gitlab
         end
       end
 
-      def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false, target_sha: nil)
+      # rubocop:disable Metrics/ParameterLists -- all arguments needed
+      def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false, target_sha: nil, sign: true)
         args = {
           user: user,
           commit: commit,
@@ -716,13 +717,15 @@ module Gitlab
           start_branch_name: start_branch_name,
           start_repository: start_repository,
           dry_run: dry_run,
-          target_sha: target_sha
+          target_sha: target_sha,
+          sign: sign
         }
 
         wrapped_gitaly_errors do
           gitaly_operation_client.user_revert(**args)
         end
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def cherry_pick(...)
         wrapped_gitaly_errors do

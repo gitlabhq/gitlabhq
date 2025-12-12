@@ -82,18 +82,28 @@ module Observability
       errors.add(:o11y_service_user_email, I18n.t(:invalid, scope: 'valid_email.validations.email'))
     end
 
+    def provisioning?
+      within_provisioning_window? || new_record?
+    end
+
+    def otel_http_endpoint
+      "http://#{otel_address}:4318"
+    end
+
+    def otel_grpc_endpoint
+      "http://#{otel_address}:4317"
+    end
+
+    def otel_address
+      "#{o11y_service_name}.otel.gitlab-o11y.com"
+    end
+
+    private
+
     def within_provisioning_window?
       return false unless persisted?
 
       Time.current.before?(created_at + SETUP_WINDOW)
-    end
-
-    def otel_http_endpoint
-      "http://#{o11y_service_name}.otel.gitlab-o11y.com:4318"
-    end
-
-    def otel_grpc_endpoint
-      "http://#{o11y_service_name}.otel.gitlab-o11y.com:4317"
     end
   end
 end

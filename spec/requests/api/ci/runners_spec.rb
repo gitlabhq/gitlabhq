@@ -2866,7 +2866,19 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
           allow(Gitlab::Kas).to receive(:enabled?).and_return(false)
         end
 
-        it 'returns discovery information with KAS disabled' do
+        it 'returns job router as unavailable' do
+          discovery
+
+          expect(response).to have_gitlab_http_status(:not_implemented)
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(job_router: false)
+        end
+
+        it 'returns job router as unavailable' do
           discovery
 
           expect(response).to have_gitlab_http_status(:not_implemented)

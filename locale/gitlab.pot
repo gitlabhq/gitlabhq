@@ -45828,6 +45828,9 @@ msgstr ""
 msgid "Observability|Built on industry-standard OpenTelemetry for seamless integration"
 msgstr ""
 
+msgid "Observability|CI/CD Observability settings"
+msgstr ""
+
 msgid "Observability|Centralized log management with powerful querying capabilities and advanced search"
 msgstr ""
 
@@ -45840,13 +45843,22 @@ msgstr ""
 msgid "Observability|Configuration notes"
 msgstr ""
 
-msgid "Observability|Configure your OpenTelemetry SDK or collector with the appropriate endpoint based on your chosen transport protocol. For detailed integration instructions specific to your language or framework, please refer to the OpenTelemetry documentation for your SDK."
+msgid "Observability|Configure your OpenTelemetry SDK or collector with the appropriate endpoint based on your chosen transport protocol. For detailed integration instructions specific to your language or framework, please refer to the %{otel_docs_link_start}OpenTelemetry documentation for your SDK%{otel_docs_link_end}."
 msgstr ""
 
 msgid "Observability|Configure your o11y service connection settings."
 msgstr ""
 
 msgid "Observability|Configure your observability service connection settings."
+msgstr ""
+
+msgid "Observability|Copy HTTP endpoint"
+msgstr ""
+
+msgid "Observability|Copy curl command"
+msgstr ""
+
+msgid "Observability|Copy gRPC endpoint"
 msgstr ""
 
 msgid "Observability|Create issues from this page to view them as related items here."
@@ -45909,13 +45921,13 @@ msgstr ""
 msgid "Observability|Endpoint details"
 msgstr ""
 
-msgid "Observability|Ensure your application's network configuration allows outbound connections to these endpoints"
-msgstr ""
-
 msgid "Observability|Enterprise ready"
 msgstr ""
 
 msgid "Observability|Enterprise-grade observability for GitLab"
+msgstr ""
+
+msgid "Observability|Example curl command"
 msgstr ""
 
 msgid "Observability|Exception tracking"
@@ -45961,6 +45973,9 @@ msgid "Observability|Filter by group ID"
 msgstr ""
 
 msgid "Observability|Filter data by month:"
+msgstr ""
+
+msgid "Observability|Firewall configuration: Open outbound access to %{endpoint} on ports 4317-4318"
 msgstr ""
 
 msgid "Observability|Free during beta period"
@@ -46077,6 +46092,9 @@ msgstr ""
 msgid "Observability|Native Kubernetes monitoring with pod-level metrics and cluster health insights"
 msgstr ""
 
+msgid "Observability|Network requirements: Allow outbound TCP connections to the endpoints listed above"
+msgstr ""
+
 msgid "Observability|New O11y service setting"
 msgstr ""
 
@@ -46113,6 +46131,9 @@ msgstr ""
 msgid "Observability|Observability configuration"
 msgstr ""
 
+msgid "Observability|Observability for CI/CD is enabled! Your CI/CD pipelines are automatically configured to export telemetry data, giving you comprehensive insights into your build and deployment processes."
+msgstr ""
+
 msgid "Observability|Observability is already enabled for this group"
 msgstr ""
 
@@ -46129,6 +46150,9 @@ msgid "Observability|Observability settings for group %{group_name} deleted succ
 msgstr ""
 
 msgid "Observability|Observability settings for group %{group_name} updated successfully."
+msgstr ""
+
+msgid "Observability|Once provisioned, you can test your HTTP endpoint by sending a sample OpenTelemetry payload using curl. This helps verify that your endpoint is accessible and configured correctly."
 msgstr ""
 
 msgid "Observability|OpenTelemetry native"
@@ -46185,6 +46209,9 @@ msgstr ""
 msgid "Observability|Superior query performance and data compression with ClickHouse backend"
 msgstr ""
 
+msgid "Observability|Testing your endpoints"
+msgstr ""
+
 msgid "Observability|The HTTP endpoint (port 4318) accepts OTLP/HTTP protocol and is suitable for applications using HTTP-based transport"
 msgstr ""
 
@@ -46198,6 +46225,9 @@ msgid "Observability|The name of the group for this o11y service configuration."
 msgstr ""
 
 msgid "Observability|The name of your o11y service instance."
+msgstr ""
+
+msgid "Observability|To enable Observability for CI/CD, set the %{variable_name} CI/CD variable in your group's %{settings_link_start}CI/CD settings%{settings_link_end} to a comma-separated list of data types to export: metrics, logs, and/or traces (e.g., %{metrics_logs} or %{all_data_types})."
 msgstr ""
 
 msgid "Observability|To widen your search, change or remove filters above"
@@ -46236,6 +46266,9 @@ msgstr ""
 msgid "Observability|User is required"
 msgstr ""
 
+msgid "Observability|VPN and proxy: If operating within a VPN or behind a proxy, ensure routing rules permit traffic to these external endpoints. Configure proxy settings in your OpenTelemetry SDK if required"
+msgstr ""
+
 msgid "Observability|View our %{documentation} for further instructions on how to use these features."
 msgstr ""
 
@@ -46261,6 +46294,12 @@ msgid "Observability|You are not authorized to request observability access"
 msgstr ""
 
 msgid "Observability|You can contact us through our %{issue_link_start}feedback issue in GitLab%{issue_link_end}. You can also join our %{discord_link_start}Discord channel%{discord_link_end} for community discussions and support."
+msgstr ""
+
+msgid "Observability|You can test your HTTP endpoint by sending a sample OpenTelemetry payload using curl. This helps verify that your endpoint is accessible and configured correctly."
+msgstr ""
+
+msgid "Observability|Your OpenTelemetry (OTel) telemetry data collection endpoints are being provisioned. Once complete, they will be ready to receive data. Please configure your instrumentation with the following endpoints:"
 msgstr ""
 
 msgid "Observability|Your OpenTelemetry (OTel) telemetry data collection endpoints have been provisioned and are ready to receive data. Please configure your instrumentation with the following endpoints:"

@@ -166,6 +166,68 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
       end
     end
 
+    context 'when account_id is :provisioning' do
+      let(:o11y_settings) do
+        instance_double(
+          Observability::GroupO11ySetting,
+          o11y_service_url: 'https://o11y.example.com',
+          o11y_service_user_email: 'test@example.com',
+          o11y_service_password: 'password123',
+          created_at: 2.minutes.ago
+        )
+      end
+
+      let(:account_id_response) do
+        instance_double(HTTParty::Response, code: '500', body: 'Internal Server Error')
+      end
+
+      before do
+        allow(Gitlab::HTTP).to receive(:get).and_return(account_id_response)
+      end
+
+      it 'returns status provisioning and does not make authentication request' do
+        aggregate_failures do
+          expect(Gitlab::HTTP).not_to receive(:post)
+          expect(generate_tokens).to eq({ status: :provisioning })
+        end
+      end
+    end
+
+    context 'when account_id is blank' do
+      shared_examples 'returns empty hash and skips authentication' do
+        before do
+          allow(Gitlab::HTTP).to receive(:get).and_return(account_id_response)
+        end
+
+        it 'returns empty hash and does not make authentication request' do
+          aggregate_failures do
+            expect(Gitlab::HTTP).not_to receive(:post)
+            expect(generate_tokens).to eq({})
+          end
+        end
+      end
+
+      context 'when account_id response returns non-200 status' do
+        let(:account_id_response) do
+          instance_double(HTTParty::Response, code: '404', body: 'Not Found')
+        end
+
+        include_examples 'returns empty hash and skips authentication'
+      end
+
+      context 'when account_id response returns 200 but no orgs available' do
+        let(:account_id_response) do
+          instance_double(
+            HTTParty::Response,
+            code: 200,
+            body: Gitlab::Json.dump({ 'data' => { 'orgs' => [] } })
+          )
+        end
+
+        include_examples 'returns empty hash and skips authentication'
+      end
+    end
+
     context 'when o11y_settings is nil' do
       let(:o11y_settings) { nil }
 
@@ -266,10 +328,12 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
           instance_double(HTTParty::Response, code: '500', body: 'Internal Server Error')
         end
 
-        it 'returns provisioning status without logging warning' do
+        it 'returns empty hash and logs warning' do
           aggregate_failures do
-            expect(Gitlab::AppLogger).not_to receive(:warn)
-            expect(generate_tokens).to eq({ status: :provisioning })
+            expect(Gitlab::AppLogger).to receive(:warn)
+              .with("O11y authentication failed with status 500")
+
+            expect(generate_tokens).to eq({})
           end
         end
       end
@@ -400,9 +464,12 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
         instance_double(HTTParty::Response, code: '500', body: 'Internal Server Error')
       end
 
-      it 'returns provisioning status' do
+      it 'logs warning and returns empty hash' do
+        expect(Gitlab::AppLogger).to receive(:warn)
+          .with("O11y authentication failed with status 500")
+
         result = o11y_token.send(:parse_response, http_response)
-        expect(result).to eq({ status: :provisioning })
+        expect(result).to eq({})
       end
     end
 

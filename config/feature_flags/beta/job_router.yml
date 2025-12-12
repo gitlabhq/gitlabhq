@@ -1,0 +1,10 @@
+---
+name: job_router
+description: Enable the Job Router globally or on top-level groups. Use job_router_instance_runners FF for instance runners.
+feature_issue_url: https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/771
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215742
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583449
+milestone: '18.7'
+group: group::runner core
+type: beta
+default_enabled: false

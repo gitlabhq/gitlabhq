@@ -319,9 +319,8 @@ module Gitlab
           raise e
         end
       end
-      # rubocop:enable Metrics/ParameterLists
 
-      def user_revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false, target_sha: nil)
+      def user_revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false, target_sha: nil, sign: true)
         request = Gitaly::UserRevertRequest.new(
           repository: @gitaly_repo,
           user: gitaly_user(user),
@@ -332,7 +331,8 @@ module Gitlab
           start_repository: start_repository.gitaly_repository,
           dry_run: dry_run,
           expected_old_oid: target_sha,
-          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i),
+          sign: sign
         )
 
         response = gitaly_client_call(
@@ -378,6 +378,7 @@ module Gitlab
           raise e
         end
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:, push_options: [])
         request_enum = QueueEnumerator.new

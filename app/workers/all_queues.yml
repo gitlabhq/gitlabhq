@@ -4201,6 +4201,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: import_bulk_imports_remove_export_upload
+  :worker_name: Import::BulkImports::RemoveExportUploadWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: import_bulk_imports_source_users_attributes
   :worker_name: Import::BulkImports::SourceUsersAttributesWorker
   :feature_category: :importers

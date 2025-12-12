@@ -82,7 +82,7 @@ RSpec.describe "Groups::Observability::AccessRequests", feature_category: :obser
           create_access_request
 
           aggregate_failures do
-            expect(response).to redirect_to(group_observability_setup_path(group))
+            expect(response).to redirect_to(group_observability_setup_path(group, provisioning: true))
             expect(flash[:success]).to eq('Welcome to GitLab Observability!')
             expect(::Observability::AccessRequestService).to have_received(:new).with(group, user)
             expect(service_instance).to have_received(:execute)

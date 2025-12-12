@@ -1024,7 +1024,8 @@ class Repository
         start_branch_name: start_branch_name,
         start_repository: start_project.repository.raw_repository,
         dry_run: dry_run,
-        target_sha: target_sha
+        target_sha: target_sha,
+        sign: sign_commits?
       )
     end
   end

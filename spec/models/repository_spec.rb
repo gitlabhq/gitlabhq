@@ -2829,6 +2829,28 @@ RSpec.describe Repository, feature_category: :source_code_management do
         end
       end
     end
+
+    describe 'delegating to Repositories::WebBasedCommitSigningSetting for sign' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:expected_sign) { [true, false] }
+
+      with_them do
+        before do
+          allow_next_instance_of(Repositories::WebBasedCommitSigningSetting) do |instance|
+            allow(instance).to receive(:sign_commits?).and_return(expected_sign)
+          end
+        end
+
+        it 'calls UserRevert with the expected value for sign' do
+          expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
+            expect(client).to receive(:user_revert).with(a_hash_including(sign: expected_sign))
+          end
+
+          subject
+        end
+      end
+    end
   end
 
   describe '#cherry_pick' do
