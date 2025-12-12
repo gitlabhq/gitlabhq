@@ -79,6 +79,10 @@ module Gitlab
     end
 
     def self.throttle_authenticated_git_http_options
+      if !settings.throttle_authenticated_git_http_enabled && settings.throttle_authenticated_web_enabled
+        return authenticated_web_options
+      end
+
       limit_proc = proc { |req| settings.throttle_authenticated_git_http_requests_per_period }
       period_proc = proc { |req| settings.throttle_authenticated_git_http_period_in_seconds.seconds }
 
