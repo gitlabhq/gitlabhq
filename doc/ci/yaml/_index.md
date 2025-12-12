@@ -1175,6 +1175,68 @@ An input of `v1.A.B` does not match the regular expression and fails validation.
 
 ---
 
+##### `spec:inputs:rules`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/582671) in GitLab 18.7 with a flag named `ci_dynamic_pipeline_inputs`. Enabled by default.
+
+{{< /history >}}
+
+Use `spec:inputs:rules` to define conditional `options` and `default` values for an input
+based on the values of other inputs.
+
+**Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
+in a header section.
+
+**Supported values**: An array of rule objects. Each rule can have:
+
+- `if`: A conditional expression to check input values, using [`$[[ inputs.input-id ]]` syntax](../inputs/_index.md#define-input-parameters-with-specinputs).
+- `options`: An array of allowed values for the input.
+- `default`: The default value for the input when this rule matches.
+
+**Example of `spec:inputs:rules`**:
+
+```yaml
+spec:
+  inputs:
+    environment:
+      options: ['development', 'production']
+      default: 'development'
+
+    instance_type:
+      description: 'VM instance size'
+      rules:
+        - if: $[[ inputs.environment ]] == 'development'
+          options: ['small', 'medium']
+          default: 'small'
+        - if: $[[ inputs.environment ]] == 'production'
+          options: ['large', 'xlarge']
+          default: 'large'
+---
+
+deploy:
+  script: echo "Deploying $[[ inputs.instance_type ]] instance"
+```
+
+In this example, when `environment` is `development`, users can only select `small` or
+`medium` instances. When `environment` is `production`, only `large` or `xlarge` instances
+are available.
+
+**Additional details**:
+
+- Rules are evaluated in order. The first rule with a matching `if` condition is used.
+- A rule without an `if` condition acts as a fallback when no other rules match.
+- Fallback rules must define `options` with at least one value.
+- All rules with `options` must also define a `default` value that exists in the `options` list.
+- You cannot use both `rules` and top-level `options` or `default` for the same input.
+
+**Related topics**:
+
+- [Define conditional input options with `spec:inputs:rules`](../inputs/_index.md#define-conditional-input-options-with-specinputsrules).
+
+---
+
 ##### `spec:inputs:type`
 
 By default, inputs expect strings. Use `spec:inputs:type` to set a different required

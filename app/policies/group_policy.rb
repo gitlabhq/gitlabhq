@@ -136,7 +136,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :admin_achievement
     prevent :admin_build
     prevent :admin_cluster
-    prevent :admin_group_member
     prevent :admin_issue
     prevent :admin_issue_board
     prevent :admin_issue_board_list

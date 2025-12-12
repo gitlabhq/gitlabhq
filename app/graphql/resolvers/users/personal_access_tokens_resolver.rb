@@ -13,6 +13,10 @@ module Resolvers
 
       alias_method :user, :object
 
+      argument :search, GraphQL::Types::String,
+        required: false,
+        description: 'Query to search personal access tokens by name.'
+
       argument :sort,
         Types::Authz::AccessTokens::SortEnum,
         required: false,
@@ -62,6 +66,7 @@ module Resolvers
 
       def filter_params(args)
         {
+          search: args[:search],
           state: args[:state],
           sort: args[:sort],
           expires_after: args[:expires_after],

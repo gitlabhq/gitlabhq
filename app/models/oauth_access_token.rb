@@ -15,6 +15,7 @@ class OauthAccessToken < Doorkeeper::AccessToken
   scope :latest_per_application, -> { select('distinct on(application_id) *').order(application_id: :desc, created_at: :desc) }
   scope :preload_application, -> { preload(:application) }
 
+  RETENTION_PERIOD = 1.month
   # user scope format is: `user:$USER_ID`
   SCOPED_USER_REGEX = /\Auser:(\d+)\z/
 

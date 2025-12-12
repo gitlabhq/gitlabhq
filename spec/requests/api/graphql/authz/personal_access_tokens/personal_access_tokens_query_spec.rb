@@ -16,7 +16,8 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
   let_it_be(:legacy_token_revoked) { create(:personal_access_token, :revoked, user: user, name: 'Revoked token') }
   let_it_be(:legacy_token_expired) { create(:personal_access_token, :expired, user:) }
   let_it_be(:granular_token) do
-    create(:granular_pat, last_used_at: 1.day.ago, permissions: ['read_member_role'], user: user, namespace: group)
+    create(:granular_pat, name: 'Special token', last_used_at: 1.day.ago, permissions: ['read_member_role'],
+      user: user, namespace: group)
   end
 
   let(:fields) do
@@ -148,6 +149,14 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
     describe 'filters' do
       before do
         send_query
+      end
+
+      context 'with { search: "<query>" }' do
+        let(:args) { { search: 'special' } }
+
+        it 'returns only personal access tokens that match the query' do
+          expect(personal_access_tokens_data).to all(include('name' => 'Special token'))
+        end
       end
 
       context 'with { state: ACTIVE }' do

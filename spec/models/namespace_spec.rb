@@ -622,6 +622,116 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.root_ids_for' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:subgroup_level_1) { create(:group, parent: root_group) }
+      let_it_be(:subgroup_level_2) { create(:group, parent: subgroup_level_1) }
+      let_it_be(:another_root_group) { create(:group) }
+      let_it_be(:another_subgroup) { create(:group, parent: another_root_group) }
+
+      subject(:root_ids_for) { described_class.root_ids_for(namespace_ids) }
+
+      context 'with empty array' do
+        let(:namespace_ids) { [] }
+
+        it 'returns empty array' do
+          expect(root_ids_for).to eq([])
+        end
+      end
+
+      context 'with nil' do
+        let(:namespace_ids) { nil }
+
+        it 'returns empty array' do
+          expect(root_ids_for).to eq([])
+        end
+      end
+
+      context 'with single root namespace' do
+        let(:namespace_ids) { [root_group.id] }
+
+        it 'returns the root namespace ID' do
+          expect(root_ids_for).to contain_exactly(root_group.id)
+        end
+      end
+
+      context 'with single child namespace' do
+        let(:namespace_ids) { [subgroup_level_2.id] }
+
+        it 'returns the root namespace ID' do
+          expect(root_ids_for).to contain_exactly(root_group.id)
+        end
+      end
+
+      context 'with multiple namespaces from same hierarchy' do
+        let(:namespace_ids) { [root_group.id, subgroup_level_1.id, subgroup_level_2.id] }
+
+        it 'returns single root namespace ID' do
+          expect(root_ids_for).to contain_exactly(root_group.id)
+        end
+      end
+
+      context 'with multiple namespaces from different hierarchies' do
+        let(:namespace_ids) { [subgroup_level_2.id, another_subgroup.id] }
+
+        it 'returns both root namespace IDs' do
+          expect(root_ids_for).to contain_exactly(root_group.id, another_root_group.id)
+        end
+      end
+
+      context 'with mix of root and child namespaces from multiple hierarchies' do
+        let(:namespace_ids) do
+          [
+            root_group.id,
+            subgroup_level_1.id,
+            subgroup_level_2.id,
+            another_root_group.id,
+            another_subgroup.id
+          ]
+        end
+
+        it 'returns unique root namespace IDs' do
+          expect(root_ids_for).to contain_exactly(root_group.id, another_root_group.id)
+        end
+      end
+
+      context 'with duplicate namespace IDs' do
+        let(:namespace_ids) { [subgroup_level_2.id, subgroup_level_2.id, subgroup_level_1.id] }
+
+        it 'returns single root namespace ID' do
+          expect(root_ids_for).to contain_exactly(root_group.id)
+        end
+      end
+
+      context 'with non-existent namespace IDs' do
+        let(:namespace_ids) { [non_existing_record_id] }
+
+        it 'returns empty array' do
+          expect(root_ids_for).to eq([])
+        end
+      end
+
+      context 'with mix of existing and non-existent namespace IDs' do
+        let(:namespace_ids) { [root_group.id, non_existing_record_id, subgroup_level_1.id] }
+
+        it 'returns only root namespace ID for existing namespaces' do
+          expect(root_ids_for).to contain_exactly(root_group.id)
+        end
+      end
+
+      context 'performance with large number of namespaces' do
+        let_it_be(:large_root_group) { create(:group) }
+        let_it_be(:many_subgroups) { create_list(:group, 10, parent: large_root_group) }
+        let(:namespace_ids) { many_subgroups.map(&:id) }
+
+        it 'efficiently extracts single root namespace ID' do
+          # Expect only one database query
+          expect { root_ids_for }.not_to exceed_query_limit(1)
+          expect(root_ids_for).to contain_exactly(large_root_group.id)
+        end
+      end
+    end
+
     describe '.filter_by_path' do
       it 'includes correct namespaces' do
         expect(described_class.filter_by_path(namespace1.path)).to eq([namespace1])

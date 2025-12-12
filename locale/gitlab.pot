@@ -62670,6 +62670,9 @@ msgstr ""
 msgid "SecurityReports|Learn more about setting up your dashboard"
 msgstr ""
 
+msgid "SecurityReports|Limited experience available"
+msgstr ""
+
 msgid "SecurityReports|Low"
 msgstr ""
 
@@ -63008,6 +63011,9 @@ msgid "SecurityReports|Warning parsing security reports"
 msgstr ""
 
 msgid "SecurityReports|Yes"
+msgstr ""
+
+msgid "SecurityReports|Your environment does not have advanced vulnerability management enabled which limits some functionality. %{linkStart}How do I enable advanced vulnerability management?%{linkEnd}"
 msgstr ""
 
 msgid "SecurityReports|scanned resources"

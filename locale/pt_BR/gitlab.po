@@ -55574,7 +55574,7 @@ msgid "Reply to comment"
 msgstr "Responder ao comentário"
 
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
-msgstr "Responda a este e-mail diretamente ou%{view_it_on_gitlab}."
+msgstr "Responda a este e-mail diretamente ou %{view_it_on_gitlab}."
 
 msgid "Reply to this email to participate in the discussion. All other participants of the ticket will receive notifications of your reply."
 msgstr ""

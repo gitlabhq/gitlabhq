@@ -6,5 +6,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189445
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/537970
 milestone: '18.0'
 group: group::source code
-type: wip
+type: beta
 default_enabled: false

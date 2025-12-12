@@ -441,8 +441,9 @@ the bot message is sent as long as at least one of those policies has the `send_
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15552) in GitLab 17.8 [with a flag](../../../administration/feature_flags/_index.md) named `security_policy_approval_warn_mode`. Disabled by default
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15552) in GitLab 17.8 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policy_approval_warn_mode`. Disabled by default
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/505352) in GitLab 18.6.
+- License scanning support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/579664) in GitLab 18.7 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policy_warn_mode_license_scanning`. Enabled by default
 
 {{< /history >}}
 
@@ -493,19 +494,6 @@ approval_policy:
       - type: send_bot_message
         enabled: true
 ```
-
-### Supported rule types
-
-Warn mode supports the following rule types:
-
-- `scan_finding`: For security scan results
-- `any_merge_request`: For general merge request conditions
-
-{{< alert type="note" >}}
-
-The `license_finding` rule type is not supported with warn mode enforcement.
-
-{{< /alert >}}
 
 ## `approval_settings`
 

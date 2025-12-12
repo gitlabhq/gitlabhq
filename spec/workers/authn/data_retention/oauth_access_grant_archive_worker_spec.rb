@@ -6,7 +6,7 @@ RSpec.describe Authn::DataRetention::OauthAccessGrantArchiveWorker, feature_cate
   describe '#perform' do
     subject(:worker) { described_class.new }
 
-    let(:cutoff_date) { 1.month.ago.beginning_of_day }
+    let(:cutoff_date) { OauthAccessGrant::RETENTION_PERIOD.ago.beginning_of_day }
 
     let_it_be_with_reload(:very_old_revoked_grant) do
       create(:oauth_access_grant, created_at: 3.years.ago, revoked_at: 2.years.ago)
@@ -29,13 +29,6 @@ RSpec.describe Authn::DataRetention::OauthAccessGrantArchiveWorker, feature_cate
       create(:oauth_access_grant, revoked_at: nil)
     end
 
-    # The `oauth_access_grant_archived_records` table is only used by the archive jobs. We want to discourage its
-    # use throughout the app as it is meant to be a temporary table and will be removed from the codebase soon. Rather
-    # than define a full ActiveRecord model with factory and spec, let's just mock a model class for test purposes.
-    let(:oauth_access_grant_archived_record_model) do
-      Class.new(ApplicationRecord) { self.table_name = 'oauth_access_grant_archived_records' }
-    end
-
     before do
       stub_application_setting(authn_data_retention_cleanup_enabled: true)
     end
@@ -47,8 +40,8 @@ RSpec.describe Authn::DataRetention::OauthAccessGrantArchiveWorker, feature_cate
         stub_application_setting(authn_data_retention_cleanup_enabled: false)
       end
 
-      it 'does not archive any grants' do
-        expect { worker.perform }.not_to change { oauth_access_grant_archived_record_model.count }
+      it 'does not delete any grants' do
+        expect { worker.perform }.not_to change { OauthAccessGrant.count }
         expect(OauthAccessGrant.count).to eq(5)
       end
 
@@ -63,8 +56,8 @@ RSpec.describe Authn::DataRetention::OauthAccessGrantArchiveWorker, feature_cate
         stub_feature_flags(archive_revoked_access_grants: false)
       end
 
-      it 'does not archive any grants' do
-        expect { worker.perform }.not_to change { oauth_access_grant_archived_record_model.count }
+      it 'does not delete any grants' do
+        expect { worker.perform }.not_to change { OauthAccessGrant.count }
         expect(OauthAccessGrant.count).to eq(5)
       end
 
@@ -75,73 +68,41 @@ RSpec.describe Authn::DataRetention::OauthAccessGrantArchiveWorker, feature_cate
     end
 
     context 'when the feature flag :archive_revoked_access_grants is enabled', :freeze_time do
-      context 'when there are revoked grants to archive' do
-        it 'archives only revoked grants created before cutoff date' do
-          old_grant_id = old_revoked_grant.id
-          very_old_grant_id = very_old_revoked_grant.id
-
-          expect { worker.perform }
-            .to change { oauth_access_grant_archived_record_model.count }.by(2)
-            .and change { OauthAccessGrant.count }.by(-2)
-
-          expect(oauth_access_grant_archived_record_model.pluck(:id))
-            .to contain_exactly(old_grant_id, very_old_grant_id)
+      context 'when there are revoked grants to delete' do
+        it 'deletes only revoked grants created before cutoff date' do
+          expect { worker.perform }.to change { OauthAccessGrant.count }.by(-2)
 
           expect(OauthAccessGrant.pluck(:id))
             .to contain_exactly(old_revoked_grant_after_cutoff.id, recent_revoked_grant.id, active_grant.id)
         end
 
-        it 'archives grants exactly at cutoff boundary' do
+        it 'deletes grants exactly at cutoff boundary' do
           grant_at_boundary = create(:oauth_access_grant, revoked_at: cutoff_date, created_at: cutoff_date - 1.month)
 
           expect { worker.perform }.to change { OauthAccessGrant.exists?(grant_at_boundary.id) }.from(true).to(false)
         end
 
-        it 'logs the sub batch archived count' do
+        it 'logs the sub batch deletion count' do
           expect(Gitlab::AppLogger).to receive(:info).with(
             class: described_class.name,
-            message: "Archived OAuth grants sub-batch",
-            sub_batch_archived: 2,
+            message: "Deleted OAuth grants sub-batch",
+            sub_batch_deleted: 2,
             cutoff_date: cutoff_date
           )
 
           worker.perform
         end
 
-        it 'logs the archived count' do
+        it 'logs the total deleted count' do
           expect(worker)
             .to receive(:log_extra_metadata_on_done)
                   .with(:result, hash_including(
                     over_time: false,
-                    total_archived: 2,
+                    total_deleted: 2,
                     cutoff_date: cutoff_date
                   ))
 
           worker.perform
-        end
-
-        it 'preserves all attributes in archived records' do
-          original_attributes = old_revoked_grant.attributes
-
-          worker.perform
-
-          archived_record = oauth_access_grant_archived_record_model.find(old_revoked_grant.id)
-
-          expect(archived_record).to have_attributes(
-            id: original_attributes['id'],
-            resource_owner_id: original_attributes['resource_owner_id'],
-            application_id: original_attributes['application_id'],
-            token: original_attributes['token'],
-            expires_in: original_attributes['expires_in'],
-            redirect_uri: original_attributes['redirect_uri'],
-            revoked_at: original_attributes['revoked_at'],
-            created_at: original_attributes['created_at'],
-            scopes: original_attributes['scopes'],
-            organization_id: original_attributes['organization_id'],
-            code_challenge: original_attributes['code_challenge'],
-            code_challenge_method: original_attributes['code_challenge_method']
-          )
-          expect(archived_record.archived_at).to be_present
         end
 
         context 'with large batch processing' do
@@ -155,15 +116,13 @@ RSpec.describe Authn::DataRetention::OauthAccessGrantArchiveWorker, feature_cate
           end
 
           it 'processes grants in batches' do
-            expect(ApplicationRecord.connection)
-              .to receive(:execute)
-                    .with(a_string_matching(/WITH deleted AS/))
-                    .at_least(3).times
-                    .and_call_original
+            expect(worker).to receive(:log_sub_batch_deleted)
+                                .at_least(3).times
+                                .and_call_original
 
             worker.perform
 
-            expect(OauthAccessGrant.where(created_at: ..cutoff_date).count).to eq(0)
+            expect(OauthAccessGrant.where(revoked_at: ..cutoff_date).count).to eq(0)
           end
         end
 
@@ -196,7 +155,7 @@ RSpec.describe Authn::DataRetention::OauthAccessGrantArchiveWorker, feature_cate
               .to receive(:log_extra_metadata_on_done)
                     .with(:result, hash_including(
                       over_time: true,
-                      total_archived: 2
+                      total_deleted: 2
                     ))
 
             worker.perform
@@ -205,9 +164,11 @@ RSpec.describe Authn::DataRetention::OauthAccessGrantArchiveWorker, feature_cate
 
         context 'when there is a database error' do
           before do
-            allow(ApplicationRecord.connection)
-              .to receive(:execute).with(a_string_matching(/WITH deleted AS/))
-                                   .and_raise(ActiveRecord::StatementInvalid.new('Failed to execute'))
+            # rubocop:disable RSpec/AnyInstanceOf -- each_batch creates multiple Relation instances that need stubbing
+            allow_any_instance_of(ActiveRecord::Relation)
+              .to receive(:delete_all)
+                    .and_raise(ActiveRecord::StatementInvalid.new('Failed to execute'))
+            # rubocop:enable RSpec/AnyInstanceOf
           end
 
           it 'skip logs and raises the error' do
@@ -216,38 +177,21 @@ RSpec.describe Authn::DataRetention::OauthAccessGrantArchiveWorker, feature_cate
             expect { worker.perform }.to raise_error(ActiveRecord::StatementInvalid, 'Failed to execute')
           end
 
-          it 'does not partially archive grants' do
+          it 'does not partially delete grants' do
             expect { worker.perform }.to raise_error(ActiveRecord::StatementInvalid)
 
             expect(OauthAccessGrant.count).to eq(5)
-            expect(oauth_access_grant_archived_record_model.count).to eq(0)
-          end
-        end
-
-        context 'when SQL operation is atomic' do
-          it 'ensures DELETE and INSERT happen together' do
-            # If INSERT fails, DELETE should be rolled back
-            allow(ApplicationRecord.connection).to receive(:execute).and_wrap_original do |method, sql|
-              raise ActiveRecord::StatementInvalid, 'Insert failed' if sql.include?('INSERT INTO')
-
-              method.call(sql)
-            end
-
-            expect { worker.perform }.to raise_error(ActiveRecord::StatementInvalid)
-
-            expect(OauthAccessGrant.find(old_revoked_grant.id)).to be_present
-            expect(oauth_access_grant_archived_record_model.count).to eq(0)
           end
         end
       end
 
-      context 'when there are no grants to archive' do
+      context 'when there are no grants to delete' do
         before do
           OauthAccessGrant.update_all(revoked_at: 1.week.ago)
         end
 
-        it 'does not archive any grants' do
-          expect { worker.perform }.not_to change { oauth_access_grant_archived_record_model.count }
+        it 'does not delete any grants' do
+          expect { worker.perform }.not_to change { OauthAccessGrant.count }
         end
 
         it 'does not enqueue another job' do
@@ -255,8 +199,8 @@ RSpec.describe Authn::DataRetention::OauthAccessGrantArchiveWorker, feature_cate
           worker.perform
         end
 
-        it 'logs zero archived count' do
-          expect(worker).to receive(:log_extra_metadata_on_done).with(:result, hash_including(total_archived: 0))
+        it 'logs zero deleted count' do
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:result, hash_including(total_deleted: 0))
 
           worker.perform
         end
@@ -269,7 +213,6 @@ RSpec.describe Authn::DataRetention::OauthAccessGrantArchiveWorker, feature_cate
 
         it 'does not process any grants' do
           expect { worker.perform }.not_to change { OauthAccessGrant.count }
-          expect(oauth_access_grant_archived_record_model.count).to eq(0)
         end
       end
     end

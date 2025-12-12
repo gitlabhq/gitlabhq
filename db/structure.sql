@@ -44400,8 +44400,6 @@ CREATE INDEX index_sent_notifications_on_issue_email_participant_id ON sent_noti
 
 CREATE INDEX index_sent_notifications_on_noteable_type_noteable_id_and_id ON sent_notifications USING btree (noteable_id, id) WHERE ((noteable_type)::text = 'Issue'::text);
 
-CREATE UNIQUE INDEX index_sent_notifications_on_reply_key ON sent_notifications USING btree (reply_key);
-
 CREATE UNIQUE INDEX index_sentry_issues_on_issue_id ON sentry_issues USING btree (issue_id);
 
 CREATE INDEX index_sentry_issues_on_namespace_id ON sentry_issues USING btree (namespace_id);

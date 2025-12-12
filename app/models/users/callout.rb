@@ -120,7 +120,8 @@ module Users
       focused_vulnerability_reporting: 116,
       expired_trial_status_widget: 117, # EE-only
       work_item_consolidated_list_feedback: 118,
-      ai_experiment_sast_fp_detection: 119 # EE-only
+      ai_experiment_sast_fp_detection: 119, # EE-only
+      vulnerability_report_limited_experience: 120 # EE-only
     }
 
     validates :feature_name,

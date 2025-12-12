@@ -308,6 +308,18 @@ class Namespace < ApplicationRecord
       top_level.take
     end
 
+    # Extracts root namespace IDs from a list of namespace IDs.
+    #
+    # @param namespace_ids [Array<Integer>] List of namespace IDs
+    # @return [Array<Integer>] List of unique root namespace IDs
+    def root_ids_for(namespace_ids)
+      where(id: namespace_ids)
+        .where.not(Arel.sql("traversal_ids[1]").eq(nil))
+        .distinct
+        .limit(1500) # the limit is higher than heaviest 100 requests. The majority is much less https://gitlab.com/gitlab-org/gitlab/-/issues/577678#note_2841315975 -
+        .pluck(Arel.sql("traversal_ids[1]"))
+    end
+
     # Searches for namespaces matching the given query.
     #
     # This method uses ILIKE on PostgreSQL.

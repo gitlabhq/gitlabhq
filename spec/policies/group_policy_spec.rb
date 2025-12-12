@@ -528,7 +528,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         admin_compliance_pipeline_configuration
         admin_custom_field
         admin_epic
-        admin_group_member
         admin_integrations
         admin_issue
         admin_issue_board
