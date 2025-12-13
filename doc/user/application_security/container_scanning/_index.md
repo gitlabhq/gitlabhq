@@ -177,6 +177,13 @@ Additional ways to see container scanning results:
 - [Vulnerability report](../vulnerability_report/_index.md): Shows confirmed vulnerabilities on the default branch.
 - [Container scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscontainer_scanning)
 
+## Optimization
+
+GitLab provides two approaches for container scanning:
+
+- Standard container scanning: Scan a single container image per job. Best for simple and distributed workflows.
+- [Multi-container scanning](multi_container_scanning.md): Scan multiple images in parallel using a single configuration file. Best for scanning multiple images efficiently.
+
 ## Roll out
 
 After you are confident in the container scanning results for a single project, you can extend its implementation to additional projects:
