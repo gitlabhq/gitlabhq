@@ -237,6 +237,12 @@ To view details:
 1. To explore data beyond 90 days, but within the last 365 days, use the [`SecurityMetrics.vulnerabilitiesOverTime` GraphQL API](../../../api/graphql/reference/_index.md#securitymetricsvulnerabilitiesovertime)
 1. Vulnerabilities that are no longer detected are not automatically counted as closed. Use [vulnerability management policies](../policies/_index.md) to automatically close them if needed.
 
+{{< alert type="note" >}}
+
+Starting in GitLab 18.8 (available January 2026), the Vulnerabilities over time chart excludes no longer detected vulnerabilities to more accurately reflect the number of detected vulnerabilities that require attention. This change might result in a drop in the total number of vulnerabilities shown in the chart. This change applies automatically to vulnerabilities no longer detected in pipelines run from GitLab 18.8 onward. A background migration handles remaining vulnerabilities from earlier pipelines.
+
+{{< /alert >}}
+
 ![vulnerabilities over time](img/vulnerabilities_over_time_chart_v18_5.png)
 
 #### Vulnerability severity panel
