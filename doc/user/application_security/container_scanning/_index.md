@@ -950,6 +950,15 @@ Container scanning for registry populates the vulnerability report only when a n
 
 {{< /alert >}}
 
+{{< alert type="warning" >}}
+
+Vulnerabilities detected by Container Scanning for Registry cannot be automatically marked as
+resolved when you update or remove vulnerable components. These vulnerabilities remain visible
+indefinitely because this feature only generates SBOMs, not the security reports required for
+vulnerability resolution.
+
+{{< /alert >}}
+
 ### Prerequisites
 
 - You must have at least the Maintainer role in a project to enable container scanning for registry.

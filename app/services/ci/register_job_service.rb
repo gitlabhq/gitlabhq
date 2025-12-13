@@ -235,8 +235,8 @@ module Ci
         ::Gitlab::AppJsonLogger.info(message: "build left on pending queue because replica not caught up",
           build_status: build.status,
           build_id: build.id,
-          runner_id: runner.id
-        )
+          runner_id: runner.id,
+          runner_type: runner.runner_type)
         @metrics.increment_queue_operation(:build_status_stale)
         return ResultFactory.invalid
       end
@@ -246,7 +246,14 @@ module Ci
       # `ci_pending_builds` table, we need to respond with 409 to retry
       # this operation.
       #
-      ResultFactory.invalid if ::Ci::UpdateBuildQueueService.new.remove!(build)
+      return unless ::Ci::UpdateBuildQueueService.new.remove!(build)
+
+      ::Gitlab::AppJsonLogger.info(message: "build removed from pending queue",
+        build_status: build.status,
+        build_id: build.id,
+        runner_id: runner.id,
+        runner_type: runner.runner_type)
+      ResultFactory.invalid
     end
 
     def runner_matched?(build)

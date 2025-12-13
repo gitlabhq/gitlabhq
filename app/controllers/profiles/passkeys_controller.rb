@@ -84,11 +84,10 @@ module Profiles
       error_message = { message: _('You must provide a valid current password.') }
       if validate_password_params[:action] == 'create'
         @webauthn_error = error_message
+        setup_passkey_registration_page
       else
-        @error = error_message
+        redirect_to profile_two_factor_auth_path, status: :found, alert: error_message[:message]
       end
-
-      setup_passkey_registration_page
     end
 
     def setup_passkey_registration_page

@@ -64,6 +64,15 @@ module Ci
             expect(ApplicationRecord.sticking).to receive(:find_caught_up_replica)
               .with(:runner, runner.id, use_primary_on_failure: false)
               .and_return(false)
+            expect(Gitlab::AppJsonLogger).to receive(:info).once.with(
+              hash_including(
+                message: 'build left on pending queue because replica not caught up',
+                build_status: 'created',
+                build_id: pending_job.id,
+                runner_id: runner.id,
+                runner_type: runner.runner_type
+              )
+            )
 
             expect(execute).not_to be_valid
             expect(pending_job.reload.queuing_entry).to be_present
@@ -1011,6 +1020,15 @@ module Ci
             end
 
             it 'logs the instrumentation' do
+              expect(Gitlab::AppJsonLogger).to receive(:info).once.with(
+                hash_including(
+                  message: 'build removed from pending queue',
+                  build_status: 'running',
+                  build_id: pending_job.id,
+                  runner_id: runner.id,
+                  runner_type: runner.runner_type
+                )
+              )
               expect(Gitlab::AppJsonLogger).to receive(:info).once.with(
                 hash_including(
                   class: 'Ci::RegisterJobService::Logger',

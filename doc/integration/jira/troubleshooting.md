@@ -331,29 +331,82 @@ The credentials for accessing Jira are not allowed to access the data.
 Check your Jira issues integration credentials and try again.
 ```
 
+{{< alert type="warning" >}}
+
+Atlassian deprecated the older JQL search endpoints (`GET/POST /rest/api/2/search`) for Jira Cloud
+on October 31, 2024, with removal scheduled for May 1, 2025.
+Jira Server and Data Center continue to use the `/rest/api/2/search` endpoint.
+For more information, see the [Atlassian deprecation notice](https://developer.atlassian.com/changelog/#CHANGE-2046).
+
+{{< /alert >}}
+
 To resolve this issue, ensure the Jira user you configured in the Jira issues integration has permission to view issues
 associated with the specified Jira project key.
 
 To verify the Jira user has this permission, do one of the following:
 
+{{< tabs >}}
+
+{{< tab title="Jira Cloud" >}}
+
 - In your browser, sign in to Jira with the user you configured in the Jira issues integration. Because the Jira API supports
-  [cookie-based authentication](https://developer.atlassian.com/server/jira/platform/security-overview/#cookie-based-authentication),
-  you can see if any issues are returned in the browser:
+  cookie-based authentication you can see if any issues are returned in the browser:
 
   ```plaintext
-  https://<ATLASSIAN_SUBDOMAIN>.atlassian.net/rest/api/2/search?jql=project=<JIRA PROJECT KEY>
+  https://<ATLASSIAN_SUBDOMAIN>.atlassian.net/rest/api/3/search/jql?jql=project=<JIRA_PROJECT_KEY>
   ```
 
 - Use `curl` for HTTP basic authentication to access the API and see if any issues are returned:
 
   ```shell
-  curl --verbose --user "$USER:$API_TOKEN" "https://$ATLASSIAN_SUBDOMAIN.atlassian.net/rest/api/2/search?jql=project=$JIRA_PROJECT_KEY" | jq
+  curl --verbose --user "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+    --header 'Content-Type: application/json' \
+    --header 'Accept: application/json' \
+    --request POST \
+    --data '{"jql":"project='$JIRA_PROJECT_KEY'"}' \
+    "https://$ATLASSIAN_SUBDOMAIN.atlassian.net/rest/api/3/search/jql" | jq
   ```
 
-Both methods should return a JSON response:
+The API response returns a JSON response:
 
-- `total` gives a count of the issues that match the Jira project key.
 - `issues` contains an array of the issues that match the Jira project key.
+- `nextPageToken` is provided if there are more results to fetch.
 
-For more information about returned status codes, see the
-[Jira Cloud platform REST API documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-issueidorkey-get-response).
+For more information about returned status codes and API details, see the
+[Search for issues using JQL enhanced search (POST)](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-search/#api-rest-api-3-search-jql-post)
+documentation.
+
+{{< /tab >}}
+
+{{< tab title="Jira Server/Data Center" >}}
+
+- In your browser, sign in to Jira with the user you configured in the Jira issues integration. Because the Jira API supports
+  cookie-based authentication you can see if any issues are returned in the browser:
+
+  ```plaintext
+  <JIRA_SERVER_URL>/rest/api/2/search?jql=project=<JIRA_PROJECT_KEY>
+  ```
+
+- Use `curl` for HTTP basic authentication to access the API and see if any issues are returned:
+
+  ```shell
+  curl --verbose --header 'Authorization: Bearer '$JIRA_API_TOKEN'' \
+    --header 'Content-Type: application/json' \
+    --header 'Accept: application/json' \
+    --request POST \
+    --data '{"jql":"project='$JIRA_PROJECT_KEY'"}' \
+    "$JIRA_SERVER_URL/rest/api/2/search" | jq
+  ```
+
+The API response returns a JSON response:
+
+- `issues` contains an array of the issues that match the Jira project key.
+- `total` is provided if there are more results to fetch.
+
+For more information about returned status codes and API details, see the
+[Perform search with JQL (POST)](https://developer.atlassian.com/server/jira/platform/rest/v10007/api-group-search/#api-api-2-search-post)
+documentation.
+
+{{< /tab >}}
+
+{{< /tabs >}}

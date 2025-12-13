@@ -652,6 +652,7 @@ The following spec inputs can be used in combination with the `Dependency-Scanni
 | `analyzer_image_name` | string | `"dependency-scanning"` | The repository of the analyzer image used by the dependency-scanning job. |
 | `analyzer_image_version` | string | `"1"` | The version of the analyzer image used by the dependency-scanning job. |
 | `enable_mr_pipelines` | boolean | `true` | Control whether dependency scanning job runs in MR or branch pipeline. |
+| `additional_ca_cert_bundle` | string |  | CA certificate bundle to trust. The CA bundle provided here is added to the system's certificates and also used by other tools during the scanning process. For more details, see [Custom TLS certificate authority](#custom-tls-certificate-authority). |
 | `pipcompile_requirements_file_name_pattern` | string |  | Custom requirements file name pattern to use when analyzing. The pattern should match file names only, not directory paths. See [doublestar library](https://www.github.com/bmatcuk/doublestar/tree/v1#patterns) for syntax details. |
 | `max_scan_depth` | number | `2` | Defines how many directory levels analyzer should search for supported files. A value of -1 means the analyzer will search all directories regardless of depth. |
 | `excluded_paths` | string | `"**/spec,**/test,**/tests,**/tmp"` | A comma-separated list of paths (globs supported) to exclude from the scan. |
@@ -668,7 +669,7 @@ These variables can replace spec inputs and are also compatible with the beta `l
 
 | CI/CD variables             | Description |
 | ----------------------------|------------ |
-| `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certificates to trust. The bundle of certificates provided here is added to the system's certificates and also used by other tools during the scanning process. For more details, see [Custom TLS certificate authority](#custom-tls-certificate-authority). |
+| `ADDITIONAL_CA_CERT_BUNDLE` | CA certificate bundle to trust. The CA bundle provided here is added to the system's certificates and also used by other tools during the scanning process. For more details, see [Custom TLS certificate authority](#custom-tls-certificate-authority). |
 | `ANALYZER_ARTIFACT_DIR`     | Directory where CycloneDX reports (SBOMs) are saved. Default `${CI_PROJECT_DIR}/sca-artifacts`. |
 | `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from dependency scanning. |
 | `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). See [Exclusion patterns](#exclusion-patterns) for matching rules. This is a pre-filter which is applied before the scan is executed. Applies both for dependency detection and static reachability. Default: `"**/spec,**/test,**/tests,**/tmp,**/node_modules,**/.bundle,**/vendor,**/.git"`. |

@@ -34,6 +34,10 @@ spec:
       description: "The version of the analyzer image used by the dependency-scanning job."
 
     # Variables for analyzer behavior.
+    additional_ca_cert_bundle:
+      type: string
+      default: ""
+      description: "CA certificate bundle to trust. The CA bundle provided here is added to the system's certificates and also used by other tools during the scanning process."
     pipcompile_requirements_file_name_pattern:
       type: string
       default: ""
@@ -90,13 +94,14 @@ variables:
   script:
     - echo "Using Dependency-Scanning.v2.gitlab-ci.yml"
     # Variable fallback for legacy variables used by version 1 of the Dependency Scanning template.
+    - export ADDITIONAL_CA_CERT_BUNDLE="${ADDITIONAL_CA_CERT_BUNDLE:-$[[ inputs.additional_ca_cert_bundle ]]}"
     - export DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN="${DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN:-$[[ inputs.pipcompile_requirements_file_name_pattern ]]}"
     - export DS_MAX_DEPTH="${DS_MAX_DEPTH:-$[[ inputs.max_scan_depth ]]}"
     - export DS_EXCLUDED_PATHS="${DS_EXCLUDED_PATHS:-$[[ inputs.excluded_paths ]]}"
     - export DS_INCLUDE_DEV_DEPENDENCIES="${DS_INCLUDE_DEV_DEPENDENCIES:-$[[ inputs.include_dev_dependencies ]]}"
     - export DS_STATIC_REACHABILITY_ENABLED="${DS_STATIC_REACHABILITY_ENABLED:-$[[ inputs.enable_static_reachability ]]}"
     - export SECURE_LOG_LEVEL="${SECURE_LOG_LEVEL:-$[[ inputs.analyzer_log_level ]]}"
-    - export DS_ENABLE_VULNERABILITY_SCAN="${DS_ENABLE_VULNERABILITY_SCAN-$[[ inputs.enable_vulnerability_scan ]]}"
+    - export DS_ENABLE_VULNERABILITY_SCAN="${DS_ENABLE_VULNERABILITY_SCAN:-$[[ inputs.enable_vulnerability_scan ]]}"
     - export DS_API_TIMEOUT="${DS_API_TIMEOUT:-$[[ inputs.vulnerability_scan_api_timeout ]]}"
     - export DS_API_SCAN_DOWNLOAD_DELAY="${DS_API_SCAN_DOWNLOAD_DELAY:-$[[ inputs.vulnerability_scan_api_download_delay ]]}"
     - /analyzer run

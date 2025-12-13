@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
   let_it_be_with_reload(:user) { create(:user, :with_namespace) }
+  let(:error_message) { { message: _('You must provide a valid current password.') } }
 
   before do
     sign_in(user)
@@ -12,22 +13,10 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
   end
 
   shared_examples 'user must enter a valid current password' do
-    let(:error_message) { { message: _('You must provide a valid current password.') } }
-
-    it 'shows an error message' do
-      bad
-
-      error = assigns[:error] || assigns[:webauthn_error]
-
-      expect(error).to eq(error_message)
-    end
-
     it "validates password attempts" do
       expect { bad }.to change { user.failed_attempts }.from(0).to(1)
       expect { go }.not_to change { user.failed_attempts }
     end
-
-    it_behaves_like 'prepares the .setup_passkey_registration_page'
 
     context 'when user authenticates with an external service' do
       before do
@@ -238,6 +227,16 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
 
       it_behaves_like 'user must enter a valid current password'
 
+      context 'when wrong password is entered' do
+        it 'shows an error message' do
+          bad
+
+          expect(assigns[:webauthn_error]).to eq(error_message)
+        end
+
+        it_behaves_like 'prepares the .setup_passkey_registration_page'
+      end
+
       context "when valid password is given" do
         context "when registration succeeds" do
           it "registers and redirects back to the 2FA profile page" do
@@ -312,6 +311,15 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
       end
 
       it_behaves_like 'user must enter a valid current password'
+
+      context 'when wrong password is entered' do
+        it 'redirects back to the 2FA profile page with an alert' do
+          bad
+
+          expect(response).to redirect_to(profile_two_factor_auth_path)
+          expect(flash[:alert]).to eq(error_message[:message])
+        end
+      end
 
       context "when a valid password is given" do
         context 'when authentication succeeds' do
