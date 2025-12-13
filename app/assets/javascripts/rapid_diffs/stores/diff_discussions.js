@@ -10,6 +10,7 @@ function addReactiveDiscussionProps(discussion) {
     notes: discussion.notes.map((note) => {
       return { ...note, isEditing: false, editedNote: null };
     }),
+    hidden: false,
   };
 }
 
@@ -101,6 +102,7 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
         noteBody: '',
         shouldFocus: true,
       });
+      this.setFileDiscussionsHidden(oldPath, newPath, false);
       return undefined;
     },
     removeNewLineDiscussionForm(discussion) {
@@ -129,6 +131,19 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
         });
       }
     },
+    setFileDiscussionsHidden(oldPath, newPath, newState) {
+      const matchingDiscussions = this.discussions.filter((discussion) => {
+        return (
+          discussion.diff_discussion &&
+          discussion.position?.old_path === oldPath &&
+          discussion.position?.new_path === newPath
+        );
+      });
+
+      matchingDiscussions.forEach((discussion) => {
+        discussion.hidden = newState;
+      });
+    },
     /* eslint-enable no-param-reassign */
   },
   getters: {
@@ -151,6 +166,18 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
             discussion.position.new_path === newPath &&
             discussion.position.old_line === oldLine &&
             discussion.position.new_line === newLine
+          );
+        });
+      };
+    },
+    findDiscussionsForFile() {
+      return ({ oldPath, newPath }) => {
+        return this.discussions.filter((discussion) => {
+          return (
+            !discussion.isForm &&
+            discussion.diff_discussion &&
+            discussion.position?.old_path === oldPath &&
+            discussion.position?.new_path === newPath
           );
         });
       };

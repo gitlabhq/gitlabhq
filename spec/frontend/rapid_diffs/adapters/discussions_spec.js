@@ -157,6 +157,20 @@ describe('discussions adapters', () => {
       ).toStrictEqual('Commit');
     });
 
+    it('does not render hidden discussions', async () => {
+      const discussionId = 'hidden-discussion';
+      useDiffDiscussions().discussions = [
+        {
+          id: discussionId,
+          diff_discussion: true,
+          position: { old_path: oldPath, new_path: newPath, old_line: 1, new_line: null },
+          hidden: true,
+        },
+      ];
+      await nextTick();
+      expect(getDiffFile().querySelector('[data-discussion-id]')).toBeNull();
+    });
+
     it('does not render discussions for different paths', async () => {
       useDiffDiscussions().discussions = [
         {
@@ -331,6 +345,20 @@ describe('discussions adapters', () => {
       expect(discussionRow.children[0].textContent).toBe(
         `This is a discussion placeholder with an id: ${discussionId}`,
       );
+    });
+
+    it('does not render hidden discussions', async () => {
+      const discussionId = 'hidden-discussion';
+      useDiffDiscussions().discussions = [
+        {
+          id: discussionId,
+          diff_discussion: true,
+          position: { old_path: oldPath, new_path: newPath, old_line: 1, new_line: null },
+          hidden: true,
+        },
+      ];
+      await nextTick();
+      expect(getDiffFile().querySelector('[data-discussion-id]')).toBeNull();
     });
 
     it('does not render discussions for different paths', async () => {

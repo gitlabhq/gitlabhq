@@ -1,7 +1,8 @@
+import { createPinia, setActivePinia } from 'pinia';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
-import { optionsMenuAdapter } from '~/rapid_diffs/adapters/options_menu';
+import { commitDiffsOptionsMenuAdapter } from '~/rapid_diffs/adapters/commit_diffs_options_menu';
 
-describe('Diff File Options Menu Adapter', () => {
+describe('Commit Diffs File Options Menu Adapter', () => {
   const item1 = { text: 'item 1', href: 'item/1/path' };
 
   function get(element) {
@@ -30,26 +31,27 @@ describe('Diff File Options Menu Adapter', () => {
     get('file').onClick(event);
   };
 
-  const mount = () => {
+  const mount = (items = [item1]) => {
     const viewer = 'any';
     document.body.innerHTML = `
       <diff-file data-file-data='${JSON.stringify({ viewer })}'>
         <div class="rd-diff-file">
           <div class="rd-diff-file-header">
-          <div class="rd-diff-file-options-menu">
-            <div data-options-menu>
-              <script type="application/json">
-                [{"text": "${item1.text}", "href": "${item1.href}"}]
-              </script>
-              <button data-click="toggleOptionsMenu" type="button"></button>
+            <div class="rd-diff-file-options-menu">
+              <div data-options-menu>
+                <script type="application/json">
+                  ${JSON.stringify(items)}
+                </script>
+                <button data-click="toggleOptionsMenu" type="button"></button>
+              </div>
             </div>
+            <div></div>
           </div>
-          <div></div>
         </div>
       </diff-file>
     `;
     get('file').mount({
-      adapterConfig: { [viewer]: [optionsMenuAdapter] },
+      adapterConfig: { [viewer]: [commitDiffsOptionsMenuAdapter] },
       appData: {},
       unobserve: jest.fn(),
     });
@@ -60,14 +62,21 @@ describe('Diff File Options Menu Adapter', () => {
   });
 
   beforeEach(() => {
-    mount();
+    setActivePinia(createPinia());
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    document.body.innerHTML = '';
   });
 
   it('starts with the server-rendered button', () => {
+    mount();
     expect(get('serverButton')).not.toBeNull();
   });
 
-  it('replaces the server-rendered button with a Vue GlDisclosureDropdown when the button is clicked', () => {
+  it('replaces the server-rendered button with a Vue CommitDiffsFileOptionsDropdown when the button is clicked', () => {
+    mount();
     const button = get('serverButton');
 
     expect(get('vueButton')).toBeNull();
@@ -76,15 +85,12 @@ describe('Diff File Options Menu Adapter', () => {
     delegatedClick(button);
 
     expect(get('vueButton')).not.toBeNull();
-    /*
-     * This button being replaced also means this replacement can only
-     * happen once (desireable!), so testing that it's no longer present is good
-     */
     expect(get('serverButton')).toBeNull();
     expect(document.activeElement).toEqual(get('vueButton'));
   });
 
-  it('renders the correct menu items in the GlDisclosureDropdown as provided by the back end', () => {
+  it('renders the correct menu items in the dropdown as provided by the back end', () => {
+    mount();
     const button = get('serverButton');
 
     delegatedClick(button);

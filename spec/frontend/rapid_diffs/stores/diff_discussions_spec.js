@@ -14,6 +14,7 @@ describe('diffDiscussions store', () => {
       expect(useDiffDiscussions().discussions[0].repliesExpanded).toBe(true);
       expect(useDiffDiscussions().discussions[0].notes[0].isEditing).toBe(false);
       expect(useDiffDiscussions().discussions[0].notes[0].editedNote).toBeNull();
+      expect(useDiffDiscussions().discussions[0].hidden).toBe(false);
     });
   });
 
@@ -271,6 +272,15 @@ describe('diffDiscussions store', () => {
         expect(result).toBe(existingDiscussion.id);
       },
     );
+
+    it('calls setFileDiscussionsHidden to show discussions when adding a new form', () => {
+      useDiffDiscussions().discussions = [];
+      const spy = jest.spyOn(useDiffDiscussions(), 'setFileDiscussionsHidden');
+
+      useDiffDiscussions().addNewLineDiscussionForm(defaultPosition);
+
+      expect(spy).toHaveBeenCalledWith(defaultPosition.oldPath, defaultPosition.newPath, false);
+    });
   });
 
   describe('removeNewLineDiscussionForm', () => {
@@ -398,6 +408,43 @@ describe('diffDiscussions store', () => {
     });
   });
 
+  describe('setFileDiscussionsHidden', () => {
+    beforeEach(() => {
+      useDiffDiscussions().discussions = [
+        {
+          id: '1',
+          diff_discussion: true,
+          position: { old_path: 'file1.js', new_path: 'file1.js' },
+        },
+        {
+          id: '2',
+          diff_discussion: true,
+          position: { old_path: 'file1.js', new_path: 'file1.js' },
+        },
+        {
+          id: '3',
+          diff_discussion: true,
+          position: { old_path: 'file2.js', new_path: 'file2.js' },
+        },
+      ];
+    });
+
+    it('hides all discussions for a file when newState is true', () => {
+      useDiffDiscussions().setFileDiscussionsHidden('file1.js', 'file1.js', true);
+
+      expect(useDiffDiscussions().discussions[0].hidden).toBe(true);
+      expect(useDiffDiscussions().discussions[1].hidden).toBe(true);
+    });
+
+    it('shows all discussions for a file when newState is false', () => {
+      useDiffDiscussions().setFileDiscussionsHidden('file1.js', 'file1.js', true);
+      useDiffDiscussions().setFileDiscussionsHidden('file1.js', 'file1.js', false);
+
+      expect(useDiffDiscussions().discussions[0].hidden).toBe(false);
+      expect(useDiffDiscussions().discussions[1].hidden).toBe(false);
+    });
+  });
+
   describe('allNotesById', () => {
     it('returns all notes by id', () => {
       const note1 = { id: 'foo' };
@@ -465,6 +512,57 @@ describe('diffDiscussions store', () => {
       const found = useDiffDiscussions().findDiscussionsForPosition(position);
 
       expect(found).toHaveLength(0);
+    });
+  });
+
+  describe('findDiscussionsForFile', () => {
+    beforeEach(() => {
+      useDiffDiscussions().discussions = [
+        {
+          id: '1',
+          diff_discussion: true,
+          position: { old_path: 'file1.js', new_path: 'file1.js' },
+        },
+        {
+          id: '2',
+          diff_discussion: true,
+          position: { old_path: 'file2.js', new_path: 'file2.js' },
+        },
+        {
+          id: '3',
+          isForm: true,
+          diff_discussion: true,
+          position: { old_path: 'file1.js', new_path: 'file1.js' },
+        },
+      ];
+    });
+
+    it('returns discussions matching the file paths', () => {
+      const discussions = useDiffDiscussions().findDiscussionsForFile({
+        oldPath: 'file1.js',
+        newPath: 'file1.js',
+      });
+
+      expect(discussions).toHaveLength(1);
+      expect(discussions[0].id).toBe('1');
+    });
+
+    it('excludes discussion forms', () => {
+      const discussions = useDiffDiscussions().findDiscussionsForFile({
+        oldPath: 'file1.js',
+        newPath: 'file1.js',
+      });
+
+      expect(discussions.every((d) => !d.isForm)).toBe(true);
+    });
+
+    it('returns empty array when no discussions match', () => {
+      const discussions = useDiffDiscussions().findDiscussionsForFile({
+        oldPath: 'nonexistent.js',
+        newPath: 'nonexistent.js',
+      });
+
+      expect(discussions).toHaveLength(0);
     });
   });
 });

@@ -57,9 +57,10 @@ RSpec.describe Groups::ParticipantsService, feature_category: :groups_and_projec
       group_hierarchy_users = group.self_and_hierarchy.flat_map(&:group_members).map(&:user)
       expected_users = (group_hierarchy_users + subproject.users)
         .map { |user| user_to_autocompletable(user) }
+        .map { |hash| hash.slice(:type, :name, :username, :avatar_url, :availability, :composite_identity_enforced) }
 
-      got = service_result.map do |result|
-        result.slice(:type, :name, :username, :avatar_url, :availability)
+      got = service_result.select { |result| result[:type] == 'User' }.map do |result|
+        result.slice(:type, :name, :username, :avatar_url, :availability, :composite_identity_enforced)
       end
 
       expect(expected_users.count).to eq(4)

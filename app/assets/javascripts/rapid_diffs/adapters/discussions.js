@@ -33,6 +33,8 @@ function mountVueApp(el, id, appData) {
     render(h) {
       if (!this.discussion) return null;
 
+      if (this.discussion.hidden) return null;
+
       if (this.discussion.isForm) {
         return h(NewLineDiscussionForm, { props: { discussion: this.discussion } });
       }
