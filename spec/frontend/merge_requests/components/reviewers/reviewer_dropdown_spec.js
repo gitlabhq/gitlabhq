@@ -9,7 +9,7 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import ReviewerDropdown from '~/merge_requests/components/reviewers/reviewer_dropdown.vue';
 import userPermissionsQuery from '~/merge_requests/components/reviewers/queries/user_permissions.query.graphql';
-import userAutocompleteWithMRPermissionsQuery from '~/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
+import userAutocompleteWithMRPermissionsQuery from 'ee_else_ce/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
 import setReviewersMutation from '~/merge_requests/components/reviewers/queries/set_reviewers.mutation.graphql';
 
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
@@ -30,6 +30,7 @@ const createMockUser = ({ id = 1, name = 'Administrator', username = 'root' } = 
   status: null,
   mergeRequestInteraction: {
     canMerge: true,
+    applicableApprovalRules: [],
   },
   username,
   name,
@@ -164,7 +165,7 @@ describe('Reviewer dropdown component', () => {
                   secondaryText: '@bob',
                   text: 'Nonadmin',
                   value: 'bob',
-                  mergeRequestInteraction: { canMerge: true },
+                  mergeRequestInteraction: expect.objectContaining({ canMerge: true }),
                 }),
               ]),
             }),
@@ -193,13 +194,13 @@ describe('Reviewer dropdown component', () => {
                   secondaryText: '@root',
                   text: 'Administrator',
                   value: 'root',
-                  mergeRequestInteraction: { canMerge: true },
+                  mergeRequestInteraction: expect.objectContaining({ canMerge: true }),
                 }),
                 expect.objectContaining({
                   secondaryText: '@bob',
                   text: 'Nonadmin',
                   value: 'bob',
-                  mergeRequestInteraction: { canMerge: true },
+                  mergeRequestInteraction: expect.objectContaining({ canMerge: true }),
                 }),
               ]),
             }),
@@ -766,7 +767,7 @@ describe('Reviewer dropdown component', () => {
                 secondaryText: '@root',
                 text: 'Administrator',
                 value: 'root',
-                mergeRequestInteraction: { canMerge: true },
+                mergeRequestInteraction: expect.objectContaining({ canMerge: true }),
               }),
             ]),
           }),

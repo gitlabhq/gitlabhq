@@ -227,17 +227,3 @@ To manage an agent:
    - To delete an agent:
      1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
      1. On the confirmation dialog, select **Delete**.
-
-## Report an agent
-
-You can report an agent if it contains potentially offensive material or poses a risk to your organization.
-
-To report an agent:
-
-1. On the top bar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog**, then select the **Agents** tab.
-1. Select the agent you want to report.
-1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Report to admin**.
-1. Complete the abuse report, then select **Submit**.
-
-An administrator is notified and can choose to hide or delete the agent.

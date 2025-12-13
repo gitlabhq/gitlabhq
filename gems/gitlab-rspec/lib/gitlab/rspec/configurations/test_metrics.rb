@@ -33,7 +33,7 @@ module Gitlab
 
           def owners_table
             @owners_table ||= GitlabQuality::TestTooling::CodeCoverage::ClickHouse::CategoryOwnersTable.new(
-              database: ENV["GLCI_CLICKHOUSE_TEST_COVERAGE_DB"],
+              database: ENV["GLCI_CLICKHOUSE_CODE_COVERAGE_DB"],
               url: clickhouse_url,
               username: clickhouse_username,
               password: clickhouse_password

@@ -36,7 +36,7 @@ Results are based on AI analysis and should be reviewed by security professional
 
 The flow runs automatically when:
 
-- A SAST security scan completes successfully.
+- A SAST security scan completes successfully on the default branch.
 - The scan detects Critical or High severity vulnerabilities.
 - GitLab Duo features are enabled for the project or group.
 

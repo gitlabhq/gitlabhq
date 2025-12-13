@@ -42,6 +42,11 @@ HTTP Headers:
 | `X-Gitlab-Nonce`      | string  | yes      | Random string or token to prevent replay attacks.                                             |
 | `X-Gitlab-Hmac-Sha256`| string  | yes      | HMAC-SHA256 signature of the request.                                                         |
 
+To compute the HMAC-SHA256 signature:
+
+1. Concatenate these values in order: timestamp + nonce + path + request body.
+1. Compute the HMAC-SHA256 of the concatenated string using your secret key.
+
 Supported attributes:
 
 | Attribute                | Type    | Required | Description                                                                                       |

@@ -1,13 +1,13 @@
 <script>
 import { debounce, difference } from 'lodash';
-import { GlCollapsibleListbox, GlButton, GlAvatar, GlIcon } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlButton, GlAvatar, GlIcon, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { uuids } from '~/lib/utils/uuids';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import userAutocompleteWithMRPermissionsQuery from '~/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
+import userAutocompleteWithMRPermissionsQuery from 'ee_else_ce/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import setReviewersMutation from '~/merge_requests/components/reviewers/queries/set_reviewers.mutation.graphql';
 import {
@@ -45,6 +45,7 @@ export default {
     GlButton,
     GlAvatar,
     GlIcon,
+    GlSprintf,
     InviteMembersTrigger,
   },
   mixins: [InternalEvents.mixin()],
@@ -295,6 +296,14 @@ export default {
 
       return [this.mapUser(this.currentUser), ...users];
     },
+    approvalRulesCount(reviewer) {
+      return reviewer?.mergeRequestInteraction?.applicableApprovalRules?.length;
+    },
+    approvalRuleName(reviewer) {
+      const [rule] = reviewer.mergeRequestInteraction.applicableApprovalRules;
+
+      return rule.type.toLowerCase() === 'code_owner' ? __('Code Owner') : rule.name;
+    },
   },
   i18n: {
     selectReviewer: __('Select reviewer'),
@@ -346,9 +355,23 @@ export default {
             class="reviewer-merge-icon"
           />
         </div>
-        <span class="gl-flex gl-flex-col">
+        <span class="gl-flex gl-flex-col gl-gap-1">
           <span class="gl-whitespace-nowrap gl-font-bold">{{ item.text }}</span>
           <span class="gl-text-subtle"> {{ item.secondaryText }}</span>
+          <span
+            v-if="approvalRulesCount(item)"
+            class="gl-flex gl-text-sm"
+            data-testid="approval-rule"
+          >
+            <span class="gl-truncate">{{ approvalRuleName(item) }}</span>
+            <span v-if="approvalRulesCount(item) > 1" class="gl-ml-2">
+              <gl-sprintf :message="__('(+%{count} rules)')">
+                <template #count>
+                  {{ approvalRulesCount(item) }}
+                </template>
+              </gl-sprintf>
+            </span>
+          </span>
         </span>
       </span>
     </template>

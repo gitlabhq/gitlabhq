@@ -1791,6 +1791,9 @@ msgstr ""
 msgid "(%{value}) has already been taken"
 msgstr ""
 
+msgid "(+%{count} rules)"
+msgstr ""
+
 msgid "(+%{count}&nbsp;rules)"
 msgstr ""
 
@@ -25749,9 +25752,6 @@ msgid "DuoChat|There was an error communicating with GitLab Duo Chat. Please try
 msgstr ""
 
 msgid "DuoChat|What is a fork?"
-msgstr ""
-
-msgid "DuoChat|You don't currently have access to Duo Chat, please contact your GitLab administrator."
 msgstr ""
 
 msgid "DuoChat|group"
@@ -50913,6 +50913,9 @@ msgstr ""
 msgid "Preparing the report for the scan."
 msgstr ""
 
+msgid "Prev"
+msgstr ""
+
 msgid "Prevent auto-stopping"
 msgstr ""
 
@@ -59645,6 +59648,9 @@ msgid "SecretsManagerPermissions|Remove secrets manager permissions?"
 msgstr ""
 
 msgid "SecretsManagerPermissions|Secrets manager"
+msgstr ""
+
+msgid "SecretsManagerPermissions|Secrets manager has been deprovisioned for this group."
 msgstr ""
 
 msgid "SecretsManagerPermissions|Secrets manager has been deprovisioned for this project."

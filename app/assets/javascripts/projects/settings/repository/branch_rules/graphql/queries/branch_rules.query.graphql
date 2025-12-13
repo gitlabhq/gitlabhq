@@ -1,7 +1,9 @@
-query getBranchRules($projectPath: ID!) {
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getBranchRules($projectPath: ID!, $after: String, $first: Int) {
   project(fullPath: $projectPath) {
     id
-    branchRules {
+    branchRules(first: $first, after: $after) {
       nodes {
         name
         id
@@ -26,6 +28,9 @@ query getBranchRules($projectPath: ID!) {
             }
           }
         }
+      }
+      pageInfo {
+        ...PageInfo
       }
     }
   }

@@ -1563,32 +1563,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let(:initial_value) { last_max_iid_from_pipelines }
       end
 
-      context 'when FF `update_init_iid_to_read_from_ci_pipeline_iids` is disabled' do
-        before do
-          stub_feature_flags(update_init_iid_to_read_from_ci_pipeline_iids: false)
-        end
-
-        it_behaves_like 'calculates the correct Internal ID initial value' do
-          let(:initial_value) { last_max_iid_from_pipelines }
-        end
-      end
-
       # This scenario shouldn't happen after iid backfill in https://gitlab.com/gitlab-org/gitlab/-/issues/582338
       context 'when max iid from ci_pipelines > max iid from ci_pipeline_iids' do
         let(:last_max_iid_from_pipelines) { last_max_iid_from_pipeline_iids + 1 }
 
         it_behaves_like 'calculates the correct Internal ID initial value' do
           let(:initial_value) { last_max_iid_from_pipelines }
-        end
-
-        context 'when FF `update_init_iid_to_read_from_ci_pipeline_iids` is disabled' do
-          before do
-            stub_feature_flags(update_init_iid_to_read_from_ci_pipeline_iids: false)
-          end
-
-          it_behaves_like 'calculates the correct Internal ID initial value' do
-            let(:initial_value) { last_max_iid_from_pipelines }
-          end
         end
       end
 
@@ -1599,24 +1579,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it_behaves_like 'calculates the correct Internal ID initial value' do
           let(:initial_value) { last_max_iid_from_pipeline_iids }
         end
-
-        context 'when FF `update_init_iid_to_read_from_ci_pipeline_iids` is disabled' do
-          before do
-            stub_feature_flags(update_init_iid_to_read_from_ci_pipeline_iids: false)
-          end
-
-          it 'generates the expected next iid' do
-            expect(generate_next_iid).to eq(last_max_iid_from_pipelines + 1)
-            expect(generate_next_iid_without_pipeline_subject).to eq(last_max_iid_from_pipelines + 1)
-            expect(generate_next_iid_without_scope).to eq(last_max_iid_from_pipelines + 1)
-            expect(generate_next_iid_without_scope_and_pipeline_subject).to eq(1)
-          end
-
-          it 'does not persist new pipeline' do
-            expect(new_pipeline.iid).to eq(last_max_iid_from_pipeline_iids)
-            expect { new_pipeline.save! }.to raise_error(ActiveRecord::RecordNotUnique)
-          end
-        end
       end
 
       # This scenario shouldn't happen after iid backfill in https://gitlab.com/gitlab-org/gitlab/-/issues/582338
@@ -1625,16 +1587,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         it_behaves_like 'calculates the correct Internal ID initial value' do
           let(:initial_value) { last_max_iid_from_pipelines }
-        end
-
-        context 'when FF `update_init_iid_to_read_from_ci_pipeline_iids` is disabled' do
-          before do
-            stub_feature_flags(update_init_iid_to_read_from_ci_pipeline_iids: false)
-          end
-
-          it_behaves_like 'calculates the correct Internal ID initial value' do
-            let(:initial_value) { last_max_iid_from_pipelines }
-          end
         end
       end
 
@@ -1645,25 +1597,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it_behaves_like 'calculates the correct Internal ID initial value' do
           let(:initial_value) { last_max_iid_from_pipeline_iids }
         end
-
-        context 'when FF `update_init_iid_to_read_from_ci_pipeline_iids` is disabled' do
-          before do
-            stub_feature_flags(update_init_iid_to_read_from_ci_pipeline_iids: false)
-          end
-
-          it 'generates the expected next iid' do
-            expect(generate_next_iid).to eq(last_pipeline_count + 1)
-            # Old logic didn't fallback to pipeline count without the pipeline subject
-            expect(generate_next_iid_without_pipeline_subject).to eq(1)
-            expect(generate_next_iid_without_scope).to eq(last_pipeline_count + 1)
-            expect(generate_next_iid_without_scope_and_pipeline_subject).to eq(1)
-          end
-
-          it 'does not persist new pipeline' do
-            expect(new_pipeline.iid).to eq(last_max_iid_from_pipeline_iids)
-            expect { new_pipeline.save! }.to raise_error(ActiveRecord::RecordNotUnique)
-          end
-        end
       end
 
       context 'when iids are neither populated in ci_pipelines nor ci_pipeline_iids' do
@@ -1672,25 +1605,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         it_behaves_like 'calculates the correct Internal ID initial value' do
           let(:initial_value) { last_pipeline_count }
-        end
-
-        context 'when FF `update_init_iid_to_read_from_ci_pipeline_iids` is disabled' do
-          before do
-            stub_feature_flags(update_init_iid_to_read_from_ci_pipeline_iids: false)
-          end
-
-          it 'generates the expected next iid' do
-            expect(generate_next_iid).to eq(last_pipeline_count + 1)
-            # Old logic didn't fallback to pipeline count without the pipeline subject
-            expect(generate_next_iid_without_pipeline_subject).to eq(1)
-            expect(generate_next_iid_without_scope).to eq(last_pipeline_count + 1)
-            expect(generate_next_iid_without_scope_and_pipeline_subject).to eq(1)
-          end
-
-          it 'successfully persists new pipeline' do
-            expect { new_pipeline.save! }.not_to raise_error
-            expect(new_pipeline.reload.iid).to eq(last_pipeline_count + 1)
-          end
         end
       end
 
@@ -1701,16 +1615,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         it_behaves_like 'calculates the correct Internal ID initial value' do
           let(:initial_value) { last_pipeline_count }
-        end
-
-        context 'when FF `update_init_iid_to_read_from_ci_pipeline_iids` is disabled' do
-          before do
-            stub_feature_flags(update_init_iid_to_read_from_ci_pipeline_iids: false)
-          end
-
-          it_behaves_like 'calculates the correct Internal ID initial value' do
-            let(:initial_value) { last_pipeline_count }
-          end
         end
       end
 

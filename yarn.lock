@@ -1300,10 +1300,10 @@
   dependencies:
     "@types/json-schema" "^7.0.15"
 
-"@eslint/eslintrc@^3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-3.3.1.tgz#e55f7f1dd400600dd066dbba349c4c0bac916964"
-  integrity sha512-gtF186CXhIl1p4pJNGZw8Yc6RlshoePRvE0X91oPGb3vZ8pM3qOS9W9NGPat9LziaBV7XrJWGylNQXkGcnM3IQ==
+"@eslint/eslintrc@^3.3.1", "@eslint/eslintrc@^3.3.3":
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-3.3.3.tgz#26393a0806501b5e2b6a43aa588a4d8df67880ac"
+  integrity sha512-Kr+LPIUVKz2qkx1HAMH8q1q6azbqBAsXJUxBl/ODDuVPX45Z9DfwB8tPjTi6nNZ8BuM3nbJxC5zCAg5elnBUTQ==
   dependencies:
     ajv "^6.12.4"
     debug "^4.3.2"
@@ -1311,7 +1311,7 @@
     globals "^14.0.0"
     ignore "^5.2.0"
     import-fresh "^3.2.1"
-    js-yaml "^4.1.0"
+    js-yaml "^4.1.1"
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
@@ -1460,10 +1460,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.152.0.tgz#7b46f31051d764cbc3c9b370d9113f4a79dc046b"
   integrity sha512-k26K51TXOw8vae3GdFe84iKWZsXjTlDFGuJmBo0okf1hU/8xPfD4p/rjjrJVlwmqyQKUZLLbt3C5KcFcX+kjFQ==
 
-"@gitlab/ui@126.3.3":
-  version "126.3.3"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-126.3.3.tgz#80abd7f4dcbfec83bea56cc6fdc827a2308ae320"
-  integrity sha512-E7IshcQf+Y9b4S50u92gzD8d5y/i0osYCtw8TIwPQAH449NLD9y39zpzM6R6q/u0oGlh/VwVISOuXDh9qyZG8w==
+"@gitlab/ui@126.3.4":
+  version "126.3.4"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-126.3.4.tgz#b41dc081a0a7a25a76867d2b1a5c878bbeac8a03"
+  integrity sha512-YIq0h/5QUhSntvIaA+m/1CWNn1MyukgDfxQ/By+9Ll5NoLgDLSsPuUgZqxaDZFOuOTcdOcmQ2Jhmtr/gGl7kXQ==
   dependencies:
     "@floating-ui/dom" "1.7.4"
     echarts "^5.6.0"
@@ -7463,10 +7463,10 @@ eslint-formatter-codeclimate@^2.0.0:
   dependencies:
     codeclimate-types "^0.3.0"
 
-eslint-formatter-gitlab@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-formatter-gitlab/-/eslint-formatter-gitlab-7.0.0.tgz#6178816af01cb9d67bbd6e3874cb73e5ac852b65"
-  integrity sha512-bs0cKMCDjvDw0gBLK/jXC0HEJDi9lt48c3HXuMPDj7dC9QblB81dXiNymrrtBs3u+RGANtQugMR5Vbd66Q3YwA==
+eslint-formatter-gitlab@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/eslint-formatter-gitlab/-/eslint-formatter-gitlab-7.0.1.tgz#d2f49aa701ec28fe4ca05b162e5e5131e8bfb66c"
+  integrity sha512-JYZ2bWR2+gKoNZ4UzRf7oEewyrJqQaieAlScdaEAAnhNM6ISFBsgoI8pxQW/CpbTHFoELjGpeDIfiohbwNf6vQ==
   dependencies:
     eslint-formatter-codeclimate "^2.0.0"
     yaml "^2.0.0"
@@ -10125,10 +10125,10 @@ js-yaml@^3.13.1, js-yaml@^3.14.0:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
-js-yaml@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.1.0.tgz#c1fb65f8f5017901cdd2c951864ba18458a10602"
-  integrity sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==
+js-yaml@^4.1.0, js-yaml@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.1.1.tgz#854c292467705b699476e1a2decc0c8a3458806b"
+  integrity sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==
   dependencies:
     argparse "^2.0.1"
 

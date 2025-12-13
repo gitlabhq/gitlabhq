@@ -83,13 +83,47 @@ Prerequisites:
 To change GitLab Duo Core availability:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **GitLab Duo**.
+1. On the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability**, select an option.
 1. Under **GitLab Duo Core**, select or clear the **Turn on features for GitLab Duo Core** checkbox.
    If you selected **Always off** for GitLab Duo availability, you cannot access
    this setting.
 1. Select **Save changes**.
+
+## Turn GitLab Duo Agent Platform on or off
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215778) in GitLab 18.7.
+
+{{< /history >}}
+
+GitLab Duo Agent Platform includes GitLab Duo Chat (Agentic), agents, and flows. This setting is on by default.
+
+This setting does not override other GitLab Duo settings. For GitLab Duo Agent Platform to work:
+
+- GitLab Duo must be enabled.
+- Experiment and beta features must be enabled because GitLab Duo Agent Platform is in beta.
+
+### On GitLab Self-Managed
+
+On GitLab Self-Managed, you can control GitLab Duo Agent Platform availability for the instance.
+
+Prerequisites:
+
+- You must be an administrator.
+
+To change GitLab Duo Agent Platform availability:
+
+1. In the upper-right corner, select **Admin**.
+1. On the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **GitLab Duo Agent Platform**, select or clear the **Turn on GitLab Duo Chat (Agentic), agents, and flows** checkbox.
+1. Select **Save changes**.
+
+When GitLab Duo Agent Platform is turned off, related settings for flows and
+[foundational agents](../duo_agent_platform/agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off) are hidden.
 
 ## Turn GitLab Duo on or off
 
@@ -167,7 +201,7 @@ Prerequisites:
 To change GitLab Duo availability for the instance:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **GitLab Duo**.
+1. On the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability**, select an option.
 1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.

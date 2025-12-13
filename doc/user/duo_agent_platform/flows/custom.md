@@ -227,20 +227,6 @@ Prerequisites:
      1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
      1. On the confirmation dialog, select **Delete**.
 
-## Report a flow
-
-You can report an flow if it contains potentially offensive material or poses a risk to your organization.
-
-To report a flow:
-
-1. On the top bar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog**, then select the **Flows** tab.
-1. Select the flow you want to report.
-1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Report to admin**.
-1. Complete the abuse report, then select **Submit**.
-
-An administrator is notified and can choose to hide or delete the flow.
-
 ## Group sharing and flows
 
 When you enable a flow in a group, a related service account is automatically created. The service account:
