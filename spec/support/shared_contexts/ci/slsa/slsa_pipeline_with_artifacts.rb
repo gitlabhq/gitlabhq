@@ -15,7 +15,7 @@ RSpec.shared_context 'with build, pipeline and artifacts' do
   end
 
   let(:build) do
-    create(:ci_build, :slsa_artifacts, :finished, runner_manager: runner_manager, pipeline: pipeline)
+    create(:ci_build, :slsa_artifacts, :finished, runner_manager: runner_manager, pipeline: pipeline, stage: "build")
   end
 
   let_it_be(:runner) { create(:ci_runner, :hosted_runner) }
@@ -27,7 +27,7 @@ RSpec.shared_context 'with build, pipeline and artifacts' do
       { key: 'SIGSTORE_ID_TOKEN', value: id_token, public: true },
       # Temporary mechanism to prevent running in test suite while UX is discused.
       # https://gitlab.com/gitlab-org/gitlab/-/issues/547903#note_2654845642
-      { key: 'GENERATE_PROVENANCE', value: 'true', public: true }
+      { key: 'ATTEST_BUILD_ARTIFACTS', value: 'true', public: true }
     ]
   end
 

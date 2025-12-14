@@ -61,16 +61,8 @@ module Ci
       #
       Ci::ArchiveTraceWorker.perform_in(ARCHIVE_TRACES_IN, build.id)
 
-      Ci::Slsa::PublishProvenanceWorker.perform_async(build.id) if should_publish_provenance?(build)
-    end
-
-    def should_publish_provenance?(build)
-      return false unless Feature.enabled?(:slsa_provenance_statement, build.project)
-      return false unless build.artifacts?
-      return false unless build.yaml_variables.any? { |variable| variable[:key] == "GENERATE_PROVENANCE" }
-      return false unless build.project.public?
-
-      true
+      Ci::Slsa::PublishProvenanceWorker.perform_async(build.id) if
+        ::SupplyChain.publish_provenance_for_build?(build)
     end
   end
 end

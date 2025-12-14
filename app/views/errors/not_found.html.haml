@@ -9,7 +9,7 @@
   .action-container
     = form_tag search_path, method: :get, class: 'form-inline-flex' do |f|
       .field
-        = search_field_tag :search, '', placeholder: _('Search for projects, issues, etc.'), class: 'form-control'
+        = search_field_tag :search, '', placeholder: _('Search for projects, issues, etc.'), class: 'form-control gl-rounded-lg'
       = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit) do
         = _('Search')
   = render 'errors/footer'

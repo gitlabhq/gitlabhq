@@ -61,6 +61,7 @@ export default {
       :aria-label="$options.i18n.preferences"
       :header-text="__('Compare changes')"
       :items="$options.diffViewTypeOptions"
+      placement="bottom-end"
       @select="$emit('updateDiffViewType', $event)"
     >
       <template #footer>
