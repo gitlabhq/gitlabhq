@@ -10,6 +10,19 @@ module Gitlab
         # the primary.
         EXPIRATION = 30
 
+        UNSTICK_IF_CAUGHT_UP_SCRIPT = <<~LUA
+          local key = KEYS[1]
+          local expected_location = ARGV[1]
+          local current_location = redis.call('GET', key)
+
+          if current_location == expected_location then
+            redis.call('DEL', key)
+            return 1
+          else
+            return 0
+          end
+        LUA
+
         attr_reader :load_balancer
 
         def initialize(load_balancer)
@@ -35,7 +48,7 @@ module Gitlab
           result = if location
                      up_to_date_result = @load_balancer.select_up_to_date_host(location)
 
-                     unstick(namespace, id) if up_to_date_result == LoadBalancer::ALL_CAUGHT_UP
+                     unstick_if_caught_up(namespace, id, location) if up_to_date_result == LoadBalancer::ALL_CAUGHT_UP
 
                      up_to_date_result != LoadBalancer::NONE_CAUGHT_UP
                    else
@@ -97,6 +110,17 @@ module Gitlab
         def unstick(namespace, id)
           with_redis do |redis|
             redis.del(redis_key_for(namespace, id))
+          end
+        end
+
+        # Atomically unstick only if the sticking point hasn't changed since we read it.
+        # This prevents a race condition where a concurrent request sets a new sticking point
+        # after we've verified all replicas are caught up but before we unstick.
+        #
+        # Returns 1 if unstick was performed, 0 if the value changed (indicating a new write).
+        def unstick_if_caught_up(namespace, id, expected_location)
+          with_redis do |redis|
+            redis.eval(UNSTICK_IF_CAUGHT_UP_SCRIPT, keys: [redis_key_for(namespace, id)], argv: [expected_location])
           end
         end
 

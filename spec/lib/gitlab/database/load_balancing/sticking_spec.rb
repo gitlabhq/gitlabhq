@@ -57,15 +57,38 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, feature_catego
     end
 
     context 'when all replicas have caught up' do
-      it 'returns true and unsticks' do
+      it 'returns true and attempts to unstick if location matches' do
         expect(load_balancer).to receive(:select_up_to_date_host).with(last_write_location)
           .and_return(::Gitlab::Database::LoadBalancing::LoadBalancer::ALL_CAUGHT_UP)
 
         expect(redis)
-          .to receive(:del)
-          .with("database-load-balancing/write-location/#{load_balancer.name}/user/42")
+          .to receive(:eval)
+          .with(
+            described_class::UNSTICK_IF_CAUGHT_UP_SCRIPT,
+            keys: ["database-load-balancing/write-location/#{load_balancer.name}/user/42"],
+            argv: [last_write_location]
+          )
+          .and_return(1)
 
         expect(sticking.find_caught_up_replica(:user, 42)).to eq(true)
+      end
+
+      context 'when the sticking point has changed (concurrent write)' do
+        it 'returns true but does not unstick' do
+          expect(load_balancer).to receive(:select_up_to_date_host).with(last_write_location)
+            .and_return(::Gitlab::Database::LoadBalancing::LoadBalancer::ALL_CAUGHT_UP)
+
+          expect(redis)
+            .to receive(:eval)
+            .with(
+              described_class::UNSTICK_IF_CAUGHT_UP_SCRIPT,
+              keys: ["database-load-balancing/write-location/#{load_balancer.name}/user/42"],
+              argv: [last_write_location]
+            )
+            .and_return(0)
+
+          expect(sticking.find_caught_up_replica(:user, 42)).to eq(true)
+        end
       end
     end
 

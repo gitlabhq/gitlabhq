@@ -237,7 +237,7 @@
     "url-loader": "^4.1.1",
     "uuid": "8.1.0",
     "visibilityjs": "^1.2.4",
-    "vite": "7.2.2",
+    "vite": "7.2.7",
     "vite-plugin-ruby": "^5.1.1",
     "vue-loader-vue3": "npm:vue-loader@17.4.2",
     "vue": "2.7.16",
