@@ -71,9 +71,17 @@ module Types
 
         ::Ci::Preloaders::CommitStatusPreloader.new(jobs).execute(preloaded_relations)
 
+        preload_deployment_associations(jobs)
+
         jobs.group_by(&:stage_id)
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def preload_deployment_associations(jobs)
+        # noop: Overridden in EE
+      end
     end
   end
 end
+
+Types::Ci::StageType.prepend_mod_with('Types::Ci::StageType')
