@@ -589,6 +589,7 @@ module API
       params do
         use :with_unidiff
       end
+      route_setting :authorization, permissions: :read_merge_request_diff, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/changes', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
@@ -615,6 +616,7 @@ module API
         use :with_unidiff
       end
       route_setting :mcp, tool_name: :get_merge_request_diffs, params: [:id, :merge_request_iid, :per_page, :page]
+      route_setting :authorization, permissions: :read_merge_request_diff, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/diffs', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
@@ -635,6 +637,7 @@ module API
         ]
         tags %w[merge_requests]
       end
+      route_setting :authorization, permissions: :read_merge_request_diff, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/raw_diffs', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 

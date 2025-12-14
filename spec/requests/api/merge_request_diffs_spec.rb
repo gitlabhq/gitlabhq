@@ -41,6 +41,13 @@ RSpec.describe API::MergeRequestDiffs, 'MergeRequestDiffs', feature_category: :s
         let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions" }
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_merge_request_diff do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions", personal_access_token: pat)
+      end
+    end
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id' do
@@ -114,6 +121,13 @@ RSpec.describe API::MergeRequestDiffs, 'MergeRequestDiffs', feature_category: :s
         expect(Rails.cache.fetch(expected_unidiff_key)).to be_present
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.dig('diffs', 0, 'diff')).to eq(expected_unidiff)
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_merge_request_diff do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions/#{merge_request.merge_request_diffs.first.id}", personal_access_token: pat)
       end
     end
   end
