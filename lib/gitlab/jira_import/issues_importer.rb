@@ -10,13 +10,12 @@ module Gitlab
 
       attr_reader :imported_items_cache_key, :start_at, :job_waiter
 
-      def initialize(project, client = nil)
+      def initialize(project)
         super
-        # get cached start_at value, or zero if not cached yet
-        @start_at = Gitlab::JiraImport.get_issues_next_start_at(project.id)
         @imported_items_cache_key = JiraImport.already_imported_cache_key(:issues, project.id)
         @job_waiter = JobWaiter.new
         @issue_type = ::WorkItems::Type.default_issue_type
+        @jira_integration = project.jira_integration
       end
 
       def execute
@@ -25,26 +24,27 @@ module Gitlab
 
       private
 
+      attr_reader :jira_integration
+
       def import_issues
         return job_waiter if jira_last_page_reached?
 
-        issues = fetch_issues(start_at)
-        update_start_at_with(issues)
+        response = fetch_issues
 
-        schedule_issue_import_workers(issues)
+        return job_waiter unless response.success?
+
+        issues = response.payload[:issues] || []
+
+        update_pagination_state(response.payload)
+
+        schedule_issue_import_workers(issues) if issues.any?
+
+        job_waiter
       end
 
       def jira_last_page_reached?
-        start_at < 0
-      end
-
-      def update_start_at_with(issues)
-        @start_at += issues.size
-
-        # store -1 if this is the last page to be imported, so no more `ImportIssuesWorker` workers are scheduled
-        # from Gitlab::JiraImport::Stage::ImportIssuesWorker#perform
-        @start_at = -1 if issues.blank?
-        Gitlab::JiraImport.store_issues_next_started_at(project.id, start_at)
+        pagination_state = Gitlab::JiraImport.get_pagination_state(project.id)
+        pagination_state[:is_last]
       end
 
       def schedule_issue_import_workers(issues)
@@ -91,8 +91,32 @@ module Gitlab
         job_waiter
       end
 
-      def fetch_issues(start_at)
-        client.Issue.jql("PROJECT='#{jira_project_key}' ORDER BY created ASC", { max_results: BATCH_SIZE, start_at: start_at })
+      def fetch_issues
+        jql = "PROJECT='#{jira_project_key}' ORDER BY created ASC"
+        pagination_state = Gitlab::JiraImport.get_pagination_state(project.id)
+
+        params = {
+          jql: jql,
+          per_page: BATCH_SIZE
+        }
+
+        if jira_integration.data_fields.deployment_cloud?
+          params[:next_page_token] = pagination_state[:next_page_token]
+          response = ::Jira::Requests::Issues::CloudListService.new(jira_integration, params).execute
+        else
+          params[:page] = pagination_state[:page] || 1
+          response = ::Jira::Requests::Issues::ServerListService.new(jira_integration, params).execute
+        end
+
+        response
+      end
+
+      def update_pagination_state(payload)
+        Gitlab::JiraImport.store_pagination_state(project.id, {
+          is_last: payload[:is_last] || payload[:issues].blank? || payload[:issues].empty?,
+          next_page_token: payload[:next_page_token],
+          page: payload[:page]
+        })
       end
     end
   end
