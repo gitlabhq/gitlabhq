@@ -227,5 +227,5 @@ On GitLab.com, flows can use:
 
 Flows executed on runners can be secured with runtime sandboxing offering network and filesystem isolation. In order to benefit from sandboxing it is required to:
 
-1. Enable  [privileged](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers) mode
+1. Enable  [privileged](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers) mode by setting `privileged = true` in your [runner config](https://docs.gitlab.com/runner/configuration/advanced-configuration/)
 1. Use Duo Agent Platform default base [image](#change-the-default-docker-image)

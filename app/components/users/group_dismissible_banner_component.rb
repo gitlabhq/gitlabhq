@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class GroupDismissibleAlertComponent < Pajamas::AlertComponent
+  class GroupDismissibleBannerComponent < Pajamas::BannerComponent
     include GroupDismissible
 
     def initialize(args = {})
@@ -10,7 +10,7 @@ module Users
 
       verify_callout_setup!
 
-      super(**args.merge(dismissible: true, alert_options: build_html_options(args[:alert_options])))
+      super(**args.merge(banner_options: build_html_options(args[:banner_options])))
     end
   end
 end

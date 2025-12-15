@@ -1,7 +1,13 @@
-- callout = Users::CalloutsHelper::PRODUCT_USAGE_DATA_COLLECTION_CHANGES
 - documentation_link = link_to '', help_page_path('administration/settings/event_data.md'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'click_link', track_label: 'documentation', track_property: 'product_usage_data_collection_banner' }
 
-= render Pajamas::BannerComponent.new(svg_path: 'illustrations/gitlab_logo.svg', banner_options: { class: 'gl-mt-6 js-data-collection-callout', data: { track_action: 'render', track_label: 'product_usage_data_collection_banner', uid: 'product_usage_data_collection_dismissed', feature_id: callout, dismiss_endpoint: callouts_path, testid: 'product-usage-data-collection-banner' } }, close_options: { class: 'js-close', data: { track_action: 'dismiss_banner', track_label: 'product_usage_data_collection_banner' }, 'aria-label': s_('ProductUsageData|Dismiss product usage data collection notice') }) do |c|
+= render Users::DismissibleBannerComponent.new(svg_path: 'illustrations/gitlab_logo.svg',
+  banner_options: { class: 'gl-mt-6',
+                    data: { track_action: 'render', track_label: 'product_usage_data_collection_banner',
+                    uid: 'product_usage_data_collection_dismissed',
+                    testid: 'product-usage-data-collection-banner' } },
+  dismiss_options: { user: current_user, feature_id: 'product_usage_data_collection_changes' },
+  close_options: { data: { track_action: 'dismiss_banner', track_label: 'product_usage_data_collection_banner' },
+                   'aria-label': s_('ProductUsageData|Dismiss product usage data collection notice') }) do |c|
   - c.with_title do
     = s_('ProductUsageData|Review data collection changes coming in GitLab 18.0')
   - c.with_primary_action do

@@ -1508,3 +1508,6 @@ Gitlab/PreventOrganizationFirst:
 
 Gitlab/AvoidDefaultOrganization:
   Enabled: true
+
+Gitlab/AvoidConstDefaultOrganizationId:
+  Enabled: true

@@ -18,13 +18,10 @@ module Users
     TRANSITION_TO_JIHU_CALLOUT = 'transition_to_jihu_callout'
     PERIOD_IN_TERRAFORM_STATE_NAME_ALERT = 'period_in_terraform_state_name_alert'
     NEW_MR_DASHBOARD_BANNER = 'new_mr_dashboard_banner'
-    PRODUCT_USAGE_DATA_COLLECTION_CHANGES = 'product_usage_data_collection_changes'
     EMAIL_OTP_ENROLLMENT_CALLOUT = 'email_otp_enrollment_callout'
 
     def render_product_usage_data_collection_changes(current_user)
-      return unless current_user &&
-        current_user.can_admin_all_resources? &&
-        !user_dismissed?(PRODUCT_USAGE_DATA_COLLECTION_CHANGES)
+      return unless current_user&.can_admin_all_resources?
 
       render 'shared/product_usage_data_collection_changes_callout'
     end

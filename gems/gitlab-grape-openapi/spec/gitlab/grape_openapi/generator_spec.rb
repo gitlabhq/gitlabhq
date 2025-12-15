@@ -38,6 +38,67 @@ RSpec.describe Gitlab::GrapeOpenapi::Generator do
       expect(generator.generate[:security]).to eq([{ 'http' => [] }])
     end
 
+    describe 'tags sorting' do
+      let(:tag_names) { spec[:tags].map { |t| t[:name] } }
+
+      context 'with a single API class' do
+        let(:api_classes) { [TestApis::UsersApi] }
+
+        it 'returns tags sorted by name' do
+          expect(tag_names).to eq(tag_names.sort)
+        end
+      end
+
+      context 'with multiple API classes' do
+        let(:api_classes) { [TestApis::NestedApi, TestApis::UsersApi] }
+
+        it 'sorts tags alphabetically across all API classes' do
+          expect(tag_names).to eq(tag_names.sort)
+        end
+
+        it 'maintains alphabetical order regardless of API class order' do
+          reversed_generator = described_class.new(api_classes: api_classes.reverse)
+          reversed_spec = reversed_generator.generate
+
+          expect(spec[:tags]).to eq(reversed_spec[:tags])
+        end
+      end
+
+      context 'with no API classes' do
+        let(:api_classes) { [] }
+
+        it 'returns an empty array' do
+          expect(spec[:tags]).to eq([])
+        end
+      end
+
+      context 'with tags containing special characters' do
+        let(:api_classes) { [TestApis::SpecialTagsApi] }
+
+        it 'sorts tags with unusual formats (numbers, hyphens, underscores, camel case) correctly' do
+          expect(tag_names).to eq(tag_names.sort)
+          # Tag names get normalized by `Tag.normalize_tag_names`: e.g. "_user_management" becomes " User Management"
+          expect(tag_names).to include("123numeric", "-api-v2", " User Management", "Adminpanel")
+        end
+      end
+
+      context 'with a tag without name' do
+        before do
+          # Manually inject a malformed tag to test defensive sorting
+          generator.tag_registry.tags << { description: 'Tag without name' }
+        end
+
+        it 'handles tags without name gracefully during sorting' do
+          expect { spec }.not_to raise_error
+        end
+
+        it 'treats missing name as empty string for sorting' do
+          expect(tag_names).to include(nil)
+          expect(spec[:tags]).to be_an(Array)
+        end
+      end
+    end
+
     it 'includes paths from API classes' do
       expect(spec[:paths]).to have_key('/api/v1/users')
     end

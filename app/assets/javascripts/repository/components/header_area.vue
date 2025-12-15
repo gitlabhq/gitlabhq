@@ -298,7 +298,8 @@ export default {
       />
       <ref-selector
         v-if="!isReadmeView"
-        class="tree-ref-holder gl-max-w-26"
+        class="tree-ref-holder gl-max-w-full @sm/panel:gl-max-w-4/10 @md/panel:gl-max-w-xs"
+        fluid-width
         data-testid="ref-dropdown-container"
         :project-id="projectId"
         :value="refSelectorValue"

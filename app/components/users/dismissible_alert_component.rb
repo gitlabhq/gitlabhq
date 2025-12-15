@@ -1,28 +1,16 @@
 # frozen_string_literal: true
 
 module Users
-  class DismissibleAlertComponent < BaseDismissibleAlertComponent
-    include Wrappable
-    extend ::Gitlab::Utils::Override
+  class DismissibleAlertComponent < Pajamas::AlertComponent
+    include UserDismissible
 
-    private
+    def initialize(args = {})
+      @dismiss_options = args.delete(:dismiss_options)
+      @wrapper_options = args.delete(:wrapper_options)
 
-    override :dismiss_endpoint
-    def dismiss_endpoint
-      ::Gitlab::Routing.url_helpers.callouts_path
-    end
+      verify_callout_setup!
 
-    override :callout_class
-    def callout_class
-      Users::Callout
-    end
-
-    override :user_dismissed_alert?
-    def user_dismissed_alert?
-      user.dismissed_callout?(
-        feature_name: dismiss_options[:feature_id],
-        ignore_dismissal_earlier_than: dismiss_options[:ignore_dismissal_earlier_than]
-      )
+      super(**args.merge(dismissible: true, alert_options: build_html_options(args[:alert_options])))
     end
   end
 end

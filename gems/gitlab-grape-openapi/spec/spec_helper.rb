@@ -9,6 +9,7 @@ require "fixtures/entities/user/person_entity"
 require "fixtures/apis/users_api"
 require "fixtures/apis/nested_api"
 require "fixtures/apis/deprecated_api"
+require "fixtures/apis/special_tags_api"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

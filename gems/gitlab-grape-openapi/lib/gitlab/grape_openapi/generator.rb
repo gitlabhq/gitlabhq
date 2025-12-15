@@ -20,7 +20,7 @@ module Gitlab
         {
           openapi: '3.0.0',
           info: Gitlab::GrapeOpenapi.configuration.info.to_h,
-          tags: tag_registry.tags,
+          tags: tag_registry.tags.sort_by { |t| t.fetch(:name, '') },
           servers: Gitlab::GrapeOpenapi.configuration.servers.map(&:to_h),
           paths: paths,
           components: {

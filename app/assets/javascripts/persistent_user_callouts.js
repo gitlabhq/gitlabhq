@@ -30,8 +30,6 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-new-mr-dashboard-banner',
   '.js-pipl-compliance-alert',
   '.gcp-signup-offer',
-  '.js-gold-trial-callout',
-  '.js-data-collection-callout',
 ];
 
 const initCallouts = () => {

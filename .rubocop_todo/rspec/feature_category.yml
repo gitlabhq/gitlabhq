@@ -1082,7 +1082,6 @@ RSpec/FeatureCategory:
     - 'spec/components/pajamas/single_stat_component_spec.rb'
     - 'spec/components/pajamas/spinner_component_spec.rb'
     - 'spec/components/pajamas/toggle_component_spec.rb'
-    - 'spec/components/users/base_dismissible_alert_component_spec.rb'
     - 'spec/components/users/dismissible_alert_component_spec.rb'
     - 'spec/components/users/group_dismissible_alert_component_spec.rb'
     - 'spec/components/users/project_dismissible_alert_component_spec.rb'
