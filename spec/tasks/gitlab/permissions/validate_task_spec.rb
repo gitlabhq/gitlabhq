@@ -47,6 +47,13 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
       # Stub exclusion list
       File.open(exclusion_file.path, "w+b") { |f| f.write exclusion_list_data }
       stub_const('Tasks::Gitlab::Permissions::ValidateTask::PERMISSION_TODO_FILE', exclusion_file.path)
+
+      # Stubs to make _metadata.yml file validation pass
+      allow(Authz::Resource).to receive(:get).and_return(instance_double(Authz::Resource, definition: {}))
+      allow(JSONSchemer).to receive(:schema).and_call_original
+      allow(JSONSchemer).to receive(:schema)
+        .with(Rails.root.join("#{described_class::PERMISSION_DIR}/resource_metadata_schema.json"))
+        .and_return(instance_double(JSONSchemer::Schema, validate: []))
     end
 
     context 'when all permissions are valid' do
@@ -248,6 +255,56 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #
           #######################################################################
         OUTPUT
+      end
+    end
+
+    describe 'permission resource validation' do
+      let(:resource) { 'permission' }
+      let(:permission_source_file) { "config/authz/permissions/#{resource}/defined.yml" }
+
+      context 'when resource definition for the permission does not exist' do
+        before do
+          allow(Authz::Resource).to receive(:get).with(resource).and_return(nil)
+        end
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following permission resource directories are missing a _metadata.yml file.
+            #
+            #    - config/authz/permissions/**/permission/
+            #
+            #######################################################################
+          OUTPUT
+        end
+      end
+
+      context 'when resource definition for the permission is not in the correct schema' do
+        let(:resource_definition) do
+          definition = { description: 'The resource', feature_category: 'unknown_feature_category' }
+          Authz::Resource.new(definition, 'source_file')
+        end
+
+        before do
+          allow(Authz::Resource).to receive(:get).with(resource).and_return(resource_definition)
+          allow(JSONSchemer).to receive(:schema)
+            .with(Rails.root.join("#{described_class::PERMISSION_DIR}/resource_metadata_schema.json"))
+            .and_call_original
+        end
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following resource metadata files failed schema validation.
+            #
+            #    - permission
+            #        - property '/feature_category' does not match format: known_product_category
+            #
+            #######################################################################
+          OUTPUT
+        end
       end
     end
   end

@@ -14,7 +14,6 @@ module QA
         Page::Main::Login.perform(&:sign_in_with_github)
 
         Vendor::Github::Page::Login.perform(&:login)
-        Page::Main::Menu.perform(&:dismiss_welcome_modal_if_present)
 
         # After OAuth login, user might be on profile page or dashboard
         # Check that we're logged in by verifying the user menu is present

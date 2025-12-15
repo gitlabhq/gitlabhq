@@ -33,7 +33,6 @@ module QA
         end
 
         expect(Page::Main::Menu.perform(&:signed_in?)).to be_truthy
-        Page::Main::Menu.perform(&:dismiss_welcome_modal_if_present)
 
         Page::Main::Menu.perform(&:sign_out)
         Flow::Login.sign_in(as: user, skip_page_validation: true)

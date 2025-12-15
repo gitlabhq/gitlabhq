@@ -16,6 +16,12 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
   let(:file_path) { 'path/to/resource/action.yml' }
   let(:assignable) { described_class.new(definition, file_path) }
 
+  it_behaves_like 'loadable from yaml' do
+    let(:definition_name) { :edit_wiki }
+  end
+
+  it_behaves_like 'yaml backed permission'
+
   describe 'class methods' do
     let(:another_assignable) do
       described_class.new({
@@ -45,10 +51,6 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
           .to match_array([another_assignable])
       end
     end
-  end
-
-  it_behaves_like 'loadable yaml permission or permission group' do
-    let(:definition_name) { :edit_wiki }
   end
 
   describe 'instance methods' do

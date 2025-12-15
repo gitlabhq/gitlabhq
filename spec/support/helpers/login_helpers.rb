@@ -47,8 +47,6 @@ module LoginHelpers
     gitlab_sign_in_with(user, **kwargs)
 
     @current_user = user
-
-    dismiss_welcome_banner_if_present(page)
   end
 
   def gitlab_sign_in_via(provider, user, uid, saml_response = nil)
@@ -67,8 +65,6 @@ module LoginHelpers
 
   # Requires Javascript driver.
   def gitlab_sign_out(user = @current_user)
-    dismiss_welcome_banner_if_present(page)
-
     if has_testid?('super-sidebar')
       click_on "#{user.name} user’s menu"
     else

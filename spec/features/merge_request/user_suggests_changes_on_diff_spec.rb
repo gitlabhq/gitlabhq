@@ -29,7 +29,6 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     sign_in(user)
 
     visit(diffs_project_merge_request_path(project, merge_request))
-    dismiss_welcome_banner_if_present(page)
     wait_for_requests
   end
 
@@ -266,7 +265,6 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
       # Making sure it's not a Front-end cache.
       visit(diffs_project_merge_request_path(project, merge_request))
-      dismiss_welcome_banner_if_present(page)
       wait_for_requests
 
       expect(page).to have_button('Apply suggestion').twice
@@ -437,7 +435,6 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       wait_for_requests
 
       visit(project_merge_request_path(project, merge_request))
-      dismiss_welcome_banner_if_present(page)
 
       wait_for_requests
     end

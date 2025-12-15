@@ -306,11 +306,7 @@ export default {
     'app/assets/javascripts/custom_emoji/components/list.vue',
     'app/assets/javascripts/custom_emoji/pages/index.vue',
     'app/assets/javascripts/custom_emoji/pages/new.vue',
-    'app/assets/javascripts/dap_welcome_modal/explainer_ai.vue',
-    'app/assets/javascripts/dap_welcome_modal/explainer_feedback.vue',
-    'app/assets/javascripts/dap_welcome_modal/explainer_panels.vue',
-    'app/assets/javascripts/dap_welcome_modal/explainer_search.vue',
-    'app/assets/javascripts/dap_welcome_modal/explainer_ui.vue',
+
     'app/assets/javascripts/deploy_freeze/components/deploy_freeze_modal.vue',
     'app/assets/javascripts/deploy_freeze/components/deploy_freeze_settings.vue',
     'app/assets/javascripts/deploy_freeze/components/deploy_freeze_table.vue',

@@ -52,14 +52,14 @@ module Tasks
           "#{out}\n"
         end
 
-        def format_schema_errors
-          return '' if violations[:schema].empty?
+        def format_schema_errors(key = :schema)
+          return '' if violations[key].empty?
 
-          out = "#{error_messages[:schema]}\n\n"
+          out = "#{error_messages[key]}\n\n"
 
-          violations[:schema].each_key do |permission|
+          violations[key].each_key do |permission|
             out += "  - #{permission}\n"
-            violations[:schema][permission].each { |error| out += "      - #{JSONSchemer::Errors.pretty(error)}\n" }
+            violations[key][permission].each { |error| out += "      - #{JSONSchemer::Errors.pretty(error)}\n" }
           end
 
           "#{out}\n"

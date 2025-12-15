@@ -2,7 +2,7 @@
 
 # requires the following let variables
 # 1. definition_name - name value from an existing YAML definition file (e.g. :create_issue)
-RSpec.shared_examples 'loadable yaml permission or permission group' do
+RSpec.shared_examples 'loadable from yaml' do
   describe '.all' do
     it 'loads all definitions' do
       expect(described_class.all).to be_a(Hash)
@@ -58,83 +58,105 @@ RSpec.shared_examples 'loadable yaml permission or permission group' do
       it { is_expected.to be(false) }
     end
   end
+end
 
-  describe 'instance methods' do
-    let(:file_path) { 'a_resource/do_action.yml' }
-    let(:source_file) { Rails.root.join(described_class::BASE_PATH, file_path).to_s }
-    let(:name) { 'do_action_a_resource' }
-    let(:boundaries) { %w[project] }
-    let(:definition) do
-      {
-        name: name,
-        description: 'Test permission description',
-        feature_category: 'feature_category',
-        boundaries: boundaries
-      }
+RSpec.shared_examples 'yaml backed permission' do
+  let(:resource_name) { 'a_resource' }
+  let(:file_path) { "#{resource_name}/do_action.yml" }
+  let(:source_file) { Rails.root.join(described_class::BASE_PATH, file_path).to_s }
+  let(:name) { 'do_action_a_resource' }
+  let(:boundaries) { %w[project] }
+  let(:definition) do
+    {
+      name: name,
+      description: 'Test permission description',
+      feature_category: 'feature_category',
+      boundaries: boundaries
+    }
+  end
+
+  subject(:instance) do
+    described_class.new(definition, source_file)
+  end
+
+  describe '#name' do
+    it 'returns the definition name' do
+      expect(instance.name).to eq(definition[:name])
     end
+  end
 
-    subject(:instance) do
-      described_class.new(definition, source_file)
+  describe '#description' do
+    it 'returns the definition description' do
+      expect(instance.description).to eq(definition[:description])
     end
+  end
 
-    describe '#name' do
-      it 'returns the definition name' do
-        expect(instance.name).to eq(definition[:name])
+  describe '#action' do
+    subject(:action) { instance.action }
+
+    context 'when the file has a base name and .yml extension' do
+      it 'returns the base name' do
+        expect(action).to eq('do_action')
       end
     end
+  end
 
-    describe '#description' do
-      it 'returns the definition description' do
-        expect(instance.description).to eq(definition[:description])
+  describe '#resource' do
+    subject(:resource) { instance.resource }
+
+    context 'when the file is under a resource dir' do
+      it 'returns the resource dir name' do
+        expect(resource).to eq(resource_name)
       end
-    end
 
-    describe '#resource' do
-      subject(:resource) { instance.resource }
+      context 'when the resource dir is under another dir' do
+        let(:file_path) { "extra_dir/#{resource_name}/do_action.yml" }
 
-      context 'when the file is under a resource dir' do
         it 'returns the resource dir name' do
-          expect(resource).to eq('a_resource')
-        end
-
-        context 'when the resource dir is under another dir' do
-          let(:file_path) { 'extra_dir/a_resource/do_action.yml' }
-
-          it 'returns the resource dir name' do
-            expect(resource).to eq('a_resource')
-          end
+          expect(resource).to eq(resource_name)
         end
       end
-
-      context 'when file is not under a resource dir' do
-        let(:file_path) { 'do_action.yml' }
-
-        it { is_expected.to be_nil }
-      end
     end
 
-    describe '#feature_category' do
-      specify do
-        expect(instance.feature_category).to eq(definition[:feature_category])
+    context 'when file is not under a resource dir' do
+      let(:file_path) { 'do_action.yml' }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#feature_category' do
+    subject(:feature_category) { instance.feature_category }
+
+    it { is_expected.to be_nil }
+
+    context 'when resource is defined' do
+      before do
+        instance = ::Authz::Resource.new({ feature_category: 'a_resource_feature_category' }, 'source_file')
+        allow(::Authz::Resource).to receive(:all).and_return({ resource_name.to_sym => instance })
+      end
+
+      it 'returns the resource\'s feature_category' do
+        expect(feature_category).to eq 'a_resource_feature_category'
       end
     end
+  end
 
-    describe '#boundaries' do
-      subject { instance.boundaries }
+  describe '#boundaries' do
+    subject { instance.boundaries }
 
-      it { is_expected.to eq(boundaries) }
+    it { is_expected.to eq(boundaries) }
 
-      context 'when boundaries are not defined' do
-        let(:boundaries) { nil }
+    context 'when boundaries are not defined' do
+      let(:boundaries) { nil }
 
-        it { is_expected.to eq([]) }
-      end
+      it { is_expected.to eq([]) }
     end
+  end
 
-    describe '#source_file' do
-      specify do
-        expect(instance.source_file).to eq(source_file)
-      end
+  describe '#source_file' do
+    specify do
+      expect(instance.source_file).to eq(source_file)
     end
   end
 end

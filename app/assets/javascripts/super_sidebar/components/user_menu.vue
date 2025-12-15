@@ -12,7 +12,6 @@ import {
 import UserMenuUpgradeSubscription from 'ee_component/super_sidebar/components/user_menu_upgrade_subscription.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import DapWelcomeModal from '~/dap_welcome_modal/dap_welcome_modal.vue';
 import { s__, __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import { SET_STATUS_MODAL_ID } from '~/set_status_modal/constants';
@@ -54,7 +53,6 @@ export default {
     UserCounts,
     UserMenuProfileItem,
     UserMenuUpgradeSubscription,
-    DapWelcomeModal,
     SetStatusModal: () =>
       import(
         /* webpackChunkName: 'statusModalBundle' */ '~/set_status_modal/set_status_modal_wrapper.vue'
@@ -76,7 +74,6 @@ export default {
   data() {
     return {
       setStatusModalReady: false,
-      showDapWelcomeModal: false,
       updatedAvatarUrl: null,
     };
   },
@@ -241,7 +238,6 @@ export default {
   },
   mounted() {
     document.addEventListener('userAvatar:update', this.updateAvatar);
-    this.showDapWelcomeModal = localStorage.getItem('showDapWelcomeModal') === 'true';
   },
   unmounted() {
     document.removeEventListener('userAvatar:update', this.updateAvatar);
@@ -256,9 +252,6 @@ export default {
     openStatusModal() {
       this.setStatusModalReady = true;
       this.$refs.userDropdown.close();
-    },
-    closeDapWelcomeModal() {
-      localStorage.setItem('showDapWelcomeModal', 'false');
     },
     initBuyCIMinsCallout() {
       const el = this.$refs?.buyPipelineMinutesNotificationCallout?.$el;
@@ -500,6 +493,5 @@ export default {
       default-emoji="speech_balloon"
       v-bind="statusModalData"
     />
-    <dap-welcome-modal v-if="showDapWelcomeModal" @close="closeDapWelcomeModal" />
   </div>
 </template>

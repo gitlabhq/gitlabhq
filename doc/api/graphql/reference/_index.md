@@ -33521,6 +33521,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. ClickHouse needs to be enabled when passing this param. |
+| <a id="groupaiusermetricssort"></a>`sort` | [`AiUserMetricsSort`](#aiusermetricssort) | Sort AI user metrics. |
 | <a id="groupaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. ClickHouse needs to be enabled when passing this param. |
 
 ##### `Group.approvalPolicies`
@@ -42240,6 +42241,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. ClickHouse needs to be enabled when passing this param. |
+| <a id="projectaiusermetricssort"></a>`sort` | [`AiUserMetricsSort`](#aiusermetricssort) | Sort AI user metrics. |
 | <a id="projectaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. ClickHouse needs to be enabled when passing this param. |
 
 ##### `Project.alertManagementAlert`
@@ -50861,6 +50863,25 @@ Type of AI usage event.
 | <a id="aiusageeventtyperequest_review_duo_code_review_on_mr_by_non_author"></a>`REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_NON_AUTHOR` | Non-author requested Duo Code Review on MR. |
 | <a id="aiusageeventtypestart_mcp_tool_call"></a>`START_MCP_TOOL_CALL` | MCP tool call was started. |
 | <a id="aiusageeventtypetroubleshoot_job"></a>`TROUBLESHOOT_JOB` | Troubleshoot job feature was used. |
+
+### `AiUserMetricsSort`
+
+Values for sorting AI user metrics.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aiusermetricssortagent_platform_total_count_asc"></a>`AGENT_PLATFORM_TOTAL_COUNT_ASC` | Agent Platform total event count in ascending order. |
+| <a id="aiusermetricssortagent_platform_total_count_desc"></a>`AGENT_PLATFORM_TOTAL_COUNT_DESC` | Agent Platform total event count in descending order. |
+| <a id="aiusermetricssortchat_total_count_asc"></a>`CHAT_TOTAL_COUNT_ASC` | Chat total event count in ascending order. |
+| <a id="aiusermetricssortchat_total_count_desc"></a>`CHAT_TOTAL_COUNT_DESC` | Chat total event count in descending order. |
+| <a id="aiusermetricssortcode_review_total_count_asc"></a>`CODE_REVIEW_TOTAL_COUNT_ASC` | Code Review total event count in ascending order. |
+| <a id="aiusermetricssortcode_review_total_count_desc"></a>`CODE_REVIEW_TOTAL_COUNT_DESC` | Code Review total event count in descending order. |
+| <a id="aiusermetricssortcode_suggestions_total_count_asc"></a>`CODE_SUGGESTIONS_TOTAL_COUNT_ASC` | Code Suggestions total event count in ascending order. |
+| <a id="aiusermetricssortcode_suggestions_total_count_desc"></a>`CODE_SUGGESTIONS_TOTAL_COUNT_DESC` | Code Suggestions total event count in descending order. |
+| <a id="aiusermetricssortmcp_total_count_asc"></a>`MCP_TOTAL_COUNT_ASC` | Mcp total event count in ascending order. |
+| <a id="aiusermetricssortmcp_total_count_desc"></a>`MCP_TOTAL_COUNT_DESC` | Mcp total event count in descending order. |
+| <a id="aiusermetricssorttroubleshoot_job_total_count_asc"></a>`TROUBLESHOOT_JOB_TOTAL_COUNT_ASC` | Troubleshoot Job total event count in ascending order. |
+| <a id="aiusermetricssorttroubleshoot_job_total_count_desc"></a>`TROUBLESHOOT_JOB_TOTAL_COUNT_DESC` | Troubleshoot Job total event count in descending order. |
 
 ### `AlertManagementAlertSort`
 

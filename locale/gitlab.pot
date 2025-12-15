@@ -29478,9 +29478,6 @@ msgstr ""
 msgid "Find the activation code for a purchased or renewed subscription in the Customers Portal or purchase confirmation email."
 msgstr ""
 
-msgid "Find what you need faster"
-msgstr ""
-
 msgid "FindFile|Switch branch/tag"
 msgstr ""
 
@@ -31286,9 +31283,6 @@ msgid "GitLab logo"
 msgstr ""
 
 msgid "GitLab metadata URL"
-msgstr ""
-
-msgid "GitLab now has a sleek panel-based layout. Find what you need faster with centered search and all your work items conveniently positioned in the upper right."
 msgstr ""
 
 msgid "GitLab project export"
@@ -46975,9 +46969,6 @@ msgid "Open new window"
 msgstr ""
 
 msgid "Open raw"
-msgstr ""
-
-msgid "Open the GitLab Duo AI assistant panel from anywhere in GitLab. Ask questions, request code help, or get guidance without interrupting your workflow."
 msgstr ""
 
 msgid "Open threads must be resolved."
@@ -64277,9 +64268,6 @@ msgstr ""
 msgid "Share the %{strong_open}GitLab single sign-on URL%{strong_close} with members so they can sign in to your group through your identity provider"
 msgstr ""
 
-msgid "Share your feedback!"
-msgstr ""
-
 msgid "Shared groups"
 msgstr ""
 
@@ -66039,12 +66027,6 @@ msgid "StatusPage|configuration documentation"
 msgstr ""
 
 msgid "StatusPage|your status page frontend."
-msgstr ""
-
-msgid "Stay in context"
-msgstr ""
-
-msgid "Stay in your workflow with contextual panels. Select an issue to view its details right alongside your list, so you can quickly review, edit, and move on to the next task."
 msgstr ""
 
 msgid "Step"
@@ -75497,9 +75479,6 @@ msgstr ""
 msgid "We've detected unusual activity"
 msgstr ""
 
-msgid "We've improved the GitLab user experience with a more modern, intuitive interface built on a new panel-based layout."
-msgstr ""
-
 msgid "We've noticed an unusually high storage usage on %{project_name}"
 msgstr ""
 
@@ -75981,9 +75960,6 @@ msgid "Welcome to GitLab,%{br_tag}%{name}!"
 msgstr ""
 
 msgid "Welcome to the new merge request homepage! This page gives you a centralized view of all the merge requests you're working on. Know at a glance what merge requests need your attention first so you can spend less time checking in, and more time reviewing and responding to feedback."
-msgstr ""
-
-msgid "Welcome to the redesigned GitLab UI"
 msgstr ""
 
 msgid "Welcome, %{name}!"

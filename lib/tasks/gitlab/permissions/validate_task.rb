@@ -31,18 +31,22 @@ module Tasks
             action: {},
             name: [],
             file: {},
-            unknown_permission: []
+            unknown_permission: [],
+            missing_resource_metadata: [],
+            resource_metadata_schema: {}
           }
           @declarative_policy_permissions = load_declarative_policy_permissions
+          @resources = []
         end
 
         private
 
-        attr_reader :violations
+        attr_reader :violations, :resources
 
         def validate!
           declarative_policy_permissions.each { |permission| validate_permission(permission) }
           validate_unknown_permissions
+          validate_resources
 
           super
         end
@@ -78,6 +82,8 @@ module Tasks
           validate_name(permission)
           validate_action(permission)
           validate_file(permission)
+
+          @resources << permission.resource
         end
 
         def validate_action(permission)
@@ -127,6 +133,23 @@ module Tasks
           violations[:unknown_permission] = defined_permissions - declarative_policy_permissions
         end
 
+        def validate_resources
+          resources.compact_blank.uniq.each do |name|
+            resource = ::Authz::Resource.get(name)
+
+            unless resource
+              violations[:missing_resource_metadata] << "#{::Authz::Permission::BASE_PATH}/**/#{name}/"
+              next
+            end
+
+            @resource_metadata_schema_validator ||= JSONSchemer.schema(
+              Rails.root.join("#{PERMISSION_DIR}/resource_metadata_schema.json")
+            )
+            errors = @resource_metadata_schema_validator.validate(resource.definition)
+            violations[:resource_metadata_schema][name] = errors if errors.any?
+          end
+        end
+
         def format_all_errors
           out = format_error_list(:definition)
           out += format_error_list(:excluded)
@@ -134,7 +157,9 @@ module Tasks
           out += format_error_list(:name)
           out += format_action_errors
           out += format_file_errors
-          out + format_error_list(:unknown_permission)
+          out += format_error_list(:unknown_permission)
+          out += format_error_list(:missing_resource_metadata)
+          out + format_schema_errors(:resource_metadata_schema)
         end
 
         def format_action_errors
@@ -176,7 +201,10 @@ module Tasks
               "\nPermission name must be in the format action_resource[_subresource].",
             file: "The following permission definitions do not exist at the expected path.",
             unknown_permission: "The following permissions have a definition file but are not found in " \
-              "declarative policy.\nRemove the definition files for the unknown permissions."
+              "declarative policy.\nRemove the definition files for the unknown permissions.",
+            missing_resource_metadata:
+              "The following permission resource directories are missing a _metadata.yml file.",
+            resource_metadata_schema: "The following resource metadata files failed schema validation."
           }
         end
 

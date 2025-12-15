@@ -144,7 +144,6 @@ export default {
     'app/assets/javascripts/contributors/components/contributor_area_chart.vue',
     'app/assets/javascripts/custom_emoji/components/form.vue',
     'app/assets/javascripts/custom_emoji/components/list.vue',
-    'app/assets/javascripts/dap_welcome_modal/dap_welcome_modal.vue',
     'app/assets/javascripts/deploy_keys/components/action_btn.vue',
     'app/assets/javascripts/deploy_keys/components/confirm_modal.vue',
     'app/assets/javascripts/design_management/components/delete_button.vue',
