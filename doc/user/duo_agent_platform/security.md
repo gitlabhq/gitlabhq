@@ -88,7 +88,7 @@ The composite identity is part of the workflow.
    - The flow must be enabled in the top-level group.
    - You must be a Maintainer to enable it in the project.
    - The service account is added to the project with the Developer role.
-1. A user executes the flow. 
+1. A user executes the flow.
    - The flow is executed by a one-time composite identity.
      This identity has a combination of the user's role and the service account's Developer role,
      whichever is more restrictive. So if the user is a Maintainer,
@@ -97,7 +97,7 @@ The composite identity is part of the workflow.
      - The user has access to.
      - The service account has been added to.
 
-     For example, if the service account has been added to other projects, 
+     For example, if the service account has been added to other projects,
      and the user has access to those projects
      the flow can access those projects even if the user has not used the flow there before.
 

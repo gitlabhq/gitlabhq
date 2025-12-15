@@ -42,44 +42,39 @@ User interactions may result in significant changes in page structure. For examp
 In that case, add an assertion after any such change.
 We want to make sure that users are able to interact with all available components.
 
-### Separate file for extensive test suites
-
-For some views, feature tests span multiple files.
-Take a look at our [feature tests for a merge request](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/features/merge_request).
-The number of user interactions that needs to be covered is too big to fit into one test file.
-As a result, multiple feature tests cover one view, with different user privileges, or data sets.
-If we were to include accessibility checks in all of them, there is a chance we would cover the same states of a view multiple times and significantly increase the run time.
-It would also make it harder to determine the coverage for accessibility, if assertions would be scattered across many files.
-
-In that case, consider creating one test file dedicated to accessibility.
-Place it in the same directory and name it `accessibility_spec.rb`, for example `spec/features/merge_request/accessibility_spec.rb`.
-Make it explicit that a feature test has accessibility coverage in a separate file, and
-doesn't need additional assertions. Include this comment below the opening of the
-top-level block:
-
-```ruby
-# spec/features/merge_request/user_approves_spec.rb
-
-# frozen_string_literal: true
-
-require 'spec_helper'
-
-RSpec.describe 'Merge request > User approves', :js, feature_category: :code_review_workflow do
-# covered by ./accessibility_spec.rb
-```
-
-### Shared examples
-
-Often feature tests include shared examples for a number of scenarios.
-If they differ only by provided data, but are based on the same user interaction, you can check for accessibility compliance outside the shared examples.
-This way we only run the check once and save resources.
-
 ## How to add accessibility tests
+
+### Create new spec file
+
+We want automated accessibility tests to follow already defined [user journeys](https://handbook.gitlab.com/handbook/product/ux/user-journeys/).
+To achieve this we are reusing test cases defined for E2E tests.
+
+To add a new accessibility spec for your team, you can:
+
+Browse the list of test cases for your team by either:
+
+- [Looking through Test Cases page](https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases),
+  which you can filter by your group's label.
+- Navigating to the E2E [`browser_ui` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/qa/specs/features/browser_ui) and
+  [`ee/browser_ui` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/qa/specs/features/ee/browser_ui),
+  then selecting the director for your stage and a feature you want to cover.
+
+Once you know the user journey you want to cover:
+
+- Navigate to `spec/features/accessibility`.
+- Create a new Ruby spec under the folder for your stage and the feature you are covering, for example `create/repository/`.
+- Name your file after E2E test case you are following, for example: `add_new_branch_rule_spec.rb`.
+
+In this example, the result will be a dedicated feature spec under `spec/features/accessibility/create/repository/add_new_branch_rule_spec.rb`.
+
+The next step is recreating the test cases with the Capybara feature tests syntax and setup.
+
+### Using axe methods
 
 Axe provides the custom matcher `be_axe_clean`, which can be used like the following:
 
 ```ruby
-# spec/features/settings_spec.rb
+# spec/features/accessibility/create/repository/add_new_branch_rule_spec.rb
 it 'passes axe automated accessibility testing', :js do
   visit_settings_page
 
@@ -124,10 +119,6 @@ If any of the errors require global changes, create a follow-up issue and assign
 Adding accessibility checks in feature tests is easier if you have domain knowledge from the product area in question.
 However, there are a few things that can help you contribute to accessibility tests.
 
-#### Find a page from a test
-
-When you don't have the page URL, you can start by running a feature spec in preview mode. To do this, add `WEBDRIVER_HEADLESS=0` to the beginning of the command that runs the tests. You can also pair it with `live_debug` to stop the browser right inside any test case with a `:js` tag (see the documentation on [testing best practices](../../testing_guide/best_practices.md#run-js-spec-in-a-visible-browser)).
-
 #### What parts of a page to add accessibility tests for
 
 In most cases you do not want to test accessibility of a whole page. There are a couple of reasons:
@@ -142,7 +133,7 @@ In most cases you do not want to test accessibility of a whole page. There are a
     end
    ```
 
-1. If a feature test covers only a part of a page, like a section that includes some components, keep the test scoped to that section. If possible, use the same selector that the feature spec uses for its test cases. Here's an example of such test case:
+1. If a specific test case covers only a part of a page, like a section that includes some components, keep the test scoped to that section. Here's an example of such test case:
 
    ```ruby
     it 'passes axe automated accessibility testing for todo' do

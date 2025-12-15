@@ -2690,6 +2690,23 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         end
 
         context 'with review state parameter' do
+          it 'sends additional properties to internal tracking' do
+            merge_request.reviewers << developer
+
+            create(:draft_note, merge_request: merge_request, author: developer)
+
+            expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
+              .to receive(:track_unique_action)
+              .with(
+                'submit_review',
+                args: 'requested_changes',
+                user: developer,
+                project: project,
+                additional_properties: { is_reviewer: 'true', pending_comments: 1, state: 'requested_changes' })
+
+            service.execute('/submit_review requested_changes', merge_request)
+          end
+
           it 'calls MergeRequests::UpdateReviewerStateService service' do
             expect_next_instance_of(
               MergeRequests::UpdateReviewerStateService, project: merge_request.project, current_user: current_user

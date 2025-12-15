@@ -194,6 +194,7 @@ module Gitlab
         command :submit_review do |state = "reviewed"|
           next if params[:review_id]
 
+          pending_comments_count = quick_action_target.draft_notes.authored_by(current_user).count
           result = DraftNotes::PublishService.new(quick_action_target, current_user).execute
 
           reviewer_state = state.strip.presence
@@ -203,6 +204,12 @@ module Gitlab
                                                else
                                                  [result[:message]]
                                                end
+
+          @additional_properties[:submit_review] = {
+            is_reviewer: quick_action_target.find_reviewer(current_user).present?.to_s,
+            pending_comments: pending_comments_count,
+            state: reviewer_state
+          }
 
           if reviewer_state === 'approve'
             approval_success = ::MergeRequests::ApprovalService

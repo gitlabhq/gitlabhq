@@ -118,6 +118,14 @@ module Gitlab
                 duration_s: RETRY_DELAY.to_i
               )
             end
+
+            before_transition any => :finished do |migration|
+              migration.finished_at = Time.current
+            end
+
+            before_transition any => :active do |migration|
+              migration.started_at = Time.current
+            end
           end
 
           def job_class
@@ -136,15 +144,18 @@ module Gitlab
           end
 
           def create_job!(min, max)
-            jobs.create!(
+            args = {
               batch_size: batch_size,
               sub_batch_size: sub_batch_size,
               pause_ms: pause_ms,
               min_cursor: min,
               max_cursor: max,
-              worker_partition: partition,
-              organization_id: organization_id
-            )
+              worker_partition: partition
+            }
+
+            args[:organization_id] = organization_id if respond_to?(:organization_id)
+
+            jobs.create!(args)
           end
 
           # Returns the end cursor of the last batch as the starting point for the next batch.

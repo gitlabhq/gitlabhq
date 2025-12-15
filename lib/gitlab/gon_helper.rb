@@ -145,6 +145,12 @@ module Gitlab
       push_to_gon_attributes(:features, name, enabled)
     end
 
+    def push_application_setting(key)
+      return unless Gitlab::CurrentSettings.respond_to?(key)
+
+      gon.push({ key => Gitlab::CurrentSettings.public_send(key) }) # rubocop:disable GitlabSecurity/PublicSend
+    end
+
     def push_namespace_setting(key, object)
       return unless object&.namespace_settings.respond_to?(key)
 

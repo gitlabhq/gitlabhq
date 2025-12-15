@@ -25,8 +25,6 @@ trim!:
   file: ee/app/models/cloud_connector/keys.rb
 truncated_pem:
   file: ee/app/models/cloud_connector/keys.rb
-notification_sent!:
-  file: ee/app/models/compliance_management/pipl_user.rb
 blocked_issuables_for_collection:
   file: ee/app/models/concerns/ee/issuable_link.rb
 vulnerability_flags_for:

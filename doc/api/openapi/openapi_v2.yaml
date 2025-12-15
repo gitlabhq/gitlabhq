@@ -48118,7 +48118,7 @@ definitions:
       ldap_access:
         type: string
       ldap_group_links:
-        "$ref": "#/definitions/EE_API_Entities_LdapGroupLink"
+        "$ref": "#/definitions/API_Entities_LdapGroupLink"
       saml_group_links:
         "$ref": "#/definitions/API_Entities_SamlGroupLink"
       file_template_project_id:
@@ -48191,7 +48191,7 @@ definitions:
         type: integer
         format: int32
         description: Wiki size in bytes.
-  EE_API_Entities_LdapGroupLink:
+  API_Entities_LdapGroupLink:
     type: object
     properties:
       cn:
@@ -48959,7 +48959,7 @@ definitions:
       ldap_access:
         type: string
       ldap_group_links:
-        "$ref": "#/definitions/EE_API_Entities_LdapGroupLink"
+        "$ref": "#/definitions/API_Entities_LdapGroupLink"
       saml_group_links:
         "$ref": "#/definitions/API_Entities_SamlGroupLink"
       file_template_project_id:

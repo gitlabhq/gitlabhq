@@ -116,8 +116,6 @@ API/EntityFieldType:
     - 'ee/lib/ee/api/entities/integration_basic.rb'
     - 'ee/lib/ee/api/entities/issue.rb'
     - 'ee/lib/ee/api/entities/issue_basic.rb'
-    - 'ee/lib/ee/api/entities/ldap_group.rb'
-    - 'ee/lib/ee/api/entities/ldap_group_link.rb'
     - 'ee/lib/ee/api/entities/list.rb'
     - 'ee/lib/ee/api/entities/member.rb'
     - 'ee/lib/ee/api/entities/member_role.rb'

@@ -70,6 +70,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { expect(described_class::COUNT_CACHE_VALIDITY_PERIOD).to be_a(Integer) }
     it { expect(described_class::MAX_USERNAME_LENGTH).to be_a(Integer) }
     it { expect(described_class::MIN_USERNAME_LENGTH).to be_a(Integer) }
+    it { expect(described_class::MAX_NAME_LENGTH).to eq(127) }
   end
 
   describe 'delegations' do

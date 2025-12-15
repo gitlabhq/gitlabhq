@@ -237,6 +237,36 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
     end
   end
 
+  describe '#push_application_setting' do
+    it 'pushes an application setting to the frontend' do
+      stub_application_setting(signup_enabled: true)
+
+      gon = class_double('Gon')
+      allow(helper)
+        .to receive(:gon)
+        .and_return(gon)
+
+      expect(gon)
+        .to receive(:push)
+        .with({ signup_enabled: true })
+
+      helper.push_application_setting(:signup_enabled)
+    end
+
+    it 'does not push if missing application setting entry' do
+      gon = class_double('Gon')
+      allow(helper)
+        .to receive(:gon)
+        .and_return(gon)
+
+      expect(gon)
+        .not_to receive(:push)
+        .with({ non_existent_application_setting: true })
+
+      helper.push_application_setting(:non_existent_application_setting)
+    end
+  end
+
   describe '#default_avatar_url' do
     it 'returns an absolute URL' do
       url = helper.default_avatar_url

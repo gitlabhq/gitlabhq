@@ -16,7 +16,13 @@ title: Data Analyst Agent
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578342) in GitLab 18.6 [with a flag](../../../../administration/feature_flags/_index.md) named `foundational_analytics_agent`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578342) in GitLab 18.6
+  [with a feature flag](../../../../administration/feature_flags/_index.md) named `foundational_analytics_agent`.
+  Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/583940)
+  to [beta](../../../../policy/development_stages_support.md#beta) in GitLab 18.7.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/583940)
+  in GitLab 18.7.
 
 {{< /history >}}
 

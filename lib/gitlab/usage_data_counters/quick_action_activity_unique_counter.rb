@@ -17,6 +17,7 @@ module Gitlab
           ship
           run_pipeline
           approve
+          submit_review
           unapprove
         ].freeze
 

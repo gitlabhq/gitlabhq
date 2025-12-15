@@ -11,9 +11,12 @@ module Gitlab
 
         def run_operation_job(worker)
           next_job = find_or_create_next_job(worker)
-          return finish_active_operation(worker) unless next_job
 
-          execute_job_and_handle_failure(worker, next_job)
+          if next_job
+            execute_job_and_handle_failure(worker, next_job)
+          else
+            finish_active_operation(worker)
+          end
         end
 
         private

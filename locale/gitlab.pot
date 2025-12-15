@@ -22632,6 +22632,9 @@ msgstr ""
 msgid "DastSiteValidation|You will not be able to run active scans against %{url}."
 msgstr ""
 
+msgid "Data Analyst"
+msgstr ""
+
 msgid "Data is still calculating…"
 msgstr ""
 
@@ -24484,6 +24487,9 @@ msgstr ""
 msgid "DevOps Adoption"
 msgstr ""
 
+msgid "DevOps Engineer"
+msgstr ""
+
 msgid "DevOps adoption"
 msgstr ""
 
@@ -24500,6 +24506,9 @@ msgid "Developers may dismiss findings to proceed or%{requireStart}receive%{requ
 msgid_plural "Developers may dismiss findings to proceed or%{requireStart}receive%{requireEnd} %{approvalsRequired} %{approvalStart}approvals%{approvalEnd} from:"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Development Team Lead"
+msgstr ""
 
 msgid "Development widget is not enabled for this work item type"
 msgstr ""
@@ -34451,7 +34460,7 @@ msgstr ""
 msgid "Human"
 msgstr ""
 
-msgid "I agree that GitLab can contact me by email or telephone about its product, services, or events."
+msgid "I agree that GitLab can contact me by email about its product, services, or events."
 msgstr ""
 
 msgid "I forgot my password"
@@ -43501,6 +43510,9 @@ msgstr ""
 msgid "My reviews and merge requests"
 msgstr ""
 
+msgid "My team"
+msgstr ""
+
 msgid "My topic"
 msgstr ""
 
@@ -50455,6 +50467,9 @@ msgstr ""
 msgid "Please review the updated escalation policies for %{project}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
 msgstr ""
 
+msgid "Please select"
+msgstr ""
+
 msgid "Please select a Jira project"
 msgstr ""
 
@@ -51043,6 +51058,12 @@ msgid "Proceed with caution."
 msgstr ""
 
 msgid "Product Analytics"
+msgstr ""
+
+msgid "Product Designer"
+msgstr ""
+
+msgid "Product Manager"
 msgstr ""
 
 msgid "Product analytics"
@@ -56758,6 +56779,9 @@ msgstr ""
 msgid "Role"
 msgstr ""
 
+msgid "Role is required."
+msgstr ""
+
 msgid "Role promotions"
 msgstr ""
 
@@ -59813,6 +59837,9 @@ msgid "SecureFiles|UUID"
 msgstr ""
 
 msgid "Security"
+msgstr ""
+
+msgid "Security Analyst"
 msgstr ""
 
 msgid "Security Dashboard"
@@ -63245,6 +63272,9 @@ msgstr ""
 msgid "Select a project"
 msgstr ""
 
+msgid "Select a reason"
+msgstr ""
+
 msgid "Select a repository containing templates for common files."
 msgstr ""
 
@@ -65005,6 +65035,9 @@ msgid "Snowplow tracking and Product event tracking cannot be enabled at the sam
 msgstr ""
 
 msgid "Soft wrap"
+msgstr ""
+
+msgid "Software Developer"
 msgstr ""
 
 msgid "Solid"
@@ -66864,6 +66897,9 @@ msgid "System output"
 msgstr ""
 
 msgid "System started"
+msgstr ""
+
+msgid "Systems Administrator"
 msgstr ""
 
 msgid "TXT"
@@ -71100,6 +71136,9 @@ msgstr ""
 msgid "Trial|Welcome to GitLab"
 msgstr ""
 
+msgid "Trial|What's your reason for joining GitLab?"
+msgstr ""
+
 msgid "Trial|Your free Ultimate & GitLab Duo Enterprise Trial lasts for %{duration} days. After this period, you can maintain a GitLab Free account forever, or upgrade to a paid plan."
 msgstr ""
 
@@ -72049,7 +72088,13 @@ msgstr ""
 msgid "UsageBilling|Credits used after all included user credits and monthly commitment pool have been exhausted. Learn about %{linkStart}GitLab Credit pricing%{linkEnd}."
 msgstr ""
 
+msgid "UsageBilling|Date"
+msgstr ""
+
 msgid "UsageBilling|Date/Time"
+msgstr ""
+
+msgid "UsageBilling|Displaying user data is disabled."
 msgstr ""
 
 msgid "UsageBilling|Enable on-demand billing to keep GitLab Duo features active when monthly GitLab Credits run out. Without these terms, users lose GitLab Duo access after exhausting their included GitLab Credits. Learn about %{linkStart}overage billing%{linkEnd}."
@@ -75021,6 +75066,9 @@ msgid "Vulnerability|AI Confidence Score"
 msgstr ""
 
 msgid "Vulnerability|AI detected false positive"
+msgstr ""
+
+msgid "Vulnerability|AI false positive Confidence Score"
 msgstr ""
 
 msgid "Vulnerability|AI has created a merge request to resolve this vulnerability"

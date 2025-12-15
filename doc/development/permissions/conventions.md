@@ -65,7 +65,7 @@ We recognize that this set of actions is limited and not applicable to every fea
 
 Permissions **should NOT encode the resource boundary** (such as `project`, `group`, or `user`) directly into the permission name.
 
-For example, avoid introducing separate permissions like `read_project_insights_dashboard` and `read_group_insights_dashboard`.  
+For example, avoid introducing separate permissions like `read_project_insights_dashboard` and `read_group_insights_dashboard`.
 Instead, define a single semantic permission that describes the capability itself, such as `read_insights_dashboard`.
 
 Including boundaries like `project` or `group` in the permission name is redundant because passing the **subject** in the `can?` check already determines the scope. For example:

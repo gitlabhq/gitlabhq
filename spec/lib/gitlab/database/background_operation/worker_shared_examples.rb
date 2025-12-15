@@ -69,6 +69,20 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
     end
   end
 
+  describe 'state machine transitions', :freeze_time do
+    let(:worker) { create(worker_factory, :queued) }
+
+    it 'sets started_at when transitioning to active' do
+      expect { worker.execute! }.to change { worker.started_at }.from(nil).to(Time.current)
+    end
+
+    it 'sets finished_at when transitioning to finished' do
+      worker.execute!
+
+      expect { worker.finish! }.to change { worker.finished_at }.from(nil).to(Time.current)
+    end
+  end
+
   describe '.schedulable_workers' do
     let(:partition_manager) { Gitlab::Database::Partitioning::PartitionManager.new(described_class) }
 
@@ -368,6 +382,35 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
 
           expect(interval_elapsed).to be_truthy
         end
+      end
+    end
+  end
+
+  describe '#create_job!' do
+    let_it_be(:worker) { create(worker_factory, :queued) }
+    let(:min_cursor) { [1] }
+    let(:max_cursor) { [1000] }
+
+    it 'creates a job with correct arguments' do
+      job = worker.create_job!(min_cursor, max_cursor)
+
+      expect(job).to have_attributes(
+        batch_size: worker.batch_size,
+        sub_batch_size: worker.sub_batch_size,
+        pause_ms: worker.pause_ms,
+        min_cursor: min_cursor,
+        max_cursor: max_cursor,
+        worker_partition: worker.partition
+      )
+    end
+
+    context 'when worker has organization_id' do
+      it 'includes organization_id in the job' do
+        skip unless worker.respond_to?(:organization_id)
+
+        job = worker.create_job!(min_cursor, max_cursor)
+
+        expect(job.organization_id).to eq(worker.organization_id)
       end
     end
   end

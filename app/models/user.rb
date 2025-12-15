@@ -59,6 +59,7 @@ class User < ApplicationRecord
 
   MAX_USERNAME_LENGTH = 255
   MIN_USERNAME_LENGTH = 2
+  MAX_NAME_LENGTH = 127
 
   SECONDARY_EMAIL_ATTRIBUTES = [
     :commit_email,
@@ -342,8 +343,8 @@ class User < ApplicationRecord
   validate :username_not_reserved_ai_prefix, if: :username_changed?
   validate :username_not_assigned_to_pages_unique_domain, if: :username_changed?
   validates :name, presence: true, length: { maximum: 255 }
-  validates :first_name, length: { maximum: 127 }
-  validates :last_name, length: { maximum: 127 }
+  validates :first_name, length: { maximum: MAX_NAME_LENGTH }
+  validates :last_name, length: { maximum: MAX_NAME_LENGTH }
   validates :email, confirmation: true, devise_email: true
   validates :notification_email, devise_email: true, allow_blank: true
   validates :public_email, uniqueness: true, devise_email: true, allow_blank: true
