@@ -4018,6 +4018,9 @@ msgstr ""
 msgid "AccessTokens|Expiring"
 msgstr ""
 
+msgid "AccessTokens|Expiring soon"
+msgstr ""
+
 msgid "AccessTokens|Failed to fetch statistics."
 msgstr ""
 
@@ -4243,6 +4246,9 @@ msgid "AccessTokens|Use DPoP to protect your REST or GraphQL API access when usi
 msgstr ""
 
 msgid "AccessTokens|Use Demonstrating Proof of Possession (DPoP)"
+msgstr ""
+
+msgid "AccessTokens|View details"
 msgstr ""
 
 msgid "AccessTokens|View token usage information"

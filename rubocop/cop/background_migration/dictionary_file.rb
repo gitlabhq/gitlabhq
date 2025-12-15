@@ -39,7 +39,7 @@ module RuboCop
           MESSAGE
           missing_finalized_by: <<-FINALIZE_MESSAGE.delete("\n").squeeze(' ').strip
             Missing `finalized_by` attribute in dictionary for migration using `ensure_batched_background_migration_is_finished`.
-            Please add the finalized_by attribute with the migration version.
+            Please add the finalized_by attribute with the migration version or no-op the migration.
           FINALIZE_MESSAGE
         }.freeze
 

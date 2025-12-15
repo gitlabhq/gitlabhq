@@ -5818,7 +5818,8 @@ CREATE TABLE p_ci_pipeline_artifact_states (
     verification_state smallint DEFAULT 0 NOT NULL,
     verification_retry_count smallint DEFAULT 0,
     verification_checksum bytea,
-    verification_failure text
+    verification_failure text,
+    CONSTRAINT check_ee83b93f85 CHECK ((char_length(verification_failure) <= 255))
 )
 PARTITION BY LIST (partition_id);
 

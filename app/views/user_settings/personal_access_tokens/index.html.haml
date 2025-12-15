@@ -3,7 +3,11 @@
 - @force_desktop_expanded_sidebar = true
 - @hide_search_settings = true
 
-#js-shared-access-token-app{ data: personal_access_token_data(@access_token_params) }
+
+- if Feature.enabled?(:granular_personal_access_tokens, current_user)
+  #js-personal-access-token-app{ data: personal_access_token_data(@access_token_params) }
+- else
+  #js-shared-access-token-app{ data: personal_access_token_data(@access_token_params) }
 
 = render 'user_settings/personal_access_tokens/dpop' if Feature.enabled?(:dpop_authentication, current_user)
 

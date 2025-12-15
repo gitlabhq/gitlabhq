@@ -1,0 +1,46 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getUserPersonalAccessTokens(
+  $id: UserID
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+  $sort: AccessTokenSort
+  $state: AccessTokenState
+  $revoked: Boolean
+  $expiresAfter: Date
+  $createdAfter: Time
+  $lastUsedAfter: Time
+) {
+  user(id: $id) {
+    id
+    personalAccessTokens(
+      first: $first
+      last: $last
+      before: $before
+      after: $after
+      sort: $sort
+      state: $state
+      revoked: $revoked
+      expiresAfter: $expiresAfter
+      createdAfter: $createdAfter
+      lastUsedAfter: $lastUsedAfter
+    ) {
+      nodes {
+        id
+        name
+        description
+        granular
+        revoked
+        active
+        lastUsedAt
+        createdAt
+        expiresAt
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

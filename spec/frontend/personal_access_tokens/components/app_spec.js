@@ -1,0 +1,287 @@
+import { GlFilteredSearch, GlKeysetPagination, GlSorting } from '@gitlab/ui';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import { createAlert } from '~/alert';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import PersonalAccessTokensApp from '~/personal_access_tokens/components/app.vue';
+import PersonalAccessTokensTable from '~/personal_access_tokens/components/personal_access_tokens_table.vue';
+import CreatePersonalAccessTokenButton from '~/personal_access_tokens/components/create_personal_access_token_button.vue';
+import getUserPersonalAccessTokens from '~/personal_access_tokens/graphql/get_user_personal_access_tokens.query.graphql';
+import { DEFAULT_SORT, PAGE_SIZE } from '~/personal_access_tokens/constants';
+
+jest.mock('~/alert');
+
+Vue.use(VueApollo);
+
+describe('PersonalAccessTokensApp', () => {
+  let wrapper;
+  let mockApollo;
+
+  const mockTokens = [
+    {
+      id: 'gid://gitlab/PersonalAccessToken/1',
+      name: 'Token 1',
+      description: 'Test token 1',
+      active: true,
+      revoked: false,
+      expiresAt: '2025-12-31',
+      lastUsedAt: '2025-11-01',
+      createdAt: '2025-01-01',
+      granular: true,
+    },
+    {
+      id: 'gid://gitlab/PersonalAccessToken/2',
+      name: 'Token 2',
+      description: 'Test token 2',
+      active: false,
+      revoked: true,
+      expiresAt: '2025-06-30',
+      lastUsedAt: null,
+      createdAt: '2025-02-01',
+      granular: false,
+    },
+  ];
+
+  const mockPageInfo = {
+    hasNextPage: true,
+    hasPreviousPage: false,
+    startCursor: 'eyJpZCI6IjUxIn0',
+    endCursor: 'eyJpZCI6IjM1In0',
+    __typename: 'PageInfo',
+  };
+
+  const mockQueryResponse = {
+    data: {
+      user: {
+        id: 'gid://gitlab/User/123',
+        personalAccessTokens: {
+          nodes: mockTokens,
+          pageInfo: mockPageInfo,
+        },
+      },
+    },
+  };
+
+  const mockQueryHandler = jest.fn().mockResolvedValue(mockQueryResponse);
+
+  const createComponent = ({ queryHandler = mockQueryHandler } = {}) => {
+    mockApollo = createMockApollo([[getUserPersonalAccessTokens, queryHandler]]);
+
+    window.gon = { current_user_id: 123 };
+
+    wrapper = shallowMountExtended(PersonalAccessTokensApp, {
+      apolloProvider: mockApollo,
+      stubs: {
+        CrudComponent,
+      },
+    });
+  };
+
+  const findFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
+  const findSorting = () => wrapper.findComponent(GlSorting);
+  const findTable = () => wrapper.findComponent(PersonalAccessTokensTable);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
+  const findCreateButton = () => wrapper.findComponent(CreatePersonalAccessTokenButton);
+
+  beforeEach(() => {
+    createComponent();
+  });
+
+  it('renders the filtered search component', () => {
+    expect(findFilteredSearch().exists()).toBe(true);
+    expect(findFilteredSearch().props('availableTokens')).toBeDefined();
+  });
+
+  it('renders the sorting component', () => {
+    expect(findSorting().exists()).toBe(true);
+    expect(findSorting().props()).toMatchObject({
+      isAscending: DEFAULT_SORT.isAsc,
+      sortBy: DEFAULT_SORT.value,
+    });
+  });
+
+  it('renders the create button', () => {
+    expect(findCreateButton().exists()).toBe(true);
+  });
+
+  it('renders the table component', () => {
+    expect(findTable().exists()).toBe(true);
+  });
+
+  describe('GraphQL query', () => {
+    it('fetches tokens on mount', async () => {
+      expect(findTable().props('loading')).toBe(true);
+
+      await waitForPromises();
+
+      expect(mockQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/User/123',
+        sort: 'EXPIRES_ASC',
+        state: 'ACTIVE',
+        first: PAGE_SIZE,
+        after: null,
+        last: null,
+        before: null,
+      });
+    });
+
+    it('passes tokens to the table', async () => {
+      await waitForPromises();
+
+      expect(findTable().props('loading')).toBe(false);
+      expect(findTable().props('tokens')).toEqual(mockTokens);
+    });
+
+    it('shows alert on error', async () => {
+      const errorHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
+      createComponent({ queryHandler: errorHandler });
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'An error occurred while fetching the tokens.',
+        variant: 'danger',
+      });
+    });
+  });
+
+  describe('filtering', () => {
+    it('refetches tokens when filter is submitted', async () => {
+      await waitForPromises();
+      mockQueryHandler.mockClear();
+
+      findFilteredSearch().vm.$emit('submit');
+      await nextTick();
+
+      expect(mockQueryHandler).toHaveBeenCalled();
+    });
+
+    it('refetches tokens when filter is cleared', async () => {
+      await waitForPromises();
+      mockQueryHandler.mockClear();
+
+      findFilteredSearch().vm.$emit('clear');
+      await nextTick();
+
+      expect(mockQueryHandler).toHaveBeenCalled();
+    });
+
+    it('converts filter tokens to GraphQL variables', async () => {
+      findFilteredSearch().vm.$emit('input', [
+        { type: 'state', value: { data: 'INACTIVE' } },
+        { type: 'revoked', value: { data: true } },
+      ]);
+
+      await nextTick();
+
+      expect(mockQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/User/123',
+        sort: 'EXPIRES_ASC',
+        state: 'INACTIVE',
+        revoked: true,
+        first: PAGE_SIZE,
+        after: null,
+        last: null,
+        before: null,
+      });
+    });
+  });
+
+  describe('sorting', () => {
+    it('updates sort value when changed', async () => {
+      await waitForPromises();
+      await findSorting().vm.$emit('sortByChange', 'name');
+
+      expect(mockQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/User/123',
+        sort: 'NAME_ASC',
+        state: 'ACTIVE',
+        first: PAGE_SIZE,
+        after: null,
+        last: null,
+        before: null,
+      });
+    });
+
+    it('updates sort direction when changed', async () => {
+      await waitForPromises();
+      await findSorting().vm.$emit('sortDirectionChange', false);
+
+      expect(mockQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/User/123',
+        sort: 'EXPIRES_DESC',
+        state: 'ACTIVE',
+        first: PAGE_SIZE,
+        after: null,
+        last: null,
+        before: null,
+      });
+    });
+  });
+
+  describe('pagination', () => {
+    it('shows pagination when there are more pages', async () => {
+      await waitForPromises();
+
+      expect(findPagination().exists()).toBe(true);
+
+      expect(findPagination().props()).toMatchObject({
+        startCursor: mockPageInfo.startCursor,
+        endCursor: mockPageInfo.endCursor,
+        hasNextPage: mockPageInfo.hasNextPage,
+        hasPreviousPage: mockPageInfo.hasPreviousPage,
+      });
+    });
+
+    it('hides pagination when there are no more pages', async () => {
+      const noPageInfoHandler = jest.fn().mockResolvedValue({
+        data: {
+          user: {
+            id: 'gid://gitlab/User/123',
+            personalAccessTokens: {
+              nodes: mockTokens,
+              pageInfo: { ...mockPageInfo, hasNextPage: false },
+            },
+          },
+        },
+      });
+
+      createComponent({ queryHandler: noPageInfoHandler });
+      await waitForPromises();
+
+      expect(findPagination().exists()).toBe(false);
+    });
+
+    it('handles next page navigation', async () => {
+      await waitForPromises();
+      await findPagination().vm.$emit('next', 'cursor123');
+
+      expect(mockQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/User/123',
+        sort: 'EXPIRES_ASC',
+        state: 'ACTIVE',
+        first: PAGE_SIZE,
+        after: 'cursor123',
+        last: null,
+        before: null,
+      });
+    });
+
+    it('handles previous page navigation', async () => {
+      await waitForPromises();
+      await findPagination().vm.$emit('prev', 'cursor456');
+
+      expect(mockQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/User/123',
+        sort: 'EXPIRES_ASC',
+        state: 'ACTIVE',
+        first: null,
+        after: null,
+        last: PAGE_SIZE,
+        before: 'cursor456',
+      });
+    });
+  });
+});

@@ -260,11 +260,7 @@ module API
         optional :generate, type: Boolean, default: false, desc: 'Triggers a new health report to be generated'
       end
       get ':id/repository/health', urgency: :low do
-        unless Feature.enabled?(:project_repositories_health, user_project)
-          not_found!
-        end
-
-        authorize! :admin_project, user_project
+        authorize! :push_code, user_project
 
         generate = params[:generate] || false
         if generate
