@@ -10,7 +10,7 @@ module Gitlab
         # the primary.
         EXPIRATION = 30
 
-        UNSTICK_IF_CAUGHT_UP_SCRIPT = <<~LUA
+        ATOMIC_UNSTICK_SCRIPT = <<~LUA
           local key = KEYS[1]
           local expected_location = ARGV[1]
           local current_location = redis.call('GET', key)
@@ -120,7 +120,7 @@ module Gitlab
         # Returns 1 if unstick was performed, 0 if the value changed (indicating a new write).
         def unstick_if_caught_up(namespace, id, expected_location)
           with_redis do |redis|
-            redis.eval(UNSTICK_IF_CAUGHT_UP_SCRIPT, keys: [redis_key_for(namespace, id)], argv: [expected_location])
+            redis.eval(ATOMIC_UNSTICK_SCRIPT, keys: [redis_key_for(namespace, id)], argv: [expected_location])
           end
         end
 

@@ -14333,6 +14333,37 @@ Input type: `VerifiedNamespaceCreateInput`
 | <a id="mutationverifiednamespacecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationverifiednamespacecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.virtualRegistriesCleanupPolicyUpsert`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Create or update virtual registries cleanup policy for a root group.
+
+Input type: `VirtualRegistriesCleanupPolicyUpsertInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvirtualregistriescleanuppolicyupsertcadence"></a>`cadence` | [`Int`](#int) | Job cadence for the cleanup process. Allowed values are 1, 7, 14, 30, 90. Default is 7. |
+| <a id="mutationvirtualregistriescleanuppolicyupsertclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvirtualregistriescleanuppolicyupsertenabled"></a>`enabled` | [`Boolean`](#boolean) | Enable or disable the virtual registries cleanup policy. Default is `false`. |
+| <a id="mutationvirtualregistriescleanuppolicyupsertfullpath"></a>`fullPath` | [`ID!`](#id) | Group path for the group virtual registries. |
+| <a id="mutationvirtualregistriescleanuppolicyupsertkeepndaysafterdownload"></a>`keepNDaysAfterDownload` | [`Int`](#int) | Keep packages for the period after download. Range is 1-365. Default is 30. |
+| <a id="mutationvirtualregistriescleanuppolicyupsertnotifyonfailure"></a>`notifyOnFailure` | [`Boolean`](#boolean) | Whether to notify group owners when cleanup runs fail. Default is `false`. |
+| <a id="mutationvirtualregistriescleanuppolicyupsertnotifyonsuccess"></a>`notifyOnSuccess` | [`Boolean`](#boolean) | Whether to notify group owners when cleanup runs succeed. Default is `false`. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvirtualregistriescleanuppolicyupsertclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvirtualregistriescleanuppolicyupserterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationvirtualregistriescleanuppolicyupsertvirtualregistriescleanuppolicy"></a>`virtualRegistriesCleanupPolicy` | [`VirtualRegistryCleanupPolicy`](#virtualregistrycleanuppolicy) | Virtual registries cleanup policy after mutation. |
+
 ### `Mutation.vulnerabilitiesArchive`
 
 {{< details >}}
@@ -48297,6 +48328,8 @@ Represents a virtual registry cleanup policy.
 | <a id="virtualregistrycleanuppolicylastrundeletedsize"></a>`lastRunDeletedSize` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Size in bytes of data deleted during the last cleanup run. |
 | <a id="virtualregistrycleanuppolicylastrundetailedmetrics"></a>`lastRunDetailedMetrics` {{< icon name="warning-solid" >}} | [`CleanupPolicyLastRunDetailedMetrics`](#cleanuppolicylastrundetailedmetrics) | **Introduced** in GitLab 18.7. **Status**: Experiment. Detailed metrics from the last cleanup run. |
 | <a id="virtualregistrycleanuppolicynextrunat"></a>`nextRunAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Next time the virtual registry cleanup policy runs. |
+| <a id="virtualregistrycleanuppolicynotifyonfailure"></a>`notifyOnFailure` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.7. **Status**: Experiment. Boolean to notify group owners on failed cleanup runs. |
+| <a id="virtualregistrycleanuppolicynotifyonsuccess"></a>`notifyOnSuccess` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.7. **Status**: Experiment. Boolean to notify group owners on successful cleanup runs. |
 | <a id="virtualregistrycleanuppolicystatus"></a>`status` {{< icon name="warning-solid" >}} | [`PolicyStatus!`](#policystatus) | **Introduced** in GitLab 18.7. **Status**: Experiment. Current execution status of the cleanup policy. |
 | <a id="virtualregistrycleanuppolicyupdatedat"></a>`updatedAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Timestamp when the cleanup policy was last updated. |
 

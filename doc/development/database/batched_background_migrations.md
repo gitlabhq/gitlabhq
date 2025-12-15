@@ -49,6 +49,8 @@ Background migrations can help when:
 - If the batched background migration is part of an important upgrade, it must be announced
   in the release post. Discuss with your Project Manager if you're unsure if the migration falls
   into this category.
+- You must add [upgrade notes](../../update/versions/_index.md) for significant migrations
+  to help self-managed and Dedicated customers plan their upgrades, following the [guidelines](#writing-upgrade-notes-for-customers).
 - You should use the [generator](#generate-a-batched-background-migration) to create batched background migrations,
   so that required files are created by default.
 
@@ -978,6 +980,40 @@ class AddNotNullToRoutesNamespaceId < Gitlab::Database::Migration[2.1]
   end
 end
 ```
+
+## Writing upgrade notes for customers
+
+For significant batched background migrations, you must add upgrade notes to help
+self-managed and Dedicated customers plan their upgrades. These notes should be added
+to the relevant version's upgrade documentation (for example, [GitLab 18 changes](../../update/versions/gitlab_18_changes.md)).
+
+For an example of well-documented upgrade notes, see
+[MR 214376](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214376) which documents
+the CI builds metadata migration.
+
+### When to add upgrade notes
+
+Add upgrade notes when **any** of the following conditions apply to the migration:
+
+- The migration operates on large tables that could take significant time to complete.
+- The migration provides configuration options for customers to control the migration scope.
+- The migration has dependencies on other migrations or features.
+
+### What to include in upgrade notes
+
+Upgrade notes should include the following information to help customers understand
+and prepare for the migration:
+
+- Describe the purpose and benefits of the migration so customers understand its impact.
+- Describe what the migration does to customers' data and what table it iterates through.
+- Document the timeline and finalization.
+  Link to an issue when finalization is not yet known.
+  When known (even in a future date) update the existing upgrade note with the actual release containing the finalization.
+- Describe preparation steps before upgrading.
+  When applicable, recommend best practices and settings to have in place.
+- Provide tools to estimate migration duration (SQL queries or Rails console commands).
+- Document controls to reduce migration scope, when available.
+  Describe controls from the end-user perspective so they are clear on what data is impacted or not.
 
 ## Managing
 

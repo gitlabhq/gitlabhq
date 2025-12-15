@@ -6,7 +6,19 @@ title: Multi-container scanning
 description: Image vulnerability scanning, configuration, customization, and reporting.
 ---
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3139) as an [experiment](../../../policy/development_stages_support.md) in GitLab 18.7.
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3139) as an [experiment](../../../policy/development_stages_support.md) in GitLab 18.7.
+
+{{< /history >}}
 
 Use multi-container scanning to scan multiple container images in a single pipeline.
 This feature enables you to:

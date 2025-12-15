@@ -278,7 +278,7 @@ You can use GitLab compliance controls or external controls for framework requir
 
 {{< history >}}
 
-- Security scanner controls do not require a successful pipeline. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/579849) in GitLab 18.7.
+- In GitLab 18.7 and later, [security scanner controls no longer require a successful pipeline](https://gitlab.com/gitlab-org/gitlab/-/work_items/579849).
 
 {{< /history >}}
 

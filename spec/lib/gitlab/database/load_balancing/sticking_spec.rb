@@ -11,19 +11,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, feature_catego
     described_class.new(load_balancer)
   end
 
-  let(:redis) { instance_double(::Gitlab::Redis::MultiStore) }
-
   before do
     Gitlab::Database::LoadBalancing::SessionMap.clear_session
-    allow(::Gitlab::Redis::DbLoadBalancing).to receive(:with).and_yield(redis)
 
     allow(ActiveRecord::Base.load_balancer)
       .to receive(:primary_write_location)
       .and_return(primary_write_location)
-
-    allow(redis).to receive(:get)
-      .with("database-load-balancing/write-location/#{load_balancer.name}/user/42")
-      .and_return(last_write_location)
   end
 
   after do
@@ -36,8 +29,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, feature_catego
     end
 
     context 'when no write location could be found' do
-      let(:last_write_location) { nil }
-
       it 'returns true' do
         expect(load_balancer).not_to receive(:select_up_to_date_host)
 
@@ -45,10 +36,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, feature_catego
       end
 
       context 'when use_primary_on_empty_location is true' do
-        it 'returns false, does not unstick and calls use_primary!' do
+        it 'returns false and calls use_primary!' do
           expect(load_balancer).not_to receive(:select_up_to_date_host)
-
-          expect(redis).not_to receive(:del)
           expect(::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer)).to receive(:use_primary!)
 
           expect(sticking.find_caught_up_replica(:user, 42, use_primary_on_empty_location: true)).to eq(false)
@@ -57,60 +46,80 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, feature_catego
     end
 
     context 'when all replicas have caught up' do
-      it 'returns true and attempts to unstick if location matches' do
+      before do
+        Gitlab::Redis::DbLoadBalancing.with do |redis|
+          redis.set("database-load-balancing/write-location/#{load_balancer.name}/user/42", last_write_location, ex: 30)
+        end
+      end
+
+      it 'returns true and unsticks if location matches' do
         expect(load_balancer).to receive(:select_up_to_date_host).with(last_write_location)
           .and_return(::Gitlab::Database::LoadBalancing::LoadBalancer::ALL_CAUGHT_UP)
-
-        expect(redis)
-          .to receive(:eval)
-          .with(
-            described_class::UNSTICK_IF_CAUGHT_UP_SCRIPT,
-            keys: ["database-load-balancing/write-location/#{load_balancer.name}/user/42"],
-            argv: [last_write_location]
-          )
-          .and_return(1)
+        expect(::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer)).not_to receive(:use_primary!)
 
         expect(sticking.find_caught_up_replica(:user, 42)).to eq(true)
+
+        # Verify the sticking point was removed
+        Gitlab::Redis::DbLoadBalancing.with do |redis|
+          expect(redis.get("database-load-balancing/write-location/#{load_balancer.name}/user/42")).to be_nil
+        end
       end
 
       context 'when the sticking point has changed (concurrent write)' do
         it 'returns true but does not unstick' do
-          expect(load_balancer).to receive(:select_up_to_date_host).with(last_write_location)
-            .and_return(::Gitlab::Database::LoadBalancing::LoadBalancer::ALL_CAUGHT_UP)
-
-          expect(redis)
-            .to receive(:eval)
-            .with(
-              described_class::UNSTICK_IF_CAUGHT_UP_SCRIPT,
-              keys: ["database-load-balancing/write-location/#{load_balancer.name}/user/42"],
-              argv: [last_write_location]
-            )
-            .and_return(0)
+          expect(load_balancer).to receive(:select_up_to_date_host)
+            .with(last_write_location).and_wrap_original do |method, location|
+              # Change the sticking point while select_up_to_date_host is being called
+              new_location = 'new-lsn'
+              Gitlab::Redis::DbLoadBalancing.with do |redis|
+                redis.set("database-load-balancing/write-location/#{load_balancer.name}/user/42", new_location, ex: 30)
+              end
+              method.call(location)
+            end
+          expect(::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer)).not_to receive(:use_primary!)
 
           expect(sticking.find_caught_up_replica(:user, 42)).to eq(true)
+
+          # Verify the sticking point was NOT removed (it changed)
+          Gitlab::Redis::DbLoadBalancing.with do |redis|
+            expect(redis.get("database-load-balancing/write-location/#{load_balancer.name}/user/42")).to eq('new-lsn')
+          end
         end
       end
     end
 
     context 'when only some of the replicas have caught up' do
+      before do
+        Gitlab::Redis::DbLoadBalancing.with do |redis|
+          redis.set("database-load-balancing/write-location/#{load_balancer.name}/user/42", last_write_location, ex: 30)
+        end
+      end
+
       it 'returns true and does not unstick' do
         expect(load_balancer).to receive(:select_up_to_date_host).with(last_write_location)
           .and_return(::Gitlab::Database::LoadBalancing::LoadBalancer::ANY_CAUGHT_UP)
 
-        expect(redis).not_to receive(:del)
-
         expect(sticking.find_caught_up_replica(:user, 42)).to eq(true)
+
+        # Verify the sticking point was NOT removed
+        Gitlab::Redis::DbLoadBalancing.with do |redis|
+          expect(redis.get("database-load-balancing/write-location/#{load_balancer.name}/user/42"))
+            .to eq(last_write_location)
+        end
       end
     end
 
     context 'when none of the replicas have caught up' do
       before do
+        Gitlab::Redis::DbLoadBalancing.with do |redis|
+          redis.set("database-load-balancing/write-location/#{load_balancer.name}/user/42", last_write_location, ex: 30)
+        end
+
         allow(load_balancer).to receive(:select_up_to_date_host).with(last_write_location)
           .and_return(::Gitlab::Database::LoadBalancing::LoadBalancer::NONE_CAUGHT_UP)
       end
 
-      it 'returns false, does not unstick and calls use_primary!' do
-        expect(redis).not_to receive(:del)
+      it 'returns false and calls use_primary!' do
         expect(::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer)).to receive(:use_primary!)
 
         expect(sticking.find_caught_up_replica(:user, 42)).to eq(false)
@@ -118,7 +127,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, feature_catego
 
       context 'when use_primary_on_failure is false' do
         it 'does not call use_primary!' do
-          expect(redis).not_to receive(:del)
           expect(::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer)).not_to receive(:use_primary!)
 
           expect(sticking.find_caught_up_replica(:user, 42, use_primary_on_failure: false)).to eq(false)
@@ -138,34 +146,32 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, feature_catego
       end
 
       it 'sticks an entity to the primary', :aggregate_failures do
-        ids.each do |id|
-          expect(redis)
-            .to receive(:set)
-            .with("database-load-balancing/write-location/#{load_balancer.name}/user/#{id}", 'the-primary-lsn', ex: 30)
-        end
-
         expect(Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer)).to receive(:use_primary!)
 
         subject
+
+        ids.each do |id|
+          Gitlab::Redis::DbLoadBalancing.with do |redis|
+            expect(redis.get("database-load-balancing/write-location/#{load_balancer.name}/user/#{id}"))
+              .to eq(primary_write_location)
+          end
+        end
       end
 
       context 'with hash_id: true' do
         let(:hash_id) { true }
 
         it 'sticks a hash instead of the actual id' do
-          ids.each do |id|
-            hashed_id = Digest::SHA2.hexdigest(id.to_s)
-
-            expect(redis)
-              .to receive(:set)
-              .with("database-load-balancing/write-location/#{load_balancer.name}/user/#{hashed_id}",
-                'the-primary-lsn',
-                ex: 30)
-          end
-
-          expect(Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer)).to receive(:use_primary!)
-
           subject
+
+          ids.each do |id|
+            hashed_id = Digest::SHA256.hexdigest(id.to_s)
+
+            Gitlab::Redis::DbLoadBalancing.with do |redis|
+              expect(redis.get("database-load-balancing/write-location/#{load_balancer.name}/user/#{hashed_id}"))
+                .to eq(primary_write_location)
+            end
+          end
         end
       end
     end

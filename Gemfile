@@ -744,7 +744,7 @@ gem 'duo_api', '~> 1.3', feature_category: :system_access
 
 gem 'gitlab-sdk', '~> 0.3.0', feature_category: :application_instrumentation
 
-gem 'paper_trail', '~> 16.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'paper_trail', '~> 16.0', feature_category: :workspaces
 
 gem "i18n_data", "~> 0.13.1", feature_category: :system_access
 
