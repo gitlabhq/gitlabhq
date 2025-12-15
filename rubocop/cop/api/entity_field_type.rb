@@ -10,35 +10,40 @@ module RuboCop
       #
       # @example
       #
-      #   # bad
+      #   # bad - Missing type declaration
+      #     expose :count, documentation: { example: 42 }
+      #
+      #   # good
+      #     expose :count, documentation: { type: 'Integer', example: 42 }
+      #
+      #
+      #   # bad - Invalid type
       #     expose :relation, documentation: { type: 'string', example: 'label' }
-      #
       #   # bad
       #     expose :relation, documentation: { type: :string, example: 'label' }
-      #
-      #   # bad
-      #     expose :relation, documentation: { type: :string, example: 'label' }
-      #
-      #   # bad
-      #     expose :relation, documentation: { example: 'label' }
-      #
       #   # bad
       #     expose :relation, documentation: { type: String, example: 'label' }
-      #
-      #   # bad
-      #     expose :relation, documentation: { type: 'UnknownClass', example: 'label' }
-      #
-      #   # bad
-      #     expose :relation, using: 'API::Entities::SomeType', documentation: { example: 'label' }
       #
       #   # good
       #     expose :relation, documentation: { type: 'String', example: 'label' }
       #
-      #   # good
-      #     expose :relation, using: API::Entities::SomeType, documentation: { example: 'label' }
+      #
+      #   # bad - Invalid/Unknown entity reference
+      #     expose :relation, documentation: { type: 'UnknownClass', example: 'label' }
       #
       #   # good
       #     expose :relation, documentation: { type: 'API::Entities::SomeType', example: 'label' }
+      #
+      #
+      #   # bad - Invalid entity reference format
+      #     expose :relation, using: 'API::Entities::SomeType', documentation: { example: 'label' }
+      #
+      #   # bad -  invalid entity reference option
+      #            `with:` should only be used for api presenters, `using:` preferred for entities
+      #     expose :relation, with: API::Entities::SomeType, documentation: { example: 'label' }
+      #
+      #   # good
+      #     expose :relation, using: ::API::Entities::SomeType, documentation: { example: 'label' }
       #
       class EntityFieldType < RuboCop::Cop::Base
         include CodeReuseHelpers
@@ -101,7 +106,7 @@ module RuboCop
         def valid_using_type?(node)
           # using: must be a constant that points to an API::Entities class
           # the value is used to introsepct
-          node.const_type? && node.source.match?(/\A(::)?API::Entities::/)
+          node.const_type? && node.source.start_with?('::API::Entities::')
         end
 
         def invalid_type?(node)
@@ -135,7 +140,14 @@ module RuboCop
         end
 
         def corrected_using_value(node)
-          return node.value if node.str_type? && node.value.match?(/\A(::)?API::Entities::/)
+          if node.str_type? && node.value.start_with?('API::Entities::')
+            return "::#{node.value}"
+          elsif node.str_type? && node.value.start_with?('::API::Entities::')
+            return node.value
+          elsif node.const_type? && node.source.start_with?('API::Entities::')
+            # Add leading :: to constant without it
+            return "::#{node.source}"
+          end
 
           nil
         end

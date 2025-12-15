@@ -18,6 +18,7 @@ module Gitlab
       end
 
       def execute
+        project.importing = true
         if import_file && check_version! && restorers.all?(&:restore) && overwrite_project
           remove_import_file
 

@@ -767,6 +767,11 @@ msgid_plural "%{count} issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{count} issue selected"
+msgid_plural "%{count} issues selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{count} item"
 msgid_plural "%{count} items"
 msgstr[0] ""
@@ -843,6 +848,11 @@ msgstr ""
 
 msgid "%{count} vulnerability set to %{severity} severity"
 msgid_plural "%{count} vulnerabilities set to %{severity} severity"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{count} work item selected"
+msgid_plural "%{count} work items selected"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -2088,11 +2098,6 @@ msgid_plural "%d weeks remaining"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "1 work item selected"
-msgid_plural "%d work items selected"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "1 year remaining"
 msgid_plural "%d years remaining"
 msgstr[0] ""
@@ -3073,6 +3078,9 @@ msgstr ""
 msgid "AICatalog|This %{itemType} requires approval from your parent group owner before it can be used"
 msgstr ""
 
+msgid "AICatalog|This %{itemType} was removed from the AI Catalog. You can still use it in this %{targetType}."
+msgstr ""
+
 msgid "AICatalog|This YAML configuration file determines the prompts, tools, and capabilities of your flow. Required properties: injectGatewayToken, image, commands"
 msgstr ""
 
@@ -3113,6 +3121,9 @@ msgid "AICatalog|Trigger this %{itemType} when the service account user is menti
 msgstr ""
 
 msgid "AICatalog|Type"
+msgstr ""
+
+msgid "AICatalog|Unlisted"
 msgstr ""
 
 msgid "AICatalog|Update available"
@@ -62652,7 +62663,7 @@ msgstr ""
 msgid "SecurityReports|GitLab Duo SAST false positive detection - available for a limited time in free Beta"
 msgstr ""
 
-msgid "SecurityReports|GitLab Duo automatically reviews critical and high severity SAST vulnerabilities to identify potential false positives. GitLab Duo assigns each false positive a confidence score and you can bulk dismiss the identified false positives in the vulnerability report. The service is enabled by default for free during the beta. You can adjust or turn off this feature in the GitLab Duo settings."
+msgid "SecurityReports|GitLab Duo will automatically review new critical and high severity %{linkStart}SAST vulnerabilities on the default branch to identify potential false positives%{linkEnd}. GitLab Duo assigns each false positive a confidence score and %{dismissLinkStart}you can bulk dismiss the identified false positives%{dismissLinkEnd} in the vulnerability report. The service is enabled by default for free during the beta. You can adjust or turn off this feature in the GitLab Duo settings."
 msgstr ""
 
 msgid "SecurityReports|Go to policies"
@@ -72070,6 +72081,9 @@ msgstr[1] ""
 msgid "UsageBilling|Accept on-demand billing"
 msgstr ""
 
+msgid "UsageBilling|Accept on-demand billing to keep GitLab Duo features active when monthly GitLab Credits run out. Without these terms, users lose GitLab Duo access after exhausting their included GitLab Credits. Learn about %{linkStart}overage billing%{linkEnd}."
+msgstr ""
+
 msgid "UsageBilling|Action"
 msgstr ""
 
@@ -72095,9 +72109,6 @@ msgid "UsageBilling|Date/Time"
 msgstr ""
 
 msgid "UsageBilling|Displaying user data is disabled."
-msgstr ""
-
-msgid "UsageBilling|Enable on-demand billing to keep GitLab Duo features active when monthly GitLab Credits run out. Without these terms, users lose GitLab Duo access after exhausting their included GitLab Credits. Learn about %{linkStart}overage billing%{linkEnd}."
 msgstr ""
 
 msgid "UsageBilling|GitLab Credits"

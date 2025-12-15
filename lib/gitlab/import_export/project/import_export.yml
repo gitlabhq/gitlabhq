@@ -1177,6 +1177,7 @@ excluded_attributes:
 methods:
   project:
     - :allow_merge_on_skipped_pipeline
+    - :default_branch
     - :squash_option
     - :merge_commit_template
     - :squash_commit_template

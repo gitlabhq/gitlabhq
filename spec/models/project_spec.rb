@@ -7120,6 +7120,185 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#default_branch=' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    context 'when not importing' do
+      it 'does not set @desired_default_branch' do
+        project.default_branch = 'main'
+
+        expect(project.instance_variable_get(:@desired_default_branch)).to be_nil
+      end
+
+      it 'does not call apply_desired_default_branch' do
+        expect(project).not_to receive(:apply_desired_default_branch)
+
+        project.default_branch = 'main'
+      end
+    end
+
+    context 'when importing' do
+      before do
+        allow(project).to receive(:importing?).and_return(true)
+      end
+
+      context 'when branch_name is blank' do
+        it 'returns early without setting instance variable' do
+          project.default_branch = ''
+
+          expect(project.instance_variable_get(:@desired_default_branch)).to be_nil
+        end
+      end
+
+      context 'when branch_name is present' do
+        it 'sets @desired_default_branch' do
+          project.default_branch = 'main'
+
+          expect(project.instance_variable_get(:@desired_default_branch)).to eq('main')
+        end
+
+        it 'calls apply_desired_default_branch' do
+          expect(project).to receive(:apply_desired_default_branch)
+
+          project.default_branch = 'main'
+        end
+      end
+    end
+
+    context 'when container is not a Project' do
+      let(:wiki) { create(:project_wiki) }
+
+      it 'returns early without setting instance variable' do
+        wiki.default_branch = 'main'
+
+        expect(wiki.instance_variable_get(:@desired_default_branch)).to be_nil
+      end
+    end
+  end
+
+  describe '#apply_desired_default_branch' do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:repository) { project.repository }
+    let(:new_branch) { 'feature-branch' }
+
+    context 'when @desired_default_branch is not set' do
+      it 'does nothing' do
+        expect(repository).not_to receive(:change_head)
+
+        project.apply_desired_default_branch
+      end
+    end
+
+    context 'when @desired_default_branch is set' do
+      before do
+        project.instance_variable_set(:@desired_default_branch, new_branch)
+      end
+
+      context 'when repository is empty' do
+        let(:project) { create(:project, :empty_repo) }
+
+        it 'does not change the default branch' do
+          expect(repository).not_to receive(:change_head)
+
+          project.apply_desired_default_branch
+        end
+
+        it 'keeps @desired_default_branch set for later application' do
+          project.apply_desired_default_branch
+
+          expect(project.instance_variable_get(:@desired_default_branch)).to eq(new_branch)
+        end
+      end
+
+      context 'when repository is not empty' do
+        before do
+          allow(repository).to receive(:empty?).and_return(false)
+        end
+
+        context 'when current default branch matches desired branch' do
+          before do
+            allow(repository).to receive(:root_ref).and_return(new_branch)
+          end
+
+          it 'does not change the default branch' do
+            expect(repository).not_to receive(:change_head)
+
+            project.apply_desired_default_branch
+          end
+        end
+
+        context 'when desired branch exists' do
+          before do
+            allow(repository).to receive(:branch_exists?).with(new_branch).and_return(true)
+            allow(repository).to receive(:root_ref).and_return('master')
+          end
+
+          it 'changes HEAD to the desired branch' do
+            expect(repository).to receive(:change_head).with(new_branch)
+            expect(project).to receive(:reload_default_branch)
+
+            project.apply_desired_default_branch
+          end
+
+          it 'clears @desired_default_branch after successful application' do
+            allow(repository).to receive(:change_head)
+            allow(project).to receive(:reload_default_branch)
+
+            project.apply_desired_default_branch
+
+            expect(project.instance_variable_get(:@desired_default_branch)).to be_nil
+          end
+        end
+
+        context 'when desired branch does not exist' do
+          before do
+            allow(repository).to receive(:root_ref).and_return('main')
+            allow(repository).to receive(:branch_exists?).with(new_branch).and_return(false)
+          end
+
+          it 'does not change HEAD' do
+            expect(repository).not_to receive(:change_head)
+
+            project.apply_desired_default_branch
+          end
+
+          it 'keeps @desired_default_branch set for later retry' do
+            project.apply_desired_default_branch
+
+            expect(project.instance_variable_get(:@desired_default_branch)).to eq(new_branch)
+          end
+        end
+
+        context 'when an error occurs during branch change' do
+          let(:error_message) { 'Failed to change HEAD' }
+
+          before do
+            allow(repository).to receive(:root_ref).and_return('main')
+            allow(repository).to receive(:branch_exists?).with(new_branch).and_return(true)
+            allow(repository).to receive(:change_head).and_raise(StandardError, error_message)
+          end
+
+          it 'logs a warning with the error message' do
+            expect(Import::Framework::Logger).to receive(:warn)
+              .with("Failed to set default branch to #{new_branch}: #{error_message}")
+
+            project.apply_desired_default_branch
+          end
+
+          it 'does not raise an error' do
+            expect { project.apply_desired_default_branch }.not_to raise_error
+          end
+
+          it 'does not clear @desired_default_branch' do
+            project.apply_desired_default_branch
+
+            expect(project.instance_variable_get(:@desired_default_branch)).to eq(new_branch)
+          end
+        end
+      end
+    end
+  end
+
   describe '#to_ability_name' do
     it 'returns project' do
       project = build(:project_empty_repo)

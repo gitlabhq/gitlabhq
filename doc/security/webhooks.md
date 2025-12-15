@@ -107,13 +107,15 @@ To filter requests by blocking many requests:
 
 When this checkbox is selected, requests to the following are still not blocked:
 
-- Core services like Geo, Git, GitLab Shell, Gitaly, PostgreSQL, and Redis.
+- Core services like Git, GitLab Shell, Gitaly, PostgreSQL, and Redis.
 - Object storage.
 - IP addresses and domains in the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
 This setting is respected by the main GitLab application only, so other services like Gitaly can still make requests that break the rule.
 Additionally, [some areas of GitLab](https://gitlab.com/groups/gitlab-org/-/epics/8029) do not respect outbound filtering
 rules.
+
+Due to an [existing bug (#544821)](https://gitlab.com/gitlab-org/gitlab/-/issues/544821), Geo region URLs must be added to the outbound allowlist.
 
 ## Allow outbound requests to certain IP addresses and domains
 

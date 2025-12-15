@@ -6,6 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { createAlert } from '~/alert';
+import { formatNumber } from '~/locale';
 import WorkItemsCsvExportModal from '~/work_items/components/work_items_csv_export_modal.vue';
 import workItemsCsvExportMutation from '~/work_items/graphql/work_items_csv_export.mutation.graphql';
 import { workItemsCsvExportResponse, workItemsCsvExportFailureResponse } from '../mock_data';
@@ -16,7 +17,7 @@ Vue.use(VueApollo);
 
 describe('WorkItemsCsvExportModal', () => {
   let wrapper;
-  const workItemCount = 10;
+  const workItemCount = 10000;
 
   function createComponent(options = {}) {
     const {
@@ -91,8 +92,8 @@ describe('WorkItemsCsvExportModal', () => {
         });
       });
 
-      it('displays work item count text', () => {
-        expect(wrapper.text()).toContain(`${workItemCount} work items selected`);
+      it('displays formatted work item count text', () => {
+        expect(wrapper.text()).toContain(`${formatNumber(workItemCount)} work items selected`);
         expect(findIcon().exists()).toBe(true);
       });
     });
@@ -124,7 +125,7 @@ describe('WorkItemsCsvExportModal', () => {
         });
       });
 
-      it('displays issue count text', () => {
+      it('displays formatted issue count text', () => {
         wrapper = createComponent({
           injectedProperties: {
             glFeatures: {
@@ -132,7 +133,7 @@ describe('WorkItemsCsvExportModal', () => {
             },
           },
         });
-        expect(wrapper.text()).toContain(`${workItemCount} issues selected`);
+        expect(wrapper.text()).toContain(`${formatNumber(workItemCount)} issues selected`);
         expect(findIcon().exists()).toBe(true);
       });
     });

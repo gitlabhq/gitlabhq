@@ -300,6 +300,10 @@ describe('when work items are fetched', () => {
     await waitForPromises();
   });
 
+  it('passes active tab count as workItemCount prop to work-item-list-actions', () => {
+    expect(findWorkItemListActions().props('workItemCount')).toBe(2);
+  });
+
   it('renders IssuableList component', () => {
     expect(findIssuableList().props()).toMatchObject({
       currentTab: STATUS_OPEN,
@@ -1883,6 +1887,14 @@ describe('when bulk editing', () => {
 });
 
 describe('when workItemPlanningView flag is enabled', () => {
+  it('passes workItemsCount as workItemCount prop to work-item-list-actions', async () => {
+    mountComponent({ workItemPlanningView: true });
+
+    await waitForPromises();
+
+    expect(findWorkItemListActions().props('workItemCount')).toBe(3);
+  });
+
   it('renders the WorkItemListHeading component', async () => {
     mountComponent({ workItemPlanningView: true });
     await waitForPromises();

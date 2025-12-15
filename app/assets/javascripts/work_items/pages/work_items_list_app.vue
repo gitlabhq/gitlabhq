@@ -1597,7 +1597,7 @@ export default {
                   <work-item-list-actions
                     :show-import-export-buttons="showImportExportButtons"
                     :show-work-item-by-email-button="showWorkItemByEmail"
-                    :work-item-count="currentTabCount"
+                    :work-item-count="workItemsCount"
                     :query-variables="csvExportQueryVariables"
                     :full-path="rootPageFullPath"
                     :url-params="urlParams"

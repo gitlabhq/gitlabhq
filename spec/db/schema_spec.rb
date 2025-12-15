@@ -324,7 +324,7 @@ RSpec.describe 'Database schema',
         next unless schemas_for_connection.include?(table_schema)
 
         describe table do
-          let(:indexes) { connection.indexes(table) }
+          let(:indexes) { connection.indexes(table) << primary_key_index(table, connection) }
           let(:columns) { connection.columns(table) }
           let(:foreign_keys) { to_foreign_keys(Gitlab::Database::PostgresForeignKey.by_constrained_table_name(table)) }
           let(:loose_foreign_keys) do
@@ -436,6 +436,7 @@ RSpec.describe 'Database schema',
                 matching_indexes = duplicate_indexes[btree_index]
 
                 error_message = <<~ERROR
+                    Table: #{table}
                     Duplicate index: #{btree_index.name} with #{matching_indexes.map(&:name)}
                     #{btree_index.name} : #{btree_index.columns.inspect}
                     #{matching_indexes.first.name} : #{matching_indexes.first.columns.inspect}.
@@ -739,6 +740,40 @@ RSpec.describe 'Database schema',
 
   def ignored_jsonb_columns(model)
     ignored_jsonb_columns_map.fetch(model, [])
+  end
+
+  def primary_key_index(table_name, connection)
+    pk_column = connection.primary_key(table_name)
+
+    row = connection.select_one(<<~SQL)
+      SELECT
+        i.relname AS index_name,
+        pg_get_indexdef(d.indexrelid) AS inddef,
+        pg_catalog.obj_description(i.oid, 'pg_class') AS comment,
+        d.indisvalid AS valid
+      FROM
+        pg_class t
+        INNER JOIN pg_index d ON t.oid = d.indrelid
+        INNER JOIN pg_class i ON d.indexrelid = i.oid
+        LEFT JOIN pg_namespace n ON n.oid = t.relnamespace
+      WHERE
+        d.indisprimary = 't'
+        AND t.relname = '#{table_name}'
+        AND n.nspname = 'public'
+    SQL
+
+    using = row["inddef"].match(/USING (\w+)/)[1]
+
+    ActiveRecord::ConnectionAdapters::IndexDefinition.new(
+      table_name,
+      row["index_name"],
+      true,
+      Array(pk_column),
+      using: using.to_sym,
+      nulls_not_distinct: false,
+      comment: row["comment"].presence,
+      valid: row["valid"]
+    )
   end
 
   def ignored_indexes

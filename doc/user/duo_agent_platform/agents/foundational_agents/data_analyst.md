@@ -36,7 +36,7 @@ This feature is available for testing, but not ready for production use.
 
 The Data Analyst Agent is a specialized AI assistant that helps you query, visualize, and surface
 data across the GitLab platform. It uses [GitLab Query Language (GLQL)](../../../glql/_index.md)
-to retrieve and analyze data, then provides clear, actionable insights about your projects and teams.
+to retrieve and analyze data, then provides clear, actionable insights about your projects and groups.
 
 Use the Data Analyst Agent when you need help with:
 
@@ -47,6 +47,10 @@ Use the Data Analyst Agent when you need help with:
 - Work item discovery: Finding issues, merge requests, or epics by author, label, milestone, or other criteria.
 - GLQL query generation: Creating queries to embed anywhere that supports GitLab Flavored Markdown,
   including issues, merge requests, epics, comments, wikis, snippets, and releases.
+
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For an overview, see the [GitLab Duo Data Analyst beta release demo](https://youtu.be/9MTT2P_t-CU).
+<!-- Video published on 2025-12-15 -->
 
 You can leave feedback in [issue 574028](https://gitlab.com/gitlab-org/gitlab/-/issues/574028).
 

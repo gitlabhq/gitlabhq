@@ -88,3 +88,84 @@ taggings:
 term_agreements:
   term_agreements_unique_index:
   - index_term_agreements_on_user_id
+aws_roles:
+  aws_roles_pkey:
+    - index_aws_roles_on_user_id
+ci_secure_file_states:
+  ci_secure_file_states_pkey:
+    - index_ci_secure_file_states_on_ci_secure_file_id
+dependency_proxy_blob_states:
+  dependency_proxy_blob_states_pkey:
+    - index_dependency_proxy_blob_states_on_dependency_proxy_blob_id
+dependency_proxy_manifest_states:
+  dependency_proxy_manifest_states_pkey:
+    - index_manifest_states_on_dependency_proxy_manifest_id
+group_crm_settings:
+  group_crm_settings_pkey:
+    - index_group_crm_settings_on_group_id
+group_import_states:
+  group_import_states_pkey:
+    - index_group_import_states_on_group_id
+lfs_object_states:
+  lfs_object_states_pkey:
+    - index_lfs_object_states_on_lfs_object_id
+merge_request_approval_metrics:
+  merge_request_approval_metrics_pkey:
+    - index_merge_request_approval_metrics_on_merge_request_id
+merge_request_cleanup_schedules:
+  merge_request_cleanup_schedules_pkey:
+    - index_merge_request_cleanup_schedules_on_merge_request_id
+merge_request_diff_details:
+  merge_request_diff_details_pkey:
+    - index_merge_request_diff_details_on_merge_request_diff_id
+namespace_aggregation_schedules:
+  namespace_aggregation_schedules_pkey:
+    - index_namespace_aggregation_schedules_on_namespace_id
+namespace_ai_settings:
+  namespace_ai_settings_pkey:
+    - index_namespace_ai_settings_on_namespace_id
+namespace_root_storage_statistics:
+  namespace_root_storage_statistics_pkey:
+    - index_namespace_root_storage_statistics_on_namespace_id
+note_metadata:
+  note_metadata_pkey:
+    - index_note_metadata_on_note_id
+p_ci_pipeline_artifact_states:
+  p_ci_pipeline_artifact_states_pkey:
+    - index_ci_pipeline_artifact_states_on_artifact_and_partition
+packages_cargo_metadata:
+  packages_cargo_metadata_pkey:
+    - index_packages_cargo_metadata_on_package_id
+packages_nuget_dependency_link_metadata:
+  packages_nuget_dependency_link_metadata_pkey:
+    - index_packages_nuget_dl_metadata_on_dependency_link_id
+packages_rpm_metadata:
+  packages_rpm_metadata_pkey:
+    - index_packages_rpm_metadata_on_package_id
+pages_deployment_states:
+  pages_deployment_states_pkey:
+    - index_pages_deployment_states_on_pages_deployment_id
+project_feature_usages:
+  project_feature_usages_pkey:
+    - index_project_feature_usages_on_project_id
+status_page_settings:
+  status_page_settings_pkey:
+    - index_status_page_settings_on_project_id
+upload_states:
+  upload_states_pkey:
+    - index_upload_states_on_upload_id
+user_details:
+  user_details_pkey:
+    - index_user_details_on_user_id
+user_statuses:
+  user_statuses_pkey:
+    - index_user_statuses_on_user_id
+vulnerability_finding_risk_scores:
+  vulnerability_finding_risk_scores_pkey:
+    - index_vulnerability_risk_scores_on_vulnerability_finding
+vulnerability_partial_scans:
+  vulnerability_partial_scans_pkey:
+    - index_vulnerability_partial_scans_on_scan_id
+work_item_weights_sources:
+  work_item_weights_sources_pkey:
+    - index_work_item_weights_sources_on_work_item_id

@@ -162,30 +162,35 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
   end
 
   describe 'using option' do
-    it 'does not register an offense when using is a constant' do
-      expect_no_offenses(<<~RUBY)
-        expose :group, using: API::Entities::BasicGroupDetails
-      RUBY
-    end
-
-    it 'does not register an offense when using is a constant with leading colons' do
+    it 'does not register an offense when the value is a constant with leading colons' do
       expect_no_offenses(<<~RUBY)
         expose :group, using: ::API::Entities::BasicGroupDetails
       RUBY
     end
 
-    it 'registers an offense when using is a string' do
+    it 'registers an offense when the value is a constant without leading colons' do
+      expect_offense(<<~RUBY)
+        expose :group, using: API::Entities::BasicGroupDetails
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        expose :group, using: ::API::Entities::BasicGroupDetails
+      RUBY
+    end
+
+    it 'registers an offense when the value is a string' do
       expect_offense(<<~RUBY)
         expose :group, using: 'API::Entities::BasicGroupDetails'
                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
       RUBY
 
       expect_correction(<<~RUBY)
-        expose :group, using: API::Entities::BasicGroupDetails
+        expose :group, using: ::API::Entities::BasicGroupDetails
       RUBY
     end
 
-    it 'registers an offense when using is not an API::Entities reference' do
+    it 'registers an offense when the value is not an API::Entities reference' do
       expect_offense(<<~RUBY)
         expose :group, using: SomeOtherClass
                               ^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
@@ -194,7 +199,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
       expect_no_corrections
     end
 
-    it 'registers an offense when using is a string not starting with API::Entities' do
+    it 'registers an offense when the value is a string not starting with API::Entities' do
       expect_offense(<<~RUBY)
         expose :group, using: 'SomeOtherClass'
                               ^^^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
@@ -203,7 +208,7 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
       expect_no_corrections
     end
 
-    it 'registers an offense when using is a symbol' do
+    it 'registers an offense when the value is a symbol' do
       expect_offense(<<~RUBY)
         expose :group, using: :some_type
                               ^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.

@@ -5233,99 +5233,52 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
-  describe '#full_website_url' do
+  describe '#full_website_url and #short_website_url' do
     let_it_be_with_reload(:user) { create(:user) }
 
-    it 'begins with http if website url omits it' do
-      user.website_url = 'test.com'
-
-      expect(user.full_website_url).to eq 'http://test.com'
+    subject do
+      user.assign_attributes(website_url: website_url)
+      user
     end
 
-    it 'begins with http if website url begins with http' do
-      user.website_url = 'http://test.com'
-
-      expect(user.full_website_url).to eq 'http://test.com'
+    where(:website_url, :full_website_url, :short_website_url) do
+      'test.com'             | 'http://test.com'      | 'test.com'
+      'http://test.com'      | 'http://test.com'      | 'test.com'
+      'https://test.com'     | 'https://test.com'     | 'test.com'
+      'http://www.test.com'  | 'http://www.test.com'  | 'www.test.com'
+      'https://www.test.com' | 'https://www.test.com' | 'www.test.com'
+      ''                     | 'http://'              | ''
     end
 
-    it 'begins with https if website url begins with https' do
-      user.website_url = 'https://test.com'
-
-      expect(user.full_website_url).to eq 'https://test.com'
-    end
-  end
-
-  describe '#short_website_url' do
-    let_it_be_with_reload(:user) { create(:user) }
-
-    it 'does not begin with http if website url omits it' do
-      user.website_url = 'test.com'
-
-      expect(user.short_website_url).to eq 'test.com'
-    end
-
-    it 'does not begin with http if website url begins with http' do
-      user.website_url = 'http://test.com'
-
-      expect(user.short_website_url).to eq 'test.com'
-    end
-
-    it 'does not begin with https if website url begins with https' do
-      user.website_url = 'https://test.com'
-
-      expect(user.short_website_url).to eq 'test.com'
+    with_them do
+      it do
+        expect(subject).to have_attributes(
+          website_url: website_url,
+          full_website_url: full_website_url,
+          short_website_url: short_website_url
+        )
+      end
     end
   end
 
   describe '#sanitize_attrs' do
-    let(:user) { build(:user, name: 'test & user', linkedin: 'test&user') }
-
-    it 'does not encode HTML entities in the name attribute' do
-      expect { user.sanitize_attrs }.not_to change { user.name }
-    end
-
     context 'for name attribute' do
-      subject { user.name }
+      subject { build(:user, name: input).tap(&:validate) }
 
-      before do
-        user.name = input_name
-        user.sanitize_attrs
+      where(:input, :expected) do
+        '<a href="//example.com">Test<a>'               | '-Test-'
+        'a<a class="js-evil" href=/api/v4'              | 'a-a class="js-evil" href=/api/v4'
+        'alice some> tag'                               | 'alice some- tag'
+        '</link>alice'                                  | '-alice'
+        '<script>alert("Test")</script>'                | '-alert("Test")-'
+        'User"><iframe src=javascript:alert()><iframe>' | 'User"---'
+
+        # Does not encode HTML entities
+        'test & user'                                   | 'test & user'
       end
 
-      context 'from html tags' do
-        let(:input_name) { '<a href="//example.com">Test<a>' }
-
-        it { is_expected.to eq('-Test-') }
-      end
-
-      context 'from unclosed html tags' do
-        let(:input_name) { 'a<a class="js-evil" href=/api/v4' }
-
-        it { is_expected.to eq('a-a class="js-evil" href=/api/v4') }
-      end
-
-      context 'from closing html brackets' do
-        let(:input_name) { 'alice some> tag' }
-
-        it { is_expected.to eq('alice some- tag') }
-      end
-
-      context 'from self-closing tags' do
-        let(:input_name) { '</link>alice' }
-
-        it { is_expected.to eq('-alice') }
-      end
-
-      context 'from js scripts' do
-        let(:input_name) { '<script>alert("Test")</script>' }
-
-        it { is_expected.to eq('-alert("Test")-') }
-      end
-
-      context 'from iframe scripts' do
-        let(:input_name) { 'User"><iframe src=javascript:alert()><iframe>' }
-
-        it { is_expected.to eq('User"---') }
+      with_them do
+        it { is_expected.to have_attributes(name: expected) }
       end
     end
   end
