@@ -8,7 +8,7 @@ title: Validity checks
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 

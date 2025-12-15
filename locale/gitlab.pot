@@ -2559,6 +2559,9 @@ msgstr ""
 msgid "AICatalog|Agent not found."
 msgstr ""
 
+msgid "AICatalog|Agent or flow"
+msgstr ""
+
 msgid "AICatalog|Agent updated."
 msgstr ""
 
@@ -2877,6 +2880,15 @@ msgstr ""
 msgid "AICatalog|Frequently failing or nuisance activity."
 msgstr ""
 
+msgid "AICatalog|From the agents and flows configured for this project, select the one that this trigger will execute."
+msgstr ""
+
+msgid "AICatalog|From the agents configured for this project, select the agent that this trigger will execute."
+msgstr ""
+
+msgid "AICatalog|From the flows configured for this project, select the flow that this trigger will execute."
+msgstr ""
+
 msgid "AICatalog|Get started with the AI Catalog"
 msgstr ""
 
@@ -3021,7 +3033,16 @@ msgstr ""
 msgid "AICatalog|Select a flow"
 msgstr ""
 
+msgid "AICatalog|Select a flow from the AI Catalog"
+msgstr ""
+
 msgid "AICatalog|Select an agent"
+msgstr ""
+
+msgid "AICatalog|Select an agent from the AI Catalog"
+msgstr ""
+
+msgid "AICatalog|Select an agent or flow from the AI Catalog"
 msgstr ""
 
 msgid "AICatalog|Select at least one trigger."
@@ -3103,6 +3124,12 @@ msgid "AICatalog|This flow specializes in... It can help you with... Best suited
 msgstr ""
 
 msgid "AICatalog|This key dashboard provides visibility into SDLC metrics in the context of AI adoption for projects and groups. %{linkStart}Learn more%{linkEnd}"
+msgstr ""
+
+msgid "AICatalog|To prevent versioning issues, you can edit only the latest version of this agent. To edit an earlier version, %{linkStart}duplicate the agent%{linkEnd}."
+msgstr ""
+
+msgid "AICatalog|To prevent versioning issues, you can edit only the latest version of this flow. To edit an earlier version, %{linkStart}duplicate the flow%{linkEnd}."
 msgstr ""
 
 msgid "AICatalog|Tools"
@@ -25576,9 +25603,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Flow"
 msgstr ""
 
-msgid "DuoAgentsPlatform|From the flows configured for this project, select the flow that this trigger will execute."
-msgstr ""
-
 msgid "DuoAgentsPlatform|Full view"
 msgstr ""
 
@@ -25649,9 +25673,6 @@ msgid "DuoAgentsPlatform|Search issues"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Select a flow"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Select a flow from the AI Catalog"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Select a service account user"
@@ -34360,6 +34381,9 @@ msgstr ""
 msgid "HomepageActivityWidget|Activity in projects you have starred."
 msgstr ""
 
+msgid "HomepageActivityWidget|Activity in projects you own or are a member of."
+msgstr ""
+
 msgid "HomepageActivityWidget|Followed users"
 msgstr ""
 
@@ -34376,6 +34400,9 @@ msgid "HomepageActivityWidget|Your activity feed is not available. Please refres
 msgstr ""
 
 msgid "HomepageActivityWidget|Your contributions, like commits and work on issues and merge requests."
+msgstr ""
+
+msgid "HomepageActivityWidget|Your projects"
 msgstr ""
 
 msgid "Homepage|We're introducing a new way for you to get an overview of your work, so you can plan what to work on next. The homepage is now the default for you. If you prefer to change your default homepage, you can %{linkStart}update your user preferences%{linkEnd}."

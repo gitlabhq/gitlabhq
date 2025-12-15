@@ -232,8 +232,8 @@ On GitLab.com:
 On GitLab Self-Managed:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **GitLab Duo**.
-1. Select **Change Configuration**.
+1. On the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
 1. Under **Prompt cache**, clear the **Turn on prompt caching** checkbox.
 1. Select **Save changes**.
 

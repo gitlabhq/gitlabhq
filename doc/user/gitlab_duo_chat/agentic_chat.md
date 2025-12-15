@@ -283,9 +283,10 @@ User-level custom rules apply to all of your projects and workspaces.
 1. Create a custom rules file in your user configuration directory:
    - If you have set the `GLAB_CONFIG_DIR` environment variable, create the file at: `$GLAB_CONFIG_DIR/chat-rules.md`
    - Otherwise, create the file in your platform's default configuration directory:
-     - macOS: `~/Library/Application Support/glab-cli/chat-rules.md`
-     - Linux: `~/.config/glab-cli/chat-rules.md`
-     - Windows: `%LOCALAPPDATA%\glab-cli\chat-rules.md`
+     - macOS or Linux:
+       - If you use the `XDG_CONFIG_HOME` environment variable, create the file at: `$XDG_CONFIG_HOME/gitlab/duo/chat-rules.md`
+       - Otherwise, create the file within your home directory at: `~/.gitlab/duo/chat-rules.md`
+     - Windows: `%APPDATA%\GitLab\duo\chat-rules.md`
 1. Add custom rules to the file. For example:
 
    ```markdown
@@ -327,6 +328,120 @@ conversation to apply the updated rules.
 You cannot use Chat to edit your custom rules file directly.
 
 To manage who must approve any changes to custom rules, use [Code Owners](../project/codeowners/_index.md).
+
+### Create `AGENTS.md` instruction files
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2597) in GitLab 18.7.
+
+{{< /history >}}
+
+Use `AGENTS.md` files to provide instructions for GitLab Duo Chat to follow during conversations in your IDE. Unlike custom rules, these instructions are also available for other AI coding tools to use.
+
+This feature follows the [`AGENTS.md` specification](https://agents.md/), an emerging standard for
+providing context and instructions to AI coding assistants.
+
+You can create `AGENTS.md` files at multiple levels:
+
+- User-level: Apply to all of your projects and workspaces.
+- Workspace-level: Apply only to a specific project or workspace.
+- Subdirectory-level: Apply only to a specific project within a monorepo
+  or within a project with distinct components.
+
+GitLab Duo Chat combines available instructions from user-level and workspace-level `AGENTS.md` files for all conversations. If a task requires working with files in a directory that contains an additional `AGENTS.md` file, Chat applies those instructions as well.
+
+Prerequisites:
+
+- For VS Code, [install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version v6.60 or later.
+- For a JetBrains IDE, [install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.26.0 or later.
+
+{{< alert type="note" >}}
+
+Conversations that existed before you created any `AGENTS.md` files do not follow those instructions.
+
+{{< /alert >}}
+
+#### Create a user-level `AGENTS.md` file
+
+User-level `AGENTS.md` files apply to all of your projects and workspaces.
+
+1. Create the file in your user configuration directory:
+   - If you have set the `GLAB_CONFIG_DIR` environment variable, create the file at: `$GLAB_CONFIG_DIR/AGENTS.md`
+   - Otherwise, create the file in your platform's default configuration directory:
+     - macOS or Linux:
+       - If you use the `XDG_CONFIG_HOME` environment variable, create the file at: `$XDG_CONFIG_HOME/gitlab/duo/AGENTS.md`
+       - Otherwise, create the file within your home directory at: `~/.gitlab/duo/AGENTS.md`
+     - Windows: `%APPDATA%\GitLab\duo\AGENTS.md`
+1. Add instructions to the file. For example:
+
+   ```markdown
+   - I am still learning Rust, explain all Rust code at a beginner level
+   - Be brief in your explanations
+   ```
+
+1. Save the file.
+1. To apply the instructions, start a new GitLab Duo conversation.
+
+   You must do this every time you change the file.
+
+#### Create workspace-level `AGENTS.md` files
+
+Workspace-level `AGENTS.md` files apply only to a specific project or workspace.
+
+1. In your project root, create a file named `AGENTS.md`.
+1. Add instructions to the file. For example:
+
+   ```markdown
+   # Project Guidelines
+
+   This is a Ruby on Rails application using PostgreSQL.
+
+   - Follow Rails conventions for file organization
+   - Use RSpec for testing
+   - All API endpoints should be documented with OpenAPI
+   ```
+
+1. Save the file.
+1. To apply the instructions, start a new GitLab Duo conversation.
+
+   You must do this every time you change the file.
+
+#### Use `AGENTS.md` in monorepos and subdirectories
+
+For monorepos or projects with distinct components, you can place `AGENTS.md` files in
+subdirectories to provide context-specific instructions for different parts of your codebase.
+
+When GitLab Duo Chat discovers additional `AGENTS.md` files in subdirectories, it reads the relevant file before editing files in that directory. For example:
+
+```plaintext
+/my-project
+  AGENTS.md              # Root instructions (included in all conversations)
+  /frontend
+    AGENTS.md            # Frontend-specific instructions
+  /backend
+    AGENTS.md            # Backend-specific instructions
+```
+
+In this example:
+
+- The root `AGENTS.md` is always included in conversations.
+- When GitLab Duo edits files in `/frontend`, it reads `/frontend/AGENTS.md` first.
+- When GitLab Duo edits files in `/backend`, it reads `/backend/AGENTS.md` first.
+
+This approach helps ensure GitLab Duo follows the appropriate conventions for each part of your project.
+
+#### The difference between `AGENTS.md` and `chat-rules.md`
+
+You can use both `AGENTS.md` and `chat-rules.md` to provide instructions for GitLab Duo Chat. Choose which one to use based on your needs:
+
+- Use `chat-rules.md` to define instructions for GitLab only.
+- Use `AGENTS.md` to define instructions for GitLab and other AI coding tools
+  that support the `AGENTS.md` specification.
+- Use `AGENTS.md` to define context-specific instructions for projects in nested directories within your workspace.
+
+You can use both simultaneously. GitLab Duo Chat applies instructions from all available
+rule files.
 
 ## Select a model
 

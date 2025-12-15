@@ -35,7 +35,7 @@ so that the `@duo-developer` service account can perform actions
 on behalf of users.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **GitLab Duo**.
+1. On the left sidebar, select **GitLab Duo**.
 1. Under **GitLab Duo Agent Platform composite identity**, select **Turn on composite identity**.
 
 ## Allow outbound connections from the GitLab instance
@@ -110,7 +110,7 @@ Prerequisites:
 To run a health check:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **GitLab Duo**.
+1. On the left sidebar, select **GitLab Duo**.
 1. In the upper-right corner, select **Run health check**.
 1. Optional. In GitLab 17.5 and later, after the health check is complete, you can select **Download report** to save a detailed report of the health check results.
 

@@ -335,4 +335,43 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
       resolve_field(:pipeline_creation_requests, merge_request, current_user: user)
     end
   end
+
+  describe '#committers' do
+    let_it_be(:project) { create(:project, :public, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
+    context 'when load_commits_from_gitaly_in_graphql feature flag is enabled' do
+      before do
+        stub_feature_flags(load_commits_from_gitaly_in_graphql: project)
+      end
+
+      it 'loads commits from gitaly' do
+        merge_request_diff = merge_request.merge_request_diff
+        allow(merge_request).to receive(:merge_request_diff).and_return(merge_request_diff)
+
+        expect(merge_request_diff).to receive(:load_commits)
+          .with(hash_including(load_from_gitaly: true))
+          .and_call_original
+
+        resolve_field(:committers, merge_request)
+      end
+    end
+
+    context 'when load_commits_from_gitaly_in_graphql feature flag is disabled' do
+      before do
+        stub_feature_flags(load_commits_from_gitaly_in_graphql: false)
+      end
+
+      it 'loads commits without gitaly flag' do
+        merge_request_diff = merge_request.merge_request_diff
+        allow(merge_request).to receive(:merge_request_diff).and_return(merge_request_diff)
+
+        expect(merge_request_diff).to receive(:load_commits)
+          .with(hash_including(load_from_gitaly: false))
+          .and_call_original
+
+        resolve_field(:committers, merge_request)
+      end
+    end
+  end
 end

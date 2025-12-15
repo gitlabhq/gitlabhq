@@ -9,7 +9,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'app/models/clusters/agents/authorizations/user_access/project_authorization.rb'
     - 'app/models/concerns/integrations/slack_mattermost_fields.rb'
     - 'app/models/concerns/spammable.rb'
-    - 'app/models/concerns/taskable.rb'
     - 'app/models/integrations/gitlab_slack_application.rb'
     - 'app/models/integrations/jira.rb'
     - 'app/models/work_items/parent_link.rb'

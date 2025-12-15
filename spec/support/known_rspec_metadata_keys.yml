@@ -1,4 +1,5 @@
 - :absolute_file_path
+- :active_context
 - :add_ci_connection
 - :aggregate_failures
 - :allow_forgery_protection

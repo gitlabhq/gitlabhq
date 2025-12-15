@@ -209,6 +209,7 @@ Examples of hard-coding static data include:
 - [`Ai::Catalog::BuiltInTool`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197300)
 - [`WorkItems::SystemDefined::RelatedLinkRestriction`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199664)
 
-## Cells Routing
+## Other topics
 
-Coming soon, guide on how to route your request to your organization's cell.
+See [HTTP Router](http_router.md) for routing.
+See [Topology Service](topology_service.md) for cluster-wide service.

@@ -1000,7 +1000,6 @@
 - './ee/spec/lib/gitlab/legacy_github_import/project_creator_spec.rb'
 - './ee/spec/lib/gitlab/licenses/submit_license_usage_data_banner_spec.rb'
 - './ee/spec/lib/gitlab/manual_quarterly_co_term_banner_spec.rb'
-- './ee/spec/lib/gitlab/metrics/samplers/global_search_sampler_spec.rb'
 - './ee/spec/lib/gitlab/middleware/ip_restrictor_spec.rb'
 - './ee/spec/lib/gitlab/mirror_spec.rb'
 - './ee/spec/lib/gitlab/object_hierarchy_spec.rb'

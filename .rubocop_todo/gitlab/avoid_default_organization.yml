@@ -4,7 +4,6 @@ Gitlab/AvoidDefaultOrganization:
   Exclude:
     - 'ee/app/graphql/resolvers/ai/foundational_chat_agents_resolver.rb'
     - 'ee/app/helpers/ee/application_settings_helper.rb'
-    - 'ee/app/models/ee/application_setting.rb'
     - 'ee/app/presenters/admin/ai_configuration_presenter.rb'
     - 'ee/app/services/ai/duo_workflows/create_workflow_service.rb'
     - 'ee/app/services/ee/application_settings/update_service.rb'

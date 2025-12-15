@@ -45,7 +45,7 @@ The GitLab Duo plugin uses the telemetry settings in your JetBrains IDE to send 
 information to GitLab. To enable telemetry in your JetBrains IDE:
 
 1. Go to your IDE's top menu bar and select **Settings**. For example, in PyCharm, select **PyCharm** > **Settings**.
-1. On the left sidebar, expand **Tools** and select **GitLab Duo**.
+1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
 1. Under **Advanced**, select the **Enable telemetry** checkbox.
 1. Select **OK** or **Apply** to save your changes.
 

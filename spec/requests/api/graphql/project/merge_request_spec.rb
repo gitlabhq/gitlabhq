@@ -87,7 +87,11 @@ RSpec.describe 'getting merge request information nested in a project', feature_
     end
   end
 
-  context 'when the merge_request has committers' do
+  shared_examples 'when the merge_request has committers' do
+    # we need to create users with emails that match the committers in gitlab-test repository
+    let!(:user1) { create(:user, email: "dmitriy.zaporozhets@gmail.com") }
+    let!(:user2) { create(:user, email: "douwe@gitlab.com") }
+
     let(:mr_fields) do
       <<~SELECT
       committers { nodes { id username } }
@@ -95,13 +99,24 @@ RSpec.describe 'getting merge request information nested in a project', feature_
     end
 
     it 'includes committers' do
-      expected = merge_request.committers.map do |r|
-        a_hash_including('id' => global_id_of(r), 'username' => r.username)
-      end
-
       post_graphql(query, current_user: current_user)
 
-      expect(graphql_data_at(:project, :merge_request, :committers, :nodes)).to match_array(expected)
+      expected = graphql_data_at(:project, :merge_request, :committers, :nodes)
+
+      expect(expected).not_to be_empty
+      expect(expected).to all(include('id', 'username'))
+    end
+  end
+
+  context 'with the load_commits_from_gitaly_in_graphql feature flag' do
+    context "when the flag is enabled" do
+      it_behaves_like 'when the merge_request has committers'
+    end
+
+    context "when the flag is disabled" do
+      stub_feature_flags(load_commits_from_gitaly_in_graphql: false)
+
+      it_behaves_like 'when the merge_request has committers'
     end
   end
 

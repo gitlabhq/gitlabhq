@@ -35,8 +35,10 @@ You can use:
 
 ## Supported models
 
+The AI Gateway supports multiple providers through LiteLLM.
+
 GitLab-supported models offer different levels of functionality for GitLab Duo features,
-depending on the specific model and feature combination.
+depending on the specific model and feature combination. 
 
 - Full functionality: The model can likely handle the feature without any loss of quality.
 - Partial functionality: The model supports the feature, but there might be compromises or limitations.

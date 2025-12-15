@@ -95,10 +95,6 @@ tags:
   description: Operations about jobs
 - name: jobs
   description: Operations about jobs
-- name: runner_controllers
-  description: Operations about runner_controllers
-- name: runner_controller_tokens
-  description: Operations about runner_controller_tokens
 - name: events
   description: Operations about events
 - name: glql
@@ -127,7 +123,7 @@ tags:
   description: Operations about users
 - name: application
   description: Operations about applications
-- name: import
+- name: imports
   description: Operations about imports
 - name: slack
   description: Operations about slacks
@@ -41336,223 +41332,6 @@ paths:
       tags:
       - jobs
       operationId: getApiV4JobsIdArtifacts
-  "/api/v4/runner_controllers":
-    get:
-      summary: List runner controllers
-      description: Get all runner controllers.
-      produces:
-      - application/json
-      parameters:
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: List runner controllers
-          schema:
-            type: array
-            items:
-              "$ref": "#/definitions/API_Entities_Ci_RunnerController"
-        '403':
-          description: Forbidden
-      tags:
-      - runner_controllers
-      operationId: getApiV4RunnerControllers
-    post:
-      summary: Register a runner controller
-      description: Register a new runner controller.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - name: postApiV4RunnerControllers
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4RunnerControllers"
-      responses:
-        '201':
-          description: Register a runner controller
-          schema:
-            "$ref": "#/definitions/API_Entities_Ci_RunnerController"
-        '403':
-          description: Forbidden
-        '400':
-          description: Bad Request
-      tags:
-      - runner_controllers
-      operationId: postApiV4RunnerControllers
-  "/api/v4/runner_controllers/{id}":
-    get:
-      summary: Get single runner controller
-      description: Get a runner controller by using the ID of the controller.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: ID of the runner controller
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get single runner controller
-          schema:
-            "$ref": "#/definitions/API_Entities_Ci_RunnerController"
-        '403':
-          description: Forbidden
-        '404':
-          description: Not found
-      tags:
-      - runner_controllers
-      operationId: getApiV4RunnerControllersId
-    delete:
-      summary: Delete a runner controller
-      description: Delete a runner controller by using the ID of the controller.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: ID of the runner controller
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '403':
-          description: Forbidden
-        '204':
-          description: Delete a runner controller
-          schema:
-            "$ref": "#/definitions/API_Entities_Ci_RunnerController"
-        '404':
-          description: Not found
-      tags:
-      - runner_controllers
-      operationId: deleteApiV4RunnerControllersId
-  "/api/v4/runner_controllers/{runner_controller_id}/tokens":
-    get:
-      summary: List runner controller tokens
-      description: Get all tokens for a specific runner controller.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: runner_controller_id
-        description: ID of the runner controller
-        type: integer
-        format: int32
-        required: true
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: List runner controller tokens
-          schema:
-            type: array
-            items:
-              "$ref": "#/definitions/API_Entities_Ci_RunnerControllerToken"
-        '403':
-          description: Forbidden
-        '404':
-          description: Not found
-      tags:
-      - runner_controller_tokens
-      operationId: getApiV4RunnerControllersRunnerControllerIdTokens
-    post:
-      summary: Create a runner controller token
-      description: Create a new token for a specific runner controller.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: runner_controller_id
-        description: ID of the runner controller
-        type: integer
-        format: int32
-        required: true
-      - name: postApiV4RunnerControllersRunnerControllerIdTokens
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4RunnerControllersRunnerControllerIdTokens"
-      responses:
-        '201':
-          description: Create a runner controller token
-          schema:
-            "$ref": "#/definitions/API_Entities_Ci_RunnerControllerToken"
-        '403':
-          description: Forbidden
-        '400':
-          description: Bad Request
-        '404':
-          description: Not found
-      tags:
-      - runner_controller_tokens
-      operationId: postApiV4RunnerControllersRunnerControllerIdTokens
-  "/api/v4/runner_controllers/{runner_controller_id}/tokens/{id}":
-    get:
-      summary: Get single runner controller token
-      description: Get a token for a specific runner controller by using the ID of
-        the token.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: runner_controller_id
-        description: ID of the runner controller
-        type: integer
-        format: int32
-        required: true
-      - in: path
-        name: id
-        description: ID of the runner controller token
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get single runner controller token
-          schema:
-            "$ref": "#/definitions/API_Entities_Ci_RunnerControllerToken"
-        '403':
-          description: Forbidden
-        '404':
-          description: Not found
-      tags:
-      - runner_controller_tokens
-      operationId: getApiV4RunnerControllersRunnerControllerIdTokensId
   "/api/v4/group/{id}/-/packages/composer/packages":
     get:
       summary: Composer packages endpoint at group level
@@ -47336,7 +47115,7 @@ paths:
         '429':
           description: Too Many Requests
       tags:
-      - import
+      - imports
       operationId: postApiV4ImportGithubGists
   "/api/v4/slack/trigger":
     post:
@@ -53081,9 +52860,9 @@ definitions:
       membership_state:
         type: string
       member_role:
-        "$ref": "#/definitions/EE_API_Entities_MemberRole"
+        "$ref": "#/definitions/API_Entities_MemberRole"
     description: API_Entities_Member model
-  EE_API_Entities_MemberRole:
+  API_Entities_MemberRole:
     type: object
     properties:
       id:
@@ -68714,60 +68493,6 @@ definitions:
     required:
     - file
     description: Upload a job artifact
-  API_Entities_Ci_RunnerController:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 1
-      description:
-        type: string
-        example: Controller for managing runner
-      created_at:
-        type: string
-        format: date-time
-      updated_at:
-        type: string
-        format: date-time
-    description: API_Entities_Ci_RunnerController model
-  postApiV4RunnerControllers:
-    type: object
-    properties:
-      description:
-        type: string
-        description: Description of the runner controller
-        example: Controller for managing runner
-    description: Register a runner controller
-  API_Entities_Ci_RunnerControllerToken:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 1
-      runner_controller_id:
-        type: integer
-        format: int32
-        example: 1
-      description:
-        type: string
-        example: Controller for managing runner
-      created_at:
-        type: string
-        format: date-time
-      updated_at:
-        type: string
-        format: date-time
-    description: API_Entities_Ci_RunnerControllerToken model
-  postApiV4RunnerControllersRunnerControllerIdTokens:
-    type: object
-    properties:
-      description:
-        type: string
-        description: Description of the runner controller token
-        example: Token for managing runner
-    description: Create a runner controller token
   putApiV4PackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionExportFileName:
     type: object
     properties:

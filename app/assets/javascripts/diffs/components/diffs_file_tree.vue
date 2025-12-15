@@ -7,6 +7,7 @@ import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import * as types from '~/diffs/store/mutation_types';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
+import { getPanelElement } from '~/lib/utils/scroll_utils';
 import {
   INITIAL_TREE_WIDTH,
   MIN_TREE_WIDTH,
@@ -50,6 +51,7 @@ export default {
       newWidth: 0,
       cachedHeight: 0,
       cachedTop: 0,
+      viewportTop: 0,
       isNarrowScreen: false,
     };
   },
@@ -78,6 +80,8 @@ export default {
     this.restoreTreeWidthUserPreference();
   },
   mounted() {
+    const panelElement = getPanelElement(this.$refs.root.$el);
+    if (panelElement) this.viewportTop = panelElement.getBoundingClientRect().top;
     const computedStyles = getComputedStyle(this.$refs.root.$el);
     this.rowHeight = parseInt(computedStyles.getPropertyValue('--file-row-height'), 10);
     this.updateIsNarrowScreen();
@@ -106,7 +110,7 @@ export default {
       this.newWidth = this.treeWidth;
       const { height, top } = this.$el.getBoundingClientRect();
       this.cachedHeight = height;
-      this.cachedTop = top;
+      this.cachedTop = top - this.viewportTop;
     },
     onResizeEnd(size) {
       setCookie(TREE_LIST_WIDTH_STORAGE_KEY, size);

@@ -179,7 +179,7 @@ class Gitlab::Seeder::TriageOps
     hook_params = {
       enable_ssl_verification: false,
       token: WEBHOOK_TOKEN,
-      url: WEBHOOK_URL.gsub("$PORT$", ENV.fetch('TRIAGE_OPS_WEBHOOK_PORT', '8091'))
+      url: WEBHOOK_URL.gsub("$PORT$", ENV.fetch('TRIAGE_OPS_WEBHOOK_PORT', '8080'))
     }
     # Subscribe the hook to all possible events.
     all_group_hook_events = GroupHook.triggers.values

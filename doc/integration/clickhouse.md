@@ -16,23 +16,30 @@ title: ClickHouse integration guidelines
 
 {{< alert type="note" >}}
 
-For more information on plans for ClickHouse support for GitLab Self-Managed, see [epic 51](https://gitlab.com/groups/gitlab-org/architecture/gitlab-data-analytics/-/epics/51).
+For information about plans for ClickHouse support for GitLab Self-Managed, see [epic 51](https://gitlab.com/groups/gitlab-org/architecture/gitlab-data-analytics/-/epics/51).
 
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-For more information about ClickHouse support for GitLab Dedicated, see [ClickHouse for GitLab Dedicated](../subscriptions/gitlab_dedicated/_index.md#clickhouse-cloud).
+For information about ClickHouse support for GitLab Dedicated, see [ClickHouse for GitLab Dedicated](../subscriptions/gitlab_dedicated/_index.md#clickhouse-cloud).
 
 {{< /alert >}}
 
 [ClickHouse](https://clickhouse.com) is an open-source column-oriented database management system. It can efficiently filter, aggregate, and query across large data sets.
 
-ClickHouse is a secondary data store for GitLab. Only specific data is stored in ClickHouse for advanced analytical features such as [GitLab Duo and SDLC trends](../user/analytics/duo_and_sdlc_trends.md) and [CI Analytics](../ci/runners/runner_fleet_dashboard.md#enable-more-ci-analytics-features-with-clickhouse).
+ClickHouse is a secondary data store for GitLab. Only specific data is stored in ClickHouse for advanced analytical features such as [GitLab Duo and SDLC trends](../user/analytics/duo_and_sdlc_trends.md) and [CI Analytics](../ci/runners/runner_fleet_dashboard.md).
 
 You should use [ClickHouse Cloud](https://clickhouse.com/cloud) to connect ClickHouse to GitLab.
 
 Alternatively, you can [bring your own ClickHouse](https://clickhouse.com/docs/en/install). For more information, see [ClickHouse recommendations for GitLab Self-Managed](https://clickhouse.com/docs/guides/sizing-and-hardware-recommendations).
+
+## Analytics available with ClickHouse
+
+After you configure ClickHouse, you can use the following analytics features:
+
+| Feature | Description |
+|----------------------|---------------------|
+| [Runner fleet dashboard](../ci/runners/runner_fleet_dashboard.md#dashboard-metrics)  | Displays runner usage metrics and job wait times. Provides export of CSV files containing job counts and executed runner minutes by runner type and job status for each project.   |
+| [Contribution analytics](../user/group/contribution_analytics/_index.md)  | Provides analytics of group member contributions (push events, issues, merge requests) over time. ClickHouse reduces the likelihood of timeout issues for large instances. |
+| [GitLab Duo and SDLC trends](../user/analytics/duo_and_sdlc_trends.md)  | Measures the impact of GitLab Duo on software development performance. Tracks development metrics (deployment frequency, lead time, change failure rate, time to restore) alongside AI-specific indicators (GitLab Duo seat adoption, Code Suggestions acceptance rates, and GitLab Duo Chat usage). |
+| [GraphQL API for AI Metrics](../api/graphql/duo_and_sdlc_trends.md) | Provides programmatic access to GitLab Duo and SDLC trend data through the `AiMetrics`, `AiUserMetrics`, and `AiUsageData` endpoints. Provides export of pre-aggregated metrics and raw event data for integration with BI tools and custom analytics. |
 
 ## Supported ClickHouse versions
 

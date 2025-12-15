@@ -43,7 +43,7 @@ Prerequisites:
 To select a model for a feature:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **GitLab Duo**.
+1. On the left sidebar, select **GitLab Duo**.
 1. On **Configure AI features**, select **Configure models for GitLab Duo**. If **Configure AI features** is not displayed, verify that the GitLab Duo Enterprise add-on is configured for your instance.
 1. For the feature you want to configure, select a model from the dropdown list.
 1. Optional. To apply the model to all features in the section, select **Apply to all**.

@@ -1,6 +1,5 @@
 ---
 RSpec/SpecFilePathFormat:
-  Details: grace period
   Exclude:
     - 'ee/spec/models/merge_request/blocking_spec.rb'
     - 'ee/spec/requests/api/ci/runner/jobs_put_spec.rb'

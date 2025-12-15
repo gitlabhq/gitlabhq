@@ -374,7 +374,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/llm/vertex_ai/model_configurations/code_spec.rb'
     - 'ee/spec/lib/gitlab/llm/vertex_ai/model_configurations/text_embeddings_spec.rb'
     - 'ee/spec/lib/gitlab/llm/vertex_ai/model_configurations/text_spec.rb'
-    - 'ee/spec/lib/gitlab/metrics/samplers/global_search_sampler_spec.rb'
     - 'ee/spec/lib/gitlab/mirror_spec.rb'
     - 'ee/spec/lib/gitlab/package_metadata/connector/base_data_file_spec.rb'
     - 'ee/spec/lib/gitlab/patch/additional_database_tasks_spec.rb'

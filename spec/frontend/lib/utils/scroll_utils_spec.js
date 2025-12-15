@@ -7,6 +7,7 @@ import {
   getScrollingElement,
   scrollToElement,
   smoothScrollTop,
+  getPanelElement,
 } from '~/lib/utils/scroll_utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
@@ -343,6 +344,20 @@ describe('scroll utils', () => {
           behavior: 'smooth',
         });
       });
+    });
+  });
+
+  describe('getPanelElement', () => {
+    it('returns static panel element', () => {
+      expect(getPanelElement(findElem())).toBe(findStaticPanelInner());
+    });
+
+    it('returns dynamic panel element', () => {
+      expect(getPanelElement(findElemInDynamicPanel())).toBe(findDynamicPanelInner());
+    });
+
+    it('returns null without context', () => {
+      expect(getPanelElement()).toBeNull();
     });
   });
 });

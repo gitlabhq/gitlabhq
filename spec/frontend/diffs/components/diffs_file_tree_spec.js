@@ -13,6 +13,7 @@ import * as types from '~/diffs/store/mutation_types';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import * as scrollUtils from '~/lib/utils/scroll_utils';
 
 Vue.use(PiniaVuePlugin);
 
@@ -67,6 +68,7 @@ describe('DiffsFileTree', () => {
     pinia = createTestingPinia();
     useLegacyDiffs();
     mockBreakpointInstance('lg');
+    jest.spyOn(scrollUtils, 'getPanelElement').mockReturnValue(null);
   });
 
   it('renders inside file browser height', () => {
@@ -177,9 +179,14 @@ describe('DiffsFileTree', () => {
       window.getComputedStyle(wrapper.findByTestId('file-browser-floating-wrapper').element);
 
     it('applies cached sizings on resize start', async () => {
+      const panelTop = 50;
+      const elementTop = 100;
+      jest.spyOn(scrollUtils, 'getPanelElement').mockReturnValue({
+        getBoundingClientRect: () => ({ top: panelTop }),
+      });
       jest.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(() => ({
         height: 200,
-        top: 100,
+        top: elementTop,
       }));
       createComponent({ floatingResize: true });
       wrapper.findComponent(PanelResizer).vm.$emit('resize-start');
@@ -187,7 +194,7 @@ describe('DiffsFileTree', () => {
       const style = getWrapperStyle();
       expect(style.height).toBe('200px');
       expect(style.width).toBe('350px');
-      expect(style.top).toBe('100px');
+      expect(style.top).toBe(`${elementTop - panelTop}px`);
     });
 
     it('resizes wrapper element', async () => {

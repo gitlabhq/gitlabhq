@@ -381,8 +381,8 @@ Prerequisites:
 - You must be an administrator.
 
 1. In the upper-right corner, select **Admin**.
-1. Select **GitLab Duo**.
-1. In the lower-right corner, select **Change configuration**.
+1. On the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
 1. Under **GitLab Duo Chat conversations**, select either of the following options:
    - **After the conversation was last updated**.
    - **After the conversation was created**.

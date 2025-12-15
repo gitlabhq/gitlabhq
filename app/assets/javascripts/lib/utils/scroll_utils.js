@@ -5,20 +5,20 @@ import { contentTop } from './common_utils';
 const DEFAULT_PANEL_SCROLL_CONTAINER_SELECTOR = '.js-static-panel-inner';
 const DYNAMIC_PANEL_SCROLL_CONTAINER_SELECTOR = '.js-dynamic-panel-inner';
 
-const getPanelScrollingElement = (contextElement) => {
-  const staticPanel = contextElement?.closest(DEFAULT_PANEL_SCROLL_CONTAINER_SELECTOR);
-  if (staticPanel) {
-    return staticPanel;
-  }
-
-  const dynamicPanel = contextElement?.closest(DYNAMIC_PANEL_SCROLL_CONTAINER_SELECTOR);
-  if (dynamicPanel) {
-    return dynamicPanel;
-  }
-
-  // Return the default panel
+export const getPanelElement = (contextElement) => {
+  if (!contextElement) return null;
   return (
-    document.querySelector(DEFAULT_PANEL_SCROLL_CONTAINER_SELECTOR) || document.scrollingElement
+    contextElement.closest(
+      [DEFAULT_PANEL_SCROLL_CONTAINER_SELECTOR, DYNAMIC_PANEL_SCROLL_CONTAINER_SELECTOR].join(','),
+    ) || null
+  );
+};
+
+const getPanelScrollingElement = (contextElement) => {
+  return (
+    getPanelElement(contextElement) ||
+    document.querySelector(DEFAULT_PANEL_SCROLL_CONTAINER_SELECTOR) ||
+    document.scrollingElement
   );
 };
 

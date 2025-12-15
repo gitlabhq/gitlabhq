@@ -54169,7 +54169,7 @@ Template type for predefined security categories.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="securitypolicyrelationtypedescendant"></a>`DESCENDANT` | Policies defined for the group's descendant projects/groups only. Only valid for group-level policies. |
+| <a id="securitypolicyrelationtypedescendant"></a>`DESCENDANT` | Policies defined for the group's descendant projects/groups only. Only valid for group policies. Policies apply only to the 50 most recently created descendant policy projects. |
 | <a id="securitypolicyrelationtypedirect"></a>`DIRECT` | Policies defined for the project/group only. |
 | <a id="securitypolicyrelationtypeinherited"></a>`INHERITED` | Policies defined for the project/group and ancestor groups. |
 | <a id="securitypolicyrelationtypeinherited_only"></a>`INHERITED_ONLY` | Policies defined for the project/group's ancestor groups only. |

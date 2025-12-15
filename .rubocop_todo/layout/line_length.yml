@@ -2026,7 +2026,6 @@ Layout/LineLength:
     - 'lib/gitlab/jira/http_client.rb'
     - 'lib/gitlab/jira_import.rb'
     - 'lib/gitlab/jira_import/base_importer.rb'
-    - 'lib/gitlab/jira_import/issues_importer.rb'
     - 'lib/gitlab/kubernetes/kubectl_cmd.rb'
     - 'lib/gitlab/kubernetes/pod_cmd.rb'
     - 'lib/gitlab/legacy_github_import/project_creator.rb'

@@ -387,7 +387,11 @@ module Types
     # and calling it again with a certain GraphQL query can cause the Rails to to throw
     # a ActiveRecord::UnmodifiableRelation error
     def committers
-      object.commits.committers
+      if Feature.enabled?(:load_commits_from_gitaly_in_graphql, object.project)
+        object.commits(load_from_gitaly: true).committers
+      else
+        object.commits.committers
+      end
     end
 
     def web_path

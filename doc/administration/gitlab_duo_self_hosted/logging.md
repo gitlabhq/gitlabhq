@@ -38,8 +38,8 @@ Prerequisites:
 To enable logging:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **GitLab Duo**.
-1. In the GitLab Duo section, select **Change configuration**.
+1. On the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
 1. Under **Enable AI logs**, select **Capture detailed information about AI-related activities and requests**.
 1. Select **Save changes**.
 
