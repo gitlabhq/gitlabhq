@@ -102,7 +102,7 @@ module LoginHelpers
     # `app/assets/javascripts/authentication/password/components/password_input.vue`.
     expect(page).not_to have_selector('.js-password') if javascript_test?
 
-    fill_in "user_password", with: (password || user.password)
+    fill_in "user_password", with: password || user.password
 
     check 'user_remember_me' if remember
 

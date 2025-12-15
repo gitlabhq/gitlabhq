@@ -15,11 +15,8 @@ module Banzai
 
       def call
         doc.xpath(XPATH).each do |node|
-          text_content = +''
-          yield_next_siblings_until(node, %w[ol ul]) do |el|
-            text_content << el.text
-          end
-          truncated_text_content = text_content.strip.truncate(100, separator: ' ', omission: '…')
+          text_content = self.class.text_for_task_item_from_input(node)
+          truncated_text_content = text_content.truncate(100, separator: ' ', omission: '…')
           node['aria-label'] = format(_('Check option: %{option}'), option: truncated_text_content)
 
           next unless node.has_attribute?('data-inapplicable')
@@ -41,7 +38,7 @@ module Banzai
           inapplicable_s = node.document.create_element('s')
           inapplicable_s['class'] = 'inapplicable'
 
-          yield_text_nodes_without_descending_into(space.next_sibling, %w[p div ul ol]) do |el|
+          self.class.yield_text_nodes_without_descending_into(space.next_sibling, %w[p div ul ol]) do |el|
             el.wrap(inapplicable_s)
           end
         end
@@ -49,36 +46,57 @@ module Banzai
         doc
       end
 
-      # Yields the #next_sibling of start, and then the #next_sibling of that, until either
-      # there are no more next siblings or a matching element is encountered.
-      #
-      # The following #next_sibling is evaluated *before* each element is yielded, so they
-      # can safely be reparented or removed without affecting iteration.
-      def yield_next_siblings_until(start, els)
-        it = start.next_sibling
-        while it && els.exclude?(it.name)
-          following = it.next_sibling
-          yield it
-          it = following
+      class << self
+        # Gets the text for the task list item, given the <input> checkbox that declares it.
+        def text_for_task_item_from_input(input)
+          text_content = +''
+          yield_next_siblings_until(input, %w[ol ul]) do |el|
+            text_content << el.text
+          end
+          text_content.strip
         end
-      end
 
-      # Starting from start, iteratively yield text nodes contained within its children,
-      # and its (repeated) #next_siblings and their children, not descending into any of
-      # the elements given by els.
-      #
-      # The following #next_sibling is evaluated before yielding, as above.
-      def yield_text_nodes_without_descending_into(start, els)
-        stack = [start]
-        while stack.any?
-          it = stack.pop
+        # Gets the HTML corresponding to the task list item text, given the <input> checkbox that declares it.
+        # This should be used for task list item matching **only**.
+        def text_html_for_task_item_from_input(input)
+          html_content = +''
+          yield_next_siblings_until(input, %w[ol ul]) do |el|
+            html_content << el.to_html
+          end
+          html_content
+        end
 
-          stack << it.next_sibling if it.next_sibling
+        # Yields the #next_sibling of start, and then the #next_sibling of that, until either
+        # there are no more next siblings or a matching element is encountered.
+        #
+        # The following #next_sibling is evaluated *before* each element is yielded, so they
+        # can safely be reparented or removed without affecting iteration.
+        def yield_next_siblings_until(start, els)
+          it = start.next_sibling
+          while it && els.exclude?(it.name)
+            following = it.next_sibling
+            yield it
+            it = following
+          end
+        end
 
-          if it.text?
-            yield it unless it.content.blank?
-          elsif els.exclude?(it.name)
-            stack.concat(it.children.reverse)
+        # Starting from start, iteratively yield text nodes contained within its children,
+        # and its (repeated) #next_siblings and their children, not descending into any of
+        # the elements given by els.
+        #
+        # The following #next_sibling is evaluated before yielding, as above.
+        def yield_text_nodes_without_descending_into(start, els)
+          stack = [start]
+          while stack.any?
+            it = stack.pop
+
+            stack << it.next_sibling if it.next_sibling
+
+            if it.text?
+              yield it unless it.content.blank?
+            elsif els.exclude?(it.name)
+              stack.concat(it.children.reverse)
+            end
           end
         end
       end

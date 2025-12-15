@@ -37,7 +37,7 @@ if Gitlab::Metrics.prometheus_metrics_enabled? && Gitlab::Runtime.application?
     def connect(*args)
       val = super
 
-      if current_transaction = (::Gitlab::Metrics::WebTransaction.current || ::Gitlab::Metrics::BackgroundTransaction.current)
+      if current_transaction = ::Gitlab::Metrics::WebTransaction.current || ::Gitlab::Metrics::BackgroundTransaction.current
         current_transaction.increment(:gitlab_transaction_new_redis_connections_total, 1)
       end
 

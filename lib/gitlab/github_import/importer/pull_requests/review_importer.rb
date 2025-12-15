@@ -113,7 +113,7 @@ module Gitlab
           end
 
           def submitted_at
-            @submitted_at ||= (review.submitted_at || merge_request.updated_at)
+            @submitted_at ||= review.submitted_at || merge_request.updated_at
           end
         end
       end

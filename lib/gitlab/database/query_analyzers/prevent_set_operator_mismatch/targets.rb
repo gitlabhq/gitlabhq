@@ -49,7 +49,7 @@ module Gitlab
               # These include targets like literals, functions, and subselects.
               sub_select_stmt = subselect_select_stmt(target)
               if sub_select_stmt
-                name = (target.name.presence || "loc_#{target.location}")
+                name = target.name.presence || "loc_#{target.location}"
                 # The select is anonymous, so we provide a name.
                 k = "#{name}_subselect"
                 # Force parsing of the select.

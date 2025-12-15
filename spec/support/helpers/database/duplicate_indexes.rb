@@ -67,7 +67,7 @@ module Database
         # the btree_index columns, as UNIQUE indexes are still needed to enforce uniqueness
         # constraints on subset of the columns.
         matching_indexes = matching_indexes.reject do |other_index|
-          (other_index.unique && (other_index.columns.length < btree_index.columns.length))
+          other_index.unique && (other_index.columns.length < btree_index.columns.length)
         end
 
         all_matching_indexes += matching_indexes

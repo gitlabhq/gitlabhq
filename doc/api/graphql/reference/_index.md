@@ -5204,6 +5204,36 @@ Input type: `createContainerProtectionTagRuleInput`
 | <a id="mutationcreatecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.8. |
 | <a id="mutationcreatecontainerprotectiontagruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.createCustomDashboard`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Creates a custom dashboard in an organization.
+
+Input type: `CreateCustomDashboardInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcreatecustomdashboardclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatecustomdashboardconfig"></a>`config` | [`JSON!`](#json) | Dashboard layout/config JSON. |
+| <a id="mutationcreatecustomdashboarddescription"></a>`description` | [`String`](#string) | Dashboard description. |
+| <a id="mutationcreatecustomdashboardname"></a>`name` | [`String!`](#string) | Dashboard name. |
+| <a id="mutationcreatecustomdashboardnamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Namespace to scope the dashboard to. |
+| <a id="mutationcreatecustomdashboardorganizationid"></a>`organizationId` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | Organization the dashboard belongs to. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcreatecustomdashboardclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatecustomdashboarddashboard"></a>`dashboard` | [`CustomDashboard`](#customdashboard) | Newly created dashboard. |
+| <a id="mutationcreatecustomdashboarderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during creation. |
+
 ### `Mutation.createCustomEmoji`
 
 Input type: `CreateCustomEmojiInput`
@@ -30402,6 +30432,27 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserworkspacesincludeactualstates"></a>`includeActualStates` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="currentuserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
+### `CustomDashboard`
+
+Customizable analytics dashboard.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customdashboardconfig"></a>`config` | [`JSON!`](#json) | Dashboard layout and widget configuration. |
+| <a id="customdashboardcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the dashboard was created. |
+| <a id="customdashboardcreatedby"></a>`createdBy` | [`UserCore!`](#usercore) | User who created the dashboard. |
+| <a id="customdashboarddescription"></a>`description` | [`String`](#string) | Optional summary or purpose of the dashboard. |
+| <a id="customdashboardid"></a>`id` | [`AnalyticsCustomDashboardsDashboardID!`](#analyticscustomdashboardsdashboardid) | Global ID of the custom dashboard. |
+| <a id="customdashboardlockversion"></a>`lockVersion` | [`Int!`](#int) | Version used for optimistic concurrency control. |
+| <a id="customdashboardname"></a>`name` | [`String!`](#string) | Display name of the dashboard. |
+| <a id="customdashboardnamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace scope of the dashboard, if any. |
+| <a id="customdashboardorganization"></a>`organization` | [`Organization!`](#organization) | Organization that owns the dashboard. |
+| <a id="customdashboardproject"></a>`project` | [`Project`](#project) | Project scope of the dashboard, if any. |
+| <a id="customdashboardupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the dashboard was last updated. |
+| <a id="customdashboardupdatedby"></a>`updatedBy` | [`UserCore`](#usercore) | User who last updated the dashboard. |
+
 ### `CustomEmoji`
 
 A custom emoji uploaded by user.
@@ -55299,6 +55350,12 @@ An example `AlertManagementAlertID` is: `"gid://gitlab/AlertManagement::Alert/1"
 A `AlertManagementHttpIntegrationID` is a global ID. It is encoded as a string.
 
 An example `AlertManagementHttpIntegrationID` is: `"gid://gitlab/AlertManagement::HttpIntegration/1"`.
+
+### `AnalyticsCustomDashboardsDashboardID`
+
+A `AnalyticsCustomDashboardsDashboardID` is a global ID. It is encoded as a string.
+
+An example `AnalyticsCustomDashboardsDashboardID` is: `"gid://gitlab/Analytics::CustomDashboards::Dashboard/1"`.
 
 ### `AnalyticsCycleAnalyticsStageID`
 
