@@ -436,6 +436,7 @@ information to GitLab. To enable or customize telemetry in Visual Studio Code:
 
 ## Related topics
 
+- [Security considerations for editor extensions](../security_considerations.md)
 - [Troubleshooting the GitLab Workflow extension for VS Code](troubleshooting.md)
 - [Download the GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
 - Extension [source code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/)

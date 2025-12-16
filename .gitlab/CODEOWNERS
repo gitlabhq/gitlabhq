@@ -733,6 +733,7 @@ lib/gitlab/checks/
 /doc/administration/settings/visibility_and_access_controls.md @brendan777
 /doc/administration/settings/web_ide.md @uchandran
 /doc/administration/sidekiq/ @axil
+/doc/administration/sidekiq/configuration_for_imports.md @eread
 /doc/administration/silent_mode/ @axil
 /doc/administration/smime_signing_email.md @axil @eread
 /doc/administration/snippets/ @brendan777
@@ -743,12 +744,15 @@ lib/gitlab/checks/
 /doc/administration/uploads.md @axil @eread
 /doc/administration/user_settings.md @idurham
 /doc/administration/wikis/ @brendan777
+/doc/api/_index.md @idurham
 /doc/api/access_requests.md @idurham
 /doc/api/admin/data_management.md @axil
 /doc/api/admin/token.md @idurham
 /doc/api/admin_sidekiq_queues.md @axil @eread
+/doc/api/api_resources.md @idurham
 /doc/api/appearance.md @idurham
 /doc/api/applications.md @idurham
+/doc/api/attestations.md @marcel.amirault
 /doc/api/avatar.md @idurham
 /doc/api/boards.md @msedlakjakubowski
 /doc/api/branches.md @brendan777
@@ -784,11 +788,16 @@ lib/gitlab/checks/
 /doc/api/geo_nodes.md @axil
 /doc/api/geo_sites.md @axil
 /doc/api/google_cloud_integration.md @idurham
+/doc/api/graphql/_index.md @idurham
 /doc/api/graphql/assign_gitlab_duo_seats.md @lciutacu
 /doc/api/graphql/branch_rules.md @brendan777
 /doc/api/graphql/custom_emoji.md @msedlakjakubowski
 /doc/api/graphql/duo_and_sdlc_trends.md @lciutacu
 /doc/api/graphql/epic_work_items_api_migration_guide.md @msedlakjakubowski
+/doc/api/graphql/examples.md @idurham
+/doc/api/graphql/getting_started.md @idurham
+/doc/api/graphql/reference/ @idurham
+/doc/api/graphql/removed_items.md @idurham
 /doc/api/graphql/sample_issue_boards.md @msedlakjakubowski
 /doc/api/graphql/users_example.md @idurham
 /doc/api/group_access_tokens.md @idurham
@@ -846,6 +855,7 @@ lib/gitlab/checks/
 /doc/api/notes.md @msedlakjakubowski
 /doc/api/notification_settings.md @kpaizee
 /doc/api/oauth2.md @idurham
+/doc/api/openapi/ @idurham
 /doc/api/organizations.md @z_painter
 /doc/api/packages.md @z_painter
 /doc/api/packages/ @z_painter
@@ -893,6 +903,7 @@ lib/gitlab/checks/
 /doc/api/resource_milestone_events.md @msedlakjakubowski
 /doc/api/resource_state_events.md @msedlakjakubowski
 /doc/api/resource_weight_events.md @msedlakjakubowski
+/doc/api/rest/ @idurham
 /doc/api/runners.md @rsarangadharan
 /doc/api/saml.md @idurham
 /doc/api/scim.md @lciutacu
@@ -921,7 +932,6 @@ lib/gitlab/checks/
 /doc/api/user_moderation.md @idurham
 /doc/api/user_tokens.md @idurham
 /doc/api/users.md @idurham
-/doc/api/version.md @rsarangadharan
 /doc/api/virtual_registries_cleanup_policies.md @z_painter
 /doc/api/vulnerabilities.md @rlehmann1
 /doc/api/vulnerability_exports.md @rlehmann1
@@ -1005,6 +1015,7 @@ lib/gitlab/checks/
 /doc/development/gitpod_internals.md @gl-dx/pipeline-maintainers
 /doc/development/identity_verification.md @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/image_scaling.md @abdwdd @alexpooley
+/doc/development/integrations/ @gitlab-org/maintainers/cicd-verify
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
 /doc/development/internal_analytics/product_analytics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/logging.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
@@ -1037,7 +1048,7 @@ lib/gitlab/checks/
 /doc/integration/diffblue_cover.md @lyspin
 /doc/integration/elasticsearch/troubleshooting/ @ashrafkhamis
 /doc/integration/external-issue-tracker.md @msedlakjakubowski
-/doc/integration/gmail_action_buttons_for_gitlab.md @eread
+/doc/integration/gmail_action_buttons_for_gitlab.md @msedlakjakubowski
 /doc/integration/jenkins.md @lyspin
 /doc/integration/jira/ @msedlakjakubowski
 /doc/integration/mattermost/ @axil @eread
@@ -1118,9 +1129,8 @@ lib/gitlab/checks/
 /doc/user/application_security/security_center/ @rlehmann1
 /doc/user/application_security/security_dashboard/ @rlehmann1
 /doc/user/application_security/security_inventory/ @rlehmann1
-/doc/user/application_security/vulnerabilities/_index.md @rlehmann1
+/doc/user/application_security/vulnerabilities/ @rlehmann1
 /doc/user/application_security/vulnerabilities/risk_assessment_data.md @rdickenson
-/doc/user/application_security/vulnerabilities/severities.md @rlehmann1
 /doc/user/application_security/vulnerabilities/validity_check.md @rsarangadharan
 /doc/user/application_security/vulnerability_archival/ @rlehmann1
 /doc/user/application_security/vulnerability_report/ @rlehmann1
@@ -1132,10 +1142,12 @@ lib/gitlab/checks/
 /doc/user/custom_roles/ @idurham
 /doc/user/discussions/ @brendan777
 /doc/user/duo_agent_platform/ @sselhorn
+/doc/user/duo_agent_platform/flows/foundational_flows/code_review.md @uchandran
 /doc/user/duo_amazon_q/ @ashrafkhamis
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @idurham
 /doc/user/free_user_limit.md @lciutacu
+/doc/user/get_started/get_started_agent_platform.md @sselhorn
 /doc/user/get_started/get_started_managing_code.md @brendan777
 /doc/user/get_started/get_started_managing_infrastructure.md @rsarangadharan
 /doc/user/get_started/get_started_planning_work.md @msedlakjakubowski
@@ -1147,18 +1159,15 @@ lib/gitlab/checks/
 /doc/user/gitlab_duo/tutorials/ @gl-docsteam
 /doc/user/gitlab_duo_chat/ @jglassman1
 /doc/user/glql/ @brendan777
-/doc/user/group/_index.md @z_painter
-/doc/user/group/access_and_permissions.md @z_painter
+/doc/user/group/ @z_painter
 /doc/user/group/clusters/ @rsarangadharan
 /doc/user/group/contribution_analytics/ @lciutacu
-/doc/user/group/credentials_inventory.md @idurham
 /doc/user/group/custom_project_templates.md @brendan777
 /doc/user/group/devops_adoption/ @lciutacu
 /doc/user/group/epics/ @msedlakjakubowski
 /doc/user/group/import/ @eread
 /doc/user/group/issues_analytics/ @lciutacu
 /doc/user/group/iterations/ @msedlakjakubowski
-/doc/user/group/manage.md @z_painter
 /doc/user/group/moderate_users.md @idurham
 /doc/user/group/reporting/ @idurham
 /doc/user/group/repositories_analytics/ @lyspin
@@ -1171,8 +1180,6 @@ lib/gitlab/checks/
 /doc/user/group/saml_sso/troubleshooting_scim.md @lciutacu
 /doc/user/group/settings/ @idurham
 /doc/user/group/ssh_certificates.md @brendan777
-/doc/user/group/subgroups/ @z_painter
-/doc/user/group/troubleshooting.md @z_painter
 /doc/user/group/value_stream_analytics/ @lciutacu
 /doc/user/import/ @eread
 /doc/user/infrastructure/ @rsarangadharan
@@ -1215,7 +1222,6 @@ lib/gitlab/checks/
 /doc/user/project/integrations/google_artifact_management.md @z_painter
 /doc/user/project/integrations/harbor.md @z_painter
 /doc/user/project/integrations/matrix.md @kpaizee
-/doc/user/project/integrations/mattermost_slash_commands.md @eread
 /doc/user/project/integrations/mock_ci.md @lyspin
 /doc/user/project/integrations/pipeline_status_emails.md @lyspin
 /doc/user/project/integrations/slack_slash_commands.md @eread

@@ -3587,6 +3587,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
           'Guest' => 10,
           'Planner' => 15,
           'Reporter' => 20,
+          'Security Manager' => 25,
           'Developer' => 30,
           'Maintainer' => 40,
           'Owner' => 50

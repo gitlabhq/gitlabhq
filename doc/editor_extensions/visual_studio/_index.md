@@ -27,6 +27,7 @@ To update your extension to the latest version:
 
 ## Related topics
 
+- [Security considerations for editor extensions](../security_considerations.md)
 - [Open issues for this plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues/)
 - [View source code](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension)
 - [GitLab Language Server documentation](../language_server/_index.md)

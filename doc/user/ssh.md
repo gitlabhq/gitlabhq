@@ -167,7 +167,16 @@ It must uniquely map to a single user.
 
 {{< /history >}}
 
-To use SSH with GitLab, copy your public key to your GitLab account:
+To use SSH with GitLab, copy your public key to your GitLab account. GitLab cannot
+access your private key.
+
+When you add an SSH key, GitLab checks it against a list of known compromised keys.
+You cannot add compromised keys because the associated private keys are publicly
+known and could be used to access accounts. This restriction cannot be configured.
+
+If your key is blocked, [generate a new SSH key pair](#generate-an-ssh-key-pair).
+
+To add an SSH key to your GitLab account:
 
 1. Copy the contents of your public key file. You can do this manually or use a script.
 

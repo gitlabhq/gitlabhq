@@ -59,6 +59,11 @@ Use [GitLab Duo Chat](../user/gitlab_duo_chat/_index.md) to interact with an AI 
 - Ask about GitLab: Get answers about how GitLab works, concepts, and step-by-step instructions.
 - Code-related queries: Ask for explanations of code snippets, generate tests, or refactor selected code in your IDE.
 
+## Security considerations
+
+To learn about the security risks of running agents locally in editor extensions and how to protect
+your local development environment, see [security considerations for editor extensions](security_considerations.md).
+
 ## Editor extensions team runbook
 
 Use the [editor extensions team runbook](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/editor-extensions)

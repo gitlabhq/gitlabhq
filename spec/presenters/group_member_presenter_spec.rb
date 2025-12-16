@@ -157,10 +157,24 @@ RSpec.describe GroupMemberPresenter do
   end
 
   it_behaves_like '#valid_level_roles', :group do
-    let(:expected_roles) { { 'Developer' => 30, 'Maintainer' => 40, 'Owner' => 50, 'Reporter' => 20 } }
+    let(:expected_roles) do
+      { 'Developer' => 30, 'Maintainer' => 40, 'Owner' => 50, 'Reporter' => 20, 'Security Manager' => 25 }
+    end
 
     before do
       entity.update!(parent: group)
+    end
+  end
+
+  context 'when security manager is disabled', :disable_security_manager do
+    it_behaves_like '#valid_level_roles', :group do
+      let(:expected_roles) do
+        { 'Developer' => 30, 'Maintainer' => 40, 'Owner' => 50, 'Reporter' => 20 }
+      end
+
+      before do
+        entity.update!(parent: group)
+      end
     end
   end
 end

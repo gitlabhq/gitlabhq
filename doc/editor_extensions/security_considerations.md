@@ -72,7 +72,7 @@ To use Model Context Protocol (MCP) servers securely with GitLab Duo:
 
 ### Use development containers for isolation
 
-Use development containers to mitigate local execution risks. 
+Use development containers to mitigate local execution risks.
 
 Development containers provide:
 
@@ -80,3 +80,6 @@ Development containers provide:
 - Limited file system access: Configure containers to restrict access to only necessary files.
 - Credential isolation: Manage credentials separately and inject them into the container as needed.
 - Network isolation: Restrict container networking to limit external access.
+
+The GitLab Workflow extension for VS Code is compatible with VS Code Dev Containers. For more
+information, see [use the extension in a Visual Studio Code Dev Container](visual_studio_code/setup.md#use-the-extension-in-a-visual-studio-code-dev-container).

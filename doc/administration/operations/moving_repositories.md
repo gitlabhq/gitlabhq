@@ -37,7 +37,7 @@ To move repositories:
    while the migration is in progress.
 1. Schedule repository moves for projects, snippets, and group.
 1. If you use [Geo](../geo/_index.md),
-   [resync all repositories](../geo/replication/troubleshooting/synchronization_verification.md#resync-all-resources-of-one-component).
+   [resync all repositories](../geo/replication/troubleshooting/synchronization_verification.md#resync-resources-for-the-selected-component).
 
 ### Move projects
 

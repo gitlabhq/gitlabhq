@@ -33,6 +33,7 @@ RSpec.describe UserHighestRole, feature_category: :plan_provisioning do
         Gitlab::Access::GUEST,
         Gitlab::Access::PLANNER,
         Gitlab::Access::REPORTER,
+        Gitlab::Access::SECURITY_MANAGER,
         Gitlab::Access::DEVELOPER,
         Gitlab::Access::MAINTAINER,
         Gitlab::Access::OWNER

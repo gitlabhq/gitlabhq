@@ -551,8 +551,8 @@ git commit -m 'Update ErrorTrackingOpenAPI from OpenAPI definition' gems/error_t
 
 ## Update banned SSH keys
 
-You can add [banned SSH keys](../security/ssh_keys_restrictions.md#block-banned-or-compromised-keys)
-from any Git repository by using the `gitlab:security:update_banned_ssh_keys` Rake task:
+You can update the list of banned SSH keys from any Git repository by using the
+`gitlab:security:update_banned_ssh_keys` Rake task:
 
 1. Find a public remote Git repository containing SSH public keys.
    The public key files must have the `.pub` file extension.

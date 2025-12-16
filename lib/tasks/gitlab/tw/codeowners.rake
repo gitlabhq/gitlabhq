@@ -23,6 +23,7 @@ module TwCodeowners
     CodeOwnerRule.new('Agent Foundations', '@sselhorn'),
     CodeOwnerRule.new('AI Framework', '@ashrafkhamis'),
     # CodeOwnerRule.new('Analytics Instrumentation', ''),
+    CodeOwnerRule.new('API', '@idurham'),
     CodeOwnerRule.new('Authentication', '@idurham'),
     CodeOwnerRule.new('Authorization', '@idurham'),
     CodeOwnerRule.new('Build', '@axil @eread'),

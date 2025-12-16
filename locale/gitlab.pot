@@ -2640,9 +2640,6 @@ msgstr ""
 msgid "AICatalog|Configuration is required."
 msgstr ""
 
-msgid "AICatalog|Connect an agent to automate complex tasks"
-msgstr ""
-
 msgid "AICatalog|Connects to an AI model provider outside GitLab."
 msgstr ""
 
@@ -3178,6 +3175,9 @@ msgid "AICatalog|Use caution when enabling."
 msgstr ""
 
 msgid "AICatalog|Use flows in your %{namespaceType}."
+msgstr ""
+
+msgid "AICatalog|Use flows to automate complex, multi-step tasks."
 msgstr ""
 
 msgid "AICatalog|View enabled version"

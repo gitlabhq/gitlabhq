@@ -3826,9 +3826,9 @@ class Project < ApplicationRecord
   def create_new_pool_repository
     pool = PoolRepository.safe_find_or_create_by!(
       shard: Shard.by_name(repository_storage),
-      source_project: self,
-      organization: organization
-    )
+      source_project: self) do |new_pool|
+        new_pool.organization = organization
+      end
 
     update!(pool_repository: pool)
 

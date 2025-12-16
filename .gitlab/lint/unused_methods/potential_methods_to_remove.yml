@@ -5,8 +5,6 @@
 # If it turns out that a method you are attempting to remove is in fact in use,
 #   remove it from this file and add it to `excluded_methods.yml`.
 #
-decrease_retries!:
-  file: ee/app/models/ai/active_context/migration.rb
 code_suggestions_self_hosted?:
   file: ee/app/models/ai/feature_setting.rb
 compatible_self_hosted_models:
@@ -289,8 +287,6 @@ load_schema!:
   file: app/models/concerns/sha_attribute.rb
 suppress_composite_primary_key:
   file: app/models/concerns/suppress_composite_primary_key_warning.rb
-safe_title:
-  file: app/models/concerns/timebox.rb
 reset_open_transactions_baseline:
   file: app/models/concerns/transactions.rb
 _query_by_sql:

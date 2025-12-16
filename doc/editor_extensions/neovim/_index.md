@@ -49,6 +49,7 @@ in the `gitlab.vim` repository.
 
 ## Related topics
 
+- [Security considerations for editor extensions](../security_considerations.md)
 - [Neovim troubleshooting](neovim_troubleshooting.md)
 - [View source code](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim)
 - [GitLab Language Server documentation](../language_server/_index.md)

@@ -303,6 +303,73 @@ models that correspond to Geo registry tables that can be queried are:
 
 {{< /history >}}
 
+When component resources fail to sync or verify, you can trigger bulk actions to re-kick the replication queue.
+These actions reset the retry count and schedule time back to 0, causing the system to process the failed resources
+sooner rather than waiting up to 1 hour.
+
+{{< alert type="note" >}}
+
+These actions don't immediately process the resources. Instead, they re-queue the background jobs that
+handle synchronization and verification. The actual replication work happens asynchronously through the standard Geo
+replication process.
+
+{{< /alert >}}
+
+#### How resync and reverification works
+
+When you trigger a resync or reverification action, the system marks matching records as `pending`. The Geo resync and
+reverification background workers pick up these records and process them according to normal queue priority.
+This mechanism allows you to expedite the processing of failed resources without immediately blocking on the operation.
+
+{{< alert type="note" >}}
+
+It is not possible to reverify a record which is not successfully synced. Only a synced record can be verified.
+
+{{< /alert >}}
+
+It is possible to trigger bulk actions from the UI or from the Rails console.
+
+#### From the UI
+
+You can schedule a full resync of all resources of one component from the UI:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Geo** > **Sites**.
+1. Under **Replication details**, select the desired component.
+
+##### Resync resources for the selected component
+
+1. Select **Resync all**: this resets the status of all records for the selected resource, regardless of whether they are already synced or not.
+1. Select **Resync all failed**: this resets all records for which sync failed.
+
+##### Reverify resources for the selected component
+
+1. Select **Reverify all**: this resets the status of all records for the selected resource, regardless of whether they are already verified or not.
+1. Select **Reverify all failed**: this resets all records for which verification failed, but sync is successful.
+
+##### Reverify one component on all sites
+
+If the **primary** site's checksums are in question, then you need to make the **primary** site recalculate checksums.
+A "full re-verification" is then achieved, because after each checksum is recalculated on a **primary** site, events
+are generated which propagate to all **secondary** sites, causing them to recalculate their checksums and compare values.
+Any mismatch marks the registry as `sync failed`, which causes sync retries to be scheduled.
+
+You can recalculate the primary site's checksum from the UI:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Monitoring** > **Data management**.
+1. Select the desired component in the dropdown list.
+1. Select **Checksum all**.
+
+{{< alert type="warning" >}}
+
+**Resync all**, **Reverify all** and **Checksum all** trigger an update of all resources, regardless of whether they are already synced or verified.
+It should not be executed when there are thousands of an object type in the instance (for example, CI Job Artifacts).
+
+{{< /alert >}}
+
+#### From the Rails console
+
 {{< alert type="warning" >}}
 
 Commands that change data can cause damage if not run correctly or under the right conditions.
@@ -313,33 +380,6 @@ Always run commands in a test environment first and have a backup instance ready
 The following sections describe how to use internal application commands in the
 [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) to cause bulk
 replication or verification.
-
-#### Resync all resources of one component
-
-{{< alert type="warning" >}}
-
-This operation triggers a full synchronization of data, regardless of whether it is already synced or not. For large systems this can take many days to complete. It is not recommended to execute this operation on data types that can have a large number of objects such as CI Job Artifacts.
-
-{{< /alert >}}
-
-You can schedule a full resync of all resources of one component from the UI:
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites**.
-1. Under **Replication details**, select the desired component.
-1. Select **Resync all**.
-
-Alternatively,
-[start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session)
-**on the secondary Geo site** to gather more information, or execute these operations manually using
-the snippets below.
-
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions.
-Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
 
 ##### Sync all resources of one component that failed to sync
 
@@ -355,6 +395,8 @@ The following script:
   or running it using [Rails runner](../../../operations/rails_console.md#using-the-rails-runner)
   and `nohup`.
 
+Run this script **on the secondary Geo site**.
+
 ```ruby
 Geo::ProjectRepositoryRegistry.failed.find_each do |registry|
    begin
@@ -366,25 +408,6 @@ Geo::ProjectRepositoryRegistry.failed.find_each do |registry|
    end
 end; nil
 ```
-
-#### Reverify one component on all sites
-
-If the **primary** site's checksums are in question, then you need to make the **primary** site recalculate checksums. A "full re-verification" is then achieved, because after each checksum is recalculated on a **primary** site, events are generated which propagate to all **secondary** sites, causing them to recalculate their checksums and compare values. Any mismatch marks the registry as `sync failed`, which causes sync retries to be scheduled.
-
-The UI does not provide a button to do a full re-verification. You can simulate this by setting your **primary** site's `Re-verification interval` to 1 (day) in **Admin** > **Geo** > **Nodes** > **Edit**. The **primary** site will then recalculate the checksum of any resource that has been checksummed more than 1 day ago.
-
-Optionally, you can do this manually:
-
-1. SSH into a GitLab Rails node in the **primary** site.
-1. Open the [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session).
-1. Replacing `Upload` with any of the [Geo data type Model classes](#geo-data-type-model-classes),
-   mark all resources as `pending verification`:
-
-   ```ruby
-   Upload.verification_state_table_class.each_batch do |relation|
-     relation.update_all(verification_state: 0)
-   end
-   ```
 
 ##### Reverify all resources that failed to checksum on the primary site
 
@@ -404,22 +427,6 @@ reverification sooner:
      relation.update_all(verification_state: 0)
    end
    ```
-
-#### Reverify all resources of one component
-
-{{< alert type="warning" >}}
-
-This operation triggers a verification of all resources, regardless of whether they are already verified or not. It should not be executed when there are thousands of an object type in the instance (for example, CI Job Artifacts).
-
-{{< /alert >}}
-
-If you believe the **primary** site checksums are correct, you can schedule a reverification of one
-component on one **secondary** site from the UI:
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Geo** > **Sites**.
-1. Under **Replication details**, select the desired component.
-1. Select **Reverify all**.
 
 ## Errors
 

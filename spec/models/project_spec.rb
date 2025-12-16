@@ -10702,20 +10702,28 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#ensure_pool_repository' do
     let_it_be_with_reload(:project) { create(:project) }
 
-    it 'returns existing pool repository when present' do
-      pool_repo = create(:pool_repository, source_project: project)
+    context 'when pool repository exists' do
+      let!(:pool_repo) { create(:pool_repository, source_project: project) }
 
-      expect(project.ensure_pool_repository).to eq(pool_repo)
+      it 'returns existing pool repository when present' do
+        expect { project.ensure_pool_repository }.not_to change { PoolRepository.count }
+
+        expect(project.ensure_pool_repository).to eq(pool_repo)
+      end
     end
 
-    it 'creates new pool repository when none exists' do
-      expect { project.ensure_pool_repository }.to change { PoolRepository.count }.by(1)
-      expect(project.ensure_pool_repository).to be_a(PoolRepository)
-    end
+    context 'when no pool repository exists' do
+      it 'creates new pool repository when none exists' do
+        expect { project.ensure_pool_repository }.to change { PoolRepository.count }.by(1)
 
-    it 'sets the organization to its own organization' do
-      expect(project.ensure_pool_repository.organization)
-        .to eq(project.organization)
+        expect(project.ensure_pool_repository).to be_a(PoolRepository)
+        expect(project.pool_repository.organization_id).to eq(project.organization.id)
+      end
+
+      it 'sets the organization to its own organization' do
+        expect(project.ensure_pool_repository.organization)
+          .to eq(project.organization)
+      end
     end
   end
 
