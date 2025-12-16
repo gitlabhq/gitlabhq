@@ -4,13 +4,13 @@ import { isCurrentUser } from '~/lib/utils/common_utils';
 
 function addReactiveDiscussionProps(discussion) {
   return {
-    ...discussion,
     repliesExpanded: true,
     isReplying: false,
+    hidden: false,
+    ...discussion,
     notes: discussion.notes.map((note) => {
       return { ...note, isEditing: false, editedNote: null };
     }),
-    hidden: false,
   };
 }
 
@@ -82,7 +82,7 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
         newPath,
         oldLine,
         newLine,
-      });
+      }).filter((discussion) => !discussion.isForm);
       if (existingDiscussion) {
         this.startReplying(existingDiscussion);
         return existingDiscussion.id;
@@ -160,7 +160,6 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
       return ({ oldPath, newPath, oldLine, newLine }) => {
         return this.discussions.filter((discussion) => {
           return (
-            !discussion.isForm &&
             discussion.diff_discussion &&
             discussion.position.old_path === oldPath &&
             discussion.position.new_path === newPath &&

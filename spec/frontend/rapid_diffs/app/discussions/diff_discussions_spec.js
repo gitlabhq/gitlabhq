@@ -60,11 +60,15 @@ describe('DiffDiscussions', () => {
     expect(useDiffDiscussions().toggleDiscussionReplies).toHaveBeenCalledWith(discussion);
   });
 
-  it('handles replyAdded event', () => {
-    const note = { id: '1' };
+  it('handles discussionUpdated event', () => {
+    const discussion = { id: '1' };
+    const updatedDiscussion = { id: '1', notes: [{ id: 'new-note' }] };
     createComponent({ discussions: [{ id: '1' }] });
-    wrapper.findComponent(NoteableDiscussion).vm.$emit('replyAdded', note);
-    expect(useDiffDiscussions().addNote).toHaveBeenCalledWith(note);
+    wrapper.findComponent(NoteableDiscussion).vm.$emit('discussionUpdated', updatedDiscussion);
+    expect(useDiffDiscussions().replaceDiscussion).toHaveBeenCalledWith(
+      discussion,
+      updatedDiscussion,
+    );
   });
 
   it('handles noteUpdated event', () => {

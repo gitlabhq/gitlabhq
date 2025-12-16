@@ -69,8 +69,10 @@ export default {
         const {
           data: { discussion },
         } = await axios.post(this.endpoints.discussions, {
-          position: this.discussion.position,
-          note_text: noteBody,
+          note: {
+            position: this.discussion.position,
+            note: noteBody,
+          },
         });
         clearDraft(this.autosaveKey);
         this.replaceDiscussion(this.discussion, discussion);

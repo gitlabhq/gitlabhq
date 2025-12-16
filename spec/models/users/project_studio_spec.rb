@@ -13,7 +13,7 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
       skip 'Test not applicable in classic UI' if ENV["GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED"] == "false"
     end
 
-    it "passes" do
+    it "passes", quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17820' do
       expect(described_class.new(user).enabled?).to be(true)
       expect(described_class.enabled_for_user?(user)).to be(true)
     end

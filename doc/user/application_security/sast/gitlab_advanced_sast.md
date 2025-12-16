@@ -226,6 +226,10 @@ For example, consider a merge request that modifies file B:
 
 Diff-based scanning may not capture the full call graph in the scanned files, which can lead to missed vulnerabilities (false negatives) or resurfacing of resolved ones (false positives). This trade-off reduces scan times and provides faster feedback during development. For comprehensive coverage, a full scan always runs on the default branch.
 
+##### C/C++ header file coverage
+
+Diff-based scanning does not fully support C/C++ header files. Vulnerabilities that span both header and source files can be detected, but those located entirely in header files might not be.
+
 ##### Fixed vulnerabilities not reported
 
 To avoid misleading results, fixed vulnerabilities are excluded in diff-based scanning. Because only a subset of files is analyzed, the complete call graph is not available, making it impossible to confirm if a vulnerability has been fixed.

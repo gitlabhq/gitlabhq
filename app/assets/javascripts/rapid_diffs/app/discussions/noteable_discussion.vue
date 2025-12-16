@@ -1,7 +1,7 @@
 <script>
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
-import { getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
+import { clearDraft, getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
@@ -97,22 +97,15 @@ export default {
 
       const postData = {
         in_reply_to_discussion_id: this.discussion.reply_id,
-        // TODO: should be implied on the endpoint level
-        // target_type: this.getNoteableData.targetType,
         note: { note: noteText },
       };
 
-      // TODO: should be implied on the endpoint level
-      // if (this.discussion.for_commit) {
-      //   postData.note_project_id = this.discussion.project_id;
-      // }
-
       try {
-        // TODO: fix after we support adding discussions
         const {
-          data: { note },
-        } = await axios.post(this.endpoints.createNote, postData);
-        this.$emit('replyAdded', note);
+          data: { discussion },
+        } = await axios.post(this.endpoints.discussions, postData);
+        clearDraft(this.autosaveKey);
+        this.$emit('discussionUpdated', discussion);
       } catch (error) {
         if (error.response) {
           const errorMessage = createNoteErrorMessages(

@@ -48,8 +48,12 @@ export default {
   },
   computed: {
     showNewProjectButton() {
+      const canCreateGroupLevelWorkItems = this.workItemPlanningViewEnabled && this.hasEpicsFeature;
       return (
-        this.canCreateProjects && !this.isProject && !this.hasProjects && !this.hasEpicsFeature
+        this.canCreateProjects &&
+        !this.isProject &&
+        !this.hasProjects &&
+        !canCreateGroupLevelWorkItems
       );
     },
     title() {

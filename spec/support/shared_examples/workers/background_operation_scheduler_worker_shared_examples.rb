@@ -64,7 +64,9 @@ RSpec.shared_examples 'it schedules background operation workers' do |worker_fac
 
     context 'with feature flags enabled' do
       it 'schedules executable workers for execution' do
-        expect(worker).to receive(:queue_workers_for_execution).with(worker_class.schedulable_workers(10))
+        expect(worker).to receive(:queue_workers_for_execution).with(
+          worker_class.schedulable_workers(worker.base_model.connection, 10)
+        )
 
         schedule_workers
       end

@@ -1163,6 +1163,15 @@ Example response:
 }
 ```
 
+If the target project has **Issues** [turned off](../user/project/settings/_index.md#toggle-project-features),
+you get the `403` response, along with the message:
+
+```json
+{
+   "message": "403 Forbidden"
+}
+```
+
 Issues created by users on GitLab Premium or Ultimate include the `weight` property:
 
 ```json

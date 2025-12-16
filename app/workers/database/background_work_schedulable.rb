@@ -17,6 +17,11 @@ module Database # rubocop:disable Gitlab/BoundedContexts -- This is the best pla
     included do
       include Gitlab::Utils::StrongMemoize
 
+      def base_model
+        Gitlab::Database.database_base_models[tracking_database]
+      end
+      strong_memoize_attr :base_model
+
       private
 
       def validate!
@@ -48,11 +53,6 @@ module Database # rubocop:disable Gitlab/BoundedContexts -- This is the best pla
         self.class.tracking_database
       end
       strong_memoize_attr :tracking_database
-
-      def base_model
-        Gitlab::Database.database_base_models[tracking_database]
-      end
-      strong_memoize_attr :base_model
 
       def shares_db_config?
         base_model && Gitlab::Database.db_config_share_with(base_model.connection_db_config).present?

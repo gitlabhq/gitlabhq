@@ -49,6 +49,7 @@ module Gitlab
           scope :unfinished, -> { with_statuses(:queued, :active, :paused) }
           scope :with_job_arguments, ->(args) { where("job_arguments = ?", args.to_json) } # rubocop:disable Rails/WhereEquals -- to override Rails comparison
           scope :not_on_hold, -> { where('on_hold_until IS NULL OR on_hold_until < NOW()') }
+          scope :for_gitlab_schema, ->(gitlab_schema) { where(gitlab_schema: gitlab_schema) }
 
           scope :executable, -> do
             with_statuses(:queued, :active, :paused).not_on_hold
@@ -93,7 +94,7 @@ module Gitlab
             state :failed, value: 4
 
             event :finish do
-              transition [:paused, :finished, :active] => :finished
+              transition [:queued, :paused, :finished, :active] => :finished
             end
 
             event :failure do
@@ -221,13 +222,14 @@ module Gitlab
         end
 
         class_methods do
-          def schedulable_workers(limit)
+          def schedulable_workers(connection, limit)
             unions = Gitlab::Database::PostgresPartitionedTable.each_partition(table_name).map do |partition|
               partition_name = partition.name
 
               select('id, partition, created_at')
                 .from("#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{partition_name} AS #{table_name}")
                 .executable
+                .for_gitlab_schema(Gitlab::Database.gitlab_schemas_for_connection(connection))
                 .order(created_at: :asc)
                 .limit(limit)
             end

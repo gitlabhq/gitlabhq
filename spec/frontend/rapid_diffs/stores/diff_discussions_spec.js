@@ -16,6 +16,12 @@ describe('diffDiscussions store', () => {
       expect(useDiffDiscussions().discussions[0].notes[0].editedNote).toBeNull();
       expect(useDiffDiscussions().discussions[0].hidden).toBe(false);
     });
+
+    it('does not overwrite existing properties', () => {
+      const discussions = [{ id: 'abc', notes: [{ id: 'bcd' }], hidden: true }];
+      useDiffDiscussions().setInitialDiscussions(discussions);
+      expect(useDiffDiscussions().discussions[0].hidden).toBe(true);
+    });
   });
 
   describe('replaceDiscussion', () => {
@@ -483,7 +489,6 @@ describe('diffDiscussions store', () => {
       useDiffDiscussions().discussions = [
         matchingDiscussion,
         { ...matchingDiscussion, id: 'match2' },
-        { ...matchingDiscussion, isForm: true, id: 'notmatch1' },
         { ...matchingDiscussion, diff_discussion: false, id: 'notmatch2' },
         {
           ...matchingDiscussion,
@@ -505,13 +510,22 @@ describe('diffDiscussions store', () => {
 
     it('returns an empty array if no discussions match', () => {
       useDiffDiscussions().discussions = [
-        { ...matchingDiscussion, isForm: true, id: 'notmatch1' },
         { ...matchingDiscussion, diff_discussion: false, id: 'notmatch2' },
       ];
 
       const found = useDiffDiscussions().findDiscussionsForPosition(position);
 
       expect(found).toHaveLength(0);
+    });
+
+    it('includes form discussions in results', () => {
+      const formDiscussion = { ...matchingDiscussion, isForm: true, id: 'form1' };
+      useDiffDiscussions().discussions = [matchingDiscussion, formDiscussion];
+
+      const found = useDiffDiscussions().findDiscussionsForPosition(position);
+
+      expect(found).toHaveLength(2);
+      expect(found.map((d) => d.id)).toEqual(['match', 'form1']);
     });
   });
 

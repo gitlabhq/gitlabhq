@@ -2,10 +2,9 @@ import Vue from 'vue';
 import { MOUNTED } from '~/rapid_diffs/adapter_events';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import { pinia } from '~/pinia/instance';
-import DiffDiscussions from '~/rapid_diffs/app/discussions/diff_discussions.vue';
-import NewLineDiscussionForm from '~/rapid_diffs/app/discussions/new_line_discussion_form.vue';
+import DiffLineDiscussions from '~/rapid_diffs/app/discussions/diff_line_discussions.vue';
 
-function mountVueApp(el, id, appData) {
+function mountVueApp(el, position, appData) {
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -24,22 +23,8 @@ function mountVueApp(el, id, appData) {
         noteableType: appData.noteableType,
       };
     },
-    computed: {
-      // this way we ensure reactivity continues to work without rerendering the whole component
-      discussion() {
-        return useDiffDiscussions().getDiscussionById(id);
-      },
-    },
     render(h) {
-      if (!this.discussion) return null;
-
-      if (this.discussion.hidden) return null;
-
-      if (this.discussion.isForm) {
-        return h(NewLineDiscussionForm, { props: { discussion: this.discussion } });
-      }
-
-      return h(DiffDiscussions, { props: { discussions: [this.discussion] } });
+      return h(DiffLineDiscussions, { props: { position } });
     },
   });
 }
@@ -120,7 +105,16 @@ function createDiscussionMount(createCell) {
     const mountTarget = document.createElement('div');
     cell.appendChild(mountTarget);
     cell.hasMountedApp = true;
-    mountVueApp(mountTarget, id, appData);
+    mountVueApp(
+      mountTarget,
+      {
+        oldLine: position.old_line,
+        newLine: position.new_line,
+        oldPath: position.old_path,
+        newPath: position.new_path,
+      },
+      appData,
+    );
   };
 }
 

@@ -99,6 +99,22 @@ describe('EmptyStateWithoutAnyIssues component', () => {
               expect(findNewProjectLink().exists()).toBe(false);
             });
           });
+
+          describe('when workItemPlanningViewEnabled and hasEpicsFeature are both true', () => {
+            it('does not render', () => {
+              mountComponent({
+                props: { hasProjects: false },
+                provide: {
+                  canCreateProjects: true,
+                  isProject: false,
+                  workItemPlanningViewEnabled: true,
+                  hasEpicsFeature: true,
+                },
+              });
+
+              expect(findNewProjectLink().exists()).toBe(false);
+            });
+          });
         });
 
         describe('"Create issue" link', () => {

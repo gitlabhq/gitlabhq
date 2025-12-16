@@ -28,7 +28,10 @@ module Database # rubocop:disable Gitlab/BoundedContexts -- This is the best pla
       private
 
       def queueable_workers
-        self.class.worker_class.schedulable_workers(self.class.orchestrator_class.max_running_jobs).to_a
+        self.class.worker_class.schedulable_workers(
+          base_model.connection,
+          self.class.orchestrator_class.max_running_jobs
+        ).to_a
       end
 
       def queue_workers_for_execution(workers)

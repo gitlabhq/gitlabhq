@@ -1,5 +1,6 @@
 import { nextTick } from 'vue';
 import { setActivePinia } from 'pinia';
+import { kebabCase } from 'lodash';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import {
   inlineDiscussionsAdapter,
@@ -9,28 +10,27 @@ import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import { pinia } from '~/pinia/instance';
 
-jest.mock('~/rapid_diffs/app/discussions/diff_discussions.vue', () => {
+// jest fails with direct usage of lodash inside jest.mock
+const toKebab = (str) => kebabCase(str);
+
+jest.mock('~/rapid_diffs/app/discussions/diff_line_discussions.vue', () => {
   return {
-    props: jest.requireActual('~/rapid_diffs/app/discussions/diff_discussions.vue').default.props,
+    props: jest.requireActual('~/rapid_diffs/app/discussions/diff_line_discussions.vue').default
+      .props,
     inject: ['userPermissions', 'endpoints', 'noteableType'],
     render(h) {
-      if (this.discussions.length === 0) return null;
-      const discussions = this.discussions.map((discussion) => {
-        return h(
-          'div',
-          { attrs: { 'data-discussion-id': discussion.id } },
-          `This is a discussion placeholder with an id: ${discussion.id}`,
-        );
-      });
       const renderAsDataAttr = (key, value) => {
-        return h('div', { attrs: { [`data-${key}`]: JSON.stringify(value) } });
+        return h('div', { attrs: { [`data-${toKebab(key)}`]: JSON.stringify(value) } });
       };
+      const props = Object.keys(this.$props).map((key) => {
+        return renderAsDataAttr(key, this.$props[key]);
+      });
       const injected = [
         renderAsDataAttr('user-permissions', this.userPermissions),
         renderAsDataAttr('endpoints', this.endpoints),
         renderAsDataAttr('noteable-type', this.noteableType),
       ];
-      return h('div', undefined, [...discussions, ...injected]);
+      return h('div', undefined, [...props, ...injected]);
     },
   };
 });
@@ -132,9 +132,9 @@ describe('discussions adapters', () => {
       expect(previousRow.querySelector('[data-line-number]').dataset.lineNumber).toBe(
         oldLine.toString(),
       );
-      expect(discussionRow.querySelector('td').textContent).toBe(
-        `This is a discussion placeholder with an id: ${discussionId}`,
-      );
+      expect(
+        JSON.parse(discussionRow.querySelector('[data-position]').dataset.position),
+      ).toStrictEqual({ oldPath, newPath, oldLine, newLine: null });
     });
 
     it('provides app data', async () => {
@@ -213,7 +213,11 @@ describe('discussions adapters', () => {
       button.click();
       getDiffFile().onClick(event);
       await nextTick();
-      expect(document.querySelector('[data-new-discussion-form]')).not.toBeNull();
+      expect(
+        JSON.parse(
+          getDiffFile().querySelector('[data-discussion-row] [data-position]').dataset.position,
+        ),
+      ).toStrictEqual({ oldPath, newPath, oldLine: 2, newLine: null });
     });
   });
 
@@ -275,9 +279,9 @@ describe('discussions adapters', () => {
       expect(
         previousRow.querySelector('[data-position="old"] [data-line-number]').dataset.lineNumber,
       ).toBe(oldLine.toString());
-      expect(discussionRow.children[0].textContent).toBe(
-        `This is a discussion placeholder with an id: ${discussionId}`,
-      );
+      expect(
+        JSON.parse(discussionRow.querySelector('[data-position]').dataset.position),
+      ).toStrictEqual({ oldPath, newPath, oldLine, newLine: null });
     });
 
     it('renders a discussion on the new side', async () => {
@@ -296,9 +300,9 @@ describe('discussions adapters', () => {
       expect(
         previousRow.querySelector('[data-position="new"] [data-line-number]').dataset.lineNumber,
       ).toBe(newLine.toString());
-      expect(discussionRow.children[1].textContent).toBe(
-        `This is a discussion placeholder with an id: ${discussionId}`,
-      );
+      expect(
+        JSON.parse(discussionRow.querySelector('[data-position]').dataset.position),
+      ).toStrictEqual({ oldPath, newPath, oldLine: null, newLine });
     });
 
     it('renders a discussion on both sides', async () => {
@@ -320,12 +324,22 @@ describe('discussions adapters', () => {
       ];
       await nextTick();
       const [discussionRow] = getDiscussionRows();
-      expect(discussionRow.children[0].textContent).toBe(
-        `This is a discussion placeholder with an id: ${leftDiscussionId}`,
-      );
-      expect(discussionRow.children[1].textContent).toBe(
-        `This is a discussion placeholder with an id: ${rightDiscussionId}`,
-      );
+      expect(
+        JSON.parse(discussionRow.children[0].querySelector('[data-position]').dataset.position),
+      ).toStrictEqual({
+        oldPath,
+        newPath,
+        oldLine,
+        newLine: null,
+      });
+      expect(
+        JSON.parse(discussionRow.children[1].querySelector('[data-position]').dataset.position),
+      ).toStrictEqual({
+        oldPath,
+        newPath,
+        oldLine: null,
+        newLine,
+      });
     });
 
     it('renders a discussion spanning both sides', async () => {
@@ -342,9 +356,9 @@ describe('discussions adapters', () => {
       await nextTick();
       const [discussionRow] = getDiscussionRows();
       expect(discussionRow.children).toHaveLength(1);
-      expect(discussionRow.children[0].textContent).toBe(
-        `This is a discussion placeholder with an id: ${discussionId}`,
-      );
+      expect(
+        JSON.parse(discussionRow.children[0].querySelector('[data-position]').dataset.position),
+      ).toStrictEqual({ oldPath, newPath, oldLine, newLine });
     });
 
     it('does not render hidden discussions', async () => {
@@ -403,7 +417,11 @@ describe('discussions adapters', () => {
       button.click();
       getDiffFile().onClick(event);
       await nextTick();
-      expect(document.querySelector('[data-new-discussion-form]')).not.toBeNull();
+      expect(
+        JSON.parse(
+          getDiffFile().querySelector('[data-discussion-row] [data-position]').dataset.position,
+        ),
+      ).toStrictEqual({ oldPath, newPath, oldLine: 2, newLine: 2 });
     });
   });
 });

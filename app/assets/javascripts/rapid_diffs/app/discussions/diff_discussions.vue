@@ -16,7 +16,7 @@ export default {
   },
   methods: {
     ...mapActions(useDiffDiscussions, [
-      'addNote',
+      'replaceDiscussion',
       'updateNote',
       'deleteNote',
       'editNote',
@@ -38,7 +38,7 @@ export default {
         :discussion="discussion"
         :request-last-note-editing="requestLastNoteEditing"
         @toggleDiscussionReplies="toggleDiscussionReplies(discussion)"
-        @replyAdded="addNote"
+        @discussionUpdated="replaceDiscussion(discussion, $event)"
         @noteUpdated="updateNote"
         @noteDeleted="deleteNote"
         @noteEdited="editNote"

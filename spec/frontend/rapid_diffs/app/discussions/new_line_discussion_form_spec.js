@@ -113,8 +113,10 @@ describe('NewLineDiscussionForm', () => {
       const oldDiscussion = createDiscussion();
       mockAdapter
         .onPost(defaultProvisions.endpoints.discussions, {
-          note_text: noteBody,
-          position: oldDiscussion.position,
+          note: {
+            note: noteBody,
+            position: oldDiscussion.position,
+          },
         })
         .reply(HTTP_STATUS_OK, { discussion: newDiscussion });
       createComponent({ props: { discussion: oldDiscussion } });
