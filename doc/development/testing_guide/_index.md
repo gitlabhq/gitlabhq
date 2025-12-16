@@ -86,4 +86,8 @@ How we track our [test suite run results](test_results_tracking.md).
 
 Practices to keep in mind when [testing AI-powered features](testing_ai_features.md).
 
+## Writing tests with Organizations
+
+Guidelines for writing tests with [Organizations](testing_with_organizations.md).
+
 [Return to Development documentation](../_index.md)

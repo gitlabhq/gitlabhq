@@ -114,6 +114,7 @@ module API
         detail 'This feature allows administrators to retrieve the support PIN for a specified user'
         success Entities::UserSupportPin
         is_array false
+        tags ['support_pins']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -141,6 +142,7 @@ module API
         detail 'This feature allows administrators to revoke the support PIN for a specified user before its natural expiration'
         success code: 204
         is_array false
+        tags ['support_pins']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -169,6 +171,7 @@ module API
 
       desc 'Get the list of users' do
         success Entities::UserBasic
+        tags ['users']
       end
       params do
         # CE
@@ -242,6 +245,7 @@ module API
 
       desc 'Get a single user' do
         success Entities::User
+        tags ['users']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -270,7 +274,10 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc "Get the status of a user"
+      desc "Get the status of a user" do
+        tags ['users']
+        success Entities::UserStatus
+      end
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
       end
@@ -285,6 +292,7 @@ module API
       end
 
       desc 'Follow a user' do
+        tags ['users']
         success Entities::User
       end
       params do
@@ -306,6 +314,7 @@ module API
       end
 
       desc 'Unfollow a user' do
+        tags ['users']
         success Entities::User
       end
       params do
@@ -328,6 +337,7 @@ module API
       end
 
       desc 'Get the users who follow a user' do
+        tags ['users']
         success Entities::UserBasic
       end
       params do
@@ -346,6 +356,7 @@ module API
       end
 
       desc 'Get the followers of a user' do
+        tags ['users']
         success Entities::UserBasic
       end
       params do
@@ -364,6 +375,7 @@ module API
       end
 
       desc 'Create a user. Available only for admins.' do
+        tags ['users']
         success Entities::UserWithAdmin
       end
       params do
@@ -408,6 +420,7 @@ module API
       end
 
       desc 'Update a user. Available only for admins.' do
+        tags ['users']
         success Entities::UserWithAdmin
       end
       params do
@@ -462,6 +475,7 @@ module API
       desc "Disable two factor authentication for a user. Available only for admins" do
         detail 'This feature was added in GitLab 15.2'
         success Entities::UserWithAdmin
+        tags ['users']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -486,6 +500,7 @@ module API
 
       desc "Delete a user's identity. Available only for admins" do
         success Entities::UserWithAdmin
+        tags ['users']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -507,6 +522,7 @@ module API
 
       desc 'Get the project-level Deploy keys that a specified user can access to.' do
         success Entities::DeployKey
+        tags ['deploy_keys']
       end
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
@@ -531,6 +547,7 @@ module API
 
       desc 'Add an SSH key to a specified user. Available only for admins.' do
         success Entities::SSHKey
+        tags ['ssh_keys']
       end
       params do
         requires :user_id, type: Integer, desc: 'The ID of the user'
@@ -559,6 +576,7 @@ module API
 
       desc 'Get the SSH keys of a specified user.' do
         success Entities::SSHKey
+        tags ['ssh_keys']
       end
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
@@ -576,6 +594,7 @@ module API
 
       desc 'Get a SSH key of a specified user.' do
         success Entities::SSHKey
+        tags ['ssh_keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -595,6 +614,7 @@ module API
 
       desc 'Delete an existing SSH key from a specified user. Available only for admins.' do
         success Entities::SSHKey
+        tags ['ssh_keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -620,6 +640,7 @@ module API
       desc 'Add a GPG key to a specified user. Available only for admins.' do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
+        tags ['gpg_keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -645,6 +666,7 @@ module API
       desc 'Get the GPG keys of a specified user.' do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
+        tags ['gpg_keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -664,6 +686,7 @@ module API
       desc 'Get a specific GPG key for a given user.' do
         detail 'This feature was added in GitLab 13.5'
         success Entities::GpgKey
+        tags ['gpg_keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -685,6 +708,7 @@ module API
 
       desc 'Delete an existing GPG key from a specified user. Available only for admins.' do
         detail 'This feature was added in GitLab 10.0'
+        tags ['gpg_keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -709,6 +733,7 @@ module API
 
       desc 'Revokes an existing GPG key from a specified user. Available only for admins.' do
         detail 'This feature was added in GitLab 10.0'
+        tags ['gpg_keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -731,6 +756,7 @@ module API
 
       desc 'Add an email address to a specified user. Available only for admins.' do
         success Entities::Email
+        tags ['users']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -756,6 +782,7 @@ module API
 
       desc 'Get the emails addresses of a specified user. Available only for admins.' do
         success Entities::Email
+        tags ['users']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -773,6 +800,7 @@ module API
 
       desc 'Delete an email address of a specified user. Available only for admins.' do
         success Entities::Email
+        tags ['users']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -795,6 +823,7 @@ module API
 
       desc 'Delete a user. Available only for admins.' do
         success Entities::Email
+        tags ['users']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -817,7 +846,9 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Activate a deactivated user. Available only for admins.'
+      desc 'Activate a deactivated user. Available only for admins.' do
+        tags ['users']
+      end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
@@ -836,7 +867,9 @@ module API
         end
       end
 
-      desc 'Approve a pending user. Available only for admins.'
+      desc 'Approve a pending user. Available only for admins.' do
+        tags ['users']
+      end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
@@ -853,7 +886,9 @@ module API
         end
       end
 
-      desc 'Reject a pending user. Available only for admins.'
+      desc 'Reject a pending user. Available only for admins.' do
+        tags ['users']
+      end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
@@ -870,7 +905,9 @@ module API
       end
 
       # rubocop: enable CodeReuse/ActiveRecord
-      desc 'Deactivate an active user. Available only for admins.'
+      desc 'Deactivate an active user. Available only for admins.' do
+        tags ['users']
+      end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
@@ -891,7 +928,9 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Block a user. Available only for admins.'
+      desc 'Block a user. Available only for admins.' do
+        tags ['users']
+      end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
@@ -918,7 +957,9 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Unblock a user. Available only for admins.'
+      desc 'Unblock a user. Available only for admins.' do
+        tags ['users']
+      end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
@@ -939,7 +980,9 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Ban a user. Available only for admins.'
+      desc 'Ban a user. Available only for admins.' do
+        tags ['users']
+      end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
@@ -955,7 +998,9 @@ module API
         end
       end
 
-      desc 'Unban a user. Available only for admins.'
+      desc 'Unban a user. Available only for admins.' do
+        tags ['users']
+      end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
@@ -973,6 +1018,7 @@ module API
 
       desc 'Get memberships' do
         success Entities::Membership
+        tags ['users']
       end
       params do
         requires :user_id, type: Integer, desc: 'The ID of the user'
@@ -1005,7 +1051,9 @@ module API
           end
         end
 
-        desc "Returns a list of a specified user's count of projects, groups, issues and merge requests."
+        desc "Returns a list of a specified user's count of projects, groups, issues and merge requests." do
+          tags ['users']
+        end
         params do
           requires :id,
             type: Integer,
@@ -1043,6 +1091,7 @@ module API
           desc 'Retrieve impersonation tokens. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
             success Entities::ImpersonationToken
+            tags ['impersonation_tokens']
           end
           params do
             use :pagination
@@ -1055,6 +1104,7 @@ module API
           desc 'Create a impersonation token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
             success Entities::ImpersonationTokenWithToken
+            tags ['impersonation_tokens']
           end
           params do
             requires :name, type: String, desc: 'The name of the impersonation token'
@@ -1076,6 +1126,7 @@ module API
           desc 'Retrieve impersonation token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
             success Entities::ImpersonationToken
+            tags ['impersonation_tokens']
           end
           params do
             requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
@@ -1086,6 +1137,7 @@ module API
 
           desc 'Revoke a impersonation token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
+            tags ['impersonation_tokens']
           end
           params do
             requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
@@ -1111,6 +1163,7 @@ module API
           desc 'Create a personal access token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 13.6'
             success Entities::PersonalAccessTokenWithToken
+            tags ['personal_access_tokens']
           end
           params do
             use :create_personal_access_token_params
@@ -1145,6 +1198,7 @@ module API
       version %w[v3 v4], using: :path do
         desc 'Get the currently authenticated user' do
           success Entities::UserPublic
+          tags ['users']
         end
         get feature_category: :user_profile, urgency: :low do
           entity =
@@ -1180,6 +1234,7 @@ module API
 
       desc "Get the currently authenticated user's SSH keys" do
         success Entities::SSHKey
+        tags ['ssh_keys']
       end
       params do
         use :pagination
@@ -1192,6 +1247,7 @@ module API
 
       desc 'Get a single key owned by currently authenticated user' do
         success Entities::SSHKey
+        tags ['ssh_keys']
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
@@ -1207,6 +1263,7 @@ module API
 
       desc 'Add a new SSH key to the currently authenticated user' do
         success Entities::SSHKey
+        tags ['ssh_keys']
       end
       params do
         requires :key, type: String, desc: 'The new SSH key'
@@ -1227,6 +1284,7 @@ module API
 
       desc 'Delete an SSH key from the currently authenticated user' do
         success Entities::SSHKey
+        tags ['ssh_keys']
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
@@ -1246,6 +1304,7 @@ module API
       desc "Get the currently authenticated user's GPG keys" do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
+        tags ['gpg_keys']
       end
       params do
         use :pagination
@@ -1257,6 +1316,7 @@ module API
       desc 'Get a single GPG key owned by currently authenticated user' do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
+        tags ['gpg_keys']
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the GPG key'
@@ -1273,6 +1333,7 @@ module API
       desc 'Add a new GPG key to the currently authenticated user' do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
+        tags ['gpg_keys']
       end
       params do
         requires :key, type: String, desc: 'The new GPG key'
@@ -1289,6 +1350,7 @@ module API
 
       desc 'Revoke a GPG key owned by currently authenticated user' do
         detail 'This feature was added in GitLab 10.0'
+        tags ['gpg_keys']
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the GPG key'
@@ -1305,6 +1367,7 @@ module API
 
       desc 'Delete a GPG key from the currently authenticated user' do
         detail 'This feature was added in GitLab 10.0'
+        tags ['gpg_keys']
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
@@ -1323,6 +1386,7 @@ module API
 
       desc "Get the currently authenticated user's email addresses" do
         success Entities::Email
+        tags ['users']
       end
       params do
         use :pagination
@@ -1333,6 +1397,7 @@ module API
 
       desc "[DEPRECATED] Update a user's credit_card_validation" do
         success Entities::UserCreditCardValidations
+        tags ['users']
       end
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
@@ -1370,6 +1435,7 @@ module API
       desc 'Create a new Support PIN for the authenticated user' do
         detail 'This feature creates a temporary Support PIN for the authenticated user'
         success Entities::UserSupportPin
+        tags ['support_pins']
       end
       post "support_pin", feature_category: :user_profile do
         authenticate!
@@ -1386,6 +1452,7 @@ module API
       desc 'Get the current Support PIN for the authenticated user' do
         detail 'This feature retrieves the temporary Support PIN for the authenticated user'
         success Entities::UserSupportPin
+        tags ['support_pins']
       end
       get "support_pin", feature_category: :user_profile do
         authenticate!
@@ -1405,6 +1472,7 @@ module API
       desc "Update the current user's preferences" do
         success Entities::UserPreferences
         detail 'This feature was introduced in GitLab 13.10.'
+        tags ['users']
       end
       params do
         optional :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
@@ -1433,6 +1501,7 @@ module API
       desc "Get the current user's preferences" do
         success Entities::UserPreferences
         detail 'This feature was introduced in GitLab 14.0.'
+        tags ['users']
       end
       get "preferences", feature_category: :user_profile do
         present current_user.user_preference, with: Entities::UserPreferences
@@ -1440,6 +1509,7 @@ module API
 
       desc 'Get a single email address owned by the currently authenticated user' do
         success Entities::Email
+        tags ['users']
       end
       params do
         requires :email_id, type: Integer, desc: 'The ID of the email'
@@ -1455,6 +1525,7 @@ module API
 
       desc 'Add new email address to the currently authenticated user' do
         success Entities::Email
+        tags ['users']
       end
       params do
         requires :email, type: String, desc: 'The new email'
@@ -1469,7 +1540,9 @@ module API
         end
       end
 
-      desc 'Delete an email address from the currently authenticated user'
+      desc 'Delete an email address from the currently authenticated user' do
+        tags ['users']
+      end
       params do
         requires :email_id, type: Integer, desc: 'The ID of the email'
       end
@@ -1484,7 +1557,9 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Get a list of user activities'
+      desc 'Get a list of user activities' do
+        tags ['users']
+      end
       params do
         optional(
           :from,
@@ -1513,6 +1588,7 @@ module API
       desc 'Set the status of the current user' do
         success Entities::UserStatus
         detail 'Any parameters that are not passed will be nullified.'
+        tags ['user_statuses']
       end
       params do
         use :set_user_status_params
@@ -1524,6 +1600,7 @@ module API
       desc 'Set the status of the current user' do
         success Entities::UserStatus
         detail 'Any parameters that are not passed will be ignored.'
+        tags ['user_statuses']
       end
       params do
         use :set_user_status_params
@@ -1540,6 +1617,7 @@ module API
 
       desc 'get the status of the current user' do
         success Entities::UserStatus
+        tags ['user_statuses']
       end
       get 'status', feature_category: :user_profile do
         present current_user.status || {}, with: Entities::UserStatus
@@ -1548,6 +1626,7 @@ module API
       desc 'Set the avatar of the current user' do
         success Entities::Avatar
         detail 'This feature was introduced in GitLab 17.0.'
+        tags ['avatars']
       end
       params do
         requires :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'The avatar file (generated by Multipart middleware)', documentation: { type: 'file' }
@@ -1570,6 +1649,7 @@ module API
         desc 'Create a personal access token with limited scopes for the currently authenticated user' do
           detail 'This feature was introduced in GitLab 16.5'
           success Entities::PersonalAccessTokenWithToken
+          tags ['personal_access_tokens']
         end
         params do
           use :create_personal_access_token_params

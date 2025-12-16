@@ -40,7 +40,7 @@ module.exports = (path, options = {}) => {
   if (USE_VUE_3) {
     setupFilesAfterEnv.unshift('<rootDir>/spec/frontend/vue_compat_test_setup.js');
     Object.assign(vueModuleNameMappers, {
-      '^vue$': '@vue/compat',
+      '^vue$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue.js',
       '^@vue/test-utils$': '@vue/test-utils-vue3',
 
       // Library wrappers

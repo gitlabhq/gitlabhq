@@ -1,0 +1,6 @@
+---
+name: read_group_project
+description: Grants the ability to view projects groups
+feature_category: source_code_management
+boundaries:
+  - project

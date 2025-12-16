@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/LineLength:
-  Details: grace period
   Exclude:
     - 'app/controllers/application_controller.rb'
     - 'app/controllers/groups/milestones_controller.rb'

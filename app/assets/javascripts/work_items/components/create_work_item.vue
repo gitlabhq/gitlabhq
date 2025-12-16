@@ -64,6 +64,7 @@ import {
   CUSTOM_FIELDS_TYPE_TEXT,
   WORK_ITEM_TYPE_NAME_ISSUE,
   WIDGET_TYPE_STATUS,
+  WORK_ITEM_CREATE_SOURCES,
 } from '../constants';
 import { TITLE_LENGTH_MAX } from '../../issues/constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
@@ -221,6 +222,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    createSource: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -789,6 +795,12 @@ export default {
           description: this.workItemDescription || '',
         },
       };
+
+      if (this.createSource) {
+        workItemCreateInput.createSource = this.createSource;
+      } else if (this.vulnerabilityId) {
+        workItemCreateInput.createSource = WORK_ITEM_CREATE_SOURCES.VULNERABILITY;
+      }
 
       if (this.discussionToResolve || this.mergeRequestToResolveDiscussionsOf) {
         workItemCreateInput.discussionsToResolve = {

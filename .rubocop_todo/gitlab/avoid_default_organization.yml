@@ -1,6 +1,5 @@
 ---
 Gitlab/AvoidDefaultOrganization:
-  Details: grace period
   Exclude:
     - 'ee/app/graphql/resolvers/ai/foundational_chat_agents_resolver.rb'
     - 'ee/app/helpers/ee/application_settings_helper.rb'

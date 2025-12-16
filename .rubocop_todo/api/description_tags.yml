@@ -132,6 +132,5 @@ API/DescriptionTags:
     - 'lib/api/usage_data_non_sql_metrics.rb'
     - 'lib/api/usage_data_queries.rb'
     - 'lib/api/user_counts.rb'
-    - 'lib/api/users.rb'
     - 'lib/api/vs_code/settings/vs_code_settings_sync.rb'
     - 'lib/api/web_commits.rb'

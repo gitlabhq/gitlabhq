@@ -1,0 +1,8 @@
+---
+name: recalculate_storage_project
+description: Grants the ability to recalculate project repository size statistics
+feature_category: source_code_management
+permissions:
+  - recalculate_storage_project
+boundaries:
+  - project

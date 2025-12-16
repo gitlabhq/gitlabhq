@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SlashCommands::IssueComment do
+RSpec.describe Gitlab::SlashCommands::IssueComment, feature_category: :team_planning do
   describe '#execute' do
     let(:project) { create(:project, :public) }
     let(:issue) { create(:issue, project: project) }
@@ -47,6 +47,12 @@ RSpec.describe Gitlab::SlashCommands::IssueComment do
         context 'when comment body exists' do
           it 'creates a new comment' do
             expect { subject }.to change { issue.notes.count }.by(1)
+          end
+
+          it 'generates correct note link' do
+            expect(subject[:attachments].first[:title_link]).to include(
+              "#{issue.project.full_path}/-/issues/#{issue.iid}#note_#{issue.notes.last.id}"
+            )
           end
 
           it 'a new comment has a correct body' do

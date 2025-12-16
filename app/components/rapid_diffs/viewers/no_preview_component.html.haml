@@ -7,15 +7,16 @@
     - if no_preview_reason
       %p.rd-no-preview-paragraph><
         = no_preview_reason
-  .rd-no-preview-actions
-    - if expandable_inline?
-      = action_button(button_options: { data: { click: 'showChanges', paths: paths.to_json } }) do
-        = _('Show changes')
-    - elsif file_changed?
-      = action_button(href: old_blob_path, target: '_blank') do
-        = _('View original file')
-      = action_button(href: new_blob_path, target: '_blank') do
-        = _('View changed file')
-    - else
-      = action_button(href: blob_path, target: '_blank') do
-        = _('View file')
+  - unless @diff_file.empty?
+    .rd-no-preview-actions
+      - if expandable_inline?
+        = action_button(button_options: { data: { click: 'showChanges', paths: paths.to_json } }) do
+          = _('Show changes')
+      - elsif file_changed?
+        = action_button(href: old_blob_path, target: '_blank') do
+          = _('View original file')
+        = action_button(href: new_blob_path, target: '_blank') do
+          = _('View changed file')
+      - else
+        = action_button(href: blob_path, target: '_blank') do
+          = _('View file')

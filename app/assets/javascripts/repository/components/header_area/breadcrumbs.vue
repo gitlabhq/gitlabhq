@@ -282,7 +282,7 @@ export default {
       ].filter(Boolean);
     },
     isBlobPath() {
-      return this.$route.name === 'blobPath' || this.$route.name === 'blobPathDecoded';
+      return ['blobPath', 'blobPathDecoded', 'blobPathEncoded'].includes(this.$route.name);
     },
     renderAddToTreeDropdown() {
       return this.dropdownItems.length && !this.glFeatures.directoryCodeDropdownUpdates;

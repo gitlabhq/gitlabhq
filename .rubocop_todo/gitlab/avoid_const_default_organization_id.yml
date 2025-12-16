@@ -14,6 +14,7 @@ Gitlab/AvoidConstDefaultOrganizationId:
     - 'ee/app/controllers/admin/application_settings/scim_oauth_controller.rb'
     - 'ee/spec/lib/security/security_orchestration_policies/policy_sync_state/state_spec.rb'
     - 'ee/spec/requests/admin/application_settings/scim_oauth_controller_spec.rb'
+    - 'ee/spec/services/ai/catalog/flows/seed_foundational_flows_service_spec.rb'
     - 'ee/spec/workers/security/persist_security_policies_worker_spec.rb'
     - 'lib/gitlab/background_migration/backfill_clusters_sharding_key.rb'
     - 'lib/gitlab/database_importers/default_organization_importer.rb'

@@ -9,7 +9,7 @@
           = _('Project name')
         = f.text_field :name, class: 'form-control gl-form-input', id: "project_name_edit", data: { testid: 'project-name-field' }
         %span.form-text.gl-text-subtle
-          = _('Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.')
+          = _('Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces.')
 
       .form-group.gl-col-md-4
         = f.label :id, class: 'label-bold' do

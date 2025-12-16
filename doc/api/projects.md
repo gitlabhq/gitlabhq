@@ -621,7 +621,10 @@ When the user is authenticated and `simple` is not set, this endpoint returns so
 {{< alert type="note" >}}
 
 `last_activity_at` is updated based on [project activity](../user/project/working_with_projects.md#view-project-activity)
-and [project events](events.md). `updated_at` is updated whenever the project record is changed in the database.
+and [project events](events.md). To optimize database performance, this field updates at most once per hour.
+Events occurring within one hour of the last update do not modify the timestamp.
+As a result, `last_activity_at` can be out of date by up to one hour.
+`updated_at` is updated whenever the project record is changed in the database.
 
 {{< /alert >}}
 

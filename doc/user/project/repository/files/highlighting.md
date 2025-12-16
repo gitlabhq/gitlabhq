@@ -75,7 +75,16 @@ the highlighting for a file type, and use `gitlab-language=text`:
 
 ## Configure maximum file size for highlighting
 
-By default, GitLab renders any file larger than 512 KB in plain text. To change this value:
+GitLab uses two syntax highlighters with different file size limits:
+
+- Rouge (server-side): 512 KB by default. You can configure this limit.
+- Highlight.js (client-side): 2 MB. This limit is not configurable.
+
+Files larger than the Rouge limit render in plain text.
+Files larger than the Highlight.js limit cannot be highlighted when viewed in GitLab
+and must be viewed as raw content.
+
+To change the Rouge highlighting limit:
 
 1. Open the [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/gitlab.yml.example)
    configuration file for your project.

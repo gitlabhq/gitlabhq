@@ -26706,6 +26706,12 @@ msgstr ""
 msgid "Empty file"
 msgstr ""
 
+msgid "Empty file added."
+msgstr ""
+
+msgid "Empty file deleted."
+msgstr ""
+
 msgid "Enable"
 msgstr ""
 
@@ -43536,7 +43542,7 @@ msgstr ""
 msgid "Must be in the following format: `5B`, `5b`, `1KB`, `1kb`, `2MB`, `2mb`, `1GB`, or `1gb`"
 msgstr ""
 
-msgid "Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses."
+msgid "Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces."
 msgstr ""
 
 msgid "My company or team"
@@ -72186,10 +72192,16 @@ msgstr ""
 msgid "UsageBilling|Monthly commitment"
 msgstr ""
 
+msgid "UsageBilling|Monthly commitment limit"
+msgstr ""
+
 msgid "UsageBilling|Monthly commitments offer significant discounts off list price. Share GitLab Credits across your namespace for flexibility and predictable monthly costs. Learn more about %{linkStart}GitLab Credit pricing%{linkEnd}."
 msgstr ""
 
 msgid "UsageBilling|Monthly waiver"
+msgstr ""
+
+msgid "UsageBilling|Monthly waiver limit"
 msgstr ""
 
 msgid "UsageBilling|No user data available"

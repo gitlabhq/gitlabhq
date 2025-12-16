@@ -106,6 +106,11 @@ export default {
       required: false,
       default: false,
     },
+    createSource: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     const draftWorkItemType = getDraftWorkItemType({
@@ -355,6 +360,7 @@ export default {
         :is-modal="true"
         :is-epics-list="isEpicsList"
         :from-global-menu="fromGlobalMenu"
+        :create-source="createSource"
         @changeType="selectedWorkItemTypeName = $event"
         @confirmCancel="handleConfirmCancellation"
         @discardDraft="handleDiscardDraft('createModal')"

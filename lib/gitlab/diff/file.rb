@@ -412,7 +412,7 @@ module Gitlab
       end
 
       def no_preview?
-        collapsed? || !modified_file?
+        collapsed? || !modified_file? || (empty? && !content_changed? && !submodule?)
       end
 
       def diffable_text?

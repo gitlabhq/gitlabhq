@@ -30,6 +30,7 @@ import {
   WORK_ITEM_TYPE_NAME_TASK,
   WORK_ITEM_TYPE_NAME_TEST_CASE,
   WORK_ITEM_TYPE_NAME_TICKET,
+  WORK_ITEM_CREATE_SOURCES,
 } from '~/work_items/constants';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
@@ -715,6 +716,72 @@ describe('Create work item component', () => {
       await submitCreateForm();
 
       expect(findAlert().text()).toBe('an error');
+    });
+
+    it('includes createSource when prop is provided', async () => {
+      createComponent({
+        props: {
+          createSource: WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST,
+        },
+      });
+      await waitForPromises();
+
+      await updateWorkItemTitle();
+      await submitCreateForm();
+
+      expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
+        input: expect.objectContaining({
+          createSource: WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST,
+        }),
+      });
+    });
+
+    it('uses VULNERABILITY source when vulnerability_id param exists', async () => {
+      setWindowLocation('?vulnerability_id=123');
+      createComponent();
+      await waitForPromises();
+
+      await updateWorkItemTitle();
+      await submitCreateForm();
+
+      expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
+        input: expect.objectContaining({
+          createSource: WORK_ITEM_CREATE_SOURCES.VULNERABILITY,
+        }),
+      });
+    });
+
+    it('does not include createSource when neither prop nor vulnerability_id exists', async () => {
+      createComponent();
+      await waitForPromises();
+
+      await updateWorkItemTitle();
+      await submitCreateForm();
+
+      expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
+        input: expect.not.objectContaining({
+          createSource: expect.anything(),
+        }),
+      });
+    });
+
+    it('prioritizes createSource prop over vulnerability_id', async () => {
+      setWindowLocation('?vulnerability_id=123');
+      createComponent({
+        props: {
+          createSource: WORK_ITEM_CREATE_SOURCES.GLOBAL_NAV,
+        },
+      });
+      await waitForPromises();
+
+      await updateWorkItemTitle();
+      await submitCreateForm();
+
+      expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
+        input: expect.objectContaining({
+          createSource: WORK_ITEM_CREATE_SOURCES.GLOBAL_NAV, // Uses prop, not VULNERABILITY
+        }),
+      });
     });
   });
 

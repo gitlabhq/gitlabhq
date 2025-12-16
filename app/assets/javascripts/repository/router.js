@@ -2,6 +2,7 @@ import { escapeRegExp } from 'lodash';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
+import { encodeRepositoryPath } from './utils/url_utility';
 import { setTitle } from './utils/title';
 import BlobPage from './pages/blob.vue';
 import IndexPage from './pages/index.vue';
@@ -51,6 +52,12 @@ export default function createRouter(base, baseRef, fullName) {
         ...treePathRoute,
       },
       {
+        name: 'treePathEncoded',
+        // Support encoded refs for branches with special characters (e.g., #, %, etc.)
+        path: `/:dash(-)?/tree/${encodeRepositoryPath(baseRef)}/:path*`,
+        ...treePathRoute,
+      },
+      {
         name: 'treePath',
         // Support without decoding as well just in case the ref doesn't need to be decoded
         path: `/:dash(-)?/tree/${escapeRegExp(baseRef)}/:path*`,
@@ -60,6 +67,12 @@ export default function createRouter(base, baseRef, fullName) {
         name: 'blobPathDecoded',
         // Sometimes the ref needs decoding depending on how the backend sends it to us
         path: `/:dash(-)?/blob/${decodeURI(baseRef)}/:path*`,
+        ...blobPathRoute,
+      },
+      {
+        name: 'blobPathEncoded',
+        // Support encoded refs for branches with special characters (e.g., #, %, etc.)
+        path: `/:dash(-)?/blob/${encodeRepositoryPath(baseRef)}/:path*`,
         ...blobPathRoute,
       },
       {

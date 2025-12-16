@@ -17,6 +17,7 @@ import {
   CREATE_NEW_WORK_ITEM_MODAL,
   CREATION_CONTEXT_SUPER_SIDEBAR,
   WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_CREATE_SOURCES,
 } from '~/work_items/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DROPDOWN_Y_OFFSET } from '../constants';
@@ -102,6 +103,7 @@ export default {
   toggleId: 'create-menu-toggle',
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
   WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_CREATE_SOURCES,
 };
 </script>
 
@@ -166,6 +168,7 @@ export default {
       :is-epics-list="isEpicsList"
       from-global-menu
       data-testid="new-work-item-modal"
+      :create-source="$options.WORK_ITEM_CREATE_SOURCES.GLOBAL_NAV"
       @hideModal="isCreateWorkItemModalVisible = false"
     />
   </gl-disclosure-dropdown>

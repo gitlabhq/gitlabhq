@@ -135,6 +135,7 @@ import {
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
   METADATA_KEYS,
+  WORK_ITEM_CREATE_SOURCES,
 } from '../constants';
 import workItemsReorderMutation from '../graphql/work_items_reorder.mutation.graphql';
 import { findHierarchyWidget } from '../utils';
@@ -173,6 +174,7 @@ export default {
   CREATION_CONTEXT_LIST_ROUTE,
   issuableListTabs,
   searchProjectsQuery,
+  WORK_ITEM_CREATE_SOURCES,
   importModalId: 'work-item-import-modal',
   components: {
     GlLoadingIcon,
@@ -1534,6 +1536,7 @@ export default {
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
               :is-epics-list="isEpicsList"
+              :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
               @workItemCreated="handleWorkItemCreated"
             />
             <new-resource-dropdown
@@ -1629,6 +1632,7 @@ export default {
                     :is-group="isGroup"
                     :preselected-work-item-type="preselectedWorkItemType"
                     :is-epics-list="isEpicsList"
+                    :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
                     @workItemCreated="handleWorkItemCreated"
                   />
                 </template>
@@ -1678,6 +1682,7 @@ export default {
                   :is-group="isGroup"
                   :preselected-work-item-type="preselectedWorkItemType"
                   :is-epics-list="isEpicsList"
+                  :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
                   @workItemCreated="handleWorkItemCreated"
                 />
                 <new-resource-dropdown
@@ -1703,6 +1708,7 @@ export default {
                   :is-group="isGroup"
                   :preselected-work-item-type="preselectedWorkItemType"
                   :show-project-selector="!hasEpicsFeature"
+                  :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
                   @workItemCreated="handleWorkItemCreated"
                 />
               </template>

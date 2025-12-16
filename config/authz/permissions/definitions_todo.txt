@@ -147,7 +147,6 @@ approve_deployment
 approve_merge_request
 approve_user
 archive_group
-archive_project
 assign_default_duo_group
 assign_runner
 audit_event_definitions
@@ -235,7 +234,6 @@ create_organization
 create_package
 create_pages
 create_path_lock
-create_project
 create_project_secrets
 create_projects
 create_protected_branch
@@ -616,7 +614,6 @@ read_pipeline_metadata
 read_pipeline_schedule_variables
 read_pod_logs
 read_pro_ai_analytics
-read_project
 read_project_audit_events
 read_project_for_iids
 read_project_level_analytics_dashboard

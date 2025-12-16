@@ -468,3 +468,10 @@ export const WORK_ITEMS_NO_PARENT_LIST = [
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
   WORK_ITEM_TYPE_ENUM_TICKET,
 ];
+
+export const WORK_ITEM_CREATE_SOURCES = {
+  GLOBAL_NAV: 'global_nav',
+  CHILD_ITEMS_WIDGET: 'child_items_widget',
+  WORK_ITEM_LIST: 'work_item_list',
+  VULNERABILITY: 'vulnerability',
+};

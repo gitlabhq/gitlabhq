@@ -10,6 +10,8 @@ module RapidDiffs
       end
 
       def virtual_rendering_params
+        return if @diff_file.empty?
+
         {
           paragraphs_count: paragraphs_count
         }
@@ -22,6 +24,11 @@ module RapidDiffs
       end
 
       def change_description
+        if @diff_file.empty?
+          return _('Empty file added.') if @diff_file.new_file?
+          return _('Empty file deleted.') if @diff_file.deleted_file?
+        end
+
         if @diff_file.new_file?
           _("File added.")
         elsif @diff_file.deleted_file?
@@ -47,6 +54,8 @@ module RapidDiffs
       end
 
       def no_preview_reason
+        return if @diff_file.empty?
+
         if @diff_file.too_large?
           _("File size exceeds preview limit.")
         elsif @diff_file.collapsed?

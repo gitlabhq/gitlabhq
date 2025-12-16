@@ -141,7 +141,7 @@ export default {
     ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsVisible']),
     ...mapState(useMainContainer, ['isCompact']),
     isTreeView() {
-      return this.$route.name !== 'blobPathDecoded';
+      return !['blobPathDecoded', 'blobPathEncoded'].includes(this.$route.name);
     },
     isProjectOverview() {
       return this.$route.name === 'projectRoot';
@@ -206,7 +206,9 @@ export default {
       return this.glFeatures.directoryCodeDropdownUpdates;
     },
     showBlobControls() {
-      return this.$route.params.path && this.$route.name === 'blobPathDecoded';
+      return (
+        this.$route.params.path && ['blobPathDecoded', 'blobPathEncoded'].includes(this.$route.name)
+      );
     },
     showFileTreeBrowserToggle() {
       return (
@@ -362,7 +364,6 @@ export default {
           :lock-author="lockAuthor"
         />
       </h1>
-
       <!-- Tree controls -->
       <div
         v-if="!showBlobControls"
@@ -543,7 +544,6 @@ export default {
           </template>
         </div>
       </div>
-
       <!-- Blob controls -->
       <blob-controls
         v-if="showBlobControls"

@@ -4,6 +4,7 @@ module Authz
   module Concerns
     module YamlPermission
       extend ActiveSupport::Concern
+      include Gitlab::Utils::StrongMemoize
 
       class_methods do
         include ::Gitlab::Utils::StrongMemoize
@@ -76,13 +77,28 @@ module Authz
         File.basename(File.dirname(source_file))
       end
 
+      def resource_name
+        resource_definition&.resource_name
+      end
+
+      def resource_description
+        resource_definition&.description
+      end
+
       def feature_category
-        ::Authz::Resource.get(resource)&.feature_category
+        resource_definition&.feature_category
       end
 
       def boundaries
         definition[:boundaries] || []
       end
+
+      private
+
+      def resource_definition
+        ::Authz::Resource.get(resource)
+      end
+      strong_memoize_attr :resource_definition
     end
   end
 end

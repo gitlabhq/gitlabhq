@@ -136,16 +136,15 @@ on the **Versions** tab.
 Gather this information from affected users, and provide it in your bug report:
 
 1. The error message shown to the user.
-1. Plugin and Language Server logs:
-   - [Debug logs](#enable-debug-mode).
-   - [Language Server debug logs](#enable-gitlab-language-server-debug-logs).
-   - [Logs output](#get-debug-logs)
-1. Diagnostics output. In your IntelliJ product, go to **Help** > **Diagnostics Tools** > **Collect Troubleshooting Information**.
-   - In the **About** section, copy the **Build Version**.
-   - For plugin-specific versions: in the **Plugins** section, copy the output.
-1. System details. In your IntelliJ product, go to **Help** > **Diagnostics Tools** > **Collect Troubleshooting Information**.
-   - For the operating system type and version: in the dialog, copy **Operating System**.
-   - For the machine specifications, copy the `System` section.
+1. Diagnostics and logs. Choose one of the following methods:  
+   - Automatic (recommended):
+     - Run the `GitLab: Export Diagnostics Bundle` quick action. Available with GitLab Duo plugin 3.27.0 or later.
+     - This downloads a zip file containing IDE logs and diagnostics to a location you specify.
+   - Manual:
+     - Enable and collect [debug logs](#enable-debug-mode)
+     - Enable and collect [Language Server debug logs](#enable-gitlab-language-server-debug-logs)
+     - Capture [logs output](#get-debug-logs)
+     - Run `GitLab: Diagnostics` from the quick actions menu and copy the Markdown output
 1. Describe the scope of impact. How many users are affected?
 1. Describe how to reproduce the error. Include a screen recording, if possible.
 1. Describe how other GitLab Duo features are affected:

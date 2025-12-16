@@ -312,6 +312,7 @@ describe('Repository breadcrumbs component', () => {
       routeName            | isRendered
       ${'blobPath'}        | ${false}
       ${'blobPathDecoded'} | ${false}
+      ${'blobPathEncoded'} | ${false}
       ${'treePath'}        | ${true}
       ${'treePathDecoded'} | ${true}
       ${'projectRoot'}     | ${true}

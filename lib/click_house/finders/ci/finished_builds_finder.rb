@@ -10,6 +10,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         ALLOWED_TO_GROUP = %i[name stage_id].freeze
         ALLOWED_TO_SELECT = %i[name stage_id].freeze
         ALLOWED_AGGREGATIONS = %i[
+          mean_duration
           mean_duration_in_seconds
           p50_duration
           p75_duration
@@ -87,6 +88,15 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
             round(
               ms_to_s(query_builder.avg(:duration))
             ).as('mean_duration_in_seconds'),
+            group_by_fields: false
+          )
+        end
+
+        def mean_duration
+          select(
+            round(
+              ms_to_s(query_builder.avg(:duration))
+            ).as('mean_duration'),
             group_by_fields: false
           )
         end

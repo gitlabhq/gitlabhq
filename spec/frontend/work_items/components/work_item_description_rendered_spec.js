@@ -275,6 +275,7 @@ describe('WorkItemDescriptionRendered', () => {
         expect(findCreateWorkItemModal().props()).toEqual({
           alwaysShowWorkItemTypeSelect: false,
           asDropdownItem: false,
+          createSource: null,
           creationContext: CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
           description: `lly really long title
 

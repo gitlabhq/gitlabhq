@@ -16,7 +16,15 @@ module Types
       PERCENTILES.each do |p|
         field :"p#{p}", Types::DurationType,
           null: true, description: "#{p}th percentile. #{p}% of the durations are lower than this value.",
-          experiment: { milestone: '15.8' }, hash_key: :"p#{p}"
+          experiment: { milestone: '15.8' }
+
+        define_method :"p#{p}" do
+          object[:"p#{p}"] || object[:"p#{p}_duration"]
+        end
+      end
+
+      def mean
+        object[:mean] || object[:mean_duration]
       end
     end
     # rubocop: enable Graphql/AuthorizeTypes

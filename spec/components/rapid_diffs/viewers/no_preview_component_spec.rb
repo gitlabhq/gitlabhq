@@ -20,6 +20,53 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
   end
 
   describe 'change type' do
+    context 'with an empty file added' do
+      before do
+        allow(diff_file).to receive_messages(empty?: true, new_file?: true)
+      end
+
+      it 'shows empty file added message' do
+        render_component
+        expect(page).to have_text('Empty file added.')
+        expect(page).not_to have_link("View file")
+      end
+
+      it 'does not include virtual rendering params' do
+        expect(virtual_rendering_params).to be_nil
+      end
+    end
+
+    context 'with an empty file deleted' do
+      before do
+        allow(diff_file).to receive_messages(empty?: true, new_file?: false, deleted_file?: true)
+      end
+
+      it 'shows empty file deleted message' do
+        render_component
+        expect(page).to have_text('Empty file deleted.')
+        expect(page).not_to have_link("View file")
+      end
+
+      it 'does not include virtual rendering params' do
+        expect(virtual_rendering_params).to be_nil
+      end
+    end
+
+    context 'with an empty file that is neither new nor deleted' do
+      before do
+        allow(diff_file).to receive_messages(empty?: true, new_file?: false, deleted_file?: false)
+      end
+
+      it 'shows changed file message' do
+        render_component
+        expect(page).to have_text('File changed.')
+      end
+
+      it 'does not include virtual rendering params' do
+        expect(virtual_rendering_params).to be_nil
+      end
+    end
+
     context 'with a changed file' do
       before do
         allow(diff_file).to receive(:content_changed?).and_return(true)

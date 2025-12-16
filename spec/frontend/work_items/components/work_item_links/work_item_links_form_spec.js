@@ -16,6 +16,7 @@ import {
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_TASK,
+  WORK_ITEM_CREATE_SOURCES,
 } from '~/work_items/constants';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
@@ -210,6 +211,7 @@ describe('WorkItemLinksForm', () => {
               parentId: 'gid://gitlab/WorkItem/1',
             },
             confidential: false,
+            createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
           },
         });
         expect(wrapper.emitted('addChild')).toEqual([[]]);
@@ -234,6 +236,7 @@ describe('WorkItemLinksForm', () => {
               parentId: 'gid://gitlab/WorkItem/1',
             },
             confidential: true,
+            createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
           },
         });
         expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
@@ -273,6 +276,7 @@ describe('WorkItemLinksForm', () => {
               parentId: 'gid://gitlab/WorkItem/1',
             },
             confidential: false,
+            createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
           },
         });
         expect(wrapper.emitted('addChild')).toEqual([[]]);
@@ -302,6 +306,7 @@ describe('WorkItemLinksForm', () => {
               parentId: 'gid://gitlab/WorkItem/1',
             },
             confidential: true,
+            createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
           },
         });
         expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
@@ -385,6 +390,7 @@ describe('WorkItemLinksForm', () => {
             parentId: 'gid://gitlab/WorkItem/1',
           },
           confidential: false,
+          createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
         },
       });
     });

@@ -121,7 +121,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
         expect do
           result
         end.to raise_error(ArgumentError,
-          "Cannot aggregate columns: [:invalid_aggregation]. Allowed: mean_duration_in_seconds, " \
+          "Cannot aggregate columns: [:invalid_aggregation]. Allowed: mean_duration, mean_duration_in_seconds, " \
             "p50_duration, p75_duration, p90_duration, p95_duration, p99_duration, p95_duration_in_seconds, " \
             "rate_of_success, rate_of_failed, rate_of_canceled, rate_of_skipped, " \
             "count_success, count_failed, count_canceled, count_skipped, total_count"
@@ -130,24 +130,24 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     end
   end
 
-  describe '#mean_duration_in_seconds' do
+  describe '#mean_duration' do
     subject(:result) do
       instance.for_project(project.id)
               .select(:name)
-              .mean_duration_in_seconds
+              .mean_duration
               .execute
     end
 
     it 'calculates average duration correctly' do
       is_expected.to include(
-        a_hash_including('name' => 'compile', 'mean_duration_in_seconds' => 1.0),
-        a_hash_including('name' => 'compile-slow', 'mean_duration_in_seconds' => 5.0),
-        a_hash_including('name' => 'rspec', 'mean_duration_in_seconds' => be_within(0.01).of(2.67))
+        a_hash_including('name' => 'compile', 'mean_duration' => 1.0),
+        a_hash_including('name' => 'compile-slow', 'mean_duration' => 5.0),
+        a_hash_including('name' => 'rspec', 'mean_duration' => be_within(0.01).of(2.67))
       )
     end
 
     it 'rounds the result to 2 decimal places' do
-      is_expected.to be_rounded_to_decimal_places('mean_duration_in_seconds', decimal_places: 2)
+      is_expected.to be_rounded_to_decimal_places('mean_duration', decimal_places: 2)
     end
   end
 
@@ -190,23 +190,23 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
   describe 'percentile duration methods' do
     include_context 'with percentile test data'
 
-    describe '#p50_duration' do
+    describe '#p50' do
       it_behaves_like 'percentile duration calculation', '50th', 'p50_duration', expected_value: 1.0
     end
 
-    describe '#p75_duration' do
+    describe '#p75' do
       it_behaves_like 'percentile duration calculation', '75th', 'p75_duration', expected_value: 1.5
     end
 
-    describe '#p90_duration' do
+    describe '#p90' do
       it_behaves_like 'percentile duration calculation', '90th', 'p90_duration', expected_value: 1.8
     end
 
-    describe '#p95_duration_in_seconds' do
-      it_behaves_like 'percentile duration calculation', '95th', 'p95_duration_in_seconds', expected_value: 1.9
+    describe '#p95' do
+      it_behaves_like 'percentile duration calculation', '95th', 'p95_duration', expected_value: 1.9
     end
 
-    describe '#p99_duration' do
+    describe '#p99' do
       it_behaves_like 'percentile duration calculation', '99th', 'p99_duration', expected_value: 1.98
     end
   end

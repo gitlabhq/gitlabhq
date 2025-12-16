@@ -1,4 +1,5 @@
 import { joinPaths } from '~/lib/utils/url_utility';
+import { encodeRepositoryPath } from './url_utility';
 
 /**
  * Creates a regex pattern to extract namespace and target path information from repository URLs.
@@ -18,7 +19,10 @@ import { joinPaths } from '~/lib/utils/url_utility';
  * - Partial URL matching (no end anchor)
  *
  */
-const getNamespaceTargetRegex = (ref) => new RegExp(`(/-/(blob|tree|commits)|/blob)/${ref}/?(.*)`);
+const getNamespaceTargetRegex = (ref) => {
+  const encodedRef = encodeRepositoryPath(ref);
+  return new RegExp(`(/-/(blob|tree|commits)|/blob)/${encodedRef}/?(.*)`);
+};
 
 /**
  * Parses a selected ref and generates router navigation parameters for Vue Router.

@@ -16,6 +16,7 @@ import {
   WIDGET_TYPE_ITERATION,
   WORK_ITEM_TYPE_NAME_TASK,
   NAME_TO_TEXT_LOWERCASE_MAP,
+  WORK_ITEM_CREATE_SOURCES,
 } from '../../constants';
 import WorkItemProjectsListbox from './work_item_projects_listbox.vue';
 import WorkItemGroupsListbox from './work_item_groups_listbox.vue';
@@ -137,6 +138,7 @@ export default {
           parentId: this.issuableGid,
         },
         confidential: this.parentConfidential || this.confidential,
+        createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
       };
 
       if (this.selectedProjectFullPath && !this.workItemChildIsEpic) {

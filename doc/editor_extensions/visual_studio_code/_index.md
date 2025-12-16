@@ -11,7 +11,8 @@ for Visual Studio Code integrates GitLab Duo and other GitLab features directly 
 GitLab Workflow panel to the VS Code sidebar where you can view issues, merge requests, and pipelines,
 and extend your view with [custom queries](custom_queries.md).
 
-To get started, [install and configure the extension](setup.md).
+To get started, [install and configure the extension](setup.md). For added security, you can set up
+the extension in a Visual Studio Code Dev Container.
 
 When configured, this extension brings the GitLab features you use every day directly into your VS Code environment:
 
@@ -432,36 +433,6 @@ information to GitLab. To enable or customize telemetry in Visual Studio Code:
    - `crash`: Sends OS-level crash reports.
    - `off`: Disables all telemetry data in Visual Studio Code.
 1. Save your changes.
-
-## Use the extension in a Dev Container
-
-The GitLab Workflow extension is compatible with [VS Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers). For added security, you should set up the extension and use GitLab Duo in a containerized development environment.
-
-### Prerequisites
-
-- [Docker](https://www.docker.com/products/docker-desktop/) installed and running
-- [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) installed in VS Code
-
-### Install the extension in a Dev Container
-
-Add the GitLab Workflow extension to your Dev Container configuration file:
-
-```json
-// .devcontainer/devcontainer.json
-{
-  "name": "My Project",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "GitLab.gitlab-workflow"
-      ]
-    }
-  }
-}
-```
-
-When you open your project in a Dev Container, VS Code automatically installs the extension inside the container.
 
 ## Related topics
 

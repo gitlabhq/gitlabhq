@@ -6,16 +6,51 @@ description: Use the GitLab Workflow extension for VS Code to handle common GitL
 title: Install and set up the GitLab Workflow extension for VS Code
 ---
 
-To install the GitLab Workflow extension for VS Code:
+To use the GitLab Workflow extension for VS Code, choose the installation method that meets your
+needs:
 
-- [Go to the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
-  and install and enable the extension.
-- If you use an unofficial version of VS Code, install the
-  extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow).
+- For standard VS Code, install from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
+- For unofficial VS Code versions, install from [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow).
+- For secure local development, install in a [Visual Studio Code Dev Container](#use-the-extension-in-a-visual-studio-code-dev-container).
+
+## Use the extension in a Visual Studio Code Dev Container
+
+For added security, set up the extension and use GitLab Duo in a containerized development
+environment using [VS Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers).
+
+Prerequisites:
+
+- [Docker](https://www.docker.com/products/docker-desktop/) is installed and running.
+- The Visual Studio Code [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+  extension is installed in VS Code.
+
+To install the extension in a VS Code Dev Container:
+
+1. Run the **Dev Containers: Add Dev Container Configuration Files** command from the Command
+   Palette.
+1. Add the GitLab Workflow extension to the configuration file:
+
+   ```json
+   // .devcontainer/devcontainer.json
+   {
+   "name": "My Project",
+   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+   "customizations": {
+      "vscode": {
+         "extensions": [
+         "GitLab.gitlab-workflow"
+         ]
+      }
+   }
+   }
+   ```
+
+1. Run the **Dev Containers: Open Folder in Container** command to open your project in a VS Code
+   Dev Container. VS Code automatically installs the extension inside the container.
 
 ## Connect to GitLab
 
-After you download and install the extension, connect it to your GitLab account.
+After you install and enable the extension, connect it to your GitLab account.
 
 ### Authenticate with GitLab
 

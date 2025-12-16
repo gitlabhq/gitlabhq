@@ -15,14 +15,30 @@ RSpec.describe Authz::Resource, feature_category: :permissions do
       }
     end
 
-    let(:resource_name) { 'resource' }
-    let(:file_path) { "path/to/config/authz/permissions/#{resource_name}/_metadata.yml" }
+    let(:resource_dir_name) { 'resource' }
+    let(:file_path) { "path/to/config/authz/permissions/#{resource_dir_name}/_metadata.yml" }
 
     subject(:resource) { described_class.new(definition, file_path) }
 
     describe '#name' do
       specify do
-        expect(resource.name).to eq(resource_name)
+        expect(resource.name).to eq(resource_dir_name)
+      end
+    end
+
+    describe '#resource_name' do
+      context 'when definition does not have a name value' do
+        it 'returns the titlecased parent directory name' do
+          expect(resource.resource_name).to eq(resource_dir_name.titlecase)
+        end
+      end
+
+      context 'when definition has a name value' do
+        let(:definition) { super().merge(name: 'Resource Display Name') }
+
+        it 'returns the name from the definition' do
+          expect(resource.resource_name).to eq(definition[:name])
+        end
       end
     end
 

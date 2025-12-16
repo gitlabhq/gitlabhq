@@ -8,9 +8,10 @@ describe('search_settings/mount', () => {
   let app;
 
   beforeEach(() => {
-    const el = document.createElement('div');
-
     setHTMLFixture('<div id="content-body"></div>');
+
+    const el = document.createElement('div');
+    document.body.appendChild(el);
 
     app = mount({ el });
   });

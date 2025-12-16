@@ -11,19 +11,25 @@ module Types
 
       value 'MEAN_DURATION_ASC',
         'Sort by mean duration in ascending order.',
-        value: :mean_duration_in_seconds_asc
+        value: :mean_duration_asc
 
       value 'MEAN_DURATION_DESC',
         'Sort by mean duration in descending order.',
-        value: :mean_duration_in_seconds_desc
+        value: :mean_duration_desc
 
-      value 'P95_DURATION_ASC',
-        'Sort by 95th percentile duration in ascending order.',
-        value: :p95_duration_in_seconds_asc
+      # rubocop:disable Graphql/EnumValues -- false positive, value is already defined in uppercase
 
-      value 'P95_DURATION_DESC',
-        'Sort by 95th percentile duration in descending order.',
-        value: :p95_duration_in_seconds_desc
+      ClickHouse::Finders::Ci::FinishedBuildsFinder::ALLOWED_PERCENTILES.each do |percentile|
+        value "P#{percentile}_DURATION_ASC",
+          description: "Sort by #{percentile}th percentile duration in ascending order.",
+          value: :"p#{percentile}_duration_asc"
+
+        value "P#{percentile}_DURATION_DESC",
+          description: "Sort by #{percentile}th percentile duration in descending order.",
+          value: :"p#{percentile}_duration_desc"
+      end
+
+      # rubocop:enable Graphql/EnumValues
 
       value 'SUCCESS_RATE_ASC',
         'Sort by success rate in ascending order.',

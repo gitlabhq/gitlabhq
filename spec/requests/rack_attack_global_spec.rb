@@ -726,7 +726,7 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
         stub_application_setting(settings_to_set)
       end
 
-      it 'rejects requests over the rate limit' do
+      it 'rejects requests over the rate limit', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/19998' do
         # First requests should succeed
         requests_per_period.times do
           do_request

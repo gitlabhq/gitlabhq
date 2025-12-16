@@ -1,0 +1,6 @@
+---
+name: housekeep_project
+description: Grants the ability to trigger repository housekeeping tasks
+feature_category: source_code_management
+boundaries:
+  - project

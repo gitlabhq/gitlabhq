@@ -1,0 +1,8 @@
+---
+name: read_language_project
+description: Grants the ability to read project languages
+feature_category: source_code_management
+permissions:
+  - read_language_project
+boundaries:
+  - project

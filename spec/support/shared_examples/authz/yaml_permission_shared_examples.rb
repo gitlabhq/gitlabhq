@@ -125,19 +125,37 @@ RSpec.shared_examples 'yaml backed permission' do
     end
   end
 
-  describe '#feature_category' do
-    subject(:feature_category) { instance.feature_category }
+  describe 'methods delegated to resource' do
+    it 'returns nil resource_name' do
+      expect(instance.resource_name).to be_nil
+    end
 
-    it { is_expected.to be_nil }
+    it 'returns nil resource_description' do
+      expect(instance.resource_description).to be_nil
+    end
+
+    it 'returns nil feature_category' do
+      expect(instance.feature_category).to be_nil
+    end
 
     context 'when resource is defined' do
       before do
-        instance = ::Authz::Resource.new({ feature_category: 'a_resource_feature_category' }, 'source_file')
-        allow(::Authz::Resource).to receive(:all).and_return({ resource_name.to_sym => instance })
+        resource = ::Authz::Resource.new({
+          name: 'The Resource', description: 'A resource', feature_category: 'a_resource_feature_category'
+        }, 'source_file')
+        allow(::Authz::Resource).to receive(:all).and_return({ resource_name.to_sym => resource })
+      end
+
+      it 'returns the resource\'s name' do
+        expect(instance.resource_name).to eq 'The Resource'
+      end
+
+      it 'returns the resource\'s description' do
+        expect(instance.resource_description).to eq 'A resource'
       end
 
       it 'returns the resource\'s feature_category' do
-        expect(feature_category).to eq 'a_resource_feature_category'
+        expect(instance.feature_category).to eq 'a_resource_feature_category'
       end
     end
   end

@@ -407,6 +407,7 @@ Since this mapping depends on HTTP requests, `Current.organization` is available
 - Rails controllers that inherit from `ApplicationController`
 - GraphQL queries and mutations
 - Grape API endpoints (requires [usage of a helper](#usage-in-grape-api)
+- Sidekiq workers (if `Current.organization` is defined when `perform_async` is called)
 
 In these request layers, it is safe to assume that `Current.organization` is not `nil`.
 
@@ -414,26 +415,8 @@ You cannot use `Current.organization` in:
 
 - Rake tasks
 - Cron jobs
-- Sidekiq workers
 
 This restriction is enforced by a RuboCop rule. For these cases, derive the organization ID from related data or pass it as an argument.
-
-### Writing tests for code that depends on `Current.organization`
-
-If you need a `current_organization` for RSpec, you can use the [`with_current_organization`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/shared_contexts/current_organization_context.rb) shared context. This will create a `current_organization` method that will be returned by `Gitlab::Current::Organization` class
-
-```ruby
-# frozen_string_literal: true
-require 'spec_helper'
-
-RSpec.describe MyController, :with_current_organization do
-  let(:project) { create(:project, organization: current_organization) }
-
-  subject { project.organization }
-
-  it {is_expected.to eq(current_organization) }
-end
-```
 
 ### Usage in Grape API
 
@@ -481,3 +464,4 @@ To populate the `organization_id` column, use these methods in order of preferen
 - [Consolidating groups and projects](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/consolidating_groups_and_projects/)
   architecture documentation
 - [Organization user documentation](../../user/organization/_index.md)
+- [Writing tests with Organizations](../../development/testing_guide/testing_with_organizations.md)

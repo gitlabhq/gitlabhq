@@ -24755,6 +24755,8 @@ Permission that belongs to a granular scope.
 | <a id="accesstokenpermissiondescription"></a>`description` | [`String!`](#string) | Description of the permission. |
 | <a id="accesstokenpermissionname"></a>`name` | [`String!`](#string) | Name of the permission. |
 | <a id="accesstokenpermissionresource"></a>`resource` | [`String!`](#string) | Resource of the permission. |
+| <a id="accesstokenpermissionresourcedescription"></a>`resourceDescription` | [`String`](#string) | Description of the resource. |
+| <a id="accesstokenpermissionresourcename"></a>`resourceName` | [`String`](#string) | Display name of the resource. |
 
 ### `Achievement`
 
@@ -35813,6 +35815,7 @@ Returns [`String`](#string).
 | <a id="grouppermissionsreadcrmcontact"></a>`readCrmContact` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_crm_contact` on this resource. |
 | <a id="grouppermissionsreadcrmorganization"></a>`readCrmOrganization` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_crm_organization` on this resource. |
 | <a id="grouppermissionsreadgroup"></a>`readGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_group` on this resource. |
+| <a id="grouppermissionsreadrunnercloudprovisioninginfo"></a>`readRunnerCloudProvisioningInfo` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. If `true`, the user can perform `read_runner_cloud_provisioning_info` on this resource. |
 | <a id="grouppermissionsremovegroup"></a>`removeGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_group` on this resource. |
 | <a id="grouppermissionsvieweditpage"></a>`viewEditPage` | [`Boolean!`](#boolean) | If `true`, the user can perform `view_edit_page` on this resource. |
 
@@ -44999,6 +45002,7 @@ Returns [`String`](#string).
 | <a id="projectpermissionsreadpathlocks"></a>`readPathLocks` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_path_locks` on this resource. |
 | <a id="projectpermissionsreadproject"></a>`readProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_project` on this resource. |
 | <a id="projectpermissionsreadprojectmember"></a>`readProjectMember` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_project_member` on this resource. |
+| <a id="projectpermissionsreadrunnercloudprovisioninginfo"></a>`readRunnerCloudProvisioningInfo` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. If `true`, the user can perform `read_runner_cloud_provisioning_info` on this resource. |
 | <a id="projectpermissionsreadwiki"></a>`readWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_wiki` on this resource. |
 | <a id="projectpermissionsremoveforkproject"></a>`removeForkProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_fork_project` on this resource. |
 | <a id="projectpermissionsremovepages"></a>`removePages` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_pages` on this resource. |
@@ -51315,8 +51319,16 @@ Values for sorting CI/CD job analytics.
 | <a id="cijobanalyticssortmean_duration_desc"></a>`MEAN_DURATION_DESC` | Sort by mean duration in descending order. |
 | <a id="cijobanalyticssortname_asc"></a>`NAME_ASC` | Sort by name in ascending order. |
 | <a id="cijobanalyticssortname_desc"></a>`NAME_DESC` | Sort by name in descending order. |
+| <a id="cijobanalyticssortp50_duration_asc"></a>`P50_DURATION_ASC` | Sort by 50th percentile duration in ascending order. |
+| <a id="cijobanalyticssortp50_duration_desc"></a>`P50_DURATION_DESC` | Sort by 50th percentile duration in descending order. |
+| <a id="cijobanalyticssortp75_duration_asc"></a>`P75_DURATION_ASC` | Sort by 75th percentile duration in ascending order. |
+| <a id="cijobanalyticssortp75_duration_desc"></a>`P75_DURATION_DESC` | Sort by 75th percentile duration in descending order. |
+| <a id="cijobanalyticssortp90_duration_asc"></a>`P90_DURATION_ASC` | Sort by 90th percentile duration in ascending order. |
+| <a id="cijobanalyticssortp90_duration_desc"></a>`P90_DURATION_DESC` | Sort by 90th percentile duration in descending order. |
 | <a id="cijobanalyticssortp95_duration_asc"></a>`P95_DURATION_ASC` | Sort by 95th percentile duration in ascending order. |
 | <a id="cijobanalyticssortp95_duration_desc"></a>`P95_DURATION_DESC` | Sort by 95th percentile duration in descending order. |
+| <a id="cijobanalyticssortp99_duration_asc"></a>`P99_DURATION_ASC` | Sort by 99th percentile duration in ascending order. |
+| <a id="cijobanalyticssortp99_duration_desc"></a>`P99_DURATION_DESC` | Sort by 99th percentile duration in descending order. |
 | <a id="cijobanalyticssortsuccess_rate_asc"></a>`SUCCESS_RATE_ASC` | Sort by success rate in ascending order. |
 | <a id="cijobanalyticssortsuccess_rate_desc"></a>`SUCCESS_RATE_DESC` | Sort by success rate in descending order. |
 
