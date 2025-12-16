@@ -13,7 +13,7 @@ module MergeRequests
       # other checks that aren't needed here.
       known_merge_params.delete(:force_remove_source_branch) unless current_user.can?(:push_code, merge_request.source_project)
 
-      merge_request.merge_params.merge!(known_merge_params)
+      merge_request.append_merge_params(known_merge_params)
 
       # Delete the known params now that they're assigned, so we don't try to
       # assign them through an `#assign_attributes` later.

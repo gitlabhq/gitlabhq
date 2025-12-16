@@ -2,6 +2,7 @@
 
 class AuthenticationEvent < ApplicationRecord
   include UsageStatistics
+  include SafelyChangeColumnDefault
 
   RETENTION_PERIOD = 1.year
   TWO_FACTOR = 'two-factor'
@@ -24,6 +25,8 @@ class AuthenticationEvent < ApplicationRecord
   scope :ldap, -> { where('provider LIKE ?', 'ldap%') }
   scope :for_user, ->(user) { where(user: user) }
   scope :order_by_created_at_desc, -> { reorder(created_at: :desc) }
+
+  columns_changing_default :organization_id
 
   def self.providers
     STATIC_PROVIDERS | Devise.omniauth_providers.map(&:to_s)

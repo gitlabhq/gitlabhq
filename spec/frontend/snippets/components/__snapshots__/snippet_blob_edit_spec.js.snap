@@ -18,6 +18,7 @@ exports[`Snippet Blob Edit component with loaded blob matches snapshot 1`] = `
     extensions="[object Object]"
     fileglobalid="blob_local_7"
     filename="foo/bar/test.md"
+    usedynamicheight="true"
     value="Lorem ipsum dolar sit amet,
 consectetur adipiscing elit."
   />

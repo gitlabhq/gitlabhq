@@ -15,6 +15,14 @@ RSpec.describe 'getting a package list for a group', feature_category: :package_
 
   it_behaves_like 'group and project packages query'
 
+  context 'when packages_projects_finder is disabled' do
+    before do
+      stub_feature_flags(packages_projects_finder: false)
+    end
+
+    it_behaves_like 'group and project packages query'
+  end
+
   context 'with a batched query' do
     let_it_be(:group_two_project) { create(:project, :repository, group: group_two) }
     let_it_be(:group_one_package) { create(:npm_package, project: project1) }

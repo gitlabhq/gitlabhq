@@ -192,8 +192,6 @@ module Types
     mount_mutation Mutations::Ci::JobTokenScope::RemoveGroup
     mount_mutation Mutations::Ci::JobTokenScope::RemoveProject
     mount_mutation Mutations::Ci::JobTokenScope::UpdateJobTokenPolicies, experiment: { milestone: '17.6' }
-    mount_mutation Mutations::Ci::JobTokenScope::AutopopulateAllowlist, experiment: { milestone: '17.9' }
-    mount_mutation Mutations::Ci::JobTokenScope::ClearAllowlistAutopopulations, experiment: { milestone: '17.9' }
     mount_mutation Mutations::Ci::Lint
     mount_mutation Mutations::Ci::NamespaceSettingsUpdate, experiment: { milestone: '17.9' }
     mount_mutation Mutations::Ci::Pipeline::Cancel
@@ -254,6 +252,12 @@ module Types
     mount_mutation Mutations::WorkItems::BulkMove, experiment: { milestone: '18.2' }
     mount_mutation Mutations::WorkItems::Reorder, experiment: { milestone: '18.3' }
     mount_mutation Mutations::WorkItems::UserPreference::Update, experiment: { milestone: '17.10' }
+    mount_mutation Mutations::WorkItems::SavedViews::Create, experiment: { milestone: '18.7' }
+    mount_mutation Mutations::WorkItems::SavedViews::Update, experiment: { milestone: '18.7' }
+    mount_mutation Mutations::WorkItems::SavedViews::Delete, experiment: { milestone: '18.7' }
+    mount_mutation Mutations::WorkItems::SavedViews::Subscribe, experiment: { milestone: '18.7' }
+    mount_mutation Mutations::WorkItems::SavedViews::Unsubscribe, experiment: { milestone: '18.7' }
+    mount_mutation Mutations::WorkItems::SavedViews::Reorder, experiment: { milestone: '18.7' }
     mount_mutation Mutations::Users::SavedReplies::Create
     mount_mutation Mutations::Users::SavedReplies::Update
     mount_mutation Mutations::Users::SavedReplies::Destroy
@@ -274,6 +278,7 @@ module Types
     mount_mutation Mutations::Pages::Deployment::Delete, experiment: { milestone: '17.1' }
     mount_mutation Mutations::Pages::Deployment::Restore, experiment: { milestone: '17.1' }
     mount_mutation Mutations::Wikis::WikiPageSubscribe, experiment: { milestone: '18.1' }
+    mount_mutation Mutations::Users::PersonalAccessTokens::Create, experiment: { milestone: '18.7' }
   end
 end
 

@@ -45,6 +45,7 @@ module ApplicationSettingImplementation
         allow_local_requests_from_web_hooks_and_services: false,
         allow_possible_spam: false,
         asset_proxy_enabled: false,
+        authn_data_retention_cleanup_enabled: false,
         authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
         autocomplete_users_limit: 300,
         autocomplete_users_unauthenticated_limit: 100,
@@ -284,7 +285,7 @@ module ApplicationSettingImplementation
         container_registry_expiration_policies_caching: true,
         kroki_enabled: false,
         kroki_url: nil,
-        kroki_formats: { blockdiag: false, bpmn: false, excalidraw: false },
+        kroki_formats: { blockdiag: false, bpmn: false, excalidraw: false, mermaid: false },
         rate_limiting_response_text: nil,
         whats_new_variant: 0,
         user_deactivation_emails_enabled: true,
@@ -322,7 +323,7 @@ module ApplicationSettingImplementation
         group_projects_api_limit: 600,
         group_shared_groups_api_limit: 60,
         groups_api_limit: 200,
-        project_members_api_limit: 60,
+        project_members_api_limit: 200,
         create_organization_api_limit: 10,
         project_api_limit: 400,
         project_invited_groups_api_limit: 60,
@@ -362,7 +363,8 @@ module ApplicationSettingImplementation
         enforce_pipl_compliance: false,
         model_prompt_cache_enabled: true,
         lock_model_prompt_cache_enabled: false,
-        pipeline_limit_per_user: 0
+        pipeline_limit_per_user: 0,
+        background_operations_max_jobs: 10
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end
@@ -507,6 +509,24 @@ module ApplicationSettingImplementation
 
   def search_rate_limit_allowlist_raw=(values)
     self.search_rate_limit_allowlist = strings_to_array(values).map(&:downcase)
+  end
+
+  def coerce_iframe_rendering_allowlist
+    self.iframe_rendering_allowlist = iframe_rendering_allowlist.map do |entry|
+      # We mandate https://, and always add a trailing slash; we expect the configured
+      # list has neither present, so we remove them if present.
+      entry
+        .sub(%r{\Ahttps?://}i, '')
+        .sub(%r{/+\z}, '')
+    end.sort
+  end
+
+  def iframe_rendering_allowlist_raw
+    array_to_string(iframe_rendering_allowlist)
+  end
+
+  def iframe_rendering_allowlist_raw=(values)
+    self.iframe_rendering_allowlist = strings_to_array(values)
   end
 
   def asset_proxy_whitelist=(values)

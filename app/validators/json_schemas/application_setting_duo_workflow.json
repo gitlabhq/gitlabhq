@@ -7,6 +7,11 @@
     "duo_workflow_oauth_application_id": {
       "type": "integer",
       "description": "oauth application id for duo workflow"
+    },
+    "duo_agent_platform_enabled": {
+      "type": "boolean",
+      "description": "Duo Agent Platform features enabled",
+      "default": true
     }
   }
 }

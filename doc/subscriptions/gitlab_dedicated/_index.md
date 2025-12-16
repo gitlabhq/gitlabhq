@@ -42,7 +42,7 @@ GitLab Dedicated provides the following security features to protect your data a
 
 #### Authentication and authorization
 
-GitLab Dedicated supports [SAML](../../administration/dedicated/configure_instance/saml.md) and [OpenID Connect (OIDC)](../../administration/dedicated/configure_instance/openid_connect.md) providers for single sign-on (SSO).
+GitLab Dedicated supports [SAML](../../administration/dedicated/configure_instance/authentication/saml.md) and [OpenID Connect (OIDC)](../../administration/dedicated/configure_instance/authentication/openid_connect.md) providers for single sign-on (SSO).
 
 You can configure single sign-on (SSO) using the supported providers for authentication. Your instance acts as the service provider, and you provide the necessary configuration for GitLab to communicate with your Identity Providers (IdPs).
 
@@ -131,22 +131,24 @@ In tenant accounts, GitLab Dedicated uses:
 
 You can access [application logs](../../administration/dedicated/monitor.md) for auditing and observability purposes. These logs provide insights into system activities and user actions, helping you monitor your instance and maintain compliance requirements.
 
-### Bring your own domain
+### Custom domains
 
-You can use your own custom domain to access your GitLab Dedicated instance
-instead of the default `tenant_name.gitlab-dedicated.com` URL.
-For example, you could use `gitlab.company.com` to access your instance.
+By default, your GitLab Dedicated instance is accessible at `tenant_name.gitlab-dedicated.com`.
+You can configure a custom domain to use your own domain name instead, such as `gitlab.company.com`.
 
-Use a custom domain when you need to:
+Use custom domains to:
 
-- Migrate from an existing GitLab Self-Managed instance without changing URLs.
-- Maintain consistent branding across your organization's tools.
+- Keep your existing URLs when migrating from GitLab Self-Managed.
+- Maintain your organization's domain across all tools.
 - Integrate with existing certificate management or domain policies.
 
-You can configure a custom domain for your main GitLab instance and for the bundled
-container registry and GitLab agent server for Kubernetes.
+You can configure custom domains for:
 
-For more information, see [bring your own domain (BYOD)](../../administration/dedicated/configure_instance/network_security.md#bring-your-own-domain-byod).
+- Your main GitLab instance
+- The container registry (for example, `registry.company.com`)
+- The GitLab agent server for Kubernetes (for example, `kas.company.com`)
+
+For more information, see [custom domains](../../administration/dedicated/configure_instance/network_security.md#custom-domains).
 
 {{< alert type="note" >}}
 
@@ -267,6 +269,20 @@ Limitations:
 - No SLA commitment.
 - Cannot run newer versions than production.
 
+## Settings managed by GitLab
+
+While you can modify most settings through the Admin area, GitLab automatically manages
+certain settings to ensure system stability and security.
+
+### Rate limits
+
+GitLab configures rate limits based on your instance size and automatically resets them to
+these defaults during maintenance windows to ensure optimal performance.
+These limits prevent any single user or automation from degrading performance for other users on your instance.
+
+For more information about how rate limits work in GitLab Dedicated,
+see [authenticated user rate limits](../../administration/dedicated/user_rate_limits.md).
+
 ## Unavailable features
 
 This section lists the features that are not available for GitLab Dedicated.
@@ -278,7 +294,6 @@ This section lists the features that are not available for GitLab Dedicated.
 | LDAP authentication                           | Authentication using corporate LDAP/Active Directory credentials.     | Must use GitLab-specific passwords or access tokens instead. |
 | Smart card authentication                     | Authentication using smart cards for enhanced security.               | Cannot use existing smart card infrastructure.               |
 | Kerberos authentication                       | Single sign-on authentication using Kerberos protocol.                | Must authenticate separately to GitLab.                      |
-| Multiple login providers                      | Configuration of multiple OAuth/SAML providers (Google, GitHub).      | Limited to a single identity provider.                       |
 | FortiAuthenticator/FortiToken 2FA             | Two-factor authentication using Fortinet security solutions.          | Cannot integrate existing Fortinet 2FA infrastructure.       |
 | Git clone using HTTPS with username/password  | Git operations using username and password authentication over HTTPS. | Must use access tokens for Git operations.                   |
 | [Sigstore](../../ci/yaml/signing_examples.md) | Keyless signing and verification for software supply chain security.  | Must use traditional code signing methods.                   |
@@ -296,25 +311,22 @@ This section lists the features that are not available for GitLab Dedicated.
 | Feature                                | Description                                                                          | Impact                                       |
 | -------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------- |
 | Some GitLab Duo AI capabilities        | AI-powered features for code suggestions, vulnerability detection, and productivity. | Limited AI assistance for development tasks. |
-| Features behind disabled feature flags | Experimental or unreleased features disabled by default.                             | Cannot access features in development.       |
+| Features behind disabled feature flags | Experiment and beta features under development.                              | No access to experimental or beta features.       |
 
 For more information about AI features, see [GitLab Duo](../../user/gitlab_duo/_index.md).
 
 #### Feature flags
 
-GitLab uses [feature flags](../../administration/feature_flags/_index.md) to support the
-development and rollout of new or experimental features. In GitLab Dedicated:
+Feature flags are used to support the development and rollout of new,
+[experiment, and beta features](../../development/documentation/experiment_beta.md).
+In GitLab Dedicated:
 
-- Features behind feature flags that are enabled by default are available.
-- Features behind feature flags that are disabled by default are not available and
-  cannot be enabled by administrators.
+- You cannot modify feature flags.
+- Features enabled by default are available.
+- Features disabled by default are not available and cannot be enabled.
 
-Features behind flags that are disabled by default are not ready for production use and
-therefore unsafe for GitLab Dedicated.
-
-When a feature becomes generally available and the flag is enabled or removed, the feature
-becomes available in GitLab Dedicated in the same GitLab version. GitLab Dedicated follows
-its own [release schedule](maintenance.md) for version deployments.
+When a feature becomes generally available, it's available in the same version
+following the [release schedule](../../administration/dedicated/maintenance.md) for deployments.
 
 ### GitLab Pages
 
@@ -381,9 +393,9 @@ To migrate your data to GitLab Dedicated:
   - Use [direct transfer](../../user/group/import/_index.md).
   - Use the [direct transfer API](../../api/bulk_imports.md).
 - From third-party services:
-  - Use [the import sources](../../user/project/import/_index.md#supported-import-sources).
+  - Use the [import sources](../../user/import/_index.md) (migration tools).
 - For complex migrations:
-  - Engage [Professional Services](../../user/project/import/_index.md#migrate-by-engaging-professional-services).
+  - Engage [Professional Services](../../user/import/_index.md#migrate-by-engaging-professional-services).
 
 ## Expired subscriptions
 

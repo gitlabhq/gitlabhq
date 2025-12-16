@@ -3,6 +3,7 @@ import { GlFilteredSearchToken, GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'JobKindToken',
   components: {
     GlFilteredSearchToken,
     GlFilteredSearchSuggestion,

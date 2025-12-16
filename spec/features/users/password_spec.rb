@@ -34,7 +34,7 @@ RSpec.describe 'User password', feature_category: :system_access do
       let_it_be(:verified_email) { create(:email, :confirmed, user: user, email: 'second@example.com') }
       let_it_be(:unverified_email) { create(:email, user: user, email: 'unverified@example.com') }
 
-      before do
+      subject(:submit_form) do
         perform_enqueued_jobs do
           visit new_user_password_path
           fill_in 'user_email', with: email
@@ -45,8 +45,35 @@ RSpec.describe 'User password', feature_category: :system_access do
       context 'when user enters the primary email' do
         let(:email) { user.email }
 
-        it 'send the email to the correct email address' do
-          expect(ActionMailer::Base.deliveries.first.to).to include(email)
+        it 'sends reset instructions email' do
+          submit_form
+
+          mail = find_email_for(email)
+          expect(mail.subject).to eq('Reset password instructions')
+          body = Nokogiri::HTML::DocumentFragment.parse(mail.body.parts.last.to_s)
+          reset_password_link = body.css('#cta a').attribute('href').value
+
+          visit reset_password_link
+          expect(page).to have_content('Change your password')
+        end
+
+        context 'when devise_email_organization_routes FF is disabled' do
+          before do
+            stub_feature_flags(devise_email_organization_routes: false)
+          end
+
+          it 'sends reset instructions email' do
+            submit_form
+
+            mail = find_email_for(email)
+            expect(mail.subject).to eq('Reset password instructions')
+            body = Nokogiri::HTML::DocumentFragment.parse(mail.body.parts.last.to_s)
+            reset_password_link = body.css('#cta a').attribute('href').value
+            expect(reset_password_link).not_to include("/o/#{user.organization.path}")
+
+            visit reset_password_link
+            expect(page).to have_content('Change your password')
+          end
         end
       end
 
@@ -54,6 +81,7 @@ RSpec.describe 'User password', feature_category: :system_access do
         let(:email) { verified_email.email }
 
         it 'send the email to the correct email address' do
+          submit_form
           expect(ActionMailer::Base.deliveries.first.to).to include(email)
         end
       end
@@ -62,6 +90,7 @@ RSpec.describe 'User password', feature_category: :system_access do
         let(:email) { unverified_email.email }
 
         it 'does not send an email' do
+          submit_form
           expect(ActionMailer::Base.deliveries.count).to eq(0)
         end
       end

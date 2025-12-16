@@ -1,6 +1,7 @@
 <script>
 import { isEqual } from 'lodash';
 import { getStorageValue, saveStorageValue, removeStorageValue } from '~/lib/utils/local_storage';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 /**
  * This component will save and restore a value to and from localStorage.
@@ -14,7 +15,7 @@ import { getStorageValue, saveStorageValue, removeStorageValue } from '~/lib/uti
  * For new components saving data for the first time, it's recommended to not use 'asString' even if you're saving a string; it will still be
  * saved and restored properly using JSON.stringify()/JSON.parse().
  */
-export default {
+export default normalizeRender({
   props: {
     storageKey: {
       type: String,
@@ -64,5 +65,5 @@ export default {
   render() {
     return this.$scopedSlots.default?.();
   },
-};
+});
 </script>

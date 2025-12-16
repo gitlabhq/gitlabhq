@@ -5,10 +5,10 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Icons and SVG Illustrations
 ---
 
-We manage our own icon and illustration library in the [`gitlab-svgs`](https://gitlab.com/gitlab-org/gitlab-svgs)
-repository. This repository is published on [npm](https://www.npmjs.com/package/@gitlab/svgs),
+We manage our own icon and illustration library in the [`gitlab-svgs`](https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/tree/main/packages/gitlab-svgs)
+package. This package is published on [npm](https://www.npmjs.com/package/@gitlab/svgs),
 and is managed as a dependency with yarn. You can browse all available
-[icons and illustrations](https://gitlab-org.gitlab.io/gitlab-svgs). To upgrade
+[icons and illustrations](https://design.gitlab.com/svgs/). To upgrade
 to a new version run `yarn upgrade @gitlab/svgs`.
 
 ## Icons
@@ -26,7 +26,7 @@ sprite_icon(icon_name, size: nil, css_class: '')
 ```
 
 - **`icon_name`**: Use the `icon_name` for the SVG sprite in the list of
-  ([GitLab SVGs](https://gitlab-org.gitlab.io/gitlab-svgs)).
+  ([GitLab SVGs](https://design.gitlab.com/svgs/)).
 - **`size` (optional)**: Use one of the following sizes: 16, 24, 32, 48, 72 (this
   is translated into a `s16` class)
 - **`css_class` (optional)**: If you want to add additional CSS classes.
@@ -47,7 +47,7 @@ sprite_icon(icon_name, size: nil, css_class: '')
 
 ### Usage in Vue
 
-[GitLab UI](https://gitlab-org.gitlab.io/gitlab-ui/), our components library, provides a component to display sprite icons.
+[GitLab UI](https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/tree/main/packages/gitlab-ui/), our components library, provides a component to display sprite icons.
 
 Sample usage :
 
@@ -72,7 +72,7 @@ export default {
 ```
 
 - **name**: Name of the icon of the SVG sprite, as listed in the
-  ([GitLab SVG Previewer](https://gitlab-org.gitlab.io/gitlab-svgs)).
+  ([GitLab SVG Previewer](https://design.gitlab.com/svgs/)).
 - **size: (optional)** Number value for the size which is then mapped to a
   specific CSS class (Available sizes: 8, 12, 16, 18, 24, 32, 48, 72 are mapped
   to `sXX` CSS classes)
@@ -121,9 +121,8 @@ with a custom size. It also appends a margin utility class.
 
 ### Usage in Vue
 
-The [GitLab UI](https://gitlab-org.gitlab.io/gitlab-ui/) components library provides a
-`GlLoadingIcon` component. See the component's
-[storybook](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-loading-icon--default)
+The [GitLab UI](https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/tree/main/packages/gitlab-ui) components library provides a
+`GlLoadingIcon` component. See the [spinner documentation](https://design.gitlab.com/components/spinner)
 for more information about its usage.
 
 **Example**:

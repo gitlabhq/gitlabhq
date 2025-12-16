@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Observability::PipelineToTraces, feature_category: :integrations do
   let(:integration) do

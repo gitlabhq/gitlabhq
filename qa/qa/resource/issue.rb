@@ -36,20 +36,6 @@ module QA
         @description = "Issue description #{SecureRandom.hex(8)}"
       end
 
-      def fabricate!
-        project.visit!
-
-        Page::Project::Menu.perform(&:go_to_new_issue)
-
-        Page::Project::Issue::New.perform do |new_page|
-          new_page.fill_title(@title)
-          new_page.choose_template(@template) if @template
-          new_page.fill_description(@description) if @description && !@template
-          new_page.choose_milestone(@milestone) if @milestone
-          new_page.create_new_issue
-        end
-      end
-
       def api_get_path
         "/projects/#{project.id}/issues/#{iid}"
       end

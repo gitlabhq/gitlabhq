@@ -71,7 +71,7 @@ Prerequisites:
 
 To create a task:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select **Add**.
 1. Select **New task**.
@@ -91,7 +91,7 @@ Prerequisites:
 
 - You must have at least the Guest role for the project.
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, hover over a task list item and select the options menu ({{< icon name="ellipsis_v" >}}).
 1. Select **Convert to task**.
@@ -113,7 +113,7 @@ Prerequisites:
 
 To add a task:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select **Add**.
 1. Select **Existing task**.
@@ -135,7 +135,7 @@ Prerequisites:
 
 To edit a task:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select the task you want to edit.
    The task window opens.
@@ -163,7 +163,7 @@ Prerequisites:
 
 To edit the description of a task:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select the title of the task you want to edit.
    The task window opens.
@@ -186,7 +186,7 @@ Prerequisites:
 
 To promote a task to an issue:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select the task you want to edit.
    The task window opens.
@@ -231,7 +231,7 @@ Prerequisites:
 
 To convert a task into another item type:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**.
 1. In the issue list, find your task.
 1. Optional. If the task has a parent issue assigned, remove it.
@@ -240,7 +240,7 @@ To convert a task into another item type:
 1. Select the desired item type.
 1. If all conditions are met, select **Change type**.
 
-Alternatively, you can use the `/type` [quick action](project/quick_actions.md#work-items), followed
+Alternatively, you can use the [`/type` quick action](project/quick_actions.md#type), followed
 by `issue`, `objective` or `key result` in a comment.
 
 ## Remove a task from an issue
@@ -260,7 +260,7 @@ It's not possible to connect them again.
 
 To remove a task from an issue:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select the options menu ({{< icon name="ellipsis_v" >}})
    next to the task you want to remove.
@@ -282,7 +282,7 @@ Prerequisites:
 
 To delete a task:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select the task you want to edit.
 1. In the task window, in the options menu ({{< icon name="ellipsis_v" >}}), select **Delete task**.
@@ -334,14 +334,14 @@ Prerequisites:
 
 To change the status of a task:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your task to view it.
 1. On the right sidebar, in the **Status** section, select **Edit**.
 1. From the dropdown list, select the status.
 
 The task's status updates immediately.
 
-You can also set the status by using the `/status` [quick action](project/quick_actions.md#issues-merge-requests-and-epics).
+You can also set the status by using the [`/status` quick action](project/quick_actions.md#status).
 
 ## Assign users to a task
 
@@ -363,7 +363,7 @@ Prerequisites:
 
 To change the assignee on a task:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select the title of the task you want to edit.
    The task window opens.
@@ -386,7 +386,7 @@ Prerequisites:
 
 To add [labels](project/labels.md) to a task:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select the title of the task you want to edit. The task window opens.
 1. Next to **Labels**, select **Add labels**.
@@ -413,7 +413,7 @@ You can set start and due dates on a task to show when work should begin and end
 
 To set a due date:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select the title of the task you want to edit.
    The task window opens.
@@ -452,7 +452,7 @@ Prerequisites:
 
 To add a task to a milestone:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select the title of the task you want to edit.
    The task window opens.
@@ -485,7 +485,7 @@ This value is visible only when you view a task.
 
 To set issue weight of a task:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select the title of the task you want to edit.
    The task window opens.
@@ -557,7 +557,7 @@ Prerequisites:
 
 To add a task to an iteration:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select the title of the task you want to edit.
    The task window opens.
@@ -648,7 +648,7 @@ To refer to a task elsewhere in GitLab, you can use its full URL or a short refe
 
 To copy the task reference to your clipboard:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select your task.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then select **Copy Reference**.
@@ -673,7 +673,7 @@ For more information about creating comments by sending an email and the necessa
 
 To copy the task's email address:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then select **Copy task email address**.
 
@@ -692,7 +692,7 @@ Prerequisites:
 
 To set an issue as a parent of a task:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select the title of the task you want to edit.
    The task window opens.
@@ -808,25 +808,6 @@ A system note is added to the page details.
 
 If a task is closed with a locked discussion, then you cannot reopen it until the discussion is unlocked.
 
-## Two-column layout
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags/_index.md) named `work_items_mvc_2`. Disabled by default. This feature is in [beta](../policy/development_stages_support.md).
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/446064) to feature flag named `work_items_beta` in GitLab 16.10. Disabled by default.
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147020) out of feature flag `work_items_beta` in GitLab 17.0.
-
-{{< /history >}}
-
-Tasks use a two-column layout, similar to issues.
-The description and threads are on the left, and attributes, such as labels
-or assignees, on the right.
-
-This feature is in [beta](../policy/development_stages_support.md).
-If you find a bug, [comment on the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/442090).
-
-![Task two column view](img/task_two_column_view_v16_10.png)
-
 ## Linked items in tasks
 
 {{< history >}}
@@ -852,7 +833,7 @@ Prerequisites:
 
 To link an item to a task:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select your task.
 1. In the **Linked items** section of a task,
@@ -875,7 +856,7 @@ Prerequisites:
 
 - You must have at least the Guest role for the project.
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, in the **Child items** section, select your task.
 1. In the **Linked items** section of a task, next to each item, select the vertical

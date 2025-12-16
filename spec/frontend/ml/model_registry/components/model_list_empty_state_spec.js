@@ -5,7 +5,7 @@ import { MLFLOW_USAGE_MODAL_ID } from '~/ml/model_registry/constants';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 let wrapper;
-const createWrapper = () => {
+const createWrapper = (props = {}) => {
   wrapper = shallowMount(EmptyState, {
     provide: { mlflowTrackingUrl: 'path/to/mlflow' },
     propsData: {
@@ -13,6 +13,8 @@ const createWrapper = () => {
       primaryLink: 'primary/link',
       title: 'title',
       description: 'description',
+      showActionButtons: true,
+      ...props,
     },
     directives: {
       GlModal: createMockDirective('gl-modal'),
@@ -45,5 +47,11 @@ describe('ml/model_registry/components/model_list_empty_state.vue', () => {
   it('creates button to docs', () => {
     expect(findDocsButton().text()).toBe('Create using MLflow');
     expect(getBinding(findDocsButton().element, 'gl-modal').value).toBe(MLFLOW_USAGE_MODAL_ID);
+  });
+
+  it('does not render actions when showActionButtons prop is false', () => {
+    createWrapper({ showActionButtons: false });
+
+    expect(wrapper.findComponent(GlButton).exists()).toBe(false);
   });
 });

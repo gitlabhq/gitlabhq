@@ -56,12 +56,12 @@ module EnforcesStepUpAuthenticationForNamespace
 
     namespace.present? &&
       namespace.is_a?(Group) &&
-      namespace.try(:step_up_auth_required_oauth_provider).present?
+      namespace.try(:step_up_auth_required_oauth_provider_from_self_or_inherited).present?
   end
 
   def step_up_auth_required_for_namespace?(namespace)
     ::Gitlab::Auth::Oidc::StepUpAuthentication.enabled_for_provider?(
-      provider_name: namespace.step_up_auth_required_oauth_provider,
+      provider_name: namespace.step_up_auth_required_oauth_provider_from_self_or_inherited,
       scope: ::Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_NAMESPACE
     )
   end

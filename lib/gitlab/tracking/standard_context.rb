@@ -45,14 +45,6 @@ module Gitlab
         GITLAB_RAILS_SOURCE
       end
 
-      private
-
-      attr_accessor :namespace, :project_id, :extra, :plan_name, :user, :feature_enabled_by_namespace_ids
-
-      def get_plan_name(_namespace)
-        'free' # GitLab CE edition is always free
-      end
-
       def to_h
         {
           environment: environment,
@@ -76,6 +68,14 @@ module Gitlab
           instance_version: Gitlab.version_info.to_s,
           context_generated_at: Time.current
         }
+      end
+
+      private
+
+      attr_accessor :namespace, :project_id, :extra, :plan_name, :user, :feature_enabled_by_namespace_ids
+
+      def get_plan_name(_namespace)
+        'free' # GitLab CE edition is always free
       end
 
       def tracked_user_id

@@ -39,7 +39,7 @@ module Ci
 
     RUNNER_FEATURES = {
       upload_multiple_artifacts: ->(build) { build.publishes_artifacts_reports? },
-      refspecs: ->(build) { build.merge_request_ref? },
+      refspecs: ->(build) { build.merge_request_ref? || build.workload? },
       artifacts_exclude: ->(build) { build.supports_artifacts_exclude? },
       multi_build_steps: ->(build) { build.multi_build_steps? },
       return_exit_code: ->(build) { build.exit_codes_defined? },
@@ -49,8 +49,16 @@ module Ci
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
     RUNNERS_STATUS_CACHE_EXPIRATION = 1.minute
     DEPLOYMENT_NAMES = %w[deploy release rollout].freeze
+    MAX_PIPELINES_TO_SEARCH = 100
 
     TOKEN_PREFIX = 'glcbt-'
+
+    INTEGRATION_TYPES = %w[
+      Integrations::Harbor
+      Integrations::AppleAppStore
+      Integrations::GooglePlay
+      Integrations::DiffblueCover
+    ].freeze
 
     has_one :pending_state, class_name: 'Ci::BuildPendingState', foreign_key: :build_id, inverse_of: :build
     has_one :queuing_entry, class_name: 'Ci::PendingBuild', foreign_key: :build_id, inverse_of: :build
@@ -63,13 +71,6 @@ module Ci
       partition_foreign_key: :partition_id
     has_many :report_results, class_name: 'Ci::BuildReportResult', foreign_key: :build_id, inverse_of: :build
     has_one :namespace, through: :project
-
-    has_one :build_source,
-      ->(build) { in_partition(build) },
-      class_name: 'Ci::BuildSource',
-      foreign_key: :build_id,
-      inverse_of: :build,
-      partition_foreign_key: :partition_id
 
     # Projects::DestroyService destroys Ci::Pipelines, which use_fast_destroy on :job_artifacts
     # before we delete builds. By doing this, the relation should be empty and not fire any
@@ -145,10 +146,6 @@ module Ci
     delegate :terminal_specification, to: :runner_session, allow_nil: true
     delegate :service_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
-    delegate :harbor_integration, to: :project
-    delegate :apple_app_store_integration, to: :project
-    delegate :google_play_integration, to: :project
-    delegate :diffblue_cover_integration, to: :project
     delegate :ensure_persistent_ref, to: :pipeline
 
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
@@ -164,10 +161,6 @@ module Ci
     }
 
     delegate :name, to: :project, prefix: true
-
-    delegate :set_waiting_for_runner_ack,
-      :heartbeat_runner_ack_wait, :cancel_wait_for_runner_ack, :runner_manager_id_waiting_for_ack,
-      to: :runner_ack_queue
 
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
@@ -215,6 +208,20 @@ module Ci
           .scoped_job
           .where("config -> 'options' -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
       )
+    end
+
+    scope :timed_out_builds, -> do
+      joins(:runtime_metadata)
+        .where("#{Ci::RunningBuild.table_name}.created_at + INTERVAL \'1 second\' * #{table_name}.timeout <= ?",
+          Time.current)
+        .where(arel_table[:partition_id].eq(Ci::RunningBuild.arel_table[:partition_id]))
+    end
+
+    scope :not_timed_out_builds, -> do
+      joins(:runtime_metadata)
+        .where("#{Ci::RunningBuild.table_name}.created_at + INTERVAL \'1 second\' * #{table_name}.timeout > ?",
+          Time.current)
+        .where(arel_table[:partition_id].eq(Ci::RunningBuild.arel_table[:partition_id]))
     end
 
     # TODO: remove this scope with `ci_builds_metadata`
@@ -284,6 +291,27 @@ module Ci
 
       def supported_keyset_orderings
         { id: [:desc] }
+      end
+
+      def latest_with_artifacts_for_ref(project, job_name, ref_name, limit: MAX_PIPELINES_TO_SEARCH)
+        joins(:pipeline)
+          .joins(:job_artifacts)
+          .where(
+            pipeline: {
+              id: Ci::Pipeline
+                .where(project_id: project.id)
+                .for_ref(ref_name)
+                .success
+                .order(id: :desc)
+                .limit(limit)
+                .select(:id)
+            }
+          )
+          .by_name(job_name)
+          .success
+          .where(job_artifacts: { file_type: Ci::JobArtifact.file_types[:archive] })
+          .order('pipeline.id DESC')
+          .first
       end
     end
 
@@ -366,6 +394,14 @@ module Ci
 
       after_transition any => [:running] do |build, transition|
         Ci::UpdateBuildQueueService.new.track(build, transition)
+
+        # The runner_manager join record is created immediately, since it is marked as `autosave: true` to avoid race
+        # conditions when one runner manager is assigned the job, and others are competing for the same job,
+        # which would cause duplicate key constraint failures.
+        # By only assigning the runner manager once the job starts running, we avoid the problem.
+        transition.args.first.try do |runner_manager|
+          build.runner_manager = runner_manager
+        end
       end
 
       after_transition running: any do |build, transition|
@@ -416,21 +452,23 @@ module Ci
         end
       end
 
+      before_transition running: [:failed] do |build|
+        if build.failure_reason&.to_sym == :job_execution_timeout
+          # If job was stuck or timed-out, only bill the set timeout.
+          build.finished_at = build.started_at + build.timeout.seconds
+        end
+      end
+
       after_transition any => any do |build|
         build.run_after_commit do
           trigger_job_status_change_subscription
           trigger_job_processed_subscriptions
+          trigger_stage_subscription
         end
       end
     end
 
     def self.build_matchers(project)
-      return legacy_build_matchers(project) if Feature.disabled?(:ci_build_uses_job_definition_tag_list, project)
-
-      new_build_matchers(project)
-    end
-
-    def self.new_build_matchers(project)
       unique_params = [
         :protected,
         Arel.sql(tag_names_array_query)
@@ -442,22 +480,6 @@ module Ci
       ]
 
       joins(:job_definition).group(*unique_params).pluck(*pluck_params).map do |values|
-        Gitlab::Ci::Matching::BuildMatcher.new(
-          build_ids: values[0],
-          protected: values[1],
-          tag_list: values[2],
-          project: project
-        )
-      end
-    end
-
-    def self.legacy_build_matchers(project)
-      unique_params = [
-        :protected,
-        Arel.sql("(#{arel_tag_names_array.to_sql})")
-      ]
-
-      group(*unique_params).pluck('array_agg(id)', *unique_params).map do |values|
         Gitlab::Ci::Matching::BuildMatcher.new(
           build_ids: values[0],
           protected: values[1],
@@ -504,6 +526,12 @@ module Ci
 
     def trigger_job_status_change_subscription
       GraphqlTriggers.ci_job_status_updated(self)
+    end
+
+    def trigger_stage_subscription
+      return unless Feature.enabled?(:ci_stage_subscription, project)
+
+      GraphqlTriggers.ci_stage_updated(self)
     end
 
     def ci_job_processed_rate_limited?
@@ -671,6 +699,7 @@ module Ci
           .append(key: 'CI_JOB_URL', value: Gitlab::Routing.url_helpers.project_job_url(project, self))
           .append(key: 'CI_JOB_TOKEN', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_JOB_STARTED_AT', value: started_at&.iso8601)
+          .append(key: 'CI_JOB_STARTED_AT_SLUG', value: started_at && Gitlab::Utils.slugify(started_at.iso8601))
           .append(key: 'CI_REGISTRY_USER', value: ::Gitlab::Auth::CI_JOB_USER)
           .append(key: 'CI_REGISTRY_PASSWORD', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_REPOSITORY_URL', value: repo_url.to_s, public: false)
@@ -858,11 +887,9 @@ module Ci
 
     override :tag_list
     def tag_list
-      # Check job_definition first to avoid loading project if not needed
       return super if job_definition.nil?
-      return super if Feature.disabled?(:ci_build_uses_job_definition_tag_list, project)
 
-      Gitlab::Ci::Tags::TagList.new(job_definition.config.fetch(:tag_list, []))
+      job_definition.tag_list
     end
     strong_memoize_attr :tag_list
 
@@ -1261,32 +1288,10 @@ module Ci
     end
     strong_memoize_attr :time_in_queue_seconds
 
-    def source
-      build_source&.source || pipeline.source
-    end
-    strong_memoize_attr :source
-
     def token
       return encoded_jwt if user&.composite_identity_enforced? || use_jwt_for_ci_cd_job_token?
 
       super
-    end
-
-    # Returns the current status of the runner acknowledgement wait process for two-phase job acceptance.
-    #
-    # @return [Symbol] One of:
-    #   - `:waiting` - Pending job has been assigned to a runner and is actively waiting for the runner to acknowledge
-    #                  that it has picked up the job. The runner manager ID is present in Redis.
-    #   - `:not_waiting` - Job is not in a waiting state. This occurs when either the job is not in pending
-    #                      status, or the job has not been assigned to a runner yet (no `runner_id``).
-    #   - `:wait_expired` - Job was previously assigned to a runner and was waiting for acknowledgement,
-    #                       but the wait period has expired. The runner manager ID is no longer present in Redis,
-    #                       indicating the runner failed to acknowledge within the expected timeframe.
-    def runner_ack_wait_status
-      return :not_waiting unless pending? && runner_id.present?
-      return :waiting if runner_manager_id_waiting_for_ack.present?
-
-      :wait_expired
     end
 
     def uses_protected_cache?
@@ -1294,6 +1299,22 @@ module Ci
       return false unless project.ci_separated_caches
 
       project.team.max_member_access(user.id) >= Gitlab::Access::MAINTAINER
+    end
+
+    def harbor_integration
+      project_integrations['Integrations::Harbor']
+    end
+
+    def apple_app_store_integration
+      project_integrations['Integrations::AppleAppStore']
+    end
+
+    def google_play_integration
+      project_integrations['Integrations::GooglePlay']
+    end
+
+    def diffblue_cover_integration
+      project_integrations['Integrations::DiffblueCover']
     end
 
     protected
@@ -1480,9 +1501,14 @@ module Ci
       ::Ci::Builds::TokenPrefix.encode(self)
     end
 
-    def runner_ack_queue
-      @runner_ack_queue ||= Gitlab::Ci::Build::RunnerAckQueue.new(self)
+    def project_integrations
+      return {} unless project
+
+      project.integrations
+        .where(type_new: INTEGRATION_TYPES)
+        .index_by(&:type_new)
     end
+    strong_memoize_attr :project_integrations
   end
 end
 

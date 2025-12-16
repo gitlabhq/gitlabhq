@@ -44,7 +44,7 @@ users.
 To import your project from FogBugz:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project**.
 1. Select **FogBugz**.
 1. Enter your FogBugz URL, email address, and password.
@@ -61,3 +61,10 @@ To import your project from FogBugz:
 1. To import a project:
    - For the first time: Select **Import**.
    - Again: Select **Re-import**. Specify a new name and select **Re-import** again. Re-importing creates a new copy of the source project.
+
+## Related topics
+
+- [Import and export settings](../../../administration/settings/import_and_export_settings.md).
+- [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
+- [Running multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md).
+- [Processing specific job classes](../../../administration/sidekiq/processing_specific_job_classes.md).

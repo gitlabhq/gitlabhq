@@ -5,6 +5,7 @@ import { __, s__ } from '~/locale';
  * Renders Unmet Prerequisites block for job's view.
  */
 export default {
+  name: 'UnmetPrerequisitesBlock',
   i18n: {
     failMessage: s__(
       'Job|This job failed because the necessary resources were not successfully created.',

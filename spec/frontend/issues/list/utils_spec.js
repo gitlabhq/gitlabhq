@@ -57,9 +57,9 @@ describe('getTypeTokenOptions', () => {
     });
 
     expect(options).toEqual([
-      { icon: 'issue-type-issue', title: 'Issue', value: 'issue' },
-      { icon: 'issue-type-incident', title: 'Incident', value: 'incident' },
-      { icon: 'issue-type-task', title: 'Task', value: 'task' },
+      { icon: 'work-item-issue', title: 'Issue', value: 'issue' },
+      { icon: 'work-item-incident', title: 'Incident', value: 'incident' },
+      { icon: 'work-item-task', title: 'Task', value: 'task' },
     ]);
   });
 });

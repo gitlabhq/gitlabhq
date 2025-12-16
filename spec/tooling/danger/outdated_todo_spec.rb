@@ -101,6 +101,12 @@ RSpec.describe Tooling::Danger::OutdatedTodo, feature_category: :tooling do
         it_behaves_like 'no warning'
       end
 
+      context 'when the filenames contain special regexp characters' do
+        let(:filenames) { ['.*'] }
+
+        it_behaves_like 'no warning'
+      end
+
       context 'when there is no todos' do
         let(:filenames) { ['app/controllers/acme_challenges_controller.rb'] }
         let(:todos) { [] }

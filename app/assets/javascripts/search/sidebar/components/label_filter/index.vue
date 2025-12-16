@@ -5,6 +5,7 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import { difference, uniq } from 'lodash';
 import { rgbFromHex } from '@gitlab/ui/src/utils/utils';
 import { I18N } from '~/vue_shared/global_search/constants';
+// eslint-disable-next-line no-restricted-imports
 import {
   FIRST_DROPDOWN_INDEX,
   SEARCH_BOX_INDEX,

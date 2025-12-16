@@ -65,11 +65,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       it { is_expected.not_to allow_value("").for(:pass_user_identities_to_ci_jwt) }
     end
 
-    describe 'project_studio_enabled' do
-      it { is_expected.to validate_inclusion_of(:project_studio_enabled).in_array([true, false]) }
-      it { is_expected.not_to allow_value(nil).for(:project_studio_enabled) }
-    end
-
     describe 'new_ui_enabled' do
       it { is_expected.to validate_inclusion_of(:new_ui_enabled).in_array([true, false]) }
       it { is_expected.to allow_value(nil).for(:new_ui_enabled) }
@@ -369,40 +364,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
         expect(user_preference).to be_valid
         expect(user_preference.timezone).to be_nil
       end
-    end
-  end
-
-  describe '#project_studio_enabled' do
-    it 'is set to false by default' do
-      pref = described_class.new
-
-      expect(pref.project_studio_enabled).to eq(false)
-    end
-
-    it 'returns assigned value' do
-      pref = described_class.new(project_studio_enabled: true)
-
-      expect(pref.project_studio_enabled).to eq(true)
-    end
-
-    it 'validates inclusion of boolean values' do
-      expect(user_preference).to be_valid
-
-      user_preference.project_studio_enabled = true
-      expect(user_preference).to be_valid
-
-      user_preference.project_studio_enabled = false
-      expect(user_preference).to be_valid
-    end
-
-    it 'persists changes correctly' do
-      user_preference.update!(project_studio_enabled: true)
-
-      expect(user_preference.reload.project_studio_enabled).to eq(true)
-
-      user_preference.update!(project_studio_enabled: false)
-
-      expect(user_preference.reload.project_studio_enabled).to eq(false)
     end
   end
 

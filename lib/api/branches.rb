@@ -9,7 +9,7 @@ module API
 
     BRANCH_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(branch: API::NO_SLASH_URL_PART_REGEX)
 
-    allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
+    allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? || request.post? }
 
     after_validation { content_type "application/json" }
 

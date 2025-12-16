@@ -81,6 +81,12 @@ module Enums
         )
       end
 
+      # `parent_pipeline` is the only dangling source whose configuration is controlled by users.
+      # The other dangling sources have internally generated configs.
+      def self.gitlab_controlled_sources
+        dangling_sources.except(:parent_pipeline)
+      end
+
       # Workloads are always dangling but they also have almost all sources of CI variables disabled by default as they
       # do not need access most of the kinds of CI variables.
       def self.workload_sources

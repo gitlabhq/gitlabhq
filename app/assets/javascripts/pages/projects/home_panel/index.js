@@ -62,7 +62,6 @@ const initHomePanel = () => {
     // Home Panel Heading
     projectName,
     projectVisibilityLevel,
-    isProjectArchived,
     isProjectMarkedForDeletion,
 
     // Compliance Badge
@@ -123,7 +122,6 @@ const initHomePanel = () => {
       // Home Panel Heading
       projectName,
       projectVisibilityLevel,
-      isProjectArchived: parseBoolean(isProjectArchived),
       isProjectMarkedForDeletion: parseBoolean(isProjectMarkedForDeletion),
 
       // Compliance Badge

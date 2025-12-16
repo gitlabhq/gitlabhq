@@ -8,6 +8,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
 import { EXCLUDE_FORKS_FILTER_PARAM } from '~/search/sidebar/constants';
 import { DEFAULT_FETCH_CHUNKS } from '../constants';
+// eslint-disable-next-line no-restricted-imports
 import { RECEIVE_NAVIGATION_COUNT } from '../../store/mutation_types';
 import EmptyResult from './result_empty.vue';
 import ErrorResult from './result_error.vue';

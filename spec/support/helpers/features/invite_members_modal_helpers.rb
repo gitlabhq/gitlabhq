@@ -13,6 +13,7 @@ module Features
     def invite_with_opened_modal(names, role: 'Guest', expires_at: nil, use_exact_text_match: true)
       page.within invite_modal_selector do
         select_members(names)
+        send_keys :escape # dismiss dropdown
         choose_options(role, expires_at, use_exact_text_match)
         submit_invites
       end

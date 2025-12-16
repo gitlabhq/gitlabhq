@@ -10,6 +10,7 @@ const STATUS_OUT_OF_DATE = 'out_of_date';
 const STATUS_FAILED = 'failed';
 
 export default {
+  name: 'EnvironmentsBlock',
   components: {
     CiIcon,
     GlLink,

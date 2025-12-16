@@ -34,33 +34,23 @@ This runbook is an [experiment](../../../../policy/development_stages_support.md
 This runbook guides you through a planned failover of a multi-node Geo site
 with one secondary. The following [40 RPS / 2,000 user reference architecture](../../../reference_architectures/2k_users.md) is assumed:
 
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-graph TD
-   accTitle: Geo planned-failover topology (multi-node)
-   accDescr: Multi-node Geo deployment for planned failover with primary and secondary sites. Each site has Rails, PostgreSQL, Gitaly, Redis, and monitoring nodes
+Primary Site (Multi-node):
 
-   subgraph main[Geo multi-node deployment architecture]
-      subgraph Primary[Primary site, multi-node]
-         Node_1[Rails node 1]
-         Node_2[Rails node 2]
-         Node_3[PostgreSQL node]
-         Node_4[Gitaly node]
-         Node_5[Redis node]
-         Node_6[Monitoring node]
-      end
-      subgraph Secondary[Secondary site]
-         Node_7[Rails node 1]
-         Node_8[Rails node 2]
-         Node_9[PostgreSQL node]
-         Node_10[Gitaly node]
-         Node_11[Redis node]
-         Node_12[Monitoring node]
-      end
-   end
-```
+- Rails node 1
+- Rails node 2
+- PostgreSQL node
+- Gitaly node
+- Redis node
+- Monitoring node
 
-The load balancer node and optional NFS server are omitted for clarity.
+Secondary Site:
+
+- Rails node 1
+- Rails node 2
+- PostgreSQL node
+- Gitaly node
+- Redis node
+- Monitoring node
 
 This guide results in the following:
 
@@ -84,7 +74,7 @@ promote a Geo replica and perform a failover.
 
 On the **secondary** site:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites** to see its status.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
@@ -123,7 +113,7 @@ follow these steps to avoid unnecessary data loss:
       [data not managed by Geo](../../replication/datatypes.md#replicated-data-types),
       trigger the final replication process now.
    1. On the **primary** site:
-      1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+      1. In the upper-right corner, select **Admin**.
       1. On the left sidebar, select **Monitoring** > **Background jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all queues except
          those with `geo` in the name to drop to 0.
@@ -138,7 +128,7 @@ follow these steps to avoid unnecessary data loss:
          - The Geo log cursor is up to date (0 events behind).
 
    1. On the **secondary** site:
-      1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+      1. In the upper-right corner, select **Admin**.
       1. On the left sidebar, select **Monitoring** > **Background jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all the `geo`
          queues to drop to 0 queued and 0 running jobs.
@@ -220,7 +210,7 @@ follow these steps to avoid unnecessary data loss:
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary site to primary **without any further confirmation**:
+   - To promote the secondary site to primary without any further confirmation:
 
      ```shell
      sudo gitlab-ctl geo promote --force
@@ -234,7 +224,7 @@ follow these steps to avoid unnecessary data loss:
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary site to primary **without any further confirmation**:
+   - To promote the secondary site to primary without any further confirmation:
 
      ```shell
      sudo gitlab-ctl geo promote --force

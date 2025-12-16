@@ -5,6 +5,7 @@ import CiResourceComponents from './ci_resource_components.vue';
 import CiResourceReadme from './ci_resource_readme.vue';
 
 export default {
+  name: 'CiResourceDetails',
   components: {
     CiResourceReadme,
     CiResourceComponents,

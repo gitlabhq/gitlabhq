@@ -30,7 +30,6 @@ module Enums
           environment_creation_failure: 21,
           deployment_rejected: 22,
           failed_outdated_deployment_job: 23,
-          runner_provisioning_timeout: 24,
           protected_environment_failure: 1_000,
           insufficient_bridge_permissions: 1_001,
           downstream_bridge_project_not_found: 1_002,
@@ -43,7 +42,8 @@ module Enums
           reached_max_descendant_pipelines_depth: 1_009,
           ip_restriction_failure: 1_010,
           reached_max_pipeline_hierarchy_size: 1_011,
-          reached_downstream_pipeline_trigger_rate_limit: 1_012
+          reached_downstream_pipeline_trigger_rate_limit: 1_012,
+          duo_workflow_not_allowed: 1_013
         }
       end
     end

@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
-# rubocop:disable RSpec/FeatureCategory -- Help pages are not part of a feature category. This feature is supported by the Technical Writing team.
-RSpec.describe Gitlab::Help::HugoTransformer do
-  # rubocop:enable RSpec/FeatureCategory
+RSpec.describe Gitlab::Help::HugoTransformer, feature_category: :gitlab_docs do
   describe '#transform' do
     let(:transformer) { described_class.new }
 
@@ -512,6 +510,126 @@ RSpec.describe Gitlab::Help::HugoTransformer do
         ```markdown
         - example 1
         - example 1 escaped backticks \`backticks\`
+        ```
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'handles yes / no shortcodes' do
+      content = <<~MARKDOWN
+        # Documentation
+
+        Is this feature available?
+
+        | feature 1 | feature 2 |
+        | --------- | --------- |
+        | {{< yes >}} | {{< no >}} |
+
+      MARKDOWN
+      expected_content = <<~MARKDOWN
+        # Documentation
+
+        Is this feature available?
+
+        | feature 1 | feature 2 |
+        | --------- | --------- |
+        | yes | no |
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'handles markdown attributes by removing them from the content' do
+      content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+        {.expandable}
+      MARKDOWN
+      expected_content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'handles markdown attributes in long format by removing them from the content' do
+      content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+        {class="expandable"}
+      MARKDOWN
+      expected_content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'handles multiple markdown attributes by removing them from the content' do
+      content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+        {.something-dashed .word .another}
+      MARKDOWN
+      expected_content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'handles multiple markdown attributes in long format by removing them from the content' do
+      content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+        {class="expandable condensed"}
+      MARKDOWN
+      expected_content = <<~MARKDOWN
+        # Documentation
+        Here is a table:
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'does not transform content in code blocks' do
+      content = <<~MARKDOWN
+        ```shell
+        {range .env[*]}{.name}{","}{end}{"\n"}{end}
+        ```
+      MARKDOWN
+
+      expected_content = <<~MARKDOWN
+        ```shell
+        {range .env[*]}{.name}{","}{end}{"\n"}{end}
         ```
       MARKDOWN
 

@@ -51,8 +51,8 @@ For more information on using a compliance projects report, see:
 - [Create a new compliance framework](../compliance_center/compliance_projects_report.md#create-a-new-compliance-framework).
 - [Edit a compliance framework](../compliance_center/compliance_projects_report.md#edit-a-compliance-framework).
 - [Delete a compliance framework](../compliance_center/compliance_projects_report.md#delete-a-compliance-framework).
-Subgroups and projects have access to all compliance frameworks created on their top-level group. However, compliance frameworks cannot be created, edited,
-or deleted by using subgroups or projects. Project owners can choose a framework to apply to their projects.
+  Subgroups and projects have access to all compliance frameworks created on their top-level group. However, compliance frameworks cannot be created, edited,
+  or deleted by using subgroups or projects. Project owners can choose a framework to apply to their projects.
 
 ## Apply a compliance framework to a project
 
@@ -76,7 +76,7 @@ has the correct permissions. The GitLab UI presents a read-only view to discoura
 
 To apply a compliance framework to a project through a compliance framework:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Hover over a compliance framework, select the **Edit Framework** tab.
@@ -102,7 +102,7 @@ A compliance framework that is set to default has a `default` label.
 
 To set as default (or remove the default) from [compliance projects report](../compliance_center/compliance_projects_report.md):
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Hover over a compliance framework, select the **Edit Framework** tab.
@@ -111,7 +111,7 @@ To set as default (or remove the default) from [compliance projects report](../c
 
 To set as default (or remove the default) from [compliance framework report](../compliance_center/compliance_frameworks_report.md):
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Hover over a compliance framework, select the **Edit Framework** tab.
@@ -143,7 +143,7 @@ With this feature, you can share and back up compliance frameworks.
 
 To export a compliance framework from the compliance center:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Locate the compliance framework you wish to export.
@@ -158,7 +158,7 @@ With this feature, you can use shared or backed up compliance frameworks. The JS
 
 To import a compliance framework by using a JSON template:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework**.
@@ -276,6 +276,12 @@ You can use GitLab compliance controls or external controls for framework requir
 
 ### GitLab compliance controls
 
+{{< history >}}
+
+- In GitLab 18.7 and later, [security scanner controls no longer require a successful pipeline](https://gitlab.com/gitlab-org/gitlab/-/work_items/579849).
+
+{{< /history >}}
+
 GitLab compliance controls can be used in GitLab compliance frameworks. Controls are checks against the configuration or
 behavior of projects that are assigned to a compliance framework.
 
@@ -286,7 +292,7 @@ Combine GitLab compliance controls to help you meet
 
 | Control name                                             | Control ID                                                 | Description |
 |:---------------------------------------------------------|:-----------------------------------------------------------|:------------|
-| API security running                                     | `scanner_api_security_running`                             | Ensures that [API security scanning](../../application_security/api_security/_index.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
+| API security running                                     | `scanner_api_security_running`                             | Ensures that [API security scanning](../../application_security/api_security/_index.md) is configured and running in the project's default branch pipeline. |
 | At least one approval                                    | `minimum_approvals_required_1`                             | Ensures that merge requests [require at least one approvals](../../project/merge_requests/approvals/_index.md) before merging. |
 | At least two approvals                                   | `minimum_approvals_required_2`                             | Ensures that merge requests [require at least two approvals](../../project/merge_requests/approvals/_index.md) before merging. |
 | Auth SSO enabled                                         | `auth_sso_enabled`                                         | Ensures that [Single Sign-On (SSO) authentication](../../group/saml_sso/_index.md) is enabled for the project. |
@@ -295,26 +301,26 @@ Combine GitLab compliance controls to help you meet
 | CI/CD job token scope enabled                            | `cicd_job_token_scope_enabled`                             | Ensures that [CI/CD job token](../../../ci/jobs/ci_job_token.md) scope restrictions are enabled. |
 | Code changes require code owners                         | `code_changes_requires_code_owners`                        | Ensures that code changes require approval from [code owners](../../project/codeowners/_index.md). |
 | Code owner approval required                             | `code_owner_approval_required`                             | Ensures that [code owners file](../../project/codeowners/_index.md) is configured. |
-| Code quality running                                     | `scanner_code_quality_running`                             | Ensures that [code quality scanning](../../../ci/testing/code_quality.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
+| Code quality running                                     | `scanner_code_quality_running`                             | Ensures that [code quality scanning](../../../ci/testing/code_quality.md) is configured and running in the project's default branch pipeline. |
 | Committers approved merge request is forbidden           | `merge_request_prevent_committers_approval`                | Ensures that users who have [committed to a merge request cannot approve it](../../project/merge_requests/approvals/_index.md). |
-| Container scanning running                               | `scanner_container_scanning_running`                       | Ensures that [container scanning](../../application_security/container_scanning/_index.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
-| DAST running                                             | `scanner_dast_running`                                     | Ensures that [Dynamic Application Security Testing](../../application_security/dast/_index.md) (DAST) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
+| Container scanning running                               | `scanner_container_scanning_running`                       | Ensures that [container scanning](../../application_security/container_scanning/_index.md) is configured and running in the project's default branch pipeline. |
+| DAST running                                             | `scanner_dast_running`                                     | Ensures that [Dynamic Application Security Testing](../../application_security/dast/_index.md) (DAST) is configured and running in the project's default branch pipeline. |
 | Default branch protected                                 | `default_branch_protected`                                 | Ensures that the default branch has [protection rules](../../project/repository/branches/protected.md) enabled. |
 | Default branch protected from direct push                | `default_branch_protected_from_direct_push`                | [Prevents direct pushes to the default branch](../../project/repository/branches/protected.md). |
 | Default branch users can merge                           | `default_branch_users_can_merge`                           | Controls [whether users can merge changes to the default branch](../../project/repository/branches/protected.md). |
 | Default branch users can push                            | `default_branch_users_can_push`                            | Controls [whether users can push directly to the default branch](../../project/repository/branches/protected.md). |
-| Dependency scanning running                              | `scanner_dep_scanning_running`                             | Ensures that [dependency scanning](../../application_security/dependency_scanning/_index.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. **Note**: On GitLab Self-Managed instances (from 18.4), this control may fail when using [SBOM-based dependency scanning](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md) due to artifact differences. See [compatibility considerations](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md#compliance-framework-compatibility). |
+| Dependency scanning running                              | `scanner_dep_scanning_running`                             | Ensures that [dependency scanning](../../application_security/dependency_scanning/_index.md) is configured and running in the project's default branch pipeline. **Note**: On GitLab Self-Managed instances (from 18.4), this control may fail when using [SBOM-based dependency scanning](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md) due to artifact differences. See [compatibility considerations](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md#compliance-framework-compatibility). |
 | Ensure two administrators per repository                 | `ensure_2_admins_per_repo`                                 | Ensures that [at least two Owners](../../project/members/_index.md) are assigned to each project. |
 | Error tracking enabled                                   | `error_tracking_enabled`                                   | Ensures that [error tracking](../../../operations/error_tracking.md) is enabled for the project. |
 | Force push disabled                                      | `force_push_disabled`                                      | Prevents [force pushing](../../project/repository/branches/protected.md) to repositories. |
 | Forks exist for the project                              | `has_forks`                                                | Ensures that the project has been [forked](../../project/repository/forking_workflow.md) |
-| Fuzz testing running                                     | `scanner_fuzz_testing_running`                             | Ensures that [fuzz testing](../../application_security/coverage_fuzzing/_index.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
+| Fuzz testing running                                     | `scanner_fuzz_testing_running`                             | Ensures that [fuzz testing](../../application_security/coverage_fuzzing/_index.md) is configured and running in the project's default branch pipeline. |
 | GitLab license level Ultimate                            | `gitlab_license_level_ultimate`                            | Ensures that the GitLab instance is using an [Ultimate license](https://about.gitlab.com/pricing/feature-comparison/). |
 | Has valid CI/CD configuration                            | `has_valid_ci_config`                                      | Ensures that the project has a [valid CI/CD configuration](../../../ci/yaml/_index.md). |
-| IaC scanning running                                     | `scanner_iac_running`                                      | Ensures [Infrastructure as Code (IaC) scanning](../../application_security/iac_scanning/_index.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
+| IaC scanning running                                     | `scanner_iac_running`                                      | Ensures [Infrastructure as Code (IaC) scanning](../../application_security/iac_scanning/_index.md) is configured and running in the project's default branch pipeline. |
 | Internal visibility is forbidden                         | `project_visibility_not_internal`                          | Ensures that projects are not set to [internal visibility](../../public_access.md). |
 | Issue tracking enabled                                   | `issue_tracking_enabled`                                   | Ensures that [issue tracking](../../project/issues/_index.md) is enabled for the project. |
-| License compliance running                               | `scanner_license_compliance_running`                       | Ensures that [license compliance scanning](../license_approval_policies.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
+| License compliance running                               | `scanner_license_compliance_running`                       | Ensures that [license compliance scanning](../license_approval_policies.md) is configured and running in the project's default branch pipeline. |
 | Merge request commit resets approvals                    | `merge_request_commit_reset_approvals`                     | Ensures that [new commits to merge requests reset approvals](../../project/merge_requests/approvals/settings.md). |
 | Merge requests approval rules prevent editing            | `merge_requests_approval_rules_prevent_editing`            | Ensures that [merge request approval rules](../../project/merge_requests/approvals/settings.md) can't be edited. |
 | Merge requests require code owner approval               | `merge_requests_require_code_owner_approval`               | Ensures that merge requests require approval from [code owners](../../project/codeowners/_index.md). |
@@ -338,8 +344,8 @@ Combine GitLab compliance controls to help you meet
 | Restricted build access                                  | `restricted_build_access`                                  | Ensures [restricted access to build artifacts and pipeline outputs](../../../ci/pipelines/settings.md). |
 | Review and archive stale repositories                    | `review_and_archive_stale_repos`                           | Ensures that stale repositories are reviewed and [archived](../../project/settings/_index.md). |
 | Review and remove inactive users                         | `review_and_remove_inactive_users`                         | Ensures that [inactive users](../../../administration/admin_area.md) are reviewed and removed. |
-| SAST running                                             | `scanner_sast_running`                                     | Ensures that [static application security testing](../../application_security/sast/_index.md) (SAST) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
-| Secret detection running                                 | `scanner_secret_detection_running`                         | Ensures that [secret detection scanning](../../application_security/secret_detection/_index.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
+| SAST running                                             | `scanner_sast_running`                                     | Ensures that [static application security testing](../../application_security/sast/_index.md) (SAST) is configured and running in the project's default branch pipeline. |
+| Secret detection running                                 | `scanner_secret_detection_running`                         | Ensures that [secret detection scanning](../../application_security/secret_detection/_index.md) is configured and running in the project's default branch pipeline. |
 | Secure webhooks                                          | `secure_webhooks`                                          | Ensures that [webhooks](../../project/integrations/webhooks.md) are securely configured. |
 | Stale branch cleanup enabled                             | `stale_branch_cleanup_enabled`                             | Ensures that [automatic cleanup of stale branches](../../project/repository/branches/_index.md) is enabled. |
 | Status checks required                                   | `status_checks_required`                                   | Ensures that [status checks](../../project/merge_requests/status_checks.md) must pass before merging is allowed. |
@@ -373,7 +379,7 @@ Status checks fail if an external control stays in the pending state for more th
 
 To add an external control when creating or editing a framework:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.
@@ -425,11 +431,160 @@ External controls can have one of three statuses.
 
 If something changes outside of GitLab, you can set the [status of an external control by using the API](../../../api/external_controls.md). You don't need to wait for a payload to be sent first.
 
+#### External control payload example
+
+When GitLab sends a notification to an external service during compliance scans, it includes detailed project information in the payload. The following is an example of the JSON payload structure:
+
+```json
+{
+  "id": 123456,
+  "description": "Project for compliance testing and validation",
+  "name": "Compliance Test Project",
+  "name_with_namespace": "acme-corp / engineering / security / compliance-test-project",
+  "path": "compliance-test-project",
+  "path_with_namespace": "acme-corp/engineering/security/compliance-test-project",
+  "created_at": "2024-01-15T10:30:00.000Z",
+  "tag_list": ["compliance", "security"],
+  "topics": ["governance", "audit"],
+  "ssh_url_to_repo": "git@gitlab.com:acme-corp/engineering/security/compliance-test-project.git",
+  "http_url_to_repo": "https://gitlab.com/acme-corp/engineering/security/compliance-test-project.git",
+  "web_url": "https://gitlab.com/acme-corp/engineering/security/compliance-test-project",
+  "avatar_url": "https://gitlab.com/uploads/-/system/project/avatar/123456/avatar.png",
+  "star_count": 5,
+  "last_activity_at": "2024-11-20T14:25:30.000Z",
+  "visibility": "private",
+  "namespace": {
+    "id": 654321,
+    "name": "Security Group",
+    "path": "security",
+    "kind": "group",
+    "full_path": "acme-corp/engineering/security",
+    "parent_id": 654320,
+    "avatar_url": "https://gitlab.com/uploads/-/system/group/avatar/654321/avatar.png",
+    "web_url": "https://gitlab.com/groups/acme-corp/engineering/security"
+  },
+  "container_registry_image_prefix": "registry.gitlab.com/acme-corp/engineering/security/compliance-test-project",
+  "_links": {
+    "self": "https://gitlab.com/api/v4/projects/123456",
+    "issues": "https://gitlab.com/api/v4/projects/123456/issues",
+    "merge_requests": "https://gitlab.com/api/v4/projects/123456/merge_requests",
+    "repo_branches": "https://gitlab.com/api/v4/projects/123456/repository/branches",
+    "labels": "https://gitlab.com/api/v4/projects/123456/labels",
+    "events": "https://gitlab.com/api/v4/projects/123456/events",
+    "members": "https://gitlab.com/api/v4/projects/123456/members",
+    "cluster_agents": "https://gitlab.com/api/v4/projects/123456/cluster_agents"
+  },
+  "marked_for_deletion_at": null,
+  "marked_for_deletion_on": null,
+  "packages_enabled": true,
+  "empty_repo": false,
+  "archived": false,
+  "resolve_outdated_diff_discussions": false,
+  "container_expiration_policy": {
+    "cadence": "1d",
+    "enabled": false,
+    "keep_n": 10,
+    "older_than": "90d",
+    "name_regex": ".*",
+    "name_regex_keep": null,
+    "next_run_at": "2024-01-16T10:30:00.000Z"
+  },
+  "repository_object_format": "sha1",
+  "issues_enabled": true,
+  "merge_requests_enabled": true,
+  "wiki_enabled": true,
+  "jobs_enabled": true,
+  "snippets_enabled": true,
+  "container_registry_enabled": true,
+  "service_desk_enabled": true,
+  "can_create_merge_request_in": false,
+  "issues_access_level": "enabled",
+  "repository_access_level": "enabled",
+  "merge_requests_access_level": "enabled",
+  "forking_access_level": "enabled",
+  "wiki_access_level": "enabled",
+  "builds_access_level": "enabled",
+  "snippets_access_level": "enabled",
+  "pages_access_level": "private",
+  "analytics_access_level": "enabled",
+  "container_registry_access_level": "enabled",
+  "security_and_compliance_access_level": "private",
+  "releases_access_level": "enabled",
+  "environments_access_level": "enabled",
+  "feature_flags_access_level": "enabled",
+  "infrastructure_access_level": "enabled",
+  "monitor_access_level": "enabled",
+  "model_experiments_access_level": "enabled",
+  "model_registry_access_level": "enabled",
+  "package_registry_access_level": "enabled",
+  "emails_disabled": false,
+  "emails_enabled": true,
+  "show_diff_preview_in_email": true,
+  "shared_runners_enabled": true,
+  "lfs_enabled": true,
+  "creator_id": 111222,
+  "import_status": "none",
+  "open_issues_count": 3,
+  "description_html": "<p>Project for compliance testing and validation</p>",
+  "updated_at": "2024-11-20T14:25:30.000Z",
+  "public_jobs": true,
+  "shared_with_groups": [],
+  "only_allow_merge_if_pipeline_succeeds": false,
+  "allow_merge_on_skipped_pipeline": null,
+  "request_access_enabled": true,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
+  "remove_source_branch_after_merge": true,
+  "printing_merge_request_link_enabled": true,
+  "merge_method": "merge",
+  "merge_request_title_regex": null,
+  "merge_request_title_regex_description": null,
+  "squash_option": "default_off",
+  "enforce_auth_checks_on_uploads": true,
+  "suggestion_commit_message": null,
+  "merge_commit_template": null,
+  "squash_commit_template": null,
+  "issue_branch_template": null,
+  "warn_about_potentially_unwanted_characters": true,
+  "autoclose_referenced_issues": true,
+  "max_artifacts_size": null,
+  "approvals_before_merge": 0,
+  "mirror": false,
+  "external_authorization_classification_label": "",
+  "requirements_enabled": true,
+  "requirements_access_level": "enabled",
+  "security_and_compliance_enabled": false,
+  "compliance_frameworks": ["SOC 2 Compliance Framework"],
+  "merge_pipelines_enabled": false,
+  "merge_trains_enabled": false,
+  "merge_trains_skip_train_allowed": false,
+  "only_allow_merge_if_all_status_checks_passed": false,
+  "allow_pipeline_trigger_approve_deployment": false,
+  "prevent_merge_without_jira_issue": false,
+  "auto_duo_code_review_enabled": false,
+  "duo_remote_flows_enabled": true,
+  "duo_foundational_flows_enabled": true,
+  "spp_repository_pipeline_access": false,
+  "project_control_compliance_status": {
+    "status": "pending",
+    "compliance_requirements_control_id": 100001,
+    "project_id": 123456,
+    "compliance_requirement_id": 200001,
+    "namespace_id": 654321,
+    "id": 300001,
+    "created_at": "2024-11-26T10:00:00.000Z",
+    "updated_at": "2024-11-26T10:00:00.000Z",
+    "requirement_status_id": null
+  }
+}
+```
+
+The external service can use this information to perform its compliance checks and then respond with the appropriate control status using the [external controls API](../../../api/external_controls.md).
+
 ### Add requirements
 
 To add a requirement when creating or editing a framework:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.
@@ -443,7 +598,7 @@ To add a requirement when creating or editing a framework:
 
 To edit a requirement when creating or editing a framework:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.

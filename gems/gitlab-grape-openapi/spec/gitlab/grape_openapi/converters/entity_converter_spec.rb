@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable API/EntityFieldType -- needed for testing purposes
 RSpec.describe Gitlab::GrapeOpenapi::Converters::EntityConverter do
   let(:schema_registry) { Gitlab::GrapeOpenapi::SchemaRegistry.new }
   let(:converter) { described_class.new(entity_class, schema_registry) }
@@ -319,3 +320,4 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::EntityConverter do
     end
   end
 end
+# rubocop:enable API/EntityFieldType

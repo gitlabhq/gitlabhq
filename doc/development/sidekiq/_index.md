@@ -398,6 +398,76 @@ tests the parameter expected to be an array of hashes:
 end
 ```
 
+### Parameter ordering
+
+When the worker accepts multiple parameters,
+follow a consistent ordering convention to improve code readability and maintainability across the codebase.
+
+Place parameters in this order:
+
+1. **Highest-level resource identifiers** (like `project_id`, `namespace_id`, `group_id`)
+1. **User identifiers** (like `user_id`, `current_user_id`)
+1. **Lower-level resource identifiers** (like `merge_request_id`, `issue_id`, `pipeline_id`)
+1. **Optional configuration hash** (like `params = {}`, `options = {}`)
+
+For workers with many parameters or parameters that may change frequently,
+consider placing non-core parameters inside the configuration hash rather than as separate positional arguments.
+This provides [flexibility for future changes](compatibility_across_updates.md#parameter-hash)
+while maintaining the ordering convention for core identifiers.
+
+**Good: Core identifiers as positional parameters, additional parameters in hash**
+
+```ruby
+class CreatePipelineWorker
+  def perform(project_id, user_id, merge_request_id, params = {})
+    # ...
+    ref = params['ref']
+    source = params['source']
+    # ...
+  end
+end
+
+class ProcessCommitWorker
+  def perform(project_id, user_id, params = {})
+    commit_hash = params['commit_hash']
+    # ...
+  end
+end
+```
+
+**Bad: Inconsistent ordering**
+
+```ruby
+# Don't put non-core parameters as positional args before core identifiers
+class ProcessCommitWorker
+  def perform(commit_hash, ref, project_id, user_id)
+    # Harder to scan and less flexible
+  end
+end
+
+# Don't alternate between user and resource IDs
+class CreatePipelineWorker
+  def perform(user_id, project_id, ref, source, merge_request_id)
+    # Inconsistent ordering
+  end
+end
+```
+
+Why this ordering?
+
+- **Consistency**: The vast majority of existing workers follow this pattern, making the codebase more predictable
+- **Readability**: Developers can quickly identify what resource the job operates on by looking at the first parameter
+- **Context flow**: Resource → User → Action follows the natural question: "What is being modified, by whom, and how?"
+- **Flexibility**: Using hash parameters for non-core parameters allows adding new parameters without breaking compatibility
+
+{{< alert type="note" >}}
+
+This guideline applies to **new workers only**. Do not refactor existing workers to match this format,
+as changing parameter order or structure can break compatibility with jobs already in the queue.
+See [Sidekiq compatibility across updates](compatibility_across_updates.md) for more details.
+
+{{< /alert >}}
+
 ## Tests
 
 Each Sidekiq worker must be tested using RSpec, just like any other class. These

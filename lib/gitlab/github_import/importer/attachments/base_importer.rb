@@ -19,9 +19,8 @@ module Gitlab
                 attachments = fetch_attachments(record)
 
                 if attachments.any?
-                  Gitlab::GithubImport::ObjectCounter.increment(
-                    project, object_type, :fetched, value: attachments.collect(&:url).uniq.size
-                  )
+                  Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched,
+                    value: attachments.collect(&:url).uniq.size)
 
                   yield record
                 end

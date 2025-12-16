@@ -181,5 +181,105 @@ RSpec.describe UserSettings::ProfilesController, :request_store, feature_categor
       expect(user.reload.orcid).to eq(orcid_id)
       expect(response).to have_gitlab_http_status(:found)
     end
+
+    context 'for email OTP enrollment' do
+      context 'when the current password is not required' do
+        it 'allows enabling email OTP', :aggregate_failures, :freeze_time do
+          stub_application_setting(password_authentication_enabled_for_web?: false)
+
+          sign_in(user)
+
+          put :update, params: { user: { email_otp_required_as_boolean: true }, current_password: password }
+
+          expect(user.reload.email_otp_required_after).to eq(Time.current)
+          expect(response).to have_gitlab_http_status(:found)
+        end
+      end
+
+      context 'when the correct user password is provided' do
+        it 'allows enabling email OTP', :aggregate_failures, :freeze_time do
+          sign_in(user)
+
+          put :update, params: { user: { email_otp_required_as_boolean: true }, current_password: password }
+
+          expect(user.reload.email_otp_required_after).to eq(Time.current)
+          expect(response).to have_gitlab_http_status(:found)
+        end
+
+        it 'allows disabling email OTP', :aggregate_failures do
+          user.update!(email_otp_required_after: Time.current)
+          sign_in(user)
+
+          put :update, params: { user: { email_otp_required_as_boolean: false }, current_password: password }
+
+          expect(user.reload.email_otp_required_after).to be_nil
+          expect(response).to have_gitlab_http_status(:found)
+        end
+      end
+
+      context 'when incorrect passwords are provided' do
+        where(:provided_password) do
+          [
+            nil,
+            "",
+            "invalid"
+          ]
+        end
+
+        with_them do
+          it 'does not allows modifying email OTP', :aggregate_failures do
+            sign_in(user)
+
+            put :update, params: { user: { email_otp_required_as_boolean: true }, current_password: provided_password }
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(flash[:alert]).to eq('You must provide a valid current password.')
+          end
+        end
+      end
+
+      context 'when email_otp_required_as_boolean is not in params' do
+        it 'does not call can_modify_email_otp_enrollment?', :aggregate_failures do
+          sign_in(user)
+
+          expect(user).not_to receive(:can_modify_email_otp_enrollment?)
+
+          put :update, params: { user: { name: 'New Name' } }
+
+          expect(response).to have_gitlab_http_status(:found)
+        end
+      end
+
+      context 'when email_otp_required_as_boolean value is not changing' do
+        it 'does not call can_modify_email_otp_enrollment?', :aggregate_failures do
+          sign_in(user)
+
+          expect(user).not_to receive(:can_modify_email_otp_enrollment?)
+
+          put :update, params: { user: { email_otp_required_as_boolean: false } }
+
+          expect(response).to have_gitlab_http_status(:found)
+        end
+      end
+
+      context 'when the user is not permitted to change their email OTP enrollment', :freeze_time do
+        # Other can_modify_email_otp_enrollment? scenarios are tested in
+        # email_otp_enrollment_spec.rb
+        before do
+          stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+          user.update!(email_otp_required_after: Time.current)
+        end
+
+        it 'does not allows modifying email OTP', :aggregate_failures do
+          sign_in(user)
+
+          put :update, params: { user: { email_otp_required_as_boolean: false } }
+
+          expect(user.reload.email_otp_required_after).to eq(Time.current)
+          expect(response).to have_gitlab_http_status(:found)
+          expect(flash[:alert]).to eq('You are not permitted to change email OTP enrollment')
+        end
+      end
+    end
   end
 end

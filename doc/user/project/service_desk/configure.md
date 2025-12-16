@@ -28,7 +28,7 @@ Prerequisites:
 
 To enable Service Desk in your project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Turn on the **Activate Service Desk** toggle.
@@ -84,12 +84,12 @@ content specific to the Service Desk ticket or your GitLab instance.
 
 | Placeholder            | `thank_you.md` and `new_participant` | `new_note.md`          | Description |
 |------------------------|--------------------------------------|------------------------|-------------|
-| `%{ISSUE_ID}`          | {{< icon name="check-circle" >}} Yes               | {{< icon name="check-circle" >}} Yes | Ticket IID. |
-| `%{ISSUE_PATH}`        | {{< icon name="check-circle" >}} Yes               | {{< icon name="check-circle" >}} Yes | Project path appended with the ticket IID. |
-| `%{ISSUE_URL}`         | {{< icon name="check-circle" >}} Yes               | {{< icon name="check-circle" >}} Yes | URL of the ticket. External participants can only view the ticket if the project is public and ticket is not confidential (Service Desk tickets are confidential by default). |
-| `%{ISSUE_DESCRIPTION}` | {{< icon name="check-circle" >}} Yes               | {{< icon name="check-circle" >}} Yes | Ticket description. If a user has edited the description, it may contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify descriptions or your team is aware of the template design. |
-| `%{UNSUBSCRIBE_URL}`   | {{< icon name="check-circle" >}} Yes               | {{< icon name="check-circle" >}} Yes | Unsubscribe URL. Learn how to [unsubscribe as an external participant](external_participants.md#unsubscribing-from-notification-emails) and [use unsubscribe headers in notification emails from GitLab](../../profile/notifications.md#using-an-email-client-or-other-software). |
-| `%{NOTE_TEXT}`         | {{< icon name="dotted-circle" >}} No               | {{< icon name="check-circle" >}} Yes | The new comment added to the ticket by a user. Take care to include this placeholder in `new_note.md`. Otherwise, the external participants may never see the updates on their Service Desk ticket. |
+| `%{ISSUE_ID}`          | {{< yes >}}               | {{< yes >}} | Ticket IID. |
+| `%{ISSUE_PATH}`        | {{< yes >}}               | {{< yes >}} | Project path appended with the ticket IID. |
+| `%{ISSUE_URL}`         | {{< yes >}}               | {{< yes >}} | URL of the ticket. External participants can only view the ticket if the project is public and ticket is not confidential (Service Desk tickets are confidential by default). |
+| `%{ISSUE_DESCRIPTION}` | {{< yes >}}               | {{< yes >}} | Ticket description. If a user has edited the description, it may contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify descriptions or your team is aware of the template design. |
+| `%{UNSUBSCRIBE_URL}`   | {{< yes >}}               | {{< yes >}} | Unsubscribe URL. Learn how to [unsubscribe as an external participant](external_participants.md#unsubscribing-from-notification-emails) and [use unsubscribe headers in notification emails from GitLab](../../profile/notifications.md#using-an-email-client-or-other-software). |
+| `%{NOTE_TEXT}`         | {{< no >}}                | {{< yes >}} | The new comment added to the ticket by a user. Take care to include this placeholder in `new_note.md`. Otherwise, the external participants may never see the updates on their Service Desk ticket. |
 
 ### Thank you email
 
@@ -174,7 +174,7 @@ Prerequisites:
 
 To use a custom description template with Service Desk:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. From the dropdown list **Template to append to all Service Desk issues**, search or select your template.
@@ -197,7 +197,7 @@ this name in the `From` header. The default display name is `GitLab Support Bot`
 
 To edit the custom email display name:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Below **Email display name**, enter a new name.
@@ -224,7 +224,7 @@ Prerequisites:
 
 To disable this setting:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Clear the **New tickets are confidential by default** checkbox.
@@ -252,7 +252,7 @@ Prerequisites:
 
 To enable this setting:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Select the **Reopen issues on a new note from an external participant** checkbox.
@@ -314,7 +314,7 @@ The custom email address you want to use must meet all of the following requirem
 
 Configure and verify a custom email address when you want to send Service Desk emails using your own email address.
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk** and find the **Configure a custom email address** section.
 1. Note the presented Service Desk address of this project, and with your email provider
@@ -412,7 +412,7 @@ After the custom email address has been verified, administrators can enable or d
 
 To **enable** the custom email address:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Turn on the **Enable custom email** toggle.
@@ -420,7 +420,7 @@ To **enable** the custom email address:
 
 To **disable** the custom email address:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Turn off the **Enable custom email** toggle.
@@ -479,7 +479,7 @@ The following steps require moving between GitLab and Google Workspace.
 
 In GitLab:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **General**
 1. Expand **Service Desk**.
 1. Note the email address below **Service Desk email address to forward emails to**.
@@ -514,7 +514,7 @@ to use with Service Desk.
 
 In GitLab:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **General**
 1. Expand **Service Desk** and find the custom email settings.
 1. Complete the fields:
@@ -619,7 +619,7 @@ The following steps require moving between GitLab and Microsoft 365 admin center
 
 In GitLab:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **General**
 1. Expand **Service Desk**.
 1. Note the email address below **Service Desk email address to forward emails to** without the
@@ -652,7 +652,7 @@ to use with Service Desk.
 
 In GitLab:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **General**
 1. Expand **Service Desk** and find the custom email settings.
 1. Complete the fields:
@@ -1148,7 +1148,7 @@ Prerequisites:
 
 - You must have configured a [Service Desk alias email](#configure-service-desk-alias-email).
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Below **Email address suffix**, enter the suffix to use.

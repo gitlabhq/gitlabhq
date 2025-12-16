@@ -74,7 +74,7 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
 
       context 'with scope argument' do
         it 'defaults to :all and returns all catalog resources' do
-          expect(result.items.count).to be(3)
+          expect(result.items.to_a.size).to be(3)
           expect(result.items.pluck(:name)).to contain_exactly('public', 'internal', 'z private test')
         end
 
@@ -86,7 +86,7 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
             internal_public_project = create(:project, :internal, name: 'internal public', namespace: namespace)
             create(:ci_catalog_resource, :published, project: internal_public_project)
 
-            expect(result.items.count).to be(4)
+            expect(result.items.to_a.size).to be(4)
             expect(result.items.pluck(:name)).to contain_exactly('public', 'internal public', 'internal',
               'z private test')
           end
@@ -96,7 +96,7 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
           let(:scope) { 'INVALID' }
 
           it 'defaults to :all and returns all catalog resources' do
-            expect(result.items.count).to be(3)
+            expect(result.items.to_a.size).to be(3)
             expect(result.items.pluck(:name)).to contain_exactly('public', 'internal', 'z private test')
           end
         end
@@ -204,9 +204,65 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
       let_it_be(:user) { nil }
 
       it 'returns only public projects' do
-        expect(result.items.count).to be(1)
+        expect(result.items.to_a.size).to be(1)
         expect(result.items.pluck(:name)).to contain_exactly('public')
       end
+    end
+  end
+
+  describe 'preloads' do
+    before_all do
+      namespace.add_reporter(user)
+      internal_project.add_reporter(user)
+    end
+
+    it 'avoids N+1 queries when accessing versions and archived fields' do
+      # Create versions with components for resources
+      version1 = create(:ci_catalog_resource_version, catalog_resource: public_resource,
+        project: public_namespace_project)
+      create(:ci_catalog_resource_component, version: version1, catalog_resource: public_resource,
+        project: public_namespace_project)
+
+      version2 = create(:ci_catalog_resource_version, catalog_resource: private_resource,
+        project: private_namespace_project)
+      create(:ci_catalog_resource_component, version: version2, catalog_resource: private_resource,
+        project: private_namespace_project)
+
+      # Query that requests versions and archived fields
+      query = <<~GQL
+        query {
+          ciCatalogResources {
+            nodes {
+              id
+              archived
+              versions {
+                nodes {
+                  id
+                  components {
+                    nodes {
+                      id
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      GQL
+
+      control = ActiveRecord::QueryRecorder.new do
+        GitlabSchema.execute(query, context: { current_user: user }).to_h
+      end
+
+      # Add more resources with versions
+      version3 = create(:ci_catalog_resource_version, catalog_resource: internal_resource,
+        project: internal_project)
+      create(:ci_catalog_resource_component, version: version3, catalog_resource: internal_resource,
+        project: internal_project)
+
+      expect do
+        GitlabSchema.execute(query, context: { current_user: user }).to_h
+      end.not_to exceed_query_limit(control)
     end
   end
 end

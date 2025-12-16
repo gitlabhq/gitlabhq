@@ -1,0 +1,21 @@
+---
+description: When the quickaction /unapprove is executed
+internal_events: true
+status: active
+action: i_quickactions_unapprove
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  is_reviewer:
+    description: Is the user a reviewer?
+product_group: code_review
+product_categories:
+- code_review_workflow
+milestone: '18.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215777
+tiers:
+- free
+- premium
+- ultimate

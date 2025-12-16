@@ -13,13 +13,27 @@ RSpec.describe 'user_settings/personal_access_tokens/index.html.haml', feature_c
     assign(:access_token_params, { name: 'new token', description: nil, scopes: [] })
   end
 
-  it 'shows the personal access tokens' do
-    render
+  context 'when `granular_personal_access_tokens` feature flag is enabled' do
+    it 'shows the personal access tokens' do
+      render
 
-    expect(rendered).to have_selector('div#js-shared-access-token-app[data-access-token-name="new token"]')
+      expect(rendered).to have_selector('div#js-personal-access-token-app[data-access-token-name="new token"]')
+    end
   end
 
-  context 'when feature flag is disabled' do
+  context 'when `granular_personal_access_tokens` feature flag is disabled' do
+    before do
+      stub_feature_flags(granular_personal_access_tokens: false)
+    end
+
+    it 'shows the personal access tokens' do
+      render
+
+      expect(rendered).to have_selector('div#js-shared-access-token-app[data-access-token-name="new token"]')
+    end
+  end
+
+  context 'when `dpop_authentication` feature flag is disabled' do
     before do
       stub_feature_flags(dpop_authentication: false)
     end
@@ -31,7 +45,7 @@ RSpec.describe 'user_settings/personal_access_tokens/index.html.haml', feature_c
     end
   end
 
-  context 'when feature flag is enabled' do
+  context 'when `dpop_authentication` feature flag is enabled' do
     before do
       stub_feature_flags(dpop_authentication: true)
     end

@@ -38,7 +38,7 @@ Linked resources for an incident are listed under the **Summary** tab.
 
 To view the linked resources of an incident:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Incidents**.
 1. Select an incident.
 
@@ -52,7 +52,7 @@ Prerequisites:
 
 To add a linked resource:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Incidents**.
 1. Select an incident.
 1. In the **Linked resources** section, select the plus icon ({{< icon name="plus-square" >}}).
@@ -67,8 +67,7 @@ To add a linked resource:
 
 {{< /history >}}
 
-To add multiple links to an incident, use the `/link`
-[quick action](../../user/project/quick_actions.md):
+To add multiple links to an incident, use the [`/link` quick action](../../user/project/quick_actions.md#link):
 
 ```plaintext
 /link https://example.link.us/j/123456789
@@ -89,7 +88,7 @@ The description shows instead of the URL in the **Linked resources** section of 
 
 {{< /history >}}
 
-Use the `/zoom` [quick action](../../user/project/quick_actions.md) to add multiple Zoom links to an incident:
+Use the [`/zoom` quick action](../../user/project/quick_actions.md#zoom) to add multiple Zoom links to an incident:
 
 ```plaintext
 /zoom https://example.zoom.us/j/123456789
@@ -111,7 +110,7 @@ Prerequisites:
 
 To remove a linked resource:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Incidents**.
 1. Select an incident.
 1. In the **Linked resources** section, select **Remove** ({{< icon name="close" >}}).

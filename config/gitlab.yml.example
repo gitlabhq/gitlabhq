@@ -81,6 +81,14 @@ production: &base
 
     allowed_hosts: []
 
+    # ActionCable allowed request origins
+    # Customize if you browse your GitLab application through multiple URLs
+    # If you have GitLab Geo enabled, then add the external URLs of every site:
+    action_cable_allowed_origins:
+      #- https://unified.url
+      #- https://primary-external.url (if different from the above)
+      #- https://secondary-external.url (if different from the above)
+
     # Trusted Proxies
     # Customize if you have GitLab behind a reverse proxy which is running on a different machine.
     # Add the IP address for your reverse proxy to the list, otherwise users will appear signed in from that address.
@@ -1353,11 +1361,6 @@ production: &base
 
     # The client timeout in seconds for the KAS API (used by the GitLab backend)
     # client_timeout_seconds: 5
-
-  suggested_reviewers:
-    # File that contains the secret key for verifying access to GitLab internal API for Suggested Reviewers.
-    # Default is '.gitlab_suggested_reviewers_secret' relative to Rails.root (i.e. root of the GitLab app).
-    # secret_file: /home/git/gitlab/.gitlab_suggested_reviewers_secret
 
   zoekt:
     # Files that contain username and password for basic auth for Zoekt

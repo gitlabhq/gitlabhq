@@ -82,7 +82,7 @@ RSpec.describe Gitlab::UrlBuilder do
     end
 
     context 'when passing a Service Desk issue', feature_category: :service_desk do
-      let(:service_desk_issue) { create(:work_item, :issue, author: Users::Internal.support_bot) }
+      let(:service_desk_issue) { create(:work_item, :issue, author: create(:support_bot)) }
 
       subject { described_class.build(service_desk_issue, only_path: true) }
 
@@ -122,8 +122,17 @@ RSpec.describe Gitlab::UrlBuilder do
       let_it_be(:compare) { create(:compare) }
       let_it_be(:project) { compare.project }
 
-      it 'returns the full URL' do
+      it 'returns the full URL with three dots' do
         expect(subject.build(compare)).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}/-/compare/#{compare.base_commit_sha}...#{compare.head_commit_sha}")
+      end
+
+      context 'when compare is straight' do
+        let(:compare) { create(:compare, straight: true) }
+        let(:project) { compare.project }
+
+        it 'returns the URL with two dots' do
+          expect(subject.build(compare)).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}/-/compare/#{compare.start_commit_sha}..#{compare.head_commit_sha}")
+        end
       end
 
       it 'returns only the path if only_path is given' do

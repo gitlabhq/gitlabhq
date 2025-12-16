@@ -27,7 +27,7 @@ module UserHelpers
       # `.tap` can only be used with `create`, and if we want to `build` a user,
       # it is more performant than creating a `project_member` or `group_member`
       # with a built user
-      create(:user, name: membership).tap { |u| target.add_member(u, membership) }
+      create(:user, name: membership, organization: target.organization).tap { |u| target.add_member(u, membership) }
     end
   end
 end

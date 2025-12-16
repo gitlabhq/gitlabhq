@@ -9,6 +9,22 @@ RSpec.describe Ci::CreateDownstreamPipelineWorker, feature_category: :continuous
 
   let(:bridge) { create(:ci_bridge, user: user, pipeline: pipeline) }
 
+  it_behaves_like 'worker with data consistency', described_class, data_consistency: :sticky
+
+  it 'is labeled as low urgency' do
+    expect(described_class.get_urgency).to eq(:low)
+  end
+
+  it 'has the `until_executed` deduplicate strategy' do
+    expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
+  end
+
+  it 'has an option to reschedule once if deduplicated' do
+    expect(described_class.get_deduplication_options).to include(
+      { if_deduplicated: :reschedule_once, including_scheduled: true }
+    )
+  end
+
   describe '#perform' do
     context 'when bridge exists' do
       let(:service) { double('pipeline creation service') }

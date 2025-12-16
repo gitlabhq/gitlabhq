@@ -39,11 +39,6 @@ export default {
       default: 0,
       required: false,
     },
-    helpPagePath: {
-      type: String,
-      default: '',
-      required: false,
-    },
     hideExpirationPolicyData: {
       type: Boolean,
       required: false,

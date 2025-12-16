@@ -32,7 +32,7 @@ CI/CDジョブを実行するプロジェクトによるインスタンスRunner
 
 GitLabでホスティングされているGitLab Dedicated上のインスタンスRunnerに、インスタンスRunnerのコンピューティングクォータを適用することはできません。
 
-### インスタンスRunner {#instance-runners}
+## インスタンスRunner {#instance-runners}
 
 GitLab.comとGitLab Self-Managed上のインスタンスRunner、およびGitLab Dedicated上のセルフホストインスタンスRunnerの場合:
 

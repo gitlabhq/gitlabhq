@@ -5,13 +5,7 @@ module MergeRequests
     include RemovesRefs
 
     def execute(merge_request, commit = nil, skip_reset: false)
-      if Feature.enabled?(:destroy_fork_network_on_archive, project)
-        unless params[:skip_authorization].present? || can?(current_user, :update_merge_request, merge_request)
-          return merge_request
-        end
-      else
-        return merge_request unless can?(current_user, :update_merge_request, merge_request)
-      end
+      return merge_request unless authorized_to_close?(merge_request)
 
       use_primary(merge_request, skip_reset) do |merge_request|
         # If we close MergeRequest we want to ignore validation
@@ -64,6 +58,10 @@ module MergeRequests
 
     def trigger_merge_request_merge_status_updated(merge_request)
       GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+    end
+
+    def authorized_to_close?(merge_request)
+      params[:skip_authorization].present? || can?(current_user, :update_merge_request, merge_request)
     end
   end
 end

@@ -6,6 +6,7 @@ class Group < Namespace
   include Gitlab::ConfigHelper
   include AfterCommitQueue
   include AccessRequestable
+  include Authz::HasRoles
   include Avatarable
   include SelectForProjectAuthorization
   include LoadedInGroupList
@@ -247,17 +248,10 @@ class Group < Namespace
 
   scope :with_users, -> { includes(:users) }
 
-  scope :active, -> { non_archived.not_aimed_for_deletion }
+  scope :active, -> { self_and_ancestors_active }
   scope :self_and_ancestors_active, -> { self_and_ancestors_non_archived.self_and_ancestors_not_aimed_for_deletion }
 
-  scope :inactive, -> do
-    joins(:namespace_settings)
-      .left_joins(:deletion_schedule)
-      .where(<<~SQL)
-        #{reflections['namespace_settings'].table_name}.archived = TRUE
-        OR #{reflections['deletion_schedule'].table_name}.#{reflections['deletion_schedule'].foreign_key} IS NOT NULL
-      SQL
-  end
+  scope :inactive, -> { self_or_ancestors_inactive }
   scope :self_or_ancestors_inactive, -> { self_or_ancestors_archived.or(self_or_ancestors_aimed_for_deletion) }
 
   scope :with_non_archived_projects, -> { includes(:non_archived_projects) }
@@ -269,7 +263,7 @@ class Group < Namespace
     where('id IN (SELECT id FROM accessible_sub_namespace_ids)')
   end
 
-  scope :by_id, ->(groups) { where(id: groups) }
+  scope :by_id, ->(groups) { id_in(groups) }
 
   scope :by_ids_or_paths, ->(ids, paths) do
     return by_id(ids) unless paths.present?
@@ -1162,17 +1156,18 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:allow_iframes_in_markdown, type: :wip)
   end
 
+  def work_items_saved_views_enabled?(user = nil)
+    return true if feature_flag_enabled_for_self_or_ancestor?(:work_items_saved_views, type: :wip)
+
+    user.present? && Feature.enabled?(:work_items_saved_views_user, user)
+  end
+
   def work_items_consolidated_list_enabled?(user = nil)
     # work_item_planning_view is the feature flag used to determine whether the consolidated list is enabled or not
     return true if feature_flag_enabled_for_self_or_ancestor?(:work_item_planning_view, type: :wip)
 
     user.present? && Feature.enabled?(:work_items_consolidated_list_user, user)
   end
-
-  def supports_group_work_items?
-    ::WorkItems::TypesFilter.new(container: self).allowed_types.present?
-  end
-  strong_memoize_attr :supports_group_work_items?
 
   # overriden in EE
   def has_active_hooks?(hooks_scope = :push_hooks)
@@ -1290,15 +1285,6 @@ class Group < Namespace
     return false unless deletion_schedule
 
     deletion_schedule.marked_for_deletion_on.future?
-  end
-
-  def assigning_role_too_high?(current_user, access_level)
-    return false if current_user.can_admin_all_resources?
-    return false unless access_level
-
-    max_access_level = max_member_access(current_user)
-
-    !Gitlab::Access.level_encompasses?(current_access_level: max_access_level, level_to_assign: access_level)
   end
 
   private

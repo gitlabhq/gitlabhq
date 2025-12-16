@@ -1,7 +1,7 @@
 - return unless can_invite_group_member?(group)
 
 .js-invite-members-modal{ data: { is_project: 'false',
-  access_levels: access_level_roles_user_can_assign(group, group.access_level_roles).to_json,
+  access_levels: group.roles_user_can_assign(current_user).to_json,
   reload_page_on_submit: content_for(:reload_on_member_invite_success).present?.to_s,
   search_url: invite_search_group_group_members_url(group, format: :json),
   help_link: help_page_url('user/permissions.md') }.merge(common_invite_modal_dataset(group)) }

@@ -74,11 +74,11 @@ RSpec.describe UpdateMergeRequestsLabel, feature_category: :delivery do
         allow(logger)
           .to receive(:info)
                 .with(
-                  "Adding label 'workflow::release-environment' to merge request.",
+                  message: "Adding label 'workflow::release-environment' to merge request.",
                   merge_request_url: mr1.web_url
                 )
         allow(logger).to receive(:info).with(
-          "Found merge requests for deployment.",
+          message: "Found merge requests for deployment.",
           deployment_id: deployment_id,
           merge_request_count: 1
         )
@@ -101,7 +101,7 @@ RSpec.describe UpdateMergeRequestsLabel, feature_category: :delivery do
 
         it 'logs error and continues processing other MRs' do
           expect(logger).to receive(:error).with(
-            "Could not add label 'workflow::release-environment' to " \
+            message: "Could not add label 'workflow::release-environment' to " \
               "merge request.",
             merge_request_url: mr1.web_url,
             error_message: "API Error"
@@ -130,7 +130,7 @@ RSpec.describe UpdateMergeRequestsLabel, feature_category: :delivery do
 
       it 'logs error and returns empty array' do
         expect(logger).to receive(:error).with(
-          "Could not retrieve merge requests for deployment.",
+          message: "Could not retrieve merge requests for deployment.",
           deployment_id: deployment_id,
           error_message: "Network Error"
         )

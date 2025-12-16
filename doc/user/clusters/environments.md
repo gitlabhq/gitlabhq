@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Cluster Environments (deprecated)
 ---
@@ -45,7 +45,7 @@ With cluster environments, you can gain insight into:
 ![Cluster environments page](img/cluster_environments_table_v12_3.png)
 
 Access to cluster environments is restricted to
-[group maintainers and owners](../permissions.md#group-members-permissions)
+[group maintainers and owners](../permissions.md#group-permissions).
 
 ## Usage
 

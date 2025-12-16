@@ -30,7 +30,7 @@ module ActiveContext
         end
 
         def push(references)
-          refs_by_shard = references.group_by { |ref| ActiveContext::Hash.consistent_hash(number_of_shards, ref) }
+          refs_by_shard = references.group_by { |ref| ActiveContext::Hasher.consistent_hash(number_of_shards, ref) }
 
           ActiveContext::Redis.with_redis do |redis|
             refs_by_shard.each do |shard_number, shard_items|

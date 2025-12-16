@@ -1,0 +1,9 @@
+---
+name: read_member_role
+description: Grants the ability to read member roles
+feature_category: system_access
+boundaries:
+  - group
+  - instance
+permissions:
+  - read_member_role

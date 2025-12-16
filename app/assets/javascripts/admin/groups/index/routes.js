@@ -10,7 +10,7 @@ export default [
   },
   ...ADMIN_GROUPS_TABS.map(({ value }) => ({
     name: value,
-    path: `${BASE_ROUTE}/${value}`,
+    path: `${BASE_ROUTE}${value}`,
     component: AdminGroupsApp,
   })),
 ];

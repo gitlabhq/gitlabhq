@@ -2,12 +2,12 @@ import {
   unwrapGroups,
   unwrapNodesWithName,
   unwrapJobWithNeeds,
+  unwrapStagesWithNeedsAndLookup,
   unwrapStagesFromMutation,
 } from '~/ci/pipeline_details/utils/unwrapping_utils';
 import {
   NEEDS_PROPERTY,
-  PREVIOUS_STAGE_JOBS_PROPERTY,
-  PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY,
+  ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY,
 } from '~/ci/pipeline_details/constants';
 
 const groupsArray = [
@@ -144,32 +144,84 @@ describe('Shared pipeline unwrapping utils', () => {
   });
 
   describe('unwrapJobWithNeeds', () => {
-    describe('PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY addition', () => {
-      it('correctly adds PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY to each job', () => {
+    describe('ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY addition', () => {
+      it('creates union of previous stage jobs and explicit needs', () => {
+        const previousStageJobs = ['prev_job_1', 'prev_job_2'];
         const jobArray = [
           {
             name: 'job_a',
-            [PREVIOUS_STAGE_JOBS_PROPERTY]: { nodes: [{ name: 'dep_a' }] },
             [NEEDS_PROPERTY]: { nodes: [{ name: 'dep_b' }] },
           },
+        ];
+
+        const result = unwrapJobWithNeeds(jobArray, previousStageJobs);
+
+        expect(result).toEqual([
+          {
+            name: 'job_a',
+            [NEEDS_PROPERTY]: ['dep_b'],
+            [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: ['prev_job_1', 'prev_job_2', 'dep_b'],
+          },
+        ]);
+      });
+
+      it('uses previous stage jobs when job has no explicit needs', () => {
+        const previousStageJobs = ['prev_job_1', 'prev_job_2'];
+        const jobArray = [
           {
             name: 'job_b',
-            [PREVIOUS_STAGE_JOBS_PROPERTY]: { nodes: [{ name: 'dep_c' }] },
+            [NEEDS_PROPERTY]: { nodes: [] },
+          },
+        ];
+
+        const result = unwrapJobWithNeeds(jobArray, previousStageJobs);
+
+        expect(result).toEqual([
+          {
+            name: 'job_b',
+            [NEEDS_PROPERTY]: [],
+            [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: ['prev_job_1', 'prev_job_2'],
+          },
+        ]);
+      });
+
+      it('uses empty array when no previous stage jobs and no explicit needs', () => {
+        const jobArray = [
+          {
+            name: 'job_c',
             [NEEDS_PROPERTY]: { nodes: [] },
           },
         ];
 
         const result = unwrapJobWithNeeds(jobArray);
 
-        expect(result).toHaveLength(2);
-        expect(result[0]).toHaveProperty(PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY);
-        expect(result[1]).toHaveProperty(PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY);
-        expect(result[0][PREVIOUS_STAGE_JOBS_PROPERTY]).toEqual(['dep_a']);
-        expect(result[0][NEEDS_PROPERTY]).toEqual(['dep_b']);
-        expect(result[0][PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY]).toEqual(['dep_a', 'dep_b']);
-        expect(result[1][PREVIOUS_STAGE_JOBS_PROPERTY]).toEqual(['dep_c']);
-        expect(result[1][NEEDS_PROPERTY]).toEqual([]);
-        expect(result[1][PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY]).toEqual(['dep_c']);
+        expect(result).toEqual([
+          {
+            name: 'job_c',
+            [NEEDS_PROPERTY]: [],
+            [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: [],
+          },
+        ]);
+      });
+
+      it('deduplicates union when explicit needs overlap with previous stage jobs', () => {
+        const previousStageJobs = ['build_a', 'build_b'];
+        const jobArray = [
+          {
+            name: 'test_job',
+            [NEEDS_PROPERTY]: { nodes: [{ name: 'build_a' }, { name: 'build_c' }] },
+          },
+        ];
+
+        const result = unwrapJobWithNeeds(jobArray, previousStageJobs);
+
+        expect(result).toEqual([
+          {
+            name: 'test_job',
+            [NEEDS_PROPERTY]: ['build_a', 'build_c'],
+            [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: ['build_a', 'build_b', 'build_c'],
+          },
+        ]);
       });
     });
 
@@ -181,7 +233,6 @@ describe('Shared pipeline unwrapping utils', () => {
           status: { icon: 'status_success', label: 'passed' },
           kind: 'BUILD',
           customProperty: 'should_be_preserved',
-          [PREVIOUS_STAGE_JOBS_PROPERTY]: { nodes: [{ name: 'stage_dep' }] },
           [NEEDS_PROPERTY]: { nodes: [{ name: 'explicit_dep' }] },
         };
 
@@ -198,17 +249,14 @@ describe('Shared pipeline unwrapping utils', () => {
         const jobArray = [
           {
             name: 'first_job',
-            [PREVIOUS_STAGE_JOBS_PROPERTY]: { nodes: [] },
             [NEEDS_PROPERTY]: { nodes: [] },
           },
           {
             name: 'second_job',
-            [PREVIOUS_STAGE_JOBS_PROPERTY]: { nodes: [] },
             [NEEDS_PROPERTY]: { nodes: [] },
           },
           {
             name: 'third_job',
-            [PREVIOUS_STAGE_JOBS_PROPERTY]: { nodes: [] },
             [NEEDS_PROPERTY]: { nodes: [] },
           },
         ];
@@ -223,21 +271,215 @@ describe('Shared pipeline unwrapping utils', () => {
     });
   });
 
+  describe('unwrapStagesWithNeedsAndLookup', () => {
+    it('correctly extracts all job names from previous stage across multiple groups', () => {
+      const queryStages = [
+        {
+          name: 'build',
+          groups: {
+            nodes: [
+              {
+                name: 'build_group_1',
+                jobs: {
+                  nodes: [
+                    { name: 'build_a', [NEEDS_PROPERTY]: { nodes: [] } },
+                    { name: 'build_b', [NEEDS_PROPERTY]: { nodes: [] } },
+                  ],
+                },
+              },
+              {
+                name: 'build_group_2',
+                jobs: {
+                  nodes: [
+                    { name: 'build_c', [NEEDS_PROPERTY]: { nodes: [] } },
+                    { name: 'build_d', [NEEDS_PROPERTY]: { nodes: [] } },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+        {
+          name: 'test',
+          groups: {
+            nodes: [
+              {
+                name: 'test_group',
+                jobs: {
+                  nodes: [
+                    {
+                      name: 'test_job',
+                      [NEEDS_PROPERTY]: { nodes: [] },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      ];
+
+      const { stages } = unwrapStagesWithNeedsAndLookup(queryStages);
+
+      expect(stages).toMatchObject([
+        {
+          groups: [
+            {
+              jobs: [
+                { [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: [] },
+                { [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: [] },
+              ],
+            },
+            {
+              jobs: [
+                { [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: [] },
+                { [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: [] },
+              ],
+            },
+          ],
+        },
+        {
+          groups: [
+            {
+              jobs: [
+                {
+                  [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: [
+                    'build_a',
+                    'build_b',
+                    'build_c',
+                    'build_d',
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+    });
+
+    it('creates union of previous stage jobs and explicit needs with deduplication', () => {
+      const queryStages = [
+        {
+          name: 'build',
+          groups: {
+            nodes: [
+              {
+                name: 'build_a',
+                jobs: {
+                  nodes: [{ name: 'build_a', [NEEDS_PROPERTY]: { nodes: [] } }],
+                },
+              },
+              {
+                name: 'build_b',
+                jobs: {
+                  nodes: [{ name: 'build_b', [NEEDS_PROPERTY]: { nodes: [] } }],
+                },
+              },
+            ],
+          },
+        },
+        {
+          name: 'test',
+          groups: {
+            nodes: [
+              {
+                name: 'test_group',
+                jobs: {
+                  nodes: [
+                    {
+                      name: 'test_job',
+                      [NEEDS_PROPERTY]: { nodes: [{ name: 'build_a' }] }, // Explicit needs
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      ];
+
+      const { stages } = unwrapStagesWithNeedsAndLookup(queryStages);
+
+      expect(stages[1].groups[0].jobs[0][NEEDS_PROPERTY]).toEqual(['build_a']);
+      expect(stages[1].groups[0].jobs[0][ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]).toEqual([
+        'build_a',
+        'build_b',
+      ]);
+
+      expect(stages).toMatchObject([
+        {
+          groups: [
+            {
+              name: 'build_a',
+              jobs: [{ [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: [], [NEEDS_PROPERTY]: [] }],
+            },
+            {
+              name: 'build_b',
+              jobs: [{ [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: [], [NEEDS_PROPERTY]: [] }],
+            },
+          ],
+        },
+        {
+          groups: [
+            {
+              jobs: [
+                {
+                  [NEEDS_PROPERTY]: ['build_a'],
+                  [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: ['build_a', 'build_b'],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+    });
+
+    it('returns lookup map with correct indices', () => {
+      const queryStages = [
+        {
+          name: 'build',
+          groups: {
+            nodes: [
+              {
+                name: 'build_group_1',
+                jobs: { nodes: [{ name: 'build_a', [NEEDS_PROPERTY]: { nodes: [] } }] },
+              },
+              {
+                name: 'build_group_2',
+                jobs: { nodes: [{ name: 'build_b', [NEEDS_PROPERTY]: { nodes: [] } }] },
+              },
+            ],
+          },
+        },
+      ];
+
+      const { lookup } = unwrapStagesWithNeedsAndLookup(queryStages);
+
+      expect(lookup).toEqual({
+        build_group_1: { stageIdx: 0, groupIdx: 0 },
+        build_group_2: { stageIdx: 0, groupIdx: 1 },
+      });
+    });
+  });
+
   describe('unwrapStagesFromMutation', () => {
-    it('transforms valid stages/groups/jobs structure from mutation format', () => {
+    it('correctly extracts all job names from previous stage across multiple groups', () => {
       const mutationStages = [
         {
           name: 'build',
           groups: [
             {
-              name: 'build_job',
-              size: 1,
+              name: 'build_group_1',
               jobs: [
-                {
-                  name: 'build_job',
-                  script: ['echo "build"'],
-                  [NEEDS_PROPERTY]: [],
-                },
+                { name: 'build_a', [NEEDS_PROPERTY]: [] },
+                { name: 'build_b', [NEEDS_PROPERTY]: [] },
+              ],
+            },
+            {
+              name: 'build_group_2',
+              jobs: [
+                { name: 'build_c', [NEEDS_PROPERTY]: [] },
+                { name: 'build_d', [NEEDS_PROPERTY]: [] },
               ],
             },
           ],
@@ -246,13 +488,11 @@ describe('Shared pipeline unwrapping utils', () => {
           name: 'test',
           groups: [
             {
-              name: 'test_job',
-              size: 1,
+              name: 'test_group',
               jobs: [
                 {
                   name: 'test_job',
-                  script: ['echo "test"'],
-                  [NEEDS_PROPERTY]: [{ name: 'build_job' }],
+                  [NEEDS_PROPERTY]: [],
                 },
               ],
             },
@@ -262,11 +502,80 @@ describe('Shared pipeline unwrapping utils', () => {
 
       const result = unwrapStagesFromMutation(mutationStages);
 
-      expect(result).toHaveLength(2);
-      expect(result[0].name).toBe('build');
-      expect(result[1].name).toBe('test');
-      expect(result[0].groups[0].jobs[0][NEEDS_PROPERTY]).toEqual([]);
-      expect(result[1].groups[0].jobs[0][NEEDS_PROPERTY]).toEqual(['build_job']);
+      expect(result).toMatchObject([
+        {
+          groups: [
+            {
+              jobs: [
+                { [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: [] },
+                { [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: [] },
+              ],
+            },
+            {
+              jobs: [
+                { [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: [] },
+                { [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: [] },
+              ],
+            },
+          ],
+        },
+        {
+          groups: [
+            {
+              jobs: [
+                {
+                  [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: [
+                    'build_a',
+                    'build_b',
+                    'build_c',
+                    'build_d',
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+    });
+
+    it('creates union of previous stage jobs and explicit needs with deduplication', () => {
+      const mutationStages = [
+        {
+          name: 'build',
+          groups: [
+            {
+              name: 'build_a',
+              jobs: [{ name: 'build_a', [NEEDS_PROPERTY]: [] }],
+            },
+            {
+              name: 'build_b',
+              jobs: [{ name: 'build_b', [NEEDS_PROPERTY]: [] }],
+            },
+          ],
+        },
+        {
+          name: 'test',
+          groups: [
+            {
+              name: 'test_job',
+              jobs: [
+                {
+                  name: 'test_job',
+                  [NEEDS_PROPERTY]: [{ name: 'build_a' }],
+                },
+              ],
+            },
+          ],
+        },
+      ];
+
+      const result = unwrapStagesFromMutation(mutationStages);
+
+      expect(result[1].groups[0].jobs[0][NEEDS_PROPERTY]).toEqual(['build_a']);
+      expect(result[1].groups[0].jobs[0][ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]).toEqual([
+        'build_a',
+        'build_b',
+      ]);
     });
 
     it('correctly unwraps needs from [{ name: "job" }] to ["job"]', () => {

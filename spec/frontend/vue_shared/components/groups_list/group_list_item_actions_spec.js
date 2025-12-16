@@ -4,7 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import GroupListItemPreventDeleteModal from '~/vue_shared/components/groups_list/group_list_item_prevent_delete_modal.vue';
-import GroupListItemDeleteModal from '~/vue_shared/components/groups_list/group_list_item_delete_modal.vue';
+import GroupDeleteModal from '~/groups/components/delete_modal.vue';
 import GroupListItemLeaveModal from '~/vue_shared/components/groups_list/group_list_item_leave_modal.vue';
 import {
   ACTION_COPY_ID,
@@ -15,6 +15,8 @@ import {
   ACTION_LEAVE,
   ACTION_RESTORE,
   ACTION_UNARCHIVE,
+  ACTION_REQUEST_ACCESS,
+  ACTION_WITHDRAW_ACCESS_REQUEST,
 } from '~/vue_shared/components/list_actions/constants';
 import { groups } from 'jest/vue_shared/components/groups_list/mock_data';
 import { archiveGroup, restoreGroup, unarchiveGroup } from '~/api/groups_api';
@@ -72,7 +74,7 @@ describe('GroupListItemActions', () => {
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findListActions = () => wrapper.findComponent(ListActions);
-  const findDeleteConfirmationModal = () => wrapper.findComponent(GroupListItemDeleteModal);
+  const findGroupDeleteModal = () => wrapper.findComponent(GroupDeleteModal);
   const findPreventDeleteModal = () => wrapper.findComponent(GroupListItemPreventDeleteModal);
   const findLeaveModal = () => wrapper.findComponent(GroupListItemLeaveModal);
 
@@ -80,10 +82,8 @@ describe('GroupListItemActions', () => {
     findListActions().props('actions')[action].action();
     await nextTick();
   };
-  const deleteModalFireConfirmEvent = async () => {
-    findDeleteConfirmationModal().vm.$emit('confirm', {
-      preventDefault: jest.fn(),
-    });
+  const deleteModalFirePrimaryEvent = async () => {
+    findGroupDeleteModal().vm.$emit('primary');
     await nextTick();
   };
 
@@ -400,10 +400,15 @@ describe('GroupListItemActions', () => {
       });
 
       it('displays confirmation modal with correct props', () => {
-        expect(findDeleteConfirmationModal().props()).toMatchObject({
+        expect(findGroupDeleteModal().props()).toMatchObject({
           visible: true,
-          phrase: group.fullName,
+          confirmPhrase: group.fullPath,
           confirmLoading: false,
+          fullName: group.fullName,
+          subgroupsCount: group.descendantGroupsCount,
+          projectsCount: group.projectsCount,
+          markedForDeletion: group.markedForDeletion,
+          permanentDeletionDate: group.permanentDeletionDate,
         });
       });
 
@@ -412,13 +417,13 @@ describe('GroupListItemActions', () => {
           it('calls DELETE on group path, properly sets loading state, and emits refetch event', async () => {
             axiosMock.onDelete(group.relativeWebUrl).reply(200);
 
-            await deleteModalFireConfirmEvent();
-            expect(findDeleteConfirmationModal().props('confirmLoading')).toBe(true);
+            await deleteModalFirePrimaryEvent();
+            expect(findGroupDeleteModal().props('confirmLoading')).toBe(true);
 
             await waitForPromises();
 
             expect(axiosMock.history.delete[0].params).toEqual(MOCK_DELETE_PARAMS);
-            expect(findDeleteConfirmationModal().props('confirmLoading')).toBe(false);
+            expect(findGroupDeleteModal().props('confirmLoading')).toBe(false);
             expect(wrapper.emitted('refetch')).toEqual([[]]);
             expect(renderDeleteSuccessToast).toHaveBeenCalledWith(group);
             expect(createAlert).not.toHaveBeenCalled();
@@ -429,13 +434,13 @@ describe('GroupListItemActions', () => {
           it('calls DELETE on group path, properly sets loading state, and shows error alert', async () => {
             axiosMock.onDelete(group.relativeWebUrl).networkError();
 
-            await deleteModalFireConfirmEvent();
-            expect(findDeleteConfirmationModal().props('confirmLoading')).toBe(true);
+            await deleteModalFirePrimaryEvent();
+            expect(findGroupDeleteModal().props('confirmLoading')).toBe(true);
 
             await waitForPromises();
 
             expect(axiosMock.history.delete[0].params).toEqual(MOCK_DELETE_PARAMS);
-            expect(findDeleteConfirmationModal().props('confirmLoading')).toBe(false);
+            expect(findGroupDeleteModal().props('confirmLoading')).toBe(false);
             expect(wrapper.emitted('refetch')).toBeUndefined();
             expect(createAlert).toHaveBeenCalledWith({
               message:
@@ -450,11 +455,11 @@ describe('GroupListItemActions', () => {
 
       describe('when change is fired', () => {
         beforeEach(() => {
-          findDeleteConfirmationModal().vm.$emit('change', false);
+          findGroupDeleteModal().vm.$emit('change', false);
         });
 
         it('updates visibility prop', () => {
-          expect(findDeleteConfirmationModal().props('visible')).toBe(false);
+          expect(findGroupDeleteModal().props('visible')).toBe(false);
         });
       });
     });
@@ -467,10 +472,15 @@ describe('GroupListItemActions', () => {
     });
 
     it('displays confirmation modal with correct props', () => {
-      expect(findDeleteConfirmationModal().props()).toMatchObject({
+      expect(findGroupDeleteModal().props()).toMatchObject({
         visible: true,
-        phrase: group.fullName,
+        confirmPhrase: group.fullPath,
         confirmLoading: false,
+        fullName: group.fullName,
+        subgroupsCount: group.descendantGroupsCount,
+        projectsCount: group.projectsCount,
+        markedForDeletion: group.markedForDeletion,
+        permanentDeletionDate: group.permanentDeletionDate,
       });
     });
   });
@@ -500,6 +510,61 @@ describe('GroupListItemActions', () => {
         findLeaveModal().vm.$emit('success');
 
         expect(wrapper.emitted('refetch')).toEqual([[]]);
+      });
+    });
+  });
+
+  describe('when group does not have requestAccessPath', () => {
+    it('does not display Request access action', () => {
+      createComponent();
+
+      expect(findListActions().props('actions')[ACTION_REQUEST_ACCESS]).toBeUndefined();
+    });
+  });
+
+  describe('when group has requestAccessPath', () => {
+    it('displays Request access action', () => {
+      const requestAccessPath = '/request_access';
+
+      createComponent({
+        propsData: { group: { ...group, requestAccessPath } },
+      });
+
+      expect(findListActions().props('actions')[ACTION_REQUEST_ACCESS]).toEqual({
+        href: requestAccessPath,
+        extraAttrs: {
+          'data-method': 'post',
+          'data-testid': 'request-access-link',
+          rel: 'nofollow',
+        },
+      });
+    });
+  });
+
+  describe('when group does not have withdrawAccessRequestPath', () => {
+    it('does not display Withdraw access request action', () => {
+      createComponent();
+
+      expect(findListActions().props('actions')[ACTION_WITHDRAW_ACCESS_REQUEST]).toBeUndefined();
+    });
+  });
+
+  describe('when group has withdrawAccessRequestPath', () => {
+    it('displays Withdraw access request action', () => {
+      const withdrawAccessRequestPath = '/withdraw_access_request';
+
+      createComponent({
+        propsData: { group: { ...group, withdrawAccessRequestPath } },
+      });
+
+      expect(findListActions().props('actions')[ACTION_WITHDRAW_ACCESS_REQUEST]).toEqual({
+        href: withdrawAccessRequestPath,
+        extraAttrs: {
+          'data-method': 'delete',
+          'data-testid': 'withdraw-access-link',
+          'data-confirm': `Are you sure you want to withdraw your access request for the ${group.fullName} group?`,
+          rel: 'nofollow',
+        },
       });
     });
   });

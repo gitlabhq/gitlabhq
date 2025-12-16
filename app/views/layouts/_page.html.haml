@@ -1,6 +1,6 @@
 - @main_wrapper_class =  "container-queries-enabled gl-@container/panel js-container-queries-enabled" if project_studio_enabled?
 
-.layout-page{ class: page_with_sidebar_class }
+.layout-page.js-page-layout{ class: page_with_sidebar_class }
   -# this is required to exactly match the main container width to the viewport inner width, which includes scrollbar
   - if project_studio_enabled?
     = javascript_tag do
@@ -46,7 +46,7 @@
               = render 'layouts/alerts', alert_class: alert_class, context: context
 
               %div{ class: "#{container_class unless @no_container} #{@content_class}" }
-                %main#content-body.content{ class: "gl-@container/panel", **page_itemtype }
+                %main#content-body.content{ class: "gl-@container/panel gl-pb-3", **page_itemtype }
                   -# mount drawers here for better page performance
                   #js-drawer-container
                   -# Sticky alerts
@@ -63,8 +63,7 @@
           class: 'gl-@container/panel !gl-absolute gl-shadow-lg @xl/content-panels:gl-w-1/2 @xl/content-panels:gl-shadow-none @xl/content-panels:!gl-relative'
         }
 
-    .paneled-view.ai-panels
-      = dispensable_render_if_exists 'layouts/duo_chat_panel'
+    = dispensable_render_if_exists 'layouts/duo_chat_panel'
 
   - else
     - @content_wrapper_class = "#{@content_wrapper_class || ""} gl-@container" if project_studio_enabled?

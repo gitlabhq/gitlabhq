@@ -2,7 +2,7 @@
 stage: Security Risk Management
 group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab Security Dashboards and Security Center
+title: Security dashboards
 description: Security dashboards, vulnerability trends, project ratings, and metrics.
 ---
 
@@ -16,6 +16,7 @@ description: Security dashboards, vulnerability trends, project ratings, and met
 {{< history >}}
 
 - New dashboard with Elasticsearch integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/570504) in GitLab 18.6 [with flags](../../../administration/feature_flags/_index.md) named `project_security_dashboard_new` and `group_security_dashboard_new`. The flags are disabled by default.
+- New dashboard with Elasticsearch integration [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215574) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -79,7 +80,7 @@ with up to 365 days of historical data for a given project. The dashboard is a h
 
 To view a project's security dashboard:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security dashboard**.
 1. Filter and search for what you need.
    - To filter the chart by severity, select the legend name.
@@ -96,11 +97,11 @@ You can download an image of the vulnerability chart from the Project Security D
 to use in documentation, presentations, and so on. To download the image of the vulnerability
 chart:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security dashboard**.
 1. Select **Save chart as an image** ({{< icon name="download" >}}).
 
-You will then be prompted to download the image in SVG format.
+You are prompted to download the image in SVG format.
 
 ### Group Security Dashboard
 
@@ -121,8 +122,8 @@ supplies the following:
 
 To view group security dashboard:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Security > Security dashboard**.
+1. On the top bar, select **Search or go to** and find your group.
+1. Select **Security** > **Security dashboard**.
 1. Hover over the **Vulnerabilities over time** chart to get more details about vulnerabilities.
    - You can display the vulnerability trends over a 30, 60, or 90-day time frame (the default is 90 days).
    - To view aggregated data beyond a 90-day time frame, use the [`VulnerabilitiesCountByDay` GraphQL API](../../../api/graphql/reference/_index.md#vulnerabilitiescountbyday). GitLab retains the data for 365 days.
@@ -135,18 +136,10 @@ To view group security dashboard:
 
 ## New security dashboards
 
-{{< details >}}
-
-- Tier: Ultimate
-- Offering: GitLab.com
-- Status: Beta
-
-{{< /details >}}
-
 {{< history >}}
 
 - New dashboard that uses [advanced vulnerability management](../vulnerability_report/_index.md#advanced-vulnerability-management) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/570504) in GitLab 18.6 [with flags](../../../administration/feature_flags/_index.md) named `project_security_dashboard_new` and `group_security_dashboard_new`. The flags are disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/571978) in GitLab 18.6.
+- New dashboard [enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215574) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -201,7 +194,7 @@ Both dashboards include:
 To view a security dashboard:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Security dashboard**.
+1. Select **Secure** > **Security dashboard**.
 
 ### Project security dashboard
 
@@ -244,6 +237,12 @@ To view details:
 1. To explore data beyond 90 days, but within the last 365 days, use the [`SecurityMetrics.vulnerabilitiesOverTime` GraphQL API](../../../api/graphql/reference/_index.md#securitymetricsvulnerabilitiesovertime)
 1. Vulnerabilities that are no longer detected are not automatically counted as closed. Use [vulnerability management policies](../policies/_index.md) to automatically close them if needed.
 
+{{< alert type="note" >}}
+
+Starting in GitLab 18.8 (available January 2026), the Vulnerabilities over time chart excludes no longer detected vulnerabilities to more accurately reflect the number of detected vulnerabilities that require attention. This change might result in a drop in the total number of vulnerabilities shown in the chart. This change applies automatically to vulnerabilities no longer detected in pipelines run from GitLab 18.8 onward. A background migration handles remaining vulnerabilities from earlier pipelines.
+
+{{< /alert >}}
+
 ![vulnerabilities over time](img/vulnerabilities_over_time_chart_v18_5.png)
 
 #### Vulnerability severity panel
@@ -283,78 +282,8 @@ To apply a filter to the whole dashboard:
 1. From the dropdown list, choose the filter type.
 1. Select one or more filter values.
 
-## Security Center
-
-The Security Center is a configurable personal space where you can view vulnerabilities across all the
-projects you belong to. You can add up to 1,000 projects to the Security Center, however the **Project** listing in
-the **Security Center** settings page displays a maximum of 100 projects. You can use the search filter to find projects not shown in the first 100 projects.
-
-The Security Center includes:
-
-- The group Security Dashboard
-- A [vulnerability report](../vulnerability_report/_index.md)
-- A settings area to configure which projects to display
-
-### Viewing the Security Center
-
-To view the Security Center:
-
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Your work**.
-1. Select **Security** > **Security dashboard**.
-
-The Security Center is blank by default. You must add a project which have been configured with at least one security scanner.
-
-### Adding projects to the Security Center
-
-To add projects:
-
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Your work**.
-1. Expand **Security**.
-1. Select **Settings**.
-1. Use the **Search your projects** text box to search for and select projects.
-1. Select **Add projects**.
-
-After you add projects, the security dashboard and vulnerability report show the vulnerabilities found in those projects' default branches.
-
-### Removing projects from the Security Center
-
-The Security Center displays a maximum of 100 projects, so you may need to use the search function to remove a project. To remove projects:
-
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Your work**.
-1. Expand **Security**.
-1. Select **Settings**.
-1. Use the **Search your projects** text box to search for the project.
-1. Select **Remove project from dashboard** ({{< icon name="remove" >}}).
-
-After you remove projects, the security dashboard and vulnerability report no longer show the vulnerabilities found in those projects' default branches.
-
-## Exporting
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196607) in GitLab 18.2. Enabled by default.
-- Feature flag `vulnerabilities_pdf_export` removed.
-
-{{< /history >}}
-
-You can export a PDF file that includes details of the vulnerabilities listed in the security dashboard.
-
-Charts in the export include:
-
-- Vulnerabilities over time
-- Project security status
-- Project's security dashboard
-
-### Export details
-
-To export the details of all vulnerabilities listed in the security dashboard, select **Export**.
-
-When the exported details are available, GitLab sends you an email. To download the exported details, select the link in the email.
-
 ## Related topics
 
+- [Security center](../security_center/_index.md)
 - [Vulnerability reports](../vulnerability_report/_index.md)
 - [Vulnerability Page](../vulnerabilities/_index.md)

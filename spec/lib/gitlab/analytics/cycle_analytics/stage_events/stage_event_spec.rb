@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Analytics::CycleAnalytics::StageEvents::StageEvent, feature_category: :product_analytics do
   let(:instance) { described_class.new({}) }

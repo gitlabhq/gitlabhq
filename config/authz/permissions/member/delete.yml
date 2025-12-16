@@ -5,4 +5,3 @@ feature_category: groups_and_projects
 boundaries:
   - group
   - project
-available_for_tokens: true

@@ -149,22 +149,34 @@ RSpec.describe ApplicationCable::Connection, :clean_gitlab_redis_sessions do
   end
 
   describe 'setting current organization' do
-    let(:organization) { create(:organization) }
+    let_it_be(:organization) { create(:organization) }
 
-    before do
-      allow_next_instance_of(Gitlab::Current::Organization) do |instance|
-        allow(instance).to receive(:organization).and_return(organization)
+    context 'when using parameters' do
+      let(:params) do
+        {
+          organization_path: organization.path
+        }
+      end
+
+      it 'sets current_organization' do
+        connect params: params
+
+        expect(connection.current_organization).to eq(organization)
       end
     end
 
-    it 'sets current_organization' do
-      expect(Gitlab::Current::Organization).to receive(:new).with(
-        params: connection.request.params, user: connection.current_user
-      )
+    context 'when using http headers' do
+      let(:headers) do
+        {
+          "X-GitLab-Organization-ID" => organization.id
+        }
+      end
 
-      connect
+      it 'sets current_organization' do
+        connect headers: headers
 
-      expect(connection.current_organization).to eq(organization)
+        expect(connection.current_organization).to eq(organization)
+      end
     end
   end
 end

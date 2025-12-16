@@ -120,7 +120,7 @@ module Issues
     end
 
     def user_agent_detail_service
-      UserAgentDetailService.new(spammable: @issue, perform_spam_check: perform_spam_check)
+      UserAgentDetailService.new(spammable: @issue, perform_spam_check: perform_spam_check, current_user: current_user)
     end
 
     def handle_add_related_issue(issue)

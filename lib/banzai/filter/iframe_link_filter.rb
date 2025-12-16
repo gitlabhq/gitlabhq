@@ -12,6 +12,16 @@ module Banzai
   module Filter
     class IframeLinkFilter < PlayableLinkFilter
       extend ::Gitlab::Utils::Override
+      include ::Gitlab::Utils::StrongMemoize
+
+      def call
+        return doc unless Gitlab::CurrentSettings.iframe_rendering_enabled?
+
+        return doc unless context[:project]&.allow_iframes_in_markdown_feature_flag_enabled? ||
+          context[:group]&.allow_iframes_in_markdown_feature_flag_enabled?
+
+        super
+      end
 
       private
 
@@ -20,21 +30,19 @@ module Banzai
       end
 
       def safe_media_ext
-        # TODO: will change to use the administrator defined allow list
-        #       Gitlab::CurrentSettings.iframe_src_allowlist
-        ['www.youtube.com/embed']
+        Gitlab::CurrentSettings.iframe_rendering_allowlist.map do |domain|
+          Addressable::URI.parse("https://#{domain}")
+        end
       end
+      strong_memoize_attr :safe_media_ext
 
       override :has_allowed_media?
       def has_allowed_media?(element)
-        return unless context[:project]&.allow_iframes_in_markdown_feature_flag_enabled? ||
-          context[:group]&.allow_iframes_in_markdown_feature_flag_enabled?
-
         src = element.attr('data-canonical-src').presence || element.attr('src')
-
         return unless src.present?
 
-        src.start_with?('https://') && safe_media_ext.any? { |domain| src.start_with?("https://#{domain}") }
+        uri = Addressable::URI.parse(src)
+        safe_media_ext.any? { |allowed_uri| allowed_uri.origin == uri.origin }
       end
 
       def extra_element_attrs(element)

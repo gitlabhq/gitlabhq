@@ -1,7 +1,7 @@
 <script>
 import { GlModal, GlSprintf, GlIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { __, n__, s__ } from '~/locale';
+import { __, n__, s__, sprintf, formatNumber } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import workItemsCsvExportMutation from '../graphql/work_items_csv_export.mutation.graphql';
 
@@ -69,8 +69,15 @@ export default {
     },
     workItemCountText() {
       return this.isPlanningViewsEnabled
-        ? n__('1 work item selected', '%d work items selected', this.workItemCount)
-        : n__('1 issue selected', '%d issues selected', this.workItemCount);
+        ? sprintf(
+            n__('%{count} work item selected', '%{count} work items selected', this.workItemCount),
+            {
+              count: formatNumber(this.workItemCount),
+            },
+          )
+        : sprintf(n__('%{count} issue selected', '%{count} issues selected', this.workItemCount), {
+            count: formatNumber(this.workItemCount),
+          });
     },
     modalTitle() {
       return this.isPlanningViewsEnabled

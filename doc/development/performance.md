@@ -383,16 +383,11 @@ irb(main):003:0> results.where(status: "passed").average(:time).to_s
 => "0.211340155844156"
 ```
 
-These results can also be placed into a PostgreSQL database by setting the
-`RSPEC_PROFILING_POSTGRES_URL` variable. This is used to profile the test suite
-when running in the CI environment.
+### Global runtime metrics
 
-We store these results also when running nightly scheduled CI jobs on the
-default branch on `gitlab.com`. Statistics of these profiling data are
-[available online](https://gitlab-org.gitlab.io/rspec_profiling_stats/). For
-example, you can find which tests take longest to run or which execute the most
-queries. Use this to optimize our tests or identify performance
-issues in our code.
+All test execution metrics are also exported to an instance of ClickHouse database and visualized using `Grafana` dashboards.
+
+[Test Runtime Overview](https://dashboards.devex.gitlab.net/d/acv8mwl/test-file-runtime-overview) dashboard allows to slowest spec files and show runtime trends over time for particular spec files.
 
 ## Memory optimization
 

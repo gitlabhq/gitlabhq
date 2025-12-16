@@ -1,3 +1,11 @@
+const mockPageInfo = {
+  hasNextPage: true,
+  hasPreviousPage: false,
+  startCursor: null,
+  endCursor: null,
+  __typename: 'PageInfo',
+};
+
 export const accessLevelsMockResponse = [
   {
     __typename: 'PushAccessLevelEdge',
@@ -102,6 +110,7 @@ export const branchRulesMockResponse = {
             __typename: 'BranchRule',
           },
         ],
+        pageInfo: mockPageInfo,
       },
     },
   },
@@ -132,6 +141,7 @@ export const predefinedBranchRulesMockResponse = {
             __typename: 'BranchRule',
           },
         ],
+        pageInfo: mockPageInfo,
       },
     },
   },

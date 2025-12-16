@@ -65,7 +65,7 @@ class SentNotificationsController < ApplicationController
 
   def unsubscribe_issue_email_participant
     return unless noteable.is_a?(Issue)
-    return unless sent_notification.recipient_id == Users::Internal.support_bot.id
+    return unless sent_notification.recipient.support_bot?
 
     # Unsubscribe external author for legacy reasons when no issue email participant is set
     email = sent_notification.issue_email_participant&.email || noteable.external_author

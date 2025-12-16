@@ -1,4 +1,3 @@
-- use_work_item = Feature.enabled?(:work_item_view_for_issues, @project.group)
 - add_page_specific_style 'page_bundles/merge_request'
 - add_page_specific_style 'page_bundles/labels'
 - add_page_specific_style 'page_bundles/issuable_list'
@@ -7,9 +6,6 @@
 - add_work_items_stylesheet
 - add_page_specific_style 'page_bundles/design_management'
 - page_title _("New Issue")
-- if !use_work_item
-  - add_to_breadcrumbs _("Issues"), project_issues_path(@project)
-  - breadcrumb_title _("New issue")
 
 .new-issue-params.hidden
   .params-title
@@ -23,8 +19,4 @@
   .params-discussion-to-resolve
     = @merge_request_to_resolve_discussions_of ? link_to_discussions_to_resolve(@merge_request_to_resolve_discussions_of, @discussion_to_resolve) : nil
 
-- if use_work_item
-  #js-work-items{ data: work_item_views_only_data(@project, current_user) }
-- else
-  = render ::Layouts::PageHeadingComponent.new(_("New issue"))
-  = render "form"
+#js-work-items{ data: work_item_views_only_data(@project, current_user) }

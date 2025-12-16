@@ -76,6 +76,10 @@ RSpec.describe 'Organization routes', feature_category: :organization do
     specify "to organizations/organizations#index" do
       expect(get("/o")).to route_to('organizations/organizations#index')
     end
+
+    it 'does not match /o with format-like suffix' do
+      expect(get('/o.json')).not_to route_to('organizations/organizations#index')
+    end
   end
 
   describe 'root' do

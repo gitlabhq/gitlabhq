@@ -111,12 +111,12 @@ describe('GreetingHeader', () => {
   const findStatusModal = () => wrapper.findComponent(SetStatusModal);
 
   describe('Greeting', () => {
-    it('renders greeting with first name', () => {
+    it('renders greeting with full name', () => {
       createComponent();
-      expect(findGreeting().text()).toBe('Hi, John');
+      expect(findGreeting().text()).toBe('Hi, John Doe');
     });
 
-    it('renders greeting with username when first name not available', () => {
+    it('renders greeting with username when full name not available', () => {
       createComponent({ gonData: { current_user_fullname: null } });
       expect(findGreeting().text()).toBe('Hi, johndoe');
     });
@@ -131,9 +131,9 @@ describe('GreetingHeader', () => {
       expect(findGreeting().text()).toBe('Hi, Madonna');
     });
 
-    it('uses only first name for multi-word names', () => {
+    it('uses full name for multi-word names', () => {
       createComponent({ gonData: { current_user_fullname: 'John Doe Smith Jr' } });
-      expect(findGreeting().text()).toBe('Hi, John');
+      expect(findGreeting().text()).toBe('Hi, John Doe Smith Jr');
     });
 
     it('handles empty string name', () => {
@@ -148,7 +148,13 @@ describe('GreetingHeader', () => {
 
     it('handles name with extra whitespace', () => {
       createComponent({ gonData: { current_user_fullname: '  John  Doe  ' } });
-      expect(findGreeting().text()).toBe('Hi, John');
+      expect(findGreeting().text()).toBe('Hi, John  Doe');
+    });
+
+    it('truncates very long names gracefully', () => {
+      const longName = 'A'.repeat(100);
+      createComponent({ gonData: { current_user_fullname: longName } });
+      expect(findGreeting().classes()).toContain('gl-truncate');
     });
   });
 
@@ -160,7 +166,7 @@ describe('GreetingHeader', () => {
 
       expect(findAvatar().props()).toMatchObject({
         src: 'https://gitlab.com/user-avatar.png',
-        alt: 'avatar for John',
+        alt: 'avatar for John Doe',
       });
     });
   });

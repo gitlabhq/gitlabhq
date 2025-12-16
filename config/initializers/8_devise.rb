@@ -166,7 +166,7 @@ Devise.setup do |config|
     # Number of authentication tries before locking an account if lock_strategy
     # is failed attempts.
     config.maximum_attempts = if Gitlab::CurrentSettings.max_login_attempts_column_exists?
-                                (Gitlab::CurrentSettings.max_login_attempts || 10)
+                                Gitlab::CurrentSettings.max_login_attempts || 10
                               else
                                 10
                               end

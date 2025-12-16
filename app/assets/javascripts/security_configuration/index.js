@@ -2,12 +2,11 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlToast } from '@gitlab/ui';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import resolvers from 'ee_else_ce/security_configuration/security_attributes/graphql/resolvers';
+import resolvers from 'ee_else_ce/security_configuration/graphql/resolvers';
 import createDefaultClient from '~/lib/graphql';
 import { parseBooleanDataAttributes } from '~/lib/utils/dom_utils';
 import SecurityConfigurationApp from './components/app.vue';
 import { augmentFeatures } from './utils';
-import typeDefs from './graphql/typedefs.graphql';
 
 export const initSecurityConfiguration = (el) => {
   if (!el) {
@@ -18,7 +17,19 @@ export const initSecurityConfiguration = (el) => {
   Vue.use(GlToast);
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(resolvers, { typeDefs }),
+    defaultClient: createDefaultClient(resolvers, {
+      cacheConfig: {
+        typePolicies: {
+          Project: {
+            fields: {
+              securityTrackedRefs: {
+                keyArgs: false, // Merge all paginated results into a single list
+              },
+            },
+          },
+        },
+      },
+    }),
   });
 
   const {

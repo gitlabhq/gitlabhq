@@ -6,27 +6,38 @@ RSpec.describe Resolvers::FeatureFlagResolver, feature_category: :feature_flags 
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let(:feature_flag) { "some_feature" }
 
   describe '#resolve' do
+    subject { resolve_flag_availability(feature_flag.to_s) }
+
+    context 'when feature flag is unknown' do
+      let(:feature_flag) { "unknown_feature" }
+
+      it { is_expected.to eq(false) }
+    end
+
     context "on feature flag resolution" do
+      let(:feature_flag) { Feature::Definition.definitions.each_key.first }
+
       before do
-        allow(Feature).to receive(:enabled?).with(feature_flag.to_sym, current_user).and_return(enabled)
+        stub_feature_flags(feature_flag => enabled)
       end
 
       context "when feature flag disabled" do
         let(:enabled) { false }
 
-        it "returns `false`" do
-          expect(resolve_flag_availability(feature_flag.to_s)).to eq false
-        end
+        it { is_expected.to eq(false) }
       end
 
       context "when feature flag enabled" do
         let(:enabled) { true }
 
-        it "returns `true`" do
-          expect(resolve_flag_availability(feature_flag.to_s)).to eq true
+        it { is_expected.to eq(true) }
+
+        context 'when user is not set' do
+          let(:current_user) { nil }
+
+          it { is_expected.to eq(false) }
         end
       end
     end

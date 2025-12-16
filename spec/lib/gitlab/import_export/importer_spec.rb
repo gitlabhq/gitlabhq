@@ -44,6 +44,12 @@ RSpec.describe Gitlab::ImportExport::Importer, feature_category: :importers do
       importer.execute
     end
 
+    it 'sets the project as importing' do
+      importer.execute
+
+      expect(project).to be_importing
+    end
+
     context 'all restores are executed' do
       [
         Gitlab::ImportExport::AvatarRestorer,

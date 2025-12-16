@@ -1,0 +1,285 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CustomDashboard config schema",
+  "description": "Schema for custom dashboard configurations",
+  "$ref": "#/definitions/AnalyticsDashboard",
+  "definitions": {
+    "AnalyticsDashboard": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": "2"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "panels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Panel"
+          }
+        },
+        "status": {
+          "enum": [
+            "beta",
+            "experiment",
+            null
+          ]
+        },
+        "errors": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "filters": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/DashboardFilters"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "panels"
+      ]
+    },
+    "DashboardFilters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "excludeAnonymousUsers": {
+          "$ref": "#/definitions/DashboardFilter"
+        },
+        "dateRange": {
+          "$ref": "#/definitions/DateRangeFilter"
+        },
+        "projects": {
+          "$ref": "#/definitions/DashboardFilter"
+        },
+        "filteredSearch": {
+          "$ref": "#/definitions/FilteredSearchFilter"
+        }
+      }
+    },
+    "DashboardFilter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "DateRangeFilter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "numberOfDaysLimit": {
+          "type": "number"
+        },
+        "options": {
+          "$ref": "#/definitions/DateRangeFilterOptions"
+        },
+        "defaultOption": {
+          "type": "string"
+        }
+      }
+    },
+    "FilteredSearchFilter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FilteredSearchFilterOption"
+          }
+        }
+      }
+    },
+    "Panel": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "tooltip": {
+          "$ref": "#/definitions/Tooltip"
+        },
+        "gridAttributes": {
+          "$ref": "#/definitions/GridAttributes"
+        },
+        "visualization": {
+          "type": [
+            "string",
+            "object"
+          ]
+        },
+        "queryOverrides": {
+          "$ref": "#/definitions/QueryOverrides"
+        },
+        "options": {
+          "$ref": "#/definitions/PanelOptions"
+        }
+      },
+      "required": [
+        "gridAttributes",
+        "title",
+        "visualization"
+      ]
+    },
+    "GridAttributes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "yPos": {
+          "type": "integer"
+        },
+        "xPos": {
+          "type": "integer"
+        },
+        "width": {
+          "type": "integer"
+        },
+        "height": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ]
+    },
+    "PanelOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "decimalPlaces": {
+          "type": "integer"
+        }
+      }
+    },
+    "QueryOverrides": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "timeDimensions": {
+          "$ref": "#/definitions/TimeDimensions"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/definitions/QueryFilters"
+        }
+      }
+    },
+    "TimeDimensions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "QueryFilters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "includeMetrics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "excludeMetrics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Tooltip": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "descriptionLink": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "description"
+      ]
+    },
+    "DateRangeFilterOptions": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "today",
+          "custom",
+          "7d",
+          "30d",
+          "60d",
+          "90d",
+          "180d",
+          "365d"
+        ]
+      }
+    },
+    "FilteredSearchFilterOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "token": {
+          "enum": [
+            "assignee",
+            "author",
+            "label",
+            "milestone",
+            "target_branch",
+            "source_branch"
+          ]
+        },
+        "operator": {
+          "enum": [
+            "is",
+            "is_not",
+            "is_not_or"
+          ]
+        },
+        "unique": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "token"
+      ]
+    }
+  }
+}

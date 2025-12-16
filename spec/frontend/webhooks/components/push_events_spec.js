@@ -13,14 +13,14 @@ describe('Webhook push events form editor component', () => {
   const findWildcardRuleInput = (w = wrapper) => w.findByTestId('webhook_branch_filter_field');
   const findRegexRuleInput = (w = wrapper) => w.findByTestId('webhook_branch_filter_field');
 
-  const createComponent = (provides) =>
+  const createComponent = (props = {}) =>
     shallowMountExtended(PushEvents, {
-      provide: {
+      propsData: {
         isNewHook: true,
         pushEvents: false,
         strategy: 'wildcard',
         pushEventsBranchFilter: '',
-        ...provides,
+        ...props,
       },
     });
 

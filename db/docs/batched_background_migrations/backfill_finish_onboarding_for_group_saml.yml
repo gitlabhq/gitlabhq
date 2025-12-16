@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillFinishOnboardingForGroupSaml
-description: Finishes the onboarding for a user if they are now attached to group saml
-feature_category: onboarding
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183559
-milestone: '17.10'
-queued_migration_version: 20250305135537
-finalized_by: 20250410134740

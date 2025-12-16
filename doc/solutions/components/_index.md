@@ -16,6 +16,12 @@ GitLab Solution to provide end to end DevSecOps workflow.
 
 [Mobile Apps](workflow_mobileapps.md)
 
+## Duo Adoption Metrics
+
+GitLab Solution to provide metrics on Duo Adoption.
+
+[Duo Adoption Metrics](duo_adoption_metrics.md)
+
 ## Integrated DevSecOps
 
 GitLab Solution to provide an integrated end to end DevSecOps workflow.

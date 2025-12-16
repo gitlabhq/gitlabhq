@@ -920,6 +920,155 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     end
   end
 
+  describe 'GET /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
+    let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: developer) }
+    let(:pipeline_schedule_variable) { create(:ci_pipeline_schedule_variable, pipeline_schedule: pipeline_schedule) }
+    let(:url) do
+      "/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}"
+    end
+
+    matcher :return_pipeline_schedule_variable_successfully do
+      match_unless_raises do |response|
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('pipeline_schedule_variable')
+      end
+    end
+
+    shared_context 'request with project permissions' do
+      context 'authenticated user with project permissions' do
+        before do
+          project.add_maintainer(user)
+        end
+
+        it 'returns pipeline_schedule_variable details' do
+          get api(url, user)
+
+          expect(response).to return_pipeline_schedule_variable_successfully
+          expect(json_response['key']).to eq(pipeline_schedule_variable.key)
+          expect(json_response['value']).to eq(pipeline_schedule_variable.value)
+          expect(json_response['variable_type']).to eq(pipeline_schedule_variable.variable_type)
+        end
+      end
+    end
+
+    shared_examples 'request with schedule ownership' do
+      context 'authenticated user with pipeline schedule ownership' do
+        it 'returns pipeline_schedule_variable details' do
+          get api(url, developer)
+
+          expect(response).to return_pipeline_schedule_variable_successfully
+          expect(json_response['key']).to eq(pipeline_schedule_variable.key)
+          expect(json_response['value']).to eq(pipeline_schedule_variable.value)
+          expect(json_response['variable_type']).to eq(pipeline_schedule_variable.variable_type)
+        end
+      end
+    end
+
+    shared_examples 'request with unauthenticated user' do
+      context 'with unauthenticated user' do
+        it 'does not return pipeline_schedule_variable' do
+          get api(url)
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+    end
+
+    shared_examples 'request with non-existing pipeline_schedule_variable' do
+      it 'responds with 404 Not Found if requesting non-existing pipeline_schedule_variable' do
+        get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/NON_EXISTING_KEY", developer)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with private project' do
+      it_behaves_like 'request with schedule ownership'
+      it_behaves_like 'request with project permissions'
+      it_behaves_like 'request with unauthenticated user'
+      it_behaves_like 'request with non-existing pipeline_schedule_variable'
+
+      context 'authenticated user with no project permissions' do
+        it 'does not return pipeline_schedule_variable' do
+          get api(url, user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'authenticated user with insufficient project permissions' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'does not return pipeline_schedule_variable' do
+          get api(url, user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_pipeline_schedule_variable do
+        let(:user) { maintainer }
+        let(:boundary_object) { project }
+        let(:request) { get api(url, personal_access_token: pat) }
+      end
+    end
+
+    context 'with public project' do
+      let_it_be(:project) { create(:project, :repository, :public, public_builds: true) }
+
+      it_behaves_like 'request with schedule ownership'
+      it_behaves_like 'request with project permissions'
+      it_behaves_like 'request with unauthenticated user'
+      it_behaves_like 'request with non-existing pipeline_schedule_variable'
+
+      context 'authenticated user with no project permissions' do
+        it 'does not return pipeline_schedule_variable' do
+          get api(url, user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'authenticated user with insufficient project permissions' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'does not return pipeline_schedule_variable' do
+          get api(url, user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when public pipelines are disabled' do
+        let_it_be(:project) { create(:project, :repository, :public, public_builds: false) }
+
+        context 'authenticated user with no project permissions' do
+          it 'does not return pipeline_schedule_variable' do
+            get api(url, user)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'authenticated user with insufficient project permissions' do
+          before do
+            project.add_guest(user)
+          end
+
+          it 'does not return pipeline_schedule_variable' do
+            get api(url, user)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+    end
+  end
+
   describe 'PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
     let_it_be(:pipeline_schedule) do
       create(:ci_pipeline_schedule, project: project, owner: developer)

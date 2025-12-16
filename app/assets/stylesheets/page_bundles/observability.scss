@@ -3,6 +3,8 @@
 .observability-container {
   height: $calc-application-viewport-height;
   min-height: 600px;
+  padding: $gl-spacing-scale-4;
+  border-radius: $gl-border-radius-lg;
 }
 
 @mixin icon-styles($color) {

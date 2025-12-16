@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlForm } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
@@ -359,6 +359,17 @@ describe('Pipeline New Form', () => {
       it('re-enables the submit button', () => {
         expect(findSubmitButton().props('disabled')).toBe(false);
       });
+    });
+  });
+
+  describe.each([false, true])('when `validity-change` event is emitted with %s', (state) => {
+    it(`sets Create pipeline schedule button disabled state to ${!state}`, async () => {
+      createComponentWithApollo();
+
+      findPipelineVariablesForm().vm.$emit('validity-change', state);
+      await nextTick();
+
+      expect(findSubmitButton().props('disabled')).toBe(!state);
     });
   });
 });

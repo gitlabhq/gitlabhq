@@ -1,0 +1,10 @@
+---
+name: use_primary_and_secondary_stores_for_action_cable
+description:
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/tenant-scale/tenant-services/team/-/issues/296
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214008
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/582005
+milestone: '18.7'
+group: group::tenant services
+type: gitlab_com_derisk
+default_enabled: false

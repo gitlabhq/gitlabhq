@@ -7,7 +7,6 @@ module Emails
     include ::ServiceDesk::CustomEmails::Logger
 
     EMAIL_ATTACHMENTS_SIZE_LIMIT = 10.megabytes.freeze
-    VERIFICATION_EMAIL_TIMEOUT = 7
 
     included do
       override_layout_lookup_table.merge!({
@@ -91,7 +90,7 @@ module Emails
       @project = @service_desk_setting.project
 
       email_sender = sender(
-        Users::Internal.support_bot.id,
+        Users::Internal.for_organization(@project.organization_id).support_bot.id,
         send_from_user_email: false,
         sender_name: @service_desk_setting.outgoing_name,
         sender_email: @service_desk_setting.custom_email
@@ -147,7 +146,7 @@ module Emails
     def setup_service_desk_mail(issue_id, issue_email_participant = nil)
       @issue = Issue.find(issue_id)
       @project = @issue.project
-      @support_bot = Users::Internal.support_bot
+      @support_bot = Users::Internal.for_organization(@project.organization_id).support_bot
 
       @service_desk_setting = @project.service_desk_setting
 
@@ -179,13 +178,6 @@ module Emails
       log_info(project: @project)
 
       delivery_options = @service_desk_setting.custom_email_credential.delivery_options
-      # We force the use of custom email settings when sending out the verification email.
-      # If the credentials aren't correct some servers tend to take a while to answer
-      # which leads to some Net::ReadTimeout errors which disguises the
-      # real configuration issue.
-      # We increase the timeout for verification emails only.
-      delivery_options[:read_timeout] = VERIFICATION_EMAIL_TIMEOUT if force
-
       mail.delivery_method(::Mail::SMTP, delivery_options)
     end
 

@@ -388,7 +388,7 @@ the container registry by themselves, follow the steps below.
 In GitLab, tokens for the container registry expire every five minutes.
 To increase the token duration:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Container Registry**.
 1. For the **Authorization token duration (minutes)**, update the value.
@@ -1708,12 +1708,12 @@ for all installations. You can override this behavior using the [`internal_key`]
 The following steps describe the communication flow:
 
 1. GitLab interacts with the registry using the registry's private key. When a registry
-request is sent, a short-lived (10 minutes), namespace-limited token is generated
-and signed with the private key.
+   request is sent, a short-lived (10 minutes), namespace-limited token is generated
+   and signed with the private key.
 1. The registry verifies that the signature matches the registry certificate
-specified in its configuration and allows the operation.
+   specified in its configuration and allows the operation.
 1. GitLab processes background jobs through Sidekiq, which also interacts with the registry.
-These jobs communicate directly with the registry to handle image deletion.
+   These jobs communicate directly with the registry to handle image deletion.
 
 ## Migrate from a third-party registry
 

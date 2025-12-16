@@ -12,6 +12,10 @@
       "minimum": 1,
       "maximum": 2147483647,
       "description": "Retention period for inactive project and group access tokens"
+    },
+    "authn_data_retention_cleanup_enabled": {
+      "type": "boolean",
+      "description": "Enable authentication data retention cleanup workers to enforce retention policies."
     }
   }
 }

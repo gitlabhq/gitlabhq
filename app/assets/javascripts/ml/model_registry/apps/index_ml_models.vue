@@ -211,6 +211,7 @@ export default {
     >
       <template #empty-state>
         <empty-state
+          :show-action-buttons="canWriteModelRegistry"
           :title="$options.emptyState.title"
           :description="$options.emptyState.description"
           :primary-text="$options.emptyState.primaryText"

@@ -52,7 +52,7 @@ Although functionality has not changed, you should [reinstall the app](#reinstal
 
 To install the GitLab for Slack app from the project or group settings:
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. Select **Install GitLab for Slack app**. You're redirected to the Slack confirmation page.
@@ -86,7 +86,7 @@ When GitLab releases new features for the GitLab for Slack app, you might have t
 
 To reinstall the GitLab for Slack app:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. Select **Install GitLab for Slack app**. You're redirected to the Slack confirmation page.
@@ -149,11 +149,19 @@ You can use a project alias instead.
 
 To create a project alias for slash commands in the GitLab for Slack app:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. Next to the project path or alias, select **Edit**.
 1. Enter the new alias and select **Save changes**.
+
+If an alias collision occurs in a Slack workspace (for example, multiple projects or groups attempt to use the same alias), GitLab automatically assigns a fallback alias
+in the following format:
+
+- For projects: `p-<project_id>` (for example, `p-12345`)
+- For groups: `g-<group_id>` (for example, `g-67890`)
+
+You can use these fallback aliases in slash commands when the preferred alias is unavailable.
 
 ## Slack notifications
 
@@ -169,7 +177,7 @@ You can receive notifications to Slack channels for certain GitLab [events](#not
 
 To configure Slack notifications:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. In the **Trigger** section:

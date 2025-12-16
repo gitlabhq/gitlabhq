@@ -21,8 +21,7 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
     it 'exposes correct attributes' do
       expect(entity_hash.keys).to match_array([
         :user,
-        :report,
-        :upload_note_attachment_path
+        :report
       ])
     end
 

@@ -13,7 +13,7 @@ module QA
       end
 
       attribute :issue do
-        Issue.fabricate! do |resource|
+        Resource::WorkItem.fabricate! do |resource|
           resource.project = project
           resource.title = 'Issue for adding notes.'
           resource.description = 'Issue for adding notes.'
@@ -30,7 +30,7 @@ module QA
       def fabricate!
         issue.visit!
 
-        Page::Project::Issue::Show.perform do |show|
+        Page::Project::WorkItem::Show.perform do |show|
           show.comment(@body)
         end
       end

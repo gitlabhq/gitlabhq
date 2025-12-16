@@ -70,7 +70,7 @@ export default {
   <div
     class="diff-stats"
     :class="{
-      'is-compare-versions-header gl-hidden @lg/panel:gl-inline-flex':
+      'is-compare-versions-header gl-hidden @md/panel:gl-inline-flex':
         isCompareVersionsHeader && hideOnNarrowScreen,
       'gl-hidden @sm/panel:!gl-inline-flex': !isCompareVersionsHeader && hideOnNarrowScreen,
       'gl-inline-flex': !hideOnNarrowScreen,

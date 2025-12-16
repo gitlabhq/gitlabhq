@@ -76,6 +76,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_pages_domain, boundary_type: :project
       # rubocop: disable CodeReuse/ActiveRecord
       get ":id/pages/domains" do
         authorize! :read_pages, user_project
@@ -90,6 +91,7 @@ module API
       params do
         requires :domain, type: String, desc: 'The domain'
       end
+      route_setting :authorization, permissions: :read_pages_domain, boundary_type: :project
       get ":id/pages/domains/:domain", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
         authorize! :read_pages, user_project
 
@@ -110,6 +112,7 @@ module API
         # rubocop:enable Scalability/FileUploads
         all_or_none_of :user_provided_certificate, :user_provided_key
       end
+      route_setting :authorization, permissions: :create_pages_domain, boundary_type: :project
       post ":id/pages/domains" do
         authorize! :update_pages, user_project
 
@@ -135,6 +138,7 @@ module API
           desc: "Enables automatic generation of SSL certificates issued by Let's Encrypt for custom domains."
         # rubocop:enable Scalability/FileUploads
       end
+      route_setting :authorization, permissions: :update_pages_domain, boundary_type: :project
       put ":id/pages/domains/:domain", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
         authorize! :update_pages, user_project
 
@@ -160,6 +164,7 @@ module API
       params do
         requires :domain, type: String, desc: 'The domain to verify'
       end
+      route_setting :authorization, permissions: :verify_pages_domain, boundary_type: :project
       put ":id/pages/domains/:domain/verify", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
         authorize! :update_pages, user_project
 
@@ -177,6 +182,7 @@ module API
       params do
         requires :domain, type: String, desc: 'The domain'
       end
+      route_setting :authorization, permissions: :delete_pages_domain, boundary_type: :project
       delete ":id/pages/domains/:domain", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
         authorize! :update_pages, user_project
 

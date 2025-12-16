@@ -68,7 +68,7 @@ To update the Git remote URL, determine the existing and new URLs for your repos
    ```
 
 1. Each repository has a default remote named `origin`. To view the current remote _fetch_ and _push_ URLs
-for your remote repository, run:
+   for your remote repository, run:
 
    ```shell
    git remote -v
@@ -78,7 +78,7 @@ for your remote repository, run:
 
 1. Get the new URL:
    1. Go to GitLab.
-   1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+   1. On the top bar, select **Search or go to** and find your project.
    1. On the left sidebar, select **Code** > **Repository**, to go to the project's **Repository** page
    1. In the upper-right corner, select **Code**
    1. Depending on which method you use for authentication and cloning with `git`,
@@ -104,8 +104,8 @@ To update the Git remote URL:
    ```
 
 1. Verify that the remote URL update is successful.
-The following command displays the new URL for both fetch and push operations,
-lists the local branches, and confirms that they are tracked to GitLab:
+   The following command displays the new URL for both fetch and push operations,
+   lists the local branches, and confirms that they are tracked to GitLab:
 
    ```shell
    git remote show origin
@@ -117,7 +117,7 @@ lists the local branches, and confirms that they are tracked to GitLab:
 To update the remote URLs for multiple repositories:
 
 1. Use the `git remote set-url` command. Replace `origin` with the name of the
-remote you want to update. For example:
+   remote you want to update. For example:
 
    ```shell
    git remote set-url <remote_name> <new_url>
@@ -153,7 +153,7 @@ To add a new remote URL:
 1. Go to your local repository working copy.
 
 1. Add a new remote URL. Replace `<new_remote_name>` with a name for the new remote,
-for example, `new-origin`, and `<new_url>` with the new repository URL:
+   for example, `new-origin`, and `<new_url>` with the new repository URL:
 
    ```shell
    git remote add <new_remote_name> <new_url>

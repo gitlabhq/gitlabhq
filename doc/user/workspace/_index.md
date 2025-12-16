@@ -61,7 +61,7 @@ A running workspace remains accessible to the user even if user permissions are 
 
 To manage workspaces from a project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. In the upper right, select **Code**.
 1. From the dropdown list, under **Your workspaces**, you can:
    - Restart, stop, or terminate an existing workspace.
@@ -96,7 +96,7 @@ To clean up orphaned resources, an administrator must manually delete the worksp
 
 To manage all workspaces associated with `agentk`:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Kubernetes clusters**.
 1. Select the agent configured for remote development.
 1. Select the **Workspaces** tab.
@@ -271,10 +271,10 @@ are used in the table:
 **Footnotes**:
 
 1. When you create a workspace, it cannot access container image details, for example, from private
-or internal registries. When `overrideCommand` is `false` and the Devfile doesn't specify `command`
-or `args`, GitLab does not validate container images or check for required `Entrypoint` or `Cmd` fields.
-You must ensure that either the Devfile or container specifies these fields, or the container exits
-prematurely and the workspace fails to start.
+   or internal registries. When `overrideCommand` is `false` and the Devfile doesn't specify `command`
+   or `args`, GitLab does not validate container images or check for required `Entrypoint` or `Cmd` fields.
+   You must ensure that either the Devfile or container specifies these fields, or the container exits
+   prematurely and the workspace fails to start.
 
 ### User-defined `postStart` events
 
@@ -518,9 +518,9 @@ For more information, see [configure VS Code Extension Marketplace](../../admini
 
 {{< /history >}}
 
-When you create a workspace, you get a personal access token
+When you create a workspace, you get a personal access token that expires in 365 days
 with `write_repository` and `api` permissions.
-Use this token to clone the project initially, while starting the workspace,
+This token is used to clone the project initially, while starting the workspace,
 and to configure the GitLab Workflow extension for VS Code.
 
 Any Git operation you perform in the workspace uses this token for authentication and authorization.

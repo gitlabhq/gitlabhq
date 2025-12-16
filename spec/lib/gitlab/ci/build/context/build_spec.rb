@@ -27,11 +27,17 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
     }
   end
 
+  let(:logger) { instance_double(Gitlab::Ci::Pipeline::Logger, instrument: nil) }
+
   before_all do
     create(:cluster_agent, project: project)
   end
 
-  subject(:context) { described_class.new(pipeline, seed_attributes) }
+  before do
+    allow(logger).to receive(:instrument).and_yield
+  end
+
+  subject(:context) { described_class.new(pipeline, seed_attributes, logger: logger) }
 
   shared_examples 'variables collection' do
     it 'returns a collection of variables' do
@@ -54,7 +60,7 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
     end
 
     context 'without passed build-specific attributes' do
-      let(:context) { described_class.new(pipeline) }
+      let(:context) { described_class.new(pipeline, {}, logger: logger) }
 
       it 'returns a collection of variables' do
         is_expected.to include('CI_JOB_NAME'        => nil)
@@ -68,6 +74,15 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
     subject(:variables) { context.variables.to_hash }
 
     it { expect(context.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
+
+    it 'instruments with logger' do
+      logger = instance_double(Gitlab::Ci::Pipeline::Logger)
+      context_with_logger = described_class.new(pipeline, seed_attributes, logger: logger)
+
+      expect(logger).to receive(:instrument).with(:pipeline_seed_context_build_variables).and_yield
+
+      context_with_logger.variables
+    end
 
     it_behaves_like 'variables collection'
 

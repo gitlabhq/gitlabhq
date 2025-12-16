@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::QuickActions::TimelineTextAndDateTimeSeparator do
   subject(:timeline_text_and_datetime_separator) { described_class }

@@ -6,4 +6,4 @@ feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/563375
 milestone: '18.6'
 type: development
 group: group::pipeline authoring
-default_enabled: false
+default_enabled: true

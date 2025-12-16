@@ -249,6 +249,55 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         expect(pipeline.limited_failed_builds).not_to include(retried_build)
       end
     end
+
+    describe '#limited_failed_jobs' do
+      let_it_be(:pipeline) { create(:ci_pipeline) }
+
+      before do
+        stub_const("#{described_class}::COUNT_FAILED_JOBS_LIMIT", 3)
+      end
+
+      it 'returns the latest failed jobs up to the limit for the pipeline' do
+        over_limit = described_class::COUNT_FAILED_JOBS_LIMIT + 1
+        create_list(:ci_build, over_limit, :failed, pipeline: pipeline)
+        create_list(:ci_build, over_limit, :success, pipeline: pipeline)
+
+        expect(pipeline.limited_failed_jobs.count).to eq(described_class::COUNT_FAILED_JOBS_LIMIT)
+        expect(pipeline.limited_failed_jobs).to all(be_failed)
+        expect(pipeline.limited_failed_jobs).to all(have_attributes(pipeline: pipeline))
+      end
+
+      it 'includes all job types (builds, bridges, and generic statuses)' do
+        create(:ci_build, :failed, pipeline: pipeline)
+        create(:ci_bridge, :failed, pipeline: pipeline)
+        create(:generic_commit_status, :failed, pipeline: pipeline)
+
+        expect(pipeline.limited_failed_jobs.count).to eq(3)
+        expect(pipeline.limited_failed_jobs.map(&:class)).to contain_exactly(
+          Ci::Build, Ci::Bridge, GenericCommitStatus
+        )
+      end
+
+      it 'does not include retried jobs' do
+        retried_build = create(:ci_build, :failed, :retried, pipeline: pipeline)
+        latest_build = create(:ci_build, :failed, pipeline: pipeline)
+        retried_bridge = create(:ci_bridge, :failed, :retried, pipeline: pipeline)
+        latest_bridge = create(:ci_bridge, :failed, pipeline: pipeline)
+
+        expect(pipeline.limited_failed_jobs).to include(latest_build, latest_bridge)
+        expect(pipeline.limited_failed_jobs).not_to include(retried_build, retried_bridge)
+      end
+
+      it 'does not include successful jobs' do
+        create(:ci_build, :failed, pipeline: pipeline)
+        create(:ci_build, :success, pipeline: pipeline)
+        create(:ci_bridge, :failed, pipeline: pipeline)
+        create(:ci_bridge, :success, pipeline: pipeline)
+
+        expect(pipeline.limited_failed_jobs.count).to eq(2)
+        expect(pipeline.limited_failed_jobs).to all(be_failed)
+      end
+    end
   end
 
   describe 'state machine transitions' do
@@ -660,6 +709,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
+    describe '.created_on_or_after', :freeze_time do
+      let_it_be(:new_pipeline_1) { create(:ci_pipeline, created_at: 1.day.ago) }
+
+      subject { described_class.created_on_or_after(1.day.ago) }
+
+      it 'returns the newer pipeline', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17341' do
+        is_expected.to contain_exactly(new_pipeline, new_pipeline_1)
+      end
+    end
+
     describe '.created_before' do
       subject { described_class.created_before(1.day.ago) }
 
@@ -985,6 +1044,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.order_created_at_asc_id_asc', :freeze_time do
+    subject(:pipelines_ordered_by_created_at_id) { described_class.order_created_at_asc_id_asc }
+
+    let_it_be(:pipeline1) { create(:ci_pipeline, project: project, created_at: 1.week.ago) }
+    let_it_be(:pipeline2) { create(:ci_pipeline, project: project, created_at: 1.day.ago) }
+    let_it_be(:pipeline3) { create(:ci_pipeline, project: project, created_at: 1.day.ago) }
+
+    it 'returns pipelines sorted by created_at ascending and id ascending' do
+      expect(pipelines_ordered_by_created_at_id).to eq([pipeline1, pipeline2, pipeline3])
+    end
+  end
+
   describe '.jobs_count_in_alive_pipelines' do
     before do
       ::Ci::HasStatus::ALIVE_STATUSES.each do |status|
@@ -1006,7 +1077,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '.builds_count_in_alive_pipelines' do
+  describe '.legacy_builds_count_in_alive_pipelines' do
     before do
       ::Ci::HasStatus::ALIVE_STATUSES.each do |status|
         alive_pipeline = create(:ci_pipeline, status: status, project: project)
@@ -1022,7 +1093,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     it 'includes all builds in alive pipelines created in the last 24 hours' do
-      expect(described_class.builds_count_in_alive_pipelines)
+      expect(described_class.legacy_builds_count_in_alive_pipelines)
         .to eq(::Ci::HasStatus::ALIVE_STATUSES.count)
     end
   end
@@ -1332,6 +1403,15 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         is_expected.to eq(merge_request.source_branch)
       end
     end
+
+    context 'for workload pipeline' do
+      let_it_be(:workload_ref) { 'refs/workloads/abc123' }
+      let(:pipeline) { create(:ci_pipeline, ref: workload_ref) }
+
+      it 'returns the workload ref as-is' do
+        is_expected.to eq(workload_ref)
+      end
+    end
   end
 
   describe '#source_ref_slug' do
@@ -1443,13 +1523,196 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe 'modules' do
+  describe 'internal ID' do
     it_behaves_like 'AtomicInternalId', validate_presence: false do
       let(:internal_id_attribute) { :iid }
       let(:instance) { build(:ci_pipeline) }
       let(:scope) { :project }
       let(:scope_attrs) { { project: instance.project } }
       let(:usage) { :ci_pipelines }
+    end
+
+    # The `init` function is called to recalculate the initial iid value when the InternalId
+    # record for ci_pipelines is not present, so we first flush it before generating next iid.
+    describe 'has_internal_id init function' do
+      let(:last_pipeline_count) { 3 }
+      let(:last_max_iid_from_pipelines) { 4 }
+      let(:last_max_iid_from_pipeline_iids) { 4 }
+      let(:new_pipeline) { build(:ci_pipeline, project: project) }
+
+      before do
+        reset_initial_data_state
+        expect_initial_data_state
+      end
+
+      shared_examples 'calculates the correct Internal ID initial value' do
+        it 'generates the expected next iid' do
+          expect(generate_next_iid).to eq(initial_value + 1)
+          expect(generate_next_iid_without_pipeline_subject).to eq(initial_value + 1)
+          expect(generate_next_iid_without_scope).to eq(initial_value + 1)
+          expect(generate_next_iid_without_scope_and_pipeline_subject).to eq(1)
+        end
+
+        it 'successfully persists new pipeline' do
+          expect { new_pipeline.save! }.not_to raise_error
+          expect(new_pipeline.reload.iid).to eq(initial_value + 1)
+        end
+      end
+
+      it_behaves_like 'calculates the correct Internal ID initial value' do
+        let(:initial_value) { last_max_iid_from_pipelines }
+      end
+
+      # This scenario shouldn't happen after iid backfill in https://gitlab.com/gitlab-org/gitlab/-/issues/582338
+      context 'when max iid from ci_pipelines > max iid from ci_pipeline_iids' do
+        let(:last_max_iid_from_pipelines) { last_max_iid_from_pipeline_iids + 1 }
+
+        it_behaves_like 'calculates the correct Internal ID initial value' do
+          let(:initial_value) { last_max_iid_from_pipelines }
+        end
+      end
+
+      # This scenario shouldn't happen in normal use; included for test coverage
+      context 'when max iid from ci_pipelines < max iid from ci_pipeline_iids' do
+        let(:last_max_iid_from_pipeline_iids) { last_max_iid_from_pipelines + 1 }
+
+        it_behaves_like 'calculates the correct Internal ID initial value' do
+          let(:initial_value) { last_max_iid_from_pipeline_iids }
+        end
+      end
+
+      # This scenario shouldn't happen after iid backfill in https://gitlab.com/gitlab-org/gitlab/-/issues/582338
+      context 'when iids are populated in ci_pipelines but not in ci_pipeline_iids' do
+        let(:last_max_iid_from_pipeline_iids) { nil }
+
+        it_behaves_like 'calculates the correct Internal ID initial value' do
+          let(:initial_value) { last_max_iid_from_pipelines }
+        end
+      end
+
+      # This scenario shouldn't happen in normal use; included for test coverage
+      context 'when iids are populated in ci_pipeline_iids but not in ci_pipelines' do
+        let(:last_max_iid_from_pipelines) { nil }
+
+        it_behaves_like 'calculates the correct Internal ID initial value' do
+          let(:initial_value) { last_max_iid_from_pipeline_iids }
+        end
+      end
+
+      context 'when iids are neither populated in ci_pipelines nor ci_pipeline_iids' do
+        let(:last_max_iid_from_pipelines) { nil }
+        let(:last_max_iid_from_pipeline_iids) { nil }
+
+        it_behaves_like 'calculates the correct Internal ID initial value' do
+          let(:initial_value) { last_pipeline_count }
+        end
+      end
+
+      context 'when there are no existing pipelines nor pipeline iids' do
+        let(:last_pipeline_count) { 0 }
+        let(:last_max_iid_from_pipelines) { nil }
+        let(:last_max_iid_from_pipeline_iids) { nil }
+
+        it_behaves_like 'calculates the correct Internal ID initial value' do
+          let(:initial_value) { last_pipeline_count }
+        end
+      end
+
+      private
+
+      # Resets the data state to match the specified max_iid
+      # and pipeline count values; count must be <= max_iid
+      def reset_initial_data_state
+        described_class.delete_all
+        Ci::PipelineIid.delete_all
+
+        if last_pipeline_count > 0
+          (last_pipeline_count - 1).downto(0).each do |j|
+            if last_max_iid_from_pipelines
+              create(:ci_pipeline, project: project, iid: last_max_iid_from_pipelines - j)
+            else
+              create(:ci_pipeline, project: project).tap { |pipeline| pipeline.update_column(:iid, nil) }
+            end
+          end
+        end
+
+        # DB triggers on ci_pipelines automatically create records in ci_pipeline_iids,
+        # so we clear it again so we can set them manually.
+        Ci::PipelineIid.delete_all
+
+        if last_max_iid_from_pipeline_iids
+          iid_record_hashes = last_max_iid_from_pipeline_iids.downto(1).map { |j| { project_id: project.id, iid: j } }
+          Ci::PipelineIid.insert_all(iid_record_hashes)
+        end
+
+        InternalId.flush_records!(project: project, usage: :ci_pipelines)
+      end
+
+      def expect_initial_data_state
+        expect(described_class.where(project: project).count).to eq(last_pipeline_count)
+        expect(described_class.where(project: project).maximum(:iid)).to eq(last_max_iid_from_pipelines)
+        expect(Ci::PipelineIid.where(project: project).maximum(:iid)).to eq(last_max_iid_from_pipeline_iids)
+      end
+
+      def generate_next_iid
+        InternalId.flush_records!(project: project, usage: :ci_pipelines)
+
+        # `after(:build)` for :ci_pipeline factory calls ensure_project_iid! so it's already generated
+        new_pipeline.iid
+      end
+
+      def generate_next_iid_without_pipeline_subject
+        new_pipeline.iid = nil
+        InternalId.flush_records!(project: project, usage: :ci_pipelines)
+
+        allow_next_instance_of(InternalId::ImplicitlyLockingInternalIdGenerator) do |instance|
+          allow(instance)
+            .to receive(:initial_value)
+            .and_wrap_original do |orig, *args|
+              args[0] = Ci::Pipeline # When the subject is a class, #initial_value sets it to nil
+              orig.call(*args)
+            end
+        end
+
+        new_pipeline.ensure_project_iid!
+        new_pipeline.iid
+      end
+
+      def generate_next_iid_without_scope
+        new_pipeline.iid = nil
+        InternalId.flush_records!(project: project, usage: :ci_pipelines)
+
+        allow_next_instance_of(InternalId::ImplicitlyLockingInternalIdGenerator) do |instance|
+          allow(instance)
+            .to receive(:initial_value)
+            .and_wrap_original do |orig, *args|
+              args[1] = nil
+              orig.call(*args)
+            end
+        end
+
+        new_pipeline.ensure_project_iid!
+        new_pipeline.iid
+      end
+
+      # This case generally shouldn't happen but we're just ensuring test coverage
+      def generate_next_iid_without_scope_and_pipeline_subject
+        new_pipeline.iid = nil
+        InternalId.flush_records!(project: project, usage: :ci_pipelines)
+
+        allow_next_instance_of(InternalId::ImplicitlyLockingInternalIdGenerator) do |instance|
+          allow(instance)
+            .to receive(:initial_value)
+            .and_wrap_original do |orig, *args|
+              args[0] = Ci::Pipeline
+              args[1] = nil
+              orig.call(*args)
+            end
+        end
+
+        new_pipeline.ensure_project_iid!
+        new_pipeline.iid
+      end
     end
   end
 
@@ -2174,6 +2437,51 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           )
           expect(unique_pipeline_pass).to eq(1)
         end
+      end
+    end
+
+    describe 'observability export' do
+      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :running, status: :running, project: project) }
+      let(:observability_setting) { instance_double(Observability::GroupO11ySetting) }
+
+      shared_context 'with observability settings' do
+        before do
+          allow(Observability::GroupO11ySetting).to receive(:observability_setting_for)
+            .with(project)
+            .and_return(observability_setting)
+        end
+      end
+
+      shared_context 'without observability settings' do
+        before do
+          allow(Observability::GroupO11ySetting).to receive(:observability_setting_for)
+            .with(project)
+            .and_return(nil)
+        end
+      end
+
+      shared_examples 'does not enqueue ExportWorker' do
+        it 'does not enqueue ExportWorker' do
+          expect(Ci::Observability::ExportWorker).not_to receive(:perform_async)
+          pipeline.succeed!
+        end
+      end
+
+      context 'when transitioning to completed status' do
+        include_context 'with observability settings'
+
+        %i[drop! skip! succeed! cancel!].each do |command|
+          it "enqueues ExportWorker on transition to #{command}" do
+            expect(Ci::Observability::ExportWorker).to receive(:perform_async).with(pipeline.id)
+            pipeline.send(command)
+          end
+        end
+      end
+
+      context 'when observability settings are not present' do
+        include_context 'without observability settings'
+
+        it_behaves_like 'does not enqueue ExportWorker'
       end
     end
 
@@ -6004,6 +6312,27 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       let(:pipeline) { create(:ci_pipeline, :tag) }
 
       it { is_expected.to eq(Gitlab::Git::TAG_REF_PREFIX + pipeline.source_ref.to_s) }
+    end
+
+    context 'when pipeline is for a workload' do
+      let_it_be(:workload_ref) { 'refs/workloads/abc123' }
+      let(:pipeline) { create(:ci_pipeline, ref: workload_ref) }
+
+      it 'returns the workload ref as-is' do
+        is_expected.to eq(workload_ref)
+      end
+    end
+
+    context 'when pipeline is neither branch, tag, merge request, nor workload' do
+      let(:pipeline) { build(:ci_pipeline, ref: 'unknown', tag: false) }
+
+      before do
+        allow(pipeline).to receive_messages(branch?: false, tag?: false, merge_request?: false, workload?: false)
+      end
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
     end
   end
 

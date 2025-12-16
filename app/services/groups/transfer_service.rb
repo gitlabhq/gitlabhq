@@ -72,6 +72,10 @@ module Groups
         end
       end
 
+      # There is a risk that the request times out and the event would never get published, even though the
+      # namespace got transferred. Publishing the event first to improve this consistency.
+      publish_event(old_root_ancestor_id)
+
       transfer_labels
       transfer_status_data(old_root_ancestor_id)
       remove_paid_features_for_projects(old_root_ancestor_id)
@@ -97,7 +101,6 @@ module Groups
     def post_update_hooks(updated_project_ids, old_root_ancestor_id)
       refresh_project_authorizations
       refresh_descendant_groups if @new_parent_group
-      publish_event(old_root_ancestor_id)
     end
 
     # Overridden in EE
@@ -127,11 +130,16 @@ module Groups
     def group_with_namespaced_npm_packages?
       return false unless group.packages_feature_enabled?
 
-      npm_packages = ::Packages::GroupPackagesFinder
-                       .new(current_user, group, preload_pipelines: false, package_type: :npm)
-                       .execute
-
-      npm_packages = npm_packages.with_npm_scope(group.root_ancestor.path)
+      npm_packages = if Feature.enabled?(:packages_projects_finder, group)
+                       projects = ::Packages::ProjectsFinder.new(current_user: current_user, group: group).execute
+                       ::Packages::PackagesFinder
+                         .new(projects, preload_pipelines: false, package_type: :npm)
+                         .execute
+                     else
+                       ::Packages::GroupPackagesFinder
+                         .new(current_user, group, preload_pipelines: false, package_type: :npm)
+                         .execute
+                     end.with_npm_scope(group.root_ancestor.path)
 
       different_root_ancestor? && npm_packages.exists?
     end

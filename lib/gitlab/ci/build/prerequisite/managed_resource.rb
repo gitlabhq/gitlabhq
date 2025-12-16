@@ -32,7 +32,7 @@ module Gitlab
               managed_resource.assign_attributes(
                 status: :completed,
                 template_name: get_template.name,
-                tracked_objects: response.objects.map(&:to_h)
+                tracked_objects: tracked_objects(response.objects)
               )
 
               deletion_strategy = template_yaml['delete_resources']
@@ -45,6 +45,14 @@ module Gitlab
           end
 
           private
+
+          def tracked_objects(objects)
+            defaults = { group: "", namespace: "" }
+
+            objects.map do |obj|
+              defaults.merge(obj.to_h)
+            end
+          end
 
           def resource_management_enabled?
             return false unless environment.cluster_agent.resource_management_enabled?

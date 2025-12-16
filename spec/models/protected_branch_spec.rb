@@ -275,6 +275,47 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
     end
   end
 
+  describe '.after_name_and_id' do
+    let_it_be(:project) { create(:project) }
+
+    let!(:branch_1) { create(:protected_branch, project: project, name: 'abranch') }
+    let!(:branch_2) { create(:protected_branch, project: project, name: 'bbranch') }
+    let!(:branch_3) { create(:protected_branch, project: project, name: 'dbranch') }
+    let!(:branch_4) { create(:protected_branch, project: project, name: 'gbranch') }
+
+    it 'returns branches after the given name and id' do
+      result = described_class.where(project: project).after_name_and_id('abranch', branch_1.id)
+
+      expect(result).to contain_exactly(branch_2, branch_3, branch_4)
+    end
+
+    it 'returns branches alphabetically after the cursor position' do
+      result = described_class.where(project: project).after_name_and_id('bbranch', branch_2.id)
+
+      expect(result).to eq([branch_3, branch_4])
+    end
+
+    it 'returns the branch when id is less than the branch id with matching name' do
+      protected_branch = create(:protected_branch, name: 'main', project: project)
+
+      result = described_class.where(project: project).after_name_and_id('main', protected_branch.id - 1)
+
+      expect(result).to contain_exactly(protected_branch)
+    end
+
+    it 'returns empty when cursor is at the last branch' do
+      result = described_class.where(project: project).after_name_and_id('gbranch', branch_4.id)
+
+      expect(result).to be_empty
+    end
+
+    it 'returns all records when name or id are nil' do
+      result = described_class.where(project: project).after_name_and_id(nil, nil)
+
+      expect(result).to be_empty
+    end
+  end
+
   describe '#default_branch?' do
     context 'when group level' do
       subject { build_stubbed(:protected_branch, project: nil, group: build(:group)) }

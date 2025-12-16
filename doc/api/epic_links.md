@@ -2,7 +2,7 @@
 stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Epic Links API
+title: Epic Links API (deprecated)
 ---
 
 {{< details >}}

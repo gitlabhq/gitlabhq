@@ -29,7 +29,7 @@ disabled by default when your instance is provisioned.
 
 To disable sign ups:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. Clear the **Sign-up enabled** checkbox, then select **Save changes**.
@@ -49,7 +49,7 @@ administrator before they can start using their account. It is only applicable i
 
 To require administrator approval for new sign ups:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. Select the **Require admin approval for new sign-ups** checkbox, then select **Save changes**.
@@ -80,7 +80,7 @@ their email address before they are allowed to sign in.
 
 To enforce confirmation of the email address used for new sign ups:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. Under **Email confirmation settings**, select **Hard**.
@@ -91,7 +91,7 @@ The following settings are available:
 - **Soft** - Send a confirmation email during sign up. New users can sign in immediately, but must confirm their email in three days. After three days, the user is not able to sign in until they confirm their email.
 - **Off** - New users can sign up without confirming their email address.
 
-## Turn on restricted access
+## Restricted access
 
 {{< details >}}
 
@@ -104,25 +104,36 @@ The following settings are available:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501717) in GitLab 17.8.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/523464) in GitLab 18.0.
+- Group sharing settings [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/488451) in GitLab 18.7.
 
 {{< /history >}}
+
+When you turn on restricted access, instances cannot add new billable users when no licensed seats
+are left in the subscription.
+
+Restrictive access is a more restrictive setting than user cap,
+as it prevents additions rather than requiring approval of new users.
 
 Use restricted access to prevent overage fees.
 Overage fees occur when you exceed the number of licensed users in your subscription,
 and must be paid at the next [quarterly reconciliation](../../subscriptions/quarterly_reconciliation.md).
 
-When you turn on restricted access, instances cannot add new billable users when there are no licensed seats
-left in the subscription.
+### Turn on restricted access
 
 Prerequisites:
 
 - You must be an administrator.
+- The group or one of its subgroups or projects must not be shared externally.
 
 To turn on restricted access:
 
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. Under **Seat control**, select **Restricted access**.
+
+When you turn on restricted access, the setting to [prevent inviting groups outside the group hierarchy](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy) is automatically turned on. This setting prevents unexpectedly adding new billable users, which might result in overage fees.
+
+You can still independently configure [project sharing for the group and its subgroups](../../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) as needed.
 
 ### Known issues
 
@@ -153,6 +164,14 @@ by an administrator. Users can use their account only after they have been appro
 
 If an administrator increases or removes the user cap, users pending approval are automatically approved.
 
+The number of [billable users](../../subscriptions/manage_users_and_seats.md#billable-users) is updated once a day.
+The user cap might apply only retrospectively after the cap has already been exceeded.
+If the cap is set to a value below the current number of billable users (for example, `1`), the cap is enabled immediately.
+
+When you turn on restricted access, the setting to [prevent inviting groups outside the group hierarchy](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy) is automatically turned on.
+
+You can still independently configure [project sharing for the group and its subgroups](../../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) as needed.
+
 You can also set up [user caps for individual groups](../../user/group/manage.md#user-cap-for-groups).
 
 {{< alert type="note" >}}
@@ -165,19 +184,13 @@ You can set a user cap to enforce approvals for new users.
 
 ### Set a user cap
 
-Set a user cap to restrict the number of users who can sign up without administrator approval.
-
-The number of [billable users](../../subscriptions/manage_users_and_seats.md#billable-users) is updated once a day.
-The user cap might apply only retrospectively after the cap has already been exceeded.
-If the cap is set to a value below the current number of billable users (for example, `1`), the cap is enabled immediately.
-
 Prerequisites:
 
 - You must be an administrator.
 
 To set a user cap:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. In the **User cap** field, enter a number or leave blank for unlimited.
@@ -196,7 +209,7 @@ Prerequisites:
 
 To remove the user cap:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. Remove the number from **User cap**.
@@ -230,7 +243,7 @@ You can add additional complexity requirements. Changes to password complexity r
 
 Existing passwords are unaffected. To change password complexity requirements:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. Under **Minimum password length (number of characters)**, select additional password complexity requirements. You can require numbers, uppercase letters, lowercase letters,
@@ -259,7 +272,7 @@ reduce the risk of malicious users creating spam accounts with disposable email 
 
 To create an email domain allowlist or denylist:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. For the allowlist, you must enter the list manually. For the denylist, you can enter the list
@@ -316,7 +329,7 @@ Prerequisites:
 
 To turn on approvals for role promotions:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. In the **Seat control** section, select **Approve role promotions**.

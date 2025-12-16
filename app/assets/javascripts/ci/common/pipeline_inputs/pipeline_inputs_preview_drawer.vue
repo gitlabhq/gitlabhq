@@ -5,6 +5,7 @@ import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { formatInputsForDisplay } from './utils';
 
 export default {
+  name: 'PipelineInputsPreviewDrawer',
   components: {
     GlDrawer,
   },
@@ -18,6 +19,7 @@ export default {
       required: true,
     },
   },
+  emits: ['close'],
   computed: {
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();

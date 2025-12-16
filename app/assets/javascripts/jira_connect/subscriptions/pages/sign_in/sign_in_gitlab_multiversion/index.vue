@@ -13,6 +13,7 @@ import {
 } from '~/jira_connect/subscriptions/constants';
 import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
 
+// eslint-disable-next-line no-restricted-imports
 import SignInOauthButton from '../../../components/sign_in_oauth_button.vue';
 import VersionSelectForm from './version_select_form.vue';
 

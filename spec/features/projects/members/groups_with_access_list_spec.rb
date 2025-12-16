@@ -8,9 +8,9 @@ RSpec.describe 'Projects > Members > Groups with access list', :js, feature_cate
   include Spec::Support::Helpers::ModalHelpers
   include Features::InviteMembersModalHelpers
 
-  let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, :with_namespace_settings) }
+  let_it_be(:user) { create(:user, owner_of: project) }
   let_it_be(:expiration_date) { 5.days.from_now.to_date }
 
   let(:additional_link_attrs) { {} }

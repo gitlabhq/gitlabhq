@@ -38,7 +38,7 @@ User limits do not apply to users in the Free tier of:
     - GitLab for Open Source
     - GitLab for Education
     - GitLab for Startups
-- [GitLab Self-Managed subscriptions](../subscriptions/self_managed/_index.md)
+- [GitLab Self-Managed subscriptions](../subscriptions/manage_subscription.md)
 
 For more information, you can [talk to an expert](https://page.gitlab.com/usage_limits_help.html).
 
@@ -84,7 +84,7 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Usage quotas**.
 1. To view all members, select the **Seats** tab.
 

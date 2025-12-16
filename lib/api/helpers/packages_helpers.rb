@@ -143,7 +143,7 @@ module API
         content_disposition: nil,
         extra_response_headers: {}
       )
-        package_file.package.touch_last_downloaded_at
+        package_file.package.touch_last_downloaded_at unless request.head?
 
         present_carrierwave_file!(
           package_file.file,

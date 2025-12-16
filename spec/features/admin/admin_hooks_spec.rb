@@ -77,6 +77,9 @@ RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
       expect(page).to have_content('Enable SSL verification')
       expect(page).to have_current_path(edit_admin_hook_path(hook), ignore_query: true)
       expect(page).to have_content('Recent events')
+      click_link 'Close'
+      expect(page).not_to have_content('Save changes')
+      expect(page).to have_content('Add new webhook')
     end
   end
 

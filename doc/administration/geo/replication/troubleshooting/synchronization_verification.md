@@ -52,6 +52,7 @@ This procedure provides detailed status information for all Geo registry types a
        puts "Failed: #{klass.failed.count}"
        puts "Synced: #{klass.synced.count}"
        puts "Pending: #{klass.pending.count}"
+       puts "Started: #{klass.with_state(:started).count}"
 
        if klass.failed.count > 0
           puts "\nSample failed records:"
@@ -315,15 +316,15 @@ replication or verification.
 
 #### Resync all resources of one component
 
-You can schedule a full resync of all resources of one component from the UI:
-
 {{< alert type="warning" >}}
 
-This operation triggers a synchronization of all resources, regardless of whether they are already synced or not. It should not be executed when there are thousands of an object type in the instance.
+This operation triggers a full synchronization of data, regardless of whether it is already synced or not. For large systems this can take many days to complete. It is not recommended to execute this operation on data types that can have a large number of objects such as CI Job Artifacts.
 
 {{< /alert >}}
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+You can schedule a full resync of all resources of one component from the UI:
+
+1. In the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Under **Replication details**, select the desired component.
 1. Select **Resync all**.
@@ -404,18 +405,18 @@ reverification sooner:
    end
    ```
 
-#### Reverify one component on one secondary site
+#### Reverify all resources of one component
 
 {{< alert type="warning" >}}
 
-This operation triggers a verification of all resources, regardless of whether they are already verified or not. It should not be executed when there are thousands of an object type in the instance.
+This operation triggers a verification of all resources, regardless of whether they are already verified or not. It should not be executed when there are thousands of an object type in the instance (for example, CI Job Artifacts).
 
 {{< /alert >}}
 
 If you believe the **primary** site checksums are correct, you can schedule a reverification of one
 component on one **secondary** site from the UI:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Under **Replication details**, select the desired component.
 1. Select **Reverify all**.

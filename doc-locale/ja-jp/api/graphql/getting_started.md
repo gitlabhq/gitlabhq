@@ -17,7 +17,7 @@ description: "例を挙げてGraphQLのクエリとミューテーションを�
 
 ## 実行例 {#running-examples}
 
-ここで説明する例は、以下を使用して実行できます。
+ここで説明する例は、以下を使用して実行できます:
 
 - [GraphiQL](#graphiql)。
 - [コマンドライン](#command-line)。
@@ -29,7 +29,7 @@ GraphiQL（「グラフィカル」と発音）を使用すると、実際のGra
 
 ほとんどの場合、GraphiQLを使用するのが、GitLab GraphQL APIを調べる最も簡単な方法です。
 
-GraphiQLは以下でも使用できます。
+GraphiQLは以下でも使用できます:
 
 - [GitLab.com](https://gitlab.com/-/graphql-explorer)。
 - `https://<your-gitlab-site.com>/-/graphql-explorer`でのGitLab Self-Managed。
@@ -53,7 +53,7 @@ curl --request POST \
   --data "{\"query\": \"query {currentUser {name}}\"}"
 ```
 
-クエリ文字列に文字列をネストするには、データを一重引用符で囲むか、` \\ `で文字列をエスケープします。
+クエリ文字列に文字列をネストするには、データを一重引用符で囲むか、` \\ `で文字列をエスケープします:
 
 ```shell
 curl --request POST \
@@ -73,7 +73,7 @@ curl --request POST \
 
 {{< /details >}}
 
-GraphQLクエリは、[Railsコンソールセッション](../../administration/operations/rails_console.md#starting-a-rails-console-session)で実行できます。たとえば、プロジェクトを検索するには、次のようにクエリを実行します。
+GraphQLクエリは、[Railsコンソールセッション](../../administration/operations/rails_console.md#starting-a-rails-console-session)で実行できます。たとえば、プロジェクトを検索するには、次のようにクエリを実行します:
 
 ```ruby
 current_user = User.find_by_id(1)
@@ -95,7 +95,7 @@ result.to_h
 
 ## クエリとミューテーション {#queries-and-mutations}
 
-GitLab GraphQL APIを使用すると、以下を実行できます。
+GitLab GraphQL APIを使用すると、以下を実行できます:
 
 - データ取得のためのクエリ。
 - データの作成、更新、削除のための[ミューテーション](#mutations)。
@@ -139,12 +139,12 @@ query {
 
 ### グラフトラバーサル {#graph-traversal}
 
-子のノードを取得する場合は、次の構文を使用します。
+子のノードを取得する場合は、次の構文を使用します:
 
 - `edges { node { } }`構文。
 - 短い形式の`nodes { }`構文。
 
-その下では、グラフを走査しています。これがGraphQLという名前の由来です。
+その下ではグラフを走査しており、これがGraphQLという名前の由来です。
 
 例: プロジェクトの名前と、そのすべてのイシューのタイトルを取得します。
 
@@ -172,7 +172,7 @@ GitLabにサインインして[GraphiQL](#graphiql)を使用すると、すべ�
 
 ミューテーションは、データに変更を加えます。新しいレコードを更新、削除、または作成できます。通常、ミューテーションはInputTypeと変数を使用しますが、ここにはどちらも示しません。
 
-ミューテーションには以下があります。
+ミューテーションには以下があります:
 
 - インプット。たとえば、どの絵文字リアクションを追加するか、どのオブジェクトに絵文字リアクションを追加するかなどの引数です。
 - 戻り値の指定。つまり、成功した場合に何を戻したいかです。
@@ -255,7 +255,7 @@ mutation {
 }
 ```
 
-次のような出力が得られるはずです。
+次のような出力が得られるはずです:
 
 ```json
 {
@@ -268,7 +268,7 @@ mutation {
 }
 ```
 
-ノートの詳細を要求しましたが、もう存在しないため、`null`が取得されます。
+リクエストされたノートはもう存在しないため、そのフィールドに返される値は`null`です。
 
 ミューテーションの詳細: [GraphQLドキュメント](https://graphql.org/learn/queries/#mutations)。
 
@@ -291,7 +291,7 @@ mutation DisableCI_JOB_TOKENscope {
 
 クライアントは、[イントロスペクションクエリ](https://graphql.org/learn/introspection/)を行うことにより、スキーマに関する情報についてGraphQLエンドポイントにクエリできます。
 
-[GraphiQLクエリエクスプローラー](#graphiql)は、イントロスペクションクエリを使用して以下を行います。
+[GraphiQLクエリエクスプローラー](#graphiql)は、イントロスペクションクエリを使用して以下を行います:
 
 - GitLab GraphQLスキーマに関する知識を取得する。
 - オートコンプリートを行う。
@@ -350,7 +350,7 @@ query {
 
 GitLab GraphQLエンドポイントの一部では、オブジェクトのコレクションをソートする方法を指定できます。スキーマで許可されているものだけでソートできます。
 
-例: イシューは作成日でソートできます。
+例: イシューは作成日でソートできます:
 
 ```graphql
 query {
@@ -421,7 +421,7 @@ query {
 
 GraphQLリクエストを別のURLに送信する必要がある場合があります。`GeoNode`クエリがその例で、セカンダリGeoサイトのURLに対してのみ機能します。
 
-GraphiQL ExplorerでGraphQLリクエストのURLを変更するには、GraphiQLのヘッダー領域（左下の領域、変数があるところ）にカスタムヘッダーを設定します。
+GraphiQL ExplorerでGraphQLリクエストのURLを変更するには、GraphiQLのヘッダー領域（左下の領域、変数があるところ）にカスタムヘッダーを設定します:
 
 ```JSON
 {

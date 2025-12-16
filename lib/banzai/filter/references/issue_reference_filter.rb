@@ -27,7 +27,7 @@ module Banzai
           return Issue.none if parent.is_a?(Group)
 
           parent.issues.iid_in(ids.to_a)
-                .includes(:project, :namespace, :work_item_type)
+                .includes(:project, :namespace, :work_item_type, :author)
         end
 
         def object_link_content_html_extras(issue, matches)

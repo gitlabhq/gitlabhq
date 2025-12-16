@@ -34,7 +34,7 @@ To complete this tutorial, you need:
 
 To begin, create a test project to apply your pipeline execution policy to:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **New project**.
 1. Select **Create blank project**.
 1. Complete the fields.
@@ -52,7 +52,9 @@ Next, create the CI/CD configuration file that you want your pipeline execution 
 1. In the file's content, copy the following:
 
    ```yaml
-   # This file defines the CI/CD jobs that will be enforced by the pipeline execution policy
+   ---
+   # This file defines the CI/CD jobs that will be
+   # enforced by the pipeline execution policy
    enforced-security-scan:
      stage: .pipeline-policy-pre
      script:
@@ -66,12 +68,12 @@ Next, create the CI/CD configuration file that you want your pipeline execution 
    enforced-test-job:
      stage: test
      script:
-      - echo "Running enforced test job in test stage"
-      - echo "Creating test stage if it doesn't exist"
-      - echo "Performing mandatory testing requirements..."
-      - echo "Enforced tests completed successfully"
-    rules:
-      - when: always
+       - echo "Running enforced test job in test stage"
+       - echo "Creating test stage if it doesn't exist"
+       - echo "Performing mandatory testing requirements..."
+       - echo "Enforced tests completed successfully"
+     rules:
+       - when: always
 
    enforced-compliance-check:
      stage: .pipeline-policy-post
@@ -100,10 +102,7 @@ Next, add a pipeline execution policy to your test project:
 
 1. Set **Actions** to the following:
 
-   ```plaintext
-   Inject into into the .gitlab-ci.yml with the pipeline execution file from My Pipeline Execution Policy
-   Filepath: [group]/my-pipeline-execution/policy/pipeline-config.yml
-   ```
+   ![Pipeline Execution Policy Actions](img/pipeline_execution_policy_actions_v18_7.png)
 
 1. Select **Configure with a merge request**.
 
@@ -126,7 +125,7 @@ Next, add a pipeline execution policy to your test project:
 
 1. Go to the **Overview** tab and select **Merge**. This step creates a new project called `My Pipeline Execution Policy - Security Policy Project`. Security policy projects are used to store security policies so the same policy can be enforced across multiple projects.
 
-1. On the left sidebar, select **Search or go to** and find the `my-pipeline-execution-policy` project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find the `my-pipeline-execution-policy` project.
 
 1. Select **Secure** > **Policies**.
 

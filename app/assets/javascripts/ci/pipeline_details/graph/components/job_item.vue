@@ -35,6 +35,7 @@ import { BRIDGE_KIND, RETRY_ACTION_TITLE, SINGLE_JOB, SKIP_RETRY_MODAL_KEY } fro
  */
 
 export default {
+  name: 'JobItem',
   confirmationModalDocLink: helpPagePath('/ci/pipelines/downstream_pipelines'),
   i18n: {
     bridgeBadgeText: __('trigger job'),

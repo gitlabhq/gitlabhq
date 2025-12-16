@@ -1583,7 +1583,7 @@ Consider the following aspects:
 - Authentication context IDs use fixed values from `c1` to `c99`, each representing a specific
   authentication context with conditional access policies.
 - By default, Microsoft Entra ID does not include the `acrs` claim in the ID token. To enable this, you must
-[configure optional claims](https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims?tabs=appui#configure-optional-claims-in-your-application).
+  [configure optional claims](https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims?tabs=appui#configure-optional-claims-in-your-application).
 - When step-up authentication succeeds, the response returns the [`acrs` claim](https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference#payload-claims) as a JSON array
   of strings. For example: `acrs: ["c1", "c2", "c3"]`.
 
@@ -1592,7 +1592,7 @@ To require step-up authentication for Admin Mode with Microsoft Entra ID:
 1. [Configure Microsoft Entra ID](#configure-microsoft-azure) in GitLab.
 
 1. Follow the steps in the Microsoft Entra ID documentation to
-[define conditional access authentication contexts in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity-platform/developer-guide-conditional-access-authentication-context).
+   [define conditional access authentication contexts in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity-platform/developer-guide-conditional-access-authentication-context).
 
 1. In Microsoft Entra ID, define [the optional claim `acrs` to include in the ID token](https://openid.net/specs/openid-connect-core-1_0.html#IDToken).
 
@@ -1721,7 +1721,7 @@ Prerequisites:
 
 To force step-up authentication for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Under Step-up authentication, select an available authentication provider.

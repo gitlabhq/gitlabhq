@@ -19,6 +19,7 @@
 
   // Filtered search button
   .input-group-prepend > div,
+  .filtered-search-box,
   .filtered-search-history-dropdown-toggle-button.gl-button,
   .input-group-prepend .btn:not([class*="emoji-picker-"]) {
     @apply gl-rounded-l-lg #{!important};

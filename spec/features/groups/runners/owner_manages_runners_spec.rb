@@ -24,30 +24,22 @@ RSpec.describe "Group manages runners in runner list", :freeze_time, :js, featur
     visit group_runners_path(group)
   end
 
-  context "with an online group runner" do
+  context "with group and project runners" do
     let_it_be(:group_runner) { create(:ci_runner, :group, :almost_offline, groups: [group]) }
+    let_it_be(:project_runner) { create(:ci_runner, :project, :almost_offline, projects: [project]) }
 
     it_behaves_like 'pauses, resumes and deletes a runner' do
       let(:runner) { group_runner }
-    end
-
-    it 'shows an edit link' do
-      within_runner_row(group_runner.id) do
-        expect(find_link('Edit')[:href]).to end_with(edit_group_runner_path(group, group_runner))
-      end
-    end
-  end
-
-  context "with an online project runner" do
-    let_it_be(:project_runner) do
-      create(:ci_runner, :project, :almost_offline, projects: [project])
     end
 
     it_behaves_like 'pauses, resumes and deletes a runner' do
       let(:runner) { project_runner }
     end
 
-    it 'shows an editable project runner' do
+    it 'shows correct edit links for group and project runners', :aggregate_failures do
+      within_runner_row(group_runner.id) do
+        expect(find_link('Edit')[:href]).to end_with(edit_group_runner_path(group, group_runner))
+      end
       within_runner_row(project_runner.id) do
         expect(find_link('Edit')[:href]).to end_with(edit_group_runner_path(group, project_runner))
       end
@@ -69,14 +61,10 @@ RSpec.describe "Group manages runners in runner list", :freeze_time, :js, featur
   end
 
   context "with multiple runners" do
-    before do
-      create_list(:ci_runner, 2, :group, groups: [group])
-
-      visit group_runners_path(group)
-    end
+    let_it_be(:runners) { create_list(:ci_runner, 2, :group, groups: [group]) }
 
     it_behaves_like 'deletes runners in bulk' do
-      let(:runner_count) { '2' }
+      let(:runner_count) { runners.length }
     end
   end
 end

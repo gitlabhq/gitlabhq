@@ -44,7 +44,8 @@ RSpec.describe 'Import/Export - project export integration test', :js, feature_c
       allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(200)
     end
 
-    it 'exports a project successfully', :sidekiq_inline do
+    it 'exports a project successfully', :sidekiq_inline,
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2137' do
       export_project_and_download_file(page, project, user)
 
       in_directory_with_expanded_export(project, user) do |exit_status, tmpdir|

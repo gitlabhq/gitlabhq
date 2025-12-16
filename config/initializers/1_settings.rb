@@ -276,6 +276,11 @@ Gitlab.ee do
 end
 
 #
+# ActionCable
+#
+Settings.gitlab['action_cable_allowed_origins'] ||= []
+
+#
 # CI
 #
 Settings['gitlab_ci'] ||= {}
@@ -516,6 +521,9 @@ Settings.cron_jobs['poll_interval'] ||= ENV["GITLAB_CRON_JOBS_POLL_INTERVAL"] ? 
 Settings.cron_jobs['stuck_ci_jobs_worker'] ||= {}
 Settings.cron_jobs['stuck_ci_jobs_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['stuck_ci_jobs_worker']['job_class'] = 'StuckCiJobsWorker'
+Settings.cron_jobs['drop_timed_out_worker'] ||= {}
+Settings.cron_jobs['drop_timed_out_worker']['cron'] ||= '*/10 * * * *'
+Settings.cron_jobs['drop_timed_out_worker']['job_class'] = 'Ci::TimedOutBuilds::DropTimedOutWorker'
 Settings.cron_jobs['pipeline_schedule_worker'] ||= {}
 Settings.cron_jobs['pipeline_schedule_worker']['cron'] ||= '3-59/10 * * * *'
 Settings.cron_jobs['pipeline_schedule_worker']['job_class'] = 'PipelineScheduleWorker'
@@ -702,6 +710,24 @@ Settings.cron_jobs['batched_background_migration_worker_ci_database']['job_class
 Settings.cron_jobs['batched_background_migration_worker_sec_database'] ||= {}
 Settings.cron_jobs['batched_background_migration_worker_sec_database']['cron'] ||= '* * * * *'
 Settings.cron_jobs['batched_background_migration_worker_sec_database']['job_class'] = 'Database::BatchedBackgroundMigration::SecDatabaseWorker'
+Settings.cron_jobs['background_operations_worker_main_database'] ||= {}
+Settings.cron_jobs['background_operations_worker_main_database']['cron'] ||= '* * * * *'
+Settings.cron_jobs['background_operations_worker_main_database']['job_class'] = 'Database::BackgroundOperation::MainSchedulerWorker'
+Settings.cron_jobs['background_operations_worker_ci_database'] ||= {}
+Settings.cron_jobs['background_operations_worker_ci_database']['cron'] ||= '* * * * *'
+Settings.cron_jobs['background_operations_worker_ci_database']['job_class'] = 'Database::BackgroundOperation::CiSchedulerWorker'
+Settings.cron_jobs['background_operations_worker_sec_database'] ||= {}
+Settings.cron_jobs['background_operations_worker_sec_database']['cron'] ||= '* * * * *'
+Settings.cron_jobs['background_operations_worker_sec_database']['job_class'] = 'Database::BackgroundOperation::SecSchedulerWorker'
+Settings.cron_jobs['background_operations_worker_cell_local_main_database'] ||= {}
+Settings.cron_jobs['background_operations_worker_cell_local_main_database']['cron'] ||= '* * * * *'
+Settings.cron_jobs['background_operations_worker_cell_local_main_database']['job_class'] = 'Database::BackgroundOperation::MainSchedulerCellLocalWorker'
+Settings.cron_jobs['background_operations_worker_cell_local_ci_database'] ||= {}
+Settings.cron_jobs['background_operations_worker_cell_local_ci_database']['cron'] ||= '* * * * *'
+Settings.cron_jobs['background_operations_worker_cell_local_ci_database']['job_class'] = 'Database::BackgroundOperation::CiSchedulerCellLocalWorker'
+Settings.cron_jobs['background_operations_worker_cell_local_sec_database'] ||= {}
+Settings.cron_jobs['background_operations_worker_cell_local_sec_database']['cron'] ||= '* * * * *'
+Settings.cron_jobs['background_operations_worker_cell_local_sec_database']['job_class'] = 'Database::BackgroundOperation::SecSchedulerCellLocalWorker'
 Settings.cron_jobs['issues_reschedule_stuck_issue_rebalances'] ||= {}
 Settings.cron_jobs['issues_reschedule_stuck_issue_rebalances']['cron'] ||= '*/15 * * * *'
 Settings.cron_jobs['issues_reschedule_stuck_issue_rebalances']['job_class'] = 'Issues::RescheduleStuckIssueRebalancesWorker'
@@ -798,6 +824,9 @@ Settings.cron_jobs['authn_data_retention_oauth_access_grant_archive_worker']['jo
 Settings.cron_jobs['authn_data_retention_oauth_access_token_archive_worker'] ||= {}
 Settings.cron_jobs['authn_data_retention_oauth_access_token_archive_worker']['cron'] ||= '5 6 * * *'
 Settings.cron_jobs['authn_data_retention_oauth_access_token_archive_worker']['job_class'] = 'Authn::DataRetention::OauthAccessTokenArchiveWorker'
+Settings.cron_jobs['lost_transaction_recovery_worker'] ||= {}
+Settings.cron_jobs['lost_transaction_recovery_worker']['cron'] ||= '* * * * *'
+Settings.cron_jobs['lost_transaction_recovery_worker']['job_class'] = 'Cells::LostTransactionRecoveryWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -950,6 +979,9 @@ Gitlab.ee do
   Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker'] ||= {}
   Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker']['job_class'] = 'Security::PipelineExecutionPolicies::ScheduleWorker'
+  Settings.cron_jobs['security_unassign_policy_configurations_for_expired_licenses_worker'] ||= {}
+  Settings.cron_jobs['security_unassign_policy_configurations_for_expired_licenses_worker']['cron'] ||= '0 1 * * *'
+  Settings.cron_jobs['security_unassign_policy_configurations_for_expired_licenses_worker']['job_class'] = 'Security::UnassignPolicyConfigurationsForExpiredLicensesCronWorker'
   Settings.cron_jobs['users_security_policy_bot_cleanup_cron_worker'] ||= {}
   Settings.cron_jobs['users_security_policy_bot_cleanup_cron_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['users_security_policy_bot_cleanup_cron_worker']['job_class'] = 'Users::SecurityPolicyBotCleanupCronWorker'
@@ -1211,14 +1243,6 @@ Gitlab.ee do
   Settings['workspaces'] ||= {}
   Settings.workspaces['enabled'] ||= false
   Settings.workspaces['host'] ||= nil
-end
-
-#
-# Suggested Reviewers
-#
-Gitlab.ee do
-  Settings['suggested_reviewers'] ||= {}
-  Settings.suggested_reviewers['secret_file'] ||= Rails.root.join('.gitlab_suggested_reviewers_secret')
 end
 
 #

@@ -42,4 +42,17 @@ Gitlab::GrapeOpenapi.configure do |config|
       }
     )
   ]
+
+  config.tag_overrides = {
+    'Ci' => 'CI',
+    'Oauth' => 'OAuth',
+    'Ldap' => 'LDAP',
+    'Npm' => 'NPM',
+    'Dora' => 'DORA',
+    'Vscode' => 'VSCode',
+    'Api' => 'API',
+    'Rpm' => 'RPM',
+    'Github' => 'GitHub',
+    'Saml' => 'SAML'
+  }
 end

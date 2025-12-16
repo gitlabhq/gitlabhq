@@ -177,7 +177,7 @@ However, the key can remain until its TTL in certain cases like:
 1. `until_executed` is used but the job fails to finish due to retry exhaustion, gets
    interrupted the maximum number of times, or gets lost.
 
-The default value is 6 hours. During this time, jobs won't be enqueued even if the first
+The default value is 10 minutes. During this time, jobs won't be enqueued even if the first
 job never executed or finished.
 
 The TTL can be configured with:

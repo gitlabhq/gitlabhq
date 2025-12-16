@@ -119,9 +119,9 @@ module Packages
         cte_name = :projects_and_packages_cte
         cte = Gitlab::SQL::CTE.new(cte_name, cte_query)
 
-        rules_cte_project_id = "#{cte_name}.#{connection.quote_column_name('project_id')}"
-        rules_cte_package_name = "#{cte_name}.#{connection.quote_column_name('package_name')}"
-        rules_cte_package_type = "#{cte_name}.#{connection.quote_column_name('package_type')}"
+        rules_cte_project_id = "#{cte_name}.#{adapter_class.quote_column_name('project_id')}"
+        rules_cte_package_name = "#{cte_name}.#{adapter_class.quote_column_name('package_name')}"
+        rules_cte_package_type = "#{cte_name}.#{adapter_class.quote_column_name('package_type')}"
 
         protection_rule_exsits_subquery = select(1)
           .where("#{rules_cte_project_id} = project_id")

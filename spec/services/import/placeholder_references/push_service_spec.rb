@@ -85,13 +85,13 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
     context 'when both numeric_key and composite_key are present' do
       let(:composite_key) { { 'foo' => 1 } }
 
-      it_behaves_like 'invalid reference', 'MergeRequest', 'one of numeric_key or composite_key must be present'
+      it_behaves_like 'invalid reference', 'MergeRequest', 'Exactly one of numeric_key, composite_key must be present'
     end
 
     context 'when numeric_key and composite_key are blank' do
       let(:numeric_key) { nil }
 
-      it_behaves_like 'invalid reference', 'MergeRequest', 'one of numeric_key or composite_key must be present'
+      it_behaves_like 'invalid reference', 'MergeRequest', 'Exactly one of numeric_key, composite_key must be present'
     end
   end
 
@@ -141,7 +141,8 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
         allow(Import::PlaceholderReferences::AliasResolver).to receive(:version_for_model).and_return(1)
       end
 
-      it_behaves_like 'invalid reference', 'RSpec::Mocks::Double', 'one of numeric_key or composite_key must be present'
+      it_behaves_like 'invalid reference', 'RSpec::Mocks::Double',
+        'Exactly one of numeric_key, composite_key must be present'
     end
 
     context 'when record id is a string' do
@@ -151,7 +152,8 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
         allow(Import::PlaceholderReferences::AliasResolver).to receive(:version_for_model).and_return(1)
       end
 
-      it_behaves_like 'invalid reference', 'RSpec::Mocks::Double', 'one of numeric_key or composite_key must be present'
+      it_behaves_like 'invalid reference', 'RSpec::Mocks::Double',
+        'Exactly one of numeric_key, composite_key must be present'
     end
     # rubocop:enable RSpec/VerifiedDoubles
   end

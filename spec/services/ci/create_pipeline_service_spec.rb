@@ -1068,6 +1068,24 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       end
     end
 
+    context 'when pipeline is running for workload ref' do
+      let(:gitlab_ci_yaml) { YAML.dump(test: { script: 'test' }) }
+
+      let(:ref_name) { 'refs/workloads/1234' }
+
+      let(:source) { 'duo_workflow' }
+
+      let(:pipeline) { execute_service(source: source).payload }
+
+      before do
+        project.repository.create_ref(project.commit.id, 'refs/workloads/1234')
+      end
+
+      it 'creates the pipeline for the branch' do
+        expect(pipeline).to be_created_successfully
+      end
+    end
+
     context 'when pipeline is running for a nonexistant-branch' do
       let(:gitlab_ci_yaml) { YAML.dump(test: { script: 'test' }) }
 

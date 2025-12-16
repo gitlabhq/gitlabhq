@@ -116,7 +116,12 @@
   -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/gitlab/-/issues/184)
   = render_if_exists "layouts/frontend_monitor"
   %meta{ name: "description", content: page_description }
-  %meta{ name: 'theme-color', content: user_theme_primary_color }
+
+  - if user_application_system_mode?
+    %meta{ name: 'theme-color', content: user_theme_primary_color, media: "(prefers-color-scheme: light)" }
+    %meta{ name: 'theme-color', content: user_theme_primary_color(true), media: "(prefers-color-scheme: dark)" }
+  - else
+    %meta{ name: 'theme-color', content: user_theme_primary_color(user_application_dark_mode?) }
 
   - if Gitlab.config.gitlab.respond_to?(:custom_html_header_tags)
     - unless Gitlab.config.gitlab.custom_html_header_tags.empty?

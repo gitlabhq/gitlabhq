@@ -85,6 +85,52 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner_core do
     end
   end
 
+  describe '#current_runner_from_header', feature_category: :runner_core do
+    let_it_be(:runner) { create(:ci_runner, token: 'foo') }
+    let(:headers_response) { { API::Ci::Helpers::Runner::RUNNER_TOKEN_HEADER => runner.token } }
+
+    subject(:current_runner_from_header) { helper.current_runner_from_header }
+
+    before do
+      allow(helper).to receive(:headers).and_return(headers_response)
+    end
+
+    it 'returns the runner' do
+      allow(helper).to receive(:headers).and_return(API::Ci::Helpers::Runner::RUNNER_TOKEN_HEADER => runner.token)
+
+      is_expected.to eq(runner)
+    end
+
+    it 'handles sticking of a runner' do
+      expect(Ci::Runner.sticking)
+        .to receive(:find_caught_up_replica)
+        .with(:runner, runner.token, hash_id: false)
+
+      current_runner_from_header
+
+      stick_object = env_hash[::Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT].first
+      expect(stick_object[0]).to eq(Ci::Runner.sticking)
+      expect(stick_object[1]).to eq(:runner)
+      expect(stick_object[2]).to eq(runner.token)
+    end
+
+    context 'when no token is specified' do
+      let(:headers_response) { {} }
+
+      it 'does not handle sticking' do
+        expect(Ci::Runner.sticking).not_to receive(:find_caught_up_replica)
+
+        current_runner_from_header
+      end
+    end
+
+    context 'when specified token is invalid' do
+      let(:headers_response) { { API::Ci::Helpers::Runner::RUNNER_TOKEN_HEADER => 'invalid' } }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#current_runner_manager', :freeze_time, feature_category: :fleet_visibility do
     let_it_be(:group) { create(:group) }
 
@@ -156,13 +202,41 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner_core do
     end
 
     it 'increments gitlab_ci_runner_authentication_failure_total' do
-      allow(helper).to receive(:params).and_return(token: 'invalid')
+      allow(helper).to receive_messages(params: { token: 'invalid' }, headers: {})
 
       success_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_success_counter
       failure_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_failure_counter
       expect { subject }.to change { failure_counter.get }.by(1)
         .and not_change { success_counter.get(runner_type: 'instance_type') }
         .and not_change { success_counter.get(runner_type: 'project_type') }
+    end
+
+    context 'when token in headers' do
+      it 'increments gitlab_ci_runner_authentication_success_total' do
+        allow(helper).to receive_messages(
+          headers: { API::Ci::Helpers::Runner::RUNNER_TOKEN_HEADER => runner.token },
+          params: {}
+        )
+
+        success_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_success_counter
+        failure_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_failure_counter
+        expect { subject }.to change { success_counter.get(runner_type: 'instance_type') }.by(1)
+          .and not_change { success_counter.get(runner_type: 'project_type') }
+          .and not_change { failure_counter.get }
+      end
+
+      it 'increments gitlab_ci_runner_authentication_failure_total' do
+        allow(helper).to receive_messages(
+          headers: { API::Ci::Helpers::Runner::RUNNER_TOKEN_HEADER => 'invalid' },
+          params: {}
+        )
+
+        success_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_success_counter
+        failure_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_failure_counter
+        expect { subject }.to change { failure_counter.get }.by(1)
+          .and not_change { success_counter.get(runner_type: 'instance_type') }
+          .and not_change { success_counter.get(runner_type: 'project_type') }
+      end
     end
   end
 
@@ -194,6 +268,148 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner_core do
         expect(helper).not_to receive(:too_many_requests!)
 
         subject
+      end
+    end
+
+    describe '#job_router_enabled?' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      subject { helper.job_router_enabled?(runner) }
+
+      context 'with instance runner' do
+        let_it_be(:runner) { create(:ci_runner, :instance) }
+
+        it { is_expected.to be true }
+
+        context 'with feature flags' do
+          where(:job_router, :job_router_instance_runners, :expected) do
+            [
+              [true,  true,  true],
+              [true,  false, true],
+              [false, true,  true],
+              [false, false, false]
+            ]
+          end
+
+          with_them do
+            before do
+              stub_feature_flags(
+                job_router: job_router,
+                job_router_instance_runners: job_router_instance_runners
+              )
+            end
+
+            it { is_expected.to be expected }
+          end
+        end
+
+        context 'and feature flag is enabled for specific runner only' do
+          let(:specific_runner) { runner }
+
+          before do
+            stub_feature_flags(job_router_instance_runners: [specific_runner])
+            stub_feature_flags(job_router: false)
+          end
+
+          it { is_expected.to be true }
+
+          context 'when enabled for an unrelated runner' do
+            let(:specific_runner) { create(:ci_runner, :instance) }
+
+            it { is_expected.to be false }
+          end
+        end
+
+        context 'and feature flag is enabled for single top-level group only' do
+          before do
+            stub_feature_flags(job_router_instance_runners: false)
+            stub_feature_flags(job_router: [project.root_ancestor])
+          end
+
+          it { is_expected.to be false }
+        end
+      end
+
+      context 'with group runner' do
+        let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+        it { is_expected.to be true }
+
+        context 'and feature flag is globally disabled' do
+          before do
+            stub_feature_flags(job_router: false)
+          end
+
+          it { is_expected.to be false }
+        end
+
+        context 'and feature flag is enabled for specific group only' do
+          before do
+            stub_feature_flags(job_router: [group])
+          end
+
+          it { is_expected.to be true }
+        end
+      end
+
+      context 'with project runner' do
+        let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+        it { is_expected.to be true }
+
+        context 'and feature flag is globally disabled' do
+          before do
+            stub_feature_flags(job_router: false)
+          end
+
+          it { is_expected.to be false }
+        end
+
+        context 'and feature flag is enabled for group of project' do
+          before do
+            stub_feature_flags(job_router: [group])
+          end
+
+          it { is_expected.to be true }
+        end
+
+        context 'and feature flag is enabled for another project only' do
+          let_it_be(:unrelated_project) { create(:project) }
+
+          before do
+            stub_feature_flags(job_router: [unrelated_project.root_ancestor])
+          end
+
+          it { is_expected.to be false }
+        end
+      end
+
+      context 'with runner without owner' do
+        let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+        before do
+          allow(runner).to receive(:owner).and_return(nil)
+        end
+
+        it { is_expected.to be true }
+
+        context 'when feature flag is enabled for single top-level group only' do
+          before do
+            stub_feature_flags(job_router_instance_runners: false)
+            stub_feature_flags(job_router: [group])
+          end
+
+          it { is_expected.to be false }
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(job_router: false)
+          end
+
+          it { is_expected.to be false }
+        end
       end
     end
   end

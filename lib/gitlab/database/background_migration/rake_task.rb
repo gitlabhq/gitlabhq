@@ -14,13 +14,16 @@ module Gitlab
         end
 
         # rubocop:disable Rails/Output -- We do want to write to stdout
-        def print_error(msg)
+        def print_error(msg, force_exit: true)
           puts Rainbow(msg).red
-          exit 1 # rubocop:disable Rails/Exit -- used only in rake tasks
+
+          exit 1 if force_exit # rubocop:disable Rails/Exit -- used only in rake tasks
         end
 
-        def print_message(msg)
+        def print_message(msg, force_exit: false)
           puts Rainbow(msg).green
+
+          exit if force_exit # rubocop:disable Rails/Exit -- used only in rake tasks
         end
 
         def print_table(data, headers: true)

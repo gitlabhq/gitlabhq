@@ -41,7 +41,7 @@ Prerequisites:
 
 To explain the code in a file:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select a file that contains code.
 1. Select the lines you want explained.
 1. On the left side, select the question mark ({{< icon name="question" >}}).
@@ -49,7 +49,7 @@ To explain the code in a file:
 
    ![File view showing selected lines and the question mark icon which you can use to explain the code.](img/explain_code_v17_1.png)
 
-Duo Chat explains the code. It might take a moment for the explanation to be generated.
+GitLab Duo Chat explains the code. It might take a moment for the explanation to be generated.
 
 If you'd like, you can provide feedback about the quality of the explanation.
 

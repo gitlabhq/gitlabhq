@@ -3,6 +3,11 @@
 class Email < ApplicationRecord
   include Sortable
   include Gitlab::SQL::Pattern
+  include Cells::Claimable
+
+  cells_claims_attribute :email, type: CLAIMS_BUCKET_TYPE::EMAILS
+
+  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::USER, subject_key: :user_id
 
   belongs_to :user, optional: false
   belongs_to :banned_user, class_name: '::Users::BannedUser', foreign_key: 'user_id', inverse_of: 'emails'
@@ -33,7 +38,7 @@ class Email < ApplicationRecord
 
   self.reconfirmable = false # currently email can't be changed, no need to reconfirm
 
-  delegate :username, :can?, :pending_invitations, :accept_pending_invitations!, to: :user
+  delegate :username, :can?, :pending_invitations, :accept_pending_invitations!, :organization, to: :user
 
   def email=(value)
     write_attribute(:email, value.downcase.strip)

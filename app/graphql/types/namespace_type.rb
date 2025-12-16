@@ -175,6 +175,15 @@ module Types
       method: :itself,
       experiment: { milestone: '18.1' }
 
+    field :metadata,
+      Types::Namespaces::Metadata,
+      null: true,
+      description: 'Metadata information for the namespace.',
+      method: :itself,
+      experiment: { milestone: '18.6' } do
+      extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
+    end
+
     field :markdown_paths,
       Types::Namespaces::MarkdownPaths,
       null: true,
@@ -208,6 +217,13 @@ module Types
       null: true,
       scopes: [:api, :read_api, :ai_workflows],
       description: 'URL of the namespace.'
+
+    field :saved_views,
+      null: true,
+      scopes: [:api, :read_api],
+      description: 'Saved views associated with the namespace.',
+      experiment: { milestone: '18.7' },
+      resolver: ::Resolvers::WorkItems::SavedViews::SavedViewsResolver
 
     markdown_field :description_html, null: true, &:namespace_details
 

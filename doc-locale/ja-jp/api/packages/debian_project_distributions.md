@@ -1,0 +1,273 @@
+---
+stage: Package
+group: Package Registry
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: DebianプロジェクトディストリビューションAPI
+---
+
+{{< details >}}
+
+- プラン: Free、Premium、Ultimate
+- 提供形態: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [機能フラグ](../../administration/feature_flags/_index.md)の背後にデプロイされ、デフォルトで無効になっています。
+
+{{< /history >}}
+
+このAPIを使用して、[Debianプロジェクトのディストリビューション](../../user/packages/debian_repository/_index.md)を管理します。このAPIは、機能フラグの背後にあり、デフォルトで無効になっています。このAPIを使用するには、[Debian APIを有効にする](#enable-the-debian-api)必要があります。
+
+{{< alert type="warning" >}}
+
+このAPIは開発中であり、本番環境での使用を目的としていません。
+
+{{< /alert >}}
+
+## Debian APIを有効にする {#enable-the-debian-api}
+
+Debian APIは、機能フラグの背後にあり、デフォルトで無効になっています。[GitLab Railsコンソールにアクセスできる管理者](../../administration/feature_flags/_index.md)は、それを有効にすることを選択できます。有効にするには、[Debian APIを有効にする](../../user/packages/debian_repository/_index.md#enable-the-debian-api)の手順に従ってください。
+
+## DebianディストリビューションAPIへの認証 {#authenticate-to-the-debian-distributions-apis}
+
+[DebianディストリビューションAPIへの認証](../../user/packages/debian_repository/_index.md#authenticate-to-the-debian-distributions-apis)を参照してください。
+
+## プロジェクト内のすべてのDebianディストリビューションをリストします {#list-all-debian-distributions-in-a-project}
+
+指定されたプロジェクト内のDebianディストリビューションをリストします。
+
+```plaintext
+GET /projects/:id/debian_distributions
+```
+
+| 属性  | 型           | 必須 | 説明 |
+| ---------- | -------------- | -------- | ----------- |
+| `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
+| `codename` | 文字列         | いいえ       | 特定の`codename`でフィルタリングします。 |
+| `suite`    | 文字列         | いいえ       | 特定の`suite`でフィルタリングします。 |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/debian_distributions"
+```
+
+レスポンス例:
+
+```json
+[
+  {
+    "id": 1,
+    "codename": "sid",
+    "suite": null,
+    "origin": null,
+    "label": null,
+    "version": null,
+    "description": null,
+    "valid_time_duration_seconds": null,
+    "components": [
+      "main"
+    ],
+    "architectures": [
+      "all",
+      "amd64"
+    ]
+  }
+]
+```
+
+## 単一のDebianプロジェクトディストリビューション {#single-debian-project-distribution}
+
+単一のDebianプロジェクトディストリビューションを取得します。
+
+```plaintext
+GET /projects/:id/debian_distributions/:codename
+```
+
+| 属性  | 型           | 必須 | 説明 |
+| ---------- | -------------- | -------- | ----------- |
+| `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
+| `codename` | 文字列         | はい      | ディストリビューションの`codename`。 |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable"
+```
+
+レスポンス例:
+
+```json
+{
+  "id": 1,
+  "codename": "sid",
+  "suite": null,
+  "origin": null,
+  "label": null,
+  "version": null,
+  "description": null,
+  "valid_time_duration_seconds": null,
+  "components": [
+    "main"
+  ],
+  "architectures": [
+    "all",
+    "amd64"
+  ]
+}
+```
+
+## 単一のDebianプロジェクトディストリビューションキー {#single-debian-project-distribution-key}
+
+単一のDebianプロジェクトディストリビューションキーを取得します。
+
+```plaintext
+GET /projects/:id/debian_distributions/:codename/key.asc
+```
+
+| 属性  | 型           | 必須 | 説明 |
+| ---------- | -------------- | -------- | ----------- |
+| `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
+| `codename` | 文字列         | はい      | ディストリビューションの`codename`。 |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable/key.asc"
+```
+
+レスポンス例:
+
+```plaintext
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Comment: Alice's OpenPGP certificate
+Comment: https://www.ietf.org/id/draft-bre-openpgp-samples-01.html
+
+mDMEXEcE6RYJKwYBBAHaRw8BAQdArjWwk3FAqyiFbFBKT4TzXcVBqPTB3gmzlC/U
+b7O1u120JkFsaWNlIExvdmVsYWNlIDxhbGljZUBvcGVucGdwLmV4YW1wbGU+iJAE
+ExYIADgCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AWIQTrhbtfozp14V6UTmPy
+MVUMT0fjjgUCXaWfOgAKCRDyMVUMT0fjjukrAPoDnHBSogOmsHOsd9qGsiZpgRnO
+dypvbm+QtXZqth9rvwD9HcDC0tC+PHAsO7OTh1S1TC9RiJsvawAfCPaQZoed8gK4
+OARcRwTpEgorBgEEAZdVAQUBAQdAQv8GIa2rSTzgqbXCpDDYMiKRVitCsy203x3s
+E9+eviIDAQgHiHgEGBYIACAWIQTrhbtfozp14V6UTmPyMVUMT0fjjgUCXEcE6QIb
+DAAKCRDyMVUMT0fjjlnQAQDFHUs6TIcxrNTtEZFjUFm1M0PJ1Dng/cDW4xN80fsn
+0QEA22Kr7VkCjeAEC08VSTeV+QFsmz55/lntWkwYWhmvOgE=
+=iIGO
+-----END PGP PUBLIC KEY BLOCK-----
+```
+
+## Debianプロジェクトディストリビューションを作成する {#create-a-debian-project-distribution}
+
+Debianプロジェクトディストリビューションを作成します。
+
+```plaintext
+POST /projects/:id/debian_distributions
+```
+
+| 属性                     | 型           | 必須 | 説明 |
+| ----------------------------- | -------------- | -------- | ----------- |
+| `id`                          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
+| `codename`                    | 文字列         | はい      | Debianディストリビューションのコードネーム。  |
+| `suite`                       | 文字列         | いいえ       | 新しいDebianディストリビューションのスイート。 |
+| `origin`                      | 文字列         | いいえ       | 新しいDebianディストリビューションのorigin。 |
+| `label`                       | 文字列         | いいえ       | 新しいDebianディストリビューションのラベル。 |
+| `version`                     | 文字列         | いいえ       | 新しいDebianディストリビューションのバージョン。 |
+| `description`                 | 文字列         | いいえ       | 新しいDebianディストリビューションの説明。 |
+| `valid_time_duration_seconds` | 整数        | いいえ       | 新しいDebianディストリビューションの有効期間（秒単位）。 |
+| `components`                  | 文字列配列   | いいえ       | 新しいDebianディストリビューションのコンポーネントのリスト。 |
+| `architectures`               | 文字列配列   | いいえ       | 新しいDebianディストリビューションのアーキテクチャのリスト。 |
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/debian_distributions?codename=sid"
+```
+
+レスポンス例:
+
+```json
+{
+  "id": 1,
+  "codename": "sid",
+  "suite": null,
+  "origin": null,
+  "label": null,
+  "version": null,
+  "description": null,
+  "valid_time_duration_seconds": null,
+  "components": [
+    "main"
+  ],
+  "architectures": [
+    "all",
+    "amd64"
+  ]
+}
+```
+
+## Debianプロジェクトディストリビューションを更新する {#update-a-debian-project-distribution}
+
+Debianプロジェクトディストリビューションを更新します。
+
+```plaintext
+PUT /projects/:id/debian_distributions/:codename
+```
+
+| 属性                     | 型           | 必須 | 説明 |
+| ----------------------------- | -------------- | -------- | ----------- |
+| `id`                          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
+| `codename`                    | 文字列         | はい      | Debianディストリビューションのコードネーム。 |
+| `suite`                       | 文字列         | いいえ       | Debianディストリビューションの新しいスイート。 |
+| `origin`                      | 文字列         | いいえ       | Debianディストリビューションの新しいorigin。 |
+| `label`                       | 文字列         | いいえ       | Debianディストリビューションの新しいラベル。 |
+| `version`                     | 文字列         | いいえ       | Debianディストリビューションの新しいバージョン。 |
+| `description`                 | 文字列         | いいえ       | Debianディストリビューションの新しい説明。 |
+| `valid_time_duration_seconds` | 整数        | いいえ       | Debianディストリビューションの新しい有効期間（秒単位）。 |
+| `components`                  | 文字列配列   | いいえ       | Debianディストリビューションの新しいコンポーネントのリスト。 |
+| `architectures`               | 文字列配列   | いいえ       | Debianディストリビューションの新しいアーキテクチャのリスト。 |
+
+```shell
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable?suite=new-suite&valid_time_duration_seconds=604800"
+```
+
+レスポンス例:
+
+```json
+{
+  "id": 1,
+  "codename": "sid",
+  "suite": "new-suite",
+  "origin": null,
+  "label": null,
+  "version": null,
+  "description": null,
+  "valid_time_duration_seconds": 604800,
+  "components": [
+    "main"
+  ],
+  "architectures": [
+    "all",
+    "amd64"
+  ]
+}
+```
+
+## Debianプロジェクトディストリビューションを削除する {#delete-a-debian-project-distribution}
+
+Debianプロジェクトディストリビューションを削除します。
+
+```plaintext
+DELETE /projects/:id/debian_distributions/:codename
+```
+
+| 属性  | 型           | 必須 | 説明 |
+| ---------- | -------------- | -------- | ----------- |
+| `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
+| `codename` | 文字列         | はい      | Debianディストリビューションのコードネーム。 |
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable"
+```

@@ -36,11 +36,6 @@ the subgroups inherit the same level of visibility as the parent.
 
 To preserve the member list and their respective permissions on imported groups, review the users in these groups. Make sure these users exist before importing the desired groups.
 
-## Prerequisites
-
-- For information on prerequisites for group import and export API, see prerequisites for
-  [migrating groups by uploading an export file](../user/project/settings/import_export.md#preparation).
-
 ## Schedule new export
 
 Start a new group export.

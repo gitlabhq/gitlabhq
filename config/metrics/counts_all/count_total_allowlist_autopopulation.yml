@@ -6,7 +6,7 @@ product_categories:
 - secrets_management
 performance_indicator_type: []
 value_type: number
-status: active
+status: removed
 milestone: '17.10'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182635
 time_frame:
@@ -21,3 +21,5 @@ tiers:
 - ultimate
 events:
 - name: ci_job_token_autopopulate_allowlist
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214627
+milestone_removed: '18.7'

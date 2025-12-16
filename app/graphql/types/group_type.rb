@@ -31,6 +31,16 @@ module Types
       null: false,
       description: 'Path for editing group.'
 
+    field :admin_edit_path, GraphQL::Types::String,
+      null: true,
+      description: 'Admin path for editing group. Only available to admins.',
+      authorize: :admin_all_resources
+
+    field :admin_show_path, GraphQL::Types::String,
+      null: true,
+      description: 'Admin path of the group. Only available to admins.',
+      authorize: :admin_all_resources
+
     field :avatar_url,
       type: GraphQL::Types::String,
       null: true,
@@ -530,6 +540,14 @@ module Types
 
     def edit_path
       ::Gitlab::Routing.url_helpers.edit_group_path(group)
+    end
+
+    def admin_show_path
+      ::Gitlab::Routing.url_helpers.admin_group_path(group)
+    end
+
+    def admin_edit_path
+      ::Gitlab::Routing.url_helpers.admin_group_edit_path(group)
     end
 
     private

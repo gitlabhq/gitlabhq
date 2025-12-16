@@ -210,6 +210,7 @@ export default {
     :is-loading="isLoading"
     :full-path="fullPath"
     :is-project="isProject"
+    :role-select-label="$options.labels.roleSelectLabel"
     is-group-invite
     @reset="resetFields"
     @submit="sendInvite"

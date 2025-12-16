@@ -45,7 +45,7 @@ module Lfs
     end
 
     def branch_to_base_off
-      @branch_to_base_off ||= (start_branch_name || branch_name)
+      @branch_to_base_off ||= start_branch_name || branch_name
     end
 
     class Result

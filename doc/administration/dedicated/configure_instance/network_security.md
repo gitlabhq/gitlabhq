@@ -13,11 +13,10 @@ title: GitLab Dedicated network access and security
 
 {{< /details >}}
 
-## Bring your own domain (BYOD)
+## Custom domains
 
-By default, your GitLab Dedicated instance is accessible at a URL like `your-tenant.gitlab-dedicated.com`.
-With bring your own domain (BYOD), you can use your own custom domain name to access your GitLab Dedicated instance and its services.
-For example, you could access your instance at `gitlab.company.com` instead of `your-tenant.gitlab-dedicated.com`.
+You can configure a custom domain to access your GitLab Dedicated
+instance instead of the default `your-tenant.gitlab-dedicated.com`.
 
 When you add a custom domain:
 
@@ -132,6 +131,9 @@ during onboarding or randomly selected.
 Prerequisites:
 
 - Your VPC must be in the same region as your GitLab Dedicated instance.
+- Use IAM principals with role names only. Do not include role paths.
+  - Valid: `arn:aws:iam::AWS_ACCOUNT_ID:role/RoleName`
+  - Invalid: `arn:aws:iam::AWS_ACCOUNT_ID:role/somepath/AnotherRoleName`
 
 To create an inbound private link:
 
@@ -417,7 +419,7 @@ To add a private hosted zone:
      Only links with the `Available` or `Pending Acceptance` status are shown.
      - For other PHZ entries, provide a list of DNS aliases.
 1. Select **Save**.
-Your PHZ entry and any aliases should appear in the list.
+   Your PHZ entry and any aliases should appear in the list.
 1. Scroll to the top of the page, and select whether to apply the changes immediately or during the next maintenance window.
 
 ### Add a private hosted zone with a support request

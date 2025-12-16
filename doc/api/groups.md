@@ -78,6 +78,9 @@ Example response:
     }
   ],
   "prevent_sharing_groups_outside_hierarchy": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
+  "allow_merge_on_skipped_pipeline": false,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
   "projects": [ // Deprecated and will be removed in API v5
     {
       "id": 7,
@@ -305,7 +308,7 @@ Parameters:
 | `visibility`             | string            | no       | Limit to groups with `public`, `internal`, or `private` visibility. |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user. |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](group_members.md#roles). |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `top_level_only`         | boolean           | no       | Limit to top-level groups, excluding all subgroups. |
 | `repository_storage`     | string            | no       | Filter by repository storage used by the group (administrators only). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3. Premium and Ultimate only. |
 | `marked_for_deletion_on` | date              | no       | Filter by date when group was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429315) in GitLab 17.1. Premium and Ultimate only. |
@@ -531,7 +534,7 @@ Parameters:
 | `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false`. |
 | `with_shared`                 | boolean        | no       | Include projects shared to this group. Default is `true`. |
 | `include_subgroups`           | boolean        | no       | Include projects in subgroups of this group. Default is `false`. |
-| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [role (`access_level`)](project_members.md#roles). |
+| `min_access_level`            | integer        | no       | Limit to projects where current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `with_security_reports`       | boolean        | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false`. Ultimate only. |
 
@@ -616,7 +619,7 @@ Parameters:
 | `starred`                     | boolean        | no       | Limit by projects starred by the current user. |
 | `with_issues_enabled`         | boolean        | no       | Limit by projects with issues feature enabled. Default is `false`. |
 | `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false`. |
-| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [role (`access_level`)](project_members.md#roles). |
+| `min_access_level`            | integer        | no       | Limit to projects where current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 
 Example response:
@@ -933,7 +936,7 @@ Parameters:
 | `statistics`             | boolean           | no       | Include group statistics (administrators only). |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user. |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](group_members.md#roles). |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `all_available`          | boolean           | no       | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Defaults to `false` for users, `true` for administrators. Unauthenticated requests always return all public groups. The `owned` and `min_access_level` attributes take precedence. |
 | `active`                 | boolean           | no       | Limit by groups that are not archived and not marked for deletion. |
 
@@ -1012,7 +1015,7 @@ Parameters:
 | `statistics`             | boolean           | no       | Include group statistics (administrators only). |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user. |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](group_members.md#roles). |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `active`                 | boolean           | no       | Limit by groups that are not archived and not marked for deletion. |
 
 ```plaintext
@@ -1125,7 +1128,7 @@ Parameters:
 | `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity`. Default is `name`. |
 | `sort`                                | string            | no       | Order groups in `asc` or `desc` order. Default is `asc`. |
 | `visibility`                          | string            | no       | Limit to groups with `public`, `internal`, or `private` visibility. |
-| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified [role (`access_level`)](group_members.md#roles). |
+| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 
 ```plaintext
@@ -1200,7 +1203,7 @@ Parameters:
 | ------------------------------------- | ----------------- | -------- | ---------- |
 | `id`                                  | integer or string    | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `search`                              | string            | no       | Return the list of authorized groups matching the search criteria. |
-| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified [role (`access_level`)](group_members.md#roles). |
+| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `relation`                            | array of strings  | no       | Filter the groups by relation (direct or inherited). |
 | `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 
@@ -1320,7 +1323,7 @@ Parameters:
 | `extra_shared_runners_minutes_limit` | integer | no       | Can be set by administrators only. Additional compute minutes for this group. GitLab Self-Managed, Premium and Ultimate only. |
 | `shared_runners_minutes_limit`       | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. GitLab Self-Managed, Premium and Ultimate only. |
 | `wiki_access_level`                  | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only. |
-| `duo_availability` | string | no | Duo availability setting. Valid values are: `default_on`, `default_off`, `never_on`. Note: In the UI, `never_on` is displayed as "Always Off". |
+| `duo_availability` | string | no | GitLab Duo availability setting. Valid values are: `default_on`, `default_off`, `never_on`. Note: In the UI, `never_on` is displayed as "Always Off". |
 | `experiment_features_enabled` | boolean | no | Enable experiment features for this group. |
 
 #### Options for `default_branch_protection`
@@ -1757,7 +1760,7 @@ Parameters:
 |------------------|-------------------|----------|-------------|
 | `id`             | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
 | `group_id`       | integer           | yes      | The ID of the group to invite. |
-| `group_access`   | integer           | yes      | The default [role (`access_level`)](group_members.md#roles) to assign to the invited group. |
+| `group_access`   | integer           | yes      | The default `access_level` to assign to the invited group. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `expires_at`     | date (ISO 8601)   | no       | The date the group invitation expires. |
 | `member_role_id` | integer           | no       | The ID of a [custom role](../user/custom_roles/_index.md#assign-a-custom-role-to-an-invited-group) to assign to the invited group. If defined, `group_access` must match the base role used to create the custom role. |
 
@@ -1843,7 +1846,7 @@ PUT /groups/:id
 | `ip_restriction_ranges`                              | string      | no       | Comma-separated list of IP addresses or subnet masks to restrict group access. Premium and Ultimate only. |
 | `allowed_email_domains_list`                         | string      | no       | Comma-separated list of email address domains to allow group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351494) in 17.4. GitLab Premium and Ultimate only. |
 | `wiki_access_level`                                  | string            | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only. |
-| `duo_availability`                                   | string | no | Duo availability setting. Valid values are: `default_on`, `default_off`, `never_on`. Note: In the UI, `never_on` is displayed as "Always Off". |
+| `duo_availability`                                   | string | no | GitLab Duo availability setting. Valid values are: `default_on`, `default_off`, `never_on`. Note: In the UI, `never_on` is displayed as "Always Off". |
 | `experiment_features_enabled`                        | boolean | no | Enable experiment features for this group. |
 | `math_rendering_limits_enabled`                      | boolean           | no       | Indicates if math rendering limits are used for this group. |
 | `lock_math_rendering_limits_enabled`                 | boolean           | no       | Indicates if math rendering limits are locked for all descendent groups. |
@@ -1851,6 +1854,9 @@ PUT /groups/:id
 | `lock_duo_features_enabled`                          | boolean           | no       | Indicates whether the GitLab Duo features enabled setting is enforced for all subgroups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. GitLab Self-Managed, Premium and Ultimate only. |
 | `max_artifacts_size`                                 | integer           | No       | The maximum file size in megabytes for individual job artifacts. |
 | `web_based_commit_signing_enabled`                  | boolean           | No       | Enables web-based commit signing for commits created from the GitLab UI. Available only for top-level groups on GitLab SaaS. When enabled for a group, applies to all projects in the group. |
+| `only_allow_merge_if_pipeline_succeeds`             | boolean           | no       | Only allow merging merge requests if the pipeline succeeds. When enabled for a group, applies to all projects in the group. Premium and Ultimate only. |
+| `allow_merge_on_skipped_pipeline`                   | boolean           | no       | Allow merging merge requests when the pipeline is skipped. Only applies when `only_allow_merge_if_pipeline_succeeds` is `true`. Premium and Ultimate only. |
+| `only_allow_merge_if_all_discussions_are_resolved`  | boolean           | no       | Only allow merging merge requests when all discussions are resolved. When enabled for a group, applies to all projects in the group. Premium and Ultimate only. |
 
 {{< alert type="note" >}}
 
@@ -1887,6 +1893,9 @@ Example response:
   "enabled_git_access_protocol": "all",
   "created_at": "2020-01-15T12:36:29.590Z",
   "prevent_sharing_groups_outside_hierarchy": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
+  "allow_merge_on_skipped_pipeline": false,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
   "projects": [ // Deprecated and will be removed in API v5
     {
       "id": 9,
@@ -2111,6 +2120,7 @@ POST /groups/:id/ldap_sync
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16343) in GitLab 18.6 [with a flag](../administration/feature_flags/_index.md) named `manage_pat_by_group_owners_ready`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/578133) in GitLab 18.7. Feature flag `manage_pat_by_group_owners_ready` removed.
 
 {{< /history >}}
 
@@ -2310,7 +2320,7 @@ Other possible responses:
 Deletes a specified SSH public key for an enterprise user associated with the top-level group.
 
 ```plaintext
-DELETE /groups/:id/manage/keys/:key_id
+DELETE /groups/:id/manage/ssh_keys/:key_id
 ```
 
 Supported attributes:

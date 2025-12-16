@@ -652,7 +652,8 @@ module Gitlab
               example: "brows:debug,auth:debug",
               name: s_("DastProfiles|Log levels"),
               description: s_(
-                "DastProfiles|A list of modules and their intended logging level for use in the console log.")
+                "DastProfiles|(Deprecated) A list of modules and their intended logging level " \
+                  "for use in the console log.")
             },
             DAST_LOG_DEVTOOLS_CONFIG: {
               additional: true,

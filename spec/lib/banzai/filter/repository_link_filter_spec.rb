@@ -46,8 +46,8 @@ RSpec.describe Banzai::Filter::RepositoryLinkFilter, feature_category: :markdown
     end
   end
 
-  let(:project)        { create(:project, :repository, :public) }
-  let(:user)           { create(:user) }
+  let_it_be(:project)  { create(:project, :repository, :public) }
+  let_it_be(:user)     { create(:user) }
   let(:group)          { nil }
   let(:project_path)   { project.full_path }
   let(:ref)            { 'markdown' }
@@ -100,19 +100,19 @@ RSpec.describe Banzai::Filter::RepositoryLinkFilter, feature_category: :markdown
   end
 
   context 'without a repository' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     include_examples 'preserve unchanged'
   end
 
   context 'with an empty repository' do
-    let(:project) { create(:project_empty_repo) }
+    let_it_be(:project) { create(:project_empty_repo) }
 
     include_examples 'preserve unchanged'
   end
 
   context 'without project repository access' do
-    let(:project) { create(:project, :repository, repository_access_level: ProjectFeature::PRIVATE) }
+    let_it_be(:project) { create(:project, :repository, repository_access_level: ProjectFeature::PRIVATE) }
 
     include_examples 'preserve unchanged'
   end

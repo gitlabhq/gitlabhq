@@ -16,10 +16,6 @@ module Projects
           return ServiceResponse.error(message: 'Not found', reason: :not_found)
         end
 
-        unless allowed_to_update_to_or_from_owner?(allowed_params)
-          return ServiceResponse.error(message: 'Forbidden', reason: :forbidden)
-        end
-
         group_link.update!(allowed_params)
 
         refresh_authorizations if requires_authorization_refresh?(allowed_params)
@@ -40,13 +36,7 @@ module Projects
       end
 
       def allowed_to_update?
-        current_user.can?(:admin_project_member, group_link.project)
-      end
-
-      def allowed_to_update_to_or_from_owner?(params)
-        return current_user.can?(:manage_owners, group_link) if upgrading_to_owner?(params) || touching_an_owner?
-
-        true
+        current_user.can?(:update_group_link, group_link.project)
       end
 
       def refresh_authorizations
@@ -60,14 +50,6 @@ module Projects
 
       def requires_authorization_refresh?(params)
         params.include?(:group_access)
-      end
-
-      def upgrading_to_owner?(params)
-        params[:group_access].to_i == Gitlab::Access::OWNER
-      end
-
-      def touching_an_owner?
-        group_link.owner_access?
       end
     end
   end

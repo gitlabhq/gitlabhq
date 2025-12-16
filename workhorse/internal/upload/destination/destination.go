@@ -13,6 +13,7 @@ import (
 	"time"
 
 	jwt "github.com/golang-jwt/jwt/v5"
+	"github.com/sirupsen/logrus"
 
 	"gitlab.com/gitlab-org/labkit/log"
 
@@ -159,9 +160,15 @@ func Upload(ctx context.Context, reader io.Reader, size int64, name string, opts
 	reader = io.TeeReader(reader, hashes.Writer)
 
 	clientMode, uploadDestination, err := getClientInformation(ctx, opts, fh, size)
-
 	if err != nil {
 		return nil, err
+	}
+
+	logger := setupUploadLogger(ctx, clientMode, fh.Name, size, opts)
+	if opts.IsLocalTempFile() {
+		logger = logger.WithField("local_temp_path", opts.LocalTempPath)
+	} else {
+		logger = logger.WithField("remote_temp_object", opts.RemoteTempObjectID)
 	}
 
 	hlr, reader, err := setupSizeLimiter(reader, size, opts)
@@ -170,8 +177,10 @@ func Upload(ctx context.Context, reader io.Reader, size int64, name string, opts
 	}
 
 	if opts.SkipDelete {
+		logger.Info("Destination: Upload ConsumeWithoutDelete")
 		fh.Size, err = uploadDestination.ConsumeWithoutDelete(ctx, reader, opts.Deadline)
 	} else {
+		logger.Info("Destination: Upload Consume")
 		fh.Size, err = uploadDestination.Consume(ctx, reader, opts.Deadline)
 	}
 
@@ -183,25 +192,31 @@ func Upload(ctx context.Context, reader io.Reader, size int64, name string, opts
 		return nil, SizeError(fmt.Errorf("expected %d bytes but got only %d", size, fh.Size))
 	}
 
-	logger := log.WithContextFields(ctx, log.Fields{
-		"copied_bytes": fh.Size,
-		"is_local":     opts.IsLocalTempFile(),
-		"is_multipart": opts.IsMultipart(),
-		"is_remote":    !opts.IsLocalTempFile(),
-		"remote_id":    opts.RemoteID,
-		"client_mode":  clientMode,
-		"filename":     fh.Name,
-	})
-
-	if opts.IsLocalTempFile() {
-		logger = logger.WithField("local_temp_path", opts.LocalTempPath)
-	} else {
-		logger = logger.WithField("remote_temp_object", opts.RemoteTempObjectID)
-	}
-
-	logger.Info("saved file")
+	logger.WithField("copied_bytes", fh.Size).Info("Destination: Upload saved file")
 	fh.hashes = hashes.finish()
 	return fh, nil
+}
+
+func setupUploadLogger(ctx context.Context, clientMode, fileName string, size int64, opts *UploadOpts) logrus.FieldLogger {
+	logger := log.WithContextFields(ctx, log.Fields{
+		"upload_size_bytes": size,
+		"is_local":          opts.IsLocalTempFile(),
+		"is_multipart":      opts.IsMultipart(),
+		"is_remote":         !opts.IsLocalTempFile(),
+		"remote_id":         opts.RemoteID,
+		"client_mode":       clientMode,
+		"provider":          opts.ObjectStorageConfig.Provider,
+		"filename":          fileName,
+	})
+
+	if opts.ObjectStorageConfig.IsAWS() {
+		logger = logger.WithFields(logrus.Fields{
+			"s3_bucket": opts.ObjectStorageConfig.S3Config.Bucket,
+			"s3_region": opts.ObjectStorageConfig.S3Config.Region,
+		})
+	}
+
+	return logger
 }
 
 func getClientInformation(ctx context.Context, opts *UploadOpts, fh *FileHandler, size int64) (string, consumer, error) {

@@ -113,7 +113,6 @@ export default {
           text: this.dropdownStartThreadButtonTitle,
           description: this.startDiscussionDescription,
           value: constants.DISCUSSION,
-          testid: 'discussion-menu-item',
         },
       ];
     },

@@ -38,6 +38,7 @@ module ApplicationCable
     def find_current_organization
       Gitlab::Current::Organization.new(
         params: request.params,
+        rack_env: request.env,
         user: current_user
       ).organization
     end

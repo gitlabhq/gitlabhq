@@ -72,7 +72,7 @@ Interactive mode merges the target branch into the source branch with your chose
 
 To resolve merge conflicts with interactive mode:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests** and find the merge request.
 1. Select **Overview**, and scroll to the merge request reports section.
 1. Find the merge conflicts message, and select **Resolve conflicts**.
@@ -92,7 +92,7 @@ resolve them.
 
 The merge conflict resolution editor helps you resolve these conflicts in GitLab:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests** and find the merge request.
 1. Select **Overview**, and scroll to the merge request reports section.
 1. Find the merge conflicts message, and select **Resolve conflicts**.
@@ -111,7 +111,7 @@ The merge conflict resolution editor helps you resolve these conflicts in GitLab
 If your merge request is stuck with a `Checking ability to merge automatically`
 message, you can:
 
-- In a comment in the merge request, run the `/rebase` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
+- In a comment in the merge request, run the [`/rebase` quick action](../quick_actions.md#rebase).
 - In the merge widget, select **Rebase source branch**.
 - [Rebase with Git](../../../topics/git/git_rebase.md#rebase).
 
@@ -119,7 +119,7 @@ To troubleshoot CI/CD pipeline issues, see [Debugging CI/CD pipelines](../../../
 
 ### Rebase in the GitLab UI
 
-To trigger a rebase from the GitLab UI, use the `/rebase` [quick action](../quick_actions.md), or the
+To trigger a rebase from the GitLab UI, use the [`/rebase` quick action](../quick_actions.md#rebase), or the
 rebase option in the merge request widget.
 
 Prerequisites:
@@ -131,7 +131,7 @@ Prerequisites:
 
 To rebase a merge request's branch from the GitLab UI:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests** and find the merge request.
 1. Either:
    - On the **Overview** tab, scroll to the merge request widget and select **Rebase source branch**.

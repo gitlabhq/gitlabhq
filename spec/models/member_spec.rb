@@ -1822,16 +1822,14 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     let_it_be(:member) { create(:group_member, :developer) }
 
     context 'when access_level is changed' do
-      it 'calls NotificationService.update_member' do
-        expect(NotificationService).to receive_message_chain(:new, :updated_member_access_level).with(member)
-
-        member.update_attribute(:access_level, Member::MAINTAINER)
+      it 'enqueues the access granted mailer when access level has changed' do
+        expect { member.update_attribute(:access_level, Member::MAINTAINER) }
+          .to have_enqueued_mail(Members::AccessGrantedMailer, :email)
+          .with(params: { member: member, member_source_type: member.real_source_type }, args: [])
       end
 
       it 'does not send an email when the access level has not changed' do
-        expect(NotificationService).not_to receive(:new)
-
-        member.touch
+        expect { member.touch }.not_to have_enqueued_mail(Members::AccessGrantedMailer, :email)
       end
 
       context 'when new access changes DEVELOPER or greater to less than DEVELOPER' do
@@ -1847,14 +1845,6 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         end
       end
     end
-
-    context 'when expiration is changed' do
-      it 'enqueues the expiration date updated mailer when membership expiry has changed' do
-        expect { member.update!(expires_at: 5.days.from_now) }
-          .to have_enqueued_mail(Members::ExpirationDateUpdatedMailer, :email)
-          .with(params: { member: member, member_source_type: member.real_source_type }, args: [])
-      end
-    end
   end
 
   context 'when after_create :post_create_hook' do
@@ -1866,11 +1856,16 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     subject(:create_member) { member }
 
     shared_examples_for 'invokes a notification' do
-      it 'enqueues an email to user' do
-        create_member
+      it 'enqueues the access granted mailer' do
+        expect { create_member }
+          .to have_enqueued_mail(Members::AccessGrantedMailer, :email)
+      end
+    end
 
-        expect_delivery_jobs_count(1)
-        expect_enqueud_email(member.real_source_type, member.id, mail: 'member_access_granted_email')
+    shared_examples_for 'does not invoke a notification' do
+      it 'does not enqueue the access granted mailer' do
+        expect { create_member }
+          .not_to have_enqueued_mail(Members::AccessGrantedMailer, :email)
       end
     end
 
@@ -1907,6 +1902,16 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
       it 'does not create an event' do
         expect { create_member }.not_to change { Event.count }
+      end
+
+      context 'when member is not notifiable' do
+        before do
+          allow_next_instance_of(GroupMember) do |instance|
+            allow(instance).to receive(:notifiable?).with(:mention, {}).and_return(false)
+          end
+        end
+
+        it_behaves_like 'does not invoke a notification'
       end
     end
 
@@ -1945,6 +1950,16 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         subject(:create_member) { member }
 
         it_behaves_like 'performs all the common hooks'
+
+        context 'when member is not notifiable' do
+          before do
+            allow_next_instance_of(ProjectMember) do |instance|
+              allow(instance).to receive(:notifiable?).with(:mention, { skip_read_ability: true }).and_return(false)
+            end
+          end
+
+          it_behaves_like 'does not invoke a notification'
+        end
       end
     end
 
@@ -1952,13 +1967,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       let(:member) { create(:group_member, source: source, importing: true) }
 
       it 'does not invoke a notification' do
-        allow(Notify).to receive(:member_access_granted_email).and_call_original
-
-        create_member
-
-        expect(Notify)
-          .not_to have_received(:member_access_granted_email)
-          .with(member.real_source_type, member.id)
+        expect { create_member }.not_to have_enqueued_mail(Members::AccessGrantedMailer, :email)
       end
     end
   end

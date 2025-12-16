@@ -11,7 +11,7 @@ primarily on Ruby on Rails, we use Python when needed to leverage the ecosystem.
 Some examples of Python in our codebase:
 
 - [AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/ai_gateway)
-- [Duo Workflow Service](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service)
+- [GitLab Duo Workflow Service](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service)
 - [Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)
 - [CloudConnector Python library](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector/-/tree/main/src/python)
 

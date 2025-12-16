@@ -22,12 +22,10 @@ After using this API, you might want to use the [project-level CI/CD variables A
 You must still migrate your [Container Registry](../user/packages/container_registry/_index.md)
 over a series of Docker pulls and pushes. Re-run any CI/CD pipelines to retrieve any build artifacts.
 
-## Prerequisites
+Prerequisites:
 
-For prerequisites for project import and export API, see:
-
-- Prerequisites for [project export](../user/project/settings/import_export.md#export-a-project-and-its-data).
-- Prerequisites for [project import](../user/project/settings/import_export.md#import-a-project-and-its-data).
+- For project exports, see [export a project and its data](../user/project/settings/import_export.md#export-a-project-and-its-data).
+- For project imports, see [import a project and its data](../user/project/settings/import_export.md#import-a-project-and-its-data).
 
 ## Schedule an export
 
@@ -160,6 +158,7 @@ ls *export.tar.gz
 {{< history >}}
 
 - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0.
+- `namespace_id` and `namespace_path` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/511053) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -172,7 +171,9 @@ POST /projects/import
 | `file`            | string            | Yes      | The file to be uploaded. |
 | `path`            | string            | Yes      | Name and path for new project. |
 | `name`            | string            | No       | The name of the project to be imported. Defaults to the path of the project if not provided. |
-| `namespace`       | integer or string | No       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group to import to. |
+| `namespace`       | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. Use `namespace_id` or `namespace_path` instead. |
+| `namespace_id`    | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
+| `namespace_path`  | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
 | `override_params` | hash              | No       | Supports all fields defined in the [Project API](projects.md). |
 | `overwrite`       | boolean           | No       | If there is a project with the same path the import overwrites it. Defaults to `false`. |
 
@@ -201,7 +202,7 @@ url =  'https://gitlab.example.com/api/v4/projects/import'
 files = { "file": open("project_export.tar.gz", "rb") }
 data = {
     "path": "example-project",
-    "namespace": "example-group"
+    "namespace_path": "example-group"
 }
 headers = {
     'Private-Token': "<your_access_token>"
@@ -240,6 +241,12 @@ As an administrator, you can modify the maximum import file size. To do so, use 
 
 {{< /details >}}
 
+{{< history >}}
+
+- `namespace_id` and `namespace_path` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/511053) in GitLab 18.7.
+
+{{< /history >}}
+
 {{< alert type="flag" >}}
 
 On GitLab Self-Managed, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags/_index.md) named `import_project_from_remote_file`.
@@ -256,7 +263,9 @@ POST /projects/remote-import
 | `path`            | string            | Yes      | Name and path for the new project. |
 | `url`             | string            | Yes      | URL for the file to import. |
 | `name`            | string            | No       | The name of the project to import. If not provided, defaults to the path of the project. |
-| `namespace`       | integer or string | No       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace. |
+| `namespace`       | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. Use `namespace_id` or `namespace_path` instead. |
+| `namespace_id`    | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
+| `namespace_path`  | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
 | `overwrite`       | boolean           | No       | Whether to overwrite a project with the same path when importing. Defaults to `false`. |
 | `override_params` | hash              | No       | Supports all fields defined in the [Project API](projects.md). |
 
@@ -392,6 +401,7 @@ Status can be one of:
 {{< history >}}
 
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350571) in GitLab 15.11. Feature flag `import_project_from_remote_file_s3` removed.
+- `namespace_id` and `namespace_path` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/511053) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -408,7 +418,9 @@ POST /projects/remote-import-s3
 | `region`            | string            | Yes      | [AWS S3 region name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html#Regions) where the file is stored. |
 | `secret_access_key` | string            | Yes      | [AWS S3 secret access key](https://docs.aws.amazon.com/IAM/latest/UserGuide/security-creds.html#access-keys-and-secret-access-keys). |
 | `name`              | string            | No       | The name of the project to import. If not provided, defaults to the path of the project. |
-| `namespace`         | integer or string | No       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace. |
+| `namespace`         | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. Use `namespace_id` or `namespace_path` instead. |
+| `namespace_id`      | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
+| `namespace_path`    | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
 
 The passed override parameters take precedence over all values defined in the export file.
 
@@ -440,7 +452,7 @@ url =  'https://gitlab.example.com/api/v4/projects/import'
 files = {'file': ('file.tar.gz', BytesIO(s3_file.content))}
 data = {
     "path": "example-project",
-    "namespace": "example-group"
+    "namespace_path": "example-group"
 }
 headers = {
     'Private-Token': "<your_access_token>"

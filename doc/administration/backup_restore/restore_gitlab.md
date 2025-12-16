@@ -394,7 +394,9 @@ Backup files use a naming scheme [starting with a backup ID](backup_archive_proc
 
 During a restore from backup, the restore script prompts for confirmation:
 
+<!-- vale gitlab_base.Spelling = NO -->
 - If the **Write to authorized_keys** setting is enabled, before the restore script deletes and rebuilds the `authorized_keys` file.
+<!-- vale gitlab_base.Spelling = YES -->
 - When restoring the database, before the restore script removes all existing tables.
 - After restoring the database, if there were errors in restoring the schema, before continuing because further problems are likely.
 

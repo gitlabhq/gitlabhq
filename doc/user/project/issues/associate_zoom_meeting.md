@@ -20,8 +20,8 @@ team members can join swiftly without requesting a link.
 
 ## Adding a Zoom meeting to an issue
 
-To associate a Zoom meeting with an issue, you can use GitLab
-[quick actions](../quick_actions.md#issues-merge-requests-and-epics).
+To associate a Zoom meeting with an issue, you can use the
+[`/zoom` quick action](../quick_actions.md#zoom).
 
 In an issue, leave a comment using the `/zoom` quick action followed by a valid Zoom link:
 
@@ -50,6 +50,8 @@ Similarly to adding a Zoom meeting, you can remove it with a quick action:
 ```shell
 /remove_zoom
 ```
+
+You can also use the [`/remove_zoom` quick action](../quick_actions.md#remove_zoom).
 
 If you have at least the Reporter role,
 a system alert notifies you that the meeting URL was successfully removed.

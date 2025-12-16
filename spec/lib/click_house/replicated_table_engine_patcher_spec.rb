@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe ClickHouse::ReplicatedTableEnginePatcher, feature_category: :database do
   describe '.patch_replicated' do

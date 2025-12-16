@@ -32,7 +32,14 @@ module Packages
 
       package_file.package.update_columns(
         status: :error,
-        status_message: truncated_status_message(exception)
+        status_message: truncated_status_message(build_status_message(exception))
+      )
+    end
+
+    def process_package_error_service_response(package_file:, message:)
+      package_file.package.update_columns(
+        status: :error,
+        status_message: truncated_status_message(message)
       )
     end
 
@@ -42,13 +49,15 @@ module Packages
       CONTROLLED_ERRORS.include?(exception.class)
     end
 
-    def truncated_status_message(exception)
+    def build_status_message(exception)
       status_message = exception.message if controlled_error?(exception)
 
       # Do not save the exception message in case it contains confidential data
-      status_message ||= "#{DEFAULT_STATUS_MESSAGE}: #{exception.class}"
+      status_message || "#{DEFAULT_STATUS_MESSAGE}: #{exception.class}"
+    end
 
-      status_message.truncate(::Packages::Package::STATUS_MESSAGE_MAX_LENGTH)
+    def truncated_status_message(message)
+      message.truncate(::Packages::Package::STATUS_MESSAGE_MAX_LENGTH)
     end
   end
 end

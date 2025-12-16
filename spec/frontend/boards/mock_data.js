@@ -913,14 +913,14 @@ export const mockTokens = (fetchLabels, isSignedIn) => [
     isProject: false,
   },
   {
-    icon: 'issue-type-issue',
+    icon: 'work-item-issue',
     title: TOKEN_TITLE_TYPE,
     type: TOKEN_TYPE_TYPE,
     token: GlFilteredSearchToken,
     unique: true,
     options: [
-      { icon: 'issue-type-issue', value: 'ISSUE', title: 'Issue' },
-      { icon: 'issue-type-incident', value: 'INCIDENT', title: 'Incident' },
+      { icon: 'work-item-issue', value: 'ISSUE', title: 'Issue' },
+      { icon: 'work-item-incident', value: 'INCIDENT', title: 'Incident' },
     ],
   },
   {

@@ -38,7 +38,7 @@ class TaskListToggleService
     return unless markdown_task.chomp == line_source
     return unless source_checkbox = Taskable::ITEM_PATTERN.match(markdown_task)
 
-    currently_checked = TaskList::Item.new(source_checkbox[2]).complete?
+    currently_checked = source_checkbox[2].match?(Taskable::COMPLETE_PATTERN)
 
     # Check `toggle_as_checked` to make sure we don't accidentally replace
     # any `[ ]` or `[x]` in the middle of the text

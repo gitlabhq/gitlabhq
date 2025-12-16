@@ -2,6 +2,9 @@
 
 module Profiles
   class PasskeysController < Profiles::ApplicationController
+    include AuthenticatesWithTwoFactor
+    include Authn::WebauthnInstrumentation
+
     before_action :check_passkeys_available!
     skip_before_action :check_two_factor_requirement
     before_action :validate_current_password,
@@ -13,6 +16,13 @@ module Profiles
     helper_method :current_password_required?
 
     def new
+      track_passkey_internal_event(
+        event_name: 'register_passkey',
+        status: 0,
+        entry_point: passkey_instrumentation_params[:entry_point],
+        user: current_user
+      )
+
       setup_passkey_registration_page
     end
 
@@ -24,10 +34,22 @@ module Profiles
       ).execute
 
       if result.success?
+        track_passkey_internal_event(
+          event_name: 'register_passkey',
+          status: 1,
+          user: current_user
+        )
+
         session.delete(:challenge)
 
         redirect_to profile_two_factor_auth_path, status: :found, notice: result.message
       else
+        track_passkey_internal_event(
+          event_name: 'register_passkey',
+          status: 2,
+          user: current_user
+        )
+
         redirect_to profile_two_factor_auth_path, status: :found, alert: result.message
       end
     end
@@ -36,6 +58,8 @@ module Profiles
       result = Authn::Passkey::DestroyService.new(current_user, current_user, destroy_params[:id]).execute
 
       if result.success?
+        destroy_all_but_current_user_session!(current_user, session)
+
         redirect_to profile_two_factor_auth_path, status: :found, notice: result.message
       else
         redirect_to profile_two_factor_auth_path, status: :found, alert: result.message
@@ -60,11 +84,10 @@ module Profiles
       error_message = { message: _('You must provide a valid current password.') }
       if validate_password_params[:action] == 'create'
         @webauthn_error = error_message
+        setup_passkey_registration_page
       else
-        @error = error_message
+        redirect_to profile_two_factor_auth_path, status: :found, alert: error_message[:message]
       end
-
-      setup_passkey_registration_page
     end
 
     def setup_passkey_registration_page
@@ -119,6 +142,10 @@ module Profiles
 
     def validate_password_params
       params.permit(:current_password, :action)
+    end
+
+    def passkey_instrumentation_params
+      params.permit(:entry_point)
     end
   end
 end

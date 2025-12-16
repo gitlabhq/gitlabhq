@@ -9,13 +9,13 @@ module Resolvers
         def resolve
           raise_resource_not_available_error! unless resource_available?
 
-          ::Authz::Permission.all_for_tokens
+          ::Authz::PermissionGroups::Assignable.definitions
         end
 
         private
 
         def resource_available?
-          Feature.enabled?(:fine_grained_personal_access_tokens, :instance)
+          Feature.enabled?(:granular_personal_access_tokens, current_user)
         end
       end
     end

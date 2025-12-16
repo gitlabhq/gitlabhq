@@ -62,4 +62,10 @@ fragment MergeRequestFragment on MergeRequest {
     count
   }
   hidden
+  project {
+    id
+    repository {
+      rootRef
+    }
+  }
 }

@@ -8,8 +8,7 @@ title: Validity checks
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
-- Status: Beta
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -19,6 +18,8 @@ title: Validity checks
 - Additional access [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556765) in GitLab 18.2 with a flag named `validity_checks_security_finding_status`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/531222) in GitLab 18.5.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206929) from experiment to beta in GitLab 18.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213223) in GitLab 18.7. Feature flag `validity_checks_security_finding_status` removed.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216100) in GitLab 18.7. Feature flag `validity_checks` is enabled by default.
 
 {{< /history >}}
 
@@ -39,8 +40,6 @@ Because active secrets can be used to impersonate a legitimate user, they pose a
 greater security risk than inactive secrets. If several secrets are leaked at once,
 knowing which secrets are active is an important part of triage and remediation.
 
-This feature is in [beta](../../../policy/development_stages_support.md).
-
 ## Enable validity checks
 
 Prerequisites:
@@ -49,7 +48,7 @@ Prerequisites:
 
 To enable validity checks for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. Under **Pipeline Secret Detection**, turn on the **Validity checks** toggle.
 
@@ -59,7 +58,22 @@ for example after revoking it, re-run the `secret_detection` CI/CD job.
 
 ### Coverage
 
-Validity checks supports the following secret types:
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16890) support for external service tokens in GitLab 18.7 [with a flag](../../../api/feature_flags.md) named `secret_detection_partner_token_verification`. Enabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+Validity checks support the following secret types:
+
+**GitLab tokens:**
 
 - GitLab personal access tokens
 - Routable GitLab personal access tokens
@@ -72,6 +86,13 @@ Validity checks supports the following secret types:
 - GitLab incoming email tokens
 - GitLab feed tokens (v2)
 - GitLab pipeline trigger tokens
+
+**External service tokens:**
+
+- AWS IAM secret access keys
+- GCP API keys
+- GCP OAuth client secrets
+- Postman API tokens
 
 ## Validity check workflow
 
@@ -91,7 +112,7 @@ flowchart TD
     accTitle: Validity checks workflow
     accDescr: Process flow for secret detection showing three possible outcomes.
     A[Secret detection analyzer runs] --> B[Secret detected]
-    B --> C{Worker verifies<br>secret status}
+    B --> C{Verification<br>with vendor}
 
     C -->|Cannot verify or unsupported type| D[Possibly active]
     C -->|Valid and not expired| E[Active]
@@ -103,15 +124,9 @@ flowchart TD
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/537133) in GitLab 18.2 [with a flag](../../../api/feature_flags.md) named `secret_detection_validity_checks_refresh_token`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/552306) in GitLab 18.7 Feature flag `secret_detection_validity_checks_refresh_token` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 After validity checks runs, the status of a token is not automatically updated, even if the token is revoked or expires.
 To update a token, you can manually refresh the status:
@@ -138,3 +153,10 @@ To resolve this issue, re-run the `secret_detection` job. If the status persists
 you might need to validate the secret manually.
 
 Unless you're certain the token isn't active, you should revoke and replace possibly active secrets as soon as possible.
+
+### External service token verification delays
+
+External service token verification might take longer than GitLab token verification due to rate limits
+imposed by external services. If an external service token shows **possibly active** status temporarily,
+this is typical. The verification is queued and completes shortly. Check the **Last verified at**
+timestamp to see when the status was last updated, or refresh the page after a few moments.

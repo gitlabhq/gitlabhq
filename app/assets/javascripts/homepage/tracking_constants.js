@@ -17,5 +17,6 @@ export const TRACKING_PROPERTY_ALL_TODOS = 'All to-dos';
 
 // Scope
 export const TRACKING_SCOPE_YOUR_ACTIVITY = 'Your activity';
+export const TRACKING_SCOPE_YOUR_PROJECTS = 'Your projects';
 export const TRACKING_SCOPE_STARRED_PROJECTS = 'Starred projects';
 export const TRACKING_SCOPE_FOLLOWED_USERS = 'Followed users';

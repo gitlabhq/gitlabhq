@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Operations Dashboard
 ---
@@ -17,7 +17,7 @@ including pipeline and alert status.
 
 To access the dashboard:
 
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to**.
 1. Select **Your work**.
 1. Select **Operations**.
 

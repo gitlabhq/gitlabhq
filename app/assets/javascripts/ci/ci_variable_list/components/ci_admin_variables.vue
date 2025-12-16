@@ -7,6 +7,7 @@ import updateAdminVariable from '../graphql/mutations/admin_update_variable.muta
 import CiVariableShared from './ci_variable_shared.vue';
 
 export default {
+  name: 'CiAdminVariables',
   components: {
     CiVariableShared,
   },

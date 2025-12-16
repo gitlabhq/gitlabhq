@@ -60,10 +60,10 @@ metadata database version.
 ## Known limitations
 
 - Metadata import for existing registries requires a period of read-only time.
-- Geo functionality is limited. Additional features are proposed in [epic 15325](https://gitlab.com/groups/gitlab-org/-/epics/15325).
 - Prior to 18.3, registry regular schema and post-deployment database migrations must be run manually when upgrading versions.
 - No guarantee for registry [zero downtime during upgrades](../../update/zero_downtime.md) on multi-node Linux package environments.
 - Backup and restore jobs do not include the registry database. For more information, see [Backup with metadata database](#backup-with-metadata-database).
+- During metadata imports for existing registries, the `createdAt` and `publishedAt` timestamp values for image tags are set to the import date. This is intentional to ensure consistency, because the legacy registry does not collect tag published dates for all images. While some images have build dates in their metadata, many do not. For more information, see [issue 1384](https://gitlab.com/gitlab-org/container-registry/-/issues/1384).
 
 ## Metadata database feature support
 
@@ -120,7 +120,7 @@ You do not need to do the following in preparation before importing:
 
 - Allocate extra object storage or file system space: The import makes no significant writes to this storage.
 - Run offline garbage collection: While not harmful, offline garbage collection does not shorten the
-import enough to recoup the time spent running this command.
+  import enough to recoup the time spent running this command.
 
 {{< alert type="note" >}}
 
@@ -643,7 +643,7 @@ they are associated with an image and tag.
 
 ### Error: `permission denied for schema public (SQLSTATE 42501)`
 
-During a registry migration, you might get one of the following errors:
+During a registry migration or GitLab upgrade, you might get one of the following errors:
 
 - `ERROR: permission denied for schema public (SQLSTATE 42501)`
 - `ERROR: relation "public.blobs" does not exist (SQLSTATE 42P01)`
@@ -658,3 +658,39 @@ ALTER DATABASE <registry_database_name> OWNER TO <registry_user>;
 ```
 
 This gives the registry user the necessary permissions to create tables and run migrations successfully.
+
+### Error: `database-in-use and filesystem-in-use lockfiles present`
+
+This error occurs when both the `filesystem-in-use` and `database-in-use`
+lockfiles are present on the configured registry storage and indicates
+an ambiguous registry state.
+
+To resolve this error, you must determine if your registry is meant to use the
+metadata database or legacy metadata storage.
+
+Your registry is likely meant to use the metadata database if:
+
+- You have previously performed one of the [import processes](#how-to-choose-the-right-import-method).
+- Your registry configuration indicates the registry is enabled.
+
+Check the file at `/etc/gitlab/gitlab.rb` to see if the registry is enabled:
+
+```ruby
+registry['database'] = {
+  'enabled' => true,
+}
+```
+
+After you have confirmed that registry is meant to use the database, delete the
+`filesystem-in-use` lockfile present in the configured registry storage
+located at `/docker/registry/lockfiles/filesystem-in-use`.
+
+Alternatively, if the above scenarios are not true, and your registry is meant
+to use legacy metadata storage, delete the `database-in-use` lockfile at
+`/docker/registry/lockfiles/database-in-use`.
+
+Finally, you can disable the lockfile checks by setting the environment variable
+`REGISTRY_FF_ENFORCE_LOCKFILES` to `false`. While this disables the checks, this
+error is meant to ensure the integrity of your registry data and it is preferable
+to confirm which metadata storage you are using. `REGISTRY_FF_ENFORCE_LOCKFILES`
+is a feature flag scheduled for removal in [issue 1439](https://gitlab.com/gitlab-org/container-registry/-/issues/1439).

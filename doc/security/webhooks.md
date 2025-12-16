@@ -55,7 +55,7 @@ To prevent exploitation of insecure internal web services, all webhook and integ
 
 To allow access to these addresses:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Outbound requests**.
 1. Select the **Allow requests to the local network from webhooks and integrations** checkbox.
@@ -68,7 +68,7 @@ Prerequisites:
 
 [System hooks](../administration/system_hooks.md) can make requests to the local network by default. To prevent system hook requests to the local network:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Outbound requests**.
 1. Clear the **Allow requests to the local network from system hooks** checkbox.
@@ -81,7 +81,7 @@ Prerequisites:
 
 [DNS rebinding](https://en.wikipedia.org/wiki/DNS_rebinding) is a technique to make a malicious domain name resolve to an internal network resource to bypass local network access restrictions. GitLab has protection against this attack enabled by default. To disable this protection:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Outbound requests**.
 1. Clear the **Enforce DNS-rebinding attack protection** checkbox.
@@ -100,20 +100,22 @@ Prerequisites:
 
 To filter requests by blocking many requests:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Outbound requests**.
 1. Select the **Block all requests, except for IP addresses, IP ranges, and domain names defined in the allowlist** checkbox.
 
 When this checkbox is selected, requests to the following are still not blocked:
 
-- Core services like Geo, Git, GitLab Shell, Gitaly, PostgreSQL, and Redis.
+- Core services like Git, GitLab Shell, Gitaly, PostgreSQL, and Redis.
 - Object storage.
 - IP addresses and domains in the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
 This setting is respected by the main GitLab application only, so other services like Gitaly can still make requests that break the rule.
 Additionally, [some areas of GitLab](https://gitlab.com/groups/gitlab-org/-/epics/8029) do not respect outbound filtering
 rules.
+
+Due to an [existing bug (#544821)](https://gitlab.com/gitlab-org/gitlab/-/issues/544821), Geo region URLs must be added to the outbound allowlist.
 
 ## Allow outbound requests to certain IP addresses and domains
 
@@ -123,7 +125,7 @@ Prerequisites:
 
 To allow outbound requests to certain IP addresses and domains:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Outbound requests**.
 1. In **Local IP addresses and domain names that hooks and integrations can access**, enter your IP addresses and domains.
@@ -175,7 +177,7 @@ To resolve this issue, [configure GitLab to no longer fetch runner release versi
 
 ### GitLab subscription management is blocked
 
-When you [filter requests](#filter-requests), [GitLab subscription management](../subscriptions/self_managed/_index.md)
+When you [filter requests](#filter-requests), [GitLab subscription management](../subscriptions/manage_subscription.md)
 is blocked.
 
 To work around this problem, add `customers.gitlab.com:443` to the

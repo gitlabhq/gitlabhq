@@ -16,11 +16,11 @@ Docker-in-Dockerを使用する場合、サービスによって新しいDocker�
 
 ## オプション1: `docker login`を実行する {#option-1-run-docker-login}
 
-[`before_script`](../yaml/_index.md#before_script)で、`docker login`を実行します。
+[`before_script`](../yaml/_index.md#before_script)で、`docker login`を実行します:
 
 ```yaml
 default:
-  image: docker:24.0.5
+  image: docker:24.0.5-cli
   services:
     - docker:24.0.5-dind
 
@@ -44,7 +44,7 @@ GitLab Runnerの管理者は、認証設定を含むファイルを`~/.docker/co
 
 設定ファイルをマウントした場合、`~/.docker/config.json`を変更する`docker`コマンドは失敗します。たとえば`docker login`は、ファイルが読み取り専用としてマウントされているために失敗します。読み取り専用属性を変更しないでください。問題を引き起こす原因となります。
 
-次に示すのは、[`DOCKER_AUTH_CONFIG`](using_docker_images.md#determine-your-docker_auth_config-data)ドキュメントに従った`/opt/.docker/config.json`の例です。
+次に示すのは、[`DOCKER_AUTH_CONFIG`](using_docker_images.md#determine-your-docker_auth_config-data)ドキュメントに従った`/opt/.docker/config.json`の例です:
 
 ```json
 {
@@ -72,7 +72,7 @@ GitLab Runnerの管理者は、認証設定を含むファイルを`~/.docker/co
 
 ### Kubernetes {#kubernetes}
 
-このファイルの内容で[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/)を作成します。そのためには、次のようなコマンドを実行します。
+このファイルの内容で[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/)を作成します。そのためには、次のようなコマンドを実行します:
 
 ```shell
 kubectl create configmap docker-client-config --namespace gitlab-runner --from-file /opt/.docker/config.json
@@ -97,7 +97,7 @@ kubectl create configmap docker-client-config --namespace gitlab-runner --from-f
 
 すでに[`DOCKER_AUTH_CONFIG`](using_docker_images.md#determine-your-docker_auth_config-data)が定義されている場合は、その変数を使用して、それを`~/.docker/config.json`に保存できます。
 
-この認証は、次の複数の方法で定義できます。
+この認証は、次の複数の方法で定義できます:
 
 - Runner設定ファイル内の[`pre_build_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)で定義する。
 - [`before_script`](../yaml/_index.md#before_script)で定義する。
@@ -107,7 +107,7 @@ kubectl create configmap docker-client-config --namespace gitlab-runner --from-f
 
 ```yaml
 default:
-  image: docker:24.0.5
+  image: docker:24.0.5-cli
   services:
     - docker:24.0.5-dind
 

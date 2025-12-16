@@ -5,6 +5,11 @@ class GpgKey < ApplicationRecord
   KEY_SUFFIX = '-----END PGP PUBLIC KEY BLOCK-----'
 
   include ShaAttribute
+  include Cells::Claimable
+
+  cells_claims_attribute :key, type: CLAIMS_BUCKET_TYPE::GPG_KEYS
+
+  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::USER, subject_key: :user_id
 
   sha_attribute :primary_keyid
   sha_attribute :fingerprint

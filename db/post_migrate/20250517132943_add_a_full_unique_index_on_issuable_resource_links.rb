@@ -5,12 +5,6 @@ class AddAFullUniqueIndexOnIssuableResourceLinks < Gitlab::Database::Migration[2
 
   disable_ddl_transaction!
 
-  DEPENDENT_BATCHED_BACKGROUND_MIGRATIONS = [
-    20240908225334,
-    20240911101712,
-    20241111055711
-  ]
-
   milestone '18.1'
 
   def up

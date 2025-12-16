@@ -11,14 +11,25 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         ALLOWED_TO_SELECT = %i[name stage_id].freeze
         ALLOWED_AGGREGATIONS = %i[
           mean_duration_in_seconds
+          p50_duration
+          p75_duration
+          p90_duration
+          p95_duration
+          p99_duration
           p95_duration_in_seconds
           rate_of_success
           rate_of_failed
           rate_of_canceled
           rate_of_skipped
+          count_success
+          count_failed
+          count_canceled
+          count_skipped
+          total_count
         ].freeze
         ALLOWED_TO_ORDER = (ALLOWED_TO_SELECT + ALLOWED_AGGREGATIONS).freeze
         STATUS = %w[success failed canceled skipped].freeze
+        ALLOWED_PERCENTILES = [50, 75, 90, 95, 99].freeze
 
         ERROR_MESSAGES = {
           select: "Cannot select columns: %{columns}. Allowed: #{ALLOWED_TO_SELECT.join(', ')}",
@@ -50,14 +61,16 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           where(project_id: project_id)
         end
 
-        def select(*fields, aggregate: false)
-          fields = Array(fields).flatten
-          return self unless fields.any?
+        # Validation is skipped for aggregate expressions - they're either validated via select_aggregations
+        # or are defined methods that will raise NoMethodError if invalid
+        def select(*fields, group_by_fields: true)
+          fields = Array(fields).flatten.compact
+          return self if fields.empty?
 
-          validate_columns!(fields, :select, aggregate)
+          validate_columns!(fields, :select) if group_by_fields
 
           query = super(*fields)
-          aggregate ? query : query.group_by(*fields)
+          group_by_fields ? query.group_by(*fields) : query
         end
 
         def select_aggregations(*aggregations)
@@ -74,7 +87,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
             round(
               ms_to_s(query_builder.avg(:duration))
             ).as('mean_duration_in_seconds'),
-            aggregate: true
+            group_by_fields: false
           )
         end
 
@@ -83,16 +96,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
             round(
               ms_to_s(query_builder.quantile(0.95, :duration))
             ).as('p95_duration_in_seconds'),
-            aggregate: true
-          )
-        end
-
-        def rate_of_status(status = 'success')
-          validate_status!(status)
-
-          select(
-            build_rate_aggregate(status),
-            aggregate: true
+            group_by_fields: false
           )
         end
 
@@ -113,10 +117,27 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           group(*fields.map { |f| @query_builder.table[f] }.uniq)
         end
 
+        def total_count
+          select(
+            query_builder.count.as('total_count'),
+            group_by_fields: false
+          )
+        end
+
         # Meta methods for STATUSes
         STATUS.each do |status|
           define_method(:"rate_of_#{status}") do
             rate_of_status(status)
+          end
+
+          define_method(:"count_#{status}") do
+            count_of_status(status)
+          end
+        end
+
+        ALLOWED_PERCENTILES.each do |percentile|
+          define_method(:"p#{percentile}_duration") do
+            duration_of_percentile(percentile)
           end
         end
 
@@ -136,9 +157,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
         private
 
-        def validate_columns!(fields, operation, aggregate = false)
-          return if aggregate && operation == :select
-
+        def validate_columns!(fields, operation)
           invalid_columns = Array(fields) - ALLOWED_COLUMNS_BY_OPERATION[operation]
           return if invalid_columns.empty?
 
@@ -148,22 +167,40 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           )
         end
 
-        def validate_status!(status)
-          return if STATUS.include?(status.to_s)
-
-          raise ArgumentError, "Invalid status: #{status}. Must be one of: #{STATUS.join(', ')}"
+        def rate_of_status(status = 'success')
+          select(
+            build_rate_aggregate(status),
+            group_by_fields: false
+          )
         end
 
         def build_rate_aggregate(status)
-          builds_with_status = query_builder.count_if(
-            query_builder.equality(:status, Arel::Nodes.build_quoted(status))
-          )
-          total_builds = query_builder.count
-
-          percentage = query_builder.division(builds_with_status, total_builds)
+          percentage = query_builder.division(build_count_aggregate(status), query_builder.count)
           percentage_value = query_builder.multiply(percentage, 100)
 
           round(percentage_value).as("rate_of_#{status}")
+        end
+
+        def count_of_status(status)
+          select(
+            build_count_aggregate(status).as("count_#{status}"),
+            group_by_fields: false
+          )
+        end
+
+        def build_count_aggregate(status)
+          query_builder.count_if(
+            query_builder.equality(:status, Arel::Nodes.build_quoted(status))
+          )
+        end
+
+        def duration_of_percentile(percentile)
+          select(
+            round(
+              ms_to_s(query_builder.quantile(percentile.to_f / 100.0, :duration))
+            ).as("p#{percentile}_duration"),
+            group_by_fields: false
+          )
         end
 
         def aggregate?(field)

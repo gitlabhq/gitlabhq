@@ -47,10 +47,10 @@ module Types
           description: 'Conditional rules for dynamic input options.'
 
         def rules
-          return unless Feature.enabled?(:ci_dynamic_pipeline_inputs, context[:project])
-          return unless object.respond_to?(:rules)
+          # TODO: Remove project logic as well as FF when ci_dynamic_pipeline_inputs is removed
+          return unless Feature.enabled?(:ci_dynamic_pipeline_inputs, object[:project])
 
-          object.rules
+          object[:rules]
         end
       end
     end

@@ -11,7 +11,7 @@ module Gitlab
           sub_batch_size: 100,
           min_cursor: [1],
           interval: 2.minutes,
-          batch_class_name: 'PrimaryKeyBatchingStrategy',
+          batch_class_name: 'PrimaryKey',
           pause_ms: 100
         }.freeze
 
@@ -87,12 +87,13 @@ module Gitlab
             interval = DEFAULT_BATCH_VALUES[:interval] if interval < DEFAULT_BATCH_VALUES[:interval]
 
             unless min_cursor.present?
-              min_cursor = [get_column_value(connection, table_name, column_name, 'MIN')] ||
-                DEFAULT_BATCH_VALUES[:min_cursor]
+              min_cursor = [get_column_value(connection, table_name, column_name, 'MIN')]
+              min_cursor = DEFAULT_BATCH_VALUES[:min_cursor] if min_cursor.compact.empty?
             end
 
             unless max_cursor.present?
-              max_cursor = [get_column_value(connection, table_name, column_name, 'MAX')] || min_cursor
+              max_cursor = [get_column_value(connection, table_name, column_name, 'MAX')]
+              max_cursor = min_cursor if max_cursor.compact.empty?
             end
 
             operation_attrs = {
@@ -108,7 +109,8 @@ module Gitlab
               pause_ms: pause_ms,
               batch_class_name: batch_class_name,
               status: :queued,
-              gitlab_schema: gitlab_schema
+              gitlab_schema: gitlab_schema,
+              total_tuple_count: total_tuple_count(connection, table_name)
             }
 
             operation_attrs.merge!(user_id: user.id, organization_id: user.organization_id) if user.present?
@@ -122,6 +124,12 @@ module Gitlab
               SELECT #{function}(#{Gitlab::Database.quote_column_name(column_name)})
               FROM #{Gitlab::Database.quote_table_name(table_name)}
             SQL
+          end
+
+          def total_tuple_count(connection, table_name)
+            Gitlab::Database::SharedModel.using_connection(connection) do
+              Gitlab::Database::PgClass.for_table(table_name)&.cardinality_estimate
+            end
           end
         end
       end

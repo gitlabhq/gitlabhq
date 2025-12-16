@@ -53,7 +53,7 @@ To view pipeline information:
 1. In VS Code, on the bottom status bar, select the pipeline status to display actions in the Command Palette.
 1. In the Command Palette, select your desired action:
 
-   - **Create New Pipeline From Current Branch**: Start a new pipeline.
+   - **Create New Pipeline from Current Branch**: Start a new pipeline.
    - **Cancel Last Pipeline**
    - **Download Artifacts from Latest Pipeline**: Download the pipeline artifact in ZIP or JSON format.
    - **Retry Last Pipeline**
@@ -112,13 +112,12 @@ VS Code opens a new tab (`.gitlab-ci (Merged).yml`) with full information.
 
 ### CI/CD variable autocompletion
 
-Quickly find the CI/CD variable you are looking for with the CI/CD variable autocompletion.
+Quickly find the CI/CD variable you are looking for with CI/CD variable autocompletion.
 
 Prerequisites:
 
-- Your file is named either:
-  - `.gitlab-ci.yml`.
-  - Beginning with `.gitlab-ci` and ending with `.yml` or `.yaml`, like `.gitlab-ci.production.yml`.
+- The name of your CI/CD configuration file starts with `.gitlab-ci` and ends with `.yml` or `.yaml`.
+  For example `.gitlab-ci.yml` or `.gitlab-ci.production.yml`
 
 To autocomplete a variable:
 

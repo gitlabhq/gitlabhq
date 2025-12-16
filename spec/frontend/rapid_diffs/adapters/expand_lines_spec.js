@@ -24,9 +24,9 @@ describe('expandLinesAdapter', () => {
       diffElement: getDiffElement(),
     };
   };
-  const click = (direction) => {
+  const click = (direction, context = getDiffFileContext()) => {
     return expandLinesAdapter.clicks.expandLines.call(
-      getDiffFileContext(),
+      context,
       new MouseEvent('click'),
       getExpandButton(direction),
     );
@@ -74,20 +74,28 @@ describe('expandLinesAdapter', () => {
     `);
   });
 
-  it.each(['up', 'both', 'down'])('expands lines in %s direction(s)', async (direction) => {
-    getLines.mockResolvedValueOnce(createLinesResponse());
-    const surroundingLines = getSurroundingLines(direction);
-    await click(direction);
-    expect(getLines).toHaveBeenCalledWith({
-      expandDirection: direction,
-      surroundingLines,
-      diffLinesPath: '/lines',
-      view: 'parallel',
+  describe.each`
+    viewer             | view
+    ${'text_inline'}   | ${'inline'}
+    ${'text_parallel'} | ${'parallel'}
+  `('when viewer is $viewer', ({ viewer, view }) => {
+    it.each(['up', 'both', 'down'])('expands lines in %s direction(s)', async (direction) => {
+      getLines.mockResolvedValueOnce(createLinesResponse());
+      const surroundingLines = getSurroundingLines(direction);
+      const context = getDiffFileContext();
+      context.data.viewer = viewer;
+      await click(direction, context);
+      expect(getLines).toHaveBeenCalledWith({
+        expandDirection: direction,
+        surroundingLines,
+        diffLinesPath: '/lines',
+        view,
+      });
+      expect(getFirstInsertedRow()).not.toBe(null);
+      expect(getLastInsertedRow()).not.toBe(null);
+      expect(getExpandButton(direction)).toBe(null);
+      expect(getDiffElement().style.getPropertyValue('--virtual-total-rows')).toBe('6');
     });
-    expect(getFirstInsertedRow()).not.toBe(null);
-    expect(getLastInsertedRow()).not.toBe(null);
-    expect(getExpandButton(direction)).toBe(null);
-    expect(getDiffElement().style.getPropertyValue('--virtual-total-rows')).toBe('6');
   });
 
   it('focuses first inserted line number', async () => {

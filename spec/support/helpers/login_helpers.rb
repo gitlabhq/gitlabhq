@@ -47,8 +47,6 @@ module LoginHelpers
     gitlab_sign_in_with(user, **kwargs)
 
     @current_user = user
-
-    dismiss_welcome_banner_if_present(page)
   end
 
   def gitlab_sign_in_via(provider, user, uid, saml_response = nil)
@@ -67,8 +65,6 @@ module LoginHelpers
 
   # Requires Javascript driver.
   def gitlab_sign_out(user = @current_user)
-    dismiss_welcome_banner_if_present(page)
-
     if has_testid?('super-sidebar')
       click_on "#{user.name} user’s menu"
     else
@@ -106,7 +102,7 @@ module LoginHelpers
     # `app/assets/javascripts/authentication/password/components/password_input.vue`.
     expect(page).not_to have_selector('.js-password') if javascript_test?
 
-    fill_in "user_password", with: (password || user.password)
+    fill_in "user_password", with: password || user.password
 
     check 'user_remember_me' if remember
 
@@ -149,7 +145,12 @@ module LoginHelpers
   end
 
   def fake_successful_webauthn_authentication
-    allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
+    allow_next_instance_of(Webauthn::AuthenticateService) do |instance|
+      allow(instance).to receive(:execute).and_return(
+        ServiceResponse.success
+      )
+    end
+
     FakeWebauthnDevice.new(page, nil).fake_webauthn_authentication
   end
 

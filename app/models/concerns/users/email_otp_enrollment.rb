@@ -4,6 +4,20 @@ module Users
   module EmailOtpEnrollment
     extend ActiveSupport::Concern
 
+    # These two methods allow us to treat email OTP enrollment as a
+    # boolean, while still preserving the enrollment date itself.
+    def email_otp_required_as_boolean
+      email_otp_required_after.present?
+    end
+
+    def email_otp_required_as_boolean=(value)
+      if ActiveModel::Type::Boolean.new.cast(value)
+        self.email_otp_required_after ||= Time.current
+      else
+        self.email_otp_required_after = nil
+      end
+    end
+
     def can_modify_email_otp_enrollment?
       email_otp_enrollment_restriction.nil?
     end
@@ -48,7 +62,7 @@ module Users
         user_detail.email_otp_required_after = user_detail.email_otp_required_after_was || Time.current
       elsif Gitlab::Auth::TwoFactorAuthVerifier.new(self).two_factor_authentication_required? && two_factor_enabled?
         # Email OTP has less security assurance than 2FA. Therefore,
-        # don't allow Email OTP when 2FA is required & configured.
+        # don't allow email OTP when 2FA is required & configured.
         user_detail.email_otp_required_after = nil
       end
       # If neither condition is true, email_otp_required_after does not

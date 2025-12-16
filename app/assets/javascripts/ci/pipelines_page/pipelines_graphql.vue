@@ -7,7 +7,6 @@ import NO_PIPELINES_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-
 import ERROR_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-job-failed-md.svg?url';
 import { GlCollapsibleListbox, GlEmptyState, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
 import { createAlert, VARIANT_INFO, VARIANT_WARNING } from '~/alert';
-import { fetchPolicies } from '~/lib/graphql';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
@@ -24,7 +23,7 @@ import {
   RAW_TEXT_WARNING,
   TRACKING_CATEGORIES,
 } from '~/ci/constants';
-import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
 import PipelinesFilteredSearch from './components/pipelines_filtered_search.vue';
 import NoCiEmptyState from './components/empty_state/no_ci_empty_state.vue';
@@ -95,6 +94,9 @@ export default {
     usesExternalConfig: {
       default: false,
     },
+    hasGitlabCi: {
+      default: false,
+    },
   },
   props: {
     params: {
@@ -110,8 +112,10 @@ export default {
   apollo: {
     pipelines: {
       query: getPipelinesQuery,
-      // Use cache-and-network to get refetches when scope is null
-      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+      // we poll only for new pipeline creation
+      // and rely on the subscription for real-time
+      // status updates
+      pollInterval: 10000,
       variables() {
         // Map frontend scope to GraphQL scope
         const scopeMap = {
@@ -245,13 +249,16 @@ export default {
       return (
         this.isEmptyState &&
         this.scope === this.$options.scopes.all &&
-        Object.keys(this.filterParams).length === 0
+        Object.keys(this.filterParams).length === 0 &&
+        !this.hasGitlabCi
       );
     },
     showEmptyTab() {
       return (
         this.isEmptyState &&
-        (this.scope !== this.$options.scopes.all || Object.keys(this.filterParams).length > 0)
+        (this.scope !== this.$options.scopes.all ||
+          Object.keys(this.filterParams).length > 0 ||
+          this.hasGitlabCi)
       );
     },
     showTable() {
@@ -488,7 +495,7 @@ export default {
     },
     transformFilterParams(filterParams) {
       // Transform filter params to be GraphQL compatible
-      const upperCaseFields = ['status', 'source'];
+      const upperCaseFields = ['status'];
 
       return Object.keys(filterParams).reduce((acc, key) => {
         acc[key] = upperCaseFields.includes(key)

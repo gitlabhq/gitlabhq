@@ -117,7 +117,11 @@ module ActiveContext
         end
 
         def remove_alias(strategy)
-          raw_client.indices.delete_alias(index: '_all', name: strategy.collection_name)
+          indices = raw_client.indices.get_alias(name: strategy.collection_name)
+
+          indices.each_key do |index|
+            raw_client.indices.delete_alias(index: index, name: strategy.collection_name)
+          end
         end
 
         def remove_index(partition_name)

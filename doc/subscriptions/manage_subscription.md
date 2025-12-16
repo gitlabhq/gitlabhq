@@ -91,7 +91,7 @@ Prerequisites:
 
 To see the status of your GitLab.com subscription:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Billing**.
 
 The following information is displayed:
@@ -120,7 +120,7 @@ Prerequisites:
 
 You can view the status of your subscription:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Subscription**.
 
 The **Subscription** page includes the following information:
@@ -211,7 +211,7 @@ The renewal period start date is displayed on the group Billing page under **Nex
 Contact the:
 
 - [Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)
-if you need help accessing the Customers Portal or changing the contact person who manages your subscription.
+  if you need help accessing the Customers Portal or changing the contact person who manages your subscription.
 - [Sales team](https://customers.gitlab.com/contact_us) if you need help renewing your subscription.
 
 ### Check when subscription expires
@@ -299,9 +299,8 @@ Subscription renewals with fewer seats must have or exceed the current number of
 
 Before you renew your subscription:
 
-- For GitLab.com,
-[reduce the number of billable users](manage_users_and_seats.md#remove-users-from-subscription)
-if it exceeds the number of seats you want to renew for.
+- For GitLab.com, [reduce the number of billable users](manage_users_and_seats.md#remove-users-from-subscription)
+  if it exceeds the number of seats you want to renew for.
 - For GitLab Self-Managed, [block inactive or unwanted users](../administration/moderate_users.md#block-a-user).
 
 To manually renew your subscription for fewer seats, you can either:
@@ -416,7 +415,7 @@ also automated.
 
 You can also manually synchronize subscription data at any time.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Subscription**.
 1. In the **Subscription details** section, select **Sync** ({{< icon name="retry" >}}).
 

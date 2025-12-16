@@ -18,14 +18,14 @@ title: 定義済みCI/CD変数のリファレンス
 
 ## 変数の可用性 {#variable-availability}
 
-定義済み変数は、次の3つのパイプライン実行フェーズで使用可能になります。
+定義済み変数は、次の3つのパイプライン実行フェーズで使用可能になります:
 
 - プリパイプライン: プリパイプライン変数は、パイプラインが作成される前に使用できます。これらの変数は、パイプラインの作成時に使用する設定ファイルを制御するため使用されます。[`include:rules`](../yaml/_index.md#includerules)では、これらの変数のみが使用できます。
 - パイプライン: パイプライン変数は、GitLabがパイプラインを作成するときに使用可能になります。パイプライン変数はプリパイプライン変数と併せて使用できます。ジョブで定義された[`rules`](../yaml/_index.md#rules)の設定に使用でき、どのジョブをパイプラインに追加するかを決定する際に役立ちます。
-- ジョブ専用: これらの変数は、Runnerがジョブを取得して実行するときにのみ、各ジョブで使用可能になります。次の特徴があります。
+- ジョブ専用: これらの変数は、Runnerがジョブを取得して実行するときにのみ、各ジョブで使用可能になります。次の特徴があります:
   - ジョブスクリプトで使用できます。
   - [トリガージョブ](../pipelines/downstream_pipelines.md#trigger-a-downstream-pipeline-from-a-job-in-the-gitlab-ciyml-file)では使用できません。
-  - [`workflow`](../yaml/_index.md#workflow)、[`include`](../yaml/_index.md#include)、または[`rules`](../yaml/_index.md#rules)では使用できません。
+  - [`workflow`](../yaml/_index.md#workflow) 、[`include`](../yaml/_index.md#include) 、または[`rules`](../yaml/_index.md#rules)では使用できません。
 
 ## 定義済み変数 {#predefined-variables}
 
@@ -43,6 +43,7 @@ title: 定義済みCI/CD変数のリファレンス
 | `CI_COMMIT_BRANCH`                              | プリパイプライン | コミットブランチ名。デフォルトブランチのパイプラインを含む、ブランチパイプラインで使用できます。マージリクエストパイプラインまたはタグパイプラインでは使用できません。 |
 | `CI_COMMIT_DESCRIPTION`                         | プリパイプライン | コミットの説明。タイトルが100文字より短い場合は、最初の行を除いたメッセージが表示されます。 |
 | `CI_COMMIT_MESSAGE`                             | プリパイプライン | コミットメッセージ全文。 |
+| `CI_COMMIT_MESSAGE_IS_TRUNCATED`                | プリパイプライン | メッセージが長すぎるため、コミットメッセージが`GITLAB_CI_MAX_COMMIT_MESSAGE_SIZE_IN_BYTES`システム環境変数（デフォルト100 KB）で指定されたサイズに`CI_COMMIT_MESSAGE`が切り詰められた場合、`true`になります。それ以外の場合は`false`。GitLab 18.6で導入されました。 |
 | `CI_COMMIT_REF_NAME`                            | プリパイプライン | プロジェクトがビルドされるブランチまたはタグ名。 |
 | `CI_COMMIT_REF_PROTECTED`                       | プリパイプライン | ジョブが保護された参照に対して実行されている場合は`true`、それ以外の場合は`false`になります。 |
 | `CI_COMMIT_REF_SLUG`                            | プリパイプライン | `CI_COMMIT_REF_NAME`を小文字にし、63バイトに短縮し、`0-9`および`a-z`以外のすべての文字を`-`に置き換えます。先頭と末尾に`-`はありません。URL、ホスト名、ドメイン名で使用します。 |
@@ -76,9 +77,9 @@ title: 定義済みCI/CD変数のリファレンス
 | `CI_ENVIRONMENT_TIER`                           | パイプライン     | このジョブの[環境のデプロイ階層](../environments/_index.md#deployment-tier-of-environments)。 |
 | `CI_GITLAB_FIPS_MODE`                           | プリパイプライン | GitLabインスタンスで[FIPSモード](../../development/fips_gitlab.md)が有効になっている場合にのみ使用できます。利用可能な場合は`true`になります。 |
 | `CI_HAS_OPEN_REQUIREMENTS`                      | パイプライン     | パイプラインのプロジェクトにオープンな[要件](../../user/project/requirements/_index.md)がある場合にのみ使用できます。利用可能な場合は`true`になります。 |
-| `CI_JOB_GROUP_NAME`                             | パイプライン     | [`parallel`](../yaml/_index.md#parallel)（並列）または[手動でグループ化されたジョブ](../jobs/_index.md#group-similar-jobs-together-in-pipeline-views)を使用する場合の、ジョブのグループの共有名。たとえば、ジョブ名が`rspec:test: [ruby, ubuntu]`の場合、`CI_JOB_GROUP_NAME`は`rspec:test`です。それ以外の場合は、`CI_JOB_NAME`と同じです。GitLab 17.10で導入されました。 |
+| `CI_JOB_GROUP_NAME`                             | パイプライン     | [`parallel`](../yaml/_index.md#parallel) （並列）または[手動でグループ化されたジョブ](../jobs/_index.md#group-similar-jobs-together-in-pipeline-views)を使用する場合の、ジョブのグループの共有名。たとえば、ジョブ名が`rspec:test: [ruby, ubuntu]`の場合、`CI_JOB_GROUP_NAME`は`rspec:test`です。それ以外の場合は、`CI_JOB_NAME`と同じです。GitLab 17.10で導入されました。 |
 | `CI_JOB_ID`                                     | ジョブ専用     | GitLabインスタンス内のすべてのジョブで一意なジョブの内部ID。 |
-| `CI_JOB_IMAGE`                                  | パイプライン     | ジョブを実行しているDockerイメージの名前。 |
+| `CI_JOB_IMAGE`                                  | ジョブ専用     | ジョブを実行しているDockerイメージの名前。ジョブがDockerイメージを明示的に指定する場合にのみ使用できます。 |
 | `CI_JOB_MANUAL`                                 | パイプライン     | ジョブが手動で開始された場合にのみ使用できます。利用可能な場合は`true`になります。 |
 | `CI_JOB_NAME`                                   | パイプライン     | ジョブの名前。 |
 | `CI_JOB_NAME_SLUG`                              | パイプライン     | `CI_JOB_NAME`を小文字にし、63バイトに短縮し、`0-9`および`a-z`以外のすべての文字を`-`に置き換えます。先頭と末尾に`-`はありません。パスで使用します。GitLab 15.4で導入されました。 |
@@ -116,7 +117,7 @@ title: 定義済みCI/CD変数のリファレンス
 | `CI_PROJECT_TITLE`                              | プリパイプライン | GitLab Webインターフェースに表示される、人間が理解しやすいプロジェクト名。 |
 | `CI_PROJECT_DESCRIPTION`                        | プリパイプライン | GitLab Webインターフェースに表示されるプロジェクトの説明。GitLab 15.1で導入されました。 |
 | `CI_PROJECT_TOPICS`                             | プリパイプライン | プロジェクトに割り当てられた[トピック](../../user/project/project_topics.md)の小文字のカンマ区切りリスト（最初の20件に制限）。GitLab 18.3で導入されました。 |
-| `CI_PROJECT_URL`                                | プリパイプライン | プロジェクトのHTTP（S）アドレス。 |
+| `CI_PROJECT_URL`                                | プリパイプライン | プロジェクトのHTTP(S)アドレス。 |
 | `CI_PROJECT_VISIBILITY`                         | プリパイプライン | プロジェクトの表示レベル。`internal`、`private`、`public`のいずれかです。 |
 | `CI_PROJECT_CLASSIFICATION_LABEL`               | プリパイプライン | プロジェクトの[外部認証分類ラベル](../../administration/settings/external_authorization.md)。 |
 | `CI_REGISTRY`                                   | プリパイプライン | [コンテナレジストリ](../../user/packages/container_registry/_index.md)サーバーのアドレス。形式は`<host>[:<port>]`。例: `registry.gitlab.example.com`。GitLabインスタンスでコンテナレジストリが有効になっている場合にのみ使用できます。 |
@@ -199,7 +200,7 @@ title: 定義済みCI/CD変数のリファレンス
 
 ## 外部プルリクエストパイプラインの定義済み変数 {#predefined-variables-for-external-pull-request-pipelines}
 
-これらの変数は、以下の場合にのみ使用できます。
+これらの変数は、以下の場合にのみ使用できます:
 
 - パイプラインが[外部プルリクエストパイプライン](../ci_cd_for_external_repos/_index.md#pipelines-for-external-pull-requests)である。
 - プルリクエストがオープンである。
@@ -216,7 +217,7 @@ title: 定義済みCI/CD変数のリファレンス
 
 ## デプロイ変数 {#deployment-variables}
 
-デプロイ設定を担うインテグレーションでは、ビルド環境で設定される独自の定義済み変数を定義できます。これらの変数は、[デプロイメントジョブ](../environments/_index.md)でのみ定義されます。
+デプロイ設定を担うインテグレーションでは、ビルド環境で設定される独自の定義済み変数を定義できます。これらの変数は、[デプロイジョブ](../environments/_index.md)でのみ定義されます。
 
 たとえば、[Kubernetesインテグレーション](../../user/project/clusters/deploy_to_cluster.md#deployment-variables)は、インテグレーションで使用できるデプロイ変数を定義します。
 
@@ -224,7 +225,7 @@ title: 定義済みCI/CD変数のリファレンス
 
 ## Auto DevOps変数 {#auto-devops-variables}
 
-[Auto DevOps](../../topics/autodevops/_index.md)が有効になっている場合、追加の[プリパイプライン](#variable-availability)変数が利用可能になります。
+[Auto DevOps](../../topics/autodevops/_index.md)が有効になっている場合、追加の[プリパイプライン](#variable-availability)変数が利用可能になります:
 
 - `AUTO_DEVOPS_EXPLICITLY_ENABLED`: 値`1`は、Auto DevOpsが有効であることを示します。
 - `STAGING_ENABLED`: [Auto DevOpsのデプロイ戦略](../../topics/autodevops/requirements.md#auto-devops-deployment-strategy)を参照してください。
@@ -233,7 +234,7 @@ title: 定義済みCI/CD変数のリファレンス
 
 ## インテグレーション変数 {#integration-variables}
 
-一部のインテグレーションでは、ジョブで変数を使用できます。これらの変数は、[ジョブ専用の定義済み変数](#variable-availability)として使用できます。
+一部のインテグレーションでは、ジョブで変数を使用できます。これらの変数は、[ジョブ専用の定義済み変数](#variable-availability)として使用できます:
 
 - [Harbor](../../user/project/integrations/harbor.md):
   - `HARBOR_URL`

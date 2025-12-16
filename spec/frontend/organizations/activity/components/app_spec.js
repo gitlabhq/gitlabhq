@@ -1,4 +1,4 @@
-import { GlEmptyState, GlPagination, GlLoadingIcon, GlFilteredSearchToken } from '@gitlab/ui';
+import { GlEmptyState, GlKeysetPagination, GlLoadingIcon, GlFilteredSearchToken } from '@gitlab/ui';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import events from 'test_fixtures/controller/users/activity.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -51,7 +51,7 @@ describe('OrganizationsActivityApp', () => {
 
   const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
-  const findGlPagination = () => wrapper.findComponent(GlPagination);
+  const findGlKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findContributionEvents = () => wrapper.findComponent(ContributionEvents);
   const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
 
@@ -86,20 +86,46 @@ describe('OrganizationsActivityApp', () => {
       axios.get.mockClear();
     });
 
-    it('when new page is fetched, calls API with correct params, and does not set page until after call resolves', async () => {
-      findGlPagination().vm.$emit('input', 3);
+    it('when next page is fetched, calls API with correct params', async () => {
+      findGlKeysetPagination().vm.$emit('next');
 
       expect(axios.get).toHaveBeenCalledWith(defaultProps.organizationActivityPath, {
         params: {
-          offset: 2 * DEFAULT_PER_PAGE,
+          offset: DEFAULT_PER_PAGE,
           limit: DEFAULT_PER_PAGE,
           event_filter: MOCK_ALL_EVENT,
         },
       });
 
-      expect(findGlPagination().props('value')).toBe(1);
       await waitForPromises();
-      expect(findGlPagination().props('value')).toBe(3);
+      expect(findGlKeysetPagination().props()).toMatchObject({
+        hasNextPage: true,
+        hasPreviousPage: true,
+      });
+    });
+
+    it('when previous page is fetched, calls API with correct params', async () => {
+      // First go to page 2
+      findGlKeysetPagination().vm.$emit('next');
+      await waitForPromises();
+      axios.get.mockClear();
+
+      // Then go back to page 1
+      findGlKeysetPagination().vm.$emit('prev');
+
+      expect(axios.get).toHaveBeenCalledWith(defaultProps.organizationActivityPath, {
+        params: {
+          offset: 0,
+          limit: DEFAULT_PER_PAGE,
+          event_filter: MOCK_ALL_EVENT,
+        },
+      });
+
+      await waitForPromises();
+      expect(findGlKeysetPagination().props()).toMatchObject({
+        hasNextPage: true,
+        hasPreviousPage: false,
+      });
     });
 
     it('when filter is updated with empty value, calls API with event_filter: all', () => {
@@ -171,7 +197,7 @@ describe('OrganizationsActivityApp', () => {
     });
 
     it('does not render pagination', () => {
-      expect(findGlPagination().exists()).toBe(false);
+      expect(findGlKeysetPagination().exists()).toBe(false);
     });
 
     it('does not render empty state', () => {
@@ -198,7 +224,7 @@ describe('OrganizationsActivityApp', () => {
     });
 
     it('does not render pagination', () => {
-      expect(findGlPagination().exists()).toBe(false);
+      expect(findGlKeysetPagination().exists()).toBe(false);
     });
 
     it('renders empty state', () => {
@@ -225,7 +251,7 @@ describe('OrganizationsActivityApp', () => {
     });
 
     it('renders pagination', () => {
-      expect(findGlPagination().exists()).toBe(true);
+      expect(findGlKeysetPagination().exists()).toBe(true);
     });
 
     it('does not render empty state', () => {

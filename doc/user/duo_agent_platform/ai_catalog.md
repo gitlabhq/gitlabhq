@@ -10,7 +10,7 @@ title: AI Catalog
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
@@ -22,8 +22,9 @@ title: AI Catalog
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/549914) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `global_ai_catalog`. Enabled on GitLab.com. This feature is an [experiment](../../policy/development_stages_support.md).
-- Support for external agents [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207610) in GitLab 18.6 with a flag named `ai_catalog_third_party_flows`. Enabled on GitLab.com.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/549914) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `global_ai_catalog`. Enabled on GitLab.com as an [experiment](../../policy/development_stages_support.md).
+- Support for external agents [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207610) in GitLab 18.6 with a flag named `ai_catalog_third_party_flows`. Enabled on GitLab.com as an [experiment](../../policy/development_stages_support.md).
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/568176) to beta in GitLab 18.7.
 
 {{< /history >}}
 
@@ -48,11 +49,13 @@ Use the AI Catalog to:
 Prerequisites:
 
 - You must meet the [prerequisites](_index.md#prerequisites).
-- To use agents and flows from the AI Catalog, you must have at least the Maintainer role for a project.
+- On GitLab.com, you must be a member of a top-level group that has
+  [turned on GitLab Duo experiment and beta features](../../user/gitlab_duo/turn_on_off.md#on-gitlabcom-2).
+- To enable agents and flows from the AI Catalog, you must have at least the Maintainer role for a project.
 
 To view the AI Catalog:
 
-1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**.
 
 A list of agents is displayed. To view available flows, select the **Flows** tab.

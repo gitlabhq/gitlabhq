@@ -18,6 +18,10 @@ RSpec.describe 'Query.project.ciPipelineCreationRequest', :clean_gitlab_redis_sh
             error
             pipelineId
             status
+            pipeline {
+              id
+              iid
+            }
           }
         }
       }
@@ -32,13 +36,53 @@ RSpec.describe 'Query.project.ciPipelineCreationRequest', :clean_gitlab_redis_sh
     it 'returns information about the pipeline creation request' do
       post_graphql(query, current_user: user)
 
-      expect(graphql_data['project']).to eq({
-        'ciPipelineCreationRequest' => {
-          'error' => nil,
-          'pipelineId' => nil,
-          'status' => 'IN_PROGRESS'
-        }
+      expect(graphql_data.dig('project', 'ciPipelineCreationRequest')).to match({
+        'error' => nil,
+        'pipelineId' => nil,
+        'status' => 'IN_PROGRESS',
+        'pipeline' => nil
       })
+    end
+
+    context 'when pipeline has been created' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+
+      before do
+        ::Ci::PipelineCreation::Requests.succeeded(creation_request, pipeline.id)
+      end
+
+      it 'returns the pipeline object' do
+        post_graphql(query, current_user: user)
+
+        expect(graphql_data.dig('project', 'ciPipelineCreationRequest')).to match({
+          'error' => nil,
+          'pipelineId' => pipeline.to_global_id.to_s,
+          'status' => 'SUCCEEDED',
+          'pipeline' => {
+            'id' => pipeline.to_global_id.to_s,
+            'iid' => pipeline.iid.to_s
+          }
+        })
+      end
+    end
+
+    context 'when pipeline creation has failed' do
+      let(:error_message) { 'Pipeline creation failed due to invalid configuration' }
+
+      before do
+        ::Ci::PipelineCreation::Requests.failed(creation_request, error_message)
+      end
+
+      it 'returns the error message' do
+        post_graphql(query, current_user: user)
+
+        expect(graphql_data.dig('project', 'ciPipelineCreationRequest')).to match({
+          'error' => error_message,
+          'pipelineId' => nil,
+          'status' => 'FAILED',
+          'pipeline' => nil
+        })
+      end
     end
   end
 

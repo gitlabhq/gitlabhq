@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 
-module Database # rubocop:disable Gitlab/BoundedContexts -- Database Framework
+module Database # rubocop:disable Gitlab/BoundedContexts -- This is the best place for this module
   module BackgroundWorkSchedulable
     extend ActiveSupport::Concern
 
     class_methods do
       # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Global FF
-      # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- It's different for each sub-class.
       def enabled?
         return false if Feature.enabled?(:disallow_database_ddl_feature_flags, type: :ops)
 
-        schedule_feature_flag_name.present? ? Feature.enabled?(schedule_feature_flag_name, type: :ops) : true
+        scheduler_feature_flag_enabled?
       end
       # rubocop:enable Gitlab/FeatureFlagWithoutActor
-      # rubocop:enable Gitlab/FeatureFlagKeyDynamic
     end
 
     included do

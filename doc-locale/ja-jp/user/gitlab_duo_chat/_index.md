@@ -10,11 +10,16 @@ title: GitLab Duo Chat（クラシック）
 - プラン: Premium、Ultimate
 - アドオン: GitLab Duo Core、Pro、またはEnterprise、GitLab Duo with Amazon Q
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+
+{{< /details >}}
+
+{{< collapsible title="モデル情報" >}}
+
 - LLM: Anthropic ClaudeおよびVertex AI Search。LLMは、質問内容によって異なります。
 - Amazon QのLLM: Amazon Q Developer
 - [セルフホストモデル対応のGitLab Duo](../../administration/gitlab_duo_self_hosted/_index.md)で利用可能: はい
 
-{{< /details >}}
+{{< /collapsible>}}
 
 {{< history >}}
 
@@ -64,31 +69,80 @@ GitLab Self-Managedを使用している場合: 最適なユーザーエクス�
 
 ## GitLab UIでGitLab Duo Chatを使用する {#use-gitlab-duo-chat-in-the-gitlab-ui}
 
-前提要件:
+{{< history >}}
+
+- GitLab 18.5のGitLab.comのGitLab UIですべてのページで利用可能になるように[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/562168)されました。
+- GitLab.comのGitLab 18.6で、[機能フラグ](../../administration/feature_flags/_index.md) `paneled_view`という名前の新しいナビゲーションとGitLab Duoサイドバーが導入されました。デフォルトでは有効になっています。
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+新しいナビゲーションとGitLab Duoサイドバーの可用性は、機能フラグによって制御されます。詳細については、履歴を参照してください。
+
+{{< /alert >}}
+
+前提要件: 
 
 - GitLab Duo Chatにアクセスできる必要があり、GitLab Duoがオンになっている必要があります。
-- Chatが利用可能な場所にいる必要があります。以下では利用できません:
-  - **マイワーク**ページ（To-Doリストなど）。
+- GitLab Self-Managedでは、チャットが利用可能な場所にいる必要があります。以下では利用できません:
+  - **あなたの作業**ページ（To-Doリストなど）。
   - **ユーザー設定**ページ。
   - **ヘルプ**メニュー。
 
-GitLab UIでGitLab Duo Chatを使用するには:
+新しいナビゲーションと従来のナビゲーションの手順が用意されています。ナビゲーションの種類に応じてタブを選択するか、[切り替え方法](../interface_redesign.md#turn-new-navigation-on-or-off)を学んでください。
 
-1. 右上隅で、**GitLab Duo Chat**を選択します。画面の右側にドロワーが開きます。
+{{< tabs >}}
+
+{{< tab title="新しいナビゲーション" >}}
+
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. GitLab Duoサイドバーで、**Current GitLab Duo Chat**（現在のGitLab Duoチャット）({{< icon name="comment" >}})または**新しいGitLab Duoチャット**({{< icon name="plus" >}})のいずれかを選択します。チャットの会話が、画面右側のGitLab Duoサイドバーに表示されます。
 1. メッセージボックスに質問を入力し、<kbd>Enter</kbd>キーを押すか、**送信**を選択します。
    - チャットに[コンテキスト](../gitlab_duo/context.md#gitlab-duo-chat)を追加できます。
-   - インタラクティブなAIチャットが回答の生成するまで、数秒かかる場合があります。
-1. オプション。フォローアップの質問をします。
+   - インタラクティブなAIチャットが回答を生成するまで、数秒かかることがあります。
+1. オプション。次のことができます: 
+   - フォローアップの質問をします。
+   - [別の会話](#have-multiple-conversations)を開始します。
 
-新しい無関係な質問をするには、`/reset`または`/clear`と入力して**送信**を選択し、コンテキストをクリアします。
+{{< /tab >}}
+
+{{< tab title="従来のナビゲーション" >}}
+
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 右上隅で、**GitLab Duo Chatを開く** ({{< icon name="duo-chat" >}}) を選択します。画面の右側にドロワーが開きます。
+1. メッセージボックスに質問を入力し、<kbd>Enter</kbd>キーを押すか、**送信**を選択します。
+   - チャットに[コンテキスト](../gitlab_duo/context.md#gitlab-duo-chat)を追加できます。
+   - インタラクティブなAIチャットが回答を生成するまで、数秒かかることがあります。
+1. オプション。次のことができます: 
+   - フォローアップの質問をします。
+   - [別の会話](#have-multiple-conversations)を開始します。
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+新しい、無関係な質問をするには、`/reset`と入力し、**送信**を選択してコンテキストをクリアします。
 
 ### Chat履歴を表示する {#view-the-chat-history}
 
 最新の25件のメッセージがChat履歴に保持されます。
 
-履歴を表示するには:
+{{< tabs >}}
 
-- Chatドロワーの右上隅で、**Chat履歴**（{{< icon name="history" >}}）を選択します。
+{{< tab title="新しいナビゲーション" >}}
+
+GitLab Duoサイドバーで、**GitLab Duo Chat履歴** ({{< icon name="history" >}})を選択します。
+
+{{< /tab >}}
+
+{{< tab title="従来のナビゲーション" >}}
+
+チャットドロワーの右上隅で、**Chat history**（Chat履歴）（{{< icon name="history" >}}）を選択します。
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### 複数の会話をする {#have-multiple-conversations}
 
@@ -102,14 +156,30 @@ GitLab UIでGitLab Duo Chatを使用するには:
 
 GitLab 17.10以降では、Chatとの同時会話を無制限に行えます。
 
-1. 右上隅で、**GitLab Duo Chat**を選択します。画面の右側にドロワーが開きます。
-1. メッセージボックスに質問を入力し、<kbd>Enter</kbd>キーを押すか、**送信**を選択します。
-1. 次のいずれかを選択して、Chatで新しい会話を作成します:
-   - ドロワーの右上隅で、**新しいチャット**（{{< icon name="duo-chat-new" >}}）を選択します。
-   - メッセージボックスに`/new`と入力し、<kbd>Enter</kbd>キーを押すか、**送信**を選択します。新しいChatドロワーが前のものと置き換わります。
-1. 別の新しい会話を作成します。
-1. すべての会話を表示するには、Chatドロワーの右上隅で、**Chat履歴**（{{< icon name="history" >}}）を選択します。
+{{< tabs >}}
+
+{{< tab title="新しいナビゲーション" >}}
+
+1. 次のいずれかの方法で、新しいチャットの会話を作成します:
+   - GitLab Duoサイドバーで、**新しいGitLab Duoチャット**({{< icon name="plus" >}})を選択します。
+   - メッセージボックスに`/new`と入力し、<kbd>Enter</kbd>キーを押すか、**送信**を選択します。新しいチャットの会話が前の会話に置き換わります。
+1. すべての会話を表示するには、[チャット履歴](#view-the-chat-history)を表示します。
 1. 会話を切り替えるには、Chat履歴で適切な会話を選択します。
+
+{{< /tab >}}
+
+{{< tab title="従来のナビゲーション" >}}
+
+1. 右上隅で、**GitLab Duo Chatを開く** ({{< icon name="duo-chat" >}}) を選択します。画面の右側にドロワーが開きます。
+1. 次のいずれかの方法で、新しいチャットの会話を作成します:
+   - 既存の会話の右上隅で、**New chat**（新しいチャット） ({{< icon name="duo-chat-new" >}})を選択します。
+   - メッセージボックスに`/new`と入力し、<kbd>Enter</kbd>キーを押すか、**送信**を選択します。新しいチャットの会話が前の会話に置き換わります。
+1. すべての会話を表示するには、[チャット履歴](#view-the-chat-history)を表示します。
+1. 会話を切り替えるには、Chat履歴で適切な会話を選択します。
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 すべての会話で、無制限にメッセージが保持されます。ただし、LLMのコンテキストウィンドウにコンテンツを収めるために、最後の25件のメッセージのみがLLMに送信されます。
 
@@ -119,10 +189,12 @@ GitLab 17.10以降では、Chatとの同時会話を無制限に行えます。
 
 会話を削除するには、次の手順に従います:
 
-1. Chatドロワーの右上隅で、**Chat履歴**（{{< icon name="history" >}}）を選択します。
-1. 履歴で、**会話を削除する**（{{< icon name="remove" >}}）を選択します。
+1. [チャット履歴](#view-the-chat-history)を選択します。
+1. 履歴で、**Delete this chat**（このチャットを削除）({{< icon name="remove" >}})を選択します。
 
-デフォルトでは、個々の会話は期限切れとなり、30日間操作がないと自動的に削除されます。ただし、管理者は[この有効期限を変更できます](#configure-chat-conversation-expiration)。
+デフォルトでは、個々の会話は期限切れとなり、30日間操作がないと自動的に削除されます。
+
+ただし、管理者は[この有効期限を変更できます](#configure-chat-conversation-expiration)。
 
 ## Web IDEでGitLab Duo Chatを使用する {#use-gitlab-duo-chat-in-the-web-ide}
 
@@ -166,7 +238,7 @@ GitLabのWeb IDEでGitLab Duo Chatを使用するには、次の手順に従い�
 
 {{< /history >}}
 
-前提要件:
+前提要件: 
 
 - [VS Code拡張機能のインストールと設定](../../editor_extensions/visual_studio_code/setup.md)が完了していること。
 
@@ -199,10 +271,10 @@ Quick Chatを開いたら、次の手順を実行します:
 
 1. メッセージボックスに質問を入力します。次の方法も使用できます:
    - `/`と入力して、使用可能なすべてのコマンドを表示します。
-   - `/re`と入力して、`/refactor`を表示します。
+   - `/re`と入力して、`/refactor`および`/reset`を表示します。
 1. 質問を送信するには、**送信**を選択するか、<kbd>コマンド</kbd> + <kbd>Enter</kbd>キーを押します。
 1. 応答に含まれるコードを使用するには、コードブロックの上にある**Copy Snippet**リンクと**Insert Snippet**リンクを使用します。
-1. チャットを終了するには、ガターでチャットアイコンを選択するか、チャットにフォーカスしているときに**Escape**キーを押します。
+1. チャットを終了するには、ガターでチャットアイコンを選択するか、チャットにフォーカスしているときに**エスケープ**キーを押します。
 
 ### Chatのステータスを確認する {#check-the-status-of-chat}
 
@@ -219,7 +291,7 @@ GitLab Duo Chatを閉じるには:
 
 ## Windows用Visual StudioでGitLab Duo Chatを使用する {#use-gitlab-duo-chat-in-visual-studio-for-windows}
 
-前提要件:
+前提要件: 
 
 - [Visual Studio用GitLab拡張機能のインストールと設定](../../editor_extensions/visual_studio/setup.md)が完了していること。
 
@@ -227,7 +299,7 @@ Visual Studio用GitLab拡張機能でGitLab Duo Chatを使用するには、以�
 
 1. Visual Studioで、ファイルを開きます。これは、Gitリポジトリ内のファイルである必要はありません。
 1. 次のいずれかの方法でChatを開きます:
-   - 上部のメニューバーで、**Extensions**をクリックし、**Open Duo Chat**を選択します。
+   - 上部のメニューバーで、**Extensions**を選択し、**Open Duo Chat**を選択します。
    - エディタで開いているファイルで、コードを選択します。
      1. 右クリックして、**GitLab Duo Chat**を選択します。
      1. **Explain selected code**または**Generate Tests**を選択します。
@@ -243,7 +315,7 @@ Visual Studio用GitLab拡張機能でGitLab Duo Chatを使用するには、以�
 
 {{< /history >}}
 
-前提要件:
+前提要件: 
 
 - [JetBrains IDE用GitLabプラグインのインストールと設定](../../editor_extensions/jetbrains_ide/setup.md)が完了していること。
 
@@ -270,7 +342,7 @@ JetBrains IDE用GitLabプラグインでGitLab Duo Chatを使用するには、�
 - 強調表示されたコードイシューから:
   1. 右クリックして**Show Context Actions**を選択します。
   1. **Fix with Duo**を選択します。
-- GitLab Duoアクション用のキーボードまたはマウスのショートカットを使用します。これは**Settings** > **Keymap**で設定できます。
+- GitLab Duoアクション用のキーボードまたはマウスのショートカットを使用します。これは**設定** > **Keymap**で設定できます。
 
 GitLab Duo Chatを開いた後:
 
@@ -321,7 +393,7 @@ Quick Chatを開いたら、次の手順を実行します:
 
 {{< /history >}}
 
-前提要件:
+前提要件: 
 
 - [GitLab for Eclipseプラグインのインストールと設定](../../editor_extensions/eclipse/setup.md)が完了していること。
 
@@ -343,16 +415,16 @@ GitLab for EclipseプラグインでGitLab Duo Chatを使用するには:
 
 会話を有効期限切れとみなし、自動的に削除するまでの、会話の継続期間を設定できます。
 
-前提要件:
+前提要件: 
 
 - 管理者である必要があります。
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../interface_redesign.md#turn-new-navigation-on-or-off)にした場合は、右上隅でアバターを選択し、**管理者**を選択します。
 1. **GitLab Duo**を選択します。
 1. 右下隅で、**設定の変更**を選択します。
 1. **GitLab Duo Chatの会話の有効期限**セクションで、次のいずれかのオプションを選択します:
-   - **会話の最終更新日から換算して有効期限を設定する**。
-   - **会話の作成日から換算して有効期限を設定する**。
+   - **Expire conversation based on time conversation was last updated**（会話の最終更新日から換算して有効期限を設定する）。
+   - **Expire conversation based on time conversation was created**（会話の作成日から換算して有効期限を設定する）。
 1. **変更を保存**を選択します。
 
 ## 利用可能な言語モデル {#available-language-models}
@@ -364,7 +436,7 @@ GitLab for EclipseプラグインでGitLab Duo Chatを使用するには:
 
 ## 入力と出力の長さ {#input-and-output-length}
 
-Chatの各会話では、入力と出力の長さが制限されています。
+Chatの各会話では、入力と出力の長さが制限されています:
 
 - 入力は20万トークン（約68万文字）に制限されています。入力トークンには以下が含まれます: 
   - [Chatが認識する](../gitlab_duo/context.md#gitlab-duo-chat)すべてのコンテキスト。

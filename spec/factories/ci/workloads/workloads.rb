@@ -2,7 +2,11 @@
 
 FactoryBot.define do
   factory :ci_workload, class: 'Ci::Workloads::Workload' do
-    project { pipeline.project }
     pipeline factory: :ci_pipeline
+    project { pipeline.project }
+
+    before(:create) do |workload|
+      workload.partition_id = workload.pipeline.partition_id
+    end
   end
 end

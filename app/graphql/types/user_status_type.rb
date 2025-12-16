@@ -17,3 +17,5 @@ module Types
       description: 'User status message.'
   end
 end
+
+Types::UserStatusType.prepend_mod_with('Types::UserStatusType')

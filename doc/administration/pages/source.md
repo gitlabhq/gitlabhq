@@ -35,7 +35,7 @@ to fully understand how it works.
 
 In the case of [custom domains](#custom-domains) (but not
 [wildcard domains](#wildcard-domains)), the Pages daemon needs to listen on
-ports `80` and/or `443`. For that reason, there is some flexibility in the way
+ports `80` or `443`. For that reason, there is some flexibility in the way
 which you can set it up:
 
 - Run the Pages daemon in the same server as GitLab, listening on a secondary
@@ -46,8 +46,8 @@ which you can set it up:
 - Run the Pages daemon in the same server as GitLab, listening on the same IP
   but on different ports. In that case, you must proxy the traffic with a load
   balancer. If you choose that route, you should use TCP load balancing for
-  HTTPS. If you use TLS-termination (HTTPS-load balancing), the pages aren't
-  able to be served with user-provided certificates. For HTTP, you can use HTTP
+  HTTPS. If you use TLS-termination (HTTPS-load balancing), the pages can't
+  be served with user-provided certificates. For HTTP, you can use HTTP
   or TCP load balancing.
 
 In this document, we proceed assuming the first option. If you aren't
@@ -272,7 +272,7 @@ Prerequisites:
 URL scheme: `http://<namespace>.example.io/<project_slug>` and `http://custom-domain.com`
 
 In that case, the pages daemon is running. NGINX still proxies requests to
-the daemon, but the daemon is also able to receive requests from the outside
+the daemon, but the daemon can also receive requests from the outside
 world. Custom domains are supported, but no TLS.
 
 1. Install the Pages daemon:
@@ -336,7 +336,7 @@ Prerequisites:
 URL scheme: `https://<namespace>.example.io/<project_slug>` and `https://custom-domain.com`
 
 In that case, the pages daemon is running. NGINX still proxies requests to
-the daemon, but the daemon is also able to receive requests from the outside
+the daemon, but the daemon can also receive requests from the outside
 world. Custom domains and TLS are supported.
 
 1. Install the Pages daemon:
@@ -493,7 +493,7 @@ The default for the maximum size of unpacked archives per project is 100 MB.
 
 To change this value:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. Update the value for **Maximum size of pages (MB)**.

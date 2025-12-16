@@ -71,7 +71,7 @@ module Resolvers
           web_path: [{ project: { namespace: [:route] } }],
           tags: [:tags],
           trace: [{ project: [:namespace] }, :job_artifacts_trace],
-          source: [:build_source]
+          source: [:job_source]
         }
       end
 

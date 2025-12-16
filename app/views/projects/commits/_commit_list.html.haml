@@ -1,5 +1,5 @@
 - commits = @commits
-- hidden = @hidden_commit_count
+- hidden = @hidden_commit_count || 0
 - commits = Commit.decorate(commits, @project)
 
 = render ::Layouts::CrudComponent.new(s_('CompareRevisions|Commits on Source'),

@@ -11,6 +11,7 @@ import {
 } from '../../constants';
 
 export default {
+  name: 'CatalogSearch',
   components: {
     GlSearchBoxByClick,
     GlSorting,
@@ -22,6 +23,7 @@ export default {
       type: String,
     },
   },
+  emits: ['update-search-term', 'update-sorting'],
   data() {
     return {
       currentSortOption: SORT_OPTION_POPULARITY,

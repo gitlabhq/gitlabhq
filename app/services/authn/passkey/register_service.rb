@@ -3,6 +3,10 @@
 module Authn
   module Passkey
     class RegisterService < BaseService
+      include WebauthnErrors
+
+      attr_reader :user
+
       def initialize(user, params, challenge)
         @user = user
         @params = params
@@ -13,7 +17,7 @@ module Authn
         registration = WebauthnRegistration.new
 
         begin
-          passkey_credential = WebAuthn::Credential.from_create(Gitlab::Json.parse(@params[:device_response]))
+          passkey_credential = WebAuthn::Credential.from_create(Gitlab::Json.safe_parse(@params[:device_response]))
           passkey_credential.verify(@challenge)
 
           @passkey_credential = passkey_credential
@@ -29,20 +33,34 @@ module Authn
             last_used_at: Time.current
           )
 
+          notify_on_success(user, registration.name)
+
           ServiceResponse.success(
             message: _('Passkey added successfully! Next time you sign in, select the sign-in with passkey option.'),
             payload: registration
           )
         rescue JSON::ParserError
           ServiceResponse.error(
-            message: _('Your Passkey did not send a valid JSON response.')
+            message: _('Your passkey did not send a valid JSON response.')
           )
-        rescue ActiveRecord::RecordInvalid, WebAuthn::Error => err
+        rescue ActiveRecord::RecordInvalid => err
           ServiceResponse.error(
             message: err.message
           )
+        rescue WebAuthn::Error => err
+          ServiceResponse.error(
+            message: webauthn_human_readable_errors(err.class.name, passkey: true)
+          )
         end
+      end
+
+      private
+
+      def notify_on_success(user, device_name)
+        notification_service.enabled_two_factor(user, :passkey, { device_name: device_name })
       end
     end
   end
 end
+
+Authn::Passkey::RegisterService.prepend_mod

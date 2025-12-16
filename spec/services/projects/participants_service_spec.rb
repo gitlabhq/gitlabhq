@@ -108,6 +108,12 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
       expect(participants.count { |p| p[:username] == noteable.author.username }).to eq 1
     end
 
+    it 'includes composite_identity_enforced field for users' do
+      user_participants = run_service.select { |p| p[:type] == 'User' && !p[:original_username].present? }
+
+      expect(user_participants).to all(include(:composite_identity_enforced))
+    end
+
     context 'when noteable.participants contains placeholder or import users' do
       let(:placeholder_user) { create(:user, :placeholder) }
       let(:import_user) { create(:user, :import_user) }
@@ -132,7 +138,8 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
           name: org_user_detail.display_name,
           avatar_url: org_user_detail.user.avatar_url,
           original_username: org_user_detail.user.username,
-          original_displayname: org_user_detail.user.name
+          original_displayname: org_user_detail.user.name,
+          composite_identity_enforced: org_user_detail.user.composite_identity_enforced
         ))
       end
 

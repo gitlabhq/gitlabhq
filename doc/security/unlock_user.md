@@ -52,43 +52,42 @@ Prerequisites
 
 To unlock an account from the Admin area:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
 1. Use the search bar to find the locked user.
 1. From the **User administration** dropdown list, select **Unlock**.
 
 The user can now sign in.
 
-### Unlock user accounts from the command line
+### Unlock user accounts from a Rails console
 
 Prerequisites
 
 - You must be an administrator of GitLab Self-Managed.
+- You must know the associated username, user ID, or email address.
 
-To unlock an account from the command line:
+To unlock a user account from a Rails console:
 
-1. SSH into your GitLab server.
-1. Start a Ruby on Rails console:
+1. Start a [Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Find the user to unlock:
 
-   ```shell
-   ## For Omnibus GitLab
-   sudo gitlab-rails console -e production
+   - By username:
 
-   ## For installations from source
-   sudo -u git -H bundle exec rails console -e production
-   ```
+     ```ruby
+     user = User.find_by_username('exampleuser')
+     ```
 
-1. Find the user to unlock. You can search by email:
+   - By user ID:
 
-   ```ruby
-   user = User.find_by(email: 'admin@local.host')
-   ```
+     ```ruby
+     user = User.find(123)
+     ```
 
-   Or you can search by ID:
+   - By email address:
 
-   ```ruby
-   user = User.where(id: 1).first
-   ```
+     ```ruby
+     user = User.find_by(email: 'user@example.com')
+     ```
 
 1. Unlock the user:
 
@@ -96,6 +95,10 @@ To unlock an account from the command line:
    user.unlock_access!
    ```
 
-1. Exit the console with <kbd>Control</kbd>+<kbd>d</kbd>.
+1. Exit the console:
+
+   ```ruby
+   exit
+   ```
 
 The user can now sign in.

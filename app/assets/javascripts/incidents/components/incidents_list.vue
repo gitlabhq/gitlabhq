@@ -18,7 +18,6 @@ import { s__, n__ } from '~/locale';
 import { INCIDENT_SEVERITY } from '~/sidebar/constants';
 import SeverityToken from '~/sidebar/components/severity/severity.vue';
 import Tracking from '~/tracking';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   tdClass,
   bodyTrClass,
@@ -137,7 +136,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: [
     'projectPath',
     'newIssuePath',
@@ -234,13 +232,8 @@ export default {
     newIncidentPath() {
       const urlParams = {
         issuable_template: this.incidentTemplateName,
+        type: this.incidentType.toUpperCase(),
       };
-      if (this.glFeatures.workItemViewForIssues) {
-        // Work Items router needs type in all-caps
-        urlParams.type = this.incidentType.toUpperCase();
-      } else {
-        urlParams['issue[issue_type]'] = this.incidentType;
-      }
       return mergeUrlParams(urlParams, this.newIssuePath);
     },
     availableFields() {

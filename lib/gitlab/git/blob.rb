@@ -73,7 +73,7 @@ module Gitlab
           when :COMMIT
             new(id: entry.oid, name: name, size: 0, data: '', path: path, commit_id: sha)
           when :BLOB
-            new(id: entry.oid, name: name, size: entry.size, data: entry.data.dup, mode: entry.mode.to_s(8),
+            new(id: entry.oid, name: name, size: entry.size, data: entry.data.dup, mode: entry.mode.to_i.to_s(8),
               path: path, commit_id: sha, binary: binary?(entry.data))
           end
         end

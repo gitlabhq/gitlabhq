@@ -2,16 +2,6 @@
 
 function update_tests_metadata() {
   scripts/setup/tests-metadata.rb update
-
-  if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then
-    if [[ -n "$RSPEC_PROFILING_PGSSLKEY" ]]; then
-      chmod 0600 $RSPEC_PROFILING_PGSSLKEY
-    fi
-    PGSSLMODE=$RSPEC_PROFILING_PGSSLMODE PGSSLROOTCERT=$RSPEC_PROFILING_PGSSLROOTCERT PGSSLCERT=$RSPEC_PROFILING_PGSSLCERT PGSSLKEY=$RSPEC_PROFILING_PGSSLKEY scripts/insert-rspec-profiling-data
-  else
-    echo "Not inserting profiling data as the pipeline is not a scheduled one."
-  fi
-
   cleanup_individual_job_reports
 }
 
@@ -264,7 +254,7 @@ function rspec_parallelized_job() {
   read -ra job_name <<< "${CI_JOB_NAME}"
   local test_tool="${job_name[0]}"
   local test_level="${job_name[1]}"
-  # e.g. 'rspec unit pg14 1/24 278964' would become 'rspec_unit_pg14_1_24_278964'
+  # e.g. 'rspec unit pg16 1/24 278964' would become 'rspec_unit_pg16_1_24_278964'
   local report_name=$(echo "${CI_JOB_NAME} ${CI_PROJECT_ID}" | sed -E 's|[/ ]|_|g')
   local rspec_opts="--force-color ${1:-}"
   local rspec_tests_mapping_enabled="${GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_ENABLED:-}"

@@ -275,8 +275,8 @@ describe('Pipeline Editor | Commit section', () => {
 
   it('sets listeners on commit form', () => {
     const handler = jest.fn();
-    createComponent({ options: { listeners: { event: handler } } });
-    findCommitForm().vm.$emit('event');
+    createComponent({ options: { listeners: { resetContent: handler } } });
+    findCommitForm().vm.$emit('resetContent');
     expect(handler).toHaveBeenCalled();
   });
 

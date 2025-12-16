@@ -34,21 +34,13 @@ This runbook is an [experiment](../../../../policy/development_stages_support.md
 This runbook guides you through a planned failover of a single-node Geo site
 with one secondary. The following general architecture is assumed:
 
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-graph TD
-  accTitle: Geo planned-failover topology (single-node)
-  accDescr: A single-node Geo deployment for planned failover, with one GitLab node at the primary site and one node at the secondary site.
+Primary Site:
 
-  subgraph main[Geo single-node deployment]
-    subgraph Primary[Primary site]
-      Node_1[(GitLab node)]
-    end
-    subgraph Secondary1[Secondary site]
-      Node_2[(GitLab node)]
-    end
-  end
-```
+- GitLab node
+
+Secondary Site:
+
+- GitLab node
 
 This guide results in the following:
 
@@ -131,7 +123,7 @@ follow these steps to avoid unnecessary data loss:
       connection.
 
    1. On the **primary** site:
-      1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+      1. In the upper-right corner, select **Admin**.
       1. On the left sidebar, select **Monitoring** > **Background jobs**.
       1. On the Sidekiq dashboard, select **Cron**.
       1. Select `Disable All` to disable any non-Geo periodic background jobs.
@@ -152,7 +144,7 @@ follow these steps to avoid unnecessary data loss:
       [data not managed by Geo](../../replication/datatypes.md#replicated-data-types),
       trigger the final replication process now.
    1. On the **primary** site:
-      1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+      1. In the upper-right corner, select **Admin**.
       1. On the left sidebar, select **Monitoring** > **Background jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all queues except
          those with `geo` in the name to drop to 0.
@@ -167,7 +159,7 @@ follow these steps to avoid unnecessary data loss:
          - The Geo log cursor is up to date (0 events behind).
 
    1. On the **secondary** site:
-      1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+      1. In the upper-right corner, select **Admin**.
       1. On the left sidebar, select **Monitoring** > **Background jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all the `geo`
          queues to drop to 0 queued and 0 running jobs.

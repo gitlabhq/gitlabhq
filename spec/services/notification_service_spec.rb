@@ -1084,9 +1084,11 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
         end
 
+        let_it_be(:project) { create(:project) }
+        let_it_be(:support_bot) { create(:support_bot) }
         let(:mailer) { double(deliver_later: true) }
-        let(:issue) { create(:issue, author: Users::Internal.support_bot) }
-        let(:project) { issue.project }
+        let(:issue) { create(:issue, project: project, author: support_bot) }
+
         let(:note) { create(:note, noteable: issue, project: project) }
 
         subject(:notification_service) { described_class.new }
@@ -1165,7 +1167,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
               let!(:note) do
                 create(
                   :note_on_issue,
-                  author: Users::Internal.support_bot,
+                  author: support_bot,
                   noteable: issue,
                   project_id: issue.project_id,
                   note: '@mention referenced, @unsubscribed_mentioned and @outsider also'
@@ -1816,9 +1818,9 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
           notification.new_note(note)
 
-          expect(PartitionedSentNotification.last(3).map(&:recipient).map(&:id))
+          expect(SentNotification.last(3).map(&:recipient).map(&:id))
             .to contain_exactly(*merge_request.assignees.pluck(:id), merge_request.author.id, @u_watcher.id)
-          expect(PartitionedSentNotification.last.in_reply_to_discussion_id).to eq(note.discussion_id)
+          expect(SentNotification.last.in_reply_to_discussion_id).to eq(note.discussion_id)
         end
 
         it_behaves_like 'project emails are disabled' do
@@ -3963,68 +3965,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           end
         end
       end
-    end
-  end
-
-  describe '#new_member', :deliver_mails_inline do
-    let_it_be(:source) { create(:group) }
-    let_it_be(:added_user) { create(:user) }
-
-    subject(:new_member) { notification.new_member(member) }
-
-    shared_examples_for 'new member added' do |source_type|
-      it 'triggers a notification about about the added access', deliver_mails_inline: false do
-        new_member
-
-        expect_delivery_jobs_count(1)
-        expect_enqueud_email(source_type, member.id, mail: 'member_access_granted_email')
-      end
-    end
-
-    context 'when source is a Group' do
-      it_behaves_like 'new member added', 'Group' do
-        let_it_be(:member) { create(:group_member, source: source) }
-      end
-
-      it_behaves_like 'group emails are disabled' do
-        let(:notification_target) { source }
-        let(:notification_trigger) { notification_target.add_guest(added_user) }
-      end
-    end
-
-    context 'when source is a Project' do
-      let_it_be(:source) { create(:project) }
-
-      it_behaves_like 'new member added', 'Project' do
-        let_it_be(:member) { create(:project_member, source: project) }
-      end
-
-      it_behaves_like 'project emails are disabled' do
-        let_it_be(:notification_target) { source }
-        let(:notification_trigger) { source.add_guest(added_user) }
-      end
-    end
-
-    context 'when notifications are disabled' do
-      before do
-        create_global_setting_for(added_user, :disabled)
-      end
-
-      it 'does not send a notification' do
-        source.add_guest(added_user)
-        should_not_email_anyone
-      end
-    end
-  end
-
-  describe '#updated_member_access_level' do
-    let_it_be(:member) { create(:group_member) }
-
-    it 'triggers a notification about the access_level change' do
-      notification.updated_member_access_level(member)
-
-      expect_delivery_jobs_count(1)
-      expect_enqueud_email('Group', member.id, mail: 'member_access_granted_email')
     end
   end
 

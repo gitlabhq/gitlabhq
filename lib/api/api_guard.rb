@@ -86,9 +86,7 @@ module API
 
       private
 
-      def group_manage_endpoint?(user)
-        return false unless Feature.enabled?(:manage_pat_by_group_owners_ready, user)
-
+      def group_manage_endpoint?
         request.path.match?(%r{/groups/(\d+)/manage/})
       end
 
@@ -134,7 +132,7 @@ module API
         ::Auth::DpopAuthenticationService.new(current_user: user,
           personal_access_token_plaintext: token,
           request: current_request).execute(
-            enforce_dpop_authentication: group_manage_endpoint?(user),
+            enforce_dpop_authentication: group_manage_endpoint?,
             group_id: params[:id])
       end
 

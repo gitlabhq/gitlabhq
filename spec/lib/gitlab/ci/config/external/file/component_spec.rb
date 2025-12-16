@@ -197,22 +197,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
         }
       )
     end
-
-    context 'when the FF ci_component_context_interpolation is disabled' do
-      before do
-        stub_feature_flags(ci_component_context_interpolation: false)
-      end
-
-      it 'inherits user and variables while changes project and sha without component_data' do
-        is_expected.to include(
-          project: project,
-          sha: 'my_component_sha',
-          user: context.user,
-          variables: context.variables,
-          component_data: {}
-        )
-      end
-    end
   end
 
   describe '#to_hash' do

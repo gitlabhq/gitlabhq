@@ -3,9 +3,18 @@
   "description": "Kroki formats",
   "type": "object",
   "properties": {
-    "bpmn": { "type": "boolean" },
-    "excalidraw": { "type": "boolean" },
-    "blockdiag": { "type": "boolean" }
+    "bpmn": {
+      "type": "boolean"
+    },
+    "excalidraw": {
+      "type": "boolean"
+    },
+    "blockdiag": {
+      "type": "boolean"
+    },
+    "mermaid": {
+      "type": "boolean"
+    }
   },
   "additionalProperties": false
 }

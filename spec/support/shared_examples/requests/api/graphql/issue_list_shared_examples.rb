@@ -272,7 +272,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
     # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/505024
     context 'when filtering by Service Desk issues/tickets' do
       # Use items only for this context because it's temporary. This way we don't need to modify other examples.
-      let_it_be(:service_desk_issue) { create(:issue, project: project, author: ::Users::Internal.support_bot) }
+      let_it_be(:service_desk_issue) { create(:issue, project: project, author: create(:support_bot)) }
+
       # don't use support bot because this isn't a req for ticket WIT
       let_it_be(:ticket) { create(:work_item, :ticket, project: project, author: current_user) }
       # Get work item as issue because this query only returns issues.

@@ -23,6 +23,7 @@ module PersonalAccessTokens
       return unless needs_update?
 
       lb = @personal_access_token.load_balancer
+
       try_obtain_lease do
         ::Gitlab::Database::LoadBalancing::SessionMap.current(lb).without_sticky_writes do
           update_pat_ip if last_used_ip_needs_update?
@@ -39,6 +40,12 @@ module PersonalAccessTokens
 
     def lease_key
       @lease_key ||= "pat:last_used_update_lock:#{@personal_access_token.id}"
+    end
+
+    def lease_release?
+      return super unless Feature.enabled?(:stop_release_lease_for_pat_last_used_service, Feature.current_request)
+
+      false
     end
 
     def lease_taken_log_level

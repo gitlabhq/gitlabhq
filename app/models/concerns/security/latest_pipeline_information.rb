@@ -28,12 +28,20 @@ module Security
       reports.tap do |r|
         build_names = builds.map(&:name)
 
-        r.push(:sast_iac) if build_names.delete('kics-iac-sast')
+        # Support both direct job names and policy-enforced job names with suffixes
+        # e.g., 'kics-iac-sast', 'kics-iac-sast-0', 'kics-iac-sast:policy-123456-0'
+        r.push(:sast_iac) if build_names.any? { |name| name.start_with?('kics-iac-sast') }
 
-        # When using adavanced sast, sast should also show in the report names
-        r.push(:sast, :sast_advanced) if build_names.delete('gitlab-advanced-sast')
+        # When using advanced sast, sast should also show in the report names
+        # e.g., 'gitlab-advanced-sast', 'gitlab-advanced-sast-0', 'gitlab-advanced-sast:policy-123456-0'
+        r.push(:sast, :sast_advanced) if build_names.any? { |name| name.start_with?('gitlab-advanced-sast') }
 
-        r.push(:sast) if build_names.any? { |name| name.include? '-sast' }
+        # Only add :sast if there are other sast jobs besides IaC and Advanced SAST
+        if build_names.any? do |name|
+          name.include?('-sast') && !name.start_with?('kics-iac-sast', 'gitlab-advanced-sast')
+        end
+          r.push(:sast)
+        end
       end.uniq
     end
 

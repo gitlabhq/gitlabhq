@@ -80,6 +80,9 @@ export default {
         id: this.inputId,
       };
     },
+    hasTextPendingTokenization() {
+      return this.query.length > 0;
+    },
   },
   watch: {
     // We might not really want this to be *reactive* since we want the "class" state to be
@@ -96,12 +99,16 @@ export default {
         this.updateTokenClasses();
       },
     },
+    hasTextPendingTokenization(newValue) {
+      this.$emit('tokenization-state-change', newValue);
+    },
   },
   methods: {
     memberName,
     handleTextInput(inputQuery) {
       this.originalInput = inputQuery;
       this.query = inputQuery.trim();
+
       this.loading = true;
       this.retrieveUsers();
     },

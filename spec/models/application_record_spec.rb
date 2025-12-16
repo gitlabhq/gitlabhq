@@ -300,24 +300,6 @@ RSpec.describe ApplicationRecord do
     end
   end
 
-  describe '.sharding_keys' do
-    it 'returns sharding keys for the model' do
-      expect(Group.sharding_keys).to eq({ 'organization_id' => 'organizations' })
-    end
-
-    context 'when no sharding key is defined' do
-      let(:entry) { instance_double(Gitlab::Database::Dictionary::Entry, sharding_key: nil) }
-
-      before do
-        allow(Gitlab::Database::Dictionary).to receive(:entry).with('namespaces').and_return(entry)
-      end
-
-      it 'returns empty hash' do
-        expect(Namespace.sharding_keys).to eq({})
-      end
-    end
-  end
-
   describe '.default_select_columns' do
     shared_examples_for 'selects identically to the default' do
       it 'generates the same sql as the default' do

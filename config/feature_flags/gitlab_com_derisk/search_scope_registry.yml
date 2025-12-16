@@ -1,0 +1,8 @@
+---
+name: search_scope_registry
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209817
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581757
+milestone: '18.7'
+type: gitlab_com_derisk
+group: group::global search
+default_enabled: false

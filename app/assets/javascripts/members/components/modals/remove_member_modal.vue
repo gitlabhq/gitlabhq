@@ -5,6 +5,7 @@ import { mapActions, mapState } from 'vuex';
 import csrf from '~/lib/utils/csrf';
 import { s__, __ } from '~/locale';
 import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
+// eslint-disable-next-line no-restricted-imports
 import { MEMBER_MODEL_TYPE_GROUP_MEMBER } from '../../constants';
 
 export default {

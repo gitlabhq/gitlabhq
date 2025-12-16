@@ -436,7 +436,7 @@ To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follo
 
 1. Make sure [`docker-credential-ecr-login`](https://github.com/awslabs/amazon-ecr-credential-helper) is available in the GitLab Runner `$PATH`.
 1. Have any of the following [AWS credentials setup](https://github.com/awslabs/amazon-ecr-credential-helper#aws-credentials).
-   Make sure that GitLab Runner can access the credentials.
+   GitLab Runner Manager acquires the credentials and passes them to the runners. Make sure that GitLab Runner can access the credentials.
 1. Make GitLab Runner use it. You can accomplish this by using one of the following options:
 
    - Create a [CI/CD variable](../variables/_index.md)

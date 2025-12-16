@@ -27,7 +27,6 @@ RSpec/ExpectChange:
     - 'ee/spec/models/ee/project_group_link_spec.rb'
     - 'ee/spec/models/ee/user_spec.rb'
     - 'ee/spec/models/geo_node_spec.rb'
-    - 'ee/spec/models/gitlab_subscription_spec.rb'
     - 'ee/spec/models/group_wiki_spec.rb'
     - 'ee/spec/models/incident_management/issuable_escalation_status_spec.rb'
     - 'ee/spec/models/security/orchestration_policy_configuration_spec.rb'

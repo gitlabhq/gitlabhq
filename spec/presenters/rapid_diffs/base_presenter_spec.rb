@@ -3,7 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe RapidDiffs::BasePresenter, feature_category: :source_code_management do
-  subject(:presenter) { described_class.new(Class.new, :inline, {}) }
+  let(:diff_view) { :inline }
+  let(:diff_options) { {} }
+  let(:environment) { nil }
+
+  subject(:presenter) { described_class.new(Class.new, diff_view, diff_options, nil, environment) }
+
+  describe '#environment' do
+    subject(:method) { presenter.environment }
+
+    it { is_expected.to be_nil }
+
+    context 'when environment is provided' do
+      let(:environment) { build(:environment) }
+
+      it { is_expected.to eq(environment) }
+    end
+  end
 
   describe 'abstract methods' do
     it 'raises a NotImplementedError for #diffs_stats_endpoint' do

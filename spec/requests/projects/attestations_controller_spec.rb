@@ -5,10 +5,65 @@ require 'spec_helper'
 RSpec.describe Projects::AttestationsController, feature_category: :artifact_security do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:attestation) { create(:supply_chain_attestation, project: project) }
-  let(:user) { project.first_owner }
+  let_it_be(:user) { project.first_owner }
 
   before do
     sign_in(user)
+  end
+
+  describe 'GET index' do
+    def get_index
+      get project_attestations_path(project), params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project.to_param
+      }
+    end
+
+    context 'when slsa_provenance_statement is enabled' do
+      context 'when user is not authorized to read attestations' do
+        let_it_be(:project) { create(:project, :private) }
+        let_it_be(:non_member) { create(:user) }
+
+        it 'returns 404' do
+          sign_in(non_member)
+          get_index
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when user can read attestations' do
+        it 'renders list of attestations' do
+          get_index
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when project has more than 20 attestations' do
+        before do
+          create_list(:supply_chain_attestation, 21, project: project) # rubocop:disable FactoryBot/ExcessiveCreateList -- paginator is rendered when there are more than 20 attestations
+        end
+
+        it 'has paginator' do
+          get_index
+
+          expect(response.body).to have_css('.gl-pagination-item[rel=next]')
+        end
+      end
+    end
+
+    context 'when slsa_provenance_statement is disabled' do
+      before do
+        stub_feature_flags(slsa_provenance_statement: false)
+      end
+
+      it 'returns 404' do
+        get_index
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe 'GET download' do
@@ -20,7 +75,8 @@ RSpec.describe Projects::AttestationsController, feature_category: :artifact_sec
 
     context 'when slsa_provenance_statement is enabled' do
       context 'when attestation is readable' do
-        it 'returns attestation file' do
+        it 'returns attestation file',
+          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/18579' do
           download_attestation
 
           filename = attestation.file.filename

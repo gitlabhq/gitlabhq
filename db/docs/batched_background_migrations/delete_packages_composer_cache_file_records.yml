@@ -1,8 +1,0 @@
----
-migration_job_name: DeletePackagesComposerCacheFileRecords
-description: Delete packages composer cache file records
-feature_category: package_registry
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159861
-milestone: '17.3'
-queued_migration_version: 20240718085345
-finalized_by: 20240816092254

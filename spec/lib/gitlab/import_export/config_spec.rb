@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Config, feature_category: :importers do
   let(:yaml_file) { described_class.new }

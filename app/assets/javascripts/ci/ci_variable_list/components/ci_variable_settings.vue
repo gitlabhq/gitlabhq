@@ -4,6 +4,7 @@ import CiVariableDrawer from './ci_variable_drawer.vue';
 import CiVariableTable from './ci_variable_table.vue';
 
 export default {
+  name: 'CiVariableSettings',
   components: {
     CiVariableDrawer,
     CiVariableTable,
@@ -60,6 +61,15 @@ export default {
       required: true,
     },
   },
+  emits: [
+    'add-variable',
+    'delete-variable',
+    'handle-next-page',
+    'handle-prev-page',
+    'search-environment-scope',
+    'sort-changed',
+    'update-variable',
+  ],
   data() {
     return {
       selectedVariable: {},

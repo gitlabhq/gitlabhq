@@ -1,0 +1,29 @@
+---
+description: Tracks passkey authentication
+internal_events: true
+status: active
+action: authenticate_passkey
+identifiers:
+- user
+additional_properties:
+  status:
+    description: Stores a string to track passkey authentication status (attempt, success, failure)
+  entry_point:
+    description: Stores a string to track which page the user passkey journey begins (two_factor_after_login_page, passwordless_passkey_button)
+  browser:
+    description: Stores the browser name from which the user executed the request (i.e Firefox)
+  device_type:
+    description: Stores the device type from which the user executed the request (i.e. smartphone)
+  device_name:
+    description: Stores the device name from which the user executed the request (i.e Pixel 8)
+  has_2fa:
+    description: Stores a string (boolean) based on whether the user has 2FA enabled (true/false)
+product_group: authentication
+product_categories:
+- system_access
+milestone: '18.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214304
+tiers:
+- free
+- premium
+- ultimate

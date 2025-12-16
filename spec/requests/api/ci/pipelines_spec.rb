@@ -34,6 +34,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       end
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_pipeline do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/pipelines", personal_access_token: pat)
+      end
+    end
+
     context 'authorized user' do
       it 'returns project pipelines', :aggregate_failures do
         get api("/projects/#{project.id}/pipelines", user)
@@ -568,6 +575,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs"), params: { job_token: target_job.token }
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_pipeline_job do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", personal_access_token: pat)
+        end
+      end
     end
   end
 
@@ -773,6 +787,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges"), params: { job_token: target_job.token }
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_pipeline_bridge do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", personal_access_token: pat)
+        end
+      end
     end
   end
 
@@ -791,6 +812,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       context 'with gitlab-ci.yml' do
         before do
           stub_ci_pipeline_to_return_yaml_file
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :create_pipeline do
+          let(:boundary_object) { project }
+          let(:request) do
+            post api("/projects/#{project.id}/pipeline", personal_access_token: pat),
+              params: { ref: project.default_branch }
+          end
         end
 
         it 'creates and returns a new pipeline', :aggregate_failures do
@@ -1016,6 +1045,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       end
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_pipeline do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/pipelines/#{pipeline.id}", personal_access_token: pat)
+      end
+    end
+
     context 'authorized user' do
       it 'exposes known attributes', :aggregate_failures do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
@@ -1161,6 +1197,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           expect(json_response['sha']).to eq(second_branch.target)
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_pipeline do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/pipelines/latest", personal_access_token: pat)
+        end
+      end
     end
 
     context 'unauthorized user' do
@@ -1200,6 +1243,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
             "value" => "bar",
             "raw" => false
           })
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_pipeline_variable do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/variables", personal_access_token: pat)
         end
       end
     end
@@ -1294,6 +1344,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           end
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_pipeline do
+        let(:boundary_object) { project }
+        let(:user) { owner }
+        let(:request) do
+          delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", personal_access_token: pat)
+        end
+      end
     end
 
     context 'unauthorized user' do
@@ -1336,6 +1394,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       let(:request) do
         put api("/projects/#{source_project.id}/pipelines/#{pipeline.id}/metadata"),
           params: { name: name, job_token: target_job.token }
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_pipeline_metadata do
+      let(:boundary_object) { project }
+      let(:request) do
+        put api("/projects/#{project.id}/pipelines/#{pipeline.id}/metadata", personal_access_token: pat),
+          params: { name: name }
       end
     end
 
@@ -1418,6 +1484,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         expect(response).to have_gitlab_http_status(:created)
         expect(build.reload.retried?).to be true
       end
+
+      it_behaves_like 'authorizing granular token permissions', :retry_pipeline do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", personal_access_token: pat)
+        end
+      end
     end
 
     context 'unauthorized user' do
@@ -1473,6 +1546,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['status']).to eq('canceled')
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :cancel_pipeline do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", personal_access_token: pat)
         end
       end
     end
@@ -1559,6 +1639,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           end
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_pipeline_test_report do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report", personal_access_token: pat)
+        end
+      end
     end
 
     context 'unauthorized user' do
@@ -1596,6 +1683,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['total']['count']).to eq(2)
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_pipeline_test_report_summary do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report_summary", personal_access_token: pat)
         end
       end
     end

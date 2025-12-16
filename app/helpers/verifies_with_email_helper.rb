@@ -33,6 +33,6 @@ module VerifiesWithEmailHelper
     return false unless email_otp_required_after.present?
 
     days_until_enrollment = (user.email_otp_required_after.to_date - Date.current).to_i
-    days_until_enrollment.between?(1, 30)
+    days_until_enrollment.between?(1, 7)
   end
 end

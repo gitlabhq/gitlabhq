@@ -32,7 +32,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsVisible']),
+    ...mapState(useFileTreeBrowserVisibility, [
+      'fileTreeBrowserIsVisible',
+      'shouldRestoreFocusToToggle',
+    ]),
     toggleFileBrowserTitle() {
       return this.fileTreeBrowserIsVisible
         ? __('Hide file tree browser')
@@ -42,12 +45,18 @@ export default {
       return !shouldDisableShortcuts();
     },
   },
+  watch: {
+    shouldRestoreFocusToToggle(newValue) {
+      if (newValue) this.$nextTick(() => this.restoreToggleFocus());
+    },
+  },
   mounted() {
     if (this.shouldShowPopover) {
       this.popoverTimeout = setTimeout(() => {
         this.showPopover = true;
       }, 500);
     }
+    if (this.shouldRestoreFocusToToggle) this.$nextTick(() => this.restoreToggleFocus());
   },
   beforeDestroy() {
     if (this.popoverTimeout) {
@@ -56,7 +65,14 @@ export default {
   },
 
   methods: {
-    ...mapActions(useFileTreeBrowserVisibility, ['handleFileTreeBrowserToggleClick']),
+    ...mapActions(useFileTreeBrowserVisibility, [
+      'handleFileTreeBrowserToggleClick',
+      'clearRestoreFocusFlag',
+    ]),
+    restoreToggleFocus() {
+      this.$refs.toggle?.$el?.focus();
+      this.clearRestoreFocusFlag();
+    },
     onClickToggle() {
       this.handleFileTreeBrowserToggleClick();
 

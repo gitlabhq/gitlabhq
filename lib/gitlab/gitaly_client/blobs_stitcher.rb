@@ -23,7 +23,7 @@ module Gitlab
           elsif msg.oid.present?
             yield new_blob(current_blob_data) if current_blob_data
 
-            current_blob_data = msg.to_h.slice(:oid, :path, :size, :revision, :mode)
+            current_blob_data = blob_attributes(msg)
             current_blob_data[:data_parts] = [msg.data]
           else
             current_blob_data[:data_parts] << msg.data
@@ -34,6 +34,14 @@ module Gitlab
       end
 
       private
+
+      # Avoid using #to_h because google-protobuf v4 omits default values
+      def blob_attributes(msg)
+        # msg can be a Gitaly::ListAllBlobsResponse::Blob or Gitaly::GetBlobsResponse
+        %i[oid path size revision mode].each_with_object({}) do |name, attrs|
+          attrs[name] = msg.send(name) if msg.respond_to?(name) # rubocop:disable GitlabSecurity/PublicSend -- This is safe because these fields are in the protobuf
+        end
+      end
 
       def removed_by_filter(msg)
         return unless @filter_function
@@ -46,7 +54,7 @@ module Gitlab
 
         Gitlab::Git::Blob.new(
           id: blob_data[:oid],
-          mode: blob_data[:mode]&.to_s(8),
+          mode: blob_data[:mode]&.to_i&.to_s(8),
           name: blob_data[:path] && File.basename(blob_data[:path]),
           path: blob_data[:path],
           size: blob_data[:size],

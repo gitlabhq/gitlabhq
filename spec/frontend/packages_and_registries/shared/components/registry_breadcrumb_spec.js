@@ -58,7 +58,7 @@ describe('Registry Breadcrumb', () => {
     });
   });
 
-  describe('when is not rootRoute', () => {
+  describe('when is details route', () => {
     beforeEach(() => {
       mountComponent({ $route: defaultRoutes[1] });
     });

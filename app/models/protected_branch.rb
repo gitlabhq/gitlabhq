@@ -9,7 +9,10 @@ class ProtectedBranch < ApplicationRecord
 
   belongs_to :group, foreign_key: :namespace_id, touch: true, inverse_of: :protected_branches, optional: true
 
-  validate :validate_either_project_or_top_group
+  validates_with ExactlyOnePresentValidator, fields: [:project, :group],
+    message: ->(_fields) { _('must be associated with a Group or a Project') }
+
+  validate :validate_not_subgroup
   validates :name, uniqueness: { scope: [:project_id, :namespace_id] }, if: :name_changed?
 
   scope :requiring_code_owner_approval, -> { where(code_owner_approval_required: true) }
@@ -19,6 +22,12 @@ class ProtectedBranch < ApplicationRecord
 
   scope :for_group, ->(group) { where(group: group) }
   scope :preload_access_levels, -> { preload(:push_access_levels, :merge_access_levels) }
+
+  scope :after_name_and_id, ->(name, id) {
+    return none unless name && id
+
+    where('(name > ?) OR (name = ? AND id > ?)', name, name, id).order(:name, :id)
+  }
 
   protected_ref_access_levels :merge, :push
 
@@ -109,14 +118,10 @@ class ProtectedBranch < ApplicationRecord
 
   private
 
-  def validate_either_project_or_top_group
-    if !project && !group
-      errors.add(:base, _('must be associated with a Group or a Project'))
-    elsif project && group
-      errors.add(:base, _('cannot be associated with both a Group and a Project'))
-    elsif group && group.subgroup?
-      errors.add(:base, _('cannot be associated with a subgroup'))
-    end
+  def validate_not_subgroup
+    return unless group&.subgroup?
+
+    errors.add(:base, _('cannot be associated with a subgroup'))
   end
 end
 

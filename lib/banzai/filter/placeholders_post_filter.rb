@@ -58,6 +58,12 @@ module Banzai
             context[:project]&.default_branch
           end
         end,
+        'current_ref' => ->(context) do
+          if context[:project]&.repository_exists? &&
+              Ability.allowed?(context[:current_user], :read_code, context[:project])
+            context[:ref]
+          end
+        end,
         'commit_sha' => ->(context) do
           if context[:project]&.repository_exists? &&
               Ability.allowed?(context[:current_user], :read_code, context[:project])

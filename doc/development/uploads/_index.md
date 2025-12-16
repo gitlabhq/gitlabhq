@@ -170,7 +170,9 @@ sequenceDiagram
 
 ## Workhorse assisted uploads
 
-Most uploads receive assistance from Workhorse in some way.
+All REST and GraphQL APIs that accept file content must use Workhorse-assisted uploads.
+
+Workhorse can assist in a variety of ways:
 
 - Often, Workhorse buffers the upload to a temporary file. Workhorse adds metadata to the request to tell
   Puma the name and location of the temporary file. This requires shared temporary storage between Workhorse and Puma.
@@ -181,5 +183,20 @@ Most uploads receive assistance from Workhorse in some way.
   where GitLab accepts the file but has not yet processed it.
 - With direct upload, Workhorse can both pre-process the file and upload it to object storage.
   Uploading a large file to object storage takes time; by doing this in Workhorse we avoid the Puma request timeout.
+
+To implement Workhorse-assisted uploads, you must:
+
+- Add a route in `workhorse/internal/upstream/routes.go` using `mimeMultipartUploader` or `requestBodyUploader`.
+- Create an `/authorize` endpoint in your API class. The endpoint must:
+  - Call `require_gitlab_workhorse!`
+  - Return status 200 with content type `Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE`
+  - Call `workhorse_authorize` on an uploader class
+- Create an upload endpoint that receives the file. The endpoint must:
+  - Call `require_gitlab_workhorse!`
+  - Use parameter type `::API::Validations::Types::WorkhorseFile` for the file
+  - Declare optional file metadata parameters (path, name, type, size, checksums)
+- Use an appropriate uploader class that includes `ObjectStorage::Concern`.
+
+See `lib/api/project_import.rb` for a complete implementation example.
 
 For additional information about uploads, see [Workhorse handlers](../workhorse/handlers.md).

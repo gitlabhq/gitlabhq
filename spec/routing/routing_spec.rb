@@ -18,6 +18,12 @@ RSpec.describe UsersController, "routing" do
     expect(get("/User")).to route_to('users#show', username: 'User')
   end
 
+  specify "to #show with username starting with o." do
+    allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
+
+    expect(get("/o.redka")).to route_to('users#show', username: 'o.redka')
+  end
+
   specify "to #gpg_keys" do
     allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
 

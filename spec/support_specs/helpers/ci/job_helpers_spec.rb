@@ -61,10 +61,11 @@ RSpec.describe Ci::JobHelpers, feature_category: :continuous_integration do
     context 'when the provided config attribute value has invalid format' do
       let(:new_options) { 'not an object' }
 
-      # TODO: Update this test to expect an ActiveRecord::RecordInvalid error when ci_job_definitions_config.json
-      # is updated in https://gitlab.com/gitlab-org/gitlab/-/issues/560157.
-      it 'does not raise an error' do
-        expect { call_stub }.not_to raise_error
+      it 'raises an error' do
+        expect do
+          call_stub
+        end.to raise_error(ActiveRecord::RecordInvalid,
+          'Validation failed: Config value at `/options` is not one of the types: ["object", "null"]')
       end
     end
   end

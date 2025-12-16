@@ -25,7 +25,7 @@ Cloning a repository:
 Clone with SSH when you want to authenticate only one time.
 
 1. Authenticate with GitLab by following the instructions in the [SSH documentation](../../user/ssh.md).
-1. On the left sidebar, select **Search or go to** and find the project you want to clone. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find the project you want to clone.
 1. On the project's overview page, in the upper-right corner, select **Code**, then copy the URL for **Clone with SSH**.
 1. Open a terminal and go to the directory where you want to clone the files.
    Git automatically creates a folder with the repository name and downloads the files there.
@@ -47,7 +47,7 @@ Clone with HTTPS when you want to authenticate each time you perform an operatio
 [OAuth credential helpers](../../user/profile/account/two_factor_authentication.md#oauth-credential-helpers) can decrease
 the number of times you must manually authenticate, making HTTPS a seamless experience.
 
-1. On the left sidebar, select **Search or go to** and find the project you want to clone. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find the project you want to clone.
 1. On the project's overview page, in the upper-right corner, select **Code**, then copy the URL for **Clone with HTTPS**.
 1. Open a terminal and go to the directory where you want to clone the files.
 1. Run the following command. Git automatically creates a folder with the repository name and downloads the files there.
@@ -56,14 +56,16 @@ the number of times you must manually authenticate, making HTTPS a seamless expe
    git clone <copied URL>
    ```
 
-1. GitLab requests your username and password.
+1. Authenticate your request.
 
-   If you have enabled two-factor authentication (2FA) on your account, you cannot use your account password. Instead, you can do one of the following:
+   {{< alert type="note" >}}
 
-   - [Clone using a token](#clone-using-a-token) with `read_repository` or `write_repository` permissions.
-   - Install an [OAuth credential helper](../../user/profile/account/two_factor_authentication.md#oauth-credential-helpers).
+   If you have enabled two-factor authentication (2FA), you cannot use username and password authentication. Instead:
 
-   If you have not enabled 2FA, use your account password.
+   - [Use a token](#clone-using-a-token) with `read_repository` or `write_repository` permissions.
+   - Install an [OAuth credential helper](../../user/profile/account/two_factor_authentication.md#oauth-credential-helpers)
+
+   {{< /alert >}}
 
 1. To view the files, go to the new directory:
 
@@ -131,7 +133,7 @@ Prerequisites:
 
      After Visual Studio Code clones your project, it opens the folder.
 - From Visual Studio Code, with the [extension](../../editor_extensions/visual_studio_code/_index.md) installed, use the
-  extension's [`Git: Clone` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#clone-gitlab-projects).
+  extension's [`Git: Clone` command](../../editor_extensions/visual_studio_code/remote_urls.md#clone-a-git-project).
 
 ## Clone and open in IntelliJ IDEA
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::SchemaCleaner do
+RSpec.describe Gitlab::Database::SchemaCleaner, feature_category: :database do
   let(:example_schema) { fixture_file(File.join('gitlab', 'database', 'structure_example.sql')) }
   let(:io) { StringIO.new }
 
@@ -27,6 +27,16 @@ RSpec.describe Gitlab::Database::SchemaCleaner do
   it 'cleans up all the gitlab_schema_prevent_write table triggers' do
     expect(subject).not_to match(/CREATE TRIGGER gitlab_schema_write_trigger_for_\w+/)
     expect(subject).not_to match(/FOR EACH STATEMENT EXECUTE FUNCTION gitlab_schema_prevent_write/)
+  end
+
+  it 'cleans up all the gitlab_schema_prevent_write with schema prefix' do
+    trigger_statement = <<~SQL.strip
+      CREATE TRIGGER gitlab_schema_write_trigger_for_p_ci_pipeline_iids_00
+      BEFORE INSERT OR DELETE OR UPDATE OR TRUNCATE ON gitlab_partitions_static.p_ci_pipeline_iids_00
+      FOR EACH STATEMENT EXECUTE FUNCTION gitlab_schema_prevent_write();
+    SQL
+
+    expect(subject).not_to include(trigger_statement)
   end
 
   it 'keeps the lock_writes trigger functions' do

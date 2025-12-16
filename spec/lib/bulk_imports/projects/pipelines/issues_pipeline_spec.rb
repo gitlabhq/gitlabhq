@@ -263,7 +263,8 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
           import_type: ::Import::SOURCE_DIRECT_TRANSFER,
           namespace: group,
           source_user_identifier: 101,
-          source_hostname: bulk_import.configuration.url
+          source_hostname: bulk_import.configuration.url,
+          placeholder_user: create(:user, :import_user)
         )
       end
 
@@ -320,27 +321,39 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
         issue_assignee = issue.issue_assignees.first
         award_emoji = issue.award_emoji.first
 
-        expect(issue.author).to be_placeholder
-        expect(issue.updated_by).to be_placeholder
-        expect(issue.last_edited_by).to be_placeholder
-        expect(issue.closed_by).to be_placeholder
-        expect(event.author).to be_placeholder
-        expect(timelog.user).to be_placeholder
-        expect(note.author).to be_placeholder
-        expect(note.updated_by).to be_placeholder
-        expect(note.resolved_by).to be_placeholder
-        expect(note_event.author).to be_placeholder
-        expect(resource_label_event.user).to be_placeholder
-        expect(resource_milestone_event.user).to be_placeholder
-        expect(resource_state_events.user).to be_placeholder
-        expect(design_version.author).to be_placeholder
-        expect(issue_assignee.assignee).to be_placeholder
-        expect(award_emoji.user).to be_placeholder
+        expect(issue.author).to be_import_user
+        expect(issue.updated_by).to be_import_user
+        expect(issue.last_edited_by).to be_import_user
+        expect(issue.closed_by).to be_import_user
+        expect(event.author).to be_import_user
+        expect(timelog.user).to be_import_user
+        expect(note.author).to be_import_user
+        expect(note.updated_by).to be_import_user
+        expect(note.resolved_by).to be_import_user
+        expect(note_event.author).to be_import_user
+        expect(resource_label_event.user).to be_import_user
+        expect(resource_milestone_event.user).to be_import_user
+        expect(resource_state_events.user).to be_import_user
+        expect(design_version.author).to be_import_user
+        expect(issue_assignee.assignee).to be_import_user
+        expect(award_emoji.user).to be_import_user
 
         source_user = Import::SourceUser.find_by(source_user_identifier: 101)
-        expect(source_user.placeholder_user).to be_placeholder
+        expect(source_user.placeholder_user).to be_import_user
 
         expect(Import::PlaceholderReferences::PushService).to have_received(:from_record).exactly(16).times
+      end
+
+      context 'when direct reassignment is supported' do
+        before do
+          allow(Import::DirectReassignService).to receive(:supported?).and_return(true)
+        end
+
+        it 'does not push any placeholder references' do
+          pipeline.run
+
+          expect(Import::PlaceholderReferences::PushService).not_to have_received(:from_record)
+        end
       end
     end
   end

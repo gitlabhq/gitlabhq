@@ -79,7 +79,8 @@ RSpec.describe BulkImports::Projects::Pipelines::CommitNotesPipeline, feature_ca
           import_type: ::Import::SOURCE_DIRECT_TRANSFER,
           namespace: group,
           source_user_identifier: 101,
-          source_hostname: bulk_import.configuration.url
+          source_hostname: bulk_import.configuration.url,
+          placeholder_user: create(:user, :import_user)
         )
       end
 
@@ -89,13 +90,25 @@ RSpec.describe BulkImports::Projects::Pipelines::CommitNotesPipeline, feature_ca
         note = project.notes.for_commit_id("sha-notes").first
         event = note.events.first
 
-        expect(note.author).to be_placeholder
-        expect(note.updated_by).to be_placeholder
-        expect(event.author).to be_placeholder
+        expect(note.author).to be_import_user
+        expect(note.updated_by).to be_import_user
+        expect(event.author).to be_import_user
 
         source_user = Import::SourceUser.find_by(source_user_identifier: 101)
-        expect(source_user.placeholder_user).to be_placeholder
+        expect(source_user.placeholder_user).to be_import_user
         expect(Import::PlaceholderReferences::PushService).to have_received(:from_record).exactly(3).times
+      end
+
+      context 'when direct reassignment is supported' do
+        before do
+          allow(Import::DirectReassignService).to receive(:supported?).and_return(true)
+        end
+
+        it 'does not push any placeholder references' do
+          pipeline.run
+
+          expect(Import::PlaceholderReferences::PushService).not_to have_received(:from_record)
+        end
       end
     end
   end

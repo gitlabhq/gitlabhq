@@ -26,7 +26,7 @@ title: Code Suggestions
 
 - [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
 - [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.
-- [Introduced support for Code Generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
+- [Introduced support for code generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
 - [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro add-on on February 15, 2024. Previously, this feature was included with Premium and Ultimate subscriptions.
 - [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro or GitLab Duo Enterprise add-on for all supported GitLab versions starting October 17, 2024.
@@ -36,7 +36,7 @@ title: Code Suggestions
 - Changed to include GitLab Duo Core in GitLab 18.0.
 - Enabled Fireworks hosted `Codestral` as the default model in GitLab 18.1.
 - To opt out of Fireworks for a group, the feature flag `code_completion_opt_out_fireworks` is available.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545489) the default model for Code Generation to Claude Sonnet 4 in GitLab 18.2.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545489) the default model for code generation to Claude Sonnet 4 in GitLab 18.2.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) feature flag `code_suggestions_context` in GitLab 18.6.
 
 {{< /history >}}
@@ -134,10 +134,7 @@ To get the best results from code generation:
 - Add additional information, like the framework or library you want to use.
 - Add a space or new line after each comment.
   This space tells the code generator that you have completed your instructions.
-- In GitLab 17.2 and later, when the `advanced_context_resolver` and `code_suggestions_context`
-  feature flags are enabled, open related files in other tabs to expand the
-  [context that Code Suggestions is aware of](../../../gitlab_duo/context.md#code-suggestions).
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) feature flag `code_suggestions_context` in GitLab 18.6.
+- Review and adjust the [context available to Code Suggestions](../../../gitlab_duo/context.md#code-suggestions).
 
 For example, to create a Python web service with some specific requirements,
 you might write something like:
@@ -181,7 +178,7 @@ However, Code Suggestions might generate suggestions that are:
 
 - Irrelevant.
 - Incomplete.
-- Results in failed pipelines.
+- Likely to result in failed pipelines.
 - Potentially insecure.
 - Offensive or insensitive.
 
@@ -219,13 +216,14 @@ To learn about the code that builds the prompt, see these files:
 
 Prompt caching is enabled by default to improve Code Suggestions latency. When prompt caching is enabled, code completion prompt data is temporarily stored in memory by the model vendor. Prompt caching significantly improves latency by avoiding the re-processing of cached prompt and input data. The cached data is never logged to any persistent storage.
 
-### Disable prompt caching
+### Turn off prompt caching
 
-You can disable prompt caching for top-level groups in the GitLab Duo settings.
+You can turn off prompt caching for top-level groups in the GitLab Duo settings.
+This also turns off prompt caching for [GitLab Duo Chat (Agentic)](../../../gitlab_duo_chat/agentic_chat.md#prompt-caching).
 
 On GitLab.com:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Disable the **Prompt caching** toggle.
@@ -233,10 +231,10 @@ On GitLab.com:
 
 On GitLab Self-Managed:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **GitLab Duo**.
-1. Select **Change Configuration**.
-1. Under **Prompt Cache**, clear the **Turn on prompt caching** checkbox.
+1. In the upper-right corner, select **Admin**.
+1. On the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Prompt cache**, clear the **Turn on prompt caching** checkbox.
 1. Select **Save changes**.
 
 ## Response time
@@ -251,7 +249,7 @@ This API connection securely transmits a context window from your IDE/editor to 
 
 ### Streaming
 
-Streaming of Code Generation responses is supported in JetBrains and Visual Studio, leading to
+Streaming of code generation responses is supported in JetBrains and Visual Studio, leading to
 perceived faster response times.
 Other supported IDEs will return the generated code in a single block.
 
@@ -281,19 +279,19 @@ Prerequisites:
 
 {{< tab title="In 17.4 and later" >}}
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **Connection method**, choose an option:
    - To minimize latency for code completion requests, select **Direct connections**.
-   - To disable direct connections for all users, select **Indirect connections through the GitLab Self-Managed instance**.
+   - To disable direct connections for all users, select **Indirect connections through GitLab Self-Managed**.
 1. Select **Save changes**.
 
 {{< /tab >}}
 
 {{< tab title="In 17.3 and earlier" >}}
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **AI-native features**.
 1. Choose an option:

@@ -26,7 +26,7 @@ For help developing custom feature flags, see
 <!-- See https://docs.gitlab.com/ee/development/documentation/testing/markdownlint.html#disable-markdownlint-tests -->
 
 <div class="d-none">
-  <strong>If you don't see the feature flag tables below, view them at <a href="https://docs.gitlab.com/ee/user/feature_flags.html">docs.gitlab.com</a>.</strong>
+  <strong>If you don't see the feature flag tables below, view them at <a href="https://docs.gitlab.com/administration/feature_flags/list/">docs.gitlab.com</a>.</strong>
 </div>
 <!-- the div tag will not display on the docs site but will display on /help -->
 

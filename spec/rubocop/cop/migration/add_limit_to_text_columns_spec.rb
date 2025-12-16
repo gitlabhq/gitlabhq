@@ -84,6 +84,44 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns, feature_category:
           RUBY
         end
       end
+
+      context 'when the column name is a constant' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            class TestTextLimits < ActiveRecord::Migration[6.0]
+              disable_ddl_transaction!
+
+              COLUMN = :name
+
+              def up
+                create_table :test_text_limits, id: false do |t|
+                  t.integer :test_id, null: false
+                  t.text COLUMN
+                    ^^^^ #{msg}
+                end
+
+                create_table :test_text_limits_create do |t|
+                  t.integer :test_id, null: false
+                  t.text :title
+                  t.text COLUMN
+                    ^^^^ #{msg}
+
+                  t.text_limit :title, 100
+                end
+
+                add_column :test_text_limits, COLUMN, :text
+                ^^^^^^^^^^ #{msg}
+
+                add_column :test_text_limits, COLUMN, :text, default: 'default'
+                ^^^^^^^^^^ #{msg}
+
+                change_column_type_concurrently :test_text_limits, COLUMN, :text
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
+              end
+            end
+          RUBY
+        end
+      end
     end
 
     context 'when text columns are defined with a limit' do

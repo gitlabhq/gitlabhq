@@ -72,6 +72,12 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
     it { is_expected.to eq("#{base_path}/discussions") }
   end
 
+  describe '#report_abuse_path' do
+    subject(:url) { presenter.report_abuse_path }
+
+    it { is_expected.to eq("/-/abuse_reports/add_category") }
+  end
+
   describe '#lazy?' do
     subject(:method) { presenter.lazy? }
 
@@ -118,5 +124,17 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
     subject(:method) { presenter.markdown_docs_path }
 
     it { is_expected.to eq('/help/user/markdown.md') }
+  end
+
+  describe '#register_path' do
+    subject(:method) { presenter.register_path }
+
+    it { is_expected.to eq('/users/sign_up?redirect_to_referer=yes') }
+  end
+
+  describe '#sign_in_path' do
+    subject(:method) { presenter.sign_in_path }
+
+    it { is_expected.to eq('/users/sign_in?redirect_to_referer=yes') }
   end
 end

@@ -1,0 +1,6 @@
+---
+name: retry_pipeline
+description: Grants the ability to retry pipelines
+feature_category: continuous_integration
+boundaries:
+  - project

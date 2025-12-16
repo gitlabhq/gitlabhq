@@ -46,6 +46,60 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to have_many(:non_archived_projects).class_name('Project') }
     it { is_expected.to have_many(:bot_users).through(:bot_user_details).source(:user) }
 
+    describe '#non_archived_projects' do
+      let_it_be_with_reload(:parent_group) { create(:group) }
+      let_it_be_with_reload(:child_group) { create(:group, parent: parent_group) }
+      let_it_be_with_reload(:grandchild_group) { create(:group, parent: child_group) }
+
+      let_it_be_with_reload(:parent_project) { create(:project, namespace: parent_group) }
+      let_it_be_with_reload(:child_project) { create(:project, namespace: child_group) }
+      let_it_be_with_reload(:grandchild_project) { create(:project, namespace: grandchild_group) }
+
+      context 'when namespace is not archived' do
+        it 'includes all projects in the namespace hierarchy' do
+          expect(parent_group.non_archived_projects).to contain_exactly(parent_project)
+          expect(child_group.non_archived_projects).to contain_exactly(child_project)
+          expect(grandchild_group.non_archived_projects).to contain_exactly(grandchild_project)
+        end
+      end
+
+      context 'when namespace itself is archived' do
+        before do
+          child_group.update!(archived: true)
+        end
+
+        it 'excludes projects from archived namespace and its descendants' do
+          expect(parent_group.non_archived_projects).to contain_exactly(parent_project)
+          expect(child_group.non_archived_projects).to be_empty
+          expect(grandchild_group.non_archived_projects).to be_empty
+        end
+      end
+
+      context 'when parent namespace is archived' do
+        before do
+          parent_group.update!(archived: true)
+        end
+
+        it 'excludes all projects in the hierarchy' do
+          expect(parent_group.non_archived_projects).to be_empty
+          expect(child_group.non_archived_projects).to be_empty
+          expect(grandchild_group.non_archived_projects).to be_empty
+        end
+      end
+
+      context 'when only grandchild namespace is archived' do
+        before do
+          grandchild_group.update!(archived: true)
+        end
+
+        it 'excludes only grandchild projects' do
+          expect(parent_group.non_archived_projects).to contain_exactly(parent_project)
+          expect(child_group.non_archived_projects).to contain_exactly(child_project)
+          expect(grandchild_group.non_archived_projects).to be_empty
+        end
+      end
+    end
+
     it do
       is_expected.to have_one(:namespace_settings_with_ancestors_inherited_settings)
                        .class_name('NamespaceSetting')
@@ -568,6 +622,116 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.root_ids_for' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:subgroup_level_1) { create(:group, parent: root_group) }
+      let_it_be(:subgroup_level_2) { create(:group, parent: subgroup_level_1) }
+      let_it_be(:another_root_group) { create(:group) }
+      let_it_be(:another_subgroup) { create(:group, parent: another_root_group) }
+
+      subject(:root_ids_for) { described_class.root_ids_for(namespace_ids) }
+
+      context 'with empty array' do
+        let(:namespace_ids) { [] }
+
+        it 'returns empty array' do
+          expect(root_ids_for).to eq([])
+        end
+      end
+
+      context 'with nil' do
+        let(:namespace_ids) { nil }
+
+        it 'returns empty array' do
+          expect(root_ids_for).to eq([])
+        end
+      end
+
+      context 'with single root namespace' do
+        let(:namespace_ids) { [root_group.id] }
+
+        it 'returns the root namespace ID' do
+          expect(root_ids_for).to contain_exactly(root_group.id)
+        end
+      end
+
+      context 'with single child namespace' do
+        let(:namespace_ids) { [subgroup_level_2.id] }
+
+        it 'returns the root namespace ID' do
+          expect(root_ids_for).to contain_exactly(root_group.id)
+        end
+      end
+
+      context 'with multiple namespaces from same hierarchy' do
+        let(:namespace_ids) { [root_group.id, subgroup_level_1.id, subgroup_level_2.id] }
+
+        it 'returns single root namespace ID' do
+          expect(root_ids_for).to contain_exactly(root_group.id)
+        end
+      end
+
+      context 'with multiple namespaces from different hierarchies' do
+        let(:namespace_ids) { [subgroup_level_2.id, another_subgroup.id] }
+
+        it 'returns both root namespace IDs' do
+          expect(root_ids_for).to contain_exactly(root_group.id, another_root_group.id)
+        end
+      end
+
+      context 'with mix of root and child namespaces from multiple hierarchies' do
+        let(:namespace_ids) do
+          [
+            root_group.id,
+            subgroup_level_1.id,
+            subgroup_level_2.id,
+            another_root_group.id,
+            another_subgroup.id
+          ]
+        end
+
+        it 'returns unique root namespace IDs' do
+          expect(root_ids_for).to contain_exactly(root_group.id, another_root_group.id)
+        end
+      end
+
+      context 'with duplicate namespace IDs' do
+        let(:namespace_ids) { [subgroup_level_2.id, subgroup_level_2.id, subgroup_level_1.id] }
+
+        it 'returns single root namespace ID' do
+          expect(root_ids_for).to contain_exactly(root_group.id)
+        end
+      end
+
+      context 'with non-existent namespace IDs' do
+        let(:namespace_ids) { [non_existing_record_id] }
+
+        it 'returns empty array' do
+          expect(root_ids_for).to eq([])
+        end
+      end
+
+      context 'with mix of existing and non-existent namespace IDs' do
+        let(:namespace_ids) { [root_group.id, non_existing_record_id, subgroup_level_1.id] }
+
+        it 'returns only root namespace ID for existing namespaces' do
+          expect(root_ids_for).to contain_exactly(root_group.id)
+        end
+      end
+
+      context 'performance with large number of namespaces' do
+        let_it_be(:large_root_group) { create(:group) }
+        let_it_be(:many_subgroups) { create_list(:group, 10, parent: large_root_group) }
+        let(:namespace_ids) { many_subgroups.map(&:id) }
+
+        it 'efficiently extracts single root namespace ID' do
+          # Expect only one database query
+          expect { root_ids_for }.not_to exceed_query_limit(1)
+          expect(root_ids_for).to contain_exactly(large_root_group.id)
+        end
+      end
+    end
+
     describe '.filter_by_path' do
       it 'includes correct namespaces' do
         expect(described_class.filter_by_path(namespace1.path)).to eq([namespace1])
@@ -691,31 +855,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
     end
 
-    describe '.archived' do
-      let_it_be(:non_archived) { create(:group) }
-      let_it_be(:archived) { create(:group, :archived) }
-
-      subject { described_class.archived }
-
-      it 'returns archived groups', :aggregate_failures do
-        is_expected.to include(archived)
-        is_expected.not_to include(non_archived)
-      end
-    end
-
-    describe '.non_archived' do
-      let_it_be(:non_archived) { create(:group) }
-      let_it_be(:archived) { create(:group, :archived) }
-
-      subject { described_class.non_archived }
-
-      it 'returns non-archived groups', :aggregate_failures do
-        is_expected.to include(non_archived)
-        is_expected.not_to include(archived)
-      end
-    end
-
-    describe '.self_or_ancestors_archived' do
+    shared_examples 'ancestor aware archived scope' do
       let_it_be(:non_archived) { create(:group) }
       let_it_be(:non_archived_subgroup) { create(:group, parent: non_archived) }
 
@@ -723,8 +863,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       let_it_be(:archived_subgroup_with_non_archived_parent) { create(:group, :archived, parent: non_archived) }
       let_it_be(:non_archived_subgroup_with_archived_parent) { create(:group, parent: archived) }
-
-      subject { described_class.self_or_ancestors_archived }
 
       it 'returns archived groups' do
         is_expected.to include(archived)
@@ -747,7 +885,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
     end
 
-    describe '.self_and_ancestors_non_archived' do
+    shared_examples 'ancestor aware unarchived scope' do
       let_it_be(:non_archived) { create(:group) }
       let_it_be(:non_archived_subgroup) { create(:group, parent: non_archived) }
 
@@ -755,8 +893,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       let_it_be(:archived_subgroup_with_non_archived_parent) { create(:group, :archived, parent: non_archived) }
       let_it_be(:non_archived_subgroup_with_archived_parent) { create(:group, parent: archived) }
-
-      subject { described_class.self_and_ancestors_non_archived }
 
       it 'returns non-archived groups' do
         is_expected.to include(non_archived)
@@ -777,6 +913,30 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       it 'does not return non-archived group with archived ancestors' do
         is_expected.not_to include(non_archived_subgroup_with_archived_parent)
       end
+    end
+
+    describe '.archived' do
+      subject { described_class.archived }
+
+      it_behaves_like 'ancestor aware archived scope'
+    end
+
+    describe '.non_archived' do
+      subject { described_class.non_archived }
+
+      it_behaves_like 'ancestor aware unarchived scope'
+    end
+
+    describe '.self_or_ancestors_archived' do
+      subject { described_class.self_or_ancestors_archived }
+
+      it_behaves_like 'ancestor aware archived scope'
+    end
+
+    describe '.self_and_ancestors_non_archived' do
+      subject { described_class.self_and_ancestors_non_archived }
+
+      it_behaves_like 'ancestor aware unarchived scope'
     end
 
     describe '.with_visibility_level_greater_than' do
@@ -990,123 +1150,11 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   it_behaves_like 'an isolatable', :namespace
 
-  describe 'archive and unarchive' do
-    let_it_be(:namespace) { create(:group) }
-
-    describe '#archive' do
-      context 'when namespace is not archived' do
-        before do
-          namespace.namespace_settings.update!(archived: false)
-        end
-
-        it 'archives the namespace' do
-          expect(namespace.archive).to be true
-          expect(namespace.namespace_settings.reload.archived).to eq(true)
-        end
-      end
-
-      context 'when namespace is already archived' do
-        before do
-          namespace.namespace_settings.update!(archived: true)
-        end
-
-        it 'returns false' do
-          expect(namespace.archive).to be false
-        end
-      end
-    end
-
-    describe '#unarchive' do
-      context 'when namespace is archived' do
-        before do
-          namespace.namespace_settings.update!(archived: true)
-        end
-
-        it 'unarchives the namespace' do
-          expect(namespace.unarchive).to be true
-          expect(namespace.namespace_settings.reload.archived).to eq(false)
-        end
-      end
-
-      context 'when namespace is not archived' do
-        before do
-          namespace.namespace_settings.update!(archived: false)
-        end
-
-        it 'returns false' do
-          expect(namespace.unarchive).to be false
-        end
-      end
-    end
-  end
-
   describe '#self_archived?' do
     let_it_be(:namespace) { create(:group) }
 
     it 'is an alias of #archived?' do
       expect(namespace.method(:self_archived?).original_name).to eq(:archived?)
-    end
-  end
-
-  describe '#archived_ancestor' do
-    let_it_be_with_reload(:root_namespace) { create(:group) }
-    let_it_be_with_reload(:parent_namespace) { create(:group, parent: root_namespace) }
-    let_it_be_with_reload(:child_namespace) { create(:group, parent: parent_namespace) }
-    let_it_be_with_reload(:grandchild_namespace) { create(:group, parent: child_namespace) }
-
-    context 'when no ancestors are archived' do
-      it 'returns nil' do
-        expect(grandchild_namespace.archived_ancestor).to be_nil
-      end
-    end
-
-    context 'when one ancestor is archived' do
-      before do
-        parent_namespace.update!(archived: true)
-      end
-
-      it 'returns the archived ancestor' do
-        expect(grandchild_namespace.archived_ancestor).to eq(parent_namespace)
-      end
-    end
-
-    context 'when multiple ancestors are archived' do
-      before do
-        root_namespace.update!(archived: true)
-        parent_namespace.update!(archived: true)
-      end
-
-      it 'returns the first archived ancestor closest to the descendant' do
-        expect(grandchild_namespace.archived_ancestor).to eq(parent_namespace)
-      end
-    end
-
-    context 'when the namespace itself is archived' do
-      before do
-        grandchild_namespace.update!(archived: true)
-      end
-
-      it 'does not return itself, only ancestors' do
-        expect(grandchild_namespace.archived_ancestor).to be_nil
-      end
-    end
-
-    context 'when namespace has no ancestors' do
-      it 'returns nil for root namespace' do
-        expect(root_namespace.archived_ancestor).to be_nil
-      end
-    end
-
-    context 'with mixed archived and non-archived ancestors' do
-      before do
-        root_namespace.update!(archived: true)
-        # parent_namespace remains non-archived
-        child_namespace.update!(archived: true)
-      end
-
-      it 'returns the first archived ancestor closest to the descendant' do
-        expect(grandchild_namespace.archived_ancestor).to eq(child_namespace)
-      end
     end
   end
 
@@ -3270,6 +3318,59 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
           expect(namespace.owner_entity_name).to be(owner_entity_name)
         end
       end
+    end
+  end
+
+  describe '#allowed_work_item_types' do
+    before do
+      namespace.clear_memoization(:allowed_work_item_types)
+    end
+
+    it 'uses WorkItems::TypesFilter and memoizes the result' do
+      expect_next_instance_of(::WorkItems::TypesFilter) do |types_filter|
+        expect(types_filter).to receive(:allowed_types).once.and_call_original
+      end
+
+      2.times { namespace.allowed_work_item_types }
+    end
+  end
+
+  describe '#allowed_work_item_type?' do
+    it 'returns boolean when work item type exists' do
+      ::WorkItems::Type.base_types.each_key do |name|
+        expect(namespace.allowed_work_item_type?(name))
+          .to be(true).or(be(false))
+      end
+    end
+
+    it 'raises an exception when work item type not exist' do
+      expect { namespace.allowed_work_item_type?(:unknown) }
+        .to raise_error(
+          ArgumentError,
+          '"unknown" is not a valid WorkItems::Type.base_types'
+        )
+    end
+  end
+
+  describe '#supports_work_items?' do
+    before do
+      namespace.clear_memoization(:supports_work_items?)
+    end
+
+    it 'returns true when ::WorkItems::TyepsFilter has non-empty allowed_types and memoizes the result' do
+      expect_next_instance_of(::WorkItems::TypesFilter) do |types_filter|
+        expect(types_filter).to receive(:allowed_types).once.and_return([:issue])
+      end
+
+      2.times { expect(namespace.supports_work_items?).to be true }
+    end
+
+    it 'returns false when ::WorkItems::TyepsFilter has an empty allowed_types and memoizes the result' do
+      expect_next_instance_of(::WorkItems::TypesFilter) do |types_filter|
+        expect(types_filter).to receive(:allowed_types).once.and_return([])
+      end
+
+      2.times { expect(namespace.supports_work_items?).to be false }
     end
   end
 end

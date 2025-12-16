@@ -305,7 +305,8 @@ class UsersController < ApplicationController
   end
 
   def load_snippets
-    @snippets = SnippetsFinder.new(current_user, author: user, scope: params[:scope])
+    @snippets = SnippetsFinder.new(current_user, organization_id: Current.organization.id, author: user,
+      scope: params[:scope])
       .execute
       .page(params[:page])
       .inc_author

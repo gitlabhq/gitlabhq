@@ -1153,7 +1153,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
 
         it 'returns 400 when access level is not valid' do
           put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer),
-            params: { access_level: 25 }
+            params: { access_level: 13 } # Invalid: between GUEST(10) and PLANNER(15)
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end

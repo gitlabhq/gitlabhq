@@ -7,26 +7,12 @@
 #   describe "..." do
 #   include Features::TwoFactorHelpers
 #     ...
-#
-#   manage_two_factor_authentication
-#
+
 module Features
   module TwoFactorHelpers
     def copy_recovery_codes
       click_on _('Copy codes')
       click_on _('Proceed')
-    end
-
-    def enable_two_factor_authentication
-      click_on _('Manage authentication')
-      expect(page).to have_content(_('Register device'))
-      wait_for_requests
-    end
-
-    def manage_two_factor_authentication
-      click_on _('Manage authentication')
-      expect(page).to have_content(_('Register device'))
-      wait_for_requests
     end
 
     # Register OTP authenticator via UI

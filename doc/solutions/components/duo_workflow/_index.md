@@ -19,6 +19,6 @@ For detailed information about GitLab Duo Workflow, review [the document here](.
 
 ## Duo Workflow Solution
 
-The Duo Workflow Solution provides prompt and context library for different software development use cases. Each solution use case with the prompt and context library support the desired automous workflow to automate the development tasks, including tasks ranged from coding changes, problem fixing and code review based on the defined workflow plan.
+The Duo Workflow Solution provides prompt and context library for different software development use cases. Each solution use case with the prompt and context library support the desired autonomous workflow to automate the development tasks, including tasks ranged from coding changes, problem fixing and code review based on the defined workflow plan.
 
 [Agentic Workflow: Apply Coding Style Guide](duo_workflow_codestyle.md)

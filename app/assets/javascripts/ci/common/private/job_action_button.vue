@@ -70,6 +70,11 @@ export default {
       type: String,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['jobActionExecuted'],
   data() {
@@ -126,7 +131,7 @@ export default {
       v-gl-tooltip.viewport.left
       :title="jobAction.title"
       :aria-label="jobAction.title"
-      :disabled="isLoading"
+      :disabled="isLoading || disabled"
       size="small"
       class="gl-h-6 gl-w-6 !gl-rounded-full !gl-p-0"
       data-testid="ci-action-button"

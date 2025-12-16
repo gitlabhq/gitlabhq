@@ -43,7 +43,7 @@ _Optional: add a short description here of the expected timeline._
 
 | Date | Audience | Status |
 |------|----------|--------|
-| ??? | Code Creation team members and other stakeholeders | |
+| ??? | Code Creation team members and other stakeholders | |
 | ??? | All GitLab team members | |
 | ??? | 50% of all users | |
 | ??? | 100% of all users | |
@@ -64,13 +64,13 @@ _Add link to the internal feedback issue._
 
 _Observed latency from May 17 to Aug 21_
 
-* p50: 637ms to 782ms
-* p90: 881ms to 1,046ms
-* p95: 977ms to 1,212 ms
+- p50: 637ms to 782ms
+- p90: 881ms to 1,046ms
+- p95: 977ms to 1,212 ms
 
 _Observed acceptance rate from July 4 to Aug 21_
 
-* Acceptance rate: 13.9% to 20.4%
+- Acceptance rate: 13.9% to 20.4%
 
 ### Pivot / Pause / Rollback Criteria
 

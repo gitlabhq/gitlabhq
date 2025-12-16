@@ -25,7 +25,7 @@ RSpec.describe Issuable::RelatedLinksCreateWorker, feature_category: :portfolio_
     # Ensure support bot user is created so creation doesn't count towards query limit
     # and we don't try to obtain an exclusive lease within a transaction.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    Users::Internal.support_bot_id
+    create(:support_bot)
   end
 
   subject { described_class.new.perform(params) }

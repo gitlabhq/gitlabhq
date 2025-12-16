@@ -541,10 +541,36 @@ Here is a summary, which is also reflected in other sections.
    - Pull common dependencies into the first MRs to avoid excessive rebases.
      - For sequential MRs use [stacked diffs](../user/project/merge_requests/stacked_diffs.md).
      - For dependent MRs (for example, `A` -> `B` -> `C`), have their branches target each other instead of `master`. For example, have `C` target `B`, `B` target `A`, and `A` target `master`. This way each MR will have only their corresponding `diff`.
+   - Split merge request into smaller MRs in a way that only one maintainer is required per MR, for example, by shipping database changes before you implement the feature.
    - ⚠️ Split MRs with caution: MRs that are **too** small increase the number of total reviews, which can cause the opposite effect.
 1. Minimize the number of reviewers in a single MR.
    - Example: A DB reviewer can also review backend and or tests. A FullStack engineer can do both frontend and backend reviews.
    - Using mocks can make the first MRs be `frontend` only, and later we can request `backend` review for the server request (see "splitting MRs" above).
+1. **Know your maintainers.**
+   - Knowing your maintainers will make code review a better experience for you
+     and your maintainers. If you have a small group of maintainers who are
+     usually reviewing your work, over time you will develop intuition for what the
+     maintainer is going to be unhappy about, and how the merge request has to be
+     structured to make the review faster.
+1. **Assign a maintainer who is a domain expert.**
+   - Assigning a maintainer who is a domain expert can significantly reduce the
+     time-to-merge. Maintainers usually prioritize reviewing merge requests
+     changing areas in the codebase they are familiar with. Even a small merge
+     request can wait very long for a review if a maintainer sees it, but concludes
+     that the time investment to understand the code will be significant. In that
+     case, maintainers tend to prioritize reviewing merge requests which are easier
+     for them to understand, because this way they will be more efficient reviewers.
+1. **Structure and write your MRs in a way that they are easy to review.**
+   - Once you know your maintainers and usually assign maintainers who are
+     domain experts, over time you will also develop intuition for how to make
+     your merge request easier to review. What it means that "a merge request
+     is easy to review" depends on who is going to review the merge request, and
+     whether they are domain experts. There are a few universal ways of making
+     a merge request easier to review which are outlined above (like splitting an MR
+     into smaller chunks), but once you become a domain expert, you know your
+     maintainer, and the maintainer is a domain expert as well, you will be able to
+     optimize for making your MRs a pleasure to review, and this will significantly
+     reduce time-to-merge.
 
 ### Having your merge request reviewed
 
@@ -696,7 +722,7 @@ the process explained in the [code owners approvals handbook section](https://ha
 
 Some actions, such as rebasing locally or applying suggestions, are considered
 the same as adding a commit and could reset existing approvals. Approvals are not removed
-when rebasing from the UI or with the [`/rebase` quick action](../user/project/quick_actions.md).
+when rebasing from the UI or with the [`/rebase` quick action](../user/project/quick_actions.md#rebase).
 
 When ready to merge:
 
@@ -720,7 +746,7 @@ When ready to merge:
     [very specific cases](https://handbook.gitlab.com/handbook/engineering/workflow/#criteria-for-merging-during-broken-master).
     For other cases, follow these [handbook instructions](https://handbook.gitlab.com/handbook/engineering/workflow/#merging-during-broken-master).
   - If the latest pipeline was created before the merge request was approved, start a new pipeline to ensure that full RSpec suite has been run. You may skip this step only if the merge request does not contain any backend change.
-  - If the **latest [merged results pipeline](../ci/pipelines/merged_results_pipelines.md)** was **created less than 8 hours ago (72 hours for stable branches)**, you may merge without starting a new pipeline as the merge request is close enough to the target branch.
+  - If the **latest [merged results pipeline](../ci/pipelines/merged_results_pipelines.md)** was **created less than 16 hours ago (72 hours for stable branches)**, you may merge without starting a new pipeline as the merge request is close enough to the target branch.
 - When you set the MR to auto-merge, you should take over
   subsequent revisions for anything that would be spotted after that.
 - For merge requests that have had [Squash and merge](../user/project/merge_requests/squash_and_merge.md) set,
@@ -754,6 +780,73 @@ When reviewing merge requests added by wider community contributors:
 - Only set the milestone when the merge request is likely to be included in
   the current milestone. This is to avoid confusion around when it'll be
   merged and avoid moving milestone too often when it's not yet ready.
+
+#### Testing community contributions locally
+
+When reviewing merge requests from forked repositories, you have several methods to test the changes locally:
+
+- Use the GitLab CLI:
+
+  ```shell
+  glab mr checkout <MR_ID>
+  ```
+
+  For more information, see the [GitLab CLI commands](https://docs.gitlab.com/cli/mr/checkout/).
+
+- Use cURL to apply the diff.
+  Use one of the following methods:
+
+  - Fetch and apply the diff directly:
+
+     ```shell
+     curl --silent <MR_URL>.diff | git apply
+     ```
+
+     Replace `<MR_URL>` with the full URL to the merge request.
+     For example: `https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1234.diff`.
+
+  - Create a Git alias to avoid typing the full URL each time:
+
+     ```shell
+     git config --global alias.mr '!f() { curl --silent "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/$1.diff" | git apply; }; f'
+     ```
+
+    After the alias is created, use it with just the merge request ID. For example:
+
+     ```shell
+     git mr 1234
+     ```
+
+- Use GDK switch:
+
+  ```shell
+  gdk switch <MR_ID>
+  ```
+
+  {{< alert type="note" >}}
+
+  This command also runs `gdk update`, which updates your development environment.
+  The process can take several minutes to complete.
+
+  {{< /alert >}}
+
+  For more information, see the
+  [GDK `switch.rb` file](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/lib/gdk/command/switch.rb).
+
+#### Add the canonical project/fork as a remote
+
+  If you frequently need to checkout upstream branches, you can add the canonical project/fork as a remote:
+
+  ```shell
+  git remote add upstream https://gitlab.com/<canonical group>/<canonical project>.git
+  ```
+
+  Then:
+
+   ```shell
+   git fetch upstream
+   git checkout upstream/<remote-branch-name>
+   ```
 
 #### Taking over a community merge request
 

@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_category: :markdown do
   include FilterSpecHelper
 
-  let(:project)   { create(:project, :public) }
-  let(:snippet)   { create(:project_snippet, project: project) }
+  let_it_be(:project) { create(:project, :public) }
+  let(:snippet) { create(:project_snippet, project: project) }
   let(:reference) { snippet.to_reference }
 
   it 'requires project context' do
@@ -121,10 +121,10 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
   end
 
   context 'cross-project / same-namespace complete reference' do
-    let(:namespace) { create(:namespace) }
-    let(:project)   { create(:project, :public, namespace: namespace) }
-    let(:project2)  { create(:project, :public, namespace: namespace) }
-    let!(:snippet)  { create(:project_snippet, project: project2) }
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project)   { create(:project, :public, namespace: namespace) }
+    let_it_be(:project2)  { create(:project, :public, namespace: namespace) }
+    let_it_be(:snippet)   { create(:project_snippet, project: project2) }
     let(:reference) { "#{project2.full_path}$#{snippet.id}" }
 
     it 'links to a valid reference' do
@@ -154,10 +154,10 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
   end
 
   context 'cross-project shorthand reference' do
-    let(:namespace) { create(:namespace) }
-    let(:project)   { create(:project, :public, namespace: namespace) }
-    let(:project2)  { create(:project, :public, namespace: namespace) }
-    let!(:snippet)  { create(:project_snippet, project: project2) }
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project)   { create(:project, :public, namespace: namespace) }
+    let_it_be(:project2)  { create(:project, :public, namespace: namespace) }
+    let_it_be(:snippet)   { create(:project_snippet, project: project2) }
     let(:reference) { "#{project2.path}$#{snippet.id}" }
 
     it 'links to a valid reference' do
@@ -187,9 +187,9 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
   end
 
   context 'cross-project URL reference' do
-    let(:namespace) { create(:namespace, name: 'cross-reference') }
-    let(:project2)  { create(:project, :public, namespace: namespace) }
-    let(:snippet)   { create(:project_snippet, project: project2) }
+    let_it_be(:namespace) { create(:namespace, name: 'cross-reference') }
+    let_it_be(:project2)  { create(:project, :public, namespace: namespace) }
+    let_it_be(:snippet)   { create(:project_snippet, project: project2) }
     let(:reference) { urls.project_snippet_url(project2, snippet) }
 
     it 'links to a valid reference' do
@@ -228,9 +228,9 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
   end
 
   context 'checking N+1' do
-    let(:namespace2) { create(:namespace) }
-    let(:project2)   { create(:project, :public, namespace: namespace2) }
-    let(:snippet2)   { create(:project_snippet, project: project2) }
+    let_it_be(:namespace2) { create(:namespace) }
+    let_it_be(:project2)   { create(:project, :public, namespace: namespace2) }
+    let_it_be(:snippet2)   { create(:project_snippet, project: project2) }
     let(:reference2) { "#{project2.full_path}$#{snippet2.id}" }
 
     it 'does not have N+1 per multiple references per project', :use_sql_query_cache do

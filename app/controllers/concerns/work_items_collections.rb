@@ -32,53 +32,18 @@ module WorkItemsCollections
       .limit(100)
   end
 
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables -- we need to use params in the finder
   def finder_options
-    work_items_collection_params[:state] = (params.permit([:state])[:state].presence || default_state)
+    work_items_collection_params[:state] = params.permit([:state])[:state].presence || default_state
 
     rewrite_type_param!
 
-    options = {
-      scope: params.permit([:scope])[:scope],
-      state: work_items_collection_params[:state],
-      confidential: Gitlab::Utils.to_boolean(work_items_collection_params[:confidential]),
-      sort: set_sort_order
-    }
-
-    # Used by view to highlight active option
-    @sort = options[:sort]
-
-    # When a user looks for an exact iid, we do not filter by search but only by iid
-    if work_items_collection_params[:search] =~ /^#(?<iid>\d+)\z/
-      options[:iids] = Regexp.last_match[:iid]
-      work_items_collection_params[:search] = nil
-    end
-
-    custom_field_source = params.permit('custom-field': {})['custom-field'] ||
-      work_items_collection_params[:custom_field]
-
-    if custom_field_source
-      work_items_collection_params[:custom_field] = custom_field_source.to_h.map do |id, option_ids|
-        { custom_field_id: id, selected_option_ids: Array(option_ids) }
-      end
-    end
-
-    if @project
-      options[:project_id] = @project.id
-      options[:attempt_project_search_optimizations] = true
-    elsif @group
-      options[:group_id] = @group.id
-      options[:include_descendants] = true
-      # If the request is from the group issues list (excluding epics), set exclude_group_work_items to true
-      options[:exclude_group_work_items] = work_items_collection_params.dig(:not, :issue_types)&.include?('epic')
-
-      options[:attempt_group_search_optimizations] = true
-    end
+    options = build_base_options
+    extract_iid_from_search!(options)
+    transform_custom_fields!
+    options.merge!(context_specific_options)
 
     work_items_collection_params.merge(options)
   end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
-
   strong_memoize_attr :finder_options
 
   def default_state
@@ -109,5 +74,66 @@ module WorkItemsCollections
     return unless work_items_collection_params.dig(:not, :type)
 
     work_items_collection_params[:not][:issue_types] = work_items_collection_params[:not].delete(:type)
+  end
+
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables -- we need to use params in the finder
+  def build_base_options
+    options = {
+      scope: params.permit([:scope])[:scope],
+      state: work_items_collection_params[:state],
+      confidential: Gitlab::Utils.to_boolean(work_items_collection_params[:confidential]),
+      sort: set_sort_order
+    }
+
+    # Used by view to highlight active option
+    @sort = options[:sort]
+
+    options
+  end
+
+  def context_specific_options
+    return project_options if @project
+    return group_options if @group
+
+    {}
+  end
+
+  def project_options
+    {
+      project_id: @project.id,
+      attempt_project_search_optimizations: true
+    }
+  end
+
+  def group_options
+    {
+      group_id: @group.id,
+      include_descendants: true,
+      exclude_group_work_items: excluding_epics?,
+      attempt_group_search_optimizations: true
+    }
+  end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  def extract_iid_from_search!(options)
+    return unless work_items_collection_params[:search] =~ /^#(?<iid>\d+)\z/
+
+    options[:iids] = Regexp.last_match[:iid]
+    work_items_collection_params[:search] = nil
+  end
+
+  def excluding_epics?
+    work_items_collection_params.dig(:not, :issue_types)&.include?('epic')
+  end
+
+  def transform_custom_fields!
+    custom_field_source = params.permit('custom-field': {})['custom-field'] ||
+      work_items_collection_params[:custom_field]
+
+    return unless custom_field_source
+
+    work_items_collection_params[:custom_field] = custom_field_source.to_h.map do |id, option_ids|
+      { custom_field_id: id, selected_option_ids: Array(option_ids) }
+    end
   end
 end

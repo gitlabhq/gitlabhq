@@ -117,6 +117,8 @@ To configure inputs, use:
   that the input must match.
 - [`spec:inputs:type`](../yaml/_index.md#specinputstype) to force a specific input type, which
   can be `string` (default when not specified), `array`, `number`, or `boolean`.
+- [`spec:inputs:rules`](../yaml/_index.md#specinputsrules) to define conditional `options`
+  and `default` values based on the values of other inputs.
 
 You can define multiple inputs per CI/CD configuration file, and each input can have
 multiple configuration parameters.
@@ -262,6 +264,79 @@ spec:
         If this issue requires further attention, reopen this issue.'
 ---
 ```
+
+### Define conditional input options with `spec:inputs:rules`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/582671) in GitLab 18.7 with a flag named `ci_dynamic_pipeline_inputs`. Enabled by default.
+
+{{< /history >}}
+
+Use [`spec:inputs:rules`](../yaml/_index.md#specinputsrules) to define different `options` and `default` values for an input
+based on the values of other inputs. You can use this configuration when one input should have different
+allowed values depending on the context provided by other inputs.
+
+Each rule in the `rules` list can have:
+
+- `if`: An expression that checks the values of one or more inputs to determine when this rule applies. Uses the same syntax as
+  [`$[[ inputs.input-id ]]` interpolation](#define-input-parameters-with-specinputs).
+- `options`: A list of allowed values for the input when this rule matches.
+- `default`: The default value to use when this rule matches.
+
+Rules are evaluated in order. The first rule with a matching `if` condition is used.
+The last rule without an `if` condition acts as a fallback when no other rules match.
+
+For example, to define instance types that vary based on cloud provider and environment:
+
+```yaml
+spec:
+  inputs:
+    cloud_provider:
+      options: ['aws', 'gcp', 'azure']
+      default: 'aws'
+      description: 'Cloud provider'
+
+    environment:
+      options: ['development', 'staging', 'production']
+      default: 'development'
+      description: 'Target environment'
+
+    instance_type:
+      description: 'VM instance type'
+      rules:
+        - if: $[[ inputs.cloud_provider ]] == 'aws' && $[[ inputs.environment ]] == 'development'
+          options: ['t3.micro', 't3.small']
+          default: 't3.micro'
+        - if: $[[ inputs.cloud_provider ]] == 'aws' && $[[ inputs.environment ]] == 'production'
+          options: ['t3.xlarge', 't3.2xlarge', 'm5.xlarge']
+          default: 't3.xlarge'
+        - if: $[[ inputs.cloud_provider ]] == 'gcp'
+          options: ['e2-micro', 'e2-small', 'e2-standard-4']
+          default: 'e2-micro'
+        - if: $[[ inputs.cloud_provider ]] == 'azure'
+          options: ['Standard_B1s', 'Standard_B2s', 'Standard_D2s_v3']
+          default: 'Standard_B1s'
+        - options: ['small', 'medium', 'large']  # Fallback for any other case
+          default: 'small'
+---
+
+deploy:
+  script: |
+    echo "Deploying to $[[ inputs.cloud_provider ]]"
+    echo "Environment: $[[ inputs.environment ]]"
+    echo "Instance: $[[ inputs.instance_type ]]"
+```
+
+In this example:
+
+- When `cloud_provider` is `aws` and `environment` is `development`, the user can select
+  from `t3.micro` or `t3.small` instance types, with `t3.micro` as the default.
+- When `cloud_provider` is `aws` and `environment` is `production`, different instance
+  types are available (`t3.xlarge`, `t3.2xlarge`, `m5.xlarge`).
+- When `cloud_provider` is `gcp`, GCP-specific instance types are available regardless
+  of the environment.
+- If none of the conditions match, the fallback rule provides generic size options.
 
 ## Set input values
 

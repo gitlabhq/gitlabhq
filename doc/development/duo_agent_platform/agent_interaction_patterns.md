@@ -8,7 +8,7 @@ This guide establishes interaction patterns and rules for agents and flows withi
 
 This guide targets GitLab-managed agents and flows. The patterns should also extend to custom agents created in the AI Catalog.
 
-### Core User Experience Principles
+## Core User Experience Principles
 
 1. Minimize notification noise: Agents should provide necessary updates without overwhelming users with notifications and comments.
 1. Maintain transparency: Users should be able to track agent progress and understand what actions are being taken.

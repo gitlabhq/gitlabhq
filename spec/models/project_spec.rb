@@ -15,6 +15,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   it_behaves_like 'having unique enum values'
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::PROJECT,
+    subject_key: :id,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_PROJECTS,
+    claiming_attributes: [:id]
+
   context 'when runner registration is allowed' do
     let_it_be(:project) { create(:project, :allow_runner_registration_token) }
 
@@ -736,7 +742,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       context 'when parent group is archived' do
         before do
-          group.archive
+          group.namespace_settings.update!(archived: true)
         end
 
         it 'returns all projects in the group' do
@@ -759,7 +765,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       context 'when parent group is archived' do
         before do
-          group.archive
+          group.namespace_settings.update!(archived: true)
         end
 
         it 'excludes all projects in the group' do
@@ -839,15 +845,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     describe '.archived' do
-      let_it_be(:active_project) { create(:project, archived: false) }
+      let_it_be(:archived_group) { create(:group, :archived) }
+      let_it_be(:active_project) { create(:project, group: archived_group, archived: false) }
       let_it_be(:archived_project) { create(:project, archived: true) }
 
-      it 'returns archived projects' do
-        result = described_class.archived
+      subject { described_class.archived }
 
-        expect(result).to include(archived_project)
-        expect(result).not_to include(active_project)
-      end
+      it_behaves_like 'includes projects in archived hierarchy'
     end
 
     describe '.self_or_ancestors_archived' do
@@ -860,12 +864,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let_it_be(:active_project) { create(:project, archived: false) }
       let_it_be(:archived_project) { create(:project, archived: true) }
 
-      it 'returns non-archived projects' do
-        result = described_class.non_archived
+      subject { described_class.non_archived }
 
-        expect(result).to include(active_project)
-        expect(result).not_to include(archived_project)
-      end
+      it_behaves_like 'excludes projects in archived hierarchy'
     end
 
     describe '.self_and_ancestors_non_archived' do
@@ -928,6 +929,17 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it 'returns no projects when level is public' do
         result = described_class.with_visibility_level_greater_than(Gitlab::VisibilityLevel::PUBLIC)
         expect(result).not_to include(private_project, internal_project, public_project)
+      end
+    end
+
+    describe '.with_api_blob_entity_associations' do
+      it 'preloads the expected associations' do
+        expected_array = [:project_feature,
+          :route,
+          { namespace: [:route, :owner] }]
+
+        expected_array << :invited_groups if ::Gitlab.ee?
+        expect(described_class.with_api_blob_entity_associations.preload_values).to match_array(expected_array)
       end
     end
   end
@@ -1505,7 +1517,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when project is not archived but parent group is archived' do
       it 'returns true' do
-        group.archive
+        group.namespace_settings.update!(archived: true)
 
         expect(group_project.ancestors_archived?).to eq(true)
       end
@@ -1513,7 +1525,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when project is not archived but parent subgroup is archived' do
       it 'returns true' do
-        subgroup.archive
+        subgroup.namespace_settings.update!(archived: true)
 
         expect(subgroup_project.ancestors_archived?).to eq(true)
       end
@@ -1745,7 +1757,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to delegate_method(:pypi_package_requests_forwarding).to(:namespace) }
     it { is_expected.to delegate_method(:npm_package_requests_forwarding).to(:namespace) }
     it { is_expected.to delegate_method(:deletion_schedule).to(:project_namespace).allow_nil }
-    it { is_expected.to delegate_method(:archived_ancestor).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:allowed_work_item_types).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:allowed_work_item_type?).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:supports_work_items?).to(:project_namespace).allow_nil }
 
     describe 'read project settings' do
       %i[
@@ -1808,62 +1822,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           merge_trains_skip_train_allowed
           restrict_pipeline_cancellation_role
         ]
-      end
-    end
-
-    describe '#archived_ancestor' do
-      let_it_be_with_reload(:root_namespace) { create(:group) }
-      let_it_be_with_reload(:parent_namespace) { create(:group, parent: root_namespace) }
-      let_it_be_with_reload(:child_namespace) { create(:group, parent: parent_namespace) }
-      let_it_be_with_reload(:project) { create(:project, namespace: child_namespace) }
-
-      context 'when no ancestors are archived' do
-        it 'returns nil' do
-          expect(project.archived_ancestor).to be_nil
-        end
-      end
-
-      context 'when one ancestor is archived' do
-        before do
-          parent_namespace.update!(archived: true)
-        end
-
-        it 'returns the archived ancestor' do
-          expect(project.archived_ancestor).to eq(parent_namespace)
-        end
-      end
-
-      context 'when multiple ancestors are archived' do
-        before do
-          root_namespace.update!(archived: true)
-          parent_namespace.update!(archived: true)
-        end
-
-        it 'returns the first archived ancestor closest to the project' do
-          expect(project.archived_ancestor).to eq(parent_namespace)
-        end
-      end
-
-      context 'when the project itself is archived' do
-        before do
-          project.update!(archived: true)
-        end
-
-        it 'does not return itself, only ancestors' do
-          expect(project.archived_ancestor).to be_nil
-        end
-      end
-
-      context 'with mixed archived and non-archived ancestors' do
-        before do
-          root_namespace.update!(archived: true)
-          # parent_namespace remains non-archived
-          child_namespace.update!(archived: true)
-        end
-
-        it 'returns the first archived ancestor closest to the project' do
-          expect(project.archived_ancestor).to eq(child_namespace)
-        end
       end
     end
 
@@ -3894,6 +3852,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#track_project_repository' do
     shared_examples 'tracks storage location' do
       context 'when a project repository entry does not exist' do
+        before do
+          project.project_repository&.delete
+        end
+
         it 'creates a new entry' do
           expect { project.track_project_repository }.to change(project, :project_repository)
         end
@@ -3911,14 +3873,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         context 'when repository is missing' do
           let(:project) { create(:project) }
 
-          it 'sets a default sha1 object format' do
-            project.track_project_repository
-
-            expect(project.project_repository).to have_attributes(
-              disk_path: project.disk_path,
-              shard_name: project.repository_storage,
-              object_format: 'sha1'
-            )
+          it 'does not create a project_repository record' do
+            expect { project.track_project_repository }.not_to change(project, :project_repository)
+            expect(project.project_repository).to be_nil
           end
         end
 
@@ -3938,7 +3895,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       context 'when a tracking entry exists' do
-        let!(:project_repository) { create(:project_repository, project: project) }
+        before do
+          project.track_project_repository
+        end
+
         let!(:shard) { create(:shard, name: 'foo') }
 
         it 'does not create a new entry in the database' do
@@ -4441,6 +4401,80 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       subject { project.latest_unscheduled_pipeline(project.default_branch, project.commit.id) }
 
       it { is_expected.to eq(push_pipeline) }
+    end
+  end
+
+  describe '#latest_pipeline_for_ci_and_security_orchestration' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    let_it_be(:push_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch, source: :push)
+    end
+
+    let_it_be(:security_policy_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch,
+        source: :security_orchestration_policy)
+    end
+
+    let_it_be(:parent_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch,
+        source: :parent_pipeline)
+    end
+
+    let_it_be(:webide_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch,
+        source: :webide)
+    end
+
+    let_it_be(:ondemand_dast_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch,
+        source: :ondemand_dast_scan)
+    end
+
+    context 'when retrieving latest pipeline for default branch' do
+      subject { project.latest_pipeline_for_ci_and_security_orchestration }
+
+      it 'returns the latest CI or security orchestration pipeline' do
+        expect(subject).to eq(security_policy_pipeline)
+      end
+
+      it 'excludes parent_pipeline source' do
+        expect(subject).not_to eq(parent_pipeline)
+      end
+
+      it 'excludes webide source' do
+        expect(subject).not_to eq(webide_pipeline)
+      end
+
+      it 'excludes ondemand_dast_scan source' do
+        expect(subject).not_to eq(ondemand_dast_pipeline)
+      end
+    end
+
+    context 'with specified ref' do
+      let(:second_branch) { project.repository.branches[2] }
+
+      let!(:pipeline_for_second_branch) do
+        create(:ci_pipeline, project: project, sha: second_branch.target, ref: second_branch.name, source: :push)
+      end
+
+      subject { project.latest_pipeline_for_ci_and_security_orchestration(second_branch.name) }
+
+      it 'returns the latest pipeline for the specified ref' do
+        expect(subject).to eq(pipeline_for_second_branch)
+      end
+    end
+
+    context 'when only dangling pipelines exist' do
+      before do
+        Ci::Pipeline.where(source: [:push, :security_orchestration_policy]).delete_all
+      end
+
+      subject { project.latest_pipeline_for_ci_and_security_orchestration }
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
     end
   end
 
@@ -7056,6 +7090,185 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         end
 
         it { expect(project.default_branch).to eq(project_branch) }
+      end
+    end
+  end
+
+  describe '#default_branch=' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    context 'when not importing' do
+      it 'does not set @desired_default_branch' do
+        project.default_branch = 'main'
+
+        expect(project.instance_variable_get(:@desired_default_branch)).to be_nil
+      end
+
+      it 'does not call apply_desired_default_branch' do
+        expect(project).not_to receive(:apply_desired_default_branch)
+
+        project.default_branch = 'main'
+      end
+    end
+
+    context 'when importing' do
+      before do
+        allow(project).to receive(:importing?).and_return(true)
+      end
+
+      context 'when branch_name is blank' do
+        it 'returns early without setting instance variable' do
+          project.default_branch = ''
+
+          expect(project.instance_variable_get(:@desired_default_branch)).to be_nil
+        end
+      end
+
+      context 'when branch_name is present' do
+        it 'sets @desired_default_branch' do
+          project.default_branch = 'main'
+
+          expect(project.instance_variable_get(:@desired_default_branch)).to eq('main')
+        end
+
+        it 'calls apply_desired_default_branch' do
+          expect(project).to receive(:apply_desired_default_branch)
+
+          project.default_branch = 'main'
+        end
+      end
+    end
+
+    context 'when container is not a Project' do
+      let(:wiki) { create(:project_wiki) }
+
+      it 'returns early without setting instance variable' do
+        wiki.default_branch = 'main'
+
+        expect(wiki.instance_variable_get(:@desired_default_branch)).to be_nil
+      end
+    end
+  end
+
+  describe '#apply_desired_default_branch' do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:repository) { project.repository }
+    let(:new_branch) { 'feature-branch' }
+
+    context 'when @desired_default_branch is not set' do
+      it 'does nothing' do
+        expect(repository).not_to receive(:change_head)
+
+        project.apply_desired_default_branch
+      end
+    end
+
+    context 'when @desired_default_branch is set' do
+      before do
+        project.instance_variable_set(:@desired_default_branch, new_branch)
+      end
+
+      context 'when repository is empty' do
+        let(:project) { create(:project, :empty_repo) }
+
+        it 'does not change the default branch' do
+          expect(repository).not_to receive(:change_head)
+
+          project.apply_desired_default_branch
+        end
+
+        it 'keeps @desired_default_branch set for later application' do
+          project.apply_desired_default_branch
+
+          expect(project.instance_variable_get(:@desired_default_branch)).to eq(new_branch)
+        end
+      end
+
+      context 'when repository is not empty' do
+        before do
+          allow(repository).to receive(:empty?).and_return(false)
+        end
+
+        context 'when current default branch matches desired branch' do
+          before do
+            allow(repository).to receive(:root_ref).and_return(new_branch)
+          end
+
+          it 'does not change the default branch' do
+            expect(repository).not_to receive(:change_head)
+
+            project.apply_desired_default_branch
+          end
+        end
+
+        context 'when desired branch exists' do
+          before do
+            allow(repository).to receive(:branch_exists?).with(new_branch).and_return(true)
+            allow(repository).to receive(:root_ref).and_return('master')
+          end
+
+          it 'changes HEAD to the desired branch' do
+            expect(repository).to receive(:change_head).with(new_branch)
+            expect(project).to receive(:reload_default_branch)
+
+            project.apply_desired_default_branch
+          end
+
+          it 'clears @desired_default_branch after successful application' do
+            allow(repository).to receive(:change_head)
+            allow(project).to receive(:reload_default_branch)
+
+            project.apply_desired_default_branch
+
+            expect(project.instance_variable_get(:@desired_default_branch)).to be_nil
+          end
+        end
+
+        context 'when desired branch does not exist' do
+          before do
+            allow(repository).to receive(:root_ref).and_return('main')
+            allow(repository).to receive(:branch_exists?).with(new_branch).and_return(false)
+          end
+
+          it 'does not change HEAD' do
+            expect(repository).not_to receive(:change_head)
+
+            project.apply_desired_default_branch
+          end
+
+          it 'keeps @desired_default_branch set for later retry' do
+            project.apply_desired_default_branch
+
+            expect(project.instance_variable_get(:@desired_default_branch)).to eq(new_branch)
+          end
+        end
+
+        context 'when an error occurs during branch change' do
+          let(:error_message) { 'Failed to change HEAD' }
+
+          before do
+            allow(repository).to receive(:root_ref).and_return('main')
+            allow(repository).to receive(:branch_exists?).with(new_branch).and_return(true)
+            allow(repository).to receive(:change_head).and_raise(StandardError, error_message)
+          end
+
+          it 'logs a warning with the error message' do
+            expect(Import::Framework::Logger).to receive(:warn)
+              .with("Failed to set default branch to #{new_branch}: #{error_message}")
+
+            project.apply_desired_default_branch
+          end
+
+          it 'does not raise an error' do
+            expect { project.apply_desired_default_branch }.not_to raise_error
+          end
+
+          it 'does not clear @desired_default_branch' do
+            project.apply_desired_default_branch
+
+            expect(project.instance_variable_get(:@desired_default_branch)).to eq(new_branch)
+          end
+        end
       end
     end
   end
@@ -9992,22 +10205,25 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#repository_object_format' do
     subject { project.repository_object_format }
 
-    let_it_be(:project) { create(:project) }
-
     context 'when project without a repository' do
+      let_it_be(:project) { create(:project) }
+
       it { is_expected.to be_nil }
     end
 
-    context 'when project with sha1 repository' do
-      let_it_be(:project_repository) { create(:project_repository, project: project, object_format: 'sha1') }
+    context 'when project with a repository' do
+      context 'when project with sha1 repository' do
+        # :custom_repo uses sha1 object format by default
+        let_it_be(:project) { create(:project, :custom_repo) }
 
-      it { is_expected.to eq 'sha1' }
-    end
+        it { is_expected.to eq 'sha1' }
+      end
 
-    context 'when project with sha256 repository' do
-      let_it_be(:project_repository) { create(:project_repository, project: project, object_format: 'sha256') }
+      context 'when project with sha256 repository' do
+        let_it_be(:project) { create(:project, :custom_repo, object_format: 'sha256') }
 
-      it { is_expected.to eq 'sha256' }
+        it { is_expected.to eq 'sha256' }
+      end
     end
   end
 
@@ -10015,6 +10231,95 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it_behaves_like 'checks self (project) and root ancestor feature flag' do
       let(:feature_flag) { :enforce_locked_labels_on_merge }
       let(:feature_flag_method) { :supports_lock_on_merge? }
+    end
+  end
+
+  describe '#work_items_saved_views_enabled?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:user) { create(:user) }
+
+    context "when the project's group has work_items_saved_views enabled" do
+      before do
+        allow(group).to receive(:work_items_saved_views_enabled?).and_return(true)
+      end
+
+      it 'returns true' do
+        expect(project.work_items_saved_views_enabled?).to eq(true)
+        expect(project.work_items_saved_views_enabled?(user)).to eq(true)
+      end
+    end
+
+    context "when the project's group has work_items_saved_views disabled" do
+      before do
+        allow(group).to receive(:work_items_saved_views_enabled?).and_return(false)
+      end
+
+      context 'when work_items_saved_views is enabled' do
+        before do
+          stub_feature_flags(work_items_saved_views: true)
+        end
+
+        it 'returns true regardless of user' do
+          expect(project.work_items_saved_views_enabled?).to eq(true)
+          expect(project.work_items_saved_views_enabled?(user)).to eq(true)
+        end
+      end
+
+      context 'when work_items_saved_views is disabled' do
+        before do
+          stub_feature_flags(work_items_saved_views: false)
+        end
+
+        context 'when work_items_saved_views_user is enabled for user' do
+          before do
+            stub_feature_flags(work_items_saved_views_user: user)
+          end
+
+          it 'returns true when user is provided' do
+            expect(project.work_items_saved_views_enabled?(user)).to eq(true)
+          end
+
+          it 'returns false when no user is provided' do
+            expect(project.work_items_saved_views_enabled?).to eq(false)
+          end
+        end
+
+        context 'when work_items_saved_views_user is disabled' do
+          before do
+            stub_feature_flags(work_items_saved_views_user: false)
+          end
+
+          it 'returns false' do
+            expect(project.work_items_saved_views_enabled?(user)).to eq(false)
+            expect(project.work_items_saved_views_enabled?).to eq(false)
+          end
+        end
+      end
+    end
+
+    context 'when the project belongs to a user namespace' do
+      let_it_be(:project_without_group) { create(:project, namespace: user.namespace) }
+
+      context 'when work_items_saved_views is enabled' do
+        before do
+          stub_feature_flags(work_items_saved_views: true)
+        end
+
+        it 'returns true' do
+          expect(project_without_group.work_items_saved_views_enabled?).to eq(true)
+        end
+      end
+
+      context 'when all saved view feature flags are disabled' do
+        before do
+          stub_feature_flags(work_items_saved_views: false, work_items_saved_views_user: false)
+        end
+
+        it 'returns false' do
+          expect(project_without_group.work_items_saved_views_enabled?).to eq(false)
+        end
+      end
     end
   end
 
@@ -10414,51 +10719,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#assigning_role_too_high?' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project) }
-    let_it_be(:member, reload: true) { create(:project_member, :reporter, project: project, user: user) }
-
-    subject(:assigning_role_too_high) { project.assigning_role_too_high?(user, access_level) }
-
-    context 'when the access_level is nil' do
-      let(:access_level) { nil }
-
-      it 'returns false' do
-        expect(assigning_role_too_high).to be_falsey
-      end
-    end
-
-    context 'when the role being assigned is lower than the role of current user' do
-      let(:access_level) { Gitlab::Access::GUEST }
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'when the role being assigned is equal to the role of current user' do
-      let(:access_level) { Gitlab::Access::REPORTER }
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'when the role being assigned is higher than the role of current user' do
-      let(:access_level) { Gitlab::Access::MAINTAINER }
-
-      it 'returns true' do
-        expect(assigning_role_too_high).to be_truthy
-      end
-
-      context 'when the current user is admin', :enable_admin_mode do
-        before do
-          user.update!(admin: true)
-        end
-
-        it 'returns false' do
-          expect(assigning_role_too_high).to be_falsey
-        end
-      end
-    end
-  end
+  it_behaves_like 'a resource that has roles', :project
 
   describe '#owner_entity' do
     let(:project) { build_stubbed(:project) }
@@ -10538,6 +10799,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect_worker_to_be_enqueued
         run_export
       end
+    end
+  end
+
+  describe '#roles_user_can_assign' do
+    it_behaves_like 'roles_user_can_assign' do
+      let(:resource) { create(:project) }
+      let(:membership) { create(:project_member, user: user, project: resource) }
     end
   end
 end

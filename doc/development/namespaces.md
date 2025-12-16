@@ -316,3 +316,34 @@ In extreme cases this can create excessive I/O leading to poor performance.
 Redundant `Namespaces` are eliminated from a query if a `Namespace` `ID` in the `traversal_ids` attribute matches an `ID` belonging to another `Namespace` in the set of `Namespaces` being queried.
 A match of this condition signifies that an ancestor exists in the set of `Namespaces` being queried, and the current `Namespace` is therefore redundant.
 This optimization will result in much better performance of edge cases that would otherwise be very slow.
+
+## Namespace locking
+
+When modifying namespace hierarchies (creating groups or updating `parent_id`/`traversal_ids`), GitLab uses database locks to maintain data integrity.
+
+GitLab uses a lightweight locking system that employs shared locks on ancestors and exclusive locks on the modified node, reducing lock contention during concurrent operations.
+
+**On namespace create:**
+
+- Ancestors are locked with `FOR SHARE` (shared lock)
+- The new namespace is locked with `FOR NO KEY UPDATE` (exclusive lock)
+- Only the node and its descendants are updated using `Namespace::TraversalHierarchy.sync_traversal_ids!(node)`
+
+**On namespace update (parent change):**
+
+- Both old and new root ancestors are locked with `FOR NO KEY UPDATE`
+- The full hierarchy is updated from the root using `Namespace::TraversalHierarchy.for_namespace(node).sync_traversal_ids!`
+
+**Benefits:**
+
+- Concurrent group creation under the same parent is no longer serialized
+- Reduced database lock contention
+- Better performance for high-concurrency scenarios
+
+**Implementation:**
+
+The locking logic is in `Namespace::TraversalHierarchy.acquire_locks` which:
+
+1. Acquires shared locks on ancestors (if node has a parent)
+1. Acquires an exclusive lock on the node itself
+1. Uses a `LOCK_TIMEOUT` of 1000ms to prevent indefinite blocking

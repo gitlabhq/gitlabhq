@@ -31,6 +31,7 @@ RSpec.describe 'Work items bulk editing', :js, feature_category: :team_planning 
 
   before do
     sign_in user
+    stub_feature_flags(work_items_saved_views: false)
   end
 
   context 'when user is signed in' do

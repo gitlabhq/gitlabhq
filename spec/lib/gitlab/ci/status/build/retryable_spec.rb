@@ -2,68 +2,68 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Build::Retryable do
-  let(:status) { double('core status') }
-  let(:user) { double('user') }
+RSpec.describe Gitlab::Ci::Status::Build::Retryable, feature_category: :continuous_integration do
+  let_it_be(:project, freeze: true) { create(:project) }
+  let_it_be(:user, freeze: true) { create(:user) }
 
-  subject do
-    described_class.new(status)
-  end
+  let(:core_status) { instance_double(Gitlab::Ci::Status::Core) }
+
+  subject(:status) { described_class.new(core_status) }
 
   describe '#text' do
-    it 'does not override status text' do
-      expect(status).to receive(:text)
+    let(:core_status) { double('core status') }
 
-      subject.text
+    it 'does not override status text' do
+      expect(core_status).to receive(:text)
+
+      status.text
     end
   end
 
   describe '#icon' do
     it 'does not override status icon' do
-      expect(status).to receive(:icon)
+      expect(core_status).to receive(:icon)
 
-      subject.icon
+      status.icon
     end
   end
 
   describe '#label' do
     it 'does not override status label' do
-      expect(status).to receive(:label)
+      expect(core_status).to receive(:label)
 
-      subject.label
+      status.label
     end
   end
 
   describe '#group' do
     it 'does not override status group' do
-      expect(status).to receive(:group)
+      expect(core_status).to receive(:group)
 
-      subject.group
+      status.group
     end
   end
 
   describe '#status_tooltip' do
     it 'does not override status status_tooltip' do
-      expect(status).to receive(:status_tooltip)
+      expect(core_status).to receive(:status_tooltip)
 
-      subject.status_tooltip
+      status.status_tooltip
     end
   end
 
   describe '#badge_tooltip' do
-    let(:user) { create(:user) }
-    let(:build) { create(:ci_build) }
-    let(:status) { Gitlab::Ci::Status::Core.new(build, user) }
+    let(:build) { create(:ci_build, project: project) }
+    let(:core_status) { Gitlab::Ci::Status::Core.new(build, user) }
 
     it 'does return status' do
-      expect(status.badge_tooltip).to eq('pending')
+      expect(core_status.badge_tooltip).to eq('pending')
     end
   end
 
   describe 'action details' do
-    let(:user) { create(:user) }
-    let(:build) { create(:ci_build) }
-    let(:status) { Gitlab::Ci::Status::Core.new(build, user) }
+    let(:build) { create(:ci_build, project: project) }
+    let(:core_status) { Gitlab::Ci::Status::Core.new(build, user) }
 
     describe '#has_action?' do
       context 'when user is allowed to update build' do
@@ -82,54 +82,52 @@ RSpec.describe Gitlab::Ci::Status::Build::Retryable do
     end
 
     describe '#action_path' do
-      it { expect(subject.action_path).to include "#{build.id}/retry" }
+      it { expect(status.action_path).to include "#{build.id}/retry" }
     end
 
     describe '#action_icon' do
-      it { expect(subject.action_icon).to eq 'retry' }
+      it { expect(status.action_icon).to eq 'retry' }
     end
 
     describe '#action_title' do
-      it { expect(subject.action_title).to eq 'Run again' }
+      it { expect(status.action_title).to eq 'Run again' }
     end
 
     describe '#action_button_title' do
-      it { expect(subject.action_button_title).to eq 'Run this job again' }
+      it { expect(status.action_button_title).to eq 'Run this job again' }
     end
 
     describe '#confirmation_message' do
       context 'when build does not have manual_confirmation' do
-        it { expect(subject.confirmation_message).to be_nil }
+        it { expect(status.confirmation_message).to be_nil }
       end
 
       context 'when build is manual and has manual_confirmation' do
         let(:build) do
-          create(:ci_build, :success, :playable, :with_manual_confirmation)
+          create(:ci_build, :success, :playable, :with_manual_confirmation, project: project)
         end
 
-        it { expect(subject.confirmation_message).to eq 'Please confirm. Do you want to proceed?' }
+        it { expect(status.confirmation_message).to eq 'Please confirm. Do you want to proceed?' }
       end
     end
   end
 
   describe '.matches?' do
-    subject { described_class.matches?(build, user) }
+    subject(:matches?) { described_class.matches?(build, user) }
 
     context 'when build is retryable' do
-      let(:build) do
-        create(:ci_build, :success)
-      end
+      let(:build) { create(:ci_build, :success, project: project) }
 
       it 'is a correct match' do
-        expect(subject).to be true
+        is_expected.to be true
       end
     end
 
     context 'when build is not retryable' do
-      let(:build) { create(:ci_build, :running) }
+      let(:build) { create(:ci_build, :running, project: project) }
 
       it 'does not match' do
-        expect(subject).to be false
+        is_expected.to be false
       end
     end
   end

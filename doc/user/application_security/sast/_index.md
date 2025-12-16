@@ -58,21 +58,32 @@ Security vulnerabilities found late in development create costly delays and pote
 scans happen automatically with each commit, giving you immediate feedback without disrupting
 your workflow.
 
+## Reducing false positives with GitLab Duo
+
+SAST scanners can generate false positives that create noise in your vulnerability reports. The
+[GitLab Duo false positive detection](../vulnerabilities/false_positive_detection.md) feature automatically
+analyzes Critical and High severity SAST vulnerabilities to identify likely false positives. This helps your
+security team focus on genuine vulnerabilities and reduces time spent on manual triage.
+
+For Ultimate tier customers with a GitLab Duo add-on, false positive detection runs automatically
+after each security scan and provides confidence scores with explanations for each assessment.
+
 ## Features
 
 The following table lists the GitLab tiers in which each feature is available.
 
-| Feature                                                                                  | In Free & Premium                    | In Ultimate |
-|:-----------------------------------------------------------------------------------------|:-------------------------------------|:------------|
-| Basic scanning with [open-source analyzers](#supported-languages-and-frameworks)         | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| Downloadable [SAST JSON report](#download-a-sast-report)                                 | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| Cross-file, cross-function scanning with [GitLab Advanced SAST](gitlab_advanced_sast.md) | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| New findings in [merge request widget](#merge-request-widget)                            | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| New findings in [merge request changes view](#merge-request-changes-view)                | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Vulnerability Management](../vulnerabilities/_index.md)                                 | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [UI-based scanner configuration](#configure-sast-by-using-the-ui)                        | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Ruleset customization](customize_rulesets.md)                                           | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Advanced Vulnerability Tracking](#advanced-vulnerability-tracking)                      | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| Feature                                                                                  | In Free & Premium | In Ultimate |
+|:-----------------------------------------------------------------------------------------|:------------------|:------------|
+| Basic scanning with [open-source analyzers](#supported-languages-and-frameworks)         | {{< yes >}}       | {{< yes >}} |
+| Downloadable [SAST JSON report](#download-a-sast-report)                                 | {{< yes >}}       | {{< yes >}} |
+| Cross-file, cross-function scanning with [GitLab Advanced SAST](gitlab_advanced_sast.md) | {{< no >}}        | {{< yes >}} |
+| New findings in [merge request widget](#merge-request-widget)                            | {{< no >}}        | {{< yes >}} |
+| New findings in [merge request changes view](#merge-request-changes-view)                | {{< no >}}        | {{< yes >}} |
+| [Vulnerability Management](../vulnerabilities/_index.md)                                 | {{< no >}}        | {{< yes >}} |
+| [GitLab Duo false positive detection](../vulnerabilities/false_positive_detection.md) (requires GitLab Duo add-on) | {{< no >}}        | {{< yes >}} |
+| [UI-based scanner configuration](#configure-sast-by-using-the-ui)                        | {{< no >}}        | {{< yes >}} |
+| [Ruleset customization](customize_rulesets.md)                                           | {{< no >}}        | {{< yes >}} |
+| [Advanced Vulnerability Tracking](#advanced-vulnerability-tracking)                      | {{< no >}}        | {{< yes >}} |
 
 ## Getting started
 
@@ -89,7 +100,7 @@ Prerequisites:
 
 To enable SAST:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. If your project does not already have one, create a `.gitlab-ci.yml` file in the root directory.
 1. At the top of the `.gitlab-ci.yml` file, add one of the following lines:
 
@@ -130,7 +141,7 @@ For details on other configuration methods, see [Configuration](#configuration).
 
 You can review vulnerabilities in a pipeline:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
@@ -221,7 +232,7 @@ To optimize SAST according to your requirements you can:
 
 To disable a rule, for example because it generates too many false positives:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Create a `.gitlab/sast-ruleset.toml` file at the root of your project if one does not already exist.
 1. In the vulnerability's details, locate the ID of the rule that triggered the finding.
 1. Use the rule ID to disable the rule. For example, to disable `gosec.G107-1`, add the following in `.gitlab/sast-ruleset.toml`:
@@ -278,20 +289,20 @@ For more information about language support plans in SAST, see the [category dir
 
 These languages are supported by both GitLab Advanced SAST (Ultimate) and standard analyzers (all tiers):
 
-| Language               | GitLab Advanced SAST<sup>1</sup>            | Standard analyzer<sup>2</sup> |
-|------------------------|---------------------------------------------|-------------------------------|
-| C                      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| C++                    | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| C#                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Go                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Java<sup>3</sup>       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| JavaScript<sup>4</sup> | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| PHP                    | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Python                 | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Ruby<sup>5</sup>       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| TypeScript             | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| YAML<sup>6</sup>       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Java Properties        | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Language               | GitLab Advanced SAST<sup>1</sup> | Standard analyzer<sup>2</sup> |
+|------------------------|----------------------------------|-------------------------------|
+| C                      | {{< yes >}}                      | {{< yes >}}                   |
+| C++                    | {{< yes >}}                      | {{< yes >}}                   |
+| C#                     | {{< yes >}}                      | {{< yes >}}                   |
+| Go                     | {{< yes >}}                      | {{< yes >}}                   |
+| Java<sup>3</sup>       | {{< yes >}}                      | {{< yes >}}                   |
+| Java Properties        | {{< yes >}}                      | {{< yes >}}                   |
+| JavaScript<sup>4</sup> | {{< yes >}}                      | {{< yes >}}                   |
+| PHP                    | {{< yes >}}                      | {{< yes >}}                   |
+| Python                 | {{< yes >}}                      | {{< yes >}}                   |
+| Ruby<sup>5</sup>       | {{< yes >}}                      | {{< yes >}}                   |
+| TypeScript             | {{< yes >}}                      | {{< yes >}}                   |
+| YAML<sup>6</sup>       | {{< yes >}}                      | {{< yes >}}                   |
 
 **Footnotes**:
 
@@ -315,15 +326,15 @@ These languages are supported by both GitLab Advanced SAST (Ultimate) and standa
 
 These languages are supported by standard analyzers (all tiers) but not by GitLab Advanced SAST:
 
-| Language           | Standard analyzer<sup>1</sup>                                                                                                           | Proposed support<sup>2</sup> |
-|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------|------------------------------|
-| Apex (Salesforce)  | {{< icon name="check-circle-filled" >}} Yes: [PMD-Apex](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)             | None                         |
-| Elixir (Phoenix)   | {{< icon name="check-circle-filled" >}} Yes: [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)               | None                         |
-| Groovy             | {{< icon name="check-circle-filled" >}} Yes: [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)<sup>3</sup> | None                         |
-| Kotlin<sup>4</sup> | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) |
-| Objective-C (iOS)  | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
-| Scala              | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 15174](https://gitlab.com/groups/gitlab-org/-/epics/15174) |
-| Swift (iOS)        | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
+| Language           | Standard analyzer<sup>1</sup>                                                                           | Proposed support<sup>2</sup> |
+|--------------------|---------------------------------------------------------------------------------------------------------|------------------------------|
+| Apex (Salesforce)  | {{< yes >}} [PMD-Apex](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)              | None                         |
+| Elixir (Phoenix)   | {{< yes >}} [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                | None                         |
+| Groovy             | {{< yes >}} [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)<sup>3</sup>  | None                         |
+| Kotlin<sup>4</sup> | {{< yes >}}                                                                                             | [Epic 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) |
+| Objective-C (iOS)  | {{< yes >}}                                                                                             | [Epic 16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
+| Scala              | {{< yes >}}                                                                                             | [Epic 15174](https://gitlab.com/groups/gitlab-org/-/epics/15174) |
+| Swift (iOS)        | {{< yes >}}                                                                                             | [Epic 16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
 
 **Footnotes**:
 
@@ -360,19 +371,22 @@ vulnerability management is harder because the same vulnerability could be repor
 GitLab SAST uses an advanced vulnerability tracking algorithm to more accurately identify when the
 same vulnerability has moved in the same file due to refactoring or unrelated changes.
 
-Support for advanced vulnerability tracking is dependent on the language and analyzers used.
+Support for advanced vulnerability tracking depends on the language and analyzers used.
 
-| Language   | GitLab Advanced SAST analyzer               | Semgrep-based analyzers |
-|------------|---------------------------------------------|-------------------------|
-| C          | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| C++        | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| C#         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Go         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Java       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| JavaScript | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| PHP        | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
-| Python     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Ruby       | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
+Languages supported by both GitLab Advanced SAST analyzers and Semgrep-based analyzers:
+
+- C
+- C++
+- C#
+- Go
+- Java
+- JavaScript
+- Python
+
+Languages supported only by Semgrep-based analyzers:
+
+- PHP
+- Ruby
 
 Support for more languages and analyzers is tracked in [epic 5144](https://gitlab.com/groups/gitlab-org/-/epics/5144).
 
@@ -521,7 +535,7 @@ successfully, and an error might occur.
 
 To enable and configure SAST with customizations:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. If the latest pipeline for the default branch of the project has completed
    and produced valid `SAST` artifacts, select **Configure SAST**, otherwise
@@ -547,7 +561,7 @@ successfully, and an error might occur.
 
 To enable and configure SAST with default settings:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. In the SAST section, select **Configure with a merge request**.
 1. Review and merge the merge request to enable SAST.

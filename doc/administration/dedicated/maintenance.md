@@ -112,10 +112,9 @@ impact to your service. All changes follow internal processes and undergo approp
 internal review and approval before they are applied to your instance.
 
 You receive advance notice when possible and complete details after the issue
-is resolved. The Support team:
+is resolved. The GitLab team:
 
-- Creates a support ticket for tracking.
-- Sends email notifications to your operational contacts.
+- Sends notifications to your operational contacts through Switchboard.
 - Copies your Customer Success Manager (CSM) on all communications.
 
 To ensure you receive these notifications,

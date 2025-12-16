@@ -24,8 +24,8 @@ module Gitlab
             validates :config, mutually_exclusive_keys: %i[rules default]
 
             validate do
-              if config.is_a?(Hash) && config.key?(:rules) && !Feature.enabled?(:ci_dynamic_pipeline_inputs,
-                @metadata&.[](:project))
+              if config.is_a?(Hash) && config.key?(:rules) &&
+                  !Gitlab::Ci::Config::FeatureFlags.enabled?(:ci_dynamic_pipeline_inputs)
                 errors.add(:rules, "is not yet supported")
               end
             end

@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: GitLab CI/CD `workflow` keyword usage for pipeline control, rule management, and preventing duplicate pipelines.
 title: GitLab CI/CD `workflow` keyword
 ---
 

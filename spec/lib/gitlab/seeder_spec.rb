@@ -3,20 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Seeder, feature_category: :shared do
-  describe Namespace do
-    subject { described_class }
-
-    it 'has not_mass_generated scope', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444919' do
-      expect { described_class.not_mass_generated }.to raise_error(NoMethodError)
-
+  describe 'scopes' do
+    it 'has not_mass_generated scope' do
       Gitlab::Seeder.quiet do
         expect { Namespace.not_mass_generated }.not_to raise_error
+        expect { Project.not_mass_generated }.not_to raise_error
+        expect { User.not_mass_generated }.not_to raise_error
       end
     end
 
-    it 'includes NamespaceSeed module' do
+    it 'includes Seed modules' do
       Gitlab::Seeder.quiet do
-        is_expected.to include_module(Gitlab::Seeder::NamespaceSeed)
+        expect(Namespace).to include_module(Gitlab::Seeder::NamespaceSeed)
+        expect(Project).to include_module(Gitlab::Seeder::ProjectSeed)
+        expect(User).to include_module(Gitlab::Seeder::UserSeed)
       end
     end
   end

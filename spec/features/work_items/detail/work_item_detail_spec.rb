@@ -56,7 +56,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     it 'shows breadcrumb links', :aggregate_failures do
       within_testid('breadcrumb-links') do
         expect(page).to have_link(project.name, href: project_path(project))
-        expect(page).to have_link('Issues', href: project_work_items_path(project))
+        expect(page).to have_link('Issues', href: project_issues_path(project))
         expect(find('nav:last-of-type li:last-of-type')).to have_link("##{work_item.iid}", href: work_items_path)
       end
     end
@@ -119,7 +119,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     end
 
     it_behaves_like 'work items parent', :issue
-    it_behaves_like 'work items change type', 'Issue', '[data-testid="issue-type-issue-icon"]'
+    it_behaves_like 'work items change type', 'Issue', '[data-testid="work-item-issue-icon"]'
   end
 
   context 'for signed in admin' do

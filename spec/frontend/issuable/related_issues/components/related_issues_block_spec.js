@@ -213,11 +213,11 @@ describe('RelatedIssuesBlock', () => {
   describe('renders correct icon when', () => {
     [
       {
-        icon: 'issues',
+        icon: 'work-item-issue',
         issuableType: 'issue',
       },
       {
-        icon: 'epic',
+        icon: 'work-item-epic',
         issuableType: 'epic',
       },
     ].forEach(({ issuableType, icon }) => {

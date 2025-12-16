@@ -190,7 +190,7 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
           eq(payload_value),
           message % {
             query: query,
-            value: (value || 'NULL'),
+            value: value || 'NULL',
             payload_value: payload_value,
             key_path: key_path.join('.')
           }

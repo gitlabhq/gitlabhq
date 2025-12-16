@@ -9,11 +9,32 @@ FactoryBot.define do
     sequence(:team_name) { |n| "team#{n}" }
     sequence(:alias) { |n| "namespace#{n}/project_name#{n}" }
 
+    organization { association :common_organization }
     integration { association :gitlab_slack_application_integration, slack_integration: instance }
 
     trait :legacy do
       bot_user_id { nil }
       bot_access_token { nil }
+    end
+
+    trait :instance do
+      organization { association :common_organization }
+      group { nil }
+      project { nil }
+      integration { association :gitlab_slack_application_integration, :instance, slack_integration: instance }
+    end
+
+    trait :group do
+      organization { nil }
+      group
+      project { nil }
+      integration { association :gitlab_slack_application_integration, :group, slack_integration: instance }
+    end
+
+    trait :project do
+      organization { nil }
+      group { nil }
+      project
     end
 
     trait :all_features_supported do

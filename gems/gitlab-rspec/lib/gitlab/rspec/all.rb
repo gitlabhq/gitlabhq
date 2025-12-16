@@ -7,5 +7,7 @@ require_relative "next_found_instance_of"
 require_relative "stub_rails"
 
 require_relative "configurations/time_travel"
+require_relative "configurations/test_metrics"
 
 Gitlab::Rspec::Configurations::TimeTravel.configure!
+Gitlab::Rspec::Configurations::TestMetrics.configure!

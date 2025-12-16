@@ -7,21 +7,42 @@ import (
 	"io"
 	"net/http"
 	"slices"
+	"strings"
 	"sync"
 	"time"
 
+	redsync "github.com/go-redsync/redsync/v4"
+	redis "github.com/redis/go-redis/v9"
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 
 	"github.com/gorilla/websocket"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
+const wsWriteDeadline = 60 * time.Second
 const wsCloseTimeout = 5 * time.Second
 const wsStopWorkflowTimeout = 10 * time.Second
+
+// ClientCapabilities is how gitlab-lsp -> workhorse -> Duo Workflow Service communicates
+// capabilities that can be used by Duo Workflow Service without breaking
+// backwards compatibility. We intersect the capabilities of all parties and
+// then new behavior can only depend on that behavior if it makes it all the
+// way through. Whenever you add to this list you must also update the constant in
+// ee/app/assets/javascripts/ai/duo_agentic_chat/utils/workflow_socket_utils.js
+// and gitlab-lsp .
+var ClientCapabilities = []string{
+	"shell_command",
+	"incremental_streaming",
+}
+
+var errFailedToAcquireLockError = errors.New("handleWebSocketMessages: failed to acquire lock")
+var errUsageQuotaExceededError = errors.New("handleWebSocketMessages: usage quota exceeded")
 
 var normalClosureErrCodes = []int{websocket.CloseGoingAway, websocket.CloseNormalClosure}
 
@@ -39,6 +60,7 @@ type websocketConn interface {
 	WriteMessage(int, []byte) error
 	WriteControl(int, []byte, time.Time) error
 	SetReadDeadline(time.Time) error
+	SetWriteDeadline(time.Time) error
 	Close() error
 }
 
@@ -50,6 +72,7 @@ type workflowStream interface {
 
 type runner struct {
 	rails       *api.API
+	backend     http.Handler
 	token       string
 	originalReq *http.Request
 	marshalBuf  []byte
@@ -58,9 +81,13 @@ type runner struct {
 	client      *Client
 	sendMu      sync.Mutex
 	mcpManager  mcpManager
+	lockManager *workflowLockManager
+	workflowID  string
+	mutex       *redsync.Mutex
+	lockFlow    bool
 }
 
-func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.DuoWorkflow) (*runner, error) {
+func newRunner(conn websocketConn, rails *api.API, backend http.Handler, r *http.Request, cfg *api.DuoWorkflow, rdb *redis.Client) (*runner, error) {
 	userAgent := r.Header.Get("User-Agent")
 
 	client, err := NewClient(cfg.ServiceURI, cfg.Headers, cfg.Secure, userAgent)
@@ -79,8 +106,16 @@ func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.Duo
 		log.WithRequest(r).WithError(err).Info("failed to initialize MCP server(s)")
 	}
 
+	lockFlow := cfg.LockConcurrentFlow
+
+	if lockFlow && rdb == nil {
+		log.WithRequest(r).Info("Workflow locking will be skipped as redis is not configured")
+		lockFlow = false
+	}
+
 	return &runner{
 		rails:       rails,
+		backend:     backend,
 		token:       cfg.Headers["x-gitlab-oauth-token"],
 		originalReq: r,
 		marshalBuf:  make([]byte, ActionResponseBodyLimit),
@@ -88,6 +123,8 @@ func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.Duo
 		wf:          wf,
 		client:      client,
 		mcpManager:  mcpManager,
+		lockManager: newWorkflowLockManager(rdb),
+		lockFlow:    lockFlow,
 	}, nil
 }
 
@@ -96,6 +133,17 @@ func (r *runner) Execute(ctx context.Context) error {
 
 	go r.handleWebSocketMessages(errCh)
 	go r.handleAgentMessages(ctx, errCh)
+
+	// Unfortunately the lock is acquired in handleWebSocketMessage.  This is
+	// because the workflowID is not known until after we see the startReq. But
+	// we need to keep it as long as either of these connections is running. So
+	// we release it here instead.
+	defer func() {
+		if r.lockFlow {
+			log.WithRequest(r.originalReq).Info("Releasing lock for workflow")
+			r.lockManager.releaseLock(ctx, r.mutex, r.workflowID)
+		}
+	}()
 
 	return <-errCh
 }
@@ -129,7 +177,11 @@ func (r *runner) handleAgentMessages(ctx context.Context, errCh chan<- error) {
 			if err == io.EOF {
 				errCh <- nil // Expected error when a workflow ends
 			} else {
-				errCh <- fmt.Errorf("handleAgentMessages: failed to read a gRPC message: %v", err)
+				// Check if this is a RESOURCE_EXHAUSTED error indicating quota exceeded
+				if r.isUsageQuotaExceededError(err) {
+					err = errUsageQuotaExceededError
+				}
+				errCh <- fmt.Errorf("handleAgentMessages: failed to read a gRPC message: %w", err)
 			}
 			return
 		}
@@ -181,7 +233,19 @@ func (r *runner) handleWebSocketMessage(message []byte) error {
 	}
 
 	if startReq := response.GetStartRequest(); startReq != nil {
+		// Acquire distributed lock when workflow starts
+		if r.lockFlow {
+			if err := r.acquireWorkflowLock(startReq); err != nil {
+				return err
+			}
+		}
+
 		startReq.McpTools = append(startReq.McpTools, r.mcpManager.Tools()...)
+		startReq.PreapprovedTools = append(startReq.PreapprovedTools, r.mcpManager.PreApprovedTools()...)
+		startReq.ClientCapabilities = intersectClientCapabilities(startReq.ClientCapabilities)
+		log.WithRequest(r.originalReq).WithFields(log.Fields{
+			"client_capabilities": startReq.ClientCapabilities,
+		}).Info("Sending startRequest")
 	}
 
 	log.WithContextFields(r.originalReq.Context(), log.Fields{
@@ -202,11 +266,43 @@ func (r *runner) handleWebSocketMessage(message []byte) error {
 	return nil
 }
 
+// Returns the intersection of what gitlab-lsp passed in and what workhorse
+// supports.
+func intersectClientCapabilities(fromClient []string) []string {
+	var result = []string{}
+
+	for _, cap := range ClientCapabilities {
+		if slices.Contains(fromClient, cap) {
+			result = append(result, cap)
+		}
+	}
+
+	return result
+}
+
+func (r *runner) acquireWorkflowLock(startReq *pb.StartWorkflowRequest) error {
+	r.workflowID = startReq.WorkflowID
+
+	if r.workflowID == "" {
+		log.WithRequest(r.originalReq).Error("No workflow ID provided in StartWorkflowRequest")
+		return fmt.Errorf("handleWebSocketMessage: no workflow ID provided in StartWorkflowRequest")
+	}
+
+	mutex, err := r.lockManager.acquireLock(r.originalReq.Context(), r.workflowID)
+	if err != nil {
+		return errFailedToAcquireLockError
+	}
+
+	r.mutex = mutex
+	return nil
+}
+
 func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error {
 	switch action.Action.(type) {
 	case *pb.Action_RunHTTPRequest:
 		handler := &runHTTPActionHandler{
 			rails:       r.rails,
+			backend:     r.backend,
 			token:       r.token,
 			originalReq: r.originalReq,
 			action:      action,
@@ -274,6 +370,11 @@ func (r *runner) sendActionToWs(action *pb.Action) error {
 		return fmt.Errorf("sendActionToWs: failed to unmarshal action: %v", err)
 	}
 
+	deadline := time.Now().Add(wsWriteDeadline)
+	if deadlineErr := r.conn.SetWriteDeadline(deadline); deadlineErr != nil {
+		return fmt.Errorf("sendActionToWs: failed to set write deadline: %v", deadlineErr)
+	}
+
 	if err = r.conn.WriteMessage(websocket.BinaryMessage, r.marshalBuf); err != nil {
 		if err != websocket.ErrCloseSent {
 			return fmt.Errorf("sendActionToWs: failed to send WS message: %v", err)
@@ -287,6 +388,23 @@ func (r *runner) threadSafeSend(event *pb.ClientEvent) error {
 	r.sendMu.Lock()
 	defer r.sendMu.Unlock()
 	return r.wf.Send(event)
+}
+
+// isUsageQuotaExceededError checks if the error is a gRPC RESOURCE_EXHAUSTED error
+// indicating that the consumer has exceeded their usage quota.
+func (r *runner) isUsageQuotaExceededError(err error) bool {
+	// Extract gRPC status from the error
+	st, ok := status.FromError(err)
+	if !ok {
+		return false
+	}
+
+	// Check if the error code is RESOURCE_EXHAUSTED and contains the quota exceeded message
+	if st.Code() == codes.ResourceExhausted {
+		return strings.Contains(st.Message(), "USAGE_QUOTA_EXCEEDED")
+	}
+
+	return false
 }
 
 func (r *runner) stopWorkflow(reason string, closeErr error) error {

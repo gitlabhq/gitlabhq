@@ -1,0 +1,10 @@
+---
+name: ci_refactor_jobs_count_in_alive_pipelines
+description: Refactor and improve the performance of alive pipeline builds count
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/572929
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213187
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581536
+milestone: '18.7'
+group: group::pipeline authoring
+type: gitlab_com_derisk
+default_enabled: false

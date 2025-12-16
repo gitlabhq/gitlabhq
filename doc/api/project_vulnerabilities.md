@@ -39,19 +39,15 @@ Every call to this API requires authentication.
 If a user isn't a member of a private project, requests to the private project return a `404 Not Found`
 status code.
 
-## Vulnerabilities pagination
-
-API results are paginated, and `GET` requests return 20 results at a time by default.
-
-Read more on [pagination](rest/_index.md#pagination).
-
 ## List project vulnerabilities
 
 List all of a project's vulnerabilities.
 
 If an authenticated user does not have permission to
-[use the Project Security Dashboard](../user/permissions.md#project-members-permissions),
+[use the Project Security Dashboard](../user/permissions.md#project-permissions),
 `GET` requests for vulnerabilities of this project result in a `403` status code.
+
+Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
 ```plaintext
 GET /projects/:id/vulnerabilities
@@ -123,7 +119,7 @@ Example response:
 Creates a new vulnerability.
 
 If an authenticated user does not have a permission to
-[create a new vulnerability](../user/permissions.md#project-members-permissions),
+[create a new vulnerability](../user/permissions.md#project-permissions),
 this request results in a `403` status code.
 
 ```plaintext

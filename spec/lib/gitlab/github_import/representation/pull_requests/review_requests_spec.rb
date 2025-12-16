@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Representation::PullRequests::ReviewRequests, feature_category: :importers do
   shared_examples 'Review requests' do

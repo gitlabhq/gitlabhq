@@ -29,7 +29,7 @@ data for features.
 | GitLab Duo: Seed failed CI jobs for Root Cause Analysis (`/troubleshoot`) evaluation                                                                                                  | `LANGCHAIN_API_KEY=$Key bundle exec rake gitlab:duo_chat:seed:failed_ci_jobs`                                                          | [seed_failed_ci_jobs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/duo_chat/seed_failed_ci_jobs.rake)                        |
 | Pipeline metrics                                                                                                  | `FILTER=pipeline_metrics SEED_PIPELINE_METRICS=1 bundle exec rake db:seed_fu`                                 | [98_pipeline_metrics.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/fixtures/development/98_pipeline_metrics.rb)                      |
 
-### Seed project and group resources for GitLab Duo
+## Seed project and group resources for GitLab Duo
 
 The [`gitlab:duo:setup` setup script](ai_features/_index.md#run-gitlabduosetup-script) executes the development seed file for GitLab Duo project and group resources. In self-managed mode, the task is idempotent and skips reseeding if the `gitlab-duo` group already exists. To force reseeding from the setup task, set `GITLAB_DUO_RESEED=1`.
 

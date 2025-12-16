@@ -20,6 +20,12 @@ module PartitionedTable
       @partitioning_strategy = strategy_class.new(self, partitioning_key, **kwargs)
     end
 
+    def with_each_partition
+      Gitlab::Database::PostgresPartitionedTable.each_partition(table_name) do |partition|
+        yield(from("#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{partition.name} AS #{table_name}"))
+      end
+    end
+
     # This PR assigns auto populated columns: https://github.com/rails/rails/pull/48241
     # However, a column is identified as auto-populated if it contains default value with nextval function.
     # The id column of partitioned tables is auto-populated via a trigger

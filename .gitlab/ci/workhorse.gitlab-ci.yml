@@ -49,12 +49,17 @@ workhorse:test go:
       - GO_VERSION: ["1.24", "1.25"]
         REDIS_VERSION: ["7.0", "6.2"]
   script:
-    - make -C workhorse test-coverage
+    - make -C workhorse test-coverage 2>&1 | tee workhorse/test-output.txt
+    - make -C workhorse TEST_OPTIONS="-json" test > workhorse/test-output.json 2>&1 || true
+    - cd workhorse && go run ../scripts/workhorse/go_coverage_to_lcov.go cover.out coverage.lcov
   coverage: '/\d+.\d+%/'
   artifacts:
     expire_in: 30 days
     paths:
       - workhorse/coverage.html
+      - workhorse/cover.out
+      - workhorse/coverage.lcov
+      - workhorse/test-output.json
       - log/gitaly-test.log
 
 workhorse:test no_gitaly_transactions:
@@ -86,3 +91,35 @@ workhorse:test race:
       - REDIS_VERSION: ["7.0", "6.2"]
   script:
     - make -C workhorse test-race
+
+workhorse-coverage:
+  extends:
+    - .workhorse-job-cache-pull
+    - .workhorse:rules:workhorse-coverage
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}golang:${GO_VERSION}
+  stage: post-test
+  needs:
+    - job: workhorse:test go
+      artifacts: true
+      parallel:
+        matrix:
+          - GO_VERSION: "1.25"
+            REDIS_VERSION: "7.0"
+  variables:
+    GO_VERSION: "1.25"
+  script:
+    - echo "Generating test report from Go test JSON output..."
+    - mkdir -p workhorse-test-reports
+    - cd workhorse && go run ../scripts/workhorse/generate_test_report.go test-output.json ../workhorse-test-reports/workhorse-tests.json
+    - cd ..
+    - mkdir -p workhorse-test-mapping
+    # Workhorse tests have feature_category: nil, so the test map is not used
+    # for category assignment. We provide an empty map to satisfy the required parameter.
+    - echo '{}' > workhorse-test-mapping/workhorse-source-to-test.json
+  artifacts:
+    expire_in: 31d
+    paths:
+      - workhorse/coverage.lcov
+      - workhorse/coverage.html
+      - workhorse-test-reports/
+      - workhorse-test-mapping/

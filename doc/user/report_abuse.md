@@ -130,6 +130,22 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 1. Complete an abuse report.
 1. Select **Send report**.
 
+## Report abuse from an agent
+
+1. On the agent detail view, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **Report to admin**.
+1. Select a reason for reporting this agent.
+1. Optional. Add additional information.
+1. Select **Submit**.
+
+## Report abuse from a flow
+
+1. On the flow detail view, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **Report to admin**.
+1. Select a reason for reporting this flow.
+1. Optional. Add additional information.
+1. Select **Submit**.
+
 ## Related topics
 
 - [Abuse reports administration documentation](../administration/review_abuse_reports.md)

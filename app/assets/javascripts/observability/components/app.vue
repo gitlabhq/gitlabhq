@@ -23,7 +23,7 @@ export default {
       type: Object,
       required: true,
       validator(authTokens) {
-        const requiredProperties = ['userId', 'accessJwt', 'refreshJwt'];
+        const requiredProperties = ['accessJwt', 'refreshJwt'];
 
         return requiredProperties.every((prop) => {
           const value = authTokens[prop];

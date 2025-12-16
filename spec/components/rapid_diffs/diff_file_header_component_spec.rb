@@ -155,12 +155,13 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
       allow(diff_file).to receive(:content_sha).and_return(content_sha)
     end
 
-    it 'always renders the "View file at [SHA]" menu item (in a code tag)' do
+    it 'adds "View file at [SHA]" option' do
       render_component
 
       options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
 
-      expect(options_menu_items.first['text']).to eq('View file at <code>abc123</code>')
+      expect(options_menu_items.first['text']).to eq('View file at %{codeStart}%{commit}%{codeEnd}')
+      expect(options_menu_items.first['messageData']['commit']).to eq(diff_file.content_sha[0..7])
     end
 
     it 'renders additional menu items with respective order' do
@@ -187,6 +188,80 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
 
       options_menu_items.each do |item|
         expect(item).not_to have_key('position')
+      end
+    end
+
+    context 'with environment' do
+      let(:project) { diff_file.repository.project }
+      let(:environment) { build(:environment, project: project, external_url: 'https://test.example.com') }
+      let(:environment_path) { "https://test.example.com/#{diff_file.new_path}" }
+
+      before do
+        allow(environment).to receive(:formatted_external_url).and_return('test.example.com')
+        allow(environment).to receive(:external_url_for)
+                                .with(diff_file.new_path, content_sha)
+                                .and_return(environment_path)
+      end
+
+      it 'renders "View on environment" menu item' do
+        render_component(environment: environment)
+
+        options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+
+        view_on_env_item = options_menu_items.find { |item| item['text']&.include?('View on') }
+
+        expect(view_on_env_item).not_to be_nil
+        expect(view_on_env_item['text']).to include('test.example.com')
+        expect(view_on_env_item['href']).to eq(environment_path)
+        expect(view_on_env_item['extraAttrs']['target']).to eq('_blank')
+        expect(view_on_env_item['extraAttrs']['rel']).to eq('noopener noreferrer')
+      end
+
+      context 'when file is renamed' do
+        before do
+          allow(diff_file).to receive(:new_path).and_return('new/file/path.rb')
+          allow(diff_file).to receive(:old_path).and_return('old/file/path.rb')
+          allow(environment).to receive(:external_url_for) do |path, _sha|
+            path == diff_file.new_path ? environment_path : nil
+          end
+        end
+
+        it 'uses new_path for environment URL generation' do
+          render_component(environment: environment)
+
+          expect(page).to have_content('View on test.example.com')
+          expect(page).to have_content(environment_path)
+        end
+      end
+
+      context 'when environment has no route map for the file' do
+        before do
+          allow(environment).to receive(:external_url_for)
+                                  .with(diff_file.new_path, content_sha)
+                                  .and_return(nil)
+        end
+
+        it 'does not render "View on environment" menu item' do
+          render_component(environment: environment)
+
+          options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+
+          view_on_env_item = options_menu_items.find { |item| item['text']&.include?('View on') }
+
+          expect(view_on_env_item).to be_nil
+        end
+      end
+    end
+
+    context 'without environment' do
+      it 'does not render "View on environment" menu item when environment is nil' do
+        render_component(environment: nil)
+
+        options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+
+        view_on_env_item = options_menu_items.find { |item| item['text']&.include?('View on') }
+
+        expect(view_on_env_item).to be_nil
       end
     end
   end

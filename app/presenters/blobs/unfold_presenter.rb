@@ -46,6 +46,8 @@ module Blobs
         end
       end
 
+      diff_lines.each { |line| line.expanded = true }
+
       add_match_line(diff_lines)
 
       diff_lines

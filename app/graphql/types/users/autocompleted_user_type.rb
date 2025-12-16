@@ -7,6 +7,12 @@ module Types
 
       authorize :read_user
 
+      field :composite_identity_enforced,
+        GraphQL::Types::Boolean,
+        null: false,
+        description: 'Indicates if the user has composite identity enforcement enabled.',
+        method: :composite_identity_enforced?
+
       field :merge_request_interaction, Types::UserMergeRequestInteractionType,
         null: true,
         description: 'Merge request state related to the user.' do

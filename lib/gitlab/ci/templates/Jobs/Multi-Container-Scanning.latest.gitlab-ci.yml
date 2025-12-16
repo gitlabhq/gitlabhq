@@ -1,0 +1,40 @@
+# Multi-Container Scanning Template - Latest version
+#
+# IMPORTANT: This is a latest version of the multi-container scanning feature.
+# This template is subject to change and should be used with caution in production environments.
+# Please report any issues or feedback to help us improve this feature.
+#
+# For more information, see: https://gitlab.com/groups/gitlab-org/-/work_items/3139
+
+variables:
+  CS_SCANNER_IMAGE: "registry.gitlab.com/gitlab-org/security-products/analyzers/multiple-container-scanner:0"
+
+.multi-cs::scan-rules:
+  rules:
+    - if: $CONTAINER_SCANNING_DISABLED == 'true' || $CONTAINER_SCANNING_DISABLED == '1'
+      when: never
+    - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: $CI_COMMIT_BRANCH
+
+multi-cs::generate-scan:
+  extends: .multi-cs::scan-rules
+  image: "$CS_SCANNER_IMAGE"
+  allow_failure: true
+  artifacts:
+    paths: ["gitlab-multi-image-output.yml"]
+  script:
+    - generate_multi_image
+
+multi-cs::trigger-scan:
+  extends: .multi-cs::scan-rules
+  needs: ["multi-cs::generate-scan"]
+  trigger:
+    include:
+      - artifact: gitlab-multi-image-output.yml
+        job: multi-cs::generate-scan
+    strategy: mirror
+    forward:
+      pipeline_variables: true
+      yaml_variables: true

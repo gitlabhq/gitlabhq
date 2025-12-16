@@ -38,7 +38,7 @@ module Gitlab
           %r{
             ^CREATE.TRIGGER.gitlab_schema_write_trigger_\w+
             \s
-            BEFORE.INSERT.OR.DELETE.OR.UPDATE.OR.TRUNCATE.ON.\w+
+            BEFORE.INSERT.OR.DELETE.OR.UPDATE.OR.TRUNCATE.ON.[\w.]+
             \s
             FOR.EACH.STATEMENT.EXECUTE.FUNCTION.gitlab_schema_prevent_write\(\);$
           }x,

@@ -19,6 +19,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { ACTION_FAILURE, DOWNSTREAM, UPSTREAM } from '../constants';
 
 export default {
+  name: 'LinkedPipeline',
   directives: {
     GlTooltip: GlTooltipDirective,
   },

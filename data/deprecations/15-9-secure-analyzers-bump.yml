@@ -18,15 +18,15 @@
     Users of GitLab 13.0-15.10 will continue to experience analyzer updates as normal until the release of GitLab 16.0, following which all newly fixed bugs and released features will be released only in the new major version of the analyzers. We do not backport bugs and features to deprecated versions as per our [maintenance policy](https://docs.gitlab.com/policy/maintenance/). As required, security patches will be backported within the latest 3 minor releases.
     Specifically, the following are being deprecated and will no longer be updated after 16.0 GitLab release:
 
-    - API Fuzzing: version 2
-    - Container Scanning: version 5
+    - API fuzzing: version 2
+    - Container scanning: version 5
     - Coverage-guided fuzz testing: version 3
-    - Dependency Scanning: version 3
+    - Dependency scanning: version 3
     - Dynamic Application Security Testing (DAST): version 3
     - DAST API: version 2
     - IaC scanning: version 3
-    - License Scanning: version 4
-    - Secret Detection: version 4
+    - License scanning: version 4
+    - Secret detection: version 4
     - Static Application Security Testing (SAST): version 3 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks)
       - `brakeman`: version 3
       - `flawfinder`: version 3

@@ -239,9 +239,16 @@ export default {
         <rect width="100" height="8" x="10" y="35" rx="4" />
       </gl-skeleton-loader>
     </div>
-    <ul v-else class="gl-m-0 gl-list-none gl-p-0">
-      <li v-for="provider in securityTrainingProviders" :key="provider.id" class="gl-mb-6">
-        <gl-card :body-class="{ 'gl-bg-subtle': !securityTrainingEnabled }">
+    <ul
+      v-else
+      class="gl-m-0 gl-grid gl-h-full gl-list-none gl-grid-cols-1 gl-items-stretch gl-gap-5 gl-p-0 @lg/panel:gl-grid-cols-2"
+    >
+      <li
+        v-for="provider in securityTrainingProviders"
+        :key="provider.id"
+        class="gl-mb-6 gl-h-full"
+      >
+        <gl-card class="gl-h-full" :body-class="{ 'gl-bg-subtle': !securityTrainingEnabled }">
           <div class="gl-flex">
             <gl-toggle
               :value="provider.isEnabled"

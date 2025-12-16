@@ -2,6 +2,8 @@
 key_path: counts.projects_beyond_identity_active
 description: Count of projects with active integrations for BeyondIdentity
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 milestone: "16.9"

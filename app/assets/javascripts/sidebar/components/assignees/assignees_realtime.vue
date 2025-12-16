@@ -1,8 +1,9 @@
 <script>
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { assigneesQueries } from '../../queries/constants';
 
-export default {
+export default normalizeRender({
   subscription: null,
   name: 'AssigneesRealtime',
   props: {
@@ -26,7 +27,6 @@ export default {
     },
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     issuable: {
       query() {
         return assigneesQueries[this.issuableType].query;
@@ -85,5 +85,5 @@ export default {
   render() {
     return null;
   },
-};
+});
 </script>

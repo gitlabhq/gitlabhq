@@ -41,11 +41,7 @@
   // When using panels, remove top padding
   &.page-with-panels .layout-page {
     @apply gl-pt-0 #{!important};
-
-    // If AI panels are disabled.
-    &:has(.paneled-view.ai-panels:not(.ai-panel)) {
-      @apply gl-pb-3;
-    }
+    @apply gl-pb-3;
   }
 
   // Free trial button
@@ -55,7 +51,7 @@
 
   // Super topbar
   .super-topbar {
-    @apply gl-pl-4 gl-pr-5 sm:gl-pr-3;
+    @apply gl-pl-3 sm:gl-pl-4 gl-pr-3;
     height: var(--top-bar-height);
 
     // Placeholder styles
@@ -198,6 +194,11 @@
     }
   }
 
+  // Siderail agents selector icon
+  .ai-nav-icon-agents .gl-new-dropdown-icon-only {
+    border-radius: 100% !important;
+  }
+
   // Position for search overlay when Performance bar is visible
   &.with-performance-bar #super-sidebar-search-modal {
     padding-top: $performance-bar-height;
@@ -210,11 +211,6 @@
     .gl-search-box-by-type-input-borderless {
       @apply gl-rounded-[0.75rem];
     }
-  }
-
-  .panel-content-inner:has(.issue-boards-content, .group-epics-roadmap) {
-    @apply gl-px-0;
-    overflow: auto;
   }
 
   // work item drawer correct background colors
@@ -247,15 +243,9 @@
 
   // Layout
   &.page-with-panels .layout-page {
-    @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row lg:gl-pl-0 gl-pt-3 lg:gl-pb-3 gl-pr-3;
+    @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row lg:gl-pl-0 gl-pt-3 lg:gl-pb-3 sm:gl-pr-3;
     min-height: 0;
     flex: 1;
-
-    // Temporarily solution to hide empty AI Chat divs
-    // empty:gl-hidden and :empty doesn't work because these empty divs have comment blocks
-    > div:not(:has(*)) {
-      @apply gl-hidden;
-    }
   }
 
   // Unset fixed positions
@@ -318,7 +308,7 @@
 
   // Add some left margin on pages with no left sidebar (like /search)
   .panels-container {
-    @apply gl-ml-3;
+    @apply sm:gl-ml-3;
   }
 
   @include media-breakpoint-up(lg) {
@@ -387,22 +377,22 @@
     @apply gl-pl-3;
   }
 
-  .paneled-view:has(.ai-panel-maximized) {
+  .ai-panel-maximized .paneled-view {
     flex-grow: 1;
   }
 
   // Hiding all other panels when DAP is maximized
-  .panels-container:has(~ .paneled-view .ai-panel-maximized) {
+  .ai-panel-maximized .panels-container {
     display: none;
   }
 
   // Preserving other panels when DAP is maximized on bigger screens
   @media(min-width: #{$paneled-layout-ultra-wide-breakpoint}) {
-    .paneled-view:has(.ai-panel-maximized) {
+    .ai-panel-maximized .paneled-view {
       width: auto;
     }
 
-    .panels-container:has(~ .paneled-view .ai-panel-maximized) {
+    .ai-panel-maximized .panels-container {
       display: flex;
     }
   }
@@ -410,7 +400,7 @@
   // Panel header
   .panel-header .top-bar-fixed,
   .work-item-drawer-header {
-    @apply gl-bg-default gl-shadow-none gl-relative gl-px-3 lg:gl-px-5 #{!important};
+    @apply gl-bg-default gl-shadow-none gl-relative gl-px-4 lg:gl-px-5 #{!important};
     z-index: 99;
     border-bottom: 1px solid var(--super-sidebar-bg);
   }
@@ -434,10 +424,11 @@
     // a margin is required for the panel element so that it works exactly like the native viewport,
     // which compensates for the scrollbar size when using fixed position
     margin-right: var(--scrollbar-width, 0);
+  }
 
-    &:has(.boards-list) {
-      @apply gl-pb-0;
-    }
+  &.issue-boards-page .panel-content,
+  &.issue-boards-page .work-item-drawer {
+    @apply gl-pb-0;
   }
 
   .panel-content-inner,
@@ -474,7 +465,7 @@
   }
 
   // Fix design management fullscreen display in panels
-  .panel-content:has(.design-detail) {
+  .design-detail-layout .panel-content {
     @apply gl-fixed gl-inset-0 gl-overflow-visible gl-rounded-none gl-max-w-none gl-z-1 gl-h-screen #{!important};
   }
 
@@ -555,6 +546,12 @@
         }
       }
     }
+  }
+
+  &.issue-boards-page .panel-content-inner,
+  &.group-epics-roadmap-html .panel-content-inner {
+    @apply gl-px-0;
+    overflow: auto;
   }
 
   // Override Tailwind
@@ -656,19 +653,15 @@
       height: calc(100% - var(--system-header-height) - var(--performance-bar-height) - var(--header-height) - var(--ai-panel-height) + 0.5rem); // 0.5rem is to balance the -0.25rem top margin
       z-index: 999;
     }
+
+    @include media-breakpoint-down(xs) {
+      @apply gl-left-3 #{!important};
+      width: calc(100% - #{$gl-spacing-scale-3 * 2});
+    }
   }
 
   .content-wrapper.paneled-view {
     @apply gl-pt-0;
-  }
-
-  /* Hide all .paneled-view elements when the last .paneled-view contains .fullscreen */
-  .panels-container:has(~ .paneled-view .fullscreen) {
-    @apply gl-hidden;
-  }
-
-  .paneled-view:has(.fullscreen) {
-    @apply gl-grow;
   }
 
   .gl-drawer {
@@ -760,6 +753,14 @@
       border-color: var(--gl-color-alpha-dark-8);
     }
 
+    .super-sidebar-main-separator {
+      @apply gl-mx-3;
+    }
+
+    .super-sidebar-is-icon-only .super-sidebar-main-separator {
+      border-color: var(--gl-border-color-strong);
+    }
+
     .super-sidebar .super-sidebar-nav-item:not(.super-sidebar-nav-item-current) .badge {
       background-color: transparent;
     }
@@ -826,6 +827,14 @@
 
     .super-sidebar hr {
       border-color: var(--gl-color-alpha-light-16);
+    }
+
+    .super-sidebar-main-separator {
+      @apply gl-mx-3;
+    }
+
+    .super-sidebar-is-icon-only .super-sidebar-main-separator {
+      border-color: var(--gl-border-color-strong);
     }
 
     .super-sidebar .super-sidebar-nav-item:not(.super-sidebar-nav-item-current) .badge {

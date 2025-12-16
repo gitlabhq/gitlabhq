@@ -19,6 +19,52 @@ module Search
     end
 
     def tabs
+      if ::Feature.enabled?(:search_scope_registry, :instance)
+        tabs_with_registry
+      else
+        legacy_tabs
+      end
+    end
+
+    private
+
+    def tabs_with_registry
+      nav = {}
+      Search::Scopes.scope_definitions.each do |scope_key, definition|
+        next if Search::Scopes.hidden_by_work_item_scope?(scope_key, user)
+
+        label = definition[:label]
+        label = label.call if label.respond_to?(:call)
+
+        nav[scope_key] = {
+          sort: definition[:sort],
+          label: label,
+          condition: scope_visible?(scope_key)
+        }
+
+        # Only add data attribute for projects and blobs (to match legacy behavior)
+        if scope_key == :projects
+          nav[scope_key][:data] = { testid: 'projects-tab' }
+        elsif scope_key == :blobs
+          nav[scope_key][:data] = { testid: 'code-tab' }
+        end
+
+        nav[scope_key][:search] = { snippets: true, group_id: nil, project_id: nil } if scope_key == :snippet_titles
+      end
+
+      if ::Feature.enabled?(:work_item_scope_frontend, user)
+        nav[:issues] = {
+          sort: 4,
+          label: _("Work items"),
+          sub_items: get_sub_items,
+          condition: show_issues_search_tab?
+        }
+      end
+
+      nav
+    end
+
+    def legacy_tabs
       nav = {
         projects: {
           sort: 1,
@@ -87,7 +133,32 @@ module Search
       nav
     end
 
-    private
+    # Returns whether a scope should be visible
+    # This method is called for each scope defined in Search::Scopes::SCOPE_DEFINITIONS
+    def scope_visible?(scope_key)
+      case scope_key
+      when :projects
+        project.nil?
+      when :blobs
+        show_code_search_tab?
+      when :issues
+        show_issues_search_tab?
+      when :merge_requests
+        show_merge_requests_search_tab?
+      when :wiki_blobs
+        show_wiki_search_tab?
+      when :commits
+        show_commits_search_tab?
+      when :notes
+        show_comments_search_tab?
+      when :milestones
+        show_milestones_search_tab?
+      when :users
+        show_user_search_tab?
+      else # scope_key is restricted to predefined keys; safe to use else
+        show_snippets_search_tab?
+      end
+    end
 
     def get_sub_items
       ::WorkItems::Type::TYPE_NAMES.each_with_object({}) do |(key, value, index), hash|

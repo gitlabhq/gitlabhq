@@ -16,6 +16,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )
@@ -65,6 +67,10 @@ func (m *mockWebSocketConn) WriteControl(_ int, _ []byte, _ time.Time) error {
 }
 
 func (m *mockWebSocketConn) SetReadDeadline(_ time.Time) error {
+	return m.setDeadlineError
+}
+
+func (m *mockWebSocketConn) SetWriteDeadline(_ time.Time) error {
 	return m.setDeadlineError
 }
 
@@ -118,6 +124,7 @@ func (m *mockWorkflowStream) CloseSend() error {
 
 type mockMcpManager struct {
 	tools               []*pb.McpTool
+	preApprovedTools    []string
 	hasToolResult       bool
 	callToolResult      *pb.ClientEvent
 	callToolError       error
@@ -142,6 +149,14 @@ func (m *mockMcpManager) Tools() []*pb.McpTool {
 	}
 
 	return m.tools
+}
+
+func (m *mockMcpManager) PreApprovedTools() []string {
+	if m == nil {
+		return nil
+	}
+
+	return m.preApprovedTools
 }
 
 func (m *mockMcpManager) CallTool(_ context.Context, action *pb.Action) (*pb.ClientEvent, error) {
@@ -188,10 +203,11 @@ func Test_newRunner(t *testing.T) {
 			"Authorization":        "Bearer test-token",
 			"x-gitlab-oauth-token": "oauth-token-123",
 		},
-		Secure: false,
+		Secure:             false,
+		LockConcurrentFlow: true,
 	}
 
-	runner, err := newRunner(mockConn, apiClient, req, cfg)
+	runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), req, cfg, initRdb(t))
 
 	require.NoError(t, err)
 	require.NotNil(t, runner)
@@ -201,6 +217,37 @@ func Test_newRunner(t *testing.T) {
 	require.NotNil(t, runner.wf)
 	require.NotNil(t, runner.client)
 	require.Equal(t, apiClient, runner.rails)
+
+	runner.Close()
+}
+
+func Test_newRunner_WithoutRedis(t *testing.T) {
+	server := setupTestServer(t)
+	mockConn := &mockWebSocketConn{}
+
+	apiServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", api.ResponseContentType)
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer apiServer.Close()
+
+	apiURL, err := url.Parse(apiServer.URL)
+	require.NoError(t, err)
+
+	apiClient := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
+
+	req := httptest.NewRequest("GET", "/duo", nil)
+	cfg := &api.DuoWorkflow{
+		ServiceURI:         server.Addr,
+		Headers:            map[string]string{},
+		LockConcurrentFlow: true,
+	}
+
+	runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), req, cfg, nil)
+
+	require.NoError(t, err)
+	require.False(t, runner.lockFlow)
+	require.Nil(t, runner.lockManager)
 
 	runner.Close()
 }
@@ -389,12 +436,13 @@ func TestRunner_Execute_with_close_errors(t *testing.T) {
 
 func TestRunner_handleWebSocketMessage(t *testing.T) {
 	tests := []struct {
-		name           string
-		message        []byte
-		sendError      error
-		mcpManager     *mockMcpManager
-		expectedErrMsg string
-		expectMcpTools bool
+		name               string
+		message            []byte
+		clientCapabilities []string
+		sendError          error
+		mcpManager         *mockMcpManager
+		expectedErrMsg     string
+		expectMcpTools     bool
 	}{
 		{
 			name:           "invalid json",
@@ -419,8 +467,9 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 			expectedErrMsg: "",
 		},
 		{
-			name:    "start request with mcp tools",
-			message: []byte(`{"startRequest": {"goal": "test goal", "mcpTools": [{"name": "get_issue"}]}}`),
+			name:               "start request with mcp tools",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "mcpTools": [{"name": "get_issue"}]}}`),
+			clientCapabilities: []string{},
 			mcpManager: &mockMcpManager{
 				tools: []*pb.McpTool{
 					{Name: "test_tool", Description: "A test tool"},
@@ -430,11 +479,18 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 			expectedErrMsg: "",
 		},
 		{
-			name:           "start request without mcp manager",
-			message:        []byte(`{"startRequest": {"goal": "test goal"}}`),
-			mcpManager:     nil,
-			expectMcpTools: false,
-			expectedErrMsg: "",
+			name:               "start request without mcp manager",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal"}}`),
+			clientCapabilities: []string{},
+			mcpManager:         nil,
+			expectMcpTools:     false,
+			expectedErrMsg:     "",
+		},
+		{
+			name:               "start request with supported and unsupported ClientCapabilities",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command", "incremental_streaming", "unsupported_capability"]}}`),
+			clientCapabilities: []string{"shell_command", "incremental_streaming"},
+			expectedErrMsg:     "",
 		},
 	}
 
@@ -443,6 +499,8 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 			mockWf := &mockWorkflowStream{
 				sendError: tt.sendError,
 			}
+
+			rdb := initRdb(t)
 
 			testURL, _ := url.Parse("http://example.com")
 			r := &runner{
@@ -455,6 +513,7 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 				conn:        &mockWebSocketConn{},
 				wf:          mockWf,
 				mcpManager:  tt.mcpManager,
+				lockManager: newWorkflowLockManager(rdb),
 			}
 
 			err := r.handleWebSocketMessage(tt.message)
@@ -473,6 +532,13 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 					assert.Equal(t, "get_issue", startReq.McpTools[0].Name)
 					assert.Equal(t, "test_tool", startReq.McpTools[1].Name)
 					assert.Equal(t, "A test tool", startReq.McpTools[1].Description)
+				}
+
+				if tt.clientCapabilities != nil {
+					require.Len(t, mockWf.sendEvents, 1)
+					startReq := mockWf.sendEvents[0].GetStartRequest()
+					require.NotNil(t, startReq)
+					assert.Equal(t, tt.clientCapabilities, startReq.ClientCapabilities)
 				}
 			}
 		})
@@ -667,6 +733,7 @@ func TestRunner_handleAgentAction(t *testing.T) {
 					Client: server.Client(),
 					URL:    serverURL,
 				},
+				backend:     createBackendHandler(server.Client()),
 				token:       "test-token",
 				originalReq: &http.Request{},
 				conn:        mockConn,
@@ -778,10 +845,11 @@ func TestRunner_closeWebSocketConnection(t *testing.T) {
 
 func TestRunner_sendActionToWs(t *testing.T) {
 	tests := []struct {
-		name           string
-		action         *pb.Action
-		writeError     error
-		expectedErrMsg string
+		name             string
+		action           *pb.Action
+		writeError       error
+		setDeadlineError error
+		expectedErrMsg   string
 	}{
 		{
 			name: "successful send",
@@ -808,12 +876,26 @@ func TestRunner_sendActionToWs(t *testing.T) {
 			writeError:     errors.New("write failed"),
 			expectedErrMsg: "sendActionToWs: failed to send WS message: write failed",
 		},
+		{
+			name: "set write deadline error",
+			action: &pb.Action{
+				RequestID: "req-789",
+				Action: &pb.Action_RunCommand{
+					RunCommand: &pb.RunCommandAction{
+						Program: "ls",
+					},
+				},
+			},
+			setDeadlineError: errors.New("set write deadline failed"),
+			expectedErrMsg:   "sendActionToWs: failed to set write deadline: set write deadline failed",
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			mockConn := &mockWebSocketConn{
-				writeError: tt.writeError,
+				writeError:       tt.writeError,
+				setDeadlineError: tt.setDeadlineError,
 			}
 
 			testURL, _ := url.Parse("http://example.com")
@@ -893,4 +975,188 @@ func TestRunner_Shutdown(t *testing.T) {
 		require.NotNil(t, stopEvent)
 		require.Equal(t, "WORKHORSE_SERVER_SHUTDOWN", stopEvent.Reason)
 	})
+}
+
+func TestRunner_AcquireWorkflowLock_ConcurrentAttempts(t *testing.T) {
+	rdb := initRdb(t)
+	mockConn1 := &mockWebSocketConn{}
+	mockWf1 := &mockWorkflowStream{}
+
+	// We only mock websocket connection 2 as we are calling
+	// handleWorkflowMessage directly for the first runner. The second runner
+	// we want to call Execute on so we need to mock it properly.
+	mockConn2 := &mockWebSocketConn{
+		readMessages: [][]byte{
+			[]byte(`{"startRequest": {"goal": "test", "workflowID": "concurrent-test-123"}}`),
+		},
+	}
+	mockWf2 := &mockWorkflowStream{
+		blockCh: make(chan bool),
+	}
+
+	testURL, _ := url.Parse("http://example.com")
+
+	r1 := &runner{
+		rails: &api.API{
+			Client: &http.Client{},
+			URL:    testURL,
+		},
+		originalReq: httptest.NewRequest("GET", "/", nil),
+		conn:        mockConn1,
+		wf:          mockWf1,
+		lockManager: newWorkflowLockManager(rdb),
+		mcpManager:  &mockMcpManager{},
+		lockFlow:    true,
+	}
+
+	r2 := &runner{
+		rails: &api.API{
+			Client: &http.Client{},
+			URL:    testURL,
+		},
+		originalReq: httptest.NewRequest("GET", "/", nil),
+		conn:        mockConn2,
+		wf:          mockWf2,
+		lockManager: newWorkflowLockManager(rdb),
+		mcpManager:  &mockMcpManager{},
+		lockFlow:    true,
+	}
+
+	startReq := &pb.StartWorkflowRequest{
+		Goal:       "test workflow",
+		WorkflowID: "concurrent-test-123",
+		McpTools:   []*pb.McpTool{},
+	}
+
+	// First runner acquires the lock
+	err := r1.acquireWorkflowLock(startReq)
+	require.NoError(t, err)
+	assert.NotNil(t, r1.mutex)
+
+	// Second runner should fail to acquire the same lock. This uses the full
+	// Execute() code path to be closer to an integration test.
+	err = r2.Execute(context.Background())
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to acquire lock")
+	assert.Nil(t, r2.mutex)
+
+	// Clean up
+	r1.lockManager.releaseLock(context.Background(), r1.mutex, r1.workflowID)
+}
+
+func TestRunner_HandleWebSocketMessage_AcquiresLock(t *testing.T) {
+	rdb := initRdb(t)
+	mockConn := &mockWebSocketConn{}
+	mockWf := &mockWorkflowStream{}
+
+	testURL, _ := url.Parse("http://example.com")
+	r := &runner{
+		rails: &api.API{
+			Client: &http.Client{},
+			URL:    testURL,
+		},
+		originalReq: httptest.NewRequest("GET", "/", nil),
+		conn:        mockConn,
+		wf:          mockWf,
+		lockManager: newWorkflowLockManager(rdb),
+		mcpManager:  &mockMcpManager{},
+		lockFlow:    true,
+	}
+
+	message := []byte(`{"startRequest": {"goal": "test", "workflowID": "msg-test-123"}}`)
+	err := r.handleWebSocketMessage(message)
+	require.NoError(t, err)
+
+	// Verify lock was acquired
+	assert.Equal(t, "msg-test-123", r.workflowID)
+	assert.NotNil(t, r.mutex)
+
+	// Clean up
+	r.lockManager.releaseLock(context.Background(), r.mutex, r.workflowID)
+}
+
+func TestRunner_Execute_ReleasesLock(t *testing.T) {
+	rdb := initRdb(t)
+
+	mockConn := &mockWebSocketConn{
+		readMessages: [][]byte{
+			[]byte(`{"startRequest": {"goal": "test", "workflowID": "execute-test-123"}}`),
+		},
+	}
+
+	mockWf := &mockWorkflowStream{
+		blockCh: make(chan bool),
+	}
+
+	testURL, _ := url.Parse("http://example.com")
+	r := &runner{
+		rails: &api.API{
+			Client: &http.Client{},
+			URL:    testURL,
+		},
+		originalReq: httptest.NewRequest("GET", "/", nil),
+		conn:        mockConn,
+		wf:          mockWf,
+		lockManager: newWorkflowLockManager(rdb),
+		mcpManager:  &mockMcpManager{},
+		lockFlow:    true,
+	}
+
+	ctx := context.Background()
+	err := r.Execute(ctx)
+
+	// since we block gRPC stream we expect websockets to end with EOF
+	require.Equal(t, "handleWebSocketMessages: failed to read a WS message: EOF", err.Error())
+
+	// Verify lock was released (we can acquire it again)
+	mutex, err := r.lockManager.acquireLock(ctx, "execute-test-123")
+	require.NoError(t, err)
+	require.NotNil(t, mutex)
+}
+
+func TestRunner_isUsageQuotaExceededError(t *testing.T) {
+	tests := []struct {
+		name     string
+		err      error
+		expected bool
+	}{
+		{
+			name:     "resource exhausted with quota exceeded message",
+			err:      status.Error(codes.ResourceExhausted, "USAGE_QUOTA_EXCEEDED: consumer has exceeded their quota"),
+			expected: true,
+		},
+		{
+			name:     "resource exhausted without quota exceeded message",
+			err:      status.Error(codes.ResourceExhausted, "some other resource exhausted error"),
+			expected: false,
+		},
+		{
+			name:     "different error code with quota exceeded message",
+			err:      status.Error(codes.Internal, "USAGE_QUOTA_EXCEEDED: consumer has exceeded their quota"),
+			expected: false,
+		},
+		{
+			name:     "non-gRPC error",
+			err:      errors.New("regular error"),
+			expected: false,
+		},
+		{
+			name:     "nil error",
+			err:      nil,
+			expected: false,
+		},
+		{
+			name:     "OK status",
+			err:      status.Error(codes.OK, "success"),
+			expected: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r := &runner{}
+			result := r.isUsageQuotaExceededError(tt.err)
+			require.Equal(t, tt.expected, result)
+		})
+	}
 }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'sawyer'
 
 require_relative '../../config/initializers/sawyer_patch'

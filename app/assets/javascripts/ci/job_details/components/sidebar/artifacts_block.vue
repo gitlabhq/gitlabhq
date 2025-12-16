@@ -14,6 +14,7 @@ import timeagoMixin from '~/vue_shared/mixins/timeago';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 
 export default {
+  name: 'ArtifactsBlock',
   i18n: {
     jobArtifacts: s__('Job|Job artifacts'),
     artifactsHelpText: s__(

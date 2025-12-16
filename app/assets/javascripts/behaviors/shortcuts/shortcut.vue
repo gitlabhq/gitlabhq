@@ -2,6 +2,7 @@
 <script>
 import { getModifierKey } from '~/constants';
 import { __, s__ } from '~/locale';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 // Map some keys to their proper representation depending on the system
 // See also: https://craig.is/killing/mice#keys
@@ -38,7 +39,7 @@ const symbolMap = {
   ';': s__('KeyboardKey|Semicolon'),
 };
 
-export default {
+export default normalizeRender({
   functional: true,
   props: {
     shortcuts: {
@@ -98,5 +99,5 @@ export default {
 
     return createElement('span', { staticClass }, shortcuts);
   },
-};
+});
 </script>

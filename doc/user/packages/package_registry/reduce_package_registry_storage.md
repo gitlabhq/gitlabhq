@@ -24,7 +24,7 @@ You should implement a regular cleanup strategy to reduce package registry bloat
 
 To review the storage **Usage breakdown**:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Usage quotas**.
 1. From the **Usage quotas** page, review the **Usage breakdown** for packages.
 
@@ -39,13 +39,13 @@ Prerequisites:
 
 To delete a package:
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Deploy** > **Package registry**.
 1. From the **Package registry** page, select the package you want to delete.
    - Or, from the **Package registry** page,
    select the vertical ellipsis ({{< icon name="ellipsis_v" >}})
    and select **Delete package**.
-1. Select **Delete**.
+1. On the **Delete package version** confirmation dialog, select **Permanently delete**.
 
 The package is permanently deleted.
 
@@ -53,9 +53,9 @@ To delete a package, you can also use [the API](../../../api/packages.md#delete-
 
 {{< alert type="note" >}}
 
-You can introduce a [dependency confusion risk](supported_functionality.md#deleting-packages)
+You can introduce a dependency confusion risk
 if you delete a package while
-[request forwarding](supported_functionality.md#forwarding-requests) is enabled.
+[request forwarding](supported_functionality.md#forwarding-requests) is turned on.
 
 {{< /alert >}}
 
@@ -69,7 +69,7 @@ Prerequisites:
 
 To delete package assets:
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Deploy** > **Package registry**.
 1. From the **Package registry** page, select a package to view additional details.
 1. From the **Assets** table, find the name of the assets you want to delete.
@@ -102,7 +102,7 @@ Prerequisites:
 
 By default, the packages cleanup policy is disabled. To enable it:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Package registry**.
 1. Under **Manage storage used by package assets**, set the rules appropriately.
@@ -110,9 +110,9 @@ By default, the packages cleanup policy is disabled. To enable it:
 ### Available rules
 
 - `Number of duplicated assets to keep`: Some package formats support multiple copies of the same asset.
-You can set a limit on how many duplicated assets to keep.
-When the limit is reached, the oldest assets are automatically deleted.
-Unique filenames, like those produced by Maven snapshots, are not counted as duplicated assets.
+  You can set a limit on how many duplicated assets to keep.
+  When the limit is reached, the oldest assets are automatically deleted.
+  Unique filenames, like those produced by Maven snapshots, are not counted as duplicated assets.
 
 - `Number of duplicated assets to keep` runs [every 12 hours](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/packages/cleanup/policy.rb).
 

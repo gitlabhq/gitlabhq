@@ -2,7 +2,9 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
 import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue2';
+import vue2 from '@vitejs/plugin-vue2';
+// eslint-disable-next-line import/no-unresolved -- False positive: eslint doesn't read `exports` and reports `unresolved`. See https://github.com/import-js/eslint-plugin-import/issues/1810
+import vue3 from '@vitejs/plugin-vue';
 import graphql from '@rollup/plugin-graphql';
 import glob from 'glob';
 import webpackConfig from './config/webpack.config';
@@ -25,6 +27,22 @@ import { IconsPlugin } from './config/helpers/vite_plugin_icons.mjs';
 import { ImagesPlugin } from './config/helpers/vite_plugin_images.mjs';
 import { CrossOriginWorkerPlugin } from './config/helpers/vite_plugin_cross_origin_worker';
 import { PrebuildDuoNext } from './config/helpers/vite_plugin_prebuild_duo_next';
+import vue3migrationCompiler from './config/vue3migration/compiler';
+
+const { VUE_VERSION: EXPLICIT_VUE_VERSION } = process.env;
+if (![undefined, '2', '3'].includes(EXPLICIT_VUE_VERSION)) {
+  throw new Error(
+    `Invalid VUE_VERSION value: ${EXPLICIT_VUE_VERSION}. Only '2' and '3' are supported`,
+  );
+}
+const USE_VUE3 = EXPLICIT_VUE_VERSION === '3';
+
+if (USE_VUE3) {
+  console.log('[V] Using Vue.js 3');
+} else {
+  console.log('[V] Using Vue.js 2');
+}
+const vue = USE_VUE3 ? vue3 : vue2;
 
 let viteGDKConfig;
 try {
@@ -105,6 +123,7 @@ export default defineConfig({
     FixedRubyPlugin(),
     vue({
       template: {
+        compiler: USE_VUE3 ? vue3migrationCompiler : undefined,
         compilerOptions: {
           whitespace: 'preserve',
         },

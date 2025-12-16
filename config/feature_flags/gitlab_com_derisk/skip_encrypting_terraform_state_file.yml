@@ -1,0 +1,10 @@
+---
+name: skip_encrypting_terraform_state_file
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578031
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211851
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/579589
+milestone: '18.7'
+group: group::runner core
+type: gitlab_com_derisk
+default_enabled: false

@@ -1,0 +1,8 @@
+---
+name: authorize_markdown_upload
+description: Grants the ability to authorize markdown upload
+feature_category: team_planning
+boundaries:
+  - project
+permissions:
+  - authorize_markdown_upload

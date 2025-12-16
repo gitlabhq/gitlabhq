@@ -11,6 +11,18 @@ module Gitlab
     end
     # rubocop:enable Gitlab/Json
 
+    def xml
+      log_parse_method_called(:xml, (body.count('<') / 2) + body.count('='))
+
+      super
+    end
+
+    def csv
+      log_parse_method_called(:csv, body.count(",\n"))
+
+      super
+    end
+
     private
 
     def oversize_response?
@@ -25,6 +37,15 @@ module Gitlab
       )
 
       raise JSON::ParserError, 'JSON response exceeded the maximum number of objects'
+    end
+
+    def log_parse_method_called(parse_method, structural_element_count)
+      Gitlab::AppJsonLogger.info(
+        message: 'HttpResponseParser method called',
+        parse_method: parse_method,
+        structural_element_count: structural_element_count,
+        caller: Gitlab::BacktraceCleaner.clean_backtrace(caller)
+      )
     end
 
     # Estimates the total number of values in the JSON response by counting:

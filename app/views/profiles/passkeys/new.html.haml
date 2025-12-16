@@ -1,5 +1,14 @@
-<!--- Placeholder -->
-%h1
-  TODO: Implement Passkey Creation
+- title = s_('Add passkey|Add passkey')
+- breadcrumb_title title
+- page_title title, _('Account')
+- add_to_breadcrumbs _('Account'), profile_account_path
+- @hide_search_settings = true
 
-.js-passkeys
+%h1
+  = s_('Add passkey|Add passkey')
+
+%p
+  - help_link = link_to '', help_page_path('auth/passkeys.md'), target: '_blank', rel: 'noopener noreferrer'
+  = safe_format(s_('Add passkey|Follow the instructions on your browser to add a passkey. %{link_start}Learn more about passkeys%{link_end}.'), tag_pair(help_link, :link_start, :link_end))
+
+#js-passkey-registration{ data: device_registration_data(current_password_required: current_password_required?, target_path: profile_passkeys_path, webauthn_error: @webauthn_error) }

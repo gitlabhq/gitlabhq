@@ -74,17 +74,6 @@ class UserDetail < ApplicationRecord
   before_validation :sanitize_attrs
   before_save :prevent_nil_fields
 
-  def sanitize_attrs
-    %i[bluesky discord linkedin mastodon orcid twitter website_url github].each do |attr|
-      value = self[attr]
-      self[attr] = Sanitize.clean(value) if value.present?
-    end
-    %i[location organization].each do |attr|
-      value = self[attr]
-      self[attr] = Sanitize.clean(value).gsub('&amp;', '&') if value.present?
-    end
-  end
-
   # Exclude the hashed email_otp attribute
   def serializable_hash(options = nil)
     options = options.try(:dup) || {}
@@ -95,6 +84,17 @@ class UserDetail < ApplicationRecord
   end
 
   private
+
+  def sanitize_attrs
+    %i[bluesky discord linkedin mastodon orcid twitter website_url github].each do |attr|
+      value = self[attr]
+      self[attr] = Sanitize.clean(value) if value.present?
+    end
+    %i[location organization].each do |attr|
+      value = self[attr]
+      self[attr] = Sanitize.clean(value).gsub('&amp;', '&') if value.present?
+    end
+  end
 
   def prevent_nil_fields
     self.bluesky = '' if bluesky.nil?

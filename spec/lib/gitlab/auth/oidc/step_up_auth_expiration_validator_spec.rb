@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Auth::Oidc::StepUpAuthExpirationValidator, feature_category: :system_access do
   let(:current_time) { Time.current }

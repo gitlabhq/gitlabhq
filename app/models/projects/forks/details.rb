@@ -13,7 +13,7 @@ module Projects
       def initialize(project, ref)
         @project = project
         @fork_repo = project.repository
-        @source_repo = project.fork_source.repository
+        @source_repo = project.fork_source&.repository
         @ref = ref
       end
 
@@ -55,7 +55,7 @@ module Projects
 
       def divergence_counts
         sha = fork_repo.commit(ref)&.sha
-        source_sha = source_repo.commit&.sha
+        source_sha = source_repo&.commit&.sha
 
         return if sha.blank? || source_sha.blank?
 

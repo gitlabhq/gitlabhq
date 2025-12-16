@@ -18,6 +18,7 @@ import { visitUrl, joinPaths, mergeUrlParams } from '~/lib/utils/url_utility';
 import SeverityToken from '~/sidebar/components/severity/severity.vue';
 import Tracking from '~/tracking';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { WORK_ITEM_TYPE_ENUM_INCIDENT } from '~/work_items/constants';
 import mockIncidents from '../mocks/incidents.json';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -228,7 +229,7 @@ describe('Incidents List', () => {
       expect(findCreateIncidentBtn().exists()).toBe(true);
       findCreateIncidentBtn().trigger('click');
       expect(mergeUrlParams).toHaveBeenCalledWith(
-        { issuable_template: incidentTemplateName, 'issue[issue_type]': incidentType },
+        { issuable_template: incidentTemplateName, type: WORK_ITEM_TYPE_ENUM_INCIDENT },
         newIssuePath,
       );
     });
@@ -236,7 +237,6 @@ describe('Incidents List', () => {
     it('shows the button linking to new incidents page with work items view', () => {
       mountComponent({
         data: { incidents: { list: mockIncidents }, incidentsCount: {} },
-        provide: { glFeatures: { workItemViewForIssues: true } },
         loading: false,
       });
 

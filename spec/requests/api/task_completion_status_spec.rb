@@ -21,30 +21,40 @@ RSpec.describe 'task completion status response', features: :team_planning do
         expected_completed_count: 0
       },
       {
-        description: %(- [ ] task 1
-        - [x] task 2 ),
+        description: <<~MARKDOWN,
+          - [ ] task 1
+          - [x] task 2
+        MARKDOWN
         expected_count: 2,
         expected_completed_count: 1
       },
       {
-        description: %(- [ ] task 1
-        - [ ] task 2 ),
+        description: <<~MARKDOWN,
+          - [ ] task 1
+          - [ ] task 2
+        MARKDOWN
         expected_count: 2,
         expected_completed_count: 0
       },
       {
-        description: %(- [x] task 1
-        - [x] task 2 ),
+        description: <<~MARKDOWN,
+          - [x] task 1
+          - [x] task 2
+        MARKDOWN
         expected_count: 2,
         expected_completed_count: 2
       },
       {
-        description: %(- [ ] task 1),
+        description: <<~MARKDOWN,
+          - [ ] task 1
+        MARKDOWN
         expected_count: 1,
         expected_completed_count: 0
       },
       {
-        description: %(- [x] task 1),
+        description: <<~MARKDOWN,
+          - [x] task
+        MARKDOWN
         expected_count: 1,
         expected_completed_count: 1
       }

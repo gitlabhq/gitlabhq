@@ -2,6 +2,8 @@
 
 module Git
   class WikiPushService < ::BaseService
+    include Gitlab::InternalEventsTracking
+
     # Maximum number of change events we will process on any single push
     MAX_CHANGES = 100
 
@@ -27,8 +29,7 @@ module Git
       push_changes.take(MAX_CHANGES).each do |change| # rubocop:disable CodeReuse/ActiveRecord
         next unless change.page.present?
 
-        response = create_event_for(change)
-        log_error(response.message) if response.error?
+        create_event_for(change)
       end
     end
 
@@ -43,16 +44,14 @@ module Git
     end
 
     def create_event_for(change)
-      event_service.execute(
-        change.last_known_slug,
-        change.page,
-        change.event_action,
-        change.sha
+      wiki_page_meta = change.page.find_or_create_meta
+      track_internal_event('performed_wiki_action',
+        project: wiki_page_meta.project,
+        user: @current_user,
+        label: change.event_action.to_s,
+        meta: wiki_page_meta,
+        fingerprint: change.sha
       )
-    end
-
-    def event_service
-      @event_service ||= WikiPages::EventCreateService.new(current_user)
     end
 
     def on_default_branch?(change)

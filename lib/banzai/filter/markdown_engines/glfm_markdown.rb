@@ -2,10 +2,8 @@
 
 require 'gitlab-glfm-markdown'
 
-# Use the gitlab-glfm-markdown gem
-# (https://gitlab.com/gitlab-org/ruby/gems/gitlab-glfm-markdown)
-# to interface with the Rust based `comrak` parser
-# https://github.com/kivikakk/comrak
+# Use the gitlab-glfm-markdown gem (https://gitlab.com/gitlab-org/ruby/gems/gitlab-glfm-markdown)
+# to interface with the Rust-based Comrak parser (https://github.com/kivikakk/comrak).
 module Banzai
   module Filter
     module MarkdownEngines
@@ -24,6 +22,7 @@ module Banzai
           full_info_string: true,
           github_pre_lang: true,
           hardbreaks: false,
+          header_accessibility: true,
           header_ids: Banzai::Renderer::USER_CONTENT_ID_PREFIX,
           inapplicable_tasks: true,
           math_code: true,
@@ -56,6 +55,24 @@ module Banzai
         }.freeze
 
         def render(text)
+          # GLFMMarkdown requires UTF-8 input, and raises on anything else,
+          # like US-ASCII.  Occasionally we can get an empty US-ASCII `text`
+          # here, due to the following surprising result:
+          #
+          # [7] pry(main)> "".encoding
+          # => #<Encoding:UTF-8>
+          # [8] pry(main)> [].join
+          # => ""
+          # [9] pry(main)> [].join.encoding
+          # => #<Encoding:US-ASCII>
+          #
+          # See related discussion with further links:
+          # https://github.com/gjtorikian/commonmarker/issues/277.
+          #
+          # Obviate the need for checking anything encoding-related by shortcutting
+          # when given an empty input.
+          return "" if text.empty?
+
           ::GLFMMarkdown.to_html(text, options: render_options)
         end
 

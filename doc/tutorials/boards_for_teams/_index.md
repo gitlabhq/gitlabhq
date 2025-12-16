@@ -67,7 +67,7 @@ You add your users as members in the group, and assign them a role.
 
 To create a group:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../user/interface_redesign.md), this button is in the upper-right corner.
 1. Select **Create group**.
 1. Complete the fields. Name your group `Paperclip Software Factory`.
 1. Select **Create group**.
@@ -83,7 +83,7 @@ upcoming code changes.
 To create a blank project:
 
 1. In your group, on the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and then select
-   **In this group** > **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+   **In this group** > **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, name your project `Paperclip Assistant`.
@@ -99,7 +99,7 @@ projects you create later.
 
 To create each label:
 
-1. On the left sidebar, select **Search or go to** and find your **Paperclip Software Factory** group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your **Paperclip Software Factory** group. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter the name of the label. Start with `Frontend`.
@@ -124,7 +124,7 @@ to manage issues from all the projects that you might create later in this group
 
 To create a new group issue board:
 
-1. On the left sidebar, select **Search or go to** and find your **Paperclip Software Factory** group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your **Paperclip Software Factory** group. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issue boards**.
 1. Create the UX workflow and Frontend workflow boards.
 

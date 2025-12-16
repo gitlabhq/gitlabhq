@@ -32,8 +32,7 @@ module Types
         field :category,
           GraphQL::Types::String,
           null: false,
-          description: 'Permission category.',
-          method: :feature_category
+          description: 'Permission category.'
 
         field :boundaries,
           [Types::Authz::AccessTokens::BoundaryEnum],

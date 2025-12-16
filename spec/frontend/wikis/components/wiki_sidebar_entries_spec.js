@@ -44,13 +44,17 @@ describe('wikis/components/wiki_sidebar_entry', () => {
 
   function buildWrapper(props = {}, provide = {}) {
     wrapper = shallowMountExtended(WikiSidebarEntries, {
-      propsData: props,
+      propsData: {
+        pagesListExpanded: false,
+        ...props,
+      },
       provide: {
         hasCustomSidebar: false,
         sidebarPagesApi: MOCK_SIDEBAR_PAGES_API,
         viewAllPagesPath: MOCK_VIEW_ALL_PAGES_PATH,
         canCreate: false,
         editing: false,
+        customSidebarContent: null,
         ...provide,
       },
       stubs: {
@@ -183,6 +187,39 @@ describe('wikis/components/wiki_sidebar_entry', () => {
     it('has a "View all pages" button', () => {
       expect(findViewAllPagesButton().exists()).toBe(true);
       expect(findViewAllPagesButton().attributes('href')).toBe(MOCK_VIEW_ALL_PAGES_PATH);
+    });
+  });
+
+  describe('when there is a custom sidebar', () => {
+    const mockContent = '<a href="example.com">Foo</a>';
+    const provide = { hasCustomSidebar: true, customSidebarContent: mockContent };
+
+    beforeEach(() => {
+      mock.onGet(MOCK_SIDEBAR_PAGES_API).reply(HTTP_STATUS_OK, MOCK_ENTRIES);
+    });
+
+    describe('when the pages list is not expanded', () => {
+      beforeEach(() => {
+        buildWrapper({}, provide);
+      });
+
+      it('hides the wiki pages list', () => {
+        expect(wrapper.findByTestId('pages-list-collapse').props('visible')).toBe(false);
+      });
+
+      it('displays the custom sidebar as rendered HTML', () => {
+        expect(wrapper.html()).toContain(mockContent);
+      });
+    });
+
+    describe('when the pages list is expanded', () => {
+      beforeEach(() => {
+        buildWrapper({ pagesListExpanded: true }, provide);
+      });
+
+      it('shows the wiki pages list', () => {
+        expect(wrapper.findByTestId('pages-list-collapse').props('visible')).toBe(true);
+      });
     });
   });
 });

@@ -95,7 +95,7 @@ module API
         optional :not, type: Hash, desc: 'Returns merge requests that do not match the parameters supplied' do
           use :merge_requests_negatable_params, prefix: '`<Negated>` '
 
-          optional :reviewer_id, types: Integer,
+          optional :reviewer_id, type: Integer,
             desc: '`<Negated>` Returns merge requests which have the user as a reviewer with the given user `id`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_username`.'
           mutually_exclusive :reviewer_id, :reviewer_username
         end
@@ -151,6 +151,11 @@ module API
 
       def self.sort_options_help
         sort_options.map { |y| "`#{y}`" }.to_sentence(last_word_connector: ' or ')
+      end
+
+      # No-op method for CE - EE will override this to apply context exclusion
+      def filter_diffs_for_mcp(diffs, _project)
+        diffs
       end
     end
   end

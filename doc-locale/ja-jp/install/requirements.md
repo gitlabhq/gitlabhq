@@ -41,16 +41,16 @@ CPU要件は、ユーザー数と予想されるワークロードによって�
 
 [PostgreSQL](https://www.postgresql.org/)は、サポートされている唯一のデータベースであり、Linuxパッケージにバンドルされています。[外部のPostgreSQLデータベース](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server)も使用できますが、その場合は[正しく設定する必要があります](#postgresql-settings)。
 
-[ユーザー数](../administration/reference_architectures/_index.md)に応じて、PostgreSQLサーバーには以下が必要です。
+[ユーザー数](../administration/reference_architectures/_index.md)に応じて、PostgreSQLサーバーには以下が必要です:
 
 - ほとんどのGitLabインスタンスでは、最低5～10 GBのストレージ
 - GitLab Ultimateの場合、最低12 GBのストレージ（1 GBの脆弱性データをインポートする必要があります）
 
-次のバージョンのGitLabでは、対応するPostgreSQLバージョンを使用してください。
+次のバージョンのGitLabでは、対応するPostgreSQLバージョンを使用してください:
 
 | GitLabバージョン | Helmチャートバージョン | PostgreSQLの最小バージョン | PostgreSQLの最大バージョン |
 | -------------- | ------------------ | -------------------------- | -------------------------- |
-| 18.x           | 9.x                | [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/508672) | 未定           |
+| 18.x           | 9.x                | [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/508672) | 17.x（[GitLab 17.10以降に対してテスト済み](https://gitlab.com/gitlab-org/gitlab/-/issues/521159)）          |
 | 17.x           | 8.x                | [14.14](https://gitlab.com/gitlab-org/gitlab/-/issues/508672) | 16.x（[GitLab 16.10以降に対してテスト済み](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145298)） |
 | 16.x           | 7.x                | 13.6                       | 15.x（[GitLab 16.1以降に対してテスト済み](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119344)） |
 | 15.x           | 6.x                | 12.10                      | 14.x（[GitLab 15.11に対してのみテスト済み](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114624)）、13.x |
@@ -69,7 +69,7 @@ PostgreSQLのマイナーリリースには、[バグとセキュリティの修
 
 ### ロケールの互換性 {#locale-compatibility}
 
-`glibc`でロケールデータを変更すると、PostgreSQLデータベースファイルは、異なるオペレーティングシステム間では完全な互換性がなくなります。インデックスの破損を回避するには、以下の場合に[ロケールの互換性を確認](../administration/geo/replication/troubleshooting/common.md#check-os-locale-data-compatibility)してください。
+`glibc`でロケールデータを変更すると、PostgreSQLデータベースファイルは、異なるオペレーティングシステム間では完全な互換性がなくなります。インデックスの破損を回避するには、以下の場合に[ロケールの互換性を確認](../administration/geo/replication/troubleshooting/common.md#check-os-locale-data-compatibility)してください:
 
 - サーバー間でバイナリPostgreSQLデータを移動する。
 - Linuxディストリビューションをアップグレードする。
@@ -79,12 +79,12 @@ PostgreSQLのマイナーリリースには、[バグとセキュリティの修
 
 ### GitLabスキーマ {#gitlab-schemas}
 
-GitLab、[Geo](../administration/geo/_index.md) 、[Gitaly Cluster (Praefect)](../administration/gitaly/praefect/_index.md)、またはその他のコンポーネント専用のデータベースを作成または使用する必要があります。以下に従う場合を除き、データベース、スキーマ、ユーザー、またはその他のプロパティを作成または変更しないでください。
+GitLab、[Geo](../administration/geo/_index.md) 、[Gitaly Cluster (Praefect)](../administration/gitaly/praefect/_index.md)、またはその他のコンポーネント専用のデータベースを作成または使用する必要があります。以下に従う場合を除き、データベース、スキーマ、ユーザー、またはその他のプロパティを作成または変更しないでください:
 
 - GitLabドキュメントの手順
 - GitLabサポートまたはエンジニアの指示
 
-主なGitLabアプリケーションは、3つのスキーマを使用します。
+主なGitLabアプリケーションは、3つのスキーマを使用します:
 
 - デフォルトの`public`スキーマ
 - `gitlab_partitions_static`（自動作成）
@@ -102,7 +102,8 @@ Railsデータベースの移行中に、GitLabはスキーマまたはテーブ
 | `maintenance_work_mem` | 最小`64 MB` | [大規模なデータベースサーバーの場合は、より多くの容量](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8377#note_1728173087)が必要です。 |
 | `max_connections`      | 最小`400`   | お使いのGitLabコンポーネントに基づいて計算します。詳細なガイダンスについては、[Tune PostgreSQL](../administration/postgresql/tune.md)ページを参照してください。 |
 | `shared_buffers`       | 最小`2 GB`  | 大規模なデータベースサーバーの場合は、より多くの容量が必要です。Linuxパッケージのデフォルトは、サーバーRAMの25%に設定されています。 |
-| `statement_timeout`    | 最大1分  | ステートメントのタイムアウトにより、ロックによる制御不能イシューや、データベースが新しいクライアントを拒否するのを回避できます。1分は、Pumaラックのタイムアウト設定と一致します。 |
+| `statement_timeout`    | 15000～60000 | ステートメントのタイムアウトにより、ロックによる制御不能イシューや、データベースが新しいクライアントを拒否するのを回避できます。15～60秒（15000～60000ミリ秒）の範囲の値を使用してください。1分はPumaラックのタイムアウト設定と一致します。 |
+| `hot_standby_feedback` | `on` | 複数のノードで[データベースロードバランシング](../administration/postgresql/database_load_balancing.md#configuring-database-load-balancing)が構成されている構成では、すべてのレプリカノードで`hot_standby_feedback`を有効にして、ラグの発生を防ぐようにしてください。 |
 
 サーバー上のすべてのデータベースではなく、特定のデータベースに対して一部のPostgreSQL設定を設定できます。
 
@@ -123,7 +124,7 @@ Pumaの設定を調整するには:
 
 推奨されるPumaワーカーの数は、主にCPUとメモリの容量によって異なります。デフォルトでは、Linuxパッケージは推奨される数のワーカーを使用します。この数の計算方法について詳しくは、[`puma.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/files/gitlab-cookbooks/gitlab/libraries/puma.rb?ref_type=heads#L46-69)を参照してください。
 
-ノードのPumaワーカー数は2つ以上でなければなりません。たとえば、ノードには以下が必要です。
+ノードのPumaワーカー数は2つ以上でなければなりません。たとえば、ノードには以下が必要です:
 
 - 2 CPUコアと8 GBのメモリに対して2個のワーカー
 - 4 CPUコアと4 GBのメモリに対して2個のワーカー
@@ -137,7 +138,7 @@ Pumaの設定を調整するには:
 
 ### スレッド {#threads}
 
-推奨されるPumaスレッド数は、システムメモリの合計によって異なります。ノードは以下を使用する必要があります。
+推奨されるPumaスレッド数は、システムメモリの合計によって異なります。ノードは以下を使用する必要があります:
 
 - 最大2 GBのメモリを持つオペレーティングシステムの場合は1つのスレッド
 - 2 GBを超えるメモリを持つオペレーティングシステムの場合は4つのスレッド
@@ -169,7 +170,7 @@ Redisでは:
 
 ## サポートされているWebブラウザ {#supported-web-browsers}
 
-GitLabは、次のWebブラウザをサポートしています。
+GitLabは、次のWebブラウザをサポートしています:
 
 - [Mozilla Firefox](https://www.mozilla.org/en-US/firefox/new/)
 - [Google Chrome](https://www.google.com/chrome/)

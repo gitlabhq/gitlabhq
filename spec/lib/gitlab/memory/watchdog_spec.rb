@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: :durability_metrics do
   context 'watchdog' do

@@ -167,7 +167,7 @@ module Gitlab
         .except(:order)
 
       if hierarchy_order
-        quoted_objects_table_name = model.connection.quote_table_name(objects_table.name)
+        quoted_objects_table_name = model.adapter_class.quote_table_name(objects_table.name)
 
         parent_query = parent_query.select(
           cte.table[DEPTH_COLUMN] + 1,
@@ -200,7 +200,7 @@ module Gitlab
         .except(:order)
 
       if with_depth
-        quoted_objects_table_name = model.connection.quote_table_name(objects_table.name)
+        quoted_objects_table_name = model.adapter_class.quote_table_name(objects_table.name)
 
         descendants_query = descendants_query.select(
           cte.table[DEPTH_COLUMN] + 1,

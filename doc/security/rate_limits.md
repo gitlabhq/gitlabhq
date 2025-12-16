@@ -17,6 +17,9 @@ title: Rate limits
 For GitLab.com, see
 [GitLab.com-specific rate limits](../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
 
+For GitLab Dedicated, see
+[Authenticated user rate limits](../administration/dedicated/user_rate_limits.md).
+
 {{< /alert >}}
 
 Rate limiting is a common technique used to improve the security and durability
@@ -182,7 +185,7 @@ The rate limit is 60 deletions per minute.
 {{< /history >}}
 
 Sets a rate limit for listing all project members in a group or project. Defaults
-to 60 requests per minute on the following endpoints:
+to 200 requests per minute on the following endpoints:
 
 ```plaintext
 GET /groups/:id/members/all

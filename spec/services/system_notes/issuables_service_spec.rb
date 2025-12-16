@@ -18,7 +18,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
     # Ensure support bot user is created so creation doesn't count towards query limit
     # and we don't try to obtain an exclusive lease within a transaction.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    Users::Internal.support_bot_id
+    create(:support_bot)
   end
 
   describe '#relate_issuable' do
@@ -624,7 +624,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
   describe '#change_task_status' do
     let(:noteable) { create(:issue, project: project) }
-    let(:task)     { double(:task, complete?: true, source: 'task') }
+    let(:task)     { double(:task, complete?: true, text: 'task', source: ' task') }
 
     subject { service.change_task_status(task) }
 
@@ -634,6 +634,32 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
     it "posts the 'marked the checklist item as complete' system note" do
       expect(subject.note).to eq("marked the checklist item **task** as completed")
+    end
+
+    context 'when task contains formatting' do
+      let(:markdown_before) { '- [ ] task with **Markdown**' }
+      let(:markdown_after) { '- [x] task with **Markdown**' }
+
+      let(:task) do
+        Taskable.get_updated_tasks(old_content: markdown_before, new_content: markdown_after).first
+      end
+
+      it 'does not leak Markdown into the system note' do
+        expect(subject.note).to eq("marked the checklist item **task with Markdown** as completed")
+      end
+    end
+
+    context 'when task contains partial formatting' do
+      let(:markdown_before) { '- [ ] task with** Markdown' }
+      let(:markdown_after) { '- [x] task with** Markdown' }
+
+      let(:task) do
+        Taskable.get_updated_tasks(old_content: markdown_before, new_content: markdown_after).first
+      end
+
+      it 'does not leak Markdown into the system note' do
+        expect(subject.note).to eq("marked the checklist item **task with\\*\\* Markdown** as completed")
+      end
     end
   end
 

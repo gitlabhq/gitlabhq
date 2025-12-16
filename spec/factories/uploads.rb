@@ -72,5 +72,10 @@ FactoryBot.define do
       model { association(:design_action) }
       uploader { DesignManagement::DesignV432x230Uploader.name }
     end
+
+    trait :bulk_imports_export_uploader do
+      mount_point { :export_file }
+      uploader { BulkImports::ExportUploader.name }
+    end
   end
 end

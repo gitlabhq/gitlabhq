@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillOrDropCiPipelineOnProjectId
-description: Backfill ci_pipelines's project_id if possible, otherwise drop records that don't have a project_id
-feature_category: continuous_integration
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155137
-milestone: '17.1'
-queued_migration_version: 20240531202753
-finalized_by: 20240704155541

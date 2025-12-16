@@ -42,10 +42,7 @@ module QA
 
           page.visit imported_issue[:web_url]
 
-          work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
-          page_type = work_item_enabled ? Page::Project::WorkItem::Show : Page::Project::Issue::Show
-
-          page_type.perform do |issue|
+          Page::Project::WorkItem::Show.perform do |issue|
             expect(issue).to have_author(placeholder_user.name)
             expect(issue).to have_comment_author(placeholder_user.name)
           end
@@ -99,10 +96,7 @@ module QA
 
           page.visit imported_issue[:web_url]
 
-          work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
-          page_type = work_item_enabled ? Page::Project::WorkItem::Show : Page::Project::Issue::Show
-
-          page_type.perform do |issue|
+          Page::Project::WorkItem::Show.perform do |issue|
             expect(issue).to have_author(user.name)
             expect(issue).to have_comment_author(user.name)
           end
@@ -139,7 +133,7 @@ module QA
       end
 
       def fetch_reassignment_url(reassignment_email_subject)
-        pattern = %r{https?://[\S]+/import/source_users/[-A-Z0-9]+}i
+        pattern = %r{https?://[\S]+/import/source_users/\d+/[-A-Z0-9]+}i
         email = find_email(reassignment_email_subject)
         email.body&.match(pattern).to_s
       end

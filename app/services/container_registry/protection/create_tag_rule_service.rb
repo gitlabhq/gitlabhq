@@ -3,6 +3,8 @@
 module ContainerRegistry
   module Protection
     class CreateTagRuleService < BaseProjectService
+      include ContainerRegistry::Protection::InternalEventsTracking
+
       ALLOWED_ATTRIBUTES = %i[
         tag_name_pattern
         minimum_access_level_for_push
@@ -30,6 +32,8 @@ module ContainerRegistry
 
         protection_rule.save
         return service_response_error(message: protection_rule.errors.full_messages) unless protection_rule.persisted?
+
+        track_tag_rule_creation(protection_rule)
 
         ServiceResponse.success(payload: { container_protection_tag_rule: protection_rule })
       rescue ArgumentError => e

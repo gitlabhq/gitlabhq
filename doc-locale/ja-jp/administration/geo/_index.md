@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Geo
@@ -13,7 +13,7 @@ description: 地理的にGitLabを分散させます。
 
 {{< /details >}}
 
-Geoは、広範囲にわたる分散型開発チーム向けのソリューションです。ディザスターリカバリー戦略の一環としてウォームスタンバイを提供することを目的としています。ただし、Geoはすぐに使用できるHAソリューション**ではありません**。
+Geoは、広範囲にわたる分散型開発チーム向けのソリューションです。ディザスターリカバリー戦略の一環としてウォームスタンバイを提供することを目的としています。ただし、Geoはすぐに使用できるHAソリューション**not**（ではありません）。
 
 {{< alert type="warning" >}}
 
@@ -112,7 +112,7 @@ Geoは、プライマリサイトの破損をすべてのセカンダリサイ�
 
 Geoは、アクティブ-パッシブ型の高可用性ソリューションとして設計されています。結果整合性の同期モデルで動作します。つまり、セカンダリサイトはプライマリサイトと緊密に同期されているわけではありません。セカンダリサイトはわずかに遅れてプライマリサイトに追従するため、災害発生時に少量のデータが失われる可能性があります。災害発生時にセカンダリサイトにフェイルオーバーするには、人的介入が必要です。ただし、[GitLab Environment Toolkit（GET）](https://gitlab.com/gitlab-org/gitlab-environment-toolkit)を使用してすべてのサイトをデプロイしている場合、セカンダリサイトをプライマリサイトに昇格させるプロセスの大部分はGETによって自動化されています。
 
-## Gitalyクラスター（Praefect） {#gitaly-cluster-praefect}
+## Gitaly Cluster (Praefect) {#gitaly-cluster-praefect}
 
 Geoを[Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md)と混同しないようにご注意ください。GeoとGitaly Clusterの違いの詳細については、[Geoとの比較](../gitaly/praefect/_index.md#comparison-to-geo)を参照してください。
 
@@ -124,14 +124,14 @@ Geoインスタンスは、データの読み取りに加えて、プロジェ�
 
 ![Geoの概要](img/geo_overview_v11_5.png)
 
-Geoを有効にすると、次のようになります。
+Geoを有効にすると、次のようになります:
 
 - 元のインスタンスは**プライマリ**サイトと呼ばれます。
 - レプリケートを行うサイトは**セカンダリ**サイトと呼ばれます。
 
-次の点に注意してください。
+次の点に注意してください:
 
-- **セカンダリ**サイトは、**プライマリ**サイトと通信して、次のことを行います。
+- **セカンダリ**サイトは、**プライマリ**サイトと通信して、次のことを行います:
   - ログイン用のユーザーデータを取得する（API）。
   - リポジトリ、LFSオブジェクト、添付ファイルをレプリケートする（HTTPS + JWT）。
 - **プライマリ**サイトは、レプリケーションの詳細を表示するために**セカンダリ**サイトと通信します。**プライマリ**サイトは、同期および検証データを取得するために**セカンダリ**サイトに対してGraphQLクエリ（API）を実行します。
@@ -149,16 +149,16 @@ Geoを有効にすると、次のようになります。
 - **プライマリ**サイトと1つの**セカンダリ**サイトの詳細を示しています。
 - データベースへの書き込みは、**プライマリ**サイトでのみ実行できます。**セカンダリ**サイトは、[PostgreSQLストリーミングレプリケーション](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION)を使用してデータベースの更新を受信します。
 - [LDAPサーバー](#ldap)が存在する場合は、[ディザスターリカバリー](disaster_recovery/_index.md)シナリオに備えてレプリケートするよう設定する必要があります。
-- **セカンダリ**サイトは、JWTによって保護された特別な認証メカニズムを使用して、**プライマリ**サイトに対してさまざまなタイプの同期を実行します。
+- **セカンダリ**サイトは、JWTによって保護された特別な認証メカニズムを使用して、**プライマリ**サイトに対してさまざまなタイプの同期を実行します:
   - リポジトリは、HTTPS経由でGitを介してクローンまたは更新されます。
   - 添付ファイル、LFSオブジェクト、およびその他のファイルは、プライベートAPIエンドポイントを通じてHTTPS経由でダウンロードされます。
 
-Git操作を実行するユーザーの視点では、次のように動作します。
+Git操作を実行するユーザーの視点では、次のように動作します:
 
 - **プライマリ**サイトは、完全な読み取り/書き込み可能なGitLabインスタンスとして動作します。
 - **セカンダリ**サイトは、完全な読み取り/書き込み可能なGitLabインスタンスとして動作します。**セカンダリ**サイトは、すべての操作を**プライマリ**サイトに透過的にプロキシしますが、[いくつかの重要な例外](secondary_proxy/_index.md#features-accelerated-by-secondary-geo-sites)があります。特に、セカンダリサイトが最新の状態であれば、Gitのフェッチは**セカンダリ**サイトによって処理されます。
 
-GitLab UIを閲覧するユーザーやAPIを使用するユーザーの視点では、次のように動作します。
+GitLab UIを閲覧するユーザーやAPIを使用するユーザーの視点では、次のように動作します:
 
 - **プライマリ**サイトは、完全な読み取り/書き込み可能なGitLabインスタンスとして動作します。
 - **セカンダリ**サイトは、完全な読み取り/書き込み可能なGitLabインスタンスとして動作します。**セカンダリ**サイトは、すべての操作を**プライマリ**サイトに透過的にプロキシしますが、[いくつかの重要な例外](secondary_proxy/_index.md#features-accelerated-by-secondary-geo-sites)があります。特に、Web UIアセットは**セカンダリ**サイトによって提供されます。
@@ -168,21 +168,21 @@ GitLab UIを閲覧するユーザーやAPIを使用するユーザーの視点�
 - SSH経由のGitの操作には、[`gitlab-shell`](https://gitlab.com/gitlab-org/gitlab-shell)が必要です。
 - HTTPS経由のGitの操作には、[`gitlab-workhorse`](https://gitlab.com/gitlab-org/gitlab-workhorse)が必要です。
 
-**セカンダリ**サイトには、2つの異なるPostgreSQLデータベースが必要です。
+**セカンダリ**サイトには、2つの異なるPostgreSQLデータベースが必要です:
 
 - メインGitLabデータベースからデータをストリーミングする、読み取り専用データベースインスタンス。
 - **セカンダリ**サイトが内部的に使用し、レプリケートされたデータを記録するための[読み取り/書き込みデータベースインスタンス（トラッキングデータベース）](#geo-tracking-database)。
 
-**セカンダリ**サイトでは、追加のデーモンである[Geo Log Cursor](#geo-log-cursor)も実行します。
+**セカンダリ**サイトでは、追加のデーモンである: [Geo Log Cursor](#geo-log-cursor)も実行します。
 
 ## Geoを実行するための要件 {#requirements-for-running-geo}
 
-Geoを実行するには、次の要件を満たす必要があります。
+Geoを実行するには、次の要件を満たす必要があります:
 
-- OpenSSH 6.9以降をサポートするオペレーティングシステム（[データベース内の許可されたSSHキーの高速検索](../operations/fast_ssh_key_lookup.md)に必要）。次のオペレーティングシステムは、最新バージョンのOpenSSHが含まれていることが確認されています。
+- OpenSSH 6.9以降をサポートするオペレーティングシステム（[データベース内の許可されたSSHキーの高速検索](../operations/fast_ssh_key_lookup.md)に必要）。次のオペレーティングシステムは、最新バージョンのOpenSSHが含まれていることが確認されています:
   - [CentOS](https://www.centos.org) 7.4以降
   - [Ubuntu](https://ubuntu.com) 16.04以降
-- 可能な場合は、すべてのGeoサイトで同じバージョンのオペレーティングシステムを使用する必要があります。Geoサイト間で異なるバージョンのオペレーティングシステムを使用する場合は、データベースインデックスのサイレントな破損を防ぐため、Geoサイト間で**必ず**[OSのロケールデータの互換性を確認](replication/troubleshooting/common.md#check-os-locale-data-compatibility)してください。
+- 可能な場合は、すべてのGeoサイトで同じバージョンのオペレーティングシステムを使用する必要があります。Geoサイト間で異なるバージョンのオペレーティングシステムを使用する場合は、データベースインデックスのサイレントな破損を防ぐため、Geoサイト間で**must**（必ず）[OSのロケールデータの互換性を確認](replication/troubleshooting/common.md#check-os-locale-data-compatibility)してください。
 - [ストリーミングレプリケーション](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION)機能を使用するGitLabリリースでは、[サポートされているPostgreSQLのバージョン](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/postgresql-upgrade-cadence/)を使用する必要があります。
   - [PostgreSQLの論理レプリケーション](https://www.postgresql.org/docs/16/logical-replication.html)はサポートされていません。
 - すべてのサイトで[同じPostgreSQLバージョン](setup/database.md#postgresql-replication)を実行する必要があります。
@@ -232,16 +232,16 @@ Geoサイト間のPostgreSQLレプリケーションでは、内部VPCピアリ�
 
 GeoセカンダリサイトからGeoプライマリサイトへのHTTPリクエストは、Geoプライマリサイトの内部URLを使用します。**管理者**エリアのGeoプライマリサイト設定でこれが明示的に定義されていない場合、プライマリサイトのパブリックURLが使用されます。
 
-Geoプライマリサイトの内部URLを更新するには、次の手順に従います。
+Geoプライマリサイトの内部URLを更新するには、次の手順に従います:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **Geo > サイト**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオンにしている](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. **Geo** > **サイト**を選択します。
 1. プライマリサイトで**編集**を選択します。
-1. **内部URL**を変更し、**変更の保存**を選択します。
+1. **内部URL**を変更し、**変更を保存**を選択します。
 
 ### Geoトラッキングデータベース {#geo-tracking-database}
 
-トラッキングデータベースインスタンスは、ローカルインスタンスで何を更新する必要があるかを制御するメタデータとして使用されます。次に例を示します。
+トラッキングデータベースインスタンスは、ローカルインスタンスで何を更新する必要があるかを制御するメタデータとして使用されます。例: 
 
 - 新しいアセットをダウンロードする。
 - 新しいLFSオブジェクトをフェッチする。
@@ -251,7 +251,7 @@ Geoプライマリサイトの内部URLを更新するには、次の手順に�
 
 ### Geo Log Cursor {#geo-log-cursor}
 
-このデーモンは次の処理を行います。
+このデーモンは次の処理を行います:
 
 - **プライマリ**サイトから**セカンダリ**データベースインスタンスにレプリケートされたイベントのログを読み取る。
 - 実行する必要がある変更内容で、Geoトラッキングデータベースインスタンスを更新する。
@@ -276,19 +276,19 @@ Geoプライマリサイトの内部URLを更新するには、次の手順に�
 - [Pagesのアクセス制御](../../user/project/pages/pages_access_control.md)は、セカンダリサイトでは機能しません。詳細については、[イシュー9336](https://gitlab.com/gitlab-org/gitlab/-/issues/9336)（詳細）を参照してください。
 - 複数のセカンダリサイトを持つデプロイにおける[ディザスターリカバリー](disaster_recovery/_index.md)では、プロモートされなかったすべてのセカンダリサイトで、PostgreSQLのストリーミングレプリケーションを再初期化して新しいプライマリサイトに従わせる必要があるため、ダウンタイムが発生します。
 - SSH経由のGitの場合、どのサイトを閲覧してもプロジェクトのクローンURLが正しく表示されるようにするには、セカンダリサイトがプライマリサイトと同じポートを使用する必要があります。詳細については、[イシュー339262](https://gitlab.com/gitlab-org/gitlab/-/issues/339262)を参照してください。
-- セカンダリサイトに対してSSH経由でGitプッシュを行う場合、1.86 GBを超えるプッシュは機能しません。このバグについては、[イシュー413109](https://gitlab.com/gitlab-org/gitlab/-/issues/413109)で追跡しています。
+- セカンダリサイトに対してSSH経由でGitプッシュを行う場合、1.86 GBを超えるプッシュは機能しません。このバグについては、[イシュー413109](https://gitlab.com/gitlab-org/gitlab/-/issues/413109)で追跡しています。
 - バックアップは、[Geoセカンダリサイトでは実行できません](replication/troubleshooting/postgresql_replication.md#message-error-canceling-statement-due-to-conflict-with-recovery)。
 - セカンダリサイトに対してSSH経由でオプション付きのGitプッシュを行うと、機能せず、接続が切断されます。詳細については、[イシュー417186](https://gitlab.com/gitlab-org/gitlab/-/issues/417186)を参照してください。
 - Geoセカンダリサイトは、ほとんどの場合、パイプラインの最初のステージにおけるクローンリクエストを高速化（提供）しません。Gitの変更が大きい、帯域幅が小さい、パイプラインステージが短いといった理由により、後続のステージもセカンダリサイトから提供されるとは限りません。一般に、後続のステージに対するクローンリクエストはセカンダリサイトから提供されます。[イシュー446176](https://gitlab.com/gitlab-org/gitlab/-/issues/446176)では、この理由について説明するとともに、Runnerのクローンリクエストがセカンダリサイトから提供される可能性を高めるための機能拡張が提案されています。
 - 単一のGitリポジトリに対して高頻度でプッシュが行われると、セカンダリサイトのローカルコピーが常に最新ではないという状態に陥る可能性があります。このような場合、そのリポジトリに対するすべてのGitフェッチがプライマリサイトに転送されることになります。詳細については、[イシュー455870](https://gitlab.com/gitlab-org/gitlab/-/issues/455870)を参照してください。
-- [プロキシ](secondary_proxy/_index.md)機能は、PumaサービスまたはWebサービスのGitLabアプリケーションでのみ実装されているため、他のサービスではこの動作の恩恵を受けることができません。リクエストが常にプライマリサイトに送信されるようにするには、[別のURL](secondary_proxy/_index.md#set-up-a-separate-url-for-a-secondary-geo-site)を使用する必要があります。該当するサービスには、次のようなものがあります。
+- [プロキシ](secondary_proxy/_index.md)機能は、PumaサービスまたはWebサービスのGitLabアプリケーションでのみ実装されているため、他のサービスではこの動作の恩恵を受けることができません。リクエストが常にプライマリサイトに送信されるようにするには、[別のURL](secondary_proxy/_index.md#set-up-a-separate-url-for-a-secondary-geo-site)を使用する必要があります。該当するサービスには、次のようなものがあります:
   - GitLabコンテナレジストリ - `registry.example.com`のように、[別のドメインを使用するように設定できます](../packages/container_registry.md#configure-container-registry-under-its-own-domain)。セカンダリサイトのコンテナレジストリは、ディザスターリカバリーのみを目的としています。特にプッシュ操作の場合、ユーザーをセカンダリサイトにルーティングしないでください。データがプライマリサイトに伝播されないからです。
   - GitLab Pages - [GitLab Pagesを運用するための前提要件](../pages/_index.md#prerequisites)の一部として、常に別のドメインを使用する必要があります。
 - [統一されたURL](secondary_proxy/_index.md#set-up-a-unified-url-for-geo-sites)を使用している場合、Let's Encryptは同じドメインを通じて両方のIPアドレスに到達できなければ、証明書を生成できません。Let's Encryptが発行するTLS証明書を使用するには、ドメインをいずれかのGeoサイトに手動で割り当てて証明書を生成し、その後、その証明書を他のすべてのサイトにコピーします。
 - [セカンダリサイトがプライマリサイトとは異なるURLを使用している](secondary_proxy/_index.md#set-up-a-separate-url-for-a-secondary-geo-site)場合、[SAMLを使用してセカンダリサイトにサインイン](replication/single_sign_on.md#saml-with-separate-url-with-proxying-enabled)するには、SAML Identity Provider（IdP）がアプリケーションに複数のコールバックURLを設定できる必要があります。
 - セカンダリサイトに対してSSH経由でオプション`--depth`を指定してGitのクローンやフェッチリクエストを実行した場合、リクエスト開始時点でセカンダリサイトが最新の状態でなければ、処理が進行せず、無期限にハングします。これは、プロキシ処理中にGit SSHをGit HTTPSに変換する際に発生する問題が原因です。詳細については、[イシュー391980](https://gitlab.com/gitlab-org/gitlab/-/issues/391980)を参照してください。前述の変換処理を含まない新しいワークフローが、LinuxパッケージのGitLab Geoセカンダリサイトで使用できるようになりました。これは、機能フラグで有効にできます。詳細については、[イシュー454707のコメント](https://gitlab.com/gitlab-org/gitlab/-/issues/454707#note_2102067451)を参照してください。クラウドネイティブGitLab Geoセカンダリサイト向けの修正は、[イシュー5641](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5641)で追跡されています。
 - 一部のお客様から、セカンダリサイトが最新の状態でない場合、SSH経由で`git fetch`を実行するとハングまたはタイムアウトして失敗すると報告されています。SSH経由での`git clone`リクエストには影響しません。詳細については、[イシュー454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707)を参照してください。LinuxパッケージのGitLab Geoセカンダリサイト向けには、この問題に対する修正が用意されており、機能フラグで有効にできます。詳細については、[イシュー454707のコメント](https://gitlab.com/gitlab-org/gitlab/-/issues/454707#note_2102067451)を参照してください。クラウドネイティブGitLab Geoセカンダリサイト向けの修正は、[イシュー5641](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5641)で追跡されています。
-- [相対URL](https://docs.gitlab.com/omnibus/settings/configuration/#configure-a-relative-url-for-gitlab) を[GitLab Geo](../../administration/geo/_index.md)で使用しないでください。サイト間のプロキシが中断されます。詳細については、[イシュー456427](https://gitlab.com/gitlab-org/gitlab/-/issues/456427)を参照してください。
+- [相対URL](https://docs.gitlab.com/omnibus/settings/configuration/#configure-a-relative-url-for-gitlab)を[GitLab Geo](../../administration/geo/_index.md)で使用しないでください。サイト間のプロキシが中断されます。詳細については、[イシュー456427](https://gitlab.com/gitlab-org/gitlab/-/issues/456427)を参照してください。
 
 ### レプリケートされるデータタイプ {#replicated-data-types}
 
@@ -332,14 +332,14 @@ Geoの調整の詳細については、[Geoの調整](replication/tuning.md)を�
 
 ### バックフィル {#backfill}
 
-**セカンダリ**サイトをセットアップすると、**プライマリ**サイトから不足しているデータのレプリケートを開始します。このプロセスは**バックフィル**と呼ばれます。ブラウザで、**プライマリ**サイトの**Geoノード**ダッシュボードから、各Geoサイトの同期プロセスをモニタリングできます。
+**セカンダリ**サイトをセットアップすると、**プライマリ**サイトから不足しているデータのレプリケートを開始します。このプロセスは**backfill**（バックフィル）と呼ばれます。ブラウザで、**プライマリ**サイトの**Geo Nodes**（Geoノード）ダッシュボードから、各Geoサイトの同期プロセスをモニタリングできます。
 
 バックフィル中に発生したエラーは、バックフィルの最後に再試行するようスケジュールされます。
 
 ### Runner {#runners}
 
 - 標準的な[Runnerフリート](https://docs.gitlab.com/runner/fleet_scaling/)のベストプラクティスに加えて、RunnerをGeoセカンダリサイトに接続するよう設定することで、ジョブの負荷を分散させることもできます。[セカンダリに対するRunnerの登録](secondary_proxy/runners.md)方法を参照してください。
-- [Runner connectivity during failover](disaster_recovery/planned_failover.md#runner-connectivity-during-failover)（フェイルオーバー中のRunner接続）の処理方法も参照してください。
+- [フェイルオーバー中のRunner接続](disaster_recovery/planned_failover.md#runner-connectivity-during-failover)の処理方法も参照してください。
 
 ### Geoをアップグレードする {#upgrading-geo}
 
@@ -375,4 +375,4 @@ Geoのログへのアクセス方法と使用方法の詳細については、[�
 
 - Geoのトラブルシューティングの手順については、[Geoのトラブルシューティング](replication/troubleshooting/_index.md)を参照してください。
 
-- ディザスタリカバリのトラブルシューティングの手順については、[Geoフェイルオーバーのトラブルシューティング](disaster_recovery/failover_troubleshooting.md)を参照してください。
+- ディザスターリカバリのトラブルシューティングの手順については、[Geoフェイルオーバーのトラブルシューティング](disaster_recovery/failover_troubleshooting.md)を参照してください。

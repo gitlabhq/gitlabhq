@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.snippets.i_snippets_show
 description: Number of users viewing snippets
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame:

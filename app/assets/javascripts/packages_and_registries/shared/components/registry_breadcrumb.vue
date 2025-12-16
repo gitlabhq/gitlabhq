@@ -4,6 +4,7 @@
 import { GlBreadcrumb } from '@gitlab/ui';
 
 export default {
+  name: 'RegistryBreadcrumb',
   components: {
     GlBreadcrumb,
   },
@@ -20,8 +21,8 @@ export default {
     detailsRoute() {
       return this.$router.options.routes.find((r) => r.name === 'details');
     },
-    isRootRoute() {
-      return this.$route.name === this.rootRoute.name;
+    isDetailsRoute() {
+      return this.$route.name === this.detailsRoute.name;
     },
     detailsRouteName() {
       return this.detailsRoute.meta?.nameGenerator() || (this.$route.params?.id ?? '');
@@ -34,7 +35,7 @@ export default {
           to: this.rootRoute.path,
         },
       ];
-      if (!this.isRootRoute) {
+      if (this.isDetailsRoute) {
         crumbs.push({
           text: this.detailsRouteName,
           to: { name: this.detailsRoute.name, params: this.$route.params },

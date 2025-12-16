@@ -26,7 +26,7 @@ by using GitLab Duo Chat, Vulnerability Explanation, and Vulnerability Resolutio
 ### Step 1: Explain vulnerabilities
 
 Go to the vulnerability report for your project.
-For each high or critical vulnerability, use Vulnerability Explanation to explain the issue. Then, use Duo Chat to ask follow-up questions.
+For each high or critical vulnerability, use Vulnerability Explanation to explain the issue. Then, use GitLab Duo Chat to ask follow-up questions.
 
 ```plaintext
 Based on the earlier vulnerability explanation:

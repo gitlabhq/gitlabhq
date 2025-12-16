@@ -20,23 +20,20 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
     end
 
     it 'shows an error when using a wrong password' do
-      visit profile_account_path
+      visit profile_two_factor_auth_path
 
       # First device
-      enable_two_factor_authentication
       webauthn_device_registration(password: 'fake')
       expect(page).to have_content(_('You must provide a valid current password.'))
     end
 
     it 'allows registering more than one device' do
-      visit profile_account_path
+      visit profile_two_factor_auth_path
 
       # First device
-      enable_two_factor_authentication
       first_device = webauthn_device_registration(password: user.password)
       expect(page).to have_content('Your WebAuthn device was registered!')
       copy_recovery_codes
-      manage_two_factor_authentication
 
       # Second device
       second_device = webauthn_device_registration(name: 'My other device', password: user.password)
@@ -49,8 +46,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
 
     it 'allows the same device to be registered for multiple users' do
       # First user
-      visit profile_account_path
-      enable_two_factor_authentication
+      visit profile_two_factor_auth_path
       webauthn_device = webauthn_device_registration(password: user.password)
       expect(page).to have_content('Your WebAuthn device was registered!')
       gitlab_sign_out
@@ -58,8 +54,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
       # Second user
       user = create(:user)
       gitlab_sign_in(user)
-      visit profile_account_path
-      enable_two_factor_authentication
+      visit profile_two_factor_auth_path
       webauthn_device_registration(webauthn_device: webauthn_device, name: 'My other device', password: user.password)
       expect(page).to have_content('Your WebAuthn device was registered!')
 
@@ -84,8 +79,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
       end
 
       it "doesn't register the device if there are errors" do
-        visit profile_account_path
-        enable_two_factor_authentication
+        visit profile_two_factor_auth_path
 
         # Have the "webauthn device" respond with bad data
         page.execute_script(mock_register_js)
@@ -98,8 +92,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
       end
 
       it 'allows retrying registration' do
-        visit profile_account_path
-        enable_two_factor_authentication
+        visit profile_two_factor_auth_path
 
         # Failed registration
         page.execute_script(mock_register_js)
@@ -171,8 +164,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
           # Register current user with the same WebAuthn device
           current_user = create(:user)
           gitlab_sign_in(current_user)
-          visit profile_account_path
-          enable_two_factor_authentication
+          visit profile_two_factor_auth_path
           webauthn_device_registration(webauthn_device: webauthn_device, password: current_user.password)
           copy_recovery_codes
           gitlab_sign_out

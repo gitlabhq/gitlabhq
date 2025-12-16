@@ -1,0 +1,15 @@
+- popover_content = capture do
+  %p
+    - link = helpers.link_to('', help_page_url, target: '_blank', rel: 'noopener noreferrer')
+    = helpers.safe_format(popover_intro, helpers.tag_pair(link, :link_start, :link_end))
+  %p.gl-mb-0
+    = popover_list_title
+
+  %ul.gl-pl-4.gl-mb-0
+    - popover_bullets.each do |bullet|
+      %li
+        = bullet
+
+- popover_data = { container: 'body', toggle: 'popover', placement: @popover_placement, html: 'true', triggers: 'hover focus click', title: popover_title, content: popover_content }
+
+= render Pajamas::BadgeComponent.new(badge_text, variant: :neutral, href: '#', data: popover_data)

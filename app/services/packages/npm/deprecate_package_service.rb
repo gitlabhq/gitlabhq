@@ -29,7 +29,7 @@ module Packages
         end
 
         if enqueue_metadata_cache_worker
-          ::Packages::Npm::CreateMetadataCacheWorker.perform_async(project.id, params['package_name'])
+          ::Packages::Npm::CreateMetadataCacheWorker.perform_async(project.id, package_name)
         end
 
         ServiceResponse.success
@@ -41,7 +41,7 @@ module Packages
         ::Packages::Npm::PackageFinder.new(
           project: project,
           params: {
-            package_name: params['package_name'],
+            package_name: package_name,
             package_version: params['versions'].keys
           }
         ).execute
@@ -98,6 +98,14 @@ module Packages
         ::Packages::Package.statuses[:deprecated]
       end
       strong_memoize_attr :package_status
+
+      # TODO: Remove params['package_name'] with
+      # the rollout of the FF packages_npm_temp_package
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/579369
+      def package_name
+        params['package_name'] || params['name']
+      end
+      strong_memoize_attr :package_name
     end
   end
 end

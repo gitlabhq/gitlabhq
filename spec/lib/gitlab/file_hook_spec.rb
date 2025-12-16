@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::FileHook do
   let(:file_hook) { Rails.root.join('file_hooks', 'test.rb') }

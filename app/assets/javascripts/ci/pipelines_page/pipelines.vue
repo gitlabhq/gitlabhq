@@ -28,7 +28,7 @@ import { validateParams } from '~/ci/pipeline_details/utils';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
 import PipelinesService from './services/pipelines_service';
 import { ANY_TRIGGER_AUTHOR } from './constants';

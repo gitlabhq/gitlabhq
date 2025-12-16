@@ -36,7 +36,7 @@ the last 30 days, averaged over the number of billable users in that time period
 - **Your score** represents the average of your feature scores.
 - **Your usage** represents the average usage of a feature per billable user in the last 30 days.
 - The **Leader usage** is calculated from top-performing instances based on
-[Service Ping data](../settings/usage_statistics.md#service-ping) collected by GitLab.
+  [Service Ping data](../settings/usage_statistics.md#service-ping) collected by GitLab.
 
 Service Ping data is aggregated on GitLab servers for analysis.
 Your usage information is **not sent** to any other GitLab instances.
@@ -47,7 +47,7 @@ before this feature becomes available.
 
 To view DevOps adoption for your instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Analytics** > **DevOps adoption**.
 
 ## Add a group to DevOps adoption
@@ -58,7 +58,7 @@ Prerequisites:
 
 To add a group to DevOps adoption:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Analytics** > **DevOps adoption**.
 1. From the **Add or remove groups** dropdown list, select the group you want to add.
 
@@ -70,7 +70,7 @@ Prerequisites:
 
 To remove a group from DevOps adoption:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Analytics** > **DevOps adoption**.
 1. Either:
 

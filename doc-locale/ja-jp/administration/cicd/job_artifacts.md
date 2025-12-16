@@ -18,19 +18,19 @@ title: ジョブアーティファクトの管理
 
 ## ジョブアーティファクトを無効にする {#disabling-job-artifacts}
 
-アーティファクトをサイト全体で無効にするには、次の手順に従います。
+アーティファクトをサイト全体で無効にするには、次の手順に従います:
 
 {{< tabs >}}
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集します。
+1. `/etc/gitlab/gitlab.rb`を編集します: 
 
    ```ruby
    gitlab_rails['artifacts_enabled'] = false
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -40,13 +40,13 @@ title: ジョブアーティファクトの管理
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. Helmの値をエクスポートします。
+1. Helmの値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -55,7 +55,7 @@ title: ジョブアーティファクトの管理
          enabled: false
    ```
 
-1. ファイルを保存して、新しい値を適用します。
+1. ファイルを保存して、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -65,7 +65,7 @@ title: ジョブアーティファクトの管理
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -76,7 +76,7 @@ title: ジョブアーティファクトの管理
            gitlab_rails['artifacts_enabled'] = false
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    docker compose up -d
@@ -86,7 +86,7 @@ title: ジョブアーティファクトの管理
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -94,7 +94,7 @@ title: ジョブアーティファクトの管理
        enabled: false
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    # For systems running systemd
@@ -130,13 +130,13 @@ Dockerインストールの場合、データがマウントされるパスを�
 
 アーティファクトはデフォルトで`/var/opt/gitlab/gitlab-rails/shared/artifacts`に保存されます。
 
-1. ストレージパスを`/mnt/storage/artifacts`に変更するには、`/etc/gitlab/gitlab.rb`を編集し、次の行を追加します。
+1. ストレージパスを`/mnt/storage/artifacts`に変更するには、`/etc/gitlab/gitlab.rb`を編集し、次の行を追加します:
 
    ```ruby
    gitlab_rails['artifacts_path'] = "/mnt/storage/artifacts"
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -148,7 +148,7 @@ Dockerインストールの場合、データがマウントされるパスを�
 
 アーティファクトはデフォルトで`/home/git/gitlab/shared/artifacts`に保存されます。
 
-1. たとえば、ストレージパスを`/mnt/storage/artifacts`に変更するには、`/home/git/gitlab/config/gitlab.yml`を編集し、次の行を追加または修正します。
+1. たとえば、ストレージパスを`/mnt/storage/artifacts`に変更するには、`/home/git/gitlab/config/gitlab.yml`を編集し、次の行を追加または修正します:
 
    ```yaml
    production: &base
@@ -157,7 +157,7 @@ Dockerインストールの場合、データがマウントされるパスを�
        path: /mnt/storage/artifacts
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    # For systems running systemd
@@ -187,10 +187,10 @@ GitLabがインストールされているローカルディスクにアーテ�
 
 ### オブジェクトストレージに移行する {#migrating-to-object-storage}
 
-ジョブアーティファクトをローカルストレージからオブジェクトストレージに移行できます。この処理はバックグラウンドワーカーで実行され、**ダウンタイムは不要**です。
+ジョブアーティファクトをローカルストレージからオブジェクトストレージに移行できます。この処理はバックグラウンドワーカーで実行され、**no downtime**（ダウンタイムは不要）です。
 
 1. [オブジェクトストレージを設定](#using-object-storage)します。
-1. アーティファクトを移行します。
+1. アーティファクトを移行します:
 
    {{< tabs >}}
 
@@ -220,8 +220,8 @@ GitLabがインストールされているローカルディスクにアーテ�
 
    {{< /tabs >}}
 
-1. （オプション）PostgreSQLコンソールを使用して、進行状況を追跡し、すべてのジョブアーティファクトを正常に移行したことを確認します。
-   1. PostgreSQLコンソールを開きます。
+1. オプション。PostgreSQLコンソールを使用して、進行状況を追跡し、すべてのジョブアーティファクトを正常に移行したことを確認します。
+   1. PostgreSQLコンソールを開きます:
 
       {{< tabs >}}
 
@@ -252,17 +252,17 @@ GitLabがインストールされているローカルディスクにアーテ�
 
       {{< /tabs >}}
 
-   1. 次のSQLクエリを使用して、すべてのアーティファクトをオブジェクトストレージに移行したことを確認します。`objectstg`の数が`total`と同じである必要があります。
+   1. 次のSQLクエリを使用して、すべてのアーティファクトをオブジェクトストレージに移行したことを確認します。`objectstg`の数が`total`と同じである必要があります:
 
       ```shell
-      gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM ci_job_artifacts;
+      gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM p_ci_job_artifacts;
 
       total | filesystem | objectstg
       ------+------------+-----------
          19 |          0 |        19
       ```
 
-1. ディスク上の`artifacts`ディレクトリにファイルがないことを確認します。
+1. ディスク上の`artifacts`ディレクトリにファイルがないことを確認します: 
 
    {{< tabs >}}
 
@@ -276,7 +276,7 @@ GitLabがインストールされているローカルディスクにアーテ�
 
    {{< tab title="Docker" >}}
 
-   `/var/opt/gitlab`を`/srv/gitlab`にマウントしている場合は、次のようになります。
+   `/var/opt/gitlab`を`/srv/gitlab`にマウントしている場合は、次のようになります: 
 
    ```shell
    sudo find /srv/gitlab/gitlab-rails/shared/artifacts -type f | grep -v tmp | wc -l
@@ -300,7 +300,7 @@ GitLabがインストールされているローカルディスクにアーテ�
 
 ### オブジェクトストレージからローカルストレージに移行する {#migrating-from-object-storage-to-local-storage}
 
-アーティファクトをローカルストレージに戻すには、次の手順に従います。
+アーティファクトをローカルストレージに戻すには、次の手順に従います:
 
 1. `gitlab-rake gitlab:artifacts:migrate_to_local`を実行します。
 1. `gitlab.rb`で、[必要に応じてアーティファクトのストレージを無効にします](../object_storage.md#disable-object-storage-for-specific-features)。
@@ -312,19 +312,19 @@ GitLabがインストールされているローカルディスクにアーテ�
 
 Sidekiqが7分ごとに実行する`expire_build_artifacts_worker` cronジョブが、アーティファクトを削除します（[Cron](../../topics/cron/_index.md)構文`*/7 * * * *`）。
 
-期限切れのアーティファクトを削除するデフォルトのスケジュールを変更するには、次の手順に従います。
+期限切れのアーティファクトを削除するデフォルトのスケジュールを変更するには、次の手順に従います:
 
 {{< tabs >}}
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集し、次の行を追加します（すでに存在しておりコメントアウトされている場合は、コメントを解除します）。スケジュールはCron構文で変更してください。
+1. `/etc/gitlab/gitlab.rb`を編集し、次の行を追加します（すでに存在しておりコメントアウトされている場合は、コメントを解除します）。スケジュールはCron構文で変更してください:
 
    ```ruby
    gitlab_rails['expire_build_artifacts_worker_cron'] = "*/7 * * * *"
    ```
 
-1. ファイルを保存して、GitLabを再設定します。
+1. ファイルを保存して、GitLabを再設定します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -334,13 +334,13 @@ Sidekiqが7分ごとに実行する`expire_build_artifacts_worker` cronジョブ
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. Helmの値をエクスポートします。
+1. Helmの値をエクスポートします: 
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. `gitlab_values.yaml`を編集します。
+1. `gitlab_values.yaml`を編集します: 
 
    ```yaml
    global:
@@ -350,7 +350,7 @@ Sidekiqが7分ごとに実行する`expire_build_artifacts_worker` cronジョブ
            cron: "*/7 * * * *"
    ```
 
-1. ファイルを保存して、新しい値を適用します。
+1. ファイルを保存して、新しい値を適用します: 
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -360,7 +360,7 @@ Sidekiqが7分ごとに実行する`expire_build_artifacts_worker` cronジョブ
 
 {{< tab title="Docker" >}}
 
-1. `docker-compose.yml`を編集します。
+1. `docker-compose.yml`を編集します: 
 
    ```yaml
    version: "3.6"
@@ -371,7 +371,7 @@ Sidekiqが7分ごとに実行する`expire_build_artifacts_worker` cronジョブ
            gitlab_rails['expire_build_artifacts_worker_cron'] = "*/7 * * * *"
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    docker compose up -d
@@ -381,7 +381,7 @@ Sidekiqが7分ごとに実行する`expire_build_artifacts_worker` cronジョブ
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. `/home/git/gitlab/config/gitlab.yml`を編集します。
+1. `/home/git/gitlab/config/gitlab.yml`を編集します: 
 
    ```yaml
    production: &base
@@ -390,7 +390,7 @@ Sidekiqが7分ごとに実行する`expire_build_artifacts_worker` cronジョブ
          cron: "*/7 * * * *"
    ```
 
-1. ファイルを保存して、GitLabを再起動します。
+1. ファイルを保存して、GitLabを再起動します: 
 
    ```shell
    # For systems running systemd
@@ -410,7 +410,7 @@ Sidekiqが7分ごとに実行する`expire_build_artifacts_worker` cronジョブ
 
 ## ストレージ統計 {#storage-statistics}
 
-グループおよびプロジェクトごとのジョブアーティファクトの合計ストレージ使用量は、次の手段で確認できます。
+グループおよびプロジェクトごとのジョブアーティファクトの合計ストレージ使用量は、次の手段で確認できます:
 
 - **管理者**エリア
 - [グループ](../../api/groups.md) APIおよび[プロジェクト](../../api/projects.md) API

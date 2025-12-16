@@ -1,0 +1,26 @@
+---
+key_path: redis_hll_counters.ci_templates.p_ci_templates_security_multi_container_scanning_latest
+description: Count of unique projects for Multi-Container-Scanning Ci template
+product_group: composition_analysis
+product_categories:
+- container_scanning
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '18.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210414
+time_frame:
+- 7d
+- 28d
+data_source: internal_events
+data_category: optional
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: ci_template_included
+  unique: project.id
+  filter:
+    label: security_multi_container_scanning_latest
+    property: 'false'

@@ -102,7 +102,7 @@ describe('MlExperimentsShow', () => {
 
     it('sets model metadata correctly', () => {
       expect(findExperimentMetadata().findComponent(GlIcon).props('name')).toBe(
-        'issue-type-test-case',
+        'work-item-test-case',
       );
       expect(findExperimentMetadata().text()).toBe('Experiment created Nov 7, 2022 by root');
 

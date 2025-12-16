@@ -17,9 +17,11 @@ import {
   UPDATE_MUTATION_ACTION,
   variableFetchErrorText,
 } from '../constants';
+import { validateQueryData, validateMutationData } from '../utils';
 import CiVariableSettings from './ci_variable_settings.vue';
 
 export default {
+  name: 'CiVariableShared',
   components: {
     CiVariableSettings,
   },
@@ -57,19 +59,7 @@ export default {
     mutationData: {
       required: true,
       type: Object,
-      validator: (obj) => {
-        const hasValidKeys = Object.keys(obj).includes(
-          ADD_MUTATION_ACTION,
-          UPDATE_MUTATION_ACTION,
-          DELETE_MUTATION_ACTION,
-        );
-
-        const hasValidValues = Object.values(obj).reduce((acc, val) => {
-          return acc && typeof val === 'object';
-        }, true);
-
-        return hasValidKeys && hasValidValues;
-      },
+      validator: validateMutationData,
     },
     refetchAfterMutation: {
       required: false,
@@ -79,21 +69,7 @@ export default {
     queryData: {
       required: true,
       type: Object,
-      validator: (obj) => {
-        const { ciVariables, environments } = obj;
-        const hasCiVariablesKey = Boolean(ciVariables);
-        let hasCorrectEnvData = true;
-
-        const hasCorrectVariablesData =
-          typeof ciVariables?.lookup === 'function' && typeof ciVariables.query === 'object';
-
-        if (environments) {
-          hasCorrectEnvData =
-            typeof environments?.lookup === 'function' && typeof environments.query === 'object';
-        }
-
-        return hasCiVariablesKey && hasCorrectVariablesData && hasCorrectEnvData;
-      },
+      validator: validateQueryData,
     },
   },
   data() {

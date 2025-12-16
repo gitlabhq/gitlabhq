@@ -36,7 +36,7 @@ DevOps adoption shows feature adoption for development, security, and operations
 | Category    | Feature |
 |-------------|---------|
 | Development | Approvals<br>Code owners<br>Issues<br>Merge requests |
-| Security    | DAST<br>Dependency Scanning<br>Fuzz Testing<br>SAST |
+| Security    | DAST<br>Dependency scanning<br>Fuzz testing<br>SAST |
 | Operations  | Deployments<br>Pipelines<br>Runners |
 
 A feature shows as **adopted** when a group or subgroup has used the feature in a project in the last full calendar month.
@@ -49,7 +49,7 @@ The **Overview** tab illustrates the:
 - Total number of features adopted.
 - Features adopted in each category.
 - Number of features adopted in each category by month in the **Adoption over time** bar chart.
-The chart shows only data from the date you enabled DevOps adoption for the group.
+  The chart shows only data from the date you enabled DevOps adoption for the group.
 - Number of features adopted in each category by subgroup in the **Adoption by subgroup** table.
 
 The **Dev**, **Sec**, and **Ops** tabs illustrate the features adopted in development, security, and operations by subgroup.
@@ -77,7 +77,7 @@ Prerequisites:
 
 To view DevOps adoption:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Analyze** > **DevOps adoption**.
 1. To view the features adopted by category in a month, hover over a bar.
 
@@ -89,7 +89,7 @@ Prerequisites:
 
 To add a subgroup to the DevOps adoption report:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Analyze** > **DevOps adoption**.
 1. From the **Add or remove subgroups** dropdown list, select the subgroup you want to add.
 
@@ -101,7 +101,7 @@ Prerequisites:
 
 To remove a subgroup from the DevOps adoption report:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Analyze** > **DevOps adoption**.
 1. Either:
 

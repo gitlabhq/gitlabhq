@@ -12,7 +12,6 @@ RSpec/PendingWithoutReason:
     - 'ee/spec/support/shared_examples/models/vulnerabilities/cvss_vector_validator_shared_examples.rb'
     - 'qa/qa/specs/features/api/8_monitor/metrics_spec.rb'
     - 'spec/controllers/projects/issues_controller_spec.rb'
-    - 'spec/features/boards/multi_select_spec.rb'
     - 'spec/features/issues/create_issue_for_single_discussion_in_merge_request_spec.rb'
     - 'spec/features/merge_request/user_merges_merge_request_spec.rb'
     - 'spec/features/merge_request/user_resolves_conflicts_spec.rb'

@@ -4,9 +4,10 @@ import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { ListType } from 'ee_else_ce/boards/constants';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { identifyAffectedLists } from '../graphql/cache_updates';
 
-export default {
+export default normalizeRender({
   name: 'BoardDrawerWrapper',
   inject: {
     issuableType: {
@@ -30,7 +31,6 @@ export default {
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     activeBoardItem: {
       query: activeBoardItemQuery,
       variables() {
@@ -145,5 +145,5 @@ export default {
       onStateUpdated: this.onStateUpdated,
     });
   },
-};
+});
 </script>

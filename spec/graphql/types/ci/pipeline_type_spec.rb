@@ -56,6 +56,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
       merge_request_event_type
       name
       total_jobs
+      failed_jobs_count
       triggered_by_path
       child
       source
@@ -162,6 +163,67 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
         expect(manual_variables.first['key']).to eq(variable.key)
         expect(manual_variables.first['value']).to eq(nil)
         expect(manual_variables.first.keys).to match_array(%w[id key value])
+      end
+    end
+  end
+
+  describe 'failed_jobs_count' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:query) do
+      %(
+        {
+          project(fullPath: "#{project.full_path}") {
+            pipeline(iid: "#{pipeline.iid}") {
+              failedJobsCount
+            }
+          }
+        }
+      )
+    end
+
+    let(:failed_jobs_count) { data.dig('data', 'project', 'pipeline', 'failedJobsCount') }
+
+    subject(:data) { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    before_all do
+      project.add_developer(user)
+    end
+
+    context 'when pipeline has no failed jobs' do
+      before do
+        create(:ci_build, :success, pipeline: pipeline)
+        create(:ci_bridge, :success, pipeline: pipeline)
+      end
+
+      it 'returns 0' do
+        expect(failed_jobs_count).to eq(0)
+      end
+    end
+
+    context 'when pipeline has failed jobs' do
+      before do
+        create(:ci_build, :failed, pipeline: pipeline)
+        create(:ci_bridge, :failed, pipeline: pipeline)
+        create(:generic_commit_status, :failed, pipeline: pipeline)
+        create(:ci_build, :success, pipeline: pipeline)
+      end
+
+      it 'returns the count of failed jobs' do
+        expect(failed_jobs_count).to eq(3)
+      end
+    end
+
+    context 'when pipeline has more than COUNT_FAILED_JOBS_LIMIT failed jobs' do
+      before do
+        stub_const("#{Ci::Pipeline}::COUNT_FAILED_JOBS_LIMIT", 3)
+        create_list(:ci_build, 3, :failed, pipeline: pipeline)
+        create_list(:ci_bridge, 3, :failed, pipeline: pipeline)
+      end
+
+      it 'returns the limited count' do
+        expect(failed_jobs_count).to eq(3)
       end
     end
   end

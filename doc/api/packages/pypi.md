@@ -271,12 +271,14 @@ POST projects/:id/packages/pypi
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | string | yes | The ID or full path of the project. |
-| `requires_python` | string | no | The PyPI required version. |
+| `id`      | string | Yes | The ID or full path of the project. |
+| `requires_python` | string | No | The PyPI required version. |
+| `sha256_digest` | string | No | The SHA256 checksum of the package file. Not required for uploads, but without this attribute, `pip install` fails because package index URLs lack required checksums. |
 
 ```shell
 curl --request POST \
      --form 'content=@path/to/my.pypi.package-0.0.1.tar.gz' \
+     --form "sha256_digest=$(shasum -a 256 < path/to/my.pypi.package-0.0.1.tar.gz | cut -d' ' -f1)" \
      --form 'name=my.pypi.package' \
      --form 'version=1.3.7' \
      --user <username>:<personal_access_token> \

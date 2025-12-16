@@ -4,7 +4,7 @@ module QA
   module Page
     module Milestone
       class Show < Page::Base
-        include Support::Dates
+        include QA::Support::Dates
 
         view 'app/views/shared/milestones/_description.html.haml' do
           element 'milestone-description-content'

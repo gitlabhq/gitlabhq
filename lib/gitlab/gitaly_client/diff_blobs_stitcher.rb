@@ -14,10 +14,7 @@ module Gitlab
 
         @rpc_response.each do |diff_blob_msg|
           if current_diff_blob.nil?
-            diff_blobs_params = diff_blob_msg.to_h.slice(
-              *Gitlab::GitalyClient::DiffBlob::ATTRS
-            )
-
+            diff_blobs_params = diff_blob_hash(diff_blob_msg)
             current_diff_blob = Gitlab::GitalyClient::DiffBlob.new(diff_blobs_params)
           else
             current_diff_blob.patch = "#{current_diff_blob.patch}#{diff_blob_msg.patch}"
@@ -34,6 +31,13 @@ module Gitlab
       private
 
       attr_reader :rpc_response
+
+      # Avoid using #to_h because google-protobuf v4 omits default values
+      def diff_blob_hash(diff_blob_msg)
+        Gitlab::GitalyClient::DiffBlob::ATTRS.index_with do |key|
+          diff_blob_msg.send(key) # rubocop:disable GitlabSecurity/PublicSend -- This is safe because these fields are in the protobuf
+        end
+      end
     end
   end
 end

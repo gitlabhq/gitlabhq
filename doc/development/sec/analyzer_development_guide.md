@@ -175,12 +175,12 @@ To avoid compatibility issues when building analyzer Docker images, use the [OCI
 In addition to the periodic test, we ensure compatibility for users of the [`ci-templates` repo](https://gitlab.com/gitlab-org/security-products/ci-templates):
 
 1. Analyzers using the [`ci-templates` `docker-test.yml` template](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker-test.yml)
-include [`tests`](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/08319f7586fd9cc66f58ca894525ab54a2b7d831/includes-dev/docker-test.yml#L155-179) to ensure our Docker images function correctly with supported Docker tools.
+   include [`tests`](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/08319f7586fd9cc66f58ca894525ab54a2b7d831/includes-dev/docker-test.yml#L155-179) to ensure our Docker images function correctly with supported Docker tools.
 
    These tests are executed in Merge Request pipelines and scheduled pipelines, and prevent images from being released if they break the supported Docker tools.
 1. The [`ci-templates` `docker.yml` template](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker.yml)
-specifies [`oci-mediatypes=true`](https://docs.docker.com/build/exporters/#oci-media-types) for the `docker buildx` command when building analyzer images.
-This builds images using [OCI](https://opencontainers.org/) media types rather than Docker proprietary media types.
+   specifies [`oci-mediatypes=true`](https://docs.docker.com/build/exporters/#oci-media-types) for the `docker buildx` command when building analyzer images.
+   This builds images using [OCI](https://opencontainers.org/) media types rather than Docker proprietary media types.
 
 When creating a new analyzer, or changing the location of existing analyzer images,
 add it to the periodic test, or consider using the shared [`ci-templates`](https://gitlab.com/gitlab-org/security-products/ci-templates/) which includes an automated test.

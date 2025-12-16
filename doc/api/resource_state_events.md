@@ -55,6 +55,8 @@ Example response:
     "created_at": "2018-08-20T13:38:20.077Z",
     "resource_type": "Issue",
     "resource_id": 11,
+    "source_commit": null,
+    "source_merge_request_id": null,
     "state": "opened"
   },
   {
@@ -70,6 +72,8 @@ Example response:
     "created_at": "2018-08-21T14:38:20.077Z",
     "resource_type": "Issue",
     "resource_id": 11,
+    "source_commit": null,
+    "source_merge_request_id": null,
     "state": "closed"
   }
 ]
@@ -113,6 +117,8 @@ Example response:
   "created_at": "2018-08-21T14:38:20.077Z",
   "resource_type": "Issue",
   "resource_id": 11,
+  "source_commit": null,
+  "source_merge_request_id": null,
   "state": "closed"
 }
 ```
@@ -155,6 +161,8 @@ Example response:
     "created_at": "2018-08-20T13:38:20.077Z",
     "resource_type": "MergeRequest",
     "resource_id": 11,
+    "source_commit": null,
+    "source_merge_request_id": null,
     "state": "opened"
   },
   {
@@ -170,6 +178,8 @@ Example response:
     "created_at": "2018-08-21T14:38:20.077Z",
     "resource_type": "MergeRequest",
     "resource_id": 11,
+    "source_commit": null,
+    "source_merge_request_id": null,
     "state": "closed"
   }
 ]
@@ -213,6 +223,8 @@ Example response:
   "created_at": "2018-08-21T14:38:20.077Z",
   "resource_type": "MergeRequest",
   "resource_id": 11,
+  "source_commit": null,
+  "source_merge_request_id": null,
   "state": "closed"
 }
 ```
@@ -271,6 +283,8 @@ Example response:
     "created_at": "2018-08-20T13:38:20.077Z",
     "resource_type": "Epic",
     "resource_id": 11,
+    "source_commit": null,
+    "source_merge_request_id": null,
     "state": "opened"
   },
   {
@@ -286,6 +300,8 @@ Example response:
     "created_at": "2018-08-21T14:38:20.077Z",
     "resource_type": "Epic",
     "resource_id": 11,
+    "source_commit": null,
+    "source_merge_request_id": null,
     "state": "closed"
   }
 ]
@@ -329,6 +345,8 @@ Example response:
   "created_at": "2018-08-21T14:38:20.077Z",
   "resource_type": "Epic",
   "resource_id": 11,
+  "source_commit": null,
+  "source_merge_request_id": null,
   "state": "closed"
 }
 ```

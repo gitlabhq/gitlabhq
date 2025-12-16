@@ -86,10 +86,6 @@ RSpec.shared_examples 'User creates wiki page' do
 
       expect(page).to have_current_path(wiki_page_path(wiki, "test"), ignore_query: true)
 
-      page.within(:css, ".wiki-page-header") do
-        expect(page).to have_content("New page")
-      end
-
       click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
 
       click_link("Home")
@@ -104,10 +100,6 @@ RSpec.shared_examples 'User creates wiki page' do
 
       expect(page).to have_current_path(wiki_page_path(wiki, "api"), ignore_query: true)
 
-      page.within(:css, ".wiki-page-header") do
-        expect(page).to have_content("New page")
-      end
-
       click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
 
       click_link("Home")
@@ -121,10 +113,6 @@ RSpec.shared_examples 'User creates wiki page' do
       click_link("Create this page…")
 
       expect(page).to have_current_path(wiki_page_path(wiki, "raketasks"), ignore_query: true)
-
-      page.within(:css, ".wiki-page-header") do
-        expect(page).to have_content("New page")
-      end
     end
 
     it "creates ASCII wiki with LaTeX blocks", :js do

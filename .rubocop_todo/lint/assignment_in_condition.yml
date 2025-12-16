@@ -1,6 +1,7 @@
 ---
 # Cop supports --autocorrect.
 Lint/AssignmentInCondition:
+  Details: grace period
   Exclude:
     - 'app/controllers/concerns/verifies_with_email.rb'
     - 'app/controllers/omniauth_callbacks_controller.rb'
@@ -105,7 +106,6 @@ Lint/AssignmentInCondition:
     - 'ee/app/services/security/security_orchestration_policies/rule_schedule_service.rb'
     - 'ee/app/validators/vulnerabilities/cvss_vector_validator.rb'
     - 'ee/db/fixtures/development/20_burndown.rb'
-    - 'ee/lib/ee/api/entities/approval_state.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/sync/group.rb'
     - 'ee/lib/ee/gitlab/checks/diff_check.rb'
     - 'ee/lib/ee/gitlab/repo_path.rb'

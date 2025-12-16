@@ -2,91 +2,48 @@
 
 module MergeRequests
   class AfterCreateService < MergeRequests::BaseService
-    include Gitlab::Utils::StrongMemoize
-
     def execute(merge_request)
-      measure_duration(:ensure_merge_request_diff) do
-        merge_request.ensure_merge_request_diff
-      end
+      merge_request.ensure_merge_request_diff
 
-      measure_duration(:prepare_for_mergeability) do
-        prepare_for_mergeability(merge_request)
-      end
-
-      measure_duration(:prepare_merge_request) do
-        prepare_merge_request(merge_request)
-      end
-
+      prepare_for_mergeability(merge_request)
+      prepare_merge_request(merge_request)
       mark_merge_request_as_prepared(merge_request)
 
       logger.info(**log_payload(merge_request, 'Executing hooks'))
       execute_hooks(merge_request)
       logger.info(**log_payload(merge_request, 'Executed hooks'))
-
-      return unless log_after_create_duration_enabled?
-
-      log_hash_metadata_on_done(duration_statistics)
     end
 
     private
 
     def prepare_for_mergeability(merge_request)
       logger.info(**log_payload(merge_request, 'Creating pipeline'))
-      measure_duration(:create_pipeline) do
-        create_pipeline_for(merge_request, current_user)
-      end
+      create_pipeline_for(merge_request, current_user)
       logger.info(**log_payload(merge_request, 'Pipeline created'))
 
-      measure_duration(:update_head_pipeline) do
-        merge_request.update_head_pipeline
-      end
-
-      measure_duration(:check_mergeability) do
-        check_mergeability(merge_request)
-      end
+      merge_request.update_head_pipeline
+      check_mergeability(merge_request)
     end
 
     def prepare_merge_request(merge_request)
-      measure_duration(:event_service_open_mr) do
-        event_service.open_mr(merge_request, current_user)
-      end
+      event_service.open_mr(merge_request, current_user)
 
-      measure_duration(:track_mr_actions) do
-        merge_request_activity_counter.track_create_mr_action(user: current_user, merge_request: merge_request)
-        merge_request_activity_counter.track_mr_including_ci_config(user: current_user, merge_request: merge_request)
-      end
+      merge_request_activity_counter.track_create_mr_action(user: current_user, merge_request: merge_request)
+      merge_request_activity_counter.track_mr_including_ci_config(user: current_user, merge_request: merge_request)
 
-      measure_duration(:notification_service) do
-        notification_service.new_merge_request(merge_request, current_user)
-      end
+      notification_service.new_merge_request(merge_request, current_user)
+      merge_request.diffs(include_stats: false).write_cache
+      merge_request.create_cross_references!(current_user)
+      todo_service.new_merge_request(merge_request, current_user)
+      merge_request.cache_merge_request_closes_issues!(current_user)
 
-      measure_duration(:write_diffs_cache) do
-        merge_request.diffs(include_stats: false).write_cache
-      end
+      Gitlab::InternalEvents.track_event(
+        'create_merge_request',
+        user: current_user,
+        project: merge_request.target_project
+      )
 
-      measure_duration(:create_cross_references) do
-        merge_request.create_cross_references!(current_user)
-      end
-
-      measure_duration(:todo_service) do
-        todo_service.new_merge_request(merge_request, current_user)
-      end
-
-      measure_duration(:cache_closes_issues) do
-        merge_request.cache_merge_request_closes_issues!(current_user)
-      end
-
-      measure_duration(:track_internal_event) do
-        Gitlab::InternalEvents.track_event(
-          'create_merge_request',
-          user: current_user,
-          project: merge_request.target_project
-        )
-      end
-
-      measure_duration(:link_lfs_objects) do
-        link_lfs_objects(merge_request)
-      end
+      link_lfs_objects(merge_request)
     end
 
     def link_lfs_objects(merge_request)
@@ -115,39 +72,6 @@ module MergeRequests
         merge_request_id: merge_request.id,
         message: message
       )
-    end
-
-    def measure_duration(operation_name)
-      return yield unless log_after_create_duration_enabled?
-
-      start_time = current_monotonic_time
-      result = yield
-      duration = (current_monotonic_time - start_time).round(Gitlab::InstrumentationHelper::DURATION_PRECISION)
-      duration_statistics[:"#{operation_name}_duration_s"] = duration
-      result
-    end
-
-    def duration_statistics
-      @duration_statistics ||= {}
-    end
-
-    def log_after_create_duration_enabled?
-      Feature.enabled?(:log_merge_request_after_create_duration, current_user)
-    end
-    strong_memoize_attr :log_after_create_duration_enabled?
-
-    def log_hash_metadata_on_done(hash)
-      total_duration = hash.values.sum
-      hash_with_total = hash.merge(after_create_service_total_duration_s: total_duration)
-
-      Gitlab::AppJsonLogger.info(
-        event: 'merge_requests_after_create_service',
-        **hash_with_total
-      )
-    end
-
-    def current_monotonic_time
-      Gitlab::Metrics::System.monotonic_time
     end
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe 'ActiveModel::AttributeMethods Patch', feature_category: :database do
   before do

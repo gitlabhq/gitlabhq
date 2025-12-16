@@ -1,0 +1,12 @@
+---
+name: duo_workflow_lock_concurrent_flows
+description: When enabled workhorse creates a distributed lock in Redis to prevent
+  concurrent execution of Duo Agent Platform flows. This usually happens when interacting
+  with Duo Chat concurrently in 2 browser tabs. This lock will fail the 2nd tab.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/580581
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212532
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/580933
+milestone: '18.6'
+group: group::agent foundations
+type: gitlab_com_derisk
+default_enabled: false

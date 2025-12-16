@@ -18,9 +18,15 @@ title: パッケージAPI
 
 {{< /history >}}
 
-[GitLabパッケージ](../administration/packages/_index.md)のAPIドキュメント。
+このAPIを使用して、[GitLab Packages](../administration/packages/_index.md)とやり取りします。
 
 ## パッケージをリストする {#list-packages}
+
+{{< history >}}
+
+- `pipelines` GitLab 16.1で[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/341950)になりました。
+
+{{< /history >}}
 
 ### プロジェクトの場合 {#for-a-project}
 
@@ -32,23 +38,21 @@ GET /projects/:id/packages
 
 | 属性             | 型           | 必須 | 説明 |
 |:----------------------|:---------------|:---------|:------------|
-| `id`                  | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `order_by`            | 文字列         | いいえ       | 順序として使用するフィールド。`created_at`（デフォルト）、`name`、`version`、または`type`のいずれか。 |
-| `sort`                | 文字列         | いいえ       | 順序の方向。昇順の場合は`asc`（デフォルト）、降順の場合は`desc`。 |
-| `package_type`        | 文字列         | いいえ       | 返されるパッケージをタイプでフィルタリングします。`composer`、`conan`、`generic`、`golang`、`helm`、`maven`、`npm`、`nuget`、`pypi`、`terraform_module`のいずれかです。 |
-| `package_name`        | 文字列         | いいえ       | プロジェクトパッケージを名前によるあいまい検索でフィルタリングします。 |
-| `package_version`     | 文字列         | いいえ       | プロジェクトパッケージをバージョンでフィルタリングします。`include_versionless`と組み合わせて使用すると、バージョンなしのパッケージは返されません。GitLab 16.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/349065)されました。 |
-| `include_versionless` | ブール値        | いいえ       | trueに設定すると、バージョンなしのパッケージが応答に含まれます。 |
-| `status`              | 文字列         | いいえ       | 返されるパッケージを状態でフィルタリングします。`default`、`hidden`、`processing`、`error`、`pending_destruction`、`deprecated`のいずれか。 |
+| `id`                  | 整数または文字列 | 可      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `order_by`            | 文字列         | 不可       | 順序として使用するフィールド。`created_at`（デフォルト）、`name`、`version`、または`type`のいずれか。 |
+| `sort`                | 文字列         | 不可       | 順序の方向。昇順の場合は`asc`（デフォルト）、降順の場合は`desc`。 |
+| `package_type`        | 文字列         | 不可       | 返されるパッケージをタイプでフィルタリングします。`composer`、`conan`、`generic`、`golang`、`helm`、`maven`、`npm`、`nuget`、`pypi`、`terraform_module`のいずれかです。 |
+| `package_name`        | 文字列         | 不可       | プロジェクトパッケージを名前によるあいまい検索でフィルタリングします。 |
+| `package_version`     | 文字列         | 不可       | プロジェクトパッケージをバージョンでフィルタリングします。`include_versionless`と組み合わせて使用すると、バージョンなしのパッケージは返されません。GitLab 16.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/349065)されました。 |
+| `include_versionless` | ブール値        | 不可       | trueに設定すると、バージョンなしのパッケージが応答に含まれます。 |
+| `status`              | 文字列         | 不可       | 返されるパッケージを状態でフィルタリングします。`default`、`hidden`、`processing`、`error`、`pending_destruction`、`deprecated`のいずれか。 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/packages"
 ```
 
-**非推奨**: 応答の`pipelines`属性は非推奨となり、代わりに[パッケージパイプラインエンドポイントのリスト](#list-package-pipelines)が使用されるようになりました。これは、GitLab 16.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/341950)されました。パッケージにパイプラインがない場合、`pipelines`属性は応答に含まれません。それ以外の場合、`pipelines`属性は空の配列を返します。
-
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -57,26 +61,30 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "name": "com/mycompany/my-app",
     "version": "1.0-SNAPSHOT",
     "package_type": "maven",
-    "created_at": "2019-11-27T03:37:38.711Z"
+    "created_at": "2019-11-27T03:37:38.711Z",
+    "pipeline": {
+      "id": 123,
+      "status": "pending",
+      "ref": "new-pipeline",
+      "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+      "web_url": "https://example.com/foo/bar/pipelines/47",
+      "created_at": "2016-08-11T11:28:34.085Z",
+      "updated_at": "2016-08-11T11:32:35.169Z",
+      "user": {
+        "name": "Administrator",
+        "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon"
+      }
+    },
+    "pipelines": []
   },
   {
     "id": 2,
     "name": "@foo/bar",
     "version": "1.0.3",
     "package_type": "npm",
-    "created_at": "2019-11-27T03:37:38.711Z"
+    "created_at": "2019-11-27T03:37:38.711Z",
   },
-  {
-    "id": 3,
-    "name": "Hello/0.1@mycompany/stable",
-    "conan_package_name": "Hello",
-    "version": "0.1",
-    "package_type": "conan",
-    "_links": {
-      "web_path": "/foo/bar/-/packages/3",
-      "delete_api_path": "https://gitlab.example.com/api/v4/projects/1/packages/3"
-    },
-    "created_at": "2029-12-16T20:33:34.316Z",
+  ],
     "tags": []
   }
 ]
@@ -96,24 +104,22 @@ GET /groups/:id/packages
 
 | 属性             | 型           | 必須 | 説明 |
 |:----------------------|:---------------|:---------|:------------|
-| `id`                  | 整数または文字列 | はい      | IDまたは[URLエンコードされた](rest/_index.md#namespaced-paths)パス。 |
-| `exclude_subgroups`   | ブール値        | いいえ       | パラメータがtrueとして含まれている場合、サブグループのプロジェクトからのパッケージはリストされません。デフォルトは`false`です。 |
-| `order_by`            | 文字列         | いいえ       | 順序として使用するフィールド。`created_at`（デフォルト）、`name`、`version`、`type`、`project_path`のいずれか |
-| `sort`                | 文字列         | いいえ       | 順序の方向。昇順の場合は`asc`（デフォルト）、降順の場合は`desc`。 |
-| `package_type`        | 文字列         | いいえ       | 返されるパッケージをタイプでフィルタリングします。`composer`、`conan`、`generic`、`golang`、`helm`、`maven`、`npm`、`nuget`、`pypi`、`terraform_module`のいずれかです。 |
-| `package_name`        | 文字列         | いいえ       | プロジェクトパッケージを名前によるあいまい検索でフィルタリングします。 |
-| `package_version`     | 文字列         | いいえ       | 返されるパッケージをバージョンでフィルタリングします。`include_versionless`と組み合わせて使用すると、バージョンなしのパッケージは返されません。GitLab 16.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/349065)されました。 |
-| `include_versionless` | ブール値        | いいえ       | trueに設定すると、バージョンなしのパッケージが応答に含まれます。 |
-| `status`              | 文字列         | いいえ       | 返されるパッケージを状態でフィルタリングします。`default`、`hidden`、`processing`、`error`、`pending_destruction`、`deprecated`のいずれか。 |
+| `id`                  | 整数または文字列 | 可      | IDまたは[URLエンコードされた](rest/_index.md#namespaced-paths)パス。 |
+| `exclude_subgroups`   | ブール値        | 不可       | パラメータがtrueとして含まれている場合、サブグループのプロジェクトからのパッケージはリストされません。デフォルトは`false`です。 |
+| `order_by`            | 文字列         | 不可       | 順序として使用するフィールド。`created_at`（デフォルト）、`name`、`version`、`type`、`project_path`のいずれか |
+| `sort`                | 文字列         | 不可       | 順序の方向。昇順の場合は`asc`（デフォルト）、降順の場合は`desc`。 |
+| `package_type`        | 文字列         | 不可       | 返されるパッケージをタイプでフィルタリングします。`composer`、`conan`、`generic`、`golang`、`helm`、`maven`、`npm`、`nuget`、`pypi`、`terraform_module`のいずれかです。 |
+| `package_name`        | 文字列         | 不可       | プロジェクトパッケージを名前によるあいまい検索でフィルタリングします。 |
+| `package_version`     | 文字列         | 不可       | 返されるパッケージをバージョンでフィルタリングします。`include_versionless`と組み合わせて使用すると、バージョンなしのパッケージは返されません。GitLab 16.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/349065)されました。 |
+| `include_versionless` | ブール値        | 不可       | trueに設定すると、バージョンなしのパッケージが応答に含まれます。 |
+| `status`              | 文字列         | 不可       | 返されるパッケージを状態でフィルタリングします。`default`、`hidden`、`processing`、`error`、`pending_destruction`、`deprecated`のいずれか。 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=false"
 ```
 
-**非推奨**: 応答の`pipelines`属性は非推奨となり、代わりに[パッケージパイプラインエンドポイントのリスト](#list-package-pipelines)が使用されるようになりました。これは、GitLab 16.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/341950)されました。パッケージにパイプラインがない場合、`pipelines`属性は応答に含まれません。それ以外の場合、`pipelines`属性は空の配列を返します。
-
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -174,7 +180,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 デフォルトでは、`GET`リクエストは20件の結果を返します。これは、APIが[ページネーション](rest/_index.md#pagination)されているためです。
 
-`_links`オブジェクトには、次のプロパティが含まれています。
+`_links`オブジェクトには、次のプロパティが含まれています:
 
 - `web_path`: GitLabでアクセスして、パッケージの詳細を表示できるパス。
 - `delete_api_path`: パッケージを削除するためのAPIパス。リクエストユーザーに削除するための権限がある場合にのみ使用できます。
@@ -182,6 +188,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 パッケージを状態でフィルタリングできますが、`processing`状態のパッケージを操作すると、不正な形式のデータや破損したパッケージが発生する可能性があります。
 
 ## プロジェクトパッケージを取得する {#get-a-project-package}
+
+{{< history >}}
+
+- `pipelines` GitLab 16.1で[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/341950)になりました。
+
+{{< /history >}}
 
 単一のプロジェクトパッケージを取得します。状態が`default`または`deprecated`のパッケージのみが返されます。
 
@@ -191,17 +203,15 @@ GET /projects/:id/packages/:package_id
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id`      | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `package_id`      | 整数 | はい | パッケージのID。 |
+| `id`      | 整数または文字列 | 可 | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `package_id`      | 整数 | 可 | パッケージのID。 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id"
 ```
 
-**非推奨**: 応答の`pipelines`属性は非推奨となり、代わりに[パッケージパイプラインエンドポイントのリスト](#list-package-pipelines)が使用されるようになりました。これは、GitLab 16.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/341950)されました。パッケージにパイプラインがない場合、`pipelines`属性は応答に含まれません。それ以外の場合、`pipelines`属性は空の配列を返します。
-
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -255,7 +265,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-`_links`オブジェクトには、次のプロパティが含まれています。
+`_links`オブジェクトには、次のプロパティが含まれています:
 
 - `web_path`: GitLabでアクセスして、パッケージの詳細を表示できるパス。パッケージの状態が`default`または`deprecated`の場合にのみ使用できます。
 - `delete_api_path`: パッケージを削除するためのAPIパス。リクエストユーザーに削除するための権限がある場合にのみ使用できます。
@@ -270,17 +280,17 @@ GET /projects/:id/packages/:package_id/package_files
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id`      | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `package_id`      | 整数 | はい | パッケージのID。 |
-| `order_by`            | 文字列         | いいえ       | 順序として使用するフィールド。`id`（デフォルト）、`file_name`、`created_at`のいずれか |
-| `sort`                | 文字列         | いいえ       | 順序の方向。昇順の場合は`asc`（デフォルト）、降順の場合は`desc`。 |
+| `id`      | 整数または文字列 | 可 | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `package_id`      | 整数 | 可 | パッケージのID。 |
+| `order_by`            | 文字列         | 不可       | 順序として使用するフィールド。`id`（デフォルト）、`file_name`、`created_at`のいずれか |
+| `sort`                | 文字列         | 不可       | 順序の方向。昇順の場合は`asc`（デフォルト）、降順の場合は`desc`。 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id/package_files"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -352,15 +362,15 @@ GET /projects/:id/packages/:package_id/pipelines
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id`      | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `package_id`      | 整数 | はい | パッケージのID。 |
+| `id`      | 整数または文字列 | 可 | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `package_id`      | 整数 | 可 | パッケージのID。 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id/pipelines"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -417,8 +427,8 @@ DELETE /projects/:id/packages/:package_id
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id`      | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `package_id`      | 整数 | はい | パッケージのID。 |
+| `id`      | 整数または文字列 | 可 | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `package_id`      | 整数 | 可 | パッケージのID。 |
 
 ```shell
 curl --request DELETE \
@@ -426,7 +436,7 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id"
 ```
 
-次のステータスコードを返すことができます。
+次のステータスコードを返すことができます:
 
 - `204 No Content`: パッケージは正常に削除されました。
 - `403 Forbidden`: パッケージは削除から保護されています。
@@ -452,9 +462,9 @@ DELETE /projects/:id/packages/:package_id/package_files/:package_file_id
 
 | 属性         | 型           | 必須 | 説明 |
 | ----------------- | -------------- | -------- | ----------- |
-| `id`              | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `package_id`      | 整数        | はい | パッケージのID。 |
-| `package_file_id` | 整数        | はい | パッケージファイルのID。 |
+| `id`              | 整数または文字列 | 可 | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `package_id`      | 整数        | 可 | パッケージのID。 |
+| `package_file_id` | 整数        | 可 | パッケージファイルのID。 |
 
 ```shell
 curl --request DELETE \
@@ -462,7 +472,7 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id/package_files/:package_file_id"
 ```
 
-次のステータスコードを返すことができます。
+次のステータスコードを返すことができます:
 
 - `204 No Content`: パッケージは正常に削除されました。
 - `403 Forbidden`: ユーザーにファイルを削除する権限がないか、パッケージが削除から保護されています。

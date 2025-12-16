@@ -65,7 +65,8 @@ class Snippet < ApplicationRecord
   validates :content, presence: true
   validates :content, bytesize: { maximum: -> { Gitlab::CurrentSettings.snippet_size_limit } }, if: :content_changed?
 
-  validate :validate_belongs_to_project_or_organization
+  validates_with ExactlyOnePresentValidator, fields: [:project, :organization],
+    message: ->(_fields) { _('must belong to either a project or an organization') }
 
   after_create :create_statistics
 
@@ -82,7 +83,7 @@ class Snippet < ApplicationRecord
   scope :with_repository_storage_moves, -> { joins(:repository_storage_moves) }
   scope :inc_projects_namespace_route, -> { includes(project: [:route, :namespace]) }
 
-  scope :for_user_organization, ->(organization_id) do
+  scope :in_organization, ->(organization_id) do
     where.not(project_id: nil).or(where(project_id: nil, organization_id: organization_id))
   end
 
@@ -297,12 +298,6 @@ class Snippet < ApplicationRecord
     'snippet'
   end
 
-  def valid_secret_token?(token)
-    return false unless token && secret_token
-
-    ActiveSupport::SecurityUtils.secure_compare(token.to_s, secret_token.to_s)
-  end
-
   def as_json(options = {})
     options[:except] = Array.wrap(options[:except])
     options[:except] << :secret_token
@@ -392,14 +387,6 @@ class Snippet < ApplicationRecord
 
   def hidden_due_to_author_ban?
     author.banned?
-  end
-
-  private
-
-  def validate_belongs_to_project_or_organization
-    return if [project, organization].compact.one?
-
-    errors.add(:base, _('must belong to either a project or an organization'))
   end
 end
 

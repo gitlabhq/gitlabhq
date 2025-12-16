@@ -1,0 +1,12 @@
+---
+table_name: import_offline_configurations
+classes:
+- Import::Offline::Configuration
+feature_categories:
+- importers
+description: Stores object storage configuration for offline transfer
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210560
+milestone: '18.7'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations

@@ -143,6 +143,8 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
       create(:gitlab_slack_application_integration, :group,
         group: group,
         slack_integration: build(:slack_integration,
+          :group,
+          group: group,
           team_id: 'group_integration_team_id',
           team_name: 'group_integration_team_name',
           alias: 'group_alias',
@@ -157,6 +159,8 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
         group: subgroup,
         inherit_from_id: group_integration.id,
         slack_integration: build(:slack_integration,
+          :group,
+          group: subgroup,
           team_id: 'subgroup_integration_team_id',
           team_name: 'subgroup_integration_team_name',
           alias: 'subgroup_alias',
@@ -171,6 +175,8 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
         project: project,
         inherit_from_id: subgroup_integration.id,
         slack_integration: build(:slack_integration,
+          :project,
+          project: project,
           alias: 'project_alias',
           authorized_scope_names: %w[project_scope]
         )
@@ -180,6 +186,7 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
     let_it_be(:excluded_integration) do
       create(:gitlab_slack_application_integration,
         slack_integration: build(:slack_integration,
+          :instance,
           team_id: 'excluded_team_id',
           alias: 'excluded_alias',
           authorized_scope_names: %w[excluded_scope]
@@ -229,6 +236,25 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
       )
     end
 
+    it 'sets the correct sharding key on updated records' do
+      execute_service
+
+      expect(subgroup_integration.reload.slack_integration.slack_integrations_scopes).to contain_exactly(
+        have_attributes(
+          organization_id: nil,
+          group_id: subgroup.id,
+          project_id: nil
+        )
+      )
+      expect(integration.reload.slack_integration.slack_integrations_scopes).to contain_exactly(
+        have_attributes(
+          organization_id: nil,
+          group_id: nil,
+          project_id: project.id
+        )
+      )
+    end
+
     context 'when integration is disabled' do
       before do
         group_integration.update!(active: false)
@@ -273,7 +299,10 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
             bot_access_token: group_slack_integration.bot_access_token,
             created_at: be_present,
             updated_at: be_present,
-            authorized_scope_names: group_slack_integration.authorized_scope_names
+            authorized_scope_names: group_slack_integration.authorized_scope_names,
+            organization_id: nil,
+            group_id: subgroup.id,
+            project_id: nil
           )
 
           expect(integration.reload.slack_integration).to have_attributes(
@@ -285,7 +314,10 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
             bot_access_token: group_slack_integration.bot_access_token,
             created_at: be_present,
             updated_at: be_present,
-            authorized_scope_names: group_slack_integration.authorized_scope_names
+            authorized_scope_names: group_slack_integration.authorized_scope_names,
+            organization_id: nil,
+            group_id: nil,
+            project_id: project.id
           )
 
           expect(excluded_integration.reload.slack_integration).to have_attributes(
@@ -305,6 +337,8 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
         project: project_2,
         inherit_from_id: subgroup_integration.id,
         slack_integration: build(:slack_integration,
+          :project,
+          project: project_2,
           alias: 'project_2_alias',
           authorized_scope_names: %w[project_2_scope]
         )

@@ -292,6 +292,7 @@ export default {
             v-if="props.line.left.old_line && props.line.left.type !== $options.CONFLICT_THEIR"
             :data-linenumber="props.line.left.old_line"
             :href="props.line.lineHrefOld"
+            :aria-label="props.line.left.old_line"
             @click="listeners.setHighlightedRow({ lineCode: props.line.lineCode, event: $event })"
           >
           </a>
@@ -318,6 +319,7 @@ export default {
             v-if="props.line.left.new_line && props.line.left.type !== $options.CONFLICT_OUR"
             :data-linenumber="props.line.left.new_line"
             :href="props.line.lineHrefOld"
+            :aria-label="props.line.left.new_line"
             @click="listeners.setHighlightedRow({ lineCode: props.line.lineCode, event: $event })"
           >
           </a>
@@ -445,6 +447,7 @@ export default {
             v-if="props.line.right.new_line"
             :data-linenumber="props.line.right.new_line"
             :href="props.line.lineHrefNew"
+            :aria-label="props.line.right.new_line"
             @click="listeners.setHighlightedRow({ lineCode: props.line.lineCode, event: $event })"
           >
           </a>

@@ -21,7 +21,7 @@ export const i18n = {
   ),
 };
 
-const groupPermissionsHelpDocLink = helpPagePath('user/permissions#repository-group-permissions');
+const groupPermissionsHelpDocLink = helpPagePath('user/permissions#group-repositories');
 
 export default {
   name: 'GroupInheritancePopover',

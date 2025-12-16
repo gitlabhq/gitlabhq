@@ -1,10 +1,11 @@
 <script>
 import dismissUserGroupCalloutMutation from '~/graphql_shared/mutations/dismiss_user_group_callout.mutation.graphql';
 import getUserGroupCalloutsQuery from '~/graphql_shared/queries/get_user_group_callouts.query.graphql';
-import { isGid, convertToGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, isGid, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { logError } from '~/lib/logger';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 /**
  * A renderless component for querying/dismissing Users::GroupCallouts via GraphQL.
@@ -53,7 +54,7 @@ import { logError } from '~/lib/logger';
  *    - `true` if the query has loaded without error, and the user is logged in, and
  *      the callout has not been dismissed yet; `false` otherwise
  */
-export default {
+export default normalizeRender({
   name: 'UserGroupCalloutDismisser',
   props: {
     groupId: {
@@ -73,7 +74,9 @@ export default {
   data() {
     return {
       currentUser: null,
-      isDismissedLocal: false,
+      // initialized with true so that apollo does not pre-emptively run the query
+      // until after the created hook checks and sets isDismissedLocal
+      isDismissedLocal: true,
       isLoadingMutation: false,
       mutationError: null,
       queryError: null,
@@ -91,7 +94,7 @@ export default {
         this.queryError = err;
       },
       skip() {
-        return this.skipQuery;
+        return this.shouldSkipQuery;
       },
     },
   },
@@ -129,6 +132,18 @@ export default {
     shouldShowCallout() {
       return !this.isLoadingQuery && !this.isDismissed && !this.queryError && !this.isAnonUser;
     },
+    shouldSkipQuery() {
+      return this.skipQuery || this.isDismissedLocal;
+    },
+    sessionStorageKey() {
+      const parsedGroupId = getIdFromGraphQLId(this.groupId);
+      return `user_callout_dismissed_${parsedGroupId}_${this.featureName}`;
+    },
+  },
+  created() {
+    if (sessionStorage.getItem(this.sessionStorageKey) === null) {
+      this.isDismissedLocal = false;
+    }
   },
   methods: {
     async dismiss() {
@@ -152,6 +167,13 @@ export default {
           const errorMessage = `User group callout dismissal failed: ${errors.join(', ')}`;
           Sentry.captureException(new Error(errorMessage));
           this.onDismissalError(errors);
+          return;
+        }
+
+        try {
+          sessionStorage.setItem(this.sessionStorageKey, new Date().toISOString());
+        } catch {
+          // session storage full or unavailable
         }
       } catch (err) {
         logError(err);
@@ -168,5 +190,5 @@ export default {
   render() {
     return this.$scopedSlots.default(this.slotProps);
   },
-};
+});
 </script>

@@ -42,7 +42,7 @@ describe('TodosWidget', () => {
   const findTodoItems = () => wrapper.findAllComponents(TodoItem);
   const findFirstTodoItem = () => wrapper.findComponent(TodoItem);
   const findEmptyState = () => wrapper.findByText('All your to-do items are done.');
-  const findAllTodosLink = () => wrapper.find('a[href="/dashboard/todos"]');
+  const findAllTodosLink = () => wrapper.findByText('All to-do items');
   const findBaseWidget = () => wrapper.findComponent(BaseWidget);
   const findErrorMessage = () =>
     wrapper.findByText('Your to-do items are not available. Please refresh the page to try again.');
@@ -449,6 +449,44 @@ describe('TodosWidget', () => {
         },
         undefined,
       );
+    });
+  });
+
+  describe('relative URL handling', () => {
+    beforeEach(() => {
+      // ensure any previous value is cleared
+      delete gon.relative_url_root;
+    });
+
+    afterEach(() => {
+      delete gon.relative_url_root;
+    });
+
+    it('prepends gon.relative_url_root to the todos link when set', async () => {
+      gon.relative_url_root = '/gitlab';
+
+      createComponent();
+      await waitForPromises();
+
+      expect(findAllTodosLink().attributes('href')).toBe('/gitlab/dashboard/todos');
+    });
+
+    it('uses dashboard path when gon.relative_url_root is empty', async () => {
+      gon.relative_url_root = '';
+
+      createComponent();
+      await waitForPromises();
+
+      expect(findAllTodosLink().attributes('href')).toBe('/dashboard/todos');
+    });
+
+    it('uses dashboard path when gon.relative_url_root is undefined', async () => {
+      delete gon.relative_url_root;
+
+      createComponent();
+      await waitForPromises();
+
+      expect(findAllTodosLink().attributes('href')).toBe('/dashboard/todos');
     });
   });
 });

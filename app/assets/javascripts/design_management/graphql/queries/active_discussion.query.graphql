@@ -1,6 +1,0 @@
-query activeDiscussion {
-  activeDiscussion @client {
-    id
-    source
-  }
-}

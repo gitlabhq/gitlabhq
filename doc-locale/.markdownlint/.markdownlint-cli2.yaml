@@ -33,6 +33,7 @@ config:
     style: "dash"
   link-fragments: false             # MD051 - English anchor links in translated text fail
   no-space-in-emphasis: true        # MD037
+  table-column-style: false         # MD060
   
   # CUSTOM JAPANESE RULES (warnings only)
   MD-JA001:  # Four consecutive asterisks (****)

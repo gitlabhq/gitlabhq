@@ -82,6 +82,7 @@ module API
         { code: 422, message: 'Unprocessable Entity' },
         { code: 429, message: 'Too Many Requests' }
       ]
+      tags ['imports']
     end
     params do
       requires :personal_access_token, type: String, desc: 'GitHub personal access token'

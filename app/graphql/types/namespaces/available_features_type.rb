@@ -112,6 +112,20 @@ module Types
         resolver_method: :work_item_status_enabled?,
         experiment: { milestone: '18.3' }
 
+      field :has_work_item_planning_view_feature,
+        GraphQL::Types::Boolean,
+        null: false,
+        description: 'Whether work item planning view is enabled for the namespace.',
+        resolver_method: :work_item_planning_view_enabled?,
+        experiment: { milestone: '18.6' }
+
+      field :has_duo_remote_flows_feature,
+        GraphQL::Types::Boolean,
+        null: false,
+        description: 'Whether Duo remote flows are enabled for the namespace.',
+        resolver_method: :has_duo_remote_flows_feature_enabled?,
+        experiment: { milestone: '18.6' }
+
       def blocked_issues_enabled?
         object.licensed_feature_available?(:blocked_issues)
       end
@@ -172,6 +186,27 @@ module Types
 
       def work_item_status_enabled?
         object.licensed_feature_available?(:work_item_status)
+      end
+
+      def work_item_planning_view_enabled?
+        case object
+        when Group, ::Namespaces::ProjectNamespace
+          object.owner_entity.work_items_consolidated_list_enabled?(current_user)
+        when ::Namespaces::UserNamespace
+          return true if Feature.enabled?(:work_item_planning_view, type: :wip) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- the flag is for group
+
+          current_user.present? && Feature.enabled?(:work_items_consolidated_list_user, current_user)
+        else
+          # rubocop:disable Gitlab/NoCodeCoverageComment -- defensive fallback for unknown namespace types; unreachable due to GraphQL type system guarantees
+          # :nocov:
+          false
+          # :nocov:
+          # rubocop:enable Gitlab/NoCodeCoverageComment
+        end
+      end
+
+      def has_duo_remote_flows_feature_enabled?
+        object.owner_entity.try(:duo_remote_flows_enabled) || false
       end
     end
   end

@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Runner
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: 'チュートリアル: プロジェクトRunnerを自分で作成、登録、実行する'
 ---
@@ -11,15 +11,15 @@ title: 'チュートリアル: プロジェクトRunnerを自分で作成、登�
 
 Runnerは、GitLab CI/CDパイプラインでジョブを実行するGitLab Runnerアプリケーション内のエージェントです。ジョブは`.gitlab-ci.yml`ファイルで定義し、利用可能なRunnerに割り当てます。
 
-GitLabには、次の3種類のRunnerがあります。
+GitLabには、次の3種類のRunnerがあります:
 
 - 共有: GitLabインスタンス内のすべてのグループとプロジェクトで使用できます。
 - グループ: グループ内のすべてのプロジェクトとサブグループで使用できます。
 - プロジェクト: 特定のプロジェクトに関連付けます。通常、プロジェクトRunnerは、一度に1つのプロジェクトで使用します。
 
-このチュートリアルでは、基本的なパイプライン設定で定義されたジョブを実行するプロジェクトRunnerを作成します。
+このチュートリアルでは、基本的なパイプライン設定で定義されたジョブを実行するプロジェクトRunnerを作成します:
 
-1. [空のプロジェクトを作成する](#create-a-blank-project)。
+1. [空のプロジェクトを作成する](#create-a-blank-project)
 1. [プロジェクトパイプラインを作成する](#create-a-project-pipeline)。
 1. [プロジェクトRunnerを作成して登録する](#create-and-register-a-project-runner)。
 1. [パイプラインをトリガーしてRunnerを実行する](#trigger-a-pipeline-to-run-your-runner)。
@@ -32,11 +32,11 @@ Runnerを作成、登録、実行する前に、ローカルコンピュータ�
 
 まず、CI/CDパイプラインとRunnerを作成できる空のプロジェクトを作成します。
 
-空のプロジェクトを作成するには:
+空のプロジェクトを作成するには: 
 
-1. 左側のサイドバーの上部で、**新規作成**（{{< icon name="plus" >}}）を選択し、**新規プロジェクト/リポジトリ**を選択します。
+1. 左側のサイドバーの上部で、**新規作成**（{{< icon name="plus" >}}）を選択し、**新規プロジェクト/リポジトリ**を選択します。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このボタンは右上隅にあります。
 1. **空のプロジェクトの作成**を選択します。
-1. プロジェクトの詳細を入力します。
+1. プロジェクトの詳細を入力します:
    - **プロジェクト名**フィールドに、プロジェクトの名前を入力します。名前は、小文字または大文字（`a-zA-Z`）、数字（`0-9`）、絵文字、またはアンダースコア（`_`）で始まる必要があります。ドット（`.`）、プラス記号（`+`）、ダッシュ（`-`）、またはスペースも使用できます。
    - **プロジェクトslug**フィールドに、プロジェクトへのパスを入力します。GitLabインスタンスは、このslugをプロジェクトへのURLパスとして使用します。slugを変更するには、最初にプロジェクト名を入力し、次にslugを変更します。
 1. **プロジェクトを作成**を選択します。
@@ -45,16 +45,16 @@ Runnerを作成、登録、実行する前に、ローカルコンピュータ�
 
 次に、プロジェクトの`.gitlab-ci.yml`ファイルを作成します。これは、GitLab CI/CDに対する指示を指定するYAMLファイルです。
 
-このファイルでは、以下を定義します。
+このファイルでは、以下を定義します:
 
 - Runnerが実行するジョブの構造と順序。
 - 特定の条件が発生した場合にRunnerが行う必要がある決定。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトまたはグループを見つけます。
-1. **プロジェクトの概要**を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトまたはグループを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーに表示されます。
+1. **Project overview**（プロジェクトの概要）を選択します。
 1. プラスアイコン（{{< icon name="plus" >}}）を選択し、**新しいファイル**を選択します。
-1. **Filename**（ファイル名）フィールドに、`.gitlab-ci.yml`と入力します。
-1. 大きなテキストボックスに、次のサンプル設定を貼り付けます。
+1. **ファイル名**フィールドに、`.gitlab-ci.yml`と入力します。
+1. 大きなテキストボックスに、次のサンプル設定を貼り付けます:
 
    ```yaml
    stages:
@@ -79,19 +79,19 @@ Runnerを作成、登録、実行する前に、ローカルコンピュータ�
 
 次に、プロジェクトRunnerを作成して登録します。Runnerを登録してGitLabにリンクし、プロジェクトパイプラインからジョブを取得できるようにする必要があります。
 
-プロジェクトRunnerを作成するには:
+プロジェクトRunnerを作成するには: 
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定 > CI/CD**を選択します。
-1. **Runner**セクションを展開します。
-1. **新規プロジェクトRunner**を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーに表示されます。
+1. **設定** > **CI/CD**を選択します。
+1. **Runners**セクションを展開します。
+1. **New project runner**（新規プロジェクトRunner）を選択します。
 1. オペレーティングシステムを選択します。
-1. **タグ**セクションで、**タグ付けされていないチェックボックスを実行**をオンにします。[タグ](../../ci/runners/configure_runners.md#control-jobs-that-a-runner-can-run)には、Runnerが実行できるジョブを指定します（オプション）。
+1. **タグ**セクションで、**Run untagged**（タグ付けされていないチェックボックスを実行）をオンにします。[タグ](../../ci/runners/configure_runners.md#control-jobs-that-a-runner-can-run)には、Runnerが実行できるジョブを指定します（オプション）。
 1. **Runnerを作成**を選択します。
-1. 画面の指示に従って、コマンドラインからRunnerを登録します。プロンプトが表示されたら、次の手順を実行します。
+1. 画面の指示に従って、コマンドラインからRunnerを登録します。プロンプトが表示されたら、次の手順を実行します:
    - `executor`の場合、Runnerはホストコンピューター上で直接実行されるため、`shell`と入力します。[executor](https://docs.gitlab.com/runner/executors/)は、Runnerがジョブを実行する環境です。
    - `GitLab instance URL`の場合、GitLabインスタンスのURLを使用します。たとえば、`gitlab.example.com/yourname/yourproject`でプロジェクトがホストされている場合、GitLabインスタンスのURLは`https://gitlab.example.com`になります。プロジェクトがGitLab.comでホスティングされている場合、URLは`https://gitlab.com`になります。
-1. Runnerを起動します。
+1. Runnerを起動します:
 
    ```shell
    gitlab-runner run
@@ -103,7 +103,7 @@ Runnerを登録すると、設定とRunner認証トークンが`config.toml`に�
 
 `config.toml`を使用すると、より[高度なRunner設定](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)を定義できます。
 
-Runnerを登録して起動すると、`config.toml`は次のようになるはずです。
+Runnerを登録して起動すると、`config.toml`は次のようになるはずです:
 
 ```toml
 [[runners]]
@@ -120,10 +120,10 @@ Runnerを登録して起動すると、`config.toml`は次のようになるは�
 
 次に、プロジェクトでパイプラインをトリガーして、Runnerがジョブを実行するのを確認できるようにします。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **ビルド > パイプライン**を選択します。
-1. **パイプラインを新規作成**を選択します。
-1. ジョブログを表示するには、ジョブを選択します。出力は次の例のようになるはずです。これは、Runnerがジョブを正常に実行したことを示しています。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーに表示されます。
+1. **ビルド** > **パイプライン**を選択します。
+1. **新しいパイプライン**を選択します。
+1. ジョブログを表示するには、ジョブを選択します。出力は次の例のようになるはずです。これは、Runnerがジョブを正常に実行したことを示しています:
 
    ```shell
       Running with gitlab-runner 18.0.0 (d7f2cea7)

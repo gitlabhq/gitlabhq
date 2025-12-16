@@ -63,9 +63,23 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
     describe '.executable' do
       let_it_be(:paused_without_hold) { create(worker_factory, :paused, on_hold_until: 2.days.ago) }
 
-      it 'returns workers with queued, paused status and on_hold_until in the past' do
-        expect(described_class.executable).to match_array([queued_worker, paused_without_hold])
+      it 'returns workers with queued, active, paused statuses and on_hold_until in the past' do
+        expect(described_class.executable).to match_array([queued_worker, active_worker, paused_without_hold])
       end
+    end
+  end
+
+  describe 'state machine transitions', :freeze_time do
+    let(:worker) { create(worker_factory, :queued) }
+
+    it 'sets started_at when transitioning to active' do
+      expect { worker.execute! }.to change { worker.started_at }.from(nil).to(Time.current)
+    end
+
+    it 'sets finished_at when transitioning to finished' do
+      worker.execute!
+
+      expect { worker.finish! }.to change { worker.finished_at }.from(nil).to(Time.current)
     end
   end
 
@@ -78,20 +92,38 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
       travel(described_class::PARTITION_DURATION + 1.minute)
       partition_manager.sync_partitions
 
-      projects_worker_2 = create(worker_factory, :queued, table_name: 'projects')
-      namespaces_worker_2 = create(worker_factory, :queued, table_name: 'namespaces')
+      current_time = Time.current
 
-      issues_worker_2 = create(
+      projects_worker_2 = create(worker_factory, :queued, table_name: 'projects', created_at: current_time)
+
+      # Won't be scheduled as on_hold_until is in future
+      create(
         worker_factory,
         :paused,
         table_name: 'issues',
-        on_hold_until: (described_class::PARTITION_DURATION + 5.days).ago
+        on_hold_until: current_time + 20.days,
+        created_at: current_time + 1.second
       )
 
-      # Won't be scheduled as its over the limit
-      create(worker_factory, :active, table_name: 'users')
+      issues_worker = create(
+        worker_factory,
+        :paused,
+        table_name: 'issues',
+        on_hold_until: current_time - 20.days,
+        created_at: current_time + 1.second
+      )
 
-      expected_worker_ids = [projects_worker_1, projects_worker_2, namespaces_worker_2, issues_worker_2].map do |w|
+      users_worker = create(worker_factory, :active, table_name: 'users', created_at: current_time + 3.seconds)
+
+      # Won't be scheduled as its over the limit
+      create(
+        worker_factory,
+        :queued,
+        table_name: 'namespaces',
+        created_at: current_time + 4.seconds
+      )
+
+      expected_worker_ids = [projects_worker_1, projects_worker_2, issues_worker, users_worker].map do |w|
         w.attributes['id']
       end
 
@@ -253,7 +285,7 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
     subject(:on_hold) { worker.on_hold? }
 
     context 'when on_hold_until is nil' do
-      it { expect(on_hold).to be_falsey }
+      it { is_expected.to be_falsey }
     end
 
     context 'when on_hold_until is set' do
@@ -315,6 +347,70 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
         # With efficiency 1.5: multiplier = 0.95/1.5 = 0.633
         # New size = 10,000 * 0.633 = 6,333
         expect { optimize }.to change { worker.reload.batch_size }.from(batch_size).to(6_333)
+      end
+    end
+  end
+
+  describe '#interval_elapsed?', :freeze_time do
+    let(:variance) { 0 }
+
+    subject(:interval_elapsed) { worker.interval_elapsed?(variance: variance) }
+
+    context 'when there is no last_job' do
+      let(:worker) { build(worker_factory) }
+
+      it 'returns true' do
+        expect(interval_elapsed).to be_truthy
+      end
+    end
+
+    context 'when there is a last_job' do
+      let(:interval) { 2.minutes }
+      let(:worker) { create(worker_factory, interval: interval) }
+
+      context 'when the last_job is created within the interval' do
+        it 'returns false' do
+          create_list(job_factory, 1, worker: worker, created_at: Time.current - 1.minute)
+
+          expect(interval_elapsed).to be_falsey
+        end
+      end
+
+      context 'when the last_job is created before the interval' do
+        it 'returns true' do
+          create_list(job_factory, 1, worker: worker, created_at: Time.current - 3.minutes)
+
+          expect(interval_elapsed).to be_truthy
+        end
+      end
+    end
+  end
+
+  describe '#create_job!' do
+    let_it_be(:worker) { create(worker_factory, :queued) }
+    let(:min_cursor) { [1] }
+    let(:max_cursor) { [1000] }
+
+    it 'creates a job with correct arguments' do
+      job = worker.create_job!(min_cursor, max_cursor)
+
+      expect(job).to have_attributes(
+        batch_size: worker.batch_size,
+        sub_batch_size: worker.sub_batch_size,
+        pause_ms: worker.pause_ms,
+        min_cursor: min_cursor,
+        max_cursor: max_cursor,
+        worker_partition: worker.partition
+      )
+    end
+
+    context 'when worker has organization_id' do
+      it 'includes organization_id in the job' do
+        skip unless worker.respond_to?(:organization_id)
+
+        job = worker.create_job!(min_cursor, max_cursor)
+
+        expect(job.organization_id).to eq(worker.organization_id)
       end
     end
   end

@@ -25,7 +25,6 @@ import {
   getFilterTokens,
   getInitialPageParams,
   getSortOptions,
-  getTypeTokenOptions,
   groupMultiSelectFilterTokens,
 } from 'ee_else_ce/issues/list/utils';
 import axios from '~/lib/utils/axios_utils';
@@ -62,7 +61,8 @@ import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
-import { __, s__, n__ } from '~/locale';
+import { setPageFullWidth, setPageDefaultWidth } from '~/lib/utils/common_utils';
+import { __, s__, n__, formatNumber } from '~/locale';
 import {
   OPERATOR_IS,
   OPERATORS_AFTER_BEFORE,
@@ -118,14 +118,15 @@ import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_i
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_count_only.query.graphql';
 import searchProjectsQuery from '~/issues/list/queries/search_projects.query.graphql';
 import hasWorkItemsQuery from '~/work_items/graphql/list/has_work_items.query.graphql';
+import { initWorkItemsFeedback } from '~/work_items_feedback';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
 import WorkItemListHeading from '../components/work_item_list_heading.vue';
 import WorkItemUserPreferences from '../components/shared/work_item_user_preferences.vue';
 import WorkItemListActions from '../components/work_item_list_actions.vue';
+import WorkItemsSavedViewsSelectors from '../components/shared/work_items_saved_views_selectors.vue';
 import {
-  BASE_ALLOWED_CREATE_TYPES,
   CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
   NAME_TO_ENUM_MAP,
@@ -133,8 +134,6 @@ import {
   STATE_OPEN,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
-  WORK_ITEM_TYPE_NAME_KEY_RESULT,
-  WORK_ITEM_TYPE_NAME_OBJECTIVE,
   METADATA_KEYS,
 } from '../constants';
 import workItemsReorderMutation from '../graphql/work_items_reorder.mutation.graphql';
@@ -159,11 +158,16 @@ const CrmContactToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/crm_contact_token.vue');
 const WorkItemParentToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/work_item_parent_token.vue');
+const WorkItemTypeToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/work_item_type_token.vue');
 
 const statusMap = {
   [STATUS_OPEN]: STATE_OPEN,
   [STATUS_CLOSED]: STATE_CLOSED,
 };
+
+const CONSOLIDATED_LIST_FEEDBACK_PROMPT_EXPIRY = '2026-01-01';
+const FEATURE_NAME = 'work_item_consolidated_list_feedback';
 
 export default {
   CREATION_CONTEXT_LIST_ROUTE,
@@ -190,6 +194,7 @@ export default {
     GlIcon,
     GlSkeletonLoader,
     NewResourceDropdown,
+    WorkItemsSavedViewsSelectors,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -199,7 +204,6 @@ export default {
   provide() {
     return {
       showExportButton: computed(() => this.showImportExportButtons && this.workItems.length > 0),
-      projectImportJiraPath: this.projectImportJiraPath,
     };
   },
   inject: [
@@ -227,7 +231,6 @@ export default {
     'canReadCrmContact',
     'releasesPath',
     'metadataLoading',
-    'projectImportJiraPath',
     'newWorkItemEmailAddress',
     'isGroupIssuesList',
     'groupId',
@@ -235,6 +238,8 @@ export default {
     'isIssueRepositioningDisabled',
     'hasProjects',
     'newIssuePath',
+    'workItemPlanningViewEnabled',
+    'workItemsSavedViewsEnabled',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -487,21 +492,6 @@ export default {
       }
       return this.canBulkUpdate;
     },
-    // TODO: delete once https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185081 is merged
-    allowedWorkItemTypes() {
-      if (this.isGroup) {
-        return [];
-      }
-
-      if (this.glFeatures.okrsMvc && this.hasOkrsFeature) {
-        return BASE_ALLOWED_CREATE_TYPES.concat(
-          WORK_ITEM_TYPE_NAME_KEY_RESULT,
-          WORK_ITEM_TYPE_NAME_OBJECTIVE,
-        );
-      }
-
-      return BASE_ALLOWED_CREATE_TYPES;
-    },
     apiFilterParams() {
       return convertToApiParams(this.filterTokens, {
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
@@ -669,11 +659,12 @@ export default {
         tokens.push({
           type: TOKEN_TYPE_TYPE,
           title: TOKEN_TITLE_TYPE,
-          icon: 'issue-type-issue',
+          icon: 'work-item-issue',
           unique: true,
-          token: GlFilteredSearchToken,
-          operators: OPERATORS_IS_NOT,
-          options: this.typeTokenOptions,
+          token: WorkItemTypeToken,
+          operators: OPERATORS_IS_NOT_OR,
+          multiSelect: true,
+          fetchWorkItemTypes: this.fetchWorkItemTypes,
         });
       }
 
@@ -857,14 +848,6 @@ export default {
         [STATUS_ALL]: all,
       };
     },
-    typeTokenOptions() {
-      return getTypeTokenOptions({
-        hasEpicsFeature: this.hasEpicsFeature,
-        hasOkrsFeature: this.hasOkrsFeature,
-        hasQualityManagementFeature: this.hasQualityManagementFeature,
-        isGroupIssuesList: this.isGroupIssuesList,
-      });
-    },
     urlFilterParams() {
       return convertToUrlParams(this.filterTokens, {
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
@@ -898,7 +881,7 @@ export default {
       return this.glFeatures.workItemsClientSideBoards;
     },
     isPlanningViewsEnabled() {
-      return this.glFeatures.workItemPlanningView;
+      return this.glFeatures.workItemPlanningView || !this.withTabs;
     },
     preselectedWorkItemType() {
       return this.isEpicsList ? WORK_ITEM_TYPE_NAME_EPIC : WORK_ITEM_TYPE_NAME_ISSUE;
@@ -924,6 +907,11 @@ export default {
       };
     },
     showProjectNewWorkItem() {
+      if (this.workItemPlanningViewEnabled) {
+        // In CE, groups cannot enable create_work_items, so showNewWorkItem is always false (only enabled in EE).
+        // However, we need to show the button for CE groups with projects (!hasEpicsFeature indicates CE).
+        return (this.isGroup && this.hasProjects && !this.hasEpicsFeature) || this.showNewWorkItem;
+      }
       return this.showNewWorkItem && !this.isGroupIssuesList;
     },
     showGroupNewWorkItem() {
@@ -933,7 +921,7 @@ export default {
       if (this.workItemsCount === null) {
         return '';
       }
-      return n__('WorkItem|%d item', 'WorkItem|%d items', this.workItemsCount);
+      return n__('WorkItem|%d item', 'WorkItem|%d items', formatNumber(this.workItemsCount));
     },
     workItemTypeId() {
       const workItemTypeName = this.workItemType || WORK_ITEM_TYPE_NAME_ISSUE;
@@ -941,6 +929,9 @@ export default {
     },
     shouldLoad() {
       return !this.isInitialLoadComplete || (!this.isSortKeyInitialized && !this.error);
+    },
+    isBulkEditDisabled() {
+      return this.showBulkEditSidebar || this.workItems.length === 0;
     },
   },
   watch: {
@@ -965,6 +956,21 @@ export default {
         this.activeItem = null;
       }
     },
+    isGroup(value) {
+      if (this.isPlanningViewsEnabled && value) {
+        initWorkItemsFeedback({
+          feedbackIssue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/579558',
+          feedbackIssueText: __('Share feedback on the experience'),
+          badgeContent: __(
+            'All your work items are now in one place, making them easier to manage.',
+          ),
+          badgeTitle: __('New unified list'),
+          badgePopoverTitle: __('New unified work items list'),
+          featureName: FEATURE_NAME,
+          expiry: CONSOLIDATED_LIST_FEEDBACK_PROMPT_EXPIRY,
+        });
+      }
+    },
   },
   created() {
     this.updateData(getParameterByName(PARAM_SORT));
@@ -974,8 +980,12 @@ export default {
     this.releasesCache = [];
     this.areReleasesFetched = false;
   },
+  mounted() {
+    setPageFullWidth();
+  },
   beforeDestroy() {
     window.removeEventListener('popstate', this.checkDrawerParams);
+    setPageDefaultWidth();
   },
   methods: {
     combineSlimAndFullLists(slim, full) {
@@ -1229,6 +1239,7 @@ export default {
       const tokens = getFilterTokens(window.location.search, {
         includeStateToken: !this.withTabs,
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+        convertTypeTokens: true,
       });
       this.filterTokens = groupMultiSelectFilterTokens(tokens, this.searchTokens);
 
@@ -1412,6 +1423,15 @@ export default {
     extractProjects(data) {
       return data?.group?.projects?.nodes;
     },
+    fetchWorkItemTypes() {
+      return this.$apollo.query({
+        query: namespaceWorkItemTypesQuery,
+        variables: {
+          fullPath: this.rootPageFullPath,
+          onlyAvailable: this.isProject,
+        },
+      });
+    },
   },
   constants: {
     METADATA_KEYS,
@@ -1500,7 +1520,7 @@ export default {
             </gl-button>
             <gl-button
               v-if="allowBulkEditing"
-              :disabled="showBulkEditSidebar"
+              :disabled="isBulkEditDisabled"
               data-testid="bulk-edit-start-button"
               @click="showBulkEditSidebar = true"
             >
@@ -1508,7 +1528,6 @@ export default {
             </gl-button>
             <create-work-item-modal
               v-if="showProjectNewWorkItem"
-              :allowed-work-item-types="allowedWorkItemTypes"
               :always-show-work-item-type-select="!isEpicsList"
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
               :full-path="rootPageFullPath"
@@ -1537,59 +1556,90 @@ export default {
           </div>
         </template>
 
-        <template v-if="isPlanningViewsEnabled" #list-header>
-          <work-item-list-heading>
-            <div class="gl-flex gl-justify-end gl-gap-3">
-              <gl-button
-                v-if="enableClientSideBoardsExperiment"
-                data-testid="show-local-board-button"
-                @click="showLocalBoard = true"
-              >
-                {{ __('Launch board') }}
-              </gl-button>
-              <gl-button
-                v-if="allowBulkEditing"
-                :disabled="showBulkEditSidebar"
-                data-testid="bulk-edit-start-button"
-                @click="showBulkEditSidebar = true"
-              >
-                {{ __('Bulk edit') }}
-              </gl-button>
-              <create-work-item-modal
-                v-if="showProjectNewWorkItem"
-                :allowed-work-item-types="allowedWorkItemTypes"
-                :always-show-work-item-type-select="!isEpicsList"
-                :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
-                :full-path="rootPageFullPath"
-                :is-group="isGroup"
-                :preselected-work-item-type="preselectedWorkItemType"
-                :is-epics-list="isEpicsList"
-                @workItemCreated="handleWorkItemCreated"
-              />
-              <new-resource-dropdown
-                v-if="isGroupIssuesList"
-                :query="$options.searchProjectsQuery"
-                :query-variables="newIssueDropdownQueryVariables"
-                :extract-projects="extractProjects"
-                :group-id="groupId"
-              />
-              <work-item-list-actions
-                :show-import-export-buttons="showImportExportButtons"
-                :show-work-item-by-email-button="showWorkItemByEmail"
-                :work-item-count="currentTabCount"
-                :query-variables="csvExportQueryVariables"
-                :full-path="rootPageFullPath"
-                :url-params="urlParams"
-                :is-epics-list="isEpicsList"
-                :is-group-issues-list="isGroupIssuesList"
-              />
-            </div>
-          </work-item-list-heading>
+        <template #list-header>
+          <template v-if="isPlanningViewsEnabled">
+            <template v-if="!workItemsSavedViewsEnabled">
+              <work-item-list-heading>
+                <div class="gl-flex gl-justify-end gl-gap-3">
+                  <gl-button
+                    v-if="enableClientSideBoardsExperiment"
+                    data-testid="show-local-board-button"
+                    @click="showLocalBoard = true"
+                  >
+                    {{ __('Launch board') }}
+                  </gl-button>
+                  <gl-button
+                    v-if="allowBulkEditing"
+                    :disabled="isBulkEditDisabled"
+                    data-testid="bulk-edit-start-button"
+                    @click="showBulkEditSidebar = true"
+                  >
+                    {{ __('Bulk edit') }}
+                  </gl-button>
+                  <create-work-item-modal
+                    v-if="showProjectNewWorkItem"
+                    :always-show-work-item-type-select="!isEpicsList"
+                    :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
+                    :full-path="rootPageFullPath"
+                    :is-group="isGroup"
+                    :preselected-work-item-type="preselectedWorkItemType"
+                    :is-epics-list="isEpicsList"
+                    :show-project-selector="!hasEpicsFeature"
+                    @workItemCreated="handleWorkItemCreated"
+                  />
+                  <new-resource-dropdown
+                    v-if="isGroupIssuesList"
+                    :query="$options.searchProjectsQuery"
+                    :query-variables="newIssueDropdownQueryVariables"
+                    :extract-projects="extractProjects"
+                    :group-id="groupId"
+                  />
+                  <work-item-list-actions
+                    :show-import-export-buttons="showImportExportButtons"
+                    :show-work-item-by-email-button="showWorkItemByEmail"
+                    :work-item-count="workItemsCount"
+                    :query-variables="csvExportQueryVariables"
+                    :full-path="rootPageFullPath"
+                    :url-params="urlParams"
+                    :is-epics-list="isEpicsList"
+                    :is-group-issues-list="isGroupIssuesList"
+                  />
+                </div>
+              </work-item-list-heading>
+            </template>
+
+            <template v-if="workItemsSavedViewsEnabled">
+              <work-items-saved-views-selectors>
+                <template #header-area>
+                  <work-item-list-actions
+                    :show-import-export-buttons="showImportExportButtons"
+                    :show-work-item-by-email-button="showWorkItemByEmail"
+                    :work-item-count="currentTabCount"
+                    :query-variables="csvExportQueryVariables"
+                    :full-path="rootPageFullPath"
+                    :url-params="urlParams"
+                    :is-epics-list="isEpicsList"
+                    :is-group-issues-list="isGroupIssuesList"
+                  />
+                  <create-work-item-modal
+                    v-if="showProjectNewWorkItem"
+                    :always-show-work-item-type-select="!isEpicsList"
+                    :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
+                    :full-path="rootPageFullPath"
+                    :is-group="isGroup"
+                    :preselected-work-item-type="preselectedWorkItemType"
+                    :is-epics-list="isEpicsList"
+                    @workItemCreated="handleWorkItemCreated"
+                  />
+                </template>
+              </work-items-saved-views-selectors>
+            </template>
+          </template>
         </template>
 
         <template v-if="isPlanningViewsEnabled" #before-list-items>
           <!-- state-count -->
-          <div class="gl-border-b gl-py-3">
+          <div class="gl-border-b gl-py-3" data-testid="work-item-count">
             {{ workItemTotalStateCount }}
           </div>
         </template>
@@ -1622,7 +1672,6 @@ export default {
               <template #new-issue-button>
                 <create-work-item-modal
                   v-if="showProjectNewWorkItem"
-                  :allowed-work-item-types="allowedWorkItemTypes"
                   :always-show-work-item-type-select="!isEpicsList"
                   :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
                   :full-path="rootPageFullPath"
@@ -1648,12 +1697,12 @@ export default {
               <template #new-issue-button>
                 <create-work-item-modal
                   v-if="showProjectNewWorkItem"
-                  :allowed-work-item-types="allowedWorkItemTypes"
                   :always-show-work-item-type-select="!isEpicsList"
                   :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
                   :full-path="rootPageFullPath"
                   :is-group="isGroup"
                   :preselected-work-item-type="preselectedWorkItemType"
+                  :show-project-selector="!hasEpicsFeature"
                   @workItemCreated="handleWorkItemCreated"
                 />
               </template>

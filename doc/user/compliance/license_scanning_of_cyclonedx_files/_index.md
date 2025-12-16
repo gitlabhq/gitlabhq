@@ -179,11 +179,11 @@ License scanning is supported for the following languages and package managers:
     </tr>
   </tbody>
 </table>
+<!-- markdownlint-enable MD044 -->
 
 **Footnotes**:
 
 1. Go standard libraries such as `stdlib` are not supported and will appear with an `unknown` license. Support for these is tracked in [issue 480305](https://gitlab.com/gitlab-org/gitlab/-/issues/480305).
-<!-- markdownlint-disable MD044 -->
 
 The supported files and versions are the ones supported by
 [Dependency Scanning](../../application_security/dependency_scanning/_index.md#supported-languages-and-package-managers).
@@ -204,7 +204,7 @@ license names.
 | NuGet           | <https://api.nuget.org/v3/catalog0/index.json>                   |
 | Packagist       | <https://packagist.org/packages/list.json>                       |
 | PyPI            | <https://warehouse.pypa.io/api-reference/bigquery-datasets.html> |
-| Rubygems        | <https://rubygems.org/versions>                                  |
+| RubyGems        | <https://rubygems.org/versions>                                  |
 
 ## License expressions
 
@@ -257,7 +257,7 @@ Choose which license information source to use when both are available.
 
 To configure the preferred source of license information for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. In the **License information source** section, select either:
    - **SBOM** (default) - Uses license information from CycloneDX reports.
@@ -305,7 +305,7 @@ License scanning changes (released in GitLab 15.9) required a significant amount
 
 To remove the unneeded data:
 
-1. Check if the [package_metadata_synchronization](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#new-license-compliance-scanner) feature flag is currently, or was previously enabled, and if so, disable it. Use [Rails console](../../../administration/operations/rails_console.md) to execute the following commands.
+1. Check if the [`package_metadata_synchronization`](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#new-license-compliance-scanner) feature flag is currently, or was previously enabled, and if so, disable it. Use [Rails console](../../../administration/operations/rails_console.md) to execute the following commands.
 
    ```ruby
    Feature.enabled?(:package_metadata_synchronization) && Feature.disable(:package_metadata_synchronization)

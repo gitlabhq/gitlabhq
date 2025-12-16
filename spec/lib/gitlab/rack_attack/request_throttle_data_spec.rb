@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::RackAttack::RequestThrottleData, feature_category: :rate_limiting do
   let(:throttle_data) do

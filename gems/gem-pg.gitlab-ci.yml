@@ -26,6 +26,9 @@ variables:
   GIT_STRATEGY: "${CI_FETCH_REPO_GIT_STRATEGY}"
   # Default Ruby version for jobs that don't use .ruby_matrix
   RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"
+  # Variables for test execution metrics export to ClickHouse
+  GLCI_TEST_METRICS_RUN_TYPE: "$[[ inputs.gem_name ]]-tests"
+  GLCI_EXPORT_TEST_METRICS: "true"
 
 include:
   - local: .gitlab/ci/version.yml

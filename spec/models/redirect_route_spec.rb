@@ -6,6 +6,23 @@ RSpec.describe RedirectRoute do
   let(:group) { create(:group) }
   let!(:redirect_route) { group.redirect_routes.create!(path: 'gitlabb') }
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
+    subject_key: Proc,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_REDIRECT_ROUTES,
+    claiming_attributes: [:path]
+
+  describe '#cells_claims_subject_key' do
+    before do
+      redirect_route.update!(namespace_id: group.id)
+    end
+
+    it 'returns the same value as the namespace_id' do
+      expect(redirect_route.__send__(:cells_claims_subject_key))
+        .to eq(redirect_route.namespace_id)
+    end
+  end
+
   describe 'relationships' do
     it { is_expected.to belong_to(:source) }
   end

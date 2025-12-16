@@ -537,5 +537,39 @@ describe('RefTrackingSelection component', () => {
         expect(findErrorAlert().exists()).toBe(shouldShowError);
       },
     );
+
+    it('keeps loading state visible when search is cancelled and new search is pending', async () => {
+      await waitForPromises();
+
+      let rejectSearch1;
+      const searchPromise1 = new Promise((resolve, reject) => {
+        rejectSearch1 = reject;
+      });
+      const { promise: searchPromise2, resolve: resolveSearch2 } = mockInFlightRequest();
+
+      fetchRefsSpy.mockReturnValueOnce(searchPromise1).mockReturnValueOnce(searchPromise2);
+
+      enterSearchTerm('mai');
+      await nextTick();
+
+      expect(findLoadingSkeleton().exists()).toBe(true);
+
+      enterSearchTerm('main');
+      await nextTick();
+
+      expect(findLoadingSkeleton().exists()).toBe(true);
+
+      axios.isCancel = jest.fn().mockReturnValueOnce(true);
+      rejectSearch1(new Error('Search cancelled'));
+      await waitForPromises();
+
+      expect(findLoadingSkeleton().exists()).toBe(true);
+      expect(findEmptyState().exists()).toBe(false);
+
+      resolveSearch2(mockRefs);
+      await waitForPromises();
+
+      expect(findLoadingSkeleton().exists()).toBe(false);
+    });
   });
 });

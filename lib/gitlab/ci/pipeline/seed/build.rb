@@ -201,7 +201,7 @@ module Gitlab
           strong_memoize_attr :rules_errors
 
           def evaluate_context
-            Gitlab::Ci::Build::Context::Build.new(@pipeline, @seed_attributes)
+            Gitlab::Ci::Build::Context::Build.new(@pipeline, @seed_attributes, logger: logger)
           end
           strong_memoize_attr :evaluate_context
 

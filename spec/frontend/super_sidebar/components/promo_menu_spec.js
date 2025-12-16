@@ -6,7 +6,6 @@ describe('PromoMenu', () => {
   let wrapper;
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findExploreButton = () => wrapper.findByTestId('explore-button');
   const findMenu = () => wrapper.findByTestId('menu');
   const findSigninButton = () => wrapper.findByTestId('topbar-signin-button');
   const findSignupButton = () => wrapper.findByTestId('topbar-signup-button');
@@ -29,20 +28,17 @@ describe('PromoMenu', () => {
   };
 
   describe('template', () => {
-    it('renders only explore when not in SaaS mode', () => {
+    it('renders dropdown with only explore item when not in SaaS mode', () => {
       createComponent();
 
-      expect(findExploreButton().props('href')).toBe('/explore');
-      expect(findExploreButton().text()).toBe('Explore');
-
-      expect(findDropdown().exists()).toBe(false);
-      expect(findMenu().exists()).toBe(false);
+      expect(findDropdown().exists()).toBe(true);
+      expect(findDropdown().props('items')).toEqual([{ href: '/explore', text: 'Explore' }]);
+      expect(findMenu().exists()).toBe(true);
     });
 
     it('renders all items when in SaaS mode', () => {
       createComponent({}, { isSaas: true });
 
-      expect(findExploreButton().exists()).toBe(false);
       expect(findMenu().exists()).toBe(true);
 
       expect(wrapper.vm.visibleItems).toEqual([
@@ -77,13 +73,13 @@ describe('PromoMenu', () => {
       );
     });
 
-    it('renders buttons', () => {
+    it('renders buttons in SaaS mode', () => {
       createComponent(
         {
+          allowSignUp: true,
+          signInVisible: true,
           sidebarData: {
-            allow_signup: true,
             new_user_registration_path: '/register',
-            sign_in_visible: true,
             sign_in_path: '/sign-in',
           },
         },
@@ -92,6 +88,45 @@ describe('PromoMenu', () => {
 
       expect(findSigninButton().props('href')).toBe('/sign-in');
       expect(findSignupButton().props('href')).toBe('/register');
+      expect(findSignupButton().text()).toBe('Get free trial');
+    });
+
+    it('renders buttons in self-managed mode', () => {
+      createComponent({
+        allowSignUp: true,
+        signInVisible: true,
+        sidebarData: {
+          new_user_registration_path: '/register',
+          sign_in_path: '/sign-in',
+        },
+      });
+
+      expect(findSigninButton().props('href')).toBe('/sign-in');
+      expect(findSignupButton().props('href')).toBe('/register');
+      expect(findSignupButton().text()).toBe('Register');
+    });
+
+    it('does not render register button when signup is disabled', () => {
+      createComponent({
+        allowSignUp: false,
+        signInVisible: true,
+        sidebarData: {
+          sign_in_path: '/sign-in',
+        },
+      });
+
+      expect(findSignupButton().exists()).toBe(false);
+      expect(findSigninButton().exists()).toBe(true);
+    });
+
+    it('does not render auth buttons section when both signup and signin are disabled', () => {
+      createComponent({
+        allowSignUp: false,
+        signInVisible: false,
+      });
+
+      expect(findSignupButton().exists()).toBe(false);
+      expect(findSigninButton().exists()).toBe(false);
     });
   });
 });

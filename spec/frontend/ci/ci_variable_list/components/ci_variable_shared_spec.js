@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { assertProps } from 'helpers/assert_props';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
@@ -569,16 +568,6 @@ describe('Ci Variable Shared Component', () => {
               expect(error).toBeUndefined();
             }
           });
-
-          it('report custom validator error on wrong data', () => {
-            expect(() =>
-              assertProps(
-                ciVariableShared,
-                { ...defaultProps, ...createGroupProps(), queryData: { wrongKey: {} } },
-                { provide: mockProvide },
-              ),
-            ).toThrow('custom validator check failed for prop');
-          });
         });
 
         describe('mutationData', () => {
@@ -600,16 +589,6 @@ describe('Ci Variable Shared Component', () => {
               expect(wrapper.exists()).toBe(true);
               expect(error).toBeUndefined();
             }
-          });
-
-          it('report custom validator error on wrong data', () => {
-            expect(() =>
-              assertProps(
-                ciVariableShared,
-                { ...defaultProps, ...createGroupProps(), mutationData: { wrongKey: {} } },
-                { provide: { ...mockProvide, ...pagesFeatureFlagProvide } },
-              ),
-            ).toThrow('custom validator check failed for prop');
           });
         });
       });

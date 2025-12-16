@@ -1,4 +1,3 @@
-import { GlLabel } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import AbuseReportRow from '~/admin/abuse_reports/components/abuse_report_row.vue';
@@ -14,7 +13,6 @@ describe('AbuseReportRow', () => {
 
   const findListItem = () => wrapper.findComponent(ListItem);
   const findAbuseCategory = () => wrapper.findComponent(AbuseCategory);
-  const findLabels = () => wrapper.findAllComponents(GlLabel);
   const findAbuseReportTitle = () => wrapper.findByTestId('abuse-report-title');
   const findDisplayedDate = () => wrapper.findByTestId('abuse-report-date');
 
@@ -95,18 +93,6 @@ describe('AbuseReportRow', () => {
 
   it('renders abuse category', () => {
     expect(findAbuseCategory().exists()).toBe(true);
-  });
-
-  it('renders labels', () => {
-    const labels = findLabels();
-    expect(labels).toHaveLength(2);
-
-    const { color, title } = mockAbuseReports[0].labels[0];
-    expect(labels.at(0).props()).toMatchObject({
-      backgroundColor: color,
-      title,
-      target: `${window.location.href}?${encodeURIComponent('label_name[]')}=${title}`,
-    });
   });
 
   describe('aggregated report', () => {

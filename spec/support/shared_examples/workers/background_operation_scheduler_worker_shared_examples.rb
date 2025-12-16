@@ -64,9 +64,34 @@ RSpec.shared_examples 'it schedules background operation workers' do |worker_fac
 
     context 'with feature flags enabled' do
       it 'schedules executable workers for execution' do
-        expect(worker).to receive(:queue_workers_for_execution).with(worker_class.schedulable_workers(2))
+        expect(worker).to receive(:queue_workers_for_execution).with(worker_class.schedulable_workers(10))
 
         schedule_workers
+      end
+    end
+  end
+
+  describe '#queue_workers_for_execution' do
+    let(:worker1) { create(worker_factory, :queued, table_name: 'users') }
+    let(:worker2) { create(worker_factory, :active, table_name: 'projects') }
+    let(:workers) { [worker1, worker2] }
+
+    it 'queues workers with correct arguments' do
+      expected_args = [
+        [worker1.class.name, worker1.partition, worker1.id, tracking_database.to_s],
+        [worker2.class.name, worker2.partition, worker2.id, tracking_database.to_s]
+      ]
+
+      expect(described_class.orchestrator_class).to receive(:perform_with_capacity).with(expected_args)
+
+      worker.send(:queue_workers_for_execution, workers)
+    end
+
+    context 'when workers array is empty' do
+      it 'does not call perform_with_capacity' do
+        expect(described_class.orchestrator_class).not_to receive(:perform_with_capacity)
+
+        worker.send(:queue_workers_for_execution, [])
       end
     end
   end

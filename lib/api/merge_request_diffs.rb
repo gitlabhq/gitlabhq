@@ -25,6 +25,7 @@ module API
         requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request'
         use :pagination
       end
+      route_setting :authorization, permissions: :read_merge_request_diff, boundary_type: :project
       get ":id/merge_requests/:merge_request_iid/versions" do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
@@ -43,6 +44,7 @@ module API
         use :with_unidiff
       end
 
+      route_setting :authorization, permissions: :read_merge_request_diff, boundary_type: :project
       get ":id/merge_requests/:merge_request_iid/versions/:version_id", urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 

@@ -74,7 +74,7 @@ gitlab_rails['omniauth_providers'] = [
 This configuration causes:
 
 - Both your sites to use `/users/auth/saml/callback` as their assertion consumer service (ACS) URL.
-- The URL's host to be set to the corresponding site's host.
+- The URL host to be set to the corresponding site's host.
 
 You can check this by visiting each site's `/users/auth/saml/metadata` path. For example, visiting `https://gitlab-primary.example.com/users/auth/saml/metadata` may respond with:
 

@@ -26,11 +26,11 @@ title: オフラインのGitLab Self-Managedインスタンスをインストー
 
 ### GitLabパッケージをダウンロードする {#download-the-gitlab-package}
 
-インターネットにアクセスできる同じオペレーティングシステムタイプのサーバーを使用して、[GitLabパッケージと関連する依存関係を手動でダウンロード](../../update/package/_index.md#by-using-a-downloaded-package)する必要があります。
+インターネットにアクセスできる同じオペレーティングシステムタイプのサーバーを使用して、[GitLabのパッケージと関連する依存関係をダウンロードする必要があります。](../../update/package/_index.md#upgrade-with-a-downloaded-package)
 
 オフライン環境がローカルネットワークアクセスに対応していない場合は、USBドライブなどの物理メディアを介して関連パッケージを手動で転送する必要があります。
 
-Ubuntuでこれを実行するには、インターネットアクセスの可能なサーバーで次のコマンドを使用します。
+Ubuntuでこれを実行するには、インターネットアクセスの可能なサーバーで次のコマンドを使用します:
 
 ```shell
 # Download the bash script to prepare the repository
@@ -45,7 +45,7 @@ sudo cp /var/cache/apt/archives/*.deb /path/to/mount
 
 ### GitLabパッケージをインストールする {#install-the-gitlab-package}
 
-前提要件:
+前提要件: 
 
 - オフライン環境にGitLabパッケージをインストールする前に、必要なすべての依存関係が最初にインストールされていることを確認してください。
 
@@ -59,11 +59,11 @@ sudo cd /path/to/mount
 sudo dpkg -i <package_name>.deb
 ```
 
-[オペレーティングシステムに関連するコマンドを使用してパッケージをインストール](../../update/package/_index.md#by-using-a-downloaded-package)しますが、`EXTERNAL_URL`インストール手順の`http` URLを指定してください。インストールしたら、SSLを手動で設定できます。
+[オペレーティングシステムに関連するコマンドを使用してパッケージをインストール](../../update/package/_index.md#upgrade-with-a-downloaded-package)しますが、`EXTERNAL_URL`インストール手順の`http` URLを指定してください。インストールが完了したら、SSLを手動で構成できます。
 
-サーバーのIPアドレスにバインドするのではなく、IP解決のためのドメインを設定することを強くお勧めします。これにより、証明書のCNの安定したターゲットが保証され、長期的な解決がより簡単になります。
+サーバーのIPアドレスにバインドするのではなく、IP解決のためにドメインを設定する必要があります。ドメインは、証明書の共通名（CN）の安定したターゲットを提供し、長期的な解決を簡素化します。
 
-Ubuntuの次の例では、HTTPを使用して`EXTERNAL_URL`を指定し、GitLabパッケージをインストールします。
+Ubuntuの次の例では、HTTPを使用して`EXTERNAL_URL`を指定し、GitLabパッケージをインストールします:
 
 ```shell
 sudo EXTERNAL_URL="http://my-host.internal" dpkg -i <gitlab_package_name>.deb
@@ -71,9 +71,9 @@ sudo EXTERNAL_URL="http://my-host.internal" dpkg -i <gitlab_package_name>.deb
 
 ## SSLを有効にする {#enabling-ssl}
 
-これらの手順に従って、新しいインスタンスのSSLを有効にします。これらの手順は、[NGINX設定でSSLを手動で設定する](https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually)手順を反映しています。
+これらの手順に従って、新しいインスタンスのSSLを有効にします。これらの手順は、[NGINX設定でSSLを手動で設定する](https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually)手順を反映しています:
 
-1. `/etc/gitlab/gitlab.rb`に次の変更を加えます。
+1. `/etc/gitlab/gitlab.rb`に次の変更を加えます:
 
    ```ruby
    # Update external_url from "http" to "https"
@@ -83,7 +83,7 @@ sudo EXTERNAL_URL="http://my-host.internal" dpkg -i <gitlab_package_name>.deb
    letsencrypt['enable'] = false
    ```
 
-1. 自己署名証明書を生成するための適切な権限を持つ次のディレクトリを作成します。
+1. 自己署名証明書を生成するための適切な権限を持つ次のディレクトリを作成します:
 
    ```shell
    sudo mkdir -p /etc/gitlab/ssl
@@ -91,7 +91,7 @@ sudo EXTERNAL_URL="http://my-host.internal" dpkg -i <gitlab_package_name>.deb
    sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/gitlab/ssl/my-host.internal.key -out /etc/gitlab/ssl/my-host.internal.crt
    ```
 
-1. インスタンスを再設定して、変更を適用します。
+1. インスタンスを再設定して、変更を適用します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -99,9 +99,9 @@ sudo EXTERNAL_URL="http://my-host.internal" dpkg -i <gitlab_package_name>.deb
 
 ## GitLabコンテナレジストリを有効にする {#enabling-the-gitlab-container-registry}
 
-次の手順に従って、コンテナレジストリを有効にします。これらの手順は、[既存のドメインでコンテナレジストリを設定する](../../administration/packages/container_registry.md#configure-container-registry-under-an-existing-gitlab-domain)手順を反映しています。
+次の手順に従って、コンテナレジストリを有効にします。これらの手順は、[既存のドメインでコンテナレジストリを設定する](../../administration/packages/container_registry.md#configure-container-registry-under-an-existing-gitlab-domain)手順を反映しています:
 
-1. `/etc/gitlab/gitlab.rb`に次の変更を加えます。
+1. `/etc/gitlab/gitlab.rb`に次の変更を加えます:
 
    ```ruby
    # Change external_registry_url to match external_url, but append the port 4567
@@ -109,7 +109,7 @@ sudo EXTERNAL_URL="http://my-host.internal" dpkg -i <gitlab_package_name>.deb
    registry_external_url "https://gitlab.example.com:4567"
    ```
 
-1. インスタンスを再設定して、変更を適用します。
+1. インスタンスを再設定して、変更を適用します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -117,7 +117,7 @@ sudo EXTERNAL_URL="http://my-host.internal" dpkg -i <gitlab_package_name>.deb
 
 ## DockerデーモンがレジストリとGitLab Runnerを信頼できるように設定する {#allow-the-docker-daemon-to-trust-the-registry-and-gitlab-runner}
 
-[レジストリで信頼できる証明書を使用するための手順に従って](../../administration/packages/container_registry_troubleshooting.md#using-self-signed-certificates-with-container-registry)、証明書をDockerデーモンに提供します。
+[レジストリで信頼できる証明書を使用するための手順に従って](../../administration/packages/container_registry_troubleshooting.md#using-self-signed-certificates-with-container-registry)、証明書をDockerデーモンに提供します:
 
 ```shell
 sudo mkdir -p /etc/docker/certs.d/my-host.internal:5000
@@ -125,7 +125,7 @@ sudo mkdir -p /etc/docker/certs.d/my-host.internal:5000
 sudo cp /etc/gitlab/ssl/my-host.internal.crt /etc/docker/certs.d/my-host.internal:5000/ca.crt
 ```
 
-[Runnerで信頼できる証明書を使用するための手順に従って](https://docs.gitlab.com/runner/install/docker.html#installing-trusted-ssl-server-certificates)、証明書をGitLab Runner（次にインストール）に提供します。
+[Runnerで信頼できる証明書を使用するための手順に従って](https://docs.gitlab.com/runner/install/docker.html#installing-trusted-ssl-server-certificates)、証明書をGitLab Runner（次にインストール）に提供します:
 
 ```shell
 sudo mkdir -p /etc/gitlab-runner/certs
@@ -135,7 +135,7 @@ sudo cp /etc/gitlab/ssl/my-host.internal.crt /etc/gitlab-runner/certs/ca.crt
 
 ## GitLab Runnerを有効にする {#enabling-gitlab-runner}
 
-[GitLab RunnerをDockerサービスとしてインストールする手順と同様のプロセスに従って](https://docs.gitlab.com/runner/install/docker.html#install-the-docker-image-and-start-the-container)、最初にRunnerを登録する必要があります。
+[当社のGitLab RunnerをDockerサービスとしてインストールする手順と同様のプロセス](https://docs.gitlab.com/runner/install/docker.html#install-the-docker-image-and-start-the-container)に従って、最初にRunnerを登録する必要があります:
 
 ```shell
 $ sudo docker run --rm -it -v /etc/gitlab-runner:/etc/gitlab-runner gitlab/gitlab-runner register
@@ -160,14 +160,14 @@ ruby:2.6
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
 ```
 
-ここで、Runnerに追加の設定を行う必要があります。
+次に、Runnerに追加の設定を行う必要があります。
 
-`/etc/gitlab-runner/config.toml`に次の変更を加えます。
+`/etc/gitlab-runner/config.toml`に次の変更を加えます:
 
 - Dockerソケットをボリューム`volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]`に追加
 - `pull_policy = "if-not-present"`をexecutorの設定に追加
 
-これで、Runnerを起動できます。
+これでRunnerを起動できます:
 
 ```shell
 sudo docker run -d --restart always --name gitlab-runner -v /etc/gitlab-runner:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest
@@ -178,7 +178,7 @@ sudo docker run -d --restart always --name gitlab-runner -v /etc/gitlab-runner:/
 
 [Dockerレジストリ認証ドキュメント](https://distribution.github.io/distribution/about/insecure/#docker-still-complains-about-the-certificate-when-using-authentication)に記載されているように、特定のバージョンのDockerでは、OSレベルで証明書チェーンを信頼する必要があります。
 
-Ubuntuの場合、`update-ca-certificates`を使用します。
+Ubuntuの場合、`update-ca-certificates`を使用します:
 
 ```shell
 sudo cp /etc/docker/certs.d/my-host.internal\:5000/ca.crt /usr/local/share/ca-certificates/my-host.internal.crt
@@ -186,7 +186,7 @@ sudo cp /etc/docker/certs.d/my-host.internal\:5000/ca.crt /usr/local/share/ca-ce
 sudo update-ca-certificates
 ```
 
-うまくいけば、次のように表示されます。
+うまくいけば、次のように表示されます:
 
 ```plaintext
 1 added, 0 removed; done.
@@ -212,13 +212,13 @@ Gitalyクラスター（Praefect）は、`pool.ntp.org`にアクセスできる�
 
 ## パッケージメタデータデータベースを有効にする {#enabling-the-package-metadata-database}
 
-[継続的脆弱性スキャン](../../user/application_security/continuous_vulnerability_scanning/_index.md)と[CycloneDXファイルのライセンススキャン](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md)を有効にするには、パッケージメタデータデータベースを有効にする必要があります。このプロセスでは、[EEライセンス](https://storage.googleapis.com/prod-export-license-bucket-1a6c642fc4de57d4/LICENSE)に基づいてライセンス供与されている、パッケージメタデータデータベースと呼ばれるライセンスやアドバイザリデータを使用する必要があります。パッケージメタデータデータベースの使用に関して、次の点に注意してください。
+[継続的な脆弱性スキャン](../../user/application_security/continuous_vulnerability_scanning/_index.md)と[CycloneDXファイルのパッケージライセンススキャン](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md)を有効にするには、パッケージメタデータデータベースを有効にする必要があります。このプロセスでは、[EEライセンス](https://storage.googleapis.com/prod-export-license-bucket-1a6c642fc4de57d4/LICENSE)に基づいてライセンス供与されている、パッケージメタデータデータベースと呼ばれるライセンスやアドバイザリデータを使用する必要があります。パッケージメタデータデータベースの使用に関して、次の点に注意してください:
 
 - 当社は、独自の裁量により、いつでも予告なしに、パッケージメタデータデータベースの全部または一部を変更または中止する場合があります。
 - パッケージメタデータデータベースには、サードパーティのWebサイトまたはリソースへのリンクが含まれている場合があります。これらのリンクは便宜上提供しているだけで、当社はこれらのWebサイトまたはリソースからのサードパーティのデータ、コンテンツ、製品、サービス、またはそのようなWebサイトに表示されるリンクについては責任を負いません。
 - パッケージメタデータデータベースは、サードパーティが提供する情報に一部基づいており、GitLabは提供されるコンテンツの正確性または完全性について責任を負いません。
 
-パッケージメタデータは、GitLabが保持し、所有する以下のGoogle Cloud Provider（GCP）バケットに保存されます。
+パッケージメタデータは、GitLabが保持し、所有する以下のGoogle Cloud Provider（GCP）バケットに保存されます:
 
 - ライセンススキャン - `prod-export-license-bucket-1a6c642fc4de57d4`
 - 依存関係スキャン - `prod-export-advisory-bucket-1a6c642fc4de57d4`
@@ -368,19 +368,19 @@ GitLabインスタンスは、[定期的](https://gitlab.com/gitlab-org/gitlab/-
 
 ライセンスまたはアドバイザリデータが依存関係リストまたはマージリクエストページにない場合、考えられる原因の1つは、データベースがエクスポートデータと同期していないことです。
 
-`package_metadata`の同期は、cronジョブ（[アドバイザリ同期](https://gitlab.com/gitlab-org/gitlab/-/blob/16-3-stable-ee/config/initializers/1_settings.rb#L864-866)と[ライセンス同期](https://gitlab.com/gitlab-org/gitlab/-/blob/16-3-stable-ee/config/initializers/1_settings.rb#L855-857)）を使用してトリガーされ、[管理者設定](../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync)で有効になっているパッケージレジストリタイプのみをインポートします。
+`package_metadata`の同期は、cronジョブ（[アドバイザリ同期](https://gitlab.com/gitlab-org/gitlab/-/blob/16-3-stable-ee/config/initializers/1_settings.rb#L864-866)と[ライセンス同期](https://gitlab.com/gitlab-org/gitlab/-/blob/16-3-stable-ee/config/initializers/1_settings.rb#L855-857) ）を使用してトリガーされ、[管理者設定](../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync)で有効になっているパッケージレジストリタイプのみをインポートします。
 
-`vendor/package_metadata`のファイル構造は、上記で有効になっているパッケージレジストリタイプと一致する必要があります。たとえば、`maven`ライセンスまたはアドバイザリデータを同期するには、Railsディレクトリのパッケージメタデータディレクトリに次の構造が必要です。
+`vendor/package_metadata`のファイル構造は、上記で有効になっているパッケージレジストリタイプと一致する必要があります。たとえば、`maven`ライセンスまたはアドバイザリデータを同期するには、Railsディレクトリのパッケージメタデータディレクトリに次の構造が必要です:
 
 - ライセンス: `$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v2/maven/**/*.ndjson`。
 - アドバイザリ: `$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/advisories/v2/maven/**/*.ndjson`。
 
-正常に実行すると、データベースの`pm_`テーブルのデータが入力されたはずです（[Railsコンソール](../../administration/operations/rails_console.md)を使用して確認してください）。
+正常に実行すると、データベースの`pm_`テーブルのデータが入力されたはずです（[Railsコンソール](../../administration/operations/rails_console.md)を使用して確認してください）:
 
 - ライセンス: `sudo gitlab-rails runner "puts \"Package model has #{PackageMetadata::Package.where(purl_type: 'maven').size} packages\""`
 - アドバイザリ: `sudo gitlab-rails runner "puts \"Advisory model has #{PackageMetadata::AffectedPackage.where(purl_type: 'maven').size} packages\""`
 
-さらに、チェックポイントデータは、同期されている特定のパッケージレジストリに存在する必要があります。たとえば、Mavenの場合、同期の実行が成功すると、チェックポイントが作成されているはずです。
+さらに、チェックポイントデータは、同期されている特定のパッケージレジストリに存在する必要があります。たとえば、Mavenの場合、同期の実行が成功すると、チェックポイントが作成されているはずです:
 
 - ライセンス: `sudo gitlab-rails runner "puts \"maven data has been synced up to #{PackageMetadata::Checkpoint.where(data_type: 'licenses', purl_type: 'maven')}\""`
 - アドバイザリ: `sudo gitlab-rails runner "puts \"maven data has been synced up to #{PackageMetadata::Checkpoint.where(data_type: 'advisories', purl_type: 'maven')}\""`

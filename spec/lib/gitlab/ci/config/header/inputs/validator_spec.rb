@@ -16,7 +16,9 @@ RSpec.describe Gitlab::Ci::Config::Header::Inputs::Validator, feature_category: 
 
   describe '#validate!' do
     before do
-      inputs.compose!
+      Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
+        inputs.compose!
+      end
     end
 
     context 'when inputs are valid' do
@@ -126,7 +128,8 @@ RSpec.describe Gitlab::Ci::Config::Header::Inputs::Validator, feature_category: 
             rules: [
               {
                 if: '$[[ inputs.environment ]] == "production" && $CI_COMMIT_BRANCH == "main"',
-                options: %w[us eu]
+                options: %w[us eu],
+                default: 'us'
               }
             ]
           }
@@ -143,17 +146,15 @@ RSpec.describe Gitlab::Ci::Config::Header::Inputs::Validator, feature_category: 
       let(:inputs_hash) do
         {
           region: {
-            rules: [{ if: '&&&&', options: %w[us] }]
+            rules: [{ if: '&&&&', options: %w[us], default: 'us' }]
           }
         }
       end
 
-      it 'handles StatementError gracefully and does not fail validation' do
-        allow(Gitlab::Ci::Pipeline::Expression::Statement).to receive(:new)
-          .and_raise(Gitlab::Ci::Pipeline::Expression::Statement::StatementError.new('Invalid'))
-
+      it 'does not add validator-specific errors for invalid syntax' do
         validator.validate!
-        expect(inputs).to be_valid
+        expect(inputs).not_to be_valid
+        expect(inputs.errors).to include(match(/invalid expression syntax/))
       end
     end
 
@@ -161,7 +162,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Inputs::Validator, feature_category: 
       let(:inputs_hash) do
         {
           region: {
-            rules: [{ options: %w[local] }]
+            rules: [{ options: %w[local], default: 'local' }]
           }
         }
       end
@@ -176,10 +177,10 @@ RSpec.describe Gitlab::Ci::Config::Header::Inputs::Validator, feature_category: 
       let(:inputs_hash) do
         {
           region: {
-            rules: [{ if: '$[[ inputs.size ]] == "large"', options: %w[us] }]
+            rules: [{ if: '$[[ inputs.size ]] == "large"', options: %w[us], default: 'us' }]
           },
           size: {
-            rules: [{ if: '$[[ inputs.region ]] == "us"', options: %w[large] }]
+            rules: [{ if: '$[[ inputs.region ]] == "us"', options: %w[large], default: 'large' }]
           }
         }
       end
@@ -195,7 +196,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Inputs::Validator, feature_category: 
       let(:inputs_hash) do
         {
           region: {
-            rules: [{ if: '$[[ inputs.region ]] == "us"', options: %w[us eu] }]
+            rules: [{ if: '$[[ inputs.region ]] == "us"', options: %w[us eu], default: 'us' }]
           }
         }
       end
@@ -211,13 +212,13 @@ RSpec.describe Gitlab::Ci::Config::Header::Inputs::Validator, feature_category: 
       let(:inputs_hash) do
         {
           input_a: {
-            rules: [{ if: '$[[ inputs.input_b ]] == "value"', options: %w[a] }]
+            rules: [{ if: '$[[ inputs.input_b ]] == "value"', options: %w[a], default: 'a' }]
           },
           input_b: {
-            rules: [{ if: '$[[ inputs.input_c ]] == "value"', options: %w[b] }]
+            rules: [{ if: '$[[ inputs.input_c ]] == "value"', options: %w[b], default: 'b' }]
           },
           input_c: {
-            rules: [{ if: '$[[ inputs.input_a ]] == "value"', options: %w[c] }]
+            rules: [{ if: '$[[ inputs.input_a ]] == "value"', options: %w[c], default: 'c' }]
           }
         }
       end
@@ -236,10 +237,10 @@ RSpec.describe Gitlab::Ci::Config::Header::Inputs::Validator, feature_category: 
         {
           environment: { options: %w[dev staging prod] },
           region: {
-            rules: [{ if: '$[[ inputs.environment ]] == "prod"', options: %w[us eu] }]
+            rules: [{ if: '$[[ inputs.environment ]] == "prod"', options: %w[us eu], default: 'us' }]
           },
           size: {
-            rules: [{ if: '$[[ inputs.region ]] == "us"', options: %w[large xlarge] }]
+            rules: [{ if: '$[[ inputs.region ]] == "us"', options: %w[large xlarge], default: 'large' }]
           }
         }
       end
@@ -254,10 +255,11 @@ RSpec.describe Gitlab::Ci::Config::Header::Inputs::Validator, feature_category: 
       let(:inputs_hash) do
         {
           input_a: {
-            rules: [{ if: '$[[ inputs.input_b ]] == "value"', options: %w[a] }]
+            rules: [{ if: '$[[ inputs.input_b ]] == "value"', options: %w[a], default: 'a' }]
           },
           input_b: {
-            rules: [{ if: '$[[ inputs.input_a ]] == "value" && $[[ inputs.undefined ]] == "x"', options: %w[b] }]
+            rules: [{ if: '$[[ inputs.input_a ]] == "value" && $[[ inputs.undefined ]] == "x"', options: %w[b],
+                      default: 'b' }]
           }
         }
       end

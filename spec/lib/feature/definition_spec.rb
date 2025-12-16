@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Feature::Definition do
+RSpec.describe Feature::Definition, feature_category: :feature_flags do
   let(:attributes) do
     { name: 'feature_flag',
       type: 'development',

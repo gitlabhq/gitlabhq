@@ -2,7 +2,7 @@
 /* eslint-disable @gitlab/require-i18n-strings */
 import { GlModal, GlButton } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getBaseURL } from '~/lib/utils/url_utility';
 
@@ -31,7 +31,7 @@ export default {
   components: {
     GlModal,
     GlButton,
-    ModalCopyButton,
+    SimpleCopyButton,
   },
   directives: {
     SafeHtml,
@@ -94,8 +94,7 @@ export default {
       <pre class="gl-mb-0 gl-mr-3 gl-w-full" data-testid="resolve-conflict-instructions">{{
         instructionsStep1
       }}</pre>
-      <modal-copy-button
-        modal-id="fork-sync-conflicts-modal"
+      <simple-copy-button
         :text="instructionsStep1"
         :title="$options.i18n.copyToClipboard"
         class="gl-shrink-0 !gl-bg-transparent !gl-shadow-none"
@@ -108,8 +107,7 @@ export default {
       <pre class="gl-mb-0 gl-mr-3 gl-w-full" data-testid="resolve-conflict-instructions">{{
         instructionsStep2
       }}</pre>
-      <modal-copy-button
-        modal-id="fork-sync-conflicts-modal"
+      <simple-copy-button
         :text="instructionsStep2"
         :title="$options.i18n.copyToClipboard"
         class="gl-shrink-0 !gl-bg-transparent !gl-shadow-none"
@@ -123,8 +121,7 @@ export default {
         >{{ $options.instructionsStep3 }}
 </pre
       >
-      <modal-copy-button
-        modal-id="fork-sync-conflicts-modal"
+      <simple-copy-button
         :text="$options.instructionsStep3"
         :title="$options.i18n.copyToClipboard"
         class="gl-ml-3 gl-shrink-0 !gl-bg-transparent !gl-shadow-none"

@@ -75,7 +75,7 @@ RSpec.describe 'Comment sort direction', feature_category: :team_planning do
   end
 
   def all_comments
-    all('.timeline > .note.timeline-entry')
+    all('.timeline li.note.timeline-entry')
   end
 
   def first_comment

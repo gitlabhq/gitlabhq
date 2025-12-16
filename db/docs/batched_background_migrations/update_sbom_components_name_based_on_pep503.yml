@@ -1,9 +1,0 @@
----
-migration_job_name: UpdateSbomComponentsNameBasedOnPep503
-description: Updates sbom_components.name in accordance with PEP503
-feature_category: software_composition_analysis
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145700
-milestone: '16.11'
-queued_migration_version: 20240223130548
-finalize_after: '2024-03-24'
-finalized_by: 20240828162042

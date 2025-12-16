@@ -1,8 +1,8 @@
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { optionsMenuAdapter } from '~/rapid_diffs/adapters/options_menu';
 
-describe('Diff File Options Menu', () => {
-  const item1 = { text: 'item 1', path: 'item/1/path' };
+describe('Diff File Options Menu Adapter', () => {
+  const item1 = { text: 'item 1', href: 'item/1/path' };
 
   function get(element) {
     const elements = {
@@ -35,16 +35,16 @@ describe('Diff File Options Menu', () => {
     document.body.innerHTML = `
       <diff-file data-file-data='${JSON.stringify({ viewer })}'>
         <div class="rd-diff-file">
-          <div class="rd-diff-file-header" data-testid="rd-diff-file-header">
-          <div class="rd-diff-file-options-menu gl-ml-2">
+          <div class="rd-diff-file-header">
+          <div class="rd-diff-file-options-menu">
             <div data-options-menu>
               <script type="application/json">
-                [{"text": "${item1.text}", "href": "${item1.path}"}]
+                [{"text": "${item1.text}", "href": "${item1.href}"}]
               </script>
               <button data-click="toggleOptionsMenu" type="button"></button>
             </div>
           </div>
-          <div data-file-body=""><!-- body content --></div>
+          <div></div>
         </div>
       </diff-file>
     `;
@@ -93,6 +93,6 @@ describe('Diff File Options Menu', () => {
 
     expect(items).toHaveLength(1);
     expect(items[0].textContent.trim()).toBe(item1.text);
-    expect(items[0].querySelector('a').getAttribute('href')).toBe(item1.path);
+    expect(items[0].querySelector('a').getAttribute('href')).toBe(item1.href);
   });
 });

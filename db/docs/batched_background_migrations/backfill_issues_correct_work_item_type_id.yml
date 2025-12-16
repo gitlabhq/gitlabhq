@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillIssuesCorrectWorkItemTypeId
-description: Backfills column issues.correct_work_item_type_id
-feature_category: team_planning
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167972
-milestone: '17.5'
-queued_migration_version: 20241002185804
-finalized_by: 20241030165330

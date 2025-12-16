@@ -3,6 +3,7 @@ import { GlButton, GlEmptyState } from '@gitlab/ui';
 import ManualJobForm from '~/ci/job_details/components/manual_job_form.vue';
 
 export default {
+  name: 'JobEmptyState',
   components: {
     GlButton,
     GlEmptyState,

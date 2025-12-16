@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_registry do
+  include PackagesManagerApiSpecHelpers
+
   let(:service) { described_class.new(project, user, params) }
 
   subject(:execute_service) { service.execute }
@@ -453,6 +455,37 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
       it 'returns an unique key' do
         is_expected.to eq lease_key
+      end
+    end
+
+    context 'with temporary package' do
+      let!(:temp_package) do
+        create(:npm_package, :processing, name: package_name, version: "0.0.0-#{SecureRandom.uuid}",
+          package_files: [], project: project)
+      end
+
+      let!(:file) { temp_file('payload', content: params.to_json) }
+      let!(:package_file) { create(:package_file, :processing, file: file, package: temp_package, file_fixture: nil) }
+      let(:service) { described_class.new(project, user, params.merge(temp_package: temp_package.reload)) }
+      let(:data) { Base64.decode64(params['_attachments']["#{package_name}-#{version}.tgz"]['data']) }
+
+      it 'creates a new npm package from temporary package' do
+        expect(::Packages::Npm::ProcessPackageFileWorker).to receive(:perform_async).once
+
+        expect { execute_service }
+          .to change { Packages::Tag.count }.by(1)
+          .and change { Packages::Npm::Metadatum.count }.by(1)
+
+        expect(temp_package.version).to eq(version)
+
+        expect(package_file.reload).to have_attributes(
+          size: data.size,
+          file_sha1: params['versions'][version]['dist']['shasum'],
+          file_name: "#{package_name}-#{version}.tgz",
+          status: 'default'
+        )
+
+        expect(package_file.file.read).to eq(data)
       end
     end
   end

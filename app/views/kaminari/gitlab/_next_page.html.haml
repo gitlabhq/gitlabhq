@@ -9,6 +9,5 @@
 - is_last_page = current_page.last?
 - view = is_last_page ? 'kaminari/gitlab/disabled_page_cursor_nav' : 'kaminari/gitlab/page_cursor_nav'
 
-= render view, testid: 'kaminari-pagination-next', rel: 'next', url: url, remote: remote do
-  = s_('Pagination|Next')
-  = sprite_icon('chevron-right')
+= render view, testid: 'kaminari-pagination-next', rel: 'next', url: url, remote: remote, aria: { label: s_('Pagination|Go to next page') } do
+  = sprite_icon('chevron-lg-right')

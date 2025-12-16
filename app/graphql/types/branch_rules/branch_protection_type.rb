@@ -16,6 +16,7 @@ module Types
       field :push_access_levels,
         type: Types::BranchProtections::PushAccessLevelType.connection_type,
         null: true,
+        calls_gitaly: true,
         description: 'Details about who can push when the branch is the source branch.'
 
       field :allow_force_push,

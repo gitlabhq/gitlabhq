@@ -22,7 +22,7 @@ You can use [ClickUp](https://clickup.com/) as an
 [external issue tracker](../../../integration/external-issue-tracker.md).
 To enable the ClickUp integration in a project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **ClickUp**.
 1. Under **Enable integration**, select the **Active** checkbox.
@@ -66,4 +66,5 @@ We suggest using the `CU-` format (`CU-<ID>`) if you have both internal and exte
 trackers enabled. If you use the shorter format, and an issue with the same ID exists in the
 internal issue tracker, the internal issue is linked.
 
-For [Custom Task IDs](https://help.clickup.com/hc/en-us/sections/17044579323671-Custom-Task-IDs), you **must** include the full ID, including your custom prefix. For example, `SOP-1432`.
+For [Custom Task IDs](https://help.clickup.com/hc/en-us/sections/17044579323671-Custom-Task-IDs),
+you must include the full ID, including your custom prefix. For example, `SOP-1432`.

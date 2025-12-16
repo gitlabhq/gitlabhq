@@ -90,11 +90,13 @@ Data usage: The diff of changes between the source branch's head and the target 
 
 When your merge request is ready to be reviewed, use GitLab Duo Code Review to perform an initial review:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. In a comment box, enter the quick action `/assign_reviewer @GitLabDuo`, or assign GitLab Duo as reviewer.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=SG3bhD1YjeY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW&index=2)
+
+Learn about the new [GitLab Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md).
 
 Provide feedback on this feature in issue [517386](https://gitlab.com/gitlab-org/gitlab/-/issues/517386).
 
@@ -136,45 +138,30 @@ Prerequisites:
 
 To enable `@GitLabDuo` to automatically review merge requests:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
 
 ### Automatic reviews from GitLab Duo for groups and applications
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Enterprise
-- Offering: GitLab.com
-- Status: Beta
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554070) in GitLab 18.4 as a [beta](../../../policy/development_stages_support.md#beta) [with a flag](../../../administration/feature_flags/_index.md) named `cascading_auto_duo_code_review_settings`. Disabled by default.
+- Feature flag `cascading_auto_duo_code_review_settings` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213240) in GitLab 18.7.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 Use group or application settings to enable automatic reviews for multiple projects.
 
 Prerequisites:
 
-- To enable automatic reviews for groups, you must have the Owner role for the group.
-- To enable automatic reviews for all projects, you must be an administrator.
+- To turn on automatic reviews for groups, have the Owner role for the group.
+- To turn on automatic reviews for all projects, be an administrator.
 
 To enable automatic reviews for groups:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Merge requests** section.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
@@ -182,7 +169,7 @@ To enable automatic reviews for groups:
 
 To enable automatic reviews for all projects:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
@@ -218,7 +205,7 @@ To configure custom instructions:
          - <glob_pattern_1>
          - <glob_pattern_2>
          - !<exclude_pattern>  # Exclude files matching this pattern
-    instructions: |
+       instructions: |
          <your_custom_review_instructions>
    ```
 
@@ -369,7 +356,7 @@ The `instruction_name` value corresponds to the `name` property from your `.gitl
 
 When you've completed your review of a merge request and are ready to [submit your review](reviews/_index.md#submit-a-review), use GitLab Duo Code Review Summary to generate a summary of your comments.
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests** and find the merge request you want to review.
 1. When you are ready to submit your review, select **Finish review**.
 1. Select **Add Summary**.
@@ -416,7 +403,7 @@ Data usage: When you use this feature, the following data is sent to the large l
 When preparing to merge your merge request, edit the proposed merge commit message
 by using GitLab Duo Merge Commit Message Generation.
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the **Edit commit message** checkbox on the merge widget.
 1. Select **Generate commit message**.
@@ -922,3 +909,42 @@ You can learn about more custom review instructions use cases in the following p
 
 - [Control GitLab Duo availability](../../gitlab_duo/turn_on_off.md)
 - [All GitLab Duo features](../../gitlab_duo/_index.md)
+
+## Troubleshooting
+
+When working with GitLab Duo in Merge Requests, you might encounter the following issues.
+
+### Response not received
+
+If you ask GitLab Duo for a review by mentioning or replying to `@GitLabDuo`,
+and do not receive a response, this might be because you do not have the
+appropriate GitLab Duo add-on.
+
+To check your GitLab Duo add-on, ask your group Owner to check the group's
+[GitLab Duo seat assignments](../../../subscriptions/subscription-add-ons.md#view-assigned-gitlab-duo-users).
+
+To change your GitLab Duo add-on, contact your administrator.
+
+### Unable to assign GitLab Duo to review
+
+If you cannot assign GitLab Duo as a reviewer, it might be because you do not
+have the appropriate GitLab Duo add-on.
+
+To check your GitLab Duo add-on, ask your group Owner to check the group's
+[GitLab Duo seat assignments](../../../subscriptions/subscription-add-ons.md#view-assigned-gitlab-duo-users).
+
+To change your GitLab Duo add-on, contact your administrator.
+
+### Error: `GitLab Duo Code Review was not automatically added...`
+
+If you try to create a merge request with automatic reviews from GitLab Duo
+turned on, you might get the following error message:
+
+```plaintext
+GitLab Duo Code Review was not automatically added because your account requires
+GitLab Duo Enterprise. Contact your administrator to upgrade your account.
+```
+
+Contact your administrator to ask them to
+[purchase a GitLab Duo Enterprise seat](../../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo)
+and assign it to you.

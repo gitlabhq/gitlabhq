@@ -101,46 +101,11 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
     end
 
     describe '.with_token' do
-      context 'when ff lookup for encrypted token is enabled' do
+      context 'when looking for ci trigger by token' do
         let_it_be(:project) { create(:project) }
         let_it_be(:trigger_1) { create(:ci_trigger, project: project) }
         let_it_be(:trigger_2) { create(:ci_trigger, project: project) }
         let_it_be(:trigger_3) { create(:ci_trigger, project: project) }
-
-        it 'returns the trigger for a valid token' do
-          result = described_class.with_token(trigger_1.token)
-
-          expect(result).to contain_exactly(trigger_1)
-        end
-
-        it 'returns the triggers for multiple valid tokens' do
-          result = described_class.with_token([trigger_1.token, trigger_2.token])
-
-          expect(result).to contain_exactly(trigger_1, trigger_2)
-        end
-
-        it 'ignores blank tokens' do
-          result = described_class.with_token([nil, '', '   '])
-
-          expect(result).to be_empty
-        end
-
-        it 'does not return triggers for invalid token' do
-          result = described_class.with_token('nonexistent-token')
-
-          expect(result).to be_empty
-        end
-      end
-
-      context 'when ff lookup for encrypted token is disabled' do
-        let_it_be(:project) { create(:project) }
-        let_it_be(:trigger_1) { create(:ci_trigger, project: project) }
-        let_it_be(:trigger_2) { create(:ci_trigger, project: project) }
-        let_it_be(:trigger_3) { create(:ci_trigger, project: project) }
-
-        before do
-          stub_feature_flags(encrypted_trigger_token_lookup: false)
-        end
 
         it 'returns the trigger for a valid token' do
           result = described_class.with_token(trigger_1.token)

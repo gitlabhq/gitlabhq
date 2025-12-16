@@ -18,6 +18,7 @@ import { reportToSentry } from '~/ci/utils';
  * - pipelines detail page in big graph
  */
 export default {
+  name: 'JobActionComponent',
   components: {
     GlIcon,
     GlButton,
@@ -50,6 +51,7 @@ export default {
       default: false,
     },
   },
+  emits: ['actionButtonClicked', 'showActionConfirmationModal', 'pipelineActionRequestComplete'],
   data() {
     return {
       isDisabled: false,

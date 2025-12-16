@@ -12,6 +12,8 @@ module API
       expose :resource_id do |event, _options|
         event.issuable.id
       end
+      expose :source_commit
+      expose :source_merge_request_id
       expose :state
     end
   end

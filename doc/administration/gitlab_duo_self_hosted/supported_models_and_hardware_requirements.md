@@ -35,13 +35,15 @@ You can use:
 
 ## Supported models
 
+The AI Gateway supports multiple providers through LiteLLM.
+
 GitLab-supported models offer different levels of functionality for GitLab Duo features,
-depending on the specific model and feature combination.
+depending on the specific model and feature combination. 
 
 - Full functionality: The model can likely handle the feature without any loss of quality.
 - Partial functionality: The model supports the feature, but there might be compromises or limitations.
 - Limited functionality: The model is unsuitable for the feature, likely resulting in significant quality loss or performance issues.
-Models that have limited functionality for a feature will not receive GitLab support for that specific feature.
+  Models that have limited functionality for a feature will not receive GitLab support for that specific feature.
 
 <!-- vale gitlab_base.Spelling = NO -->
 
@@ -121,6 +123,7 @@ This feature is in beta and is therefore subject to change as we gather feedback
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17192) in GitLab 18.3, with a [feature flag](../feature_flags/_index.md) named `ai_self_hosted_vendored_features`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214030) in GitLab 18.7
 
 {{< /history >}}
 
@@ -131,14 +134,14 @@ For more information, see the history.
 
 {{< /alert >}}
 
-GitLab AI vendor models integrate with GitLab-hosted AI gateway infrastructure to provide access to AI models curated and made available by GitLab. Instead of using your own self-hosted models, you can choose to use GitLab AI vendor models for specific GitLab Duo features.
+GitLab AI vendor models integrate with GitLab-hosted AI Gateway infrastructure to provide access to AI models curated and made available by GitLab. Instead of using your own self-hosted models, you can choose to use GitLab AI vendor models for specific GitLab Duo features.
 
 To choose which features use GitLab AI vendor models, see [Configure GitLab AI vendor models](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model).
 
 When enabled for a specific feature:
 
-- All calls to those features configured with a GitLab AI vendor model use the GitLab-hosted AI gateway, not the self-hosted AI gateway.
-- No detailed logs are generated in the GitLab-hosted AI gateway, even when [AI logs are enabled](logging.md#enable-logging). This prevents unintended leaks of sensitive information.
+- All calls to those features configured with a GitLab AI vendor model use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
+- No detailed logs are generated in the GitLab-hosted AI Gateway, even when [AI logs are enabled](logging.md#enable-logging). This prevents unintended leaks of sensitive information.
 
 ## Hardware requirements
 
@@ -170,7 +173,7 @@ Use [Hugging Face's memory utility](https://huggingface.co/spaces/hf-accelerate/
 
 #### Small machine
 
-With a `a2-highgpu-2g` (2x Nvidia A100 40 GB - 150 GB vRAM) or equivalent:
+With a `a2-highgpu-2g` (2x NVIDIA A100 40 GB - 150 GB vRAM) or equivalent:
 
 | Model name               | Number of requests | Average time per request (sec) | Average tokens in response | Average tokens per second per request | Total time for requests | Total TPS |
 |--------------------------|--------------------|------------------------------|----------------------------|---------------------------------------|-------------------------|-----------|
@@ -180,7 +183,7 @@ With a `a2-highgpu-2g` (2x Nvidia A100 40 GB - 150 GB vRAM) or equivalent:
 
 #### Medium machine
 
-With a `a2-ultragpu-4g` (4x Nvidia A100 40 GB - 340 GB vRAM) machine on GCP or equivalent:
+With a `a2-ultragpu-4g` (4x NVIDIA A100 40 GB - 340 GB vRAM) machine on GCP or equivalent:
 
 | Model name                 | Number of requests | Average time per request (sec) | Average tokens in response | Average tokens per second per request | Total time for requests | Total TPS |
 |----------------------------|--------------------|------------------------------|----------------------------|---------------------------------------|-------------------------|-----------|
@@ -209,4 +212,4 @@ With a `a2-ultragpu-8g` (8 x NVIDIA A100 80 GB - 1360 GB vRAM) machine on GCP or
 
 ### AI Gateway Hardware Requirements
 
-For recommendations on AI gateway hardware, see the [AI gateway scaling recommendations](../../install/install_ai_gateway.md#scaling-recommendations).
+For recommendations on AI Gateway hardware, see the [AI Gateway scaling recommendations](../../install/install_ai_gateway.md#scaling-recommendations).

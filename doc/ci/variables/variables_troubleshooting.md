@@ -151,7 +151,7 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 
 ### Access to debug logging
 
-Access to debug logging is restricted to [users with at least the Developer role](../../user/permissions.md#cicd). Users with a lower role cannot see the logs when debug logging is enabled with a variable in:
+Access to debug logging is restricted to [users with at least the Developer role](../../user/permissions.md#project-cicd). Users with a lower role cannot see the logs when debug logging is enabled with a variable in:
 
 - The [`.gitlab-ci.yml` file](_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file).
 - The CI/CD variables set in the GitLab UI.

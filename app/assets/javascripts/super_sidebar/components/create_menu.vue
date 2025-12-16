@@ -14,7 +14,6 @@ import {
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 } from '~/invite_members/constants';
 import {
-  BASE_ALLOWED_CREATE_TYPES,
   CREATE_NEW_WORK_ITEM_MODAL,
   CREATION_CONTEXT_SUPER_SIDEBAR,
   WORK_ITEM_TYPE_NAME_EPIC,
@@ -57,12 +56,6 @@ export default {
     };
   },
   computed: {
-    allowedWorkItemTypes() {
-      if (this.isGroup) {
-        return [];
-      }
-      return BASE_ALLOWED_CREATE_TYPES;
-    },
     dropdownOffset() {
       return {
         mainAxis: DROPDOWN_Y_OFFSET,
@@ -116,7 +109,7 @@ export default {
   <gl-disclosure-dropdown
     v-gl-tooltip.bottom="dropdownOpen ? '' : $options.i18n.createNew"
     category="tertiary"
-    :icon="projectStudioEnabled ? 'plus-square-o' : 'plus'"
+    icon="plus"
     no-caret
     text-sr-only
     :toggle-text="$options.i18n.createNew"
@@ -163,7 +156,6 @@ export default {
     </gl-disclosure-dropdown-group>
     <create-work-item-modal
       v-if="loadCreateWorkItemModal"
-      :allowed-work-item-types="allowedWorkItemTypes"
       :always-show-work-item-type-select="!isGroup"
       :creation-context="$options.CREATION_CONTEXT_SUPER_SIDEBAR"
       :full-path="fullPath"

@@ -64,8 +64,6 @@ module Ci
       end
 
       def build_tags_ids(build)
-        return build.tags_ids if Feature.disabled?(:ci_build_uses_job_definition_tag_list, build.project)
-
         Ci::Tag.find_or_create_all_with_like_by_name(build.tag_list).map(&:id).sort
       end
 

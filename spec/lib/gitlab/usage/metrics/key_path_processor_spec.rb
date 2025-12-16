@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::KeyPathProcessor do
   describe '#unflatten_default_path' do

@@ -19,15 +19,15 @@ security scanning tools:
 
 The following table summarizes which types of dependencies each scanning tool can detect:
 
-| Feature                                                                                      | Dependency scanning | Container scanning              |
-|----------------------------------------------------------------------------------------------|---------------------|---------------------------------|
-| Identify the manifest, lock file, or static file that introduced the dependency              | {{< icon name="check-circle" >}}  | {{< icon name="dotted-circle" >}}             |
-| Development dependencies                                                                     | {{< icon name="check-circle" >}}  | {{< icon name="dotted-circle" >}}             |
-| Dependencies in a lock file committed to your repository                                     | {{< icon name="check-circle" >}}  | {{< icon name="check-circle" >}} <sup>1</sup> |
-| Binaries built by Go                                                                         | {{< icon name="dotted-circle" >}} | {{< icon name="check-circle" >}} <sup>2</sup> |
-| Dynamically-linked language-specific dependencies installed by the Operating System          | {{< icon name="dotted-circle" >}} | {{< icon name="check-circle" >}}              |
-| Operating system dependencies                                                                | {{< icon name="dotted-circle" >}} | {{< icon name="check-circle" >}}              |
-| Language-specific dependencies installed on the operating system (not built by your project) | {{< icon name="dotted-circle" >}} | {{< icon name="check-circle" >}}              |
+| Feature                                                                                      | Dependency scanning | Container scanning |
+|----------------------------------------------------------------------------------------------|---------------------|--------------------|
+| Identify the manifest, lock file, or static file that introduced the dependency              | {{< yes >}}         | {{< no >}}         |
+| Development dependencies                                                                     | {{< yes >}}         | {{< no >}}         |
+| Dependencies in a lock file committed to your repository                                     | {{< yes >}}         | {{< yes >}} <sup>1</sup> |
+| Binaries built by Go                                                                         | {{< no >}}          | {{< yes >}} <sup>2</sup> |
+| Dynamically-linked language-specific dependencies installed by the Operating System          | {{< no >}}          | {{< yes >}}        |
+| Operating system dependencies                                                                | {{< no >}}          | {{< yes >}}        |
+| Language-specific dependencies installed on the operating system (not built by your project) | {{< no >}}          | {{< yes >}}        |
 
 1. Lock file must be present in the image to be detected.
 1. [Report language-specific findings](container_scanning/_index.md#report-language-specific-findings) must be enabled, and binaries must be present in the image to be detected.

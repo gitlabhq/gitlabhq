@@ -1,0 +1,25 @@
+---
+description: When the quickaction /submit_review is executed
+internal_events: true
+status: active
+action: i_quickactions_submit_review
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  state:
+    description: Review state
+  pending_comments:
+    description: Number of pending review comments
+  is_reviewer:
+    description: Is the user a reviewer?
+product_group: code_review
+product_categories:
+- code_review_workflow
+milestone: '18.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215374
+tiers:
+- free
+- premium
+- ultimate

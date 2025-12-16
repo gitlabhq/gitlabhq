@@ -64,6 +64,7 @@ export default {
       default: '',
     },
   },
+  emits: ['search-environment-scope', 'select-environment'],
   data() {
     return {
       customEnvScope: null,

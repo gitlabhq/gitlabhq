@@ -86,12 +86,6 @@ module Analytics
         start_event.object_type
       end
 
-      def matches_with_stage_params?(stage_params)
-        default_stage? &&
-          start_event_identifier.to_s.eql?(stage_params[:start_event_identifier].to_s) &&
-          end_event_identifier.to_s.eql?(stage_params[:end_event_identifier].to_s)
-      end
-
       private
 
       def validate_stage_event_pairs

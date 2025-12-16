@@ -1,8 +1,0 @@
----
-migration_job_name: PopulateTopicsSlugColumn
-description: Populates topics slug column from name column
-feature_category: groups_and_projects
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141715
-milestone: '16.9'
-queued_migration_version: 20240113071052
-finalized_by: '20241030232146'

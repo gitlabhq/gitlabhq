@@ -255,7 +255,8 @@ Insecure implementation of JWTs can lead to several security vulnerabilities, in
 ### Working securely with JWTs
 
 - Token generation:
-Use a strong, unique secret key for signing tokens. Prefer asymmetric algorithms (RS256, ES256) over symmetric ones (HS256). Include essential claims: 'exp' (expiration time), 'iat' (issued at), 'iss' (issuer), 'aud' (audience).
+
+  Use a strong, unique secret key for signing tokens. Prefer asymmetric algorithms (RS256, ES256) over symmetric ones (HS256). Include essential claims: 'exp' (expiration time), 'iat' (issued at), 'iss' (issuer), 'aud' (audience).
 
   ```ruby
   # Ruby

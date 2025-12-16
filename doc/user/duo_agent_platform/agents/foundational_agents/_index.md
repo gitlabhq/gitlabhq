@@ -28,35 +28,50 @@ frameworks, and best practices of their specialized domains. Each agent combines
 GitLab features with role-specific reasoning to provide targeted help that aligns with how
 practitioners actually work.
 
-When you interact with a foundational agent, you're engaging with an AI tool that understands not just
-what you're asking, but the broader context of your role and objectives. For example:
-
-- A product planning agent that understands prioritization frameworks and dependency management.
-- A security agent that recognizes vulnerability patterns and compliance requirements.
-
-These agents integrate into your existing GitLab workflows through Chat,
-and can help provide specialized support without requiring you to leave your current context.
-
-GitLab provides foundational agents for workflows where specialized knowledge significantly improves
-outcome quality. Each agent maintains awareness of GitLab-specific implementations, organizational
-standards, and industry best practices in its domain. This specialization helps enable more accurate,
-actionable, and contextually appropriate responses compared to general-purpose AI help.
+Foundational agents are built and maintained by GitLab and display a GitLab-maintained badge ({{< icon name="tanuki-verified" >}}).
 
 ## Available foundational agents
 
 The following foundational agents are available:
 
-- [GitLab Planner Agent](planner.md), for product management and
+- [Planner](planner.md), for product management and
   planning workflows.
-- [GitLab Security Analyst Agent](security_analyst_agent.md), for
+- [Security Analyst](security_analyst_agent.md), for
   security analysis and vulnerability management.
+- [Data Analyst](data_analyst.md), for analysis
+  and visualization of platform data.
+
+## Duplicate an agent
+
+To make changes to a foundational agent, create a copy of it.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
+To duplicate an agent:
+
+1. On the top bar, select **Search or go to** > **Explore**.
+1. Select **AI Catalog**, then select the **Agents** tab.
+1. Select the agent you want to duplicate.
+1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Duplicate**.
+1. Under **Visibility & access**:
+   1. From the **Managed by** dropdown list, select a project for the agent.
+   1. For **Visibility**, select **Private** or **Public**.
+1. Optional. Edit any fields you want to change.
+1. Select **Create agent**.
+
+A custom agent is created. To use it, you must [enable it](../custom.md#enable-an-agent).
 
 ## Turn foundational agents on or off
 
 By default, foundational agents are turned on.
 You can turn them on or off for a top-level group (namespace) or for an instance.
 
-If you turn foundational agents off, you can still use the default GitLab Duo agent.
+If you turn foundational agents off by default:
+
+- Foundational agents that use the default configuration, including newly released agents, are turned off.
+- You can still use the default GitLab Duo Agent.
 
 {{< tabs >}}
 
@@ -66,13 +81,22 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Foundational agents**, select either:
+1. Under **Foundational agents**, for **Default availability**, select one of the following:
    - **On by default**
    - **Off by default**
+1. Under **Availability settings**, for each agent, select one of the following:
+   - **On**
+   - **Off**
+   - **On (default)** or **Off (default)**
 1. Select **Save changes**.
+
+These settings apply to:
+
+- Users who have the top-level group as the [default GitLab Duo namespace](../../../gitlab_duo/model_selection.md#assign-a-default-gitlab-duo-namespace).
+- Users without a default namespace, and who visit a namespace that belongs to the top-level group.
 
 If you turn off foundational agents for a top-level group, users with that group as their default GitLab Duo namespace can't access foundational agents in any namespace.
 
@@ -84,12 +108,16 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **GitLab Duo**.
+1. In the upper-right corner, select **Admin**.
+1. On the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Foundational agents**, select either:
+1. Under **Foundational agents**, for **Default availability**, select one of the following:
    - **On by default**
    - **Off by default**
+1. Under **Availability settings**, for each agent, select one of the following:
+   - **On**
+   - **Off**
+   - **On (default)** or **Off (default)**
 1. Select **Save changes**.
 
 {{< /tab >}}

@@ -38,6 +38,18 @@ RSpec.describe Database::DuplicateIndexes, feature_category: :database do
     )
   end
 
+  let(:primary_key_index) do
+    instance_double(index_class, default_index_options.merge(name: 'table_pkey', columns: %w[id], unique: true))
+  end
+
+  let(:primary_key_index_copy) do
+    instance_double(index_class, default_index_options.merge(name: 'table_pkey_copy', columns: %w[id]))
+  end
+
+  let(:primary_key_index_with_extra_columns) do
+    instance_double(index_class, default_index_options.merge(name: 'table_pkey_with_user_id', columns: %w[id user_id]))
+  end
+
   subject(:duplicate_indexes) do
     described_class.new(table_name, indexes).duplicate_indexes
   end
@@ -102,6 +114,25 @@ RSpec.describe Database::DuplicateIndexes, feature_category: :database do
     let(:indexes) { [index1, index1_desc] }
 
     it { expect(duplicate_indexes).to be_empty }
+  end
+
+  context 'with a copy of the primary key index' do
+    let(:indexes) { [primary_key_index, primary_key_index_copy] }
+
+    it 'detects duplicate indexes' do
+      expected_duplicate_indexes = {
+        index_struct(primary_key_index) => [index_struct(primary_key_index_copy)],
+        index_struct(primary_key_index_copy) => [index_struct(primary_key_index)]
+      }
+
+      expect(duplicate_indexes).to eq(expected_duplicate_indexes)
+    end
+  end
+
+  context 'with a copy of primary key index with extra columns' do
+    let(:indexes) { [primary_key_index, primary_key_index_with_extra_columns] }
+
+    it { is_expected.to be_empty }
   end
 
   def index_struct(index)

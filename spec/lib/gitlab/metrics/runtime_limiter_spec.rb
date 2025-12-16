@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Metrics::RuntimeLimiter, feature_category: :value_stream_management do
   let(:max_runtime) { 321 }

@@ -742,6 +742,22 @@ RSpec.describe Packages::Package, feature_category: :package_registry do
     end
   end
 
+  describe '.package_type_to_class!' do
+    let(:package_type) { :npm }
+
+    subject(:execute) { described_class.package_type_to_class!(package_type) }
+
+    it { is_expected.to eq(::Packages::Npm::Package) }
+
+    context 'when package_type is not valid' do
+      let(:package_type) { :zig }
+
+      it 'raises ArgumentError' do
+        expect { execute }.to raise_error(ArgumentError, "'#{package_type}' is not a valid package_type")
+      end
+    end
+  end
+
   describe '#detailed_info?' do
     subject { package.detailed_info? }
 

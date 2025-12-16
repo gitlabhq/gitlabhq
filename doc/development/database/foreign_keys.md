@@ -45,13 +45,15 @@ traverse the entire table which will be time consuming for large/high-traffic ta
 So in almost all cases we have to run them in separate transactions to avoid holding the
 stricter lock and blocking other operations on the tables for a longer time.
 
+### On a new table
+
+1. If the new table is referencing only one other table, it is straightforward. `create_table (t.references, ..., foreign_key: true)` can be used regardless of the referenced table.
+1. If the new table is referencing two other different tables. Please refer to [creating a new table when we have two foreign keys](../migration_style_guide.md#creating-a-new-table-when-we-have-two-foreign-keys).
+
 ### On a new column
 
-If the FK is added while creating the table, it is straight forward and
-`create_table (t.references, ..., foreign_key: true)` can be used.
-
-If you have a new (without much records) or empty table that doesn't reference a
-[high-traffic table](../migration_style_guide.md#high-traffic-tables), either of below approaches can be used.
+If you have a new (without many records) table, either of below approaches can be used. If you need
+to add two foreign keys, please split them in different migrations, to avoid locking more than one table in the same migration.
 
 1. add_reference(... foreign_key: true)
 1. add_column(...) and add_foreign_key(...) in the same transaction.
@@ -555,12 +557,12 @@ have a foreign key constraint. If that spec fails, add the column to
 `ignored_fk_columns_map` if the column fits any of the two criteria:
 
 1. The column references another table, such as the two tables belong to
-[GitLab schemas](multiple_databases.md#gitlab-schema) that don't
-allow Foreign Keys between them.
+   [GitLab schemas](multiple_databases.md#gitlab-schema) that don't
+   allow Foreign Keys between them.
 1. The foreign key is replaced by a [Loose Foreign Key](loose_foreign_keys.md) for performance reasons.
 1. The column represents a [polymorphic relationship](polymorphic_associations.md). Note that polymorphic associations should not be used.
 1. The column is not meant to reference another table. For example, it's common to have `partition_id`
-for partitioned tables.
+   for partitioned tables.
 
 ## Dependent removals
 

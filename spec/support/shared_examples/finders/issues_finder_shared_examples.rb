@@ -254,7 +254,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         let_it_be_with_reload(:service_desk_issue) do
           create(
             :issue, # legacy Service Desk issues are always of type issue
-            author: Users::Internal.support_bot,
+            author: create(:support_bot),
             external_author: 'user@example.com',
             project: project2,
             description: 'Service Desk issue'

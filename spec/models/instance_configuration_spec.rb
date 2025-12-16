@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe InstanceConfiguration do
+RSpec.describe InstanceConfiguration, feature_category: :configuration do
   context 'without cache' do
     describe '#settings' do
       describe '#ssh_algorithms_hashes' do
@@ -275,7 +275,14 @@ RSpec.describe InstanceConfiguration do
             search_rate_limit: 1022,
             search_rate_limit_unauthenticated: 1000,
             users_get_by_id_limit: 1023,
-            pipeline_limit_per_project_user_sha: 1024
+            pipeline_limit_per_project_user_sha: 1024,
+            users_api_limit_followers: 1025,
+            users_api_limit_following: 1026,
+            users_api_limit_status: 1027,
+            users_api_limit_ssh_keys: 1028,
+            users_api_limit_ssh_key: 1029,
+            users_api_limit_gpg_keys: 1030,
+            users_api_limit_gpg_key: 1031
           )
         end
 
@@ -302,6 +309,13 @@ RSpec.describe InstanceConfiguration do
           expect(rate_limits[:search_rate_limit_unauthenticated]).to eq({ enabled: true, requests_per_period: 1000, period_in_seconds: 60 })
           expect(rate_limits[:users_get_by_id]).to eq({ enabled: true, requests_per_period: 1023, period_in_seconds: 600 })
           expect(rate_limits[:pipeline_creation]).to eq({ enabled: true, requests_per_period: 1024, period_in_seconds: 60 })
+          expect(rate_limits[:users_api_followers]).to eq({ enabled: true, requests_per_period: 1025, period_in_seconds: 60 })
+          expect(rate_limits[:users_api_following]).to eq({ enabled: true, requests_per_period: 1026, period_in_seconds: 60 })
+          expect(rate_limits[:users_api_status]).to eq({ enabled: true, requests_per_period: 1027, period_in_seconds: 60 })
+          expect(rate_limits[:users_api_ssh_keys]).to eq({ enabled: true, requests_per_period: 1028, period_in_seconds: 60 })
+          expect(rate_limits[:users_api_ssh_key]).to eq({ enabled: true, requests_per_period: 1029, period_in_seconds: 60 })
+          expect(rate_limits[:users_api_gpg_keys]).to eq({ enabled: true, requests_per_period: 1030, period_in_seconds: 60 })
+          expect(rate_limits[:users_api_gpg_key]).to eq({ enabled: true, requests_per_period: 1031, period_in_seconds: 60 })
         end
       end
     end

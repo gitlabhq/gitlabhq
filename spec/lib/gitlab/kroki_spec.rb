@@ -17,6 +17,7 @@ RSpec.describe Gitlab::Kroki do
       'blockdiag'  | (default_formats + %w[actdiag blockdiag nwdiag packetdiag rackdiag seqdiag])
       'bpmn'       | (default_formats + %w[bpmn])
       'excalidraw' | (default_formats + %w[excalidraw])
+      'mermaid'    | (default_formats + %w[mermaid])
     end
 
     with_them do

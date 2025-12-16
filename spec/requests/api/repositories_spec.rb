@@ -519,6 +519,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
         expect(json_response['web_url']).to be_present
+        expect(json_response['web_url']).to include('...')
       end
 
       it "compares branches with explicit merge-base mode" do
@@ -531,6 +532,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
         expect(json_response['web_url']).to be_present
+        expect(json_response['web_url']).to include('...')
       end
 
       it "compares branches with explicit straight mode" do
@@ -543,6 +545,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
         expect(json_response['web_url']).to be_present
+        expect(json_response['web_url']).to include('..').and exclude('...')
       end
 
       it "compares tags" do
@@ -839,10 +842,6 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
   end
 
   describe 'GET :id/repository/health' do
-    before do
-      stub_feature_flags(project_repositories_health: true)
-    end
-
     let(:params) { nil }
 
     subject(:request) do
@@ -911,7 +910,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
 
     context 'when authenticated', 'as a developer' do
-      it_behaves_like '403 response' do
+      it_behaves_like 'health' do
         let(:current_user) { developer }
       end
     end
@@ -919,16 +918,6 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     context 'when authenticated', 'as a guest' do
       it_behaves_like '403 response' do
         let(:current_user) { guest }
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(project_repositories_health: false)
-      end
-
-      it_behaves_like '404 response' do
-        let(:current_user) { user }
       end
     end
   end

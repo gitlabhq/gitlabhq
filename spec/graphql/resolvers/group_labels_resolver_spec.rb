@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::GroupLabelsResolver do
+RSpec.describe Resolvers::GroupLabelsResolver, feature_category: :team_planning do
   include GraphqlHelpers
 
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:organization) { create(:organization) }
+  let_it_be(:organization) { create(:common_organization) }
   let_it_be(:group, reload: true) { create(:group, :private, organization: organization) }
   let_it_be(:subgroup, reload: true) { create(:group, :private, parent: group, organization: organization) }
   let_it_be(:sub_subgroup, reload: true) { create(:group, :private, parent: subgroup, organization: organization) }

@@ -1,5 +1,11 @@
 <script>
-import { GlButton, GlModal, GlModalDirective, GlDisclosureDropdown } from '@gitlab/ui';
+import {
+  GlButton,
+  GlModal,
+  GlModalDirective,
+  GlDisclosureDropdown,
+  GlKeysetPagination,
+} from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
@@ -17,6 +23,8 @@ import createBranchRuleMutation from './graphql/mutations/create_branch_rule.mut
 import BranchRule from './components/branch_rule.vue';
 import { I18N, PROTECTED_BRANCHES_ANCHOR, BRANCH_PROTECTION_MODAL_ID } from './constants';
 
+const PAGE_SIZE = 20;
+
 export default {
   name: 'BranchRules',
   i18n: I18N,
@@ -27,6 +35,7 @@ export default {
     GlModal,
     GlDisclosureDropdown,
     CrudComponent,
+    GlKeysetPagination,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -38,10 +47,14 @@ export default {
       variables() {
         return {
           projectPath: this.projectPath,
+          first: PAGE_SIZE,
+          after: this.currentCursor,
         };
       },
       update(data) {
-        return data.project?.branchRules?.nodes || [];
+        const branchRulesData = data.project?.branchRules;
+        this.pageInfo = branchRulesData?.pageInfo || {};
+        return branchRulesData?.nodes || [];
       },
       error() {
         createAlert({ message: this.$options.i18n.queryError });
@@ -59,9 +72,18 @@ export default {
   data() {
     return {
       branchRules: [],
+      pageInfo: {},
+      pageHistory: [null],
+      currentPageIndex: 0,
     };
   },
   computed: {
+    currentCursor() {
+      return this.pageHistory[this.currentPageIndex] || null;
+    },
+    canGoBack() {
+      return this.currentPageIndex > 0;
+    },
     getAddRuleItems() {
       const items = [
         { text: this.$options.i18n.branchName, action: () => this.openCreateRuleModal() },
@@ -122,6 +144,15 @@ export default {
     },
     getBranchRuleEditPath(name) {
       return `${this.branchRulesPath}?branch=${encodeURIComponent(name)}`;
+    },
+    handleNextPage() {
+      this.pageHistory.push(this.pageInfo.endCursor);
+      this.currentPageIndex += 1;
+    },
+    handlePreviousPage() {
+      if (this.currentPageIndex > 0) {
+        this.currentPageIndex -= 1;
+      }
     },
   },
   modalId: BRANCH_PROTECTION_MODAL_ID,
@@ -189,6 +220,18 @@ export default {
         <p>{{ $options.i18n.branchRuleModalDescription }}</p>
         <p>{{ $options.i18n.branchRuleModalContent }}</p>
       </gl-modal>
+    </template>
+
+    <template #pagination>
+      <gl-keyset-pagination
+        v-bind="pageInfo"
+        :prev-text="__('Prev')"
+        :next-text="__('Next')"
+        :disabled="$apollo.queries.branchRules.loading"
+        :has-previous-page="canGoBack"
+        @prev="handlePreviousPage"
+        @next="handleNextPage"
+      />
     </template>
   </crud-component>
 </template>

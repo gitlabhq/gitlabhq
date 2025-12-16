@@ -643,6 +643,10 @@ p_ci_pipeline_artifact_states:
   - table: ci_pipeline_artifacts
     column: pipeline_artifact_id
     on_delete: async_delete
+p_ci_pipeline_iids:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 p_ci_pipelines:
   - table: merge_requests
     column: merge_request_id
@@ -849,6 +853,10 @@ security_project_tracked_contexts:
   - table: projects
     column: project_id
     on_delete: async_delete
+security_scan_profile_triggers:
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
 security_scan_profiles:
   - table: namespaces
     column: namespace_id
@@ -874,9 +882,17 @@ slsa_attestations:
     column: build_id
     on_delete: async_delete
     worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
+snippet_repositories:
+  - table: shards
+    column: shard_id
+    on_delete: async_nullify
 snippets:
   - table: organizations
     column: organization_id
+    on_delete: async_delete
+supply_chain_attestation_states:
+  - table: slsa_attestations
+    column: supply_chain_attestation_id
     on_delete: async_delete
 terraform_state_version_states:
   - table: projects
@@ -937,6 +953,10 @@ vulnerability_archived_records:
     column: project_id
     on_delete: async_delete
 vulnerability_archives:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+vulnerability_detection_transitions:
   - table: projects
     column: project_id
     on_delete: async_delete

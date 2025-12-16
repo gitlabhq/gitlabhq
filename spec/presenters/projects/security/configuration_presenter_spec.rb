@@ -130,7 +130,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         end
 
         let!(:artifacts) do
-          { artifacts: { reports: { other_job: ['gl-other-report.json'], sast: ['gl-sast-report.json'] } } }
+          { artifacts: { reports: { annotations: ['gl-other-report.json'], sast: ['gl-sast-report.json'] } } }
         end
 
         let!(:complicated_job) { build_stubbed(:ci_build, name: 'semgrep-sast', options: artifacts) }

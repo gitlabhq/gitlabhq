@@ -27,12 +27,10 @@ RSpec.describe API::Internal::Coverage, feature_category: :code_testing do
     context 'when user is admin' do
       let(:coverage_hash) do
         { "./lib/gitlab/database/load_balancing/load_balancer.rb" =>
-           { "first_updated_at" => 1718070708,
-             "last_updated_at" => 1718073948,
-             "file_hash" => "1d6368d5806dba4d4af79450d0df9b72" } }
+           { "1" => "5", "2" => "10", "3" => "0" } }
       end
 
-      let(:resp) { coverage_hash.keys }
+      let(:resp) { coverage_hash }
 
       before do
         stub_const('Coverband', Class.new)

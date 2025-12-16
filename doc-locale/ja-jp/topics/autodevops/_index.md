@@ -15,7 +15,7 @@ description: 自動化されたDevOps、言語検出、デプロイ、カスタ�
 
 Auto DevOpsを使用すると、煩雑な設定を行わずに、コードをすぐに本番環境対応のアプリケーションに変換できます。DevOpsライフサイクル全体は、業界のベストプラクティスを使用して事前設定されています。まずデフォルト設定で迅速にリリースし、より詳細な制御が必要な場合はカスタマイズしてください。複雑な設定ファイルや、DevOpsに関する深い専門知識は必要ありません。
 
-Auto DevOpsでは、次の機能を利用できます。
+Auto DevOpsでは、次の機能を利用できます。:
 
 - 言語やフレームワークを自動的に検出するCI/CDパイプライン
 - 本番環境に到達する前に脆弱性を見つける組み込みのセキュリティスキャン
@@ -43,14 +43,14 @@ Auto DevOpsは、[DevOpsの各ステージ](stages.md)での開発をサポー�
 | Deploy | [Auto Review Apps](stages.md#auto-review-apps) |
 | Deploy | [Auto Deploy](stages.md#auto-deploy) |
 | Secure | [Auto Dynamic Application Security Testing（DAST）](stages.md#auto-dast) |
-| Secure | [Auto Static Application Security Testing（SAST）](stages.md#auto-sast) |
+| Secure | [Auto静的アプリケーションセキュリティテスト（SAST）](stages.md#auto-sast) |
 | Secure | [Auto Secret Detection](stages.md#auto-secret-detection) |
 
 ### アプリケーションプラットフォームおよびPaaSとの比較 {#comparison-to-application-platforms-and-paas}
 
 Auto DevOpsが提供する機能は、多くの場合、アプリケーションプラットフォームまたはPlatform as a Service（PaaS）に含まれています。
 
-[Heroku](https://www.heroku.com/)に着想を得たAuto DevOpsは、さまざまな点でHerokuよりも優れています。
+[Heroku](https://www.heroku.com/)に着想を得たAuto DevOpsは、さまざまな点でHerokuよりも優れています。:
 
 - Auto DevOpsは、あらゆるKubernetesクラスターで動作します。
 - 追加費用はかかりません。
@@ -61,7 +61,7 @@ Auto DevOpsが提供する機能は、多くの場合、アプリケーション
 
 使用を開始するには、[Auto DevOps](#enable-or-disable-auto-devops)を有効にするだけです。これで、アプリケーションのビルドとテストを行うAuto DevOpsパイプラインを実行できます。
 
-アプリをビルド、テスト、デプロイする場合は、次の手順に従います。
+アプリをビルド、テスト、デプロイする場合は、次の手順に従います。:
 
 1. [デプロイの要件](requirements.md)を確認します。
 1. [Auto DevOps](#enable-or-disable-auto-devops)を有効にします。
@@ -84,10 +84,10 @@ Auto DevOpsを有効にする前に、[デプロイの準備](requirements.md)�
 - プロジェクトのメンテナーロール以上が必要です。
 - プロジェクトに`.gitlab-ci.yml`が存在しないことを確認します。存在する場合は、CI/CD設定がAuto DevOpsパイプラインよりも優先されます。
 
-プロジェクトに対してAuto DevOpsを有効にするには、次の手順に従います。
+プロジェクトに対してAuto DevOpsを有効にするには、次の手順に従います。:
 
 1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定 > CI/CD**を選択します。
+1. **設定** > **CI/CD**を選択します。
 1. **Auto DevOps**を展開します。
 1. **デフォルトのAuto DevOpsパイプライン**チェックボックスをオンにします。
 1. オプション（推奨）: [ベースドメイン](requirements.md#auto-devops-base-domain)を追加します。
@@ -108,21 +108,21 @@ GitLabは、デフォルトブランチでAuto DevOpsパイプラインをトリ
 
 - グループのオーナーロールが必要です。
 
-グループに対してAuto DevOpsを有効にするには、次の手順に従います。
+グループに対してAuto DevOpsを有効にするには、次の手順に従います。:
 
 1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。
-1. **設定 > CI/CD**を選択します。
+1. **設定** > **CI/CD**を選択します。
 1. **Auto DevOps**を展開します。
 1. **デフォルトのAuto DevOpsパイプライン**チェックボックスをオンにします。
 1. **変更を保存**を選択します。
 
 グループのAuto DevOpsを無効にするには、同じ手順に従って**デフォルトのAuto DevOpsパイプライン**チェックボックスをオフにします。
 
-グループに対してAuto DevOpsを有効にした後、そのグループに属するプロジェクトのAuto DevOpsパイプラインをトリガーできます。
+グループに対してAuto DevOpsを有効にした後、そのグループに属するプロジェクトのAuto DevOpsパイプラインをトリガーできます。:
 
 1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. プロジェクトに`.gitlab-ci.yml`ファイルが含まれていないことを確認します。
-1. **ビルド > パイプライン**を選択します。
+1. **ビルド** > **パイプライン**を選択します。
 1. Auto DevOpsパイプラインをトリガーするには、**パイプラインを新規作成**を選択します。
 
 ### アプリをクラウドプロバイダーにデプロイする {#deploy-your-app-to-a-cloud-provider}
@@ -134,7 +134,7 @@ GitLabは、デフォルトブランチでAuto DevOpsパイプラインをトリ
 
 ## GitLabの更新時にAuto DevOpsの依存関係をアップグレードする {#upgrade-auto-devops-dependencies-when-updating-gitlab}
 
-GitLabの更新時に、新しいGitLabバージョンに合わせてAuto DevOpsの依存関係をアップグレードする必要が生じる場合があります。
+GitLabの更新時に、新しいGitLabバージョンに合わせてAuto DevOpsの依存関係をアップグレードする必要が生じる場合があります。:
 
 - [Auto DevOpsリソースのアップグレード](upgrading_auto_deploy_dependencies.md):
   - Auto DevOpsテンプレート。

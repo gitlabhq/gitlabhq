@@ -33,6 +33,8 @@ title: Fine-grained permissions for CI/CD job tokens
 You can use fine-grained permissions to explicitly allow access to a limited set of REST API endpoints.
 These permissions are applied to the CI/CD job tokens in a specified project.
 
+Share your feedback in [issue 519575](https://gitlab.com/gitlab-org/gitlab/-/issues/519575).
+
 ## Add fine-grained permissions to the job token allowlist
 
 Prerequisites:
@@ -46,7 +48,7 @@ resources are available to these groups and projects.
 
 To add fine-grained permissions to groups or projects on the job token allowlist:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
 1. In the **CI/CD job token allowlist** section, select **Add**.

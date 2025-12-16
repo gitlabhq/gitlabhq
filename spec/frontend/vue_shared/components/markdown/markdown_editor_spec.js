@@ -690,4 +690,20 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(focusSpy).toHaveBeenCalled();
     });
   });
+
+  it('does not enable immersive mode on content editor by default', async () => {
+    buildWrapper();
+    await enableContentEditor();
+    await nextTick();
+
+    expect(findContentEditor().props().immersive).toBe(false);
+  });
+
+  it('passes on immersive mode to content editor', async () => {
+    buildWrapper({ propsData: { immersive: true } });
+    await enableContentEditor();
+    await nextTick();
+
+    expect(findContentEditor().props().immersive).toBe(true);
+  });
 });

@@ -14,6 +14,7 @@ class Namespace < ApplicationRecord
   include Namespaces::Traversal::Cached
   include Namespaces::Traversal::Traversable
   include Namespaces::AdjournedDeletable
+  include Namespaces::Stateful
   include Organizations::Isolatable
   include EachBatch
   include BlocksUnsafeSerialization
@@ -22,8 +23,13 @@ class Namespace < ApplicationRecord
   include UseSqlFunctionForPrimaryKeyLookups
   include SafelyChangeColumnDefault
   include Todoable
+  include Cells::Claimable
 
   extend Gitlab::Utils::Override
+
+  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::NAMESPACE_IDS
+
+  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::NAMESPACE, subject_key: :id
 
   ignore_columns :description, :description_html, :cached_markdown_version, remove_with: '18.3', remove_after: '2025-07-17'
 
@@ -57,7 +63,7 @@ class Namespace < ApplicationRecord
   ].freeze
 
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :non_archived_projects, -> { where.not(archived: true) }, class_name: 'Project'
+  has_many :non_archived_projects, -> { self_and_ancestors_non_archived }, class_name: 'Project'
   has_many :project_statistics
   has_one :namespace_settings, inverse_of: :namespace, class_name: 'NamespaceSetting', autosave: true
   has_one :namespace_settings_with_ancestors_inherited_settings, -> { with_ancestors_inherited_settings },
@@ -233,10 +239,10 @@ class Namespace < ApplicationRecord
   scope :with_visibility_level_greater_than, ->(level) { where("visibility_level > ?", level) }
   scope :with_namespace_details, -> { preload(:namespace_details) }
 
-  scope :archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: true }) }
+  scope :archived, -> { self_or_ancestors_archived }
   scope :self_or_ancestors_archived, -> { where(self_or_ancestors_archived_setting_subquery.exists) }
 
-  scope :non_archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: false }) }
+  scope :non_archived, -> { self_and_ancestors_non_archived }
   scope :self_and_ancestors_non_archived, -> { where.not(self_or_ancestors_archived_setting_subquery.exists) }
 
   scope :with_statistics, -> do
@@ -300,6 +306,18 @@ class Namespace < ApplicationRecord
 
     def find_top_level
       top_level.take
+    end
+
+    # Extracts root namespace IDs from a list of namespace IDs.
+    #
+    # @param namespace_ids [Array<Integer>] List of namespace IDs
+    # @return [Array<Integer>] List of unique root namespace IDs
+    def root_ids_for(namespace_ids)
+      where(id: namespace_ids)
+        .where.not(Arel.sql("traversal_ids[1]").eq(nil))
+        .distinct
+        .limit(1500) # the limit is higher than heaviest 100 requests. The majority is much less https://gitlab.com/gitlab-org/gitlab/-/issues/577678#note_2841315975 -
+        .pluck(Arel.sql("traversal_ids[1]"))
     end
 
     # Searches for namespaces matching the given query.
@@ -408,27 +426,11 @@ class Namespace < ApplicationRecord
     end
   end
 
-  def archive
-    return false if archived?
-
-    namespace_settings.update(archived: true)
-  end
-
-  def unarchive
-    return false unless archived?
-
-    namespace_settings.update(archived: false)
-  end
-
   def archived?
     !!namespace_settings&.archived?
   end
 
   alias_method :self_archived?, :archived?
-
-  def archived_ancestor
-    ancestors(hierarchy_order: :asc, skope: Namespace).archived.first
-  end
 
   def self_or_ancestors_archived?
     if association(:namespace_settings_with_ancestors_inherited_settings).loaded? &&
@@ -870,6 +872,27 @@ class Namespace < ApplicationRecord
     user_access = max_member_access_for_user(user)
     Gitlab::Access.human_access(user_access)
   end
+
+  def allowed_work_item_types
+    ::WorkItems::TypesFilter.new(container: self).allowed_types
+  end
+  strong_memoize_attr :allowed_work_item_types
+
+  def allowed_work_item_type?(type)
+    type = type.to_s
+
+    unless ::WorkItems::TypesFilter.base_types.include?(type)
+      raise ArgumentError,
+        %("#{type}" is not a valid WorkItems::Type.base_types)
+    end
+
+    allowed_work_item_types.include?(type)
+  end
+
+  def supports_work_items?
+    allowed_work_item_types.present?
+  end
+  strong_memoize_attr :supports_work_items?
 
   private
 

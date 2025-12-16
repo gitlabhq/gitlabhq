@@ -13,7 +13,7 @@ RSpec.describe Packages::Npm::DeprecatePackageService, feature_category: :packag
     end
   end
 
-  let_it_be(:package_2) do
+  let_it_be_with_reload(:package_2) do
     create(:npm_package, project: project, name: package_name, version: '1.0.2').tap do |package|
       create(:npm_metadatum, package: package)
     end
@@ -26,10 +26,13 @@ RSpec.describe Packages::Npm::DeprecatePackageService, feature_category: :packag
   subject(:execute) { service.execute }
 
   describe '#execute' do
-    shared_examples 'enqueues metadata cache worker' do
+    # TODO: Always use 'package_name' as a package name key
+    # with the rollout of the FF packages_npm_temp_package
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/579369
+    shared_examples 'enqueues metadata cache worker' do |package_name_key: 'name'|
       it 'enqueues metadata cache worker' do
         expect(::Packages::Npm::CreateMetadataCacheWorker).to receive(:perform_async)
-          .with(project.id, params['package_name'])
+          .with(project.id, params[package_name_key])
 
         execute
       end
@@ -55,6 +58,27 @@ RSpec.describe Packages::Npm::DeprecatePackageService, feature_category: :packag
           .and change { package_1.status }.from('default').to('deprecated')
           .and change { package_2.status }.from('default').to('deprecated')
         expect(execute).to be_success
+      end
+
+      # TODO: Remove with the rollout of the FF packages_npm_temp_package
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/579369
+      context 'with package_name param' do
+        let(:params) { super().tap { |p| p['package_name'] = p.delete('name') } }
+
+        it 'adds or updates the deprecated field and sets status to `deprecated`' do
+          expect { execute }
+            .to change {
+                  package_1.reload.npm_metadatum.package_json['deprecated']
+                }.to('This version is deprecated')
+            .and change {
+                   package_2.reload.npm_metadatum.package_json['deprecated']
+                 }.from('old deprecation message').to('This version is deprecated')
+            .and change { package_1.status }.from('default').to('deprecated')
+            .and change { package_2.status }.from('default').to('deprecated')
+          expect(execute).to be_success
+        end
+
+        it_behaves_like 'enqueues metadata cache worker', package_name_key: 'package_name'
       end
 
       it 'executes 8 queries' do
@@ -172,7 +196,7 @@ RSpec.describe Packages::Npm::DeprecatePackageService, feature_category: :packag
 
   def build_params(versions, deprecation_msg = 'This version is deprecated')
     {
-      'package_name' => package_name,
+      'name' => package_name,
       'versions' => versions.index_with do |version|
         {
           'name' => package_name,

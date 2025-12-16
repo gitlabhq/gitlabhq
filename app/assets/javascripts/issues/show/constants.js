@@ -9,8 +9,8 @@ export const POLLING_DELAY = 2000;
 export const STATUS_PAGE_PUBLISHED = __('Published on status page');
 
 export const issuableTypes = [
-  { value: 'issue', text: __('Issue'), icon: 'issue-type-issue' },
-  { value: 'incident', text: __('Incident'), icon: 'issue-type-incident' },
+  { value: 'issue', text: __('Issue'), icon: 'work-item-issue' },
+  { value: 'incident', text: __('Incident'), icon: 'work-item-incident' },
 ];
 
 export const issueState = {

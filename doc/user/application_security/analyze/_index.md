@@ -32,6 +32,11 @@ already using a risk assessment framework, consider the following:
 - [SANS Institute Vulnerability Management Framework](https://www.sans.org/blog/the-vulnerability-assessment-framework/)
 - [OWASP Threat and Safeguard Matrix (TaSM)](https://owasp.org/www-project-threat-and-safeguard-matrix/)
 
+If available, use the
+[Security Analyst Agent](../../duo_agent_platform/agents/foundational_agents/security_analyst_agent.md)
+to accelerate your vulnerability analysis. The agent efficiently triages, assesses, and remediates
+security findings by providing insights, risk assessments, and remediation guidance.
+
 Calculating the risk score of a vulnerability depends on criteria that are specific to your
 organization. A basic risk score formula is:
 

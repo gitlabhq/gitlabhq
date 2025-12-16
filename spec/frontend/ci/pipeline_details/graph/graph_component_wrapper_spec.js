@@ -349,7 +349,7 @@ describe('Pipeline graph wrapper', () => {
       });
 
       it('switches between views', async () => {
-        expect(findStageColumnTitle().text()).toBe('deploy');
+        expect(findStageColumnTitle().text()).toBe('build');
 
         await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
 

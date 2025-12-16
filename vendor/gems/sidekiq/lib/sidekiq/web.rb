@@ -23,7 +23,6 @@ module Sidekiq
     VIEWS = "#{ROOT}/views"
     LOCALES = ["#{ROOT}/locales"]
     LAYOUT = "#{VIEWS}/layout.erb"
-    ASSETS = "#{ROOT}/assets"
 
     DEFAULT_TABS = {
       "Dashboard" => "",
@@ -53,6 +52,16 @@ module Sidekiq
       # Forward compatibility with 8.0
       def configure
         yield self
+      end
+
+      # Upstreamed in https://github.com/sidekiq/sidekiq/pull/6865
+      def assets_path
+        @assets_path ||= "#{ROOT}/assets"
+      end
+
+      # Upstreamed in https://github.com/sidekiq/sidekiq/pull/6865
+      def assets_path=(path)
+        @assets_path = path
       end
 
       def settings
@@ -205,7 +214,7 @@ module Sidekiq
 
       ::Rack::Builder.new do
         use Rack::Static, urls: ["/stylesheets", "/images", "/javascripts"],
-          root: ASSETS,
+          root: klass.assets_path, # Upstreamed in https://github.com/sidekiq/sidekiq/pull/6865
           cascade: true,
           header_rules: rules
         m.each { |middleware, block| use(*middleware, &block) }

@@ -18,7 +18,7 @@ RSpec.describe 'Marginalia spec' do
 
     private
 
-    [:auth_user, :current_user, :set_experimentation_subject_id_cookie, :signed_in?].each do |method|
+    [:auth_user, :current_user, :signed_in?].each do |method|
       define_method(method) {}
     end
   end

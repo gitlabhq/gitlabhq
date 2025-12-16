@@ -80,6 +80,7 @@ module Issues
 
       Milestones::ClosedIssuesCountService.new(issue.milestone).delete_cache if issue.milestone
 
+      track_work_item_close(issue)
       GraphqlTriggers.work_item_updated(issue)
 
       issue
@@ -145,6 +146,14 @@ module Issues
       return unless first_commit_timestamp
 
       metrics.update!(first_mentioned_in_commit_at: first_commit_timestamp)
+    end
+
+    def track_work_item_close(work_item)
+      ::Gitlab::WorkItems::Instrumentation::TrackingService.new(
+        work_item: work_item,
+        current_user: current_user,
+        event: Gitlab::WorkItems::Instrumentation::EventActions::CLOSE
+      ).execute
     end
   end
 end

@@ -121,6 +121,52 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       context 'with maintainer permissions' do
         let(:current_user) { maintainer }
 
+        context 'when the file is encrypted' do
+          before do
+            allow_next_instance_of(Terraform::StateVersion) do |instance|
+              allow(instance).to receive(:is_encrypted?).and_return(true)
+            end
+          end
+
+          let(:state_name) { 'test-state' }
+
+          it 'decrypts and returns the terraform state file' do
+            request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.body).to eq(state.reload.latest_file.read)
+          end
+        end
+
+        context 'when the file is not encrypted and stored in file storage' do
+          before do
+            state.latest_version.update!(is_encrypted: false, file_store: ObjectStorage::Store::LOCAL)
+          end
+
+          let(:state_name) { 'test-state' }
+
+          it 'returns the terraform state file via X-Sendfile header' do
+            request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers['X-Sendfile']).to eq(state.latest_file.path)
+          end
+        end
+
+        context 'when the file is not encrypted and stored in remote storage' do
+          before do
+            state.latest_version.update!(is_encrypted: false, file_store: ObjectStorage::Store::REMOTE)
+          end
+
+          it 'returns the terraform state file via Workhorse send-url' do
+            request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers.to_h).to include('Gitlab-Workhorse-Send-Data' => /send-url:/)
+            expect(response.body).to be_empty
+          end
+        end
+
         where(given_state_name: %w[test-state test.state test%2Ffoo])
         with_them do
           it_behaves_like 'can access terraform state' do

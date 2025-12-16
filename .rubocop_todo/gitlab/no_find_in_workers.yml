@@ -42,7 +42,6 @@ Gitlab/NoFindInWorkers:
     - 'app/workers/projects/after_import_worker.rb'
     - 'app/workers/projects/git_garbage_collect_worker.rb'
     - 'app/workers/projects/import_export/parallel_project_export_worker.rb'
-    - 'app/workers/projects/import_export/relation_export_worker.rb'
     - 'app/workers/projects/import_export/relation_import_worker.rb'
     - 'app/workers/projects/import_export/wait_relation_exports_worker.rb'
     - 'app/workers/projects/inactive_projects_deletion_notification_worker.rb'

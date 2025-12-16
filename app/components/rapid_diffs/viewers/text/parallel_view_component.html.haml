@@ -3,6 +3,6 @@
     %tr
       - column_titles.each do |title|
         %th= title
-  %tbody.rd-text-view-content
+  %tbody.rd-text-view-content.code.code-syntax-highlight-theme
     - @diff_file.viewer_hunks.each do |hunk|
       = render RapidDiffs::Viewers::Text::ParallelHunkComponent.new(diff_hunk: hunk, file_hash: @diff_file.file_hash, file_path: @diff_file.file_path)

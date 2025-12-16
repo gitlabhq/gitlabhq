@@ -18,7 +18,7 @@ import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import getPipelinesQuery from '~/ci/pipelines_page/graphql/queries/get_pipelines.query.graphql';
 import getAllPipelinesCountQuery from '~/ci/pipelines_page/graphql/queries/get_all_pipelines_count.query.graphql';
 import clearRunnerCacheMutation from '~/ci/pipelines_page/graphql/mutations/clear_runner_cache.mutation.graphql';
-import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
 import retryPipelineMutation from '~/ci/pipelines_page/graphql/mutations/retry_pipeline.mutation.graphql';
@@ -40,6 +40,7 @@ import {
   mockPipelinesFilteredSearch,
   mockPipelineUpdateResponse,
   mockPipelineUpdateResponseEmpty,
+  mockPipelineWithDownstream,
 } from './mock_data';
 
 jest.mock('~/alert');
@@ -56,6 +57,7 @@ describe('Pipelines app', () => {
 
   const countHandler = jest.fn().mockResolvedValue(mockPipelinesCount);
   const successHandler = jest.fn().mockResolvedValue(mockPipelinesData);
+  const downstreamHandler = jest.fn().mockResolvedValue(mockPipelineWithDownstream);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
   const emptyHandler = jest.fn().mockResolvedValue(mockPipelinesDataEmpty);
   const subscriptionHandler = jest.fn().mockResolvedValue(mockPipelineUpdateResponse);
@@ -94,7 +96,7 @@ describe('Pipelines app', () => {
     params: {},
   };
 
-  const createComponent = (props = {}, requestHandlers, provide = {}) => {
+  const createComponent = ({ props = {}, requestHandlers, provide = {} } = {}) => {
     wrapper = shallowMountExtended(Pipelines, {
       provide: {
         fullPath: 'gitlab-org/gitlab',
@@ -104,6 +106,7 @@ describe('Pipelines app', () => {
         identityVerificationRequired: false,
         identityVerificationPath: '#',
         usesExternalConfig: false,
+        hasGitlabCi: false,
         ...provide,
       },
       stubs: {
@@ -159,10 +162,12 @@ describe('Pipelines app', () => {
 
   describe('empty state', () => {
     it('shows error empty state when there is an error', async () => {
-      createComponent(defaultProps, [
-        [getPipelinesQuery, failedHandler],
-        [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
-      ]);
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, failedHandler],
+          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
+        ],
+      });
 
       await waitForPromises();
 
@@ -178,10 +183,12 @@ describe('Pipelines app', () => {
         return Promise.resolve(mockPipelinesData);
       });
 
-      createComponent(defaultProps, [
-        [getPipelinesQuery, dynamicHandler],
-        [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
-      ]);
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, dynamicHandler],
+          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
+        ],
+      });
 
       await waitForPromises();
 
@@ -201,10 +208,12 @@ describe('Pipelines app', () => {
     });
 
     it('shows no ci empty state when there are no pipelines', async () => {
-      createComponent(defaultProps, [
-        [getPipelinesQuery, emptyHandler],
-        [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
-      ]);
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, emptyHandler],
+          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
+        ],
+      });
 
       await waitForPromises();
 
@@ -224,8 +233,11 @@ describe('Pipelines app', () => {
     });
 
     it('does render external config empty state', async () => {
-      createComponent(defaultProps, [[getPipelinesQuery, emptyHandler]], {
-        usesExternalConfig: true,
+      createComponent({
+        requestHandlers: [[getPipelinesQuery, emptyHandler]],
+        provide: {
+          usesExternalConfig: true,
+        },
       });
 
       await waitForPromises();
@@ -258,16 +270,34 @@ describe('Pipelines app', () => {
     });
 
     it('shows query error alert', async () => {
-      createComponent(defaultProps, [
-        [getPipelinesQuery, failedHandler],
-        [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
-      ]);
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, failedHandler],
+          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
+        ],
+      });
 
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while loading pipelines',
       });
+    });
+
+    it('passes downstream pipeline data to mini graph', async () => {
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, downstreamHandler],
+          [getAllPipelinesCountQuery, countHandler],
+          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
+        ],
+      });
+
+      await waitForPromises();
+
+      expect(findTable().props('pipelines')[0].downstream.nodes[0]).toEqual(
+        mockPipelineWithDownstream.data.project.pipelines.nodes[0].downstream.nodes[0],
+      );
     });
   });
 
@@ -335,11 +365,13 @@ describe('Pipelines app', () => {
     });
 
     it('clears runner cache', async () => {
-      createComponent(defaultProps, [
-        [getPipelinesQuery, successHandler],
-        [clearRunnerCacheMutation, clearCacheMutationSuccessHandler],
-        [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
-      ]);
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, successHandler],
+          [clearRunnerCacheMutation, clearCacheMutationSuccessHandler],
+          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
+        ],
+      });
 
       await waitForPromises();
 
@@ -360,11 +392,13 @@ describe('Pipelines app', () => {
     });
 
     it('shows an error alert when clearing runner cache fails', async () => {
-      createComponent(defaultProps, [
-        [getPipelinesQuery, successHandler],
-        [clearRunnerCacheMutation, clearCacheMutationFailedHandler],
-        [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
-      ]);
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, successHandler],
+          [clearRunnerCacheMutation, clearCacheMutationFailedHandler],
+          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
+        ],
+      });
 
       await waitForPromises();
 
@@ -388,7 +422,7 @@ describe('Pipelines app', () => {
         username: 'root',
       };
 
-      createComponent({ params: expectedParams });
+      createComponent({ props: { params: expectedParams } });
 
       await waitForPromises();
 
@@ -406,7 +440,7 @@ describe('Pipelines app', () => {
         last: null,
         ref: 'test',
         scope: null,
-        source: 'SCHEDULE',
+        source: 'schedule',
         status: 'SUCCESS',
         username: 'root',
       };
@@ -493,11 +527,13 @@ describe('Pipelines app', () => {
     });
 
     it('calls mutation to save idType preference', async () => {
-      createComponent(defaultProps, [
-        [getPipelinesQuery, successHandler],
-        [setSortPreferenceMutation, setSortPreferenceMutationSuccessHandler],
-        [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
-      ]);
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, successHandler],
+          [setSortPreferenceMutation, setSortPreferenceMutationSuccessHandler],
+          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
+        ],
+      });
 
       await waitForPromises();
 
@@ -511,11 +547,13 @@ describe('Pipelines app', () => {
     });
 
     it('captures error when mutation response has errors', async () => {
-      createComponent(defaultProps, [
-        [getPipelinesQuery, successHandler],
-        [setSortPreferenceMutation, setSortPreferenceMutationFailedHandler],
-        [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
-      ]);
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, successHandler],
+          [setSortPreferenceMutation, setSortPreferenceMutationFailedHandler],
+          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
+        ],
+      });
 
       await waitForPromises();
 
@@ -571,12 +609,14 @@ describe('Pipelines app', () => {
   describe('events', () => {
     describe('successful events', () => {
       beforeEach(async () => {
-        createComponent(defaultProps, [
-          [getPipelinesQuery, successHandler],
-          [retryPipelineMutation, pipelineRetryMutationHandler],
-          [cancelPipelineMutation, pipelineCancelMutationHandler],
-          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
-        ]);
+        createComponent({
+          requestHandlers: [
+            [getPipelinesQuery, successHandler],
+            [retryPipelineMutation, pipelineRetryMutationHandler],
+            [cancelPipelineMutation, pipelineCancelMutationHandler],
+            [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
+          ],
+        });
 
         await waitForPromises();
       });
@@ -602,12 +642,14 @@ describe('Pipelines app', () => {
 
     describe('errors during the mutations', () => {
       beforeEach(async () => {
-        createComponent(defaultProps, [
-          [getPipelinesQuery, successHandler],
-          [getAllPipelinesCountQuery, countHandler],
-          [retryPipelineMutation, pipelineRetryFailedMutationHandler],
-          [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
-        ]);
+        createComponent({
+          requestHandlers: [
+            [getPipelinesQuery, successHandler],
+            [getAllPipelinesCountQuery, countHandler],
+            [retryPipelineMutation, pipelineRetryFailedMutationHandler],
+            [ciPipelineStatusesUpdatedSubscription, subscriptionHandlerEmpty],
+          ],
+        });
 
         await waitForPromises();
       });
@@ -627,11 +669,13 @@ describe('Pipelines app', () => {
 
   describe('subscription', () => {
     it('calls subscription with correct variables', async () => {
-      createComponent(defaultProps, [
-        [getPipelinesQuery, successHandler],
-        [getAllPipelinesCountQuery, countHandler],
-        [ciPipelineStatusesUpdatedSubscription, subscriptionHandler],
-      ]);
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, successHandler],
+          [getAllPipelinesCountQuery, countHandler],
+          [ciPipelineStatusesUpdatedSubscription, subscriptionHandler],
+        ],
+      });
 
       await waitForPromises();
 
@@ -639,11 +683,13 @@ describe('Pipelines app', () => {
     });
 
     it('passes updated pipeline from subscription to table', async () => {
-      createComponent(defaultProps, [
-        [getPipelinesQuery, successHandler],
-        [getAllPipelinesCountQuery, countHandler],
-        [ciPipelineStatusesUpdatedSubscription, subscriptionHandler],
-      ]);
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, successHandler],
+          [getAllPipelinesCountQuery, countHandler],
+          [ciPipelineStatusesUpdatedSubscription, subscriptionHandler],
+        ],
+      });
 
       await waitForPromises();
 
@@ -651,11 +697,13 @@ describe('Pipelines app', () => {
     });
 
     it('skips subscription where there are no pipelines', async () => {
-      createComponent(defaultProps, [
-        [getPipelinesQuery, emptyHandler],
-        [getAllPipelinesCountQuery, countHandler],
-        [ciPipelineStatusesUpdatedSubscription, subscriptionHandler],
-      ]);
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, emptyHandler],
+          [getAllPipelinesCountQuery, countHandler],
+          [ciPipelineStatusesUpdatedSubscription, subscriptionHandler],
+        ],
+      });
 
       await waitForPromises();
 

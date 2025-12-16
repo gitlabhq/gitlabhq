@@ -1,0 +1,10 @@
+---
+name: wiki_immersive_editor
+description: enable an immersive editor experience in wiki
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/560758
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212581
+rollout_issue_url:
+milestone: '18.7'
+group: group::knowledge
+type: wip
+default_enabled: false

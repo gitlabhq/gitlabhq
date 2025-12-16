@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Gitlab::RSpec::AvoidCreateDefaultOrganization, feat
   include RuboCop::RSpec::ExpectOffense
 
   let(:message) do
-    "Do not use the `:default` trait when creating organizations"
+    "Do not use the `:default` trait when creating organizations. See https://docs.gitlab.com/development/organization/#the-default-organization."
   end
 
   describe 'bad examples' do

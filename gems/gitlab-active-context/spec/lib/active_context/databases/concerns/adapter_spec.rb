@@ -40,7 +40,7 @@ RSpec.describe ActiveContext::Databases::Concerns::Adapter do
   describe '#initialize' do
     it 'sets instance variables correctly' do
       expect(adapter.connection).to eq(connection)
-      expect(adapter.options).to eq(options)
+      expect(adapter.options).to eq(options.symbolize_keys)
       expect(adapter.prefix).to eq('gitlab_active_context')
       expect(adapter.client).to be_a(Struct)
       expect(adapter.indexer).to be_a(Struct)

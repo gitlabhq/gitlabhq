@@ -185,161 +185,89 @@ describe('FeatureCard component', () => {
   });
 
   describe('secondary feature', () => {
-    describe('basic structure', () => {
-      describe('given no secondary', () => {
-        beforeEach(() => {
-          feature = makeFeature();
-          createComponent({ feature });
-        });
-
-        it('does not show a secondary feature', () => {
-          expect(findSecondarySection().exists()).toBe(false);
-        });
+    const build = (overrides) => {
+      feature = makeFeature({
+        available: true,
+        secondary: {
+          name: 'secondary name',
+          description: 'secondary description',
+          configurationPath: '/secondary',
+          configurationText: 'Manage secondary feature',
+        },
+        ...overrides,
       });
 
-      describe('given a secondary', () => {
-        beforeEach(() => {
-          feature = makeFeature({
-            secondary: {
-              name: 'secondary name',
-              description: 'secondary description',
-              configurationText: 'manage secondary',
-            },
-          });
-          createComponent({ feature });
-        });
+      createComponent({ feature });
+    };
 
-        it('shows a secondary feature', () => {
-          const secondaryText = findSecondarySection().text();
-          expect(secondaryText).toContain(feature.secondary.name);
-          expect(secondaryText).toContain(feature.secondary.description);
-        });
+    const findButton = () => findSecondarySection().findComponent(GlButton);
+
+    describe('when available with configurationPath', () => {
+      beforeEach(() => build());
+
+      it('renders a settings button with correct props', () => {
+        const button = findButton();
+
+        expect(button.exists()).toBe(true);
+        expect(button.props('icon')).toBe('settings');
+        expect(button.attributes('href')).toBe(feature.secondary.configurationPath);
       });
     });
 
-    describe('actions', () => {
-      describe('given available feature with secondary', () => {
-        beforeEach(() => {
-          feature = makeFeature({
-            available: true,
-            secondary: {
-              name: 'secondary name',
-              description: 'secondary description',
-              configurationPath: '/secondary',
-              configurationText: 'manage secondary',
-            },
-          });
-          createComponent({ feature });
-        });
+    describe('when unavailable', () => {
+      beforeEach(() => build({ available: false }));
 
-        it('shows the secondary action', () => {
-          const links = findLinks({
-            text: feature.secondary.configurationText,
-            href: feature.secondary.configurationPath,
-          });
-
-          expect(links).toHaveLength(1);
-        });
-      });
-
-      describe.each`
-        context                                    | available | secondaryConfigPath
-        ${'available feature without config path'} | ${true}   | ${null}
-        ${'unavailable feature with config path'}  | ${false}  | ${'/secondary'}
-      `('given $context', ({ available, secondaryConfigPath }) => {
-        beforeEach(() => {
-          feature = makeFeature({
-            available,
-            secondary: {
-              name: 'secondary name',
-              description: 'secondary description',
-              configurationPath: secondaryConfigPath,
-              configurationText: 'manage secondary',
-            },
-          });
-          createComponent({ feature });
-        });
-
-        it('does not show the secondary action', () => {
-          const links = findLinks({
-            text: feature.secondary.configurationText,
-            href: feature.secondary.configurationPath,
-          });
-          expect(links.exists()).toBe(false);
-        });
-      });
-
-      describe('given an available secondary with a configuration guide', () => {
-        beforeEach(() => {
-          feature = makeFeature({
-            available: true,
-            configurationHelpPath: null,
-            secondary: {
-              name: 'secondary name',
-              description: 'secondary description',
-              configurationHelpPath: '/secondary',
-              configurationText: null,
-            },
-          });
-          createComponent({ feature });
-        });
-
-        it('shows the secondary action', () => {
-          const links = findLinks({
-            text: 'Configuration guide',
-            href: feature.secondary.configurationHelpPath,
-          });
-
-          expect(links).toHaveLength(1);
-        });
-      });
-
-      describe('given an unavailable secondary with a configuration guide', () => {
-        beforeEach(() => {
-          feature = makeFeature({
-            available: false,
-            configurationHelpPath: null,
-            secondary: {
-              name: 'secondary name',
-              description: 'secondary description',
-              configurationHelpPath: '/secondary',
-              configurationText: null,
-            },
-          });
-          createComponent({ feature });
-        });
-
-        it('does not show the secondary action', () => {
-          const links = findLinks({
-            text: 'Configuration guide',
-            href: feature.secondary.configurationHelpPath,
-          });
-          expect(links.exists()).toBe(false);
-          expect(links).toHaveLength(0);
-        });
+      it('renders the section but no button', () => {
+        expect(findSecondarySection().exists()).toBe(true);
+        expect(findButton().exists()).toBe(false);
       });
     });
 
-    describe('information badge', () => {
-      describe.each`
-        context                                 | available | badge
-        ${'available feature with badge'}       | ${true}   | ${{ text: 'test' }}
-        ${'unavailable feature without badge'}  | ${false}  | ${null}
-        ${'available feature without badge'}    | ${true}   | ${null}
-        ${'unavailable feature with badge'}     | ${false}  | ${{ text: 'test' }}
-        ${'available feature with empty badge'} | ${false}  | ${{}}
-      `('given $context', ({ available, badge }) => {
-        beforeEach(() => {
-          feature = makeFeature({
-            available,
-            badge,
-          });
-          createComponent({ feature });
-        });
+    describe('when no secondary', () => {
+      beforeEach(() => build({ secondary: null }));
 
-        it('should show badge when badge given in configuration and available', () => {
-          expect(findBadge().exists()).toBe(Boolean(available && badge && badge.text));
+      it('does not render the section', () => {
+        expect(findSecondarySection().exists()).toBe(false);
+      });
+    });
+
+    describe('when secondary has no configurationPath', () => {
+      beforeEach(() =>
+        build({
+          secondary: {
+            name: 'secondary name',
+            description: 'secondary description',
+            configurationPath: null,
+            configurationText: 'Manage secondary feature',
+          },
+        }),
+      );
+
+      it('renders the section but no button', () => {
+        expect(findSecondarySection().exists()).toBe(true);
+        expect(findButton().exists()).toBe(false);
+      });
+    });
+  });
+  describe('information badge', () => {
+    describe.each`
+      context                                 | available | badge
+      ${'available feature with badge'}       | ${true}   | ${{ text: 'test' }}
+      ${'unavailable feature without badge'}  | ${false}  | ${null}
+      ${'available feature without badge'}    | ${true}   | ${null}
+      ${'unavailable feature with badge'}     | ${false}  | ${{ text: 'test' }}
+      ${'available feature with empty badge'} | ${false}  | ${{}}
+    `('given $context', ({ available, badge }) => {
+      beforeEach(() => {
+        feature = makeFeature({
+          available,
+          badge,
         });
+        createComponent({ feature });
+      });
+
+      it('should show badge when badge given in configuration and available', () => {
+        expect(findBadge().exists()).toBe(Boolean(available && badge && badge.text));
       });
     });
   });

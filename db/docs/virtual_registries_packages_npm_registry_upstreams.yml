@@ -1,0 +1,13 @@
+---
+table_name: virtual_registries_packages_npm_registry_upstreams
+classes:
+- VirtualRegistries::Packages::Npm::RegistryUpstream
+feature_categories:
+- virtual_registry
+description: Link a Npm Registry with a Npm Upstream.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213405
+milestone: '18.7'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  group_id: namespaces
+table_size: small

@@ -3,12 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe SentNotificationsController, feature_category: :team_planning do
-  include SentNotificationHelpers
-
   let_it_be(:project) { create(:project) }
 
   describe 'GET #unsubscribe' do
-    let_it_be_with_reload(:sent_notification) { create_sent_notification(project: project) }
+    let_it_be_with_reload(:sent_notification) { create(:sent_notification, project: project) }
 
     context 'when user is not authenticated' do
       it 'renders a confirmation form to unsubscribe' do
@@ -26,7 +24,6 @@ RSpec.describe SentNotificationsController, feature_category: :team_planning do
       it 'renders an expired link view' do
         unsubscribe_url = unsubscribe_sent_notification_path(sent_notification)
 
-        PartitionedSentNotification.where(id: sent_notification.id).delete_all
         SentNotification.where(id: sent_notification.id).delete_all
 
         get unsubscribe_url

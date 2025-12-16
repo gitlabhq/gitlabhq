@@ -15,6 +15,7 @@ description: Configure granular permissions with specific abilities for fine-gra
   To make changes to the output of the Rake task,
   edit `tooling/custom_roles/docs/templates/custom_abilities.md.erb`.
 -->
+
 {{< history >}}
 
 - Custom admin roles [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181346) in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `custom_admin_roles`. Disabled by default.
@@ -96,6 +97,12 @@ Any dependencies are noted in the `Description` column for each permission.
 | Permission | Description | API Attribute | Scope | Introduced |
 |:-----------|:------------|:--------------|:------|:-----------|
 | Manage CI/CD variables | Create, read, update, and delete CI/CD variables. | [`admin_cicd_variables`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143369) | Group,<br> Project | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/437947) |
+
+## Security asset inventories
+
+| Permission | Description | API Attribute | Scope | Introduced |
+|:-----------|:------------|:--------------|:------|:-----------|
+| Read security scan profiles | Read security scan profiles. | [`read_security_scan_profiles`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213203) | Group,<br> Project | GitLab [18.7](https://gitlab.com/groups/gitlab-org/-/epics/19802) |
 
 ## Security policy management
 

@@ -19,13 +19,6 @@ title: Scheduled pipeline execution policies
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history. This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
-
 Pipeline execution policies enforce custom CI/CD jobs in your projects' pipelines. With scheduled pipeline execution policies, you can extend this enforcement to run the CI/CD job on a regular cadence (daily, weekly, or monthly), ensuring that compliance scripts, security scans, or other custom CI/CD job are executed even when there are no new commits.
 
 ## Scheduling your pipeline execution policies

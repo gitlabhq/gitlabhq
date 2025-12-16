@@ -16,7 +16,7 @@ module Ci
 
       new_temp_job_definition.validate
       config_errors = new_temp_job_definition.errors[:config]
-      raise ActiveRecord::RecordInvalid, config_errors.join(', ') if config_errors.any?
+      raise ActiveRecord::RecordInvalid, new_temp_job_definition if config_errors.any?
 
       job.temp_job_definition = new_temp_job_definition
     end

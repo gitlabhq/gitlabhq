@@ -68,7 +68,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-mb-6 gl-flex gl-flex-wrap gl-gap-6">
+  <div class="gl-flex gl-flex-wrap gl-gap-6">
     <gl-skeleton-loader v-if="loading" :height="18">
       <rect width="45" height="18" rx="4" />
       <rect x="50" width="45" height="18" rx="4" />

@@ -184,37 +184,39 @@ these parameters:
 
 - `allow_all_integrations`
 - `allowed_integrations`
-- `group_owners_can_manage_default_branch_protection`
+- `default_project_deletion_protection`
+- `delete_unconfirmed_users`
+- `dependency_scanning_sbom_scan_api_download_limit`
+- `dependency_scanning_sbom_scan_api_upload_limit`
+- `disable_personal_access_tokens`
+- `duo_features_enabled`
 - `file_template_project_id`
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
-- `default_project_deletion_protection`
-- `disable_personal_access_tokens`
-- `security_policy_global_group_approvers_enabled`
-- `security_approval_policies_limit`
+- `group_owners_can_manage_default_branch_protection`
+- `lock_duo_features_enabled`
 - `scan_execution_policies_action_limit`
 - `scan_execution_policies_schedule_limit`
-- `delete_unconfirmed_users`
-- `unconfirmed_users_delete_after_days`
-- `duo_features_enabled`
-- `lock_duo_features_enabled`
-- `use_clickhouse_for_analytics`
 - `secret_push_protection_available`
+- `security_approval_policies_limit`
+- `security_policy_global_group_approvers_enabled`
+- `unconfirmed_users_delete_after_days`
+- `use_clickhouse_for_analytics`
 - `virtual_registries_endpoints_api_limit`
 
 ```json
 {
-  "id": 1,
-  "signup_enabled": true,
-  "group_owners_can_manage_default_branch_protection": true,
-  "file_template_project_id": 1,
-  "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
+  "allow_all_integrations": true,
+  "allowed_integrations": [],
   "default_project_deletion_protection": false,
   "disable_personal_access_tokens": false,
   "duo_features_enabled": true,
+  "file_template_project_id": 1,
+  "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
+  "group_owners_can_manage_default_branch_protection": true,
+  "id": 1,
   "lock_duo_features_enabled": false,
-  "allow_all_integrations": true,
-  "allowed_integrations": [],
+  "signup_enabled": true,
   "virtual_registries_endpoints_api_limit": 1000,
   ...
 }
@@ -440,6 +442,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 - `require_personal_access_token_expiry` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470192) in GitLab 17.3.
 - `receptive_cluster_agents_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463427) in GitLab 17.4.
 - `allow_all_integrations` and `allowed_integrations` [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
+- `iframe_rendering_enabled`, `iframe_rendering_allowlist`, and `iframe_rendering_allowlist_raw` introduced in GitLab 18.6.
 
 {{< /history >}}
 
@@ -688,7 +691,7 @@ to configure other related settings. These requirements are
 | `inactive_resource_access_tokens_delete_after_days`| integer | no                                   | Specifies retention period for inactive project and group access tokens. Default is `30`. |
 | `kroki_enabled`                          | boolean          | no                                   | (**If enabled, requires**: `kroki_url`) Enable [Kroki integration](../administration/integration/kroki.md). Default is `false`. |
 | `kroki_url`                              | string           | required by: `kroki_enabled`         | The Kroki instance URL for integration. |
-| `kroki_formats`                          | object           | no                                   | Additional formats supported by the Kroki instance. Possible values are `true` or `false` for formats `bpmn`, `blockdiag`, and `excalidraw` in the format `<format>: true` or `<format>: false`. |
+| `kroki_formats`                          | object           | no                                   | Additional formats supported by the Kroki instance. Possible values are `true` or `false` for formats `bpmn`, `blockdiag`, `excalidraw`, and `mermaid` in the format `<format>: true` or `<format>: false`. |
 | `plantuml_enabled`                       | boolean          | no                                   | (**If enabled, requires**: `plantuml_url`) Enable [PlantUML integration](../administration/integration/plantuml.md). Default is `false`. |
 | `plantuml_url`                           | string           | required by: `plantuml_enabled`      | The PlantUML instance URL for integration. |
 | `polling_interval_multiplier`            | float            | no                                   | Interval multiplier used by endpoints that perform polling. Set to `0` to disable polling. |
@@ -838,6 +841,10 @@ to configure other related settings. These requirements are
 | `secret_push_protection_available` | boolean         | no | Allow projects to enable secret push protection. This does not enable secret push protection. Ultimate only. |
 | `disable_invite_members` | boolean         | no | Disable invite members functionality for group. |
 | `enforce_pipl_compliance` | boolean | no | Sets whether pipl compliance is enforced for the saas application or not |
+| `iframe_rendering_enabled`               | boolean          | no                                   | Allow rendering of iframes in Markdown. Disabled by default. |
+| `iframe_rendering_allowlist`             | array of strings | no                                   | List of allowed iframe `src` host[:port] entries used for Content Security Policy and sanitization. |
+| `iframe_rendering_allowlist_raw`         | string           | no                                   | Raw newline- or comma-separated list of allowed iframe `src` host[:port] entries. |
+| `usage_billing`                          | object           | no                                   | Usage Billing Settings. Check `ee/app/validators/json_schemas/usage_billing_settings.json` for schema definition |
 
 ### Dormant project settings
 

@@ -2,13 +2,14 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: ているGitLabを設定する
+description: Dockerコンテナで実行する際にGitLabを設定する方法。
+title: Dockerコンテナで実行されているGitLabを設定する
 ---
 
 {{< details >}}
 
-- プラン:Free、Premium、Ultimate
-- 提供形態:GitLab Self-Managed
+- プラン: Free、Premium、Ultimate
+- 提供形態: GitLab Self-Managed
 
 {{< /details >}}
 
@@ -18,19 +19,19 @@ title: ているGitLabを設定する
 
 GitLabの設定ファイルにアクセスするには、実行中のコンテナのコンテキストでShellセッションを開始します。
 
-1. セッションを開始します。
+1. セッションを開始します:
 
    ```shell
    sudo docker exec -it gitlab /bin/bash
    ```
 
-   または、`/etc/gitlab/gitlab.rb`をエディタで直接開くこともできます。
+   または、`/etc/gitlab/gitlab.rb`をエディタで直接開くこともできます:
 
    ```shell
    sudo docker exec -it gitlab editor /etc/gitlab/gitlab.rb
    ```
 
-1. お好みのテキストエディタで`/etc/gitlab/gitlab.rb`を開き、次のフィールドを更新します。
+1. お好みのテキストエディタで`/etc/gitlab/gitlab.rb`を開き、次のフィールドを更新します:
 
    1. `external_url`フィールドを、GitLabインスタンスの有効なURLに設定します。
 
@@ -38,7 +39,7 @@ GitLabの設定ファイルにアクセスするには、実行中のコンテ�
 
    1. 必要に応じて[HTTPSを有効](https://docs.gitlab.com/omnibus/settings/ssl/)にします。
 
-1. ファイルを保存し、コンテナを再起動してGitLabを再設定します。
+1. ファイルを保存し、コンテナを再起動してGitLabを再設定します:
 
    ```shell
    sudo docker restart gitlab
@@ -50,7 +51,7 @@ GitLabは、コンテナが起動するたびに再設定が行われます。Gi
 
 Dockerの実行コマンドに環境変数`GITLAB_OMNIBUS_CONFIG`を追加すると、GitLab Dockerイメージを事前に設定できます。この変数は、任意の`gitlab.rb`設定を含めることができ、コンテナの`gitlab.rb`ファイルが読み込む前に評価されます。この動作により、外部GitLab URLの設定やデータベースの構成、その他[Linuxパッケージテンプレート](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)から任意のオプションを作成できます。`GITLAB_OMNIBUS_CONFIG`に含まれる設定は、`gitlab.rb`設定ファイルには書き込まれず、読み込む時に評価されます。複数の設定を指定するには、コロン（`;`）で区切ります。
 
-次の例では、外部URLを設定し、LFSを有効にして、[Prometheusに必要な最小shmサイズ](troubleshooting.md#devshm-mount-not-having-enough-space-in-docker-container)でコンテナを起動します。
+次の例では、外部URLを設定し、LFSを有効にして、[Prometheusに必要な最小shmサイズ](troubleshooting.md#devshm-mount-not-having-enough-space-in-docker-container)でコンテナを起動します:
 
 ```shell
 sudo docker run --detach \
@@ -72,7 +73,7 @@ sudo docker run --detach \
 
 Dockerで`--publish`フラグを変更することにより、指定したIPアドレスを使用し、すべてのトラフィックをGitLabコンテナに転送するように設定できます。
 
-IP`198.51.100.1`でGitLabを公開するには:
+IP`198.51.100.1`でGitLabを公開するには: 
 
 ```shell
 sudo docker run --detach \
@@ -98,9 +99,9 @@ GitLabはコンテナ内の[特定のポート](../../administration/package_inf
 
 デフォルトのポート`80`（HTTP）、`443`（HTTPS）、または`22`（SSH）とは異なるホストのポートを使用する場合は、個別の`--publish`ディレクティブを`docker run`コマンドに追加する必要があります。
 
-たとえば、Webインターフェイスをホストのポート`8929`で、SSHサービスをポート`2424`で公開するには:
+たとえば、Webインターフェイスをホストのポート`8929`で、SSHサービスをポート`2424`で公開するには: 
 
-1. 次の`docker run`コマンドを使用します。
+1. 次の`docker run`コマンドを使用します:
 
    ```shell
    sudo docker run --detach \
@@ -122,13 +123,13 @@ GitLabはコンテナ内の[特定のポート](../../administration/package_inf
 
    {{< /alert >}}
 
-1. 実行中のコンテナを入力します。
+1. 実行中のコンテナを入力します:
 
    ```shell
    sudo docker exec -it gitlab /bin/bash
    ```
 
-1. エディタで`/etc/gitlab/gitlab.rb`を開き、`external_url`を設定します。
+1. エディタで`/etc/gitlab/gitlab.rb`を開き、`external_url`を設定します:
 
    ```ruby
    # For HTTP
@@ -142,13 +143,13 @@ GitLabはコンテナ内の[特定のポート](../../administration/package_inf
 
    このURLで指定されたポートは、Dockerがホストに公開したポートと一致する必要があります。また、NGINXリッスンポートが`nginx['listen_port']`で明示的に設定されていない場合は、代わりに`external_url`が使用されます。詳細については、[NGINXのドキュメント](https://docs.gitlab.com/omnibus/settings/nginx.html)を参照してください。
 
-1. SSHポートを設定します。
+1. SSHポートを設定します:
 
    ```ruby
    gitlab_rails['gitlab_shell_ssh_port'] = 2424
    ```
 
-1. 最後に、GitLabを再設定します。
+1. 最後に、GitLabを再設定します:
 
    ```shell
    gitlab-ctl reconfigure
@@ -162,21 +163,21 @@ GitLabはコンテナ内の[特定のポート](../../administration/package_inf
 
 [GitLab 16.0](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6850)以降、GitLabはデフォルトで、同じPostgreSQLデータベースを指す2つのデータベース接続を使用します。
 
-何らかの理由で、単一のデータベース接続に戻したい場合は:
+何らかの理由で、単一のデータベース接続に戻したい場合は: 
 
-1. コンテナ内の`/etc/gitlab/gitlab.rb`を編集します。
+1. コンテナ内の`/etc/gitlab/gitlab.rb`を編集します:
 
    ```shell
    sudo docker exec -it gitlab editor /etc/gitlab/gitlab.rb
    ```
 
-1. 次の行を追加します。
+1. 次の行を追加します:
 
    ```ruby
    gitlab_rails['databases']['ci']['enable'] = false
    ```
 
-1. コンテナを再起動します。
+1. コンテナを再起動します:
 
    ```shell
    sudo docker restart gitlab

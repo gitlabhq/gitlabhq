@@ -165,6 +165,11 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
           expect(redis_requests_total).to receive(:increment).with(labels_with_job_status, redis_calls)
           expect(elasticsearch_requests_total).to receive(:increment).with(labels_with_job_status, elasticsearch_calls)
           expect(sidekiq_mem_total_bytes).to receive(:set).with(labels_with_job_status, mem_total_bytes)
+          expect(GVLTools::LocalTimer).to receive(:enable)
+          expect(GVLTools::GlobalTimer).to receive(:enable)
+          expect(gvl_thread_metric).to receive(:observe).with(labels_with_job_status, gvl_thread_duration / 1_000_000_000.0)
+          expect(gvl_process_metric).to receive(:increment).with(labels_with_job_status, gvl_process_duration / 1_000_000_000.0)
+          expect(gvl_enabled_metric).to receive(:set).with(labels_with_job_status, 1)
           expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_execution_apdex)
                                                     .with(labels.slice(:worker,
                                                       :feature_category,
@@ -319,6 +324,24 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
 
           it 'sets sidekiq_jobs_interrupted_total metric' do
             expect(interrupted_total_metric).to receive(:increment)
+
+            subject.call(worker, job, :test) { nil }
+          end
+        end
+
+        context 'when enable_sidekiq_gvl_metrics FF is disabled' do
+          include_context 'server metrics with mocked prometheus'
+          include_context 'server metrics call'
+
+          before do
+            stub_feature_flags(enable_sidekiq_gvl_metrics: false)
+          end
+
+          it 'does not report gvl duration' do
+            expect(GVLTools::LocalTimer).to receive(:disable)
+            expect(GVLTools::GlobalTimer).to receive(:disable)
+            expect(Gitlab::Metrics).not_to receive(:histogram).with(:sidekiq_gvl_thread_wait_seconds, anything, anything, anything)
+            expect(Gitlab::Metrics).not_to receive(:histogram).with(:sidekiq_gvl_process_wait_seconds, anything, anything, anything)
 
             subject.call(worker, job, :test) { nil }
           end

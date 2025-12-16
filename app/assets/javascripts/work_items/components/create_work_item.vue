@@ -20,7 +20,6 @@ import { s__, sprintf, __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { findWidget } from '~/issues/list/utils';
-import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ZenMode from '~/zen_mode';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
@@ -33,6 +32,8 @@ import {
   getNewWorkItemWidgetsAutoSaveKey,
   updateDraftWorkItemType,
   newWorkItemFullPath,
+  getLastUsedWorkItemTypeIdForNamespace,
+  setLastUsedWorkItemTypeIdForNamespace,
 } from '~/work_items/utils';
 import { TYPENAME_MERGE_REQUEST, TYPENAME_VULNERABILITY } from '~/graphql_shared/constants';
 import {
@@ -69,6 +70,7 @@ import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
+import TitleSuggestions from './title_suggestions.vue';
 import WorkItemProjectsListbox from './work_item_links/work_item_projects_listbox.vue';
 import WorkItemNamespaceListbox from './shared/work_item_namespace_listbox.vue';
 import WorkItemTitle from './work_item_title.vue';
@@ -128,6 +130,9 @@ export default {
     workItemPlanningViewEnabled: {
       default: false,
     },
+    hasEpicsFeature: {
+      default: false,
+    },
   },
   i18n: {
     contributionGuidelinesText: s__(
@@ -143,11 +148,6 @@ export default {
     ),
   },
   props: {
-    allowedWorkItemTypes: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     alwaysShowWorkItemTypeSelect: {
       type: Boolean,
       required: false,
@@ -217,11 +217,6 @@ export default {
       required: false,
       default: '',
     },
-    isEpicsList: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     fromGlobalMenu: {
       type: Boolean,
       required: false,
@@ -244,7 +239,7 @@ export default {
       loading: false,
       initialLoadingWorkItem: true,
       initialLoadingWorkItemTypes: true,
-      selectedNamespacePath: null,
+      selectedNamespacePath: this.initialSelectedProject(),
       showWorkItemTypeSelect: false,
       discussionToResolve: getParameterByName('discussion_to_resolve'),
       mergeRequestToResolveDiscussionsOf: getParameterByName('merge_request_id'),
@@ -281,7 +276,8 @@ export default {
       },
       variables() {
         return {
-          fullPath: this.selectedProjectFullPath,
+          fullPath: this.inputNamespacePath,
+          onlyAvailable: true,
         };
       },
       update(data) {
@@ -302,9 +298,9 @@ export default {
           .querySelector('.params-description')
           ?.textContent.trim();
 
-        for await (const workItemType of this.workItemTypes) {
-          await setNewWorkItemCache({
-            fullPath: this.selectedProjectFullPath,
+        for (const workItemType of this.workItemTypes) {
+          setNewWorkItemCache({
+            fullPath: this.inputNamespacePath,
             context: this.creationContext,
             widgetDefinitions: workItemType?.widgetDefinitions,
             workItemType: workItemType.name,
@@ -317,11 +313,15 @@ export default {
           });
         }
 
-        const selectedWorkItemType = this.findWorkItemType(this.preselectedWorkItemType);
+        const persistedTypeId = getLastUsedWorkItemTypeIdForNamespace(this.inputNamespacePath);
+
+        const selectedWorkItemType = persistedTypeId
+          ? this.findWorkItemTypeById(persistedTypeId)
+          : this.findWorkItemType(this.preselectedWorkItemType);
 
         if (selectedWorkItemType) {
           updateDraftWorkItemType({
-            fullPath: this.selectedProjectFullPath,
+            fullPath: this.inputNamespacePath,
             context: this.creationContext,
             relatedItemId: this.relatedItemId,
             workItemType: {
@@ -354,7 +354,7 @@ export default {
       return this.namespace?.workItemTypes?.nodes ?? [];
     },
     newWorkItemPath() {
-      return newWorkItemFullPath(this.selectedProjectFullPath, this.selectedWorkItemTypeName);
+      return newWorkItemFullPath(this.inputNamespacePath, this.selectedWorkItemTypeName);
     },
     canSetNewWorkItemMetadata() {
       return this.namespace?.userPermissions.setNewWorkItemMetadata;
@@ -421,13 +421,9 @@ export default {
         return false;
       }
 
-      // Hide Parent widget on Epic or Issue creation according to license permissions
-      if (
-        this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_ISSUE ||
-        this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_EPIC
-      ) {
-        if (!this.validateAllowedParentTypes(this.selectedWorkItemTypeName).length) return false;
-      }
+      // Hide Parent widget on work item creation according to license permissions
+
+      if (!this.validateAllowedParentTypes(this.selectedWorkItemTypeName).length) return false;
 
       return Boolean(this.workItemHierarchy);
     },
@@ -435,15 +431,7 @@ export default {
       return findWidget(WIDGET_TYPE_CRM_CONTACTS, this.workItem);
     },
     workItemTypesForSelect() {
-      let workItemTypes = this.workItemTypes ?? [];
-
-      if (this.allowedWorkItemTypes.length) {
-        workItemTypes = workItemTypes.filter((workItemType) =>
-          this.allowedWorkItemTypes.includes(workItemType.name),
-        );
-      }
-
-      return workItemTypes.map((workItemType) => ({
+      return this.workItemTypes.map((workItemType) => ({
         value: workItemType.id,
         text: NAME_TO_TEXT_MAP[workItemType.name],
       }));
@@ -646,7 +634,7 @@ export default {
     },
     shouldShowNamespaceSelector() {
       if (this.workItemPlanningViewEnabled) {
-        return this.fromGlobalMenu || (this.isGroup && !this.isEpicsList);
+        return this.fromGlobalMenu || (this.isGroup && this.hasEpicsFeature);
       }
       return false;
     },
@@ -697,6 +685,9 @@ export default {
     findWorkItemType(workItemTypeName) {
       return this.workItemTypes?.find((workItemType) => workItemType.name === workItemTypeName);
     },
+    findWorkItemTypeById(workItemTypeId) {
+      return this.workItemTypes?.find((workItemType) => workItemType.id === workItemTypeId);
+    },
     initialSelectedProject() {
       if (this.relatedItem) {
         return this.relatedItem.reference.substring(0, this.relatedItem.reference.lastIndexOf('#'));
@@ -713,7 +704,7 @@ export default {
         this.workItemTypes
           ?.find((type) => type.name === selectedWorkItemType)
           ?.widgetDefinitions.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)
-          .allowedParentTypes?.nodes || []
+          ?.allowedParentTypes?.nodes || []
       );
     },
     isWidgetSupported(widgetType) {
@@ -949,6 +940,8 @@ export default {
           throw new Error(data.workItemCreate.errors);
         }
 
+        setLastUsedWorkItemTypeIdForNamespace(this.selectedWorkItemTypeId, this.inputNamespacePath);
+
         this.$emit('workItemCreated', {
           workItem: data.workItemCreate.workItem,
           numberOfDiscussionsResolved: this.numberOfDiscussionsResolved,
@@ -967,7 +960,7 @@ export default {
           mutation: updateNewWorkItemMutation,
           variables: {
             input: {
-              fullPath: this.selectedProjectFullPath,
+              fullPath: this.inputNamespacePath,
               context: this.creationContext,
               workItemType: this.selectedWorkItemTypeName,
               relatedItemId: this.relatedItemId,
@@ -1347,11 +1340,11 @@ export default {
               {{ __('Cancel') }}
             </gl-button>
             <gl-button
+              type="submit"
               variant="confirm"
               :disabled="!isTitleValid"
               :loading="loading"
               data-testid="create-button"
-              @click="createWorkItem"
             >
               {{ createWorkItemText }}
             </gl-button>

@@ -10,6 +10,7 @@ import updateProjectVariable from '../graphql/mutations/project_update_variable.
 import CiVariableShared from './ci_variable_shared.vue';
 
 export default {
+  name: 'CiProjectVariables',
   components: {
     CiVariableShared,
   },

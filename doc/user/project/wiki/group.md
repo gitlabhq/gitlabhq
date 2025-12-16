@@ -30,7 +30,7 @@ can edit group wikis. Group wiki repositories can be moved using the
 
 To access a group wiki:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. To display the wiki, either:
    - On the left sidebar, select **Plan** > **Wiki**.
    - On any page in the group, use the <kbd>g</kbd>+<kbd>w</kbd>
@@ -61,18 +61,12 @@ All files in the wiki are available in this Git repository.
 
 ## Configure group wiki visibility
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208412) in GitLab 15.0.
-
-{{< /history >}}
-
 Wikis are enabled by default in GitLab. Group [administrators](../../permissions.md)
 can enable or disable a group wiki through the group settings.
 
 To open group settings:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Scroll to **Wiki** and select one of these options:

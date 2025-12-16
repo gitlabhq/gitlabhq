@@ -42,6 +42,43 @@ To learn how the GitLab Strategic Marketing department uses GitLab issues with [
 [Managing Commitments with Issues](https://www.youtube.com/watch?v=cuIHNintg1o&t=3).
 <!-- Video published on 2020-04-10 -->
 
+## Issues as work items
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9584) in GitLab 17.5 [with a flag](../../../administration/feature_flags/_index.md) named `work_items_view_preference`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
+- Feature flag named `work_items_view_preference` enabled on GitLab.com in GitLab 17.9 for a subset of users.
+- Feature flag named `work_items_view_preference` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184496) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in 17.10.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/482931) in GitLab 17.11.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/482931) to feature flag named `work_item_view_for_issues` in GitLab 18.1. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated. Feature flag `work_items_view_preference` removed.
+- Additional filters on the Issues page in projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198544) in GitLab 18.4. [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204139).
+- Additional filters on the Issues page in groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202089) in GitLab 18.5. [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205308).
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/520791) in GitLab 18.7. Feature flag `work_item_view_for_issues` removed.
+
+{{< /history >}}
+
+We have changed how issues look by migrating them to a unified framework for work items to better
+meet the product needs of our Agile Planning offering.
+
+For more information, see [epic 9290](https://gitlab.com/groups/gitlab-org/-/epics/9290) and the blog post
+[First look: The new Agile planning experience in GitLab](https://about.gitlab.com/blog/2024/06/18/first-look-the-new-agile-planning-experience-in-gitlab/)
+(June 2024).
+
+If you run into any issues while trying out this change, you can use the
+[feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523713) to provide more details.
+
+### Work item Markdown reference
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) in GitLab 18.2. Feature flag `extensible_reference_filters` removed.
+
+{{< /history >}}
+
+You can reference work items in GitLab Flavored Markdown fields with `[work_item:123]`.
+For more information, see [GitLab-specific references](../../markdown.md#gitlab-specific-references).
+
 ## Related topics
 
 - [Create issues](create_issues.md)

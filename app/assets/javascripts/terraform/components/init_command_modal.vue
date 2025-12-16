@@ -1,7 +1,7 @@
 <script>
 import { GlModal, GlSprintf, GlLink } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 
 export default {
   i18n: {
@@ -22,7 +22,7 @@ export default {
     GlModal,
     GlSprintf,
     GlLink,
-    ModalCopyButton,
+    SimpleCopyButton,
   },
   inject: ['accessTokensPath', 'terraformApiUrl', 'username', 'projectPath'],
   props: {
@@ -91,11 +91,10 @@ terraform init \\
         data-testid="glab-command"
         >{{ getModalInfoGlabCopyStr() }}</pre
       >
-      <modal-copy-button
+      <simple-copy-button
         :title="$options.i18n.copyToClipboardText"
         :text="getModalInfoGlabCopyStr()"
-        :modal-id="$options.modalId"
-        css-classes="gl-self-start gl-ml-2"
+        class="gl-ml-2 gl-self-start"
         data-testid="glab-command-copy-button"
       />
     </div>
@@ -112,11 +111,10 @@ terraform init \\
       <pre class="gl-bg-gray gl-whitespace-pre-wrap" data-testid="terraform-init-command">{{
         getModalInfoPlainCopyStr()
       }}</pre>
-      <modal-copy-button
+      <simple-copy-button
         :title="$options.i18n.copyToClipboardText"
         :text="getModalInfoPlainCopyStr()"
-        :modal-id="$options.modalId"
-        css-classes="gl-self-start gl-ml-2"
+        class="gl-ml-2 gl-self-start"
         data-testid="terraform-init-command-copy-button"
       />
     </div>

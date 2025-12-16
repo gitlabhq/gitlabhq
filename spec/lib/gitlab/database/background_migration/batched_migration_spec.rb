@@ -1032,4 +1032,31 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       expect(migration.finalize_command).to eq("sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[[\"column_1\"]\\,[\"column_1_convert_to_bigint\"]]']")
     end
   end
+
+  describe '#health_context_tables' do
+    let(:job_class_name) { 'CopyColumnUsingBackgroundMigrationJob' }
+    let(:batched_migration) { create(:batched_background_migration, table_name: :users, job_class_name: job_class_name) }
+
+    context 'when tables to check for vacuum are not specifed' do
+      it 'defaults to [table_name]' do
+        expect(batched_migration.health_context_tables).to match_array(['users'])
+      end
+    end
+
+    context 'when tables to check for vacuum are specified' do
+      let(:job_class) do
+        Class.new(Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob) do
+          tables_to_check_for_vacuum :foo, :bar
+        end
+      end
+
+      before do
+        expect(batched_migration).to receive(:job_class).at_least(:once).and_return(job_class)
+      end
+
+      it 'returns list of specified tables' do
+        expect(batched_migration.health_context_tables).to match_array(%w[foo bar])
+      end
+    end
+  end
 end

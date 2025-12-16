@@ -1146,7 +1146,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/services/ci/runners/create_runner_service_spec.rb'
     - 'spec/services/cloud_seed/google_cloud/generate_pipeline_service_spec.rb'
     - 'spec/services/design_management/delete_designs_service_spec.rb'
-    - 'spec/services/discussions/resolve_service_spec.rb'
     - 'spec/services/discussions/unresolve_service_spec.rb'
     - 'spec/services/git/branch_push_service_spec.rb'
     - 'spec/services/groups/auto_devops_service_spec.rb'

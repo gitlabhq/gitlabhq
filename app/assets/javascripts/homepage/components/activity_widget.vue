@@ -9,6 +9,7 @@ import { InternalEvents } from '~/tracking';
 import {
   EVENT_USER_CLICKS_LINK_ON_ACTIVITY_FEED,
   TRACKING_SCOPE_YOUR_ACTIVITY,
+  TRACKING_SCOPE_YOUR_PROJECTS,
   TRACKING_SCOPE_STARRED_PROJECTS,
   TRACKING_SCOPE_FOLLOWED_USERS,
 } from '../tracking_constants';
@@ -23,6 +24,12 @@ const FILTER_OPTIONS = [
       'HomepageActivityWidget|Your contributions, like commits and work on issues and merge requests.',
     ),
     scope: TRACKING_SCOPE_YOUR_ACTIVITY,
+  },
+  {
+    value: 'your_projects',
+    text: s__('HomepageActivityWidget|Your projects'),
+    description: s__('HomepageActivityWidget|Activity in projects you own or are a member of.'),
+    scope: TRACKING_SCOPE_YOUR_PROJECTS,
   },
   {
     value: 'starred',

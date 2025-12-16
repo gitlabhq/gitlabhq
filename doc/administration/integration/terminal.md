@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Web terminals (deprecated)
 description: Information about Web terminals.
@@ -134,6 +134,6 @@ they receive a `Connection failed` message.
 By default, terminal sessions do not expire. To limit the terminal session
 lifetime in your GitLab instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Web terminal**.
 1. Set a `max session time`.

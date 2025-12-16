@@ -62,7 +62,7 @@ RSpec.shared_examples 'project policies as anonymous' do
     context 'when a project has pending invites' do
       let(:group) { create(:group, :public) }
       let(:project) { create(:project, :public, namespace: group) }
-      let(:user_permissions) { [:create_merge_request_in, :create_project, :create_issue, :create_note, :upload_file, :award_emoji, :create_incident, :admin_issue_link] }
+      let(:user_permissions) { [:create_merge_request_in, :create_project, :create_issue, :create_note, :upload_file, :award_emoji, :create_incident, :admin_issue_link, :export_work_items] }
       let(:anonymous_permissions) { base_guest_permissions - user_permissions }
       let(:current_user) { anonymous }
 
@@ -118,7 +118,7 @@ end
 
 RSpec.shared_examples 'project policies as guest' do
   let(:reporter_public_build_permissions) do
-    reporter_permissions - [:read_build, :read_pipeline]
+    reporter_permissions - [:read_build, :read_pipeline, :export_work_items]
   end
 
   context 'as a direct project member' do
@@ -216,7 +216,7 @@ RSpec.shared_examples 'project policies as planner' do
     disallowed_reporter_public_permissions +
       %i[
         fork_project read_commit_status read_container_image read_deployment
-        read_environment create_merge_request_in download_code
+        read_environment create_merge_request_in
       ]
   end
 
@@ -244,7 +244,9 @@ RSpec.shared_examples 'project policies as planner' do
       specify do
         expect_allowed(*guest_permissions)
         expect_allowed(*planner_permissions)
+        expect_allowed(:read_code, :download_code)
         expect_allowed(*(base_reporter_permissions - disallowed_reporter_permissions))
+        expect_disallowed(:create_merge_request_in)
         expect_disallowed(*disallowed_reporter_permissions)
         expect_disallowed(*(developer_permissions - [:create_wiki]))
         expect_disallowed(*(maintainer_permissions - [:admin_wiki]))
@@ -300,7 +302,9 @@ RSpec.shared_examples 'project policies as planner' do
       specify do
         expect_allowed(*guest_permissions)
         expect_allowed(*planner_permissions)
+        expect_allowed(:read_code, :download_code)
         expect_allowed(*(base_reporter_permissions - disallowed_reporter_permissions))
+        expect_disallowed(:create_merge_request_in)
         expect_disallowed(*disallowed_reporter_permissions)
         expect_disallowed(*(developer_permissions - [:create_wiki]))
         expect_disallowed(*(maintainer_permissions - [:admin_wiki]))

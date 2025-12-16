@@ -31,7 +31,7 @@ Prerequisites:
 
 To add a group README:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. In the **Group README** section, select **Add README**. This action creates a new project `gitlab-profile` that contains the `README.md` file.
 1. On the prompt for creating a README, select **Create and add README**. You're redirected to the Web IDE, where a README file is created.
@@ -43,12 +43,12 @@ You can change the Owner of a group. Each group must always have at least one
 member with the Owner role.
 
 - As an administrator:
-  1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+  1. On the top bar, select **Search or go to** and find your group.
   1. Select **Manage** > **Members**.
   1. Give a different member the Owner role.
   1. Refresh the page. You can now remove the Owner role from the original Owner.
 - As the current group's Owner:
-  1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+  1. On the top bar, select **Search or go to** and find your group.
   1. Select **Manage** > **Members**.
   1. Give a different member the Owner role.
   1. Have the new Owner sign in and remove the Owner role from you.
@@ -69,7 +69,7 @@ create a new group and transfer projects to it instead.
 
 To change your group path (group URL):
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. Under **Change group URL**, enter a new name.
@@ -136,7 +136,7 @@ Prerequisites:
 
 To archive a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Archive group** section, select **Archive**.
@@ -149,7 +149,7 @@ Archiving a group automatically archives all its subgroups and projects. Individ
 
 To archive a group from the **Your work** list view directly:
 
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to**.
 1. Select **View all my groups**.
 1. In the **Member** tab, find the group you want to archive and select ({{< icon name="ellipsis_v" >}}).
 1. Select **Archive**.
@@ -170,7 +170,7 @@ Prerequisites:
 To unarchive a group:
 
 1. Find the archived group.
-   1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+   1. On the top bar, select **Search or go to**.
    1. Select **View all my groups**.
    1. In the **Inactive** tab, select your group.
 1. On the left sidebar, select **Settings** > **General**.
@@ -179,7 +179,7 @@ To unarchive a group:
 
 To unarchive a group from the **Your work** list view directly:
 
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to**.
 1. Select **View all my groups**.
 1. In the **Inactive** tab, find the group you want to unarchive and select ({{< icon name="ellipsis_v" >}}).
 1. Select **Unarchive**.
@@ -215,7 +215,7 @@ Prerequisites:
 
 To transfer a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. Select **Transfer group**.
@@ -228,7 +228,7 @@ You can disable all email notifications related to the group, which includes its
 
 To disable email notifications:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Clear the **Enable email notifications** checkbox.
@@ -254,7 +254,7 @@ Prerequisites:
 
 To disable diff previews for all projects in a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Clear **Include diff previews**.
@@ -281,7 +281,7 @@ The following group and project members receive notification emails about access
 
 You can enable notifications to inherited members of a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Expiry notification emails about group and project access tokens within this group should be sent to:**, select **All direct and inherited members of the group or project**.
@@ -308,7 +308,7 @@ before a group token expires. By default, these webhooks trigger 7 days before a
 
 To configure these webhooks to also trigger 60 days and 30 days before a token expires:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select the **Add additional webhook triggers for group access token expiration** checkbox.
@@ -326,7 +326,7 @@ These visual cues are particularly helpful for groups with many users.
 
 To disable group mentions:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Group mentions are disabled**.
@@ -349,7 +349,7 @@ For more information, see [prevent invitations to a groups and projects](../../a
 
 {{< alert type="note" >}}
 
-Features such as [sharing](../project/members/sharing_projects_groups.md) or [migrations](../project/import/_index.md) can still allow access to these subgroups and projects.
+Features such as [sharing](../project/members/sharing_projects_groups.md) or [migrations](../import/_index.md) can still allow access to these subgroups and projects.
 
 {{< /alert >}}
 
@@ -359,7 +359,7 @@ Prerequisites:
 
 To prevent invitations to a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Disable Group/Project members invitation**.
@@ -376,7 +376,7 @@ To prevent invitations to a group:
 
 You can export a list of members in a group or subgroup as a CSV.
 
-1. On the left sidebar, select **Search or go to** and find your group or subgroup. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group or subgroup.
 1. Select **Manage** > **Members**.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
@@ -385,7 +385,7 @@ The output lists direct members and members inherited from the ancestor groups.
 For members with `Minimal Access` in the selected group, their `Max Role` and `Source` are derived from their membership in subgroups.
 [Issue 390358](https://gitlab.com/gitlab-org/gitlab/-/issues/390358) tracks the discussion about the group members CSV export list not matching the UI members list.
 
-## Turn on restricted access
+## Restricted access
 
 {{< details >}}
 
@@ -398,6 +398,7 @@ For members with `Minimal Access` in the selected group, their `Max Role` and `S
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442718) in GitLab 17.5.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/523468) in GitLab 18.0.
+- Group sharing settings [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/488451) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -414,6 +415,8 @@ If [user cap](#user-cap-for-groups) is enabled for a group that has pending memb
 
 {{< /alert >}}
 
+### Turn on restricted access
+
 Prerequisites:
 
 - You must have the Owner role for the group.
@@ -424,6 +427,12 @@ To turn on restricted access:
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Seat control**, select **Restricted access**.
+
+When you turn on restricted access, the setting to
+[prevent inviting groups outside the group hierarchy](../project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy)
+is automatically turned on.
+
+You can still independently configure [project sharing for the group and its subgroups](../project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) as needed.
 
 ### Known issues
 
@@ -437,9 +446,9 @@ When you turn on restricted access, the following known issues might occur and r
     from before you changed to restricted access. In this case, those members remain in a pending state. If
     pending members are approved while using restricted access, you might exceed the number of seats in your subscription.
 - If you renew your subscription through the GitLab Sales Team for fewer users than your current
-subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
-renewal starts. For example, if you have 20 users and renew your subscription for 15 users,
-you will be charged overages for the five additional users.
+  subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
+  renewal starts. For example, if you have 20 users and renew your subscription for 15 users,
+  you will be charged overages for the five additional users.
 
 Additionally, restricted access might block the standard non-overage flows:
 
@@ -475,15 +484,15 @@ When you specify a user cap, any members added through group sharing lose access
 
 {{< /alert >}}
 
-### Specify a user cap for a group
+### Set a user cap for a group
 
 Prerequisites:
 
 - You must be assigned the Owner role for the group.
 
-To specify a user cap:
+To set a user cap:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
    You can set a cap on the top-level group only.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
@@ -505,7 +514,7 @@ Prerequisites:
 
 To remove the user cap:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. From **Seat control**, select **Open access**.
@@ -526,7 +535,7 @@ Prerequisites:
 
 To approve members that are pending because they've exceeded the user cap:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Usage quotas**.
 1. On the **Seats** tab, under the alert, select **View pending approvals**.
 1. For each member you want to approve, select **Approve**.
@@ -537,7 +546,9 @@ The user cap cannot be enabled if a group, subgroup, or project is shared extern
 or project is shared externally, it is shared outside of the namespace hierarchy, regardless of its level
 in the hierarchy.
 
-To ensure that the user cap applies when groups, subgroups, or projects are shared externally, restrict group sharing only in the top-level namespace. A top-level namespace restriction allows invitations in the same namespace and prevents new user (seat) additions from external shares.
+To ensure that the user cap applies when groups, subgroups, or projects are shared externally,
+[restrict group sharing only in the top-level namespace](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy).
+A top-level namespace restriction allows invitations in the same namespace and prevents new user (seat) additions from external shares.
 
 GitLab.com Ultimate has a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/441504) where you cannot add guest users to a group when billable users exceed the user cap. For example, suppose you have a user cap of 5, with 3 developers, and 2 guests. After you add 2 more developers, you cannot add any more users, even if they are guest users that don't consume a billable seat.
 
@@ -581,7 +592,7 @@ For more information, see [group-level project templates](custom_project_templat
 
 To enable group file templates:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Templates** section.
 1. Choose a project to act as the template repository.
@@ -621,7 +632,7 @@ Prerequisites:
 
 To enable this setting:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Merge requests**.
 1. Under **Merge checks**, select **Pipelines must succeed**.
@@ -640,7 +651,7 @@ Prerequisites:
 
 To change this behavior:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Merge requests**.
 1. Under **Merge checks**:
@@ -658,7 +669,7 @@ Prerequisites:
 
 To enable this setting:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Merge requests**.
 1. Under **Merge checks**, select **All threads must be resolved**.
@@ -679,7 +690,7 @@ that belong to the group.
 
 To view the merge request approval settings for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Merge request approvals** section.
 1. Select the settings you want.
@@ -706,7 +717,7 @@ Changes to [group wikis](../project/wiki/group.md) do not appear in group activi
 
 You can view the most recent actions taken in a group, either in your browser or in an RSS feed:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Manage** > **Activity**.
 
 To view the activity feed in Atom format, select the

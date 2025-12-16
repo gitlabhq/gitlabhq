@@ -37,22 +37,6 @@ jest.mock('~/super_sidebar/utils', () => ({
 
 const trialWidgetStubTestId = 'trial-widget';
 const TrialWidgetStub = { template: `<div data-testid="${trialWidgetStubTestId}" />` };
-const dapWidgetStubTestId = 'dap-widget';
-const DapWidgetStub = {
-  template: `<div data-testid="${dapWidgetStubTestId}" />`,
-  inject: {
-    isAuthorized: { default: false },
-    requestCount: { default: 0 },
-    showRequestAccess: { default: false },
-    hasRequested: { default: false },
-    showDuoAgentPlatformWidget: { default: false },
-  },
-  render(h) {
-    return this.showDuoAgentPlatformWidget
-      ? h('div', { attrs: { 'data-testid': dapWidgetStubTestId } })
-      : null;
-  },
-};
 const UserBarStub = {
   template: `<div><a href="#">link</a></div>`,
 };
@@ -72,7 +56,6 @@ describe('SuperSidebar component', () => {
   const findPeekBehavior = () => wrapper.findComponent(SidebarPeekBehavior);
   const findHoverPeekBehavior = () => wrapper.findComponent(SidebarHoverPeekBehavior);
   const findTrialWidget = () => wrapper.findByTestId(trialWidgetStubTestId);
-  const findDapWidget = () => wrapper.findByTestId(dapWidgetStubTestId);
   const findIconOnlyToggle = () => wrapper.findComponent(IconOnlyToggle);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
   const findAdminLink = () => wrapper.findByTestId('sidebar-admin-link');
@@ -90,11 +73,6 @@ describe('SuperSidebar component', () => {
       provide: {
         showTrialWidget: false,
         projectStudioEnabled: false,
-        showDuoAgentPlatformWidget: false,
-        isAuthorized: false,
-        requestCount: 0,
-        showRequestAccess: false,
-        hasRequested: false,
         ...provide,
       },
       propsData: {
@@ -102,7 +80,6 @@ describe('SuperSidebar component', () => {
       },
       stubs: {
         TrialWidget: TrialWidgetStub,
-        DuoAgentPlatformWidget: DapWidgetStub,
         UserBar: stubComponent(UserBar, UserBarStub),
       },
       attachTo: document.body,
@@ -221,12 +198,6 @@ describe('SuperSidebar component', () => {
       createWrapper();
 
       expect(findTrialWidget().exists()).toBe(false);
-    });
-
-    it('does not render Duo agent platform widget', () => {
-      createWrapper();
-
-      expect(findDapWidget().exists()).toBe(false);
     });
 
     it('does not render icon-only toggle', () => {
@@ -348,7 +319,6 @@ describe('SuperSidebar component', () => {
             provide: {
               projectStudioEnabled: true,
               showTrialWidget: true,
-              showDuoAgentPlatformWidget: true,
             },
             sidebarState: { isMobile: false, isIconOnly: true },
           });
@@ -364,7 +334,6 @@ describe('SuperSidebar component', () => {
 
         it('does not render the any widgets', () => {
           expect(findTrialWidget().exists()).toBe(false);
-          expect(findDapWidget().exists()).toBe(false);
         });
       });
 
@@ -374,7 +343,6 @@ describe('SuperSidebar component', () => {
             provide: {
               projectStudioEnabled: true,
               showTrialWidget: true,
-              showDuoAgentPlatformWidget: true,
             },
             sidebarState: { isMobile: false, isIconOnly: false },
           });
@@ -386,7 +354,6 @@ describe('SuperSidebar component', () => {
 
         it('renders the widgets', () => {
           expect(findTrialWidget().exists()).toBe(true);
-          expect(findDapWidget().exists()).toBe(true);
         });
       });
     });
@@ -462,86 +429,6 @@ describe('SuperSidebar component', () => {
 
     it('renders trial widget', () => {
       expect(findTrialWidget().exists()).toBe(true);
-    });
-  });
-
-  describe('when a Duo agent platform widget is active', () => {
-    beforeEach(() => {
-      createWrapper({
-        provide: {
-          showDuoAgentPlatformWidget: true,
-          isAuthorized: false,
-          showRequestAccess: false,
-          hasRequested: false,
-          requestCount: 0,
-        },
-      });
-    });
-
-    it('renders Duo agent platform widget', () => {
-      expect(findDapWidget().exists()).toBe(true);
-    });
-
-    describe('with admin access', () => {
-      beforeEach(() => {
-        createWrapper({
-          provide: {
-            showDuoAgentPlatformWidget: true,
-            isAuthorized: true,
-            showRequestAccess: false,
-            hasRequested: false,
-            requestCount: 5,
-          },
-        });
-      });
-
-      it('passes admin status to widget', () => {
-        expect(findDapWidget().vm.isAuthorized).toBe(true);
-      });
-
-      it('passes request count to widget', () => {
-        expect(findDapWidget().vm.requestCount).toBe(5);
-      });
-    });
-
-    describe('with request access functionality', () => {
-      beforeEach(() => {
-        createWrapper({
-          provide: {
-            showDuoAgentPlatformWidget: true,
-            isAuthorized: false,
-            showRequestAccess: true,
-            hasRequested: false,
-            requestCount: 0,
-          },
-        });
-      });
-
-      it('shows request access option', () => {
-        expect(findDapWidget().vm.showRequestAccess).toBe(true);
-      });
-
-      it('shows request not yet made', () => {
-        expect(findDapWidget().vm.hasRequested).toBe(false);
-      });
-    });
-
-    describe('with request already made', () => {
-      beforeEach(() => {
-        createWrapper({
-          provide: {
-            showDuoAgentPlatformWidget: true,
-            isAuthorized: false,
-            showRequestAccess: true,
-            hasRequested: true,
-            requestCount: 0,
-          },
-        });
-      });
-
-      it('shows request has been made', () => {
-        expect(findDapWidget().vm.hasRequested).toBe(true);
-      });
     });
   });
 

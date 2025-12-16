@@ -205,7 +205,7 @@ export default {
     <component
       :is="navItemLinkComponent"
       v-bind="linkProps"
-      class="super-sidebar-nav-item show-on-focus-or-hover--control hide-on-focus-or-hover--control gl-relative gl-mb-1 gl-flex gl-items-center gl-gap-3 gl-py-2 gl-font-semibold !gl-text-default !gl-no-underline focus:gl-focus-inset"
+      class="super-sidebar-nav-item show-on-focus-or-hover--control hide-on-focus-or-hover--control gl-relative gl-mb-1 gl-flex gl-items-center gl-gap-3 gl-py-1 !gl-text-default !gl-no-underline focus:gl-focus-inset"
       :class="computedLinkClasses"
       data-testid="nav-item-link"
       :aria-label="item.title"
@@ -214,7 +214,11 @@ export default {
       <div
         v-if="!isFlyout"
         class="gl-flex gl-h-6 gl-w-6 gl-shrink-0"
-        :class="{ 'gl-w-6 gl-self-start': hasAvatar, '-gl-mr-2': hasAvatar && isIconOnly }"
+        :class="{
+          'gl-w-6 gl-self-start': hasAvatar,
+          'gl-rounded-base gl-bg-default': hasAvatar && avatarShape === 'rect',
+          '-gl-mr-2': hasAvatar && isIconOnly,
+        }"
       >
         <slot name="icon">
           <gl-icon

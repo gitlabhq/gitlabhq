@@ -79,6 +79,12 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
           expect(job.job_artifacts.size).to eq 0
         end
 
+        it_behaves_like 'authorizing granular token permissions', :delete_job_artifact do
+          let(:boundary_object) { project }
+          let(:user) { maintainer }
+          let(:request) { delete api("/projects/#{project.id}/jobs/#{job.id}/artifacts", personal_access_token: pat) }
+        end
+
         it 'returns status 204 (no content)' do
           expect(response).to have_gitlab_http_status(:no_content)
         end
@@ -149,6 +155,12 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
         delete api("/projects/#{project.id}/artifacts", api_user)
 
         expect(response).to have_gitlab_http_status(:accepted)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_artifact do
+        let(:boundary_object) { project }
+        let(:user) { maintainer }
+        let(:request) { delete api("/projects/#{project.id}/artifacts", personal_access_token: pat) }
       end
 
       context 'when project is undergoing stats refresh' do
@@ -268,6 +280,11 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
             expect(response).to have_gitlab_http_status(:ok)
           end
         end
+
+        it_behaves_like 'authorizing granular token permissions', :download_job_artifact do
+          let(:boundary_object) { project }
+          let(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts/#{artifact}", personal_access_token: pat) }
+        end
       end
     end
 
@@ -316,6 +333,11 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
           context 'authorized user' do
             it_behaves_like 'downloads artifact'
+
+            it_behaves_like 'authorizing granular token permissions', :download_job_artifact do
+              let(:boundary_object) { project }
+              let(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", personal_access_token: pat) }
+            end
           end
 
           context 'when job token is used' do
@@ -504,8 +526,10 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
       job.success
     end
 
-    def get_for_ref(ref = pipeline.ref, job_name = job.name)
-      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/download", api_user), params: { job: job_name }
+    def get_for_ref(ref = pipeline.ref, job_name = job.name, search_recent_successful_pipelines: false)
+      params = { job: job_name, search_recent_successful_pipelines: search_recent_successful_pipelines }
+
+      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/download", api_user), params: params
     end
 
     it_behaves_like 'enforcing job token policies', :read_jobs do
@@ -630,6 +654,88 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
         it_behaves_like 'a valid file'
       end
+
+      it_behaves_like 'authorizing granular token permissions', :download_job_artifact do
+        let(:boundary_object) { project }
+        let(:user) { reporter }
+        let(:request) do
+          get api("/projects/#{project.id}/jobs/artifacts/#{pipeline.ref}/download", personal_access_token: pat), params: { job: job.name }
+        end
+
+        before_all do
+          pipeline.update!(status: :success)
+        end
+      end
+    end
+
+    context 'when search_recent_successful_pipelines parameter is used' do
+      let(:ref_name) { 'master' }
+
+      before do
+        pipeline.reload
+        pipeline.update!(ref: ref_name, sha: project.commit(ref_name).sha, status: :success)
+        stub_const('Ci::Build::MAX_PIPELINES_TO_SEARCH', 2)
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_search_recent_successful_pipelines: false)
+        end
+
+        it 'returns 404 when search_recent_successful_pipelines is true' do
+          get_for_ref(ref_name, job.name, search_recent_successful_pipelines: true)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'works normally when search_recent_successful_pipelines is false' do
+          get_for_ref(ref_name, job.name, search_recent_successful_pipelines: false)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      it 'returns artifacts when build exists within search limit' do
+        # Create older pipeline with artifacts
+        older_pipeline = create(:ci_pipeline, :success, project: project, ref: ref_name,
+          created_at: 2.days.ago)
+        job_with_artifacts = create(:ci_build, :success, :artifacts,
+          name: 'test-job', pipeline: older_pipeline)
+
+        # Create newer pipeline without this job
+        create(:ci_pipeline, :success, project: project, ref: ref_name,
+          created_at: 1.day.ago)
+
+        get_for_ref(ref_name, 'test-job', search_recent_successful_pipelines: true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['X-Sendfile']).to eq(job_with_artifacts.artifacts_file.file.path)
+      end
+
+      it 'returns 404 when build has no artifacts in recent pipelines' do
+        create(:ci_build, :success, name: 'test-job', pipeline: pipeline)
+
+        get_for_ref(ref_name, 'test-job', search_recent_successful_pipelines: true)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns 404 when job exists beyond search limit' do
+        # Create pipeline with artifacts (will be beyond limit)
+        old_pipeline = create(:ci_pipeline, :success, project: project, ref: ref_name,
+          created_at: 5.days.ago)
+        create(:ci_build, :success, :artifacts, name: 'old-job', pipeline: old_pipeline)
+
+        # Create 2 newer successful pipelines without this job (exceeds MAX_PIPELINES_TO_SEARCH=2)
+        2.times do
+          create(:ci_pipeline, :success, project: project, ref: ref_name,
+            created_at: 1.day.ago)
+        end
+
+        get_for_ref(ref_name, 'old-job', search_recent_successful_pipelines: true)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
   end
 
@@ -738,6 +844,17 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
           )
           expect(response.parsed_body).to be_empty
         end
+
+        it_behaves_like 'authorizing granular token permissions', :download_job_artifact do
+          let(:boundary_object) { project }
+          let(:request) do
+            get api("/projects/#{project.id}/jobs/artifacts/#{pipeline.ref}/raw/#{artifact}", personal_access_token: pat), params: { job: job.name }
+          end
+
+          before_all do
+            pipeline.update!(status: :success)
+          end
+        end
       end
 
       context 'with branch name containing slash' do
@@ -825,6 +942,11 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
         it 'responds with :not_found' do
           expect(response).to have_gitlab_http_status(:not_found)
         end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :preserve_job_artifact do
+        let(:boundary_object) { project }
+        let(:request) { post api("/projects/#{project.id}/jobs/#{job.id}/artifacts/keep", personal_access_token: pat) }
       end
     end
 

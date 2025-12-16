@@ -41,10 +41,11 @@ module Users
       namespace_user_cap_reached_alert: 29, # EE-only,
       # 30 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983
       # 31 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983
-      duo_agent_platform_requested: 32, # EE-only,
+      # 32 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214108
       project_premium_message_callout: 33, # EE-only
       repository_premium_message_callout: 34, # EE-only
-      mrs_premium_message_callout: 35 # EE-only
+      mrs_premium_message_callout: 35, # EE-only
+      virtual_registry_permission_change_alert: 36 # EE-only
     }
 
     validates :group, presence: true

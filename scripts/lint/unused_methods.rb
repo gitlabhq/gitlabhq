@@ -99,13 +99,21 @@ if current_unused_names.size > potential_methods_count
 
   exit 1
 elsif unused.size < potential_methods_count
+  removed_method_names = potential_methods.keys - unused.collect { |h| h[:method].to_sym }
+  removed = potential_methods.select { |k, _| removed_method_names.include?(k) }
+
   warning = <<~UPDATE_UNUSED
   🏆 It appears you have removed unused methods. Thank you!
 
-  Please update potential_methods_to_remove.yml with the current list of unused methods.
+  Please update potential_methods_to_remove.yml and remove entries for these methods.\n
   UPDATE_UNUSED
 
   print Rainbow(warning).yellow.bright
+
+  removed.each do |k, v|
+    puts Rainbow("#{k}:").yellow.bright
+    puts Rainbow("  file: #{v[:file]}").yellow.bright
+  end
 
   exit 1
 end

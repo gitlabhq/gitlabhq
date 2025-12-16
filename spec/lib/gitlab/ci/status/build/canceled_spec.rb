@@ -4,13 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Status::Build::Canceled, feature_category: :continuous_integration do
   let(:user) { build_stubbed(:user) }
+  let(:core_status) { instance_double(Gitlab::Ci::Status::Core) }
 
-  subject do
-    described_class.new(double('subject'))
-  end
+  subject(:status) { described_class.new(core_status) }
 
   describe '#illustration' do
-    it { expect(subject.illustration).to include(:image, :size, :title) }
+    it { expect(status.illustration).to include(:image, :size, :title) }
   end
 
   describe '.matches?' do
@@ -20,7 +19,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Canceled, feature_category: :continuou
       let(:build) { build_stubbed(:ci_build, :canceled) }
 
       it 'is a correct match' do
-        expect(subject).to be true
+        is_expected.to be true
       end
     end
 
@@ -28,7 +27,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Canceled, feature_category: :continuou
       let(:build) { build_stubbed(:ci_build) }
 
       it 'does not match' do
-        expect(subject).to be false
+        is_expected.to be false
       end
     end
   end

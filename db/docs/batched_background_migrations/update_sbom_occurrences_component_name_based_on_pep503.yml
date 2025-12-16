@@ -1,8 +1,0 @@
----
-migration_job_name: UpdateSbomOccurrencesComponentNameBasedOnPep503
-description: Updates sbom_occurrences.component_name in accordance with PEP503
-feature_category: software_composition_analysis
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146776
-milestone: '16.11'
-queued_migration_version: 20240306120522
-finalized_by: '20241028232442'

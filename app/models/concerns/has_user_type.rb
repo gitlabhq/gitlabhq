@@ -11,7 +11,7 @@ module HasUserType
     service_user: 4,
     ghost: 5,
     project_bot: 6,
-    migration_bot: 7,
+    # 7: Deprecated migration_bot type (removed)
     security_bot: 8,
     automation_bot: 9,
     security_policy_bot: 10,
@@ -28,7 +28,6 @@ module HasUserType
     project_bot
     support_bot
     visual_review_bot
-    migration_bot
     security_bot
     automation_bot
     security_policy_bot
@@ -56,6 +55,9 @@ module HasUserType
     scope :human_or_service_user, -> { where(user_type: %i[human service_user]) }
     scope :resource_access_token_bot, -> { where(user_type: 'project_bot') }
     scope :service_accounts, -> { where(user_type: 'service_account') }
+    scope :service_accounts_without_composite_identity, -> do
+      where(user_type: 'service_account', composite_identity_enforced: false)
+    end
     scope :with_user_types, ->(user_types) { where(user_type: user_types) }
     scope :without_placeholders, -> { where.not(user_type: 'placeholder') }
 

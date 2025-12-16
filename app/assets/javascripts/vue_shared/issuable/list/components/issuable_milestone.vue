@@ -1,5 +1,4 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
 import {
   getTimeRemainingInWords,
   isInFuture,
@@ -15,7 +14,6 @@ export default {
   name: 'IssuableMilestone',
   components: {
     WorkItemAttribute,
-    GlIcon,
   },
   props: {
     milestone: {
@@ -68,15 +66,12 @@ export default {
     anchor-id="issuable-milestone"
     :title="milestone.title"
     wrapper-component="a"
-    wrapper-component-class="!gl-text-subtle !gl-cursor-help gl-bg-transparent gl-border-0 gl-p-0 focus-visible:gl-focus-inset"
+    wrapper-component-class="!gl-text-subtle gl-bg-transparent gl-border-0 gl-p-0 focus-visible:gl-focus-inset gl-max-w-30 gl-min-w-0"
     :tooltip-text="milestoneDate"
     tooltip-placement="top"
-    class="issuable-milestone gl-mr-3"
+    icon-name="milestone"
+    icon-size="12"
     :is-link="true"
     :href="milestoneLink"
-  >
-    <template #icon>
-      <gl-icon name="milestone" :size="12" />
-    </template>
-  </work-item-attribute>
+  />
 </template>

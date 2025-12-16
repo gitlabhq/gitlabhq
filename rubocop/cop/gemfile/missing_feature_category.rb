@@ -12,11 +12,11 @@ module RuboCop
       #   # bad
       #   gem 'foo'
       #   gem 'bar', feature_category: :invalid
+      #   gem 'baz', feature_category: :shared
       #
       #   # good
       #   gem 'foo', feature_category: :wiki
       #   gem 'bar', feature_category: :tooling
-      #   gem 'baz', feature_category: :shared
       #
       class MissingFeatureCategory < RuboCop::Cop::Base
         DOCUMENT_LINK = 'https://docs.gitlab.com/ee/development/feature_categorization/#gemfile'
@@ -56,7 +56,7 @@ module RuboCop
 
         def feature_categories
           @feature_categories ||=
-            FeatureCategories.new(FeatureCategories.available_with_custom)
+            FeatureCategories.new(FeatureCategories.available_for_rspec)
         end
       end
     end

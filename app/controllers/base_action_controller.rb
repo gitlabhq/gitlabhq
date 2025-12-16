@@ -27,9 +27,13 @@ class BaseActionController < ActionController::Base
     next if p.directives.blank?
     next unless Gitlab::CurrentSettings.snowplow_enabled? && !Gitlab::CurrentSettings.snowplow_collector_hostname.blank?
 
-    default_connect_src = p.directives['connect-src'] || p.directives['default-src']
-    connect_src_values = Array.wrap(default_connect_src) | [Gitlab::CurrentSettings.snowplow_collector_hostname]
-    p.connect_src(*connect_src_values)
+    append_to_content_security_policy(p, 'connect-src', [Gitlab::CurrentSettings.snowplow_collector_hostname])
+  end
+
+  def append_to_content_security_policy(policy, directive, values)
+    existing_value = policy.directives[directive] || policy.directives['default-src']
+    new_value = Array.wrap(existing_value) | values
+    policy.directives[directive] = new_value
   end
 end
 # rubocop:enable Gitlab/NamespacedClass

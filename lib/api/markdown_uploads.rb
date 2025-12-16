@@ -38,6 +38,7 @@ module API
         ]
         tags %w[projects]
       end
+      route_setting :authorization, permissions: :authorize_markdown_upload, boundary_type: :project
       post ':id/uploads/authorize' do
         require_gitlab_workhorse!
 
@@ -57,6 +58,7 @@ module API
         requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile],
           desc: 'The attachment file to be uploaded', documentation: { type: 'file' }
       end
+      route_setting :authorization, permissions: :create_markdown_upload, boundary_type: :project
       post ':id/uploads' do
         upload = UploadService.new(user_project, params[:file], uploaded_by_user_id: current_user&.id).execute
 
@@ -75,6 +77,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_markdown_upload, boundary_type: :project
       get ':id/uploads' do
         authorize! :admin_upload, user_project
 
@@ -94,6 +97,7 @@ module API
       params do
         requires :upload_id, type: Integer, desc: 'The ID of a project upload'
       end
+      route_setting :authorization, permissions: :read_markdown_upload, boundary_type: :project
       get ':id/uploads/:upload_id' do
         # Fetching uploads by ID is maintainer-only because it can be used to enumerate uploads
         # even without the secret
@@ -116,6 +120,7 @@ module API
         requires :secret, type: String, desc: 'The 32-character secret of a project upload'
         requires :filename, type: String, file_path: true, desc: 'The filename of a project upload'
       end
+      route_setting :authorization, permissions: :read_markdown_upload, boundary_type: :project
       get ':id/uploads/:secret/:filename', requirements: FILENAME_QUERY_PARAM_REQUIREMENTS do
         authorize! :read_upload, user_project
 
@@ -136,6 +141,7 @@ module API
       params do
         requires :upload_id, type: Integer, desc: 'The ID of a project upload'
       end
+      route_setting :authorization, permissions: :delete_markdown_upload, boundary_type: :project
       delete ':id/uploads/:upload_id' do
         authorize! :destroy_upload, user_project
 
@@ -162,6 +168,7 @@ module API
         requires :secret, type: String, desc: 'The 32-character secret of a project upload'
         requires :filename, type: String, file_path: true, desc: 'The filename of a project upload'
       end
+      route_setting :authorization, permissions: :delete_markdown_upload, boundary_type: :project
       delete ':id/uploads/:secret/:filename', requirements: FILENAME_QUERY_PARAM_REQUIREMENTS do
         authorize! :destroy_upload, user_project
 
@@ -189,6 +196,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_markdown_upload, boundary_type: :group
       get ':id/uploads' do
         authorize! :admin_upload, user_group
 
@@ -208,6 +216,7 @@ module API
       params do
         requires :upload_id, type: Integer, desc: 'The ID of a group upload'
       end
+      route_setting :authorization, permissions: :read_markdown_upload, boundary_type: :group
       get ':id/uploads/:upload_id' do
         # Fetching uploads by ID is maintainer-only because it can be used to enumerate uploads
         # even without the secret
@@ -230,6 +239,7 @@ module API
         requires :secret, type: String, desc: 'The 32-character secret of a group upload'
         requires :filename, type: String, file_path: true, desc: 'The filename of a group upload'
       end
+      route_setting :authorization, permissions: :read_markdown_upload, boundary_type: :group
       get ':id/uploads/:secret/:filename', requirements: FILENAME_QUERY_PARAM_REQUIREMENTS do
         authorize! :read_upload, user_group
 
@@ -250,6 +260,7 @@ module API
       params do
         requires :upload_id, type: Integer, desc: 'The ID of a group upload'
       end
+      route_setting :authorization, permissions: :delete_markdown_upload, boundary_type: :group
       delete ':id/uploads/:upload_id' do
         authorize! :destroy_upload, user_group
 
@@ -276,6 +287,7 @@ module API
         requires :secret, type: String, desc: 'The 32-character secret of a group upload'
         requires :filename, type: String, file_path: true, desc: 'The filename of a group upload'
       end
+      route_setting :authorization, permissions: :delete_markdown_upload, boundary_type: :group
       delete ':id/uploads/:secret/:filename', requirements: FILENAME_QUERY_PARAM_REQUIREMENTS do
         authorize! :destroy_upload, user_group
 

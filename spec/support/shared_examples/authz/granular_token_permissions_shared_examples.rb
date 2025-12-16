@@ -26,14 +26,20 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions|
   end
 
   context 'when authenticating with a granular personal access token' do
+    let(:assignables) do
+      Array(permissions).map do |permission|
+        ::Authz::PermissionGroups::Assignable.for_permission(permission).first&.name
+      end
+    end
+
     let(:boundary) { ::Authz::Boundary.for(boundary_object) }
-    let(:pat) { create(:granular_pat, user: user, namespace: boundary.namespace, permissions: permissions) }
+    let(:pat) { create(:granular_pat, user: user, namespace: boundary.namespace, permissions: assignables) }
 
     it_behaves_like 'granting access'
 
-    context 'when the `authorize_granular_pats` feature flag is disabled' do
+    context 'when the `granular_personal_access_tokens` feature flag is disabled' do
       before do
-        stub_feature_flags(authorize_granular_pats: false)
+        stub_feature_flags(granular_personal_access_tokens: false)
       end
 
       let(:message) { 'Granular tokens are not yet supported' }

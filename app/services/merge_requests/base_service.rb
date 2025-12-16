@@ -205,6 +205,8 @@ module MergeRequests
       end
 
       reviewer_ids = User.id_in(params[:reviewer_ids]).select do |reviewer|
+        link_composite_identity(reviewer) if reviewer.composite_identity_enforced? && reviewer.service_account?
+
         user_can_read?(merge_request, reviewer)
       end.map(&:id)
 
@@ -332,15 +334,22 @@ module MergeRequests
     end
 
     override :change_state
-    def change_state(merge_request)
-      case params[:state_event]
+    def change_state(merge_request, state_event)
+      case state_event
       when 'close'
         close_service.new(**close_service.constructor_container_arg(project), current_user: current_user)
                      .execute(merge_request, skip_reset: true)
-        params.delete(:state_event)
       else
         super
       end
+    end
+
+    def reopen_service
+      MergeRequests::ReopenService
+    end
+
+    def close_service
+      MergeRequests::CloseService
     end
   end
 end

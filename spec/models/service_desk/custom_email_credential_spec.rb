@@ -67,7 +67,8 @@ RSpec.describe ServiceDesk::CustomEmailCredential, feature_category: :service_de
         user_name: 'user@example.com',
         port: 587,
         password: 'supersecret',
-        authentication: nil
+        authentication: nil,
+        read_timeout: described_class::SMTP_READ_TIMEOUT
       }
     end
 

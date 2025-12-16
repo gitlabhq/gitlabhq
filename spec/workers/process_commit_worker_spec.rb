@@ -31,21 +31,6 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
 
     let(:track_time) { -> { worker.send(:track_time_from_commit_message, project, commit, author) } }
 
-    context 'when commit_time_tracking feature flag is disabled' do
-      before do
-        stub_feature_flags(commit_time_tracking: false)
-        allow(commit).to receive(:safe_message).and_return(message)
-      end
-
-      it 'does not process time tracking at all' do
-        expect(worker).not_to receive(:validate_and_limit_time_tracking_references)
-        expect(Gitlab::WorkItems::TimeTrackingExtractor).not_to receive(:new)
-
-        allow(worker).to receive(:track_time_from_commit_message)
-        expect(&track_time).not_to change { Timelog.count }
-      end
-    end
-
     context 'when commit message has too many issue references (abuse prevention)' do
       let(:issues) { create_list(:issue, ProcessCommitWorker::MAX_TIME_TRACKING_REFERENCES + 1, project: project) }
       let(:message_with_many_issues) do
@@ -199,6 +184,25 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
       it 'does not add time spent and system note' do
         expect(&track_time).not_to change { issue.timelogs.count }
         expect(issue.reload.notes.count).to eq(0)
+      end
+    end
+
+    context 'when referenced issue is an external issue' do
+      let(:external_issue) { ExternalIssue.new('JIRA-123', project) }
+      let(:external_issue_message) { "Fix bug in JIRA-123 @2h" }
+
+      before do
+        allow(worker).to receive(:validate_and_limit_time_tracking_references).and_return(external_issue_message)
+
+        allow_next_instance_of(Gitlab::WorkItems::TimeTrackingExtractor) do |instance|
+          allow(instance).to receive(:extract_time_spent).and_return({ external_issue => 7200 })
+        end
+      end
+
+      it 'does not add time spent or create notes for external issues' do
+        expect { track_time.call }
+          .to not_change { Timelog.count }
+          .and not_change { Note.count }
       end
     end
 

@@ -3,13 +3,42 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WebhookFormApp from '~/webhooks/components/webhook_form_app.vue';
 import FormUrlApp from '~/webhooks/components/form_url_app.vue';
 import FormCustomHeaders from '~/webhooks/components/form_custom_headers.vue';
+import WebhookFormTriggerList from '~/webhooks/components/webhook_form_trigger_list.vue';
 
 describe('WebhookFormApp', () => {
   let wrapper;
 
+  const defaultInitialTriggers = {
+    pushEvents: false,
+    pushEventsBranchFilter: '',
+    branchFilterStrategy: '',
+    tagPushEvents: false,
+    noteEvents: false,
+    confidentialNoteEvents: false,
+    issuesEvents: false,
+    confidentialIssuesEvents: false,
+    memberEvents: false,
+    projectEvents: false,
+    subgroupEvents: false,
+    mergeRequestsEvents: false,
+    jobEvents: false,
+    pipelineEvents: false,
+    wikiPageEvents: false,
+    deploymentEvents: false,
+    featureFlagEvents: false,
+    releasesEvents: false,
+    milestoneEvents: false,
+    emojiEvents: false,
+    resourceAccessTokenEvents: false,
+    vulnerabilityEvents: false,
+  };
+
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(WebhookFormApp, {
       propsData: {
+        initialTriggers: defaultInitialTriggers,
+        isNewHook: false,
+        hasGroup: false,
         ...props,
       },
     });
@@ -20,6 +49,7 @@ describe('WebhookFormApp', () => {
   const findSecretTokenInput = () => wrapper.findByTestId('webhook-secret-token');
   const findFormUrlApp = () => wrapper.findComponent(FormUrlApp);
   const findFormCustomHeaders = () => wrapper.findComponent(FormCustomHeaders);
+  const findWebhookFormTriggerList = () => wrapper.findComponent(WebhookFormTriggerList);
 
   beforeEach(() => {
     createComponent();
@@ -127,6 +157,21 @@ describe('WebhookFormApp', () => {
 
       expect(findFormCustomHeaders().props()).toMatchObject({
         initialCustomHeaders,
+      });
+    });
+  });
+
+  describe('trigger list component', () => {
+    it('is passed the correct data', () => {
+      createComponent({
+        props: {
+          hasGroup: true,
+        },
+      });
+
+      expect(findWebhookFormTriggerList().props()).toMatchObject({
+        initialTriggers: defaultInitialTriggers,
+        hasGroup: true,
       });
     });
   });

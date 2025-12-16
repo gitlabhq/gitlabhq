@@ -27,10 +27,10 @@ and are not meant for manual consumption.
 {{< alert type="note" >}}
 
 - These endpoints do not adhere to the standard API authentication methods.
-See each route for details on how credentials are expected to be passed. Undocumented authentication methods might be removed in the future.
+  See each route for details on how credentials are expected to be passed. Undocumented authentication methods might be removed in the future.
 
 - The Conan registry is not FIPS compliant and is disabled when FIPS mode is enabled.
-These endpoints all return `404 Not Found`.
+  These endpoints all return `404 Not Found`.
 
 {{< /alert >}}
 

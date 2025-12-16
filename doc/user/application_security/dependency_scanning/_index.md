@@ -52,10 +52,7 @@ table.no-vertical-table-lines tr {
 
 {{< alert type="warning" >}}
 
-The dependency scanning feature based on the Gemnasium analyzer is deprecated in GitLab 17.9 and is planned for removal in
-GitLab 19.0. It is being replaced with [dependency scanning using SBOM](dependency_scanning_sbom/_index.md)
-and the [new dependency scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning).
-For more information, see [epic 15961](https://gitlab.com/groups/gitlab-org/-/epics/15961).
+The dependency scanning feature based on the Gemnasium analyzer is deprecated in GitLab 17.9 and is proposed for removal in GitLab 20.0. However, the removal timeline is not finalized, and you can continue using Gemnasium as needed. For more information, see [epic 15961](https://gitlab.com/groups/gitlab-org/-/epics/15961).
 
 {{< /alert >}}
 
@@ -127,7 +124,7 @@ might occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually
 
 To enable dependency scanning:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. In the **Dependency Scanning** row, select **Configure with a merge request**.
 1. Select **Create merge request**.
@@ -142,7 +139,7 @@ your GitLab CI/CD configuration file is complex.
 
 To enable dependency scanning:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline editor**.
 1. If no `.gitlab-ci.yml` file exists, select **Configure pipeline**, then delete the example
    content.
@@ -192,7 +189,7 @@ After completing these steps, you can:
 
 You can review vulnerabilities in a pipeline:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
@@ -222,7 +219,8 @@ Dependency scanning produces the following output:
 
 Dependency scanning outputs a report containing details of all vulnerabilities. The report is
 processed internally and the results are shown in the UI. The report is also output as an artifact
-of the dependency scanning job, named `gl-dependency-scanning-report.json`.
+of the dependency scanning job, named `gl-dependency-scanning-report.json`, and is always generated
+at the root of the project.
 
 For more details of the dependency scanning report, see the
 [Dependency scanning report schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).
@@ -473,7 +471,7 @@ The following languages and dependency managers are supported by dependency scan
       <td>N</td>
     </tr>
     <tr>
-      <td>Cocoapods<sup>9</sup></td>
+      <td>CocoaPods<sup>9</sup></td>
       <td>All versions</td>
       <td><a href="https://cocoapods.org/">CocoaPods</a></td>
       <td><code>Podfile.lock</code></td>
@@ -1280,7 +1278,7 @@ Follow these steps to modify the `settings.xml` file:
 1. Check if there's an existing `<pluginRepositories>` section in the file.
 
 1. If a `<pluginRepositories>` section already exists, add only the following `<pluginRepository>` element inside it.
-Otherwise, add the entire `<pluginRepositories>` section:
+   Otherwise, add the entire `<pluginRepositories>` section:
 
    ```xml
      <pluginRepositories>
@@ -1430,7 +1428,7 @@ Follow these best practices when you build projects that use CocoaPods for depen
 
      1. Open your `.xcworkspace` file in Xcode.
      1. Select your target scheme.
-     1. Select **Product > Build**. You can also press <kbd>⌘</kbd>+<kbd>B</kbd>.
+     1. Select **Product** > **Build**. You can also press <kbd>⌘</kbd>+<kbd>B</kbd>.
 
    - [fastlane](https://fastlane.tools/), a tool for automating builds and releases for iOS and Android apps:
 

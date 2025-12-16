@@ -39,14 +39,26 @@ class Projects::WorkItemsController < Projects::ApplicationController
     end
   end
 
-  def index
-    not_found unless project&.work_items_consolidated_list_enabled?(current_user)
-  end
+  def index; end
 
   def show
     return if show_params[:iid] == 'new'
 
     @work_item = issuable
+  end
+
+  def edit
+    # Check if user can edit the work item
+    work_item = issuable
+    return render_404 unless work_item
+
+    if can?(current_user, :update_work_item, work_item)
+      # Redirect to work_items detail page with edit mode enabled
+      redirect_to project_work_item_path(project, show_params[:iid], edit: 'true')
+    else
+      # Redirect to work_items detail page without edit mode
+      redirect_to project_work_item_path(project, show_params[:iid])
+    end
   end
 
   def calendar

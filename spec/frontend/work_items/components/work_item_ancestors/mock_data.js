@@ -1,53 +1,53 @@
 export const mockDisclosureHierarchyItems = [
   {
     title: 'First',
-    icon: 'epic',
+    icon: 'work-item-epic',
     href: '#',
   },
   {
     title: 'Second',
-    icon: 'epic',
+    icon: 'work-item-epic',
     href: '#',
   },
   {
     title: 'Third',
-    icon: 'epic',
+    icon: 'work-item-epic',
     href: '#',
   },
   {
     title: 'Fourth',
-    icon: 'epic',
+    icon: 'work-item-epic',
     href: '#',
   },
   {
     title: 'Fifth',
-    icon: 'issues',
+    icon: 'work-item-issue',
     href: '#',
   },
   {
     title: 'Sixth',
-    icon: 'issues',
+    icon: 'work-item-issue',
     href: '#',
   },
   {
     title: 'Seventh',
-    icon: 'issues',
+    icon: 'work-item-issue',
     href: '#',
   },
   {
     title: 'Eighth',
-    icon: 'issue-type-task',
+    icon: 'work-item-task',
     href: '#',
     disabled: true,
   },
   {
     title: 'Ninth',
-    icon: 'issue-type-task',
+    icon: 'work-item-task',
     href: '#',
   },
   {
     title: 'Tenth',
-    icon: 'issue-type-task',
+    icon: 'work-item-task',
     href: '#',
   },
 ];
@@ -84,7 +84,7 @@ export const workItemAncestorsQueryResponse = {
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/2',
               name: 'Issue',
-              iconName: 'issue-type-issue',
+              iconName: 'work-item-issue',
             },
           },
           ancestors: {
@@ -102,7 +102,7 @@ export const workItemAncestorsQueryResponse = {
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/2',
                   name: 'Issue',
-                  iconName: 'issue-type-issue',
+                  iconName: 'work-item-issue',
                 },
                 widgets: [
                   {
@@ -167,7 +167,7 @@ export const workItemMultipleInaccessibleAncestorsQueryResponse = {
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/2',
               name: 'Issue',
-              iconName: 'issue-type-issue',
+              iconName: 'work-item-issue',
             },
           },
           ancestors: {
@@ -185,7 +185,7 @@ export const workItemMultipleInaccessibleAncestorsQueryResponse = {
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/2',
                   name: 'Issue',
-                  iconName: 'issue-type-issue',
+                  iconName: 'work-item-issue',
                 },
                 widgets: [
                   {
@@ -211,7 +211,7 @@ export const workItemMultipleInaccessibleAncestorsQueryResponse = {
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/2',
                   name: 'Issue',
-                  iconName: 'issue-type-issue',
+                  iconName: 'work-item-issue',
                 },
                 widgets: [
                   {
@@ -240,7 +240,7 @@ export const workItemThreeAncestorsQueryResponse = {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
         name: 'Task',
-        iconName: 'issue-type-task',
+        iconName: 'work-item-task',
       },
       widgets: [
         {
@@ -261,7 +261,7 @@ export const workItemThreeAncestorsQueryResponse = {
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/2',
               name: 'Issue',
-              iconName: 'issue-type-issue',
+              iconName: 'work-item-issue',
             },
           },
           ancestors: {
@@ -279,7 +279,7 @@ export const workItemThreeAncestorsQueryResponse = {
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/2',
                   name: 'Issue',
-                  iconName: 'issue-type-issue',
+                  iconName: 'work-item-issue',
                 },
                 widgets: [
                   {
@@ -303,7 +303,7 @@ export const workItemThreeAncestorsQueryResponse = {
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/2',
                   name: 'Issue',
-                  iconName: 'issue-type-issue',
+                  iconName: 'work-item-issue',
                 },
                 widgets: [
                   {
@@ -327,7 +327,7 @@ export const workItemThreeAncestorsQueryResponse = {
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/2',
                   name: 'Epic',
-                  iconName: 'issue-type-epic',
+                  iconName: 'work-item-epic',
                 },
                 widgets: [
                   {
@@ -356,7 +356,7 @@ export const workItemEmptyAncestorsQueryResponse = {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
         name: 'Task',
-        iconName: 'issue-type-task',
+        iconName: 'work-item-task',
       },
       widgets: [
         {

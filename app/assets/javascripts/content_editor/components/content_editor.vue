@@ -121,6 +121,11 @@ export default {
       required: false,
       default: () => [],
     },
+    immersive: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -315,7 +320,7 @@ export default {
 </script>
 <template>
   <content-editor-provider :content-editor="contentEditor">
-    <div class="md-area gl-relative">
+    <div class="md-area gl-relative" :class="{ immersive }" data-testid="content-editor-container">
       <gl-loading-icon
         v-if="isLoading"
         size="lg"

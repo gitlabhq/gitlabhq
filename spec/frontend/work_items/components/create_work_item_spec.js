@@ -18,7 +18,7 @@ import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import WorkItemProjectsListbox from '~/work_items/components/work_item_links/work_item_projects_listbox.vue';
 import WorkItemNamespaceListbox from '~/work_items/components/shared/work_item_namespace_listbox.vue';
-import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
+import TitleSuggestions from '~/work_items/components/title_suggestions.vue';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
   WORK_ITEM_TYPE_NAME_EPIC,
@@ -85,6 +85,8 @@ describe('Create work item component', () => {
     webUrl: '/full-path/-/issues/22',
   };
 
+  let namespaceWorkItemTypesHandler;
+
   const findFormTitle = () => wrapper.find('h1');
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findTitleInput = () => wrapper.findComponent(WorkItemTitle);
@@ -122,7 +124,7 @@ describe('Create work item component', () => {
     namespaceResponseCopy.data.workspace.id = 'gid://gitlab/Group/33';
     const namespaceResponse = isGroupWorkItem ? namespaceResponseCopy : namespaceQueryResponse;
 
-    const namespaceWorkItemTypesHandler = jest.fn().mockResolvedValue(namespaceResponse);
+    namespaceWorkItemTypesHandler = jest.fn().mockResolvedValue(namespaceResponse);
 
     mockApollo = createMockApollo(
       [
@@ -365,7 +367,7 @@ describe('Create work item component', () => {
     it('renders with the current namespace selected by default', async () => {
       createComponent({
         props: { isGroup: true },
-        provide: { workItemPlanningViewEnabled: true },
+        provide: { workItemPlanningViewEnabled: true, hasEpicsFeature: true },
       });
       await waitForPromises();
 
@@ -374,23 +376,46 @@ describe('Create work item component', () => {
     });
 
     it.each`
-      scenario                   | isGroup  | fromGlobalMenu | isEpicsList | workItemPlanningViewEnabled | expected
-      ${'group list page'}       | ${true}  | ${false}       | ${false}    | ${true}                     | ${true}
-      ${'project global menu'}   | ${false} | ${true}        | ${false}    | ${true}                     | ${true}
-      ${'legacy epics list'}     | ${true}  | ${false}       | ${true}     | ${false}                    | ${false}
-      ${'disabled feature flag'} | ${true}  | ${false}       | ${false}    | ${false}                    | ${false}
+      scenario                   | isGroup  | fromGlobalMenu | hasEpicsFeature | workItemPlanningViewEnabled | expected
+      ${'group list page'}       | ${true}  | ${false}       | ${true}         | ${true}                     | ${true}
+      ${'project global menu'}   | ${false} | ${true}        | ${false}        | ${true}                     | ${true}
+      ${'EE with epics'}         | ${true}  | ${false}       | ${true}         | ${true}                     | ${true}
+      ${'disabled feature flag'} | ${true}  | ${false}       | ${false}        | ${false}                    | ${false}
     `(
       '$scenario shows selector: $expected',
-      async ({ isGroup, fromGlobalMenu, isEpicsList, workItemPlanningViewEnabled, expected }) => {
+      async ({
+        isGroup,
+        fromGlobalMenu,
+        hasEpicsFeature,
+        workItemPlanningViewEnabled,
+        expected,
+      }) => {
         createComponent({
-          props: { isGroup, fromGlobalMenu, isEpicsList },
-          provide: { workItemPlanningViewEnabled },
+          props: { isGroup, fromGlobalMenu },
+          provide: { workItemPlanningViewEnabled, hasEpicsFeature },
         });
 
         await waitForPromises();
         expect(findGroupProjectSelector().exists()).toBe(expected);
       },
     );
+
+    it('updates available work item types when new namespace is selected', async () => {
+      createComponent({
+        props: { isGroup: true },
+        provide: { workItemPlanningViewEnabled: true, hasEpicsFeature: true },
+      });
+      await waitForPromises();
+
+      findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
+
+      await waitForPromises();
+
+      expect(namespaceWorkItemTypesHandler).toHaveBeenCalledWith({
+        onlyAvailable: true,
+        fullPath: 'other-namespace/path',
+      });
+    });
   });
 
   describe('Work item types dropdown', () => {
@@ -447,20 +472,6 @@ describe('Create work item component', () => {
       );
     });
 
-    it('restricts the type selector to types provided by allowedWorkItemTypes', async () => {
-      const allowedWorkItemTypes = [
-        WORK_ITEM_TYPE_NAME_INCIDENT,
-        WORK_ITEM_TYPE_NAME_ISSUE,
-        WORK_ITEM_TYPE_NAME_TASK,
-      ];
-      createComponent({ props: { preselectedWorkItemType: null, allowedWorkItemTypes } });
-      await waitForPromises();
-      // +1 for the "Select type" option
-      const expectedOptions = allowedWorkItemTypes.length + 1;
-
-      expect(findSelect().attributes('options').split(',')).toHaveLength(expectedOptions);
-    });
-
     it('selects a work item type on click', async () => {
       createComponent({ props: { preselectedWorkItemType: null } });
       await waitForPromises();
@@ -486,7 +497,7 @@ describe('Create work item component', () => {
         widgetDefinitions: expect.any(Array),
         workItemType: mockId,
         workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
-        workItemTypeIconName: 'issue-type-issue',
+        workItemTypeIconName: 'work-item-issue',
         relatedItemId: mockRelatedItem.id,
       });
 
@@ -508,7 +519,7 @@ describe('Create work item component', () => {
         workItemType: {
           id: 'gid://gitlab/WorkItems::Type/1',
           name: mockId,
-          iconName: 'issue-type-issue',
+          iconName: 'work-item-issue',
         },
       });
     });
@@ -1180,6 +1191,39 @@ describe('Create work item component', () => {
             },
           }),
         });
+      });
+    });
+  });
+
+  describe('last used work item type persistence', () => {
+    describe('when the form is submitted', () => {
+      it('stores the last used work item type against the selected namespace on submit', async () => {
+        createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE } });
+        await waitForPromises();
+        await updateWorkItemTitle();
+        await submitCreateForm();
+
+        expect(localStorage.setItem).toHaveBeenCalledWith(
+          'freq-wi-type:full-path',
+          'gid://gitlab/WorkItems::Type/1',
+        );
+      });
+    });
+    describe('loading the last used work item type', () => {
+      beforeEach(async () => {
+        createComponent({
+          props: { isGroup: true },
+          provide: { workItemPlanningViewEnabled: true, hasEpicsFeature: true },
+        });
+        await waitForPromises();
+      });
+      it('when the form loads', () => {
+        expect(localStorage.getItem).toHaveBeenCalledWith('freq-wi-type:full-path');
+      });
+      it('when selecting a different namespace', async () => {
+        findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
+        await waitForPromises();
+        expect(localStorage.getItem).toHaveBeenCalledWith('freq-wi-type:other-namespace/path');
       });
     });
   });

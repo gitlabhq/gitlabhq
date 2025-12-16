@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillMergeRequestContextCommitsProjectId
-description: Backfills sharding key `merge_request_context_commits.project_id` from
-  `merge_requests`.
-feature_category: code_review_workflow
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156255
-milestone: '17.1'
-queued_migration_version: 20240613072542
-finalized_by: '20241110232607'

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Stage do
   let(:stage) { described_class.new(config) }

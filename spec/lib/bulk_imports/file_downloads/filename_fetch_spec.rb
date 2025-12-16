@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe BulkImports::FileDownloads::FilenameFetch do
   let(:dummy_instance) { dummy_class.new }

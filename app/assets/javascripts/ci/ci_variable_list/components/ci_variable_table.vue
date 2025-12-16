@@ -24,6 +24,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'CiVariableTable',
   defaultFields: [
     {
       key: 'key',
@@ -112,6 +113,13 @@ export default {
       required: true,
     },
   },
+  emits: [
+    'delete-variable',
+    'handle-next-page',
+    'handle-prev-page',
+    'set-selected-variable',
+    'sort-changed',
+  ],
   deleteModal: {
     actionPrimary: {
       text: __('Delete'),

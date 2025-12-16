@@ -15,5 +15,3 @@ module Users
     end
   end
 end
-
-Users::GroupCalloutsController.prepend_mod

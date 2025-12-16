@@ -75,7 +75,7 @@ model:
 ### 3. Create a Completion class
 
 1. Create a new completion under `ee/lib/gitlab/llm/ai_gateway/completions/` and inherit it from the `Base`
-AI gateway Completion.
+   AI gateway Completion.
 
 ```ruby
 # ee/lib/gitlab/llm/ai_gateway/completions/rewrite_description.rb
@@ -185,8 +185,7 @@ prompt_template:
 
 Once a stable prompt version is added to the AI Gateway it should not be altered. You can create a mutable version of a
 prompt by adding a pre-release suffix to the file name (for example, `1.0.1-dev.yml`). This will also prevent it from being
-automatically served to clients. Then you can use a feature flag to control the rollout this new version. For GitLab
-Duo Self-hosted, forced versions are ignored, and only versions defined in `PromptVersions` are used. This avoids
+automatically served to clients. Then you can use a feature flag to control the rollout this new version. For GitLab Duo Self-Hosted, forced versions are ignored, and only versions defined in `PromptVersions` are used. This avoids
 mistakenly enabling versions for models that don't have that specified version.
 
 If your AI action is implemented as a subclass of `AiGateway::Completions::Base`, you can achieve this by overriding the prompt
@@ -274,7 +273,7 @@ For more information, see [the GitLab AI gateway documentation](https://gitlab-o
 
 {{< /alert >}}
 
-If your Duo feature involves an autonomous agent, you should use
+If your GitLab Duo feature involves an autonomous agent, you should use
 [composite identity](composite_identity.md) authorization.
 
 ### Pairing requests with responses
@@ -414,11 +413,11 @@ Gitlab::Llm::Anthropic::Client.new(user, unit_primitive: 'your_feature')
 Prompt versions should adjust to [Semantic Versioning](https://semver.org/) standards: `MAJOR.MINOR.PATCH[-PRERELEASE]`.
 
 - A change in the MAJOR component reflects changes will break with older versions of GitLab. For example, when the new
-prompt must receive a new property that doesn't have a default, since if this change were applied to all GitLab versions,
-requests made from older versions will throw an error since that property is not present.
+  prompt must receive a new property that doesn't have a default, since if this change were applied to all GitLab versions,
+  requests made from older versions will throw an error since that property is not present.
 
 - A change in the MINOR component reflects feature additions, but that are still backwards compatible. For example,
-suppose we want to use a new more powerful model: requests of older versions of GitLab will still work.
+  suppose we want to use a new more powerful model: requests of older versions of GitLab will still work.
 
 - A change in the PATCH component reflects small bug fixes to prompts, like a typo.
 

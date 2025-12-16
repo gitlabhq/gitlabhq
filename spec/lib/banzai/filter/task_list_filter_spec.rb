@@ -5,15 +5,6 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::TaskListFilter, feature_category: :markdown do
   include FilterSpecHelper
 
-  it 'adds `<task-button></task-button>` to every list item' do
-    doc = reference_filter(<<~MARKDOWN)
-      * [ ] testing item 1
-      * [x] testing item 2
-    MARKDOWN
-
-    expect(doc.xpath('.//li//task-button').count).to eq(2)
-  end
-
   it 'adds `aria-label` to every checkbox in the list' do
     # Some of these test cases are not possible to encounter in practice:
     # they imply these tags or attributes made it past SanitizationFilter.

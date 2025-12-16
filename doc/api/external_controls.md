@@ -26,11 +26,9 @@ You can configure external controls with periodic ping functionality. When ping 
 
 For a single external control, use the API to inform GitLab that a control has passed or failed a check by an external service.
 
-### Authentication
+Prerequisites
 
-External controls API requires HMAC, Timestamp, and Nonce authentication for security.
-
-### Endpoint
+- Must use HMAC, Timestamp, and Nonce authentication for security.
 
 ```plaintext
 PATCH /api/v4/projects/:id/compliance_external_controls/:external_control_id/status
@@ -43,6 +41,11 @@ HTTP Headers:
 | `X-Gitlab-Timestamp`  | string  | yes      | Current Unix timestamp.                                                                       |
 | `X-Gitlab-Nonce`      | string  | yes      | Random string or token to prevent replay attacks.                                             |
 | `X-Gitlab-Hmac-Sha256`| string  | yes      | HMAC-SHA256 signature of the request.                                                         |
+
+To compute the HMAC-SHA256 signature:
+
+1. Concatenate these values in order: timestamp + nonce + path + request body.
+1. Compute the HMAC-SHA256 of the concatenated string using your secret key.
 
 Supported attributes:
 

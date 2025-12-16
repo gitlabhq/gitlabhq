@@ -28,11 +28,8 @@ export default {
     };
   },
   computed: {
-    userFirstName() {
-      return gon.current_user_fullname?.trim().split(' ')[0] || null;
-    },
     relevantName() {
-      return this.userFirstName || gon.current_username;
+      return gon.current_user_fullname?.trim() || gon.current_username;
     },
     greeting() {
       return sprintf(__('Hi, %{name}'), { name: this.relevantName });
@@ -166,9 +163,11 @@ export default {
         </button>
       </div>
     </div>
-    <header>
+    <header class="gl-flex gl-min-w-0 gl-flex-col">
       <p class="gl-heading-5 gl-mb-2 gl-truncate gl-text-subtle">{{ __("Today's highlights") }}</p>
-      <h1 v-if="relevantName" class="gl-heading-display gl-m-0">{{ greeting }}</h1>
+      <h1 v-if="relevantName" class="gl-heading-display gl-m-0 gl-min-w-0 gl-truncate">
+        {{ greeting }}
+      </h1>
     </header>
     <set-status-modal-wrapper
       v-if="showStatusModal"

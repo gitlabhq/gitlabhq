@@ -266,6 +266,7 @@ a pre-release version, specify the full version, for example `1.0.1-rc`.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438275) in GitLab 18.6 as a [beta](../../policy/development_stages_support.md#beta) [with a flag](../../administration/feature_flags/_index.md) named `ci_component_context_interpolation`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/571986) in GitLab 18.7. Feature flag `ci_component_context_interpolation` removed.
 
 {{< /history >}}
 
@@ -646,7 +647,7 @@ For a click-through demo, see [the CI/CD Catalog beta Product Tour](https://gitl
 
 To access the CI/CD Catalog and view the published components that are available to you:
 
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to**.
 1. Select **Explore**.
 1. Select **CI/CD Catalog**.
 
@@ -678,7 +679,7 @@ Prerequisites:
 
 To set the project as a catalog project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Turn on the **CI/CD Catalog project** toggle.

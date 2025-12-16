@@ -101,8 +101,8 @@ export default {
       required: true,
     },
   },
+  emits: ['set-current-tab'],
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     appStatus: {
       query: getAppStatus,
       update(data) {
@@ -113,6 +113,7 @@ export default {
   data() {
     return {
       showValidateNewBadge: false,
+      appStatus: null,
     };
   },
   computed: {

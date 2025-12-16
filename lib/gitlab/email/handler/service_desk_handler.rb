@@ -117,7 +117,7 @@ module Gitlab
         def create_issue!
           result = ::Issues::CreateService.new(
             container: project,
-            current_user: Users::Internal.support_bot,
+            current_user: support_bot,
             params: {
               title: mail.subject,
               description: message_including_template,
@@ -199,7 +199,7 @@ module Gitlab
         def create_note(note)
           ::Notes::CreateService.new(
             project,
-            Users::Internal.support_bot,
+            support_bot,
             noteable: @issue,
             note: note
           ).execute
@@ -223,7 +223,7 @@ module Gitlab
         end
 
         def author
-          Users::Internal.support_bot
+          support_bot
         end
 
         def add_email_participants
@@ -243,7 +243,7 @@ module Gitlab
 
           ::IssueEmailParticipants::CreateService.new(
             target: @issue,
-            current_user: Users::Internal.support_bot,
+            current_user: support_bot,
             emails: cc_addresses.excluding(service_desk_addresses)
           ).execute
         end
@@ -257,6 +257,10 @@ module Gitlab
           return true if service_desk_setting.nil?
 
           service_desk_setting.tickets_confidential_by_default?
+        end
+
+        def support_bot
+          @support_bot ||= Users::Internal.for_organization(project.organization_id).support_bot
         end
       end
     end

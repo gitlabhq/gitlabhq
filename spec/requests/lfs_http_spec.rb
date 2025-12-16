@@ -1038,19 +1038,62 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
                   project.ci_push_repository_for_job_token_allowed = push_repository_for_job_token_allowed
                   project.save!
                   project.add_developer(user)
-                  put_authorize
                 end
 
                 context 'when project is not allowed to push' do
                   let(:push_repository_for_job_token_allowed) { false }
 
-                  it_behaves_like 'LFS http 403 response'
+                  context 'and request is sent by gitlab-workhorse to authorize the request' do
+                    before do
+                      put_authorize
+                    end
+
+                    it_behaves_like 'LFS http 403 response'
+                  end
+
+                  context 'and request is sent by gitlab-workhorse to finalize the upload' do
+                    before do
+                      put_finalize
+                    end
+
+                    it_behaves_like 'LFS http 403 response'
+                  end
                 end
 
                 context 'when project is allowed to push' do
                   let(:push_repository_for_job_token_allowed) { true }
 
-                  it_behaves_like 'LFS http 200 workhorse response'
+                  context 'but user lacks build_push_code permission' do
+                    before do
+                      # Remove developer role to simulate missing build_push_code permission
+                      project.members.find_by(user: user).destroy!
+                      put_authorize
+                    end
+
+                    it_behaves_like 'LFS http 404 response'
+                  end
+
+                  context 'and user has build_push_code permission' do
+                    context 'and request is sent by gitlab-workhorse to authorize the request' do
+                      before do
+                        put_authorize
+                      end
+
+                      it_behaves_like 'LFS http 200 workhorse response'
+                    end
+
+                    context 'and request is sent by gitlab-workhorse to finalize the upload' do
+                      before do
+                        put_finalize
+                      end
+
+                      it_behaves_like 'LFS http 200 response'
+
+                      it 'LFS object is linked to the project' do
+                        expect(lfs_object.projects.pluck(:id)).to include(project.id)
+                      end
+                    end
+                  end
                 end
               end
 
@@ -1069,10 +1112,25 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
               let(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
               before do
-                put_authorize
+                project.ci_push_repository_for_job_token_allowed = true
+                project.save!
               end
 
-              it_behaves_like 'LFS http 403 response'
+              context 'and request is sent by gitlab-workhorse to authorize the request' do
+                before do
+                  put_authorize
+                end
+
+                it_behaves_like 'LFS http 403 response'
+              end
+
+              context 'and request is sent by gitlab-workhorse to finalize the upload' do
+                before do
+                  put_finalize
+                end
+
+                it_behaves_like 'LFS http 403 response'
+              end
             end
           end
 

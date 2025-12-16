@@ -116,6 +116,7 @@ $solarized-light-il: #2aa198;
   --diff-expansion-background-color: #{$gl-color-neutral-100};
 
   --code-background: #{$solarized-light-pre-bg};
+  --code-border-color: #{$gl-color-neutral-100};
   --code-empty-background: #{color.adjust(color.adjust($solarized-light-pre-bg, $lightness: -3%), $saturation: -30%)};
 
   --code-line-number-background-color: #{$solarized-light-line-bg};

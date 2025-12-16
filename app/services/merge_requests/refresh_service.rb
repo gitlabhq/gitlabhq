@@ -18,7 +18,6 @@ module MergeRequests
     def refresh_merge_requests!
       # n + 1: https://gitlab.com/gitlab-org/gitlab-foss/issues/60289
       Gitlab::GitalyClient.allow_n_plus_1_calls { find_new_commits }
-
       # Be sure to close outstanding MRs before reloading them to avoid generating an
       # empty diff during a manual merge
       close_upon_missing_source_branch_ref
@@ -36,21 +35,18 @@ module MergeRequests
       end
 
       abort_ff_merge_requests_with_auto_merges
+
       cache_merge_requests_closing_issues
 
       merge_requests_for_source_branch.each do |mr|
         # Leave a system note if a branch was deleted/added
-        if branch_added_or_removed?
-          comment_mr_branch_presence_changed(mr)
-        end
+        comment_mr_branch_presence_changed(mr) if branch_added_or_removed?
 
         notify_about_push(mr)
         mark_mr_as_draft_from_commits(mr)
 
         # Call merge request webhook with update branches
-        if Feature.disabled?(:split_refresh_worker_web_hooks, @current_user)
-          execute_mr_web_hooks(mr)
-        end
+        execute_mr_web_hooks(mr) if Feature.disabled?(:split_refresh_worker_web_hooks, @current_user)
 
         if Feature.disabled?(:split_refresh_worker_pipeline, @current_user) && !@push.branch_removed?
           # Run at the end of the loop to avoid any potential contention on the MR object
@@ -76,6 +72,14 @@ module MergeRequests
       # create an `empty` diff for `closed` MRs without a source branch, keeping
       # the latest diff state as the last _valid_ one.
       merge_requests_for_source_branch.reject(&:source_branch_exists?).each do |mr|
+        Gitlab::AppLogger.info(
+          message: 'Closing merge request due to missing source branch',
+          merge_request_id: mr.id,
+          merge_request_iid: mr.iid,
+          project_id: mr.project_id,
+          source_branch: mr.source_branch
+        )
+
         MergeRequests::CloseService
           .new(project: mr.target_project, current_user: @current_user)
           .execute(mr)
@@ -91,6 +95,7 @@ module MergeRequests
       commit_ids = @commits.map(&:id)
       merge_requests = @project.merge_requests.opened
         .preload_project_and_latest_diff
+        .preload_merge_data(@project)
         .preload_latest_diff_commit(@project)
         .where(target_branch: @push.branch_name).to_a
         .select(&:diff_head_commit)
@@ -152,9 +157,11 @@ module MergeRequests
       merge_requests = @project.merge_requests.opened
         .by_source_or_target_branch(@push.branch_name)
         .preload_project_and_latest_diff
+        .preload_merge_data(@project)
 
       merge_requests_from_forks = merge_requests_for_forks
         .preload_project_and_latest_diff
+        .preload_merge_data(@project)
 
       merge_requests_array = merge_requests.to_a + merge_requests_from_forks.to_a
       filter_merge_requests(merge_requests_array).each do |merge_request|

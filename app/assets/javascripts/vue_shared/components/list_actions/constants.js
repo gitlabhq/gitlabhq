@@ -8,6 +8,8 @@ export const ACTION_RESTORE = 'restore';
 export const ACTION_LEAVE = 'leave';
 export const ACTION_DELETE = 'delete';
 export const ACTION_DELETE_IMMEDIATELY = 'delete-immediately';
+export const ACTION_REQUEST_ACCESS = 'request-access';
+export const ACTION_WITHDRAW_ACCESS_REQUEST = 'withdraw-access-request';
 
 // The order the actions are defined in the array is the order they will render.
 export const ORDERED_GENERAL_ACTIONS = [
@@ -16,6 +18,8 @@ export const ORDERED_GENERAL_ACTIONS = [
   ACTION_ARCHIVE,
   ACTION_UNARCHIVE,
   ACTION_RESTORE,
+  ACTION_REQUEST_ACCESS,
+  ACTION_WITHDRAW_ACCESS_REQUEST,
 ];
 export const ORDERED_DANGER_ACTIONS = [ACTION_LEAVE, ACTION_DELETE, ACTION_DELETE_IMMEDIATELY];
 
@@ -39,6 +43,12 @@ export const DEFAULT_ACTION_ITEM_DEFINITIONS = {
   },
   [ACTION_RESTORE]: {
     text: __('Restore'),
+  },
+  [ACTION_REQUEST_ACCESS]: {
+    text: __('Request access'),
+  },
+  [ACTION_WITHDRAW_ACCESS_REQUEST]: {
+    text: __('Withdraw access request'),
   },
   [ACTION_LEAVE]: {
     text: __('Leave'),

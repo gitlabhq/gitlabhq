@@ -51,7 +51,7 @@ module Gitlab
           scope :not_on_hold, -> { where('on_hold_until IS NULL OR on_hold_until < NOW()') }
 
           scope :executable, -> do
-            with_statuses(:queued, :paused).not_on_hold
+            with_statuses(:queued, :active, :paused).not_on_hold
           end
 
           scope :unfinished_with_config, ->(job_class_name, table_name, column_name, job_arguments, org_id: nil) do
@@ -93,15 +93,19 @@ module Gitlab
             state :failed, value: 4
 
             event :finish do
-              transition [:paused, :finished, :active, :finalizing] => :finished
+              transition [:paused, :finished, :active] => :finished
             end
 
             event :failure do
-              transition [:failed, :finalizing, :active] => :failed
+              transition [:failed, :active] => :failed
             end
 
             event :hold do
               transition any => :paused
+            end
+
+            event :execute do
+              transition any => :active
             end
 
             before_transition any => [:paused] do |worker|
@@ -113,6 +117,14 @@ module Gitlab
                 job_class_name: worker.job_class_name,
                 duration_s: RETRY_DELAY.to_i
               )
+            end
+
+            before_transition any => :finished do |migration|
+              migration.finished_at = Time.current
+            end
+
+            before_transition any => :active do |migration|
+              migration.started_at = Time.current
             end
           end
 
@@ -132,15 +144,18 @@ module Gitlab
           end
 
           def create_job!(min, max)
-            jobs.create!(
+            args = {
               batch_size: batch_size,
               sub_batch_size: sub_batch_size,
               pause_ms: pause_ms,
               min_cursor: min,
               max_cursor: max,
-              worker_partition: partition,
-              organization_id: organization_id
-            )
+              worker_partition: partition
+            }
+
+            args[:organization_id] = organization_id if respond_to?(:organization_id)
+
+            jobs.create!(args)
           end
 
           # Returns the end cursor of the last batch as the starting point for the next batch.
@@ -148,6 +163,13 @@ module Gitlab
           # skipping the first row, as required by KeysetIterator.
           def next_min_cursor
             last_job&.max_cursor || min_cursor
+          end
+
+          def interval_elapsed?(variance: 0)
+            return true unless last_job
+
+            interval_with_variance = interval - variance
+            last_job.created_at <= Time.current - interval_with_variance
           end
 
           def health_context

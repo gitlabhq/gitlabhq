@@ -1,6 +1,11 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlModal, GlCollapsibleListbox, GlDisclosureDropdown } from '@gitlab/ui';
+import {
+  GlModal,
+  GlCollapsibleListbox,
+  GlDisclosureDropdown,
+  GlKeysetPagination,
+} from '@gitlab/ui';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -86,6 +91,9 @@ describe('Branch rules app', () => {
   const findAddBranchRuleDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findCreateBranchRuleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
+  const clickNextButton = () => findPagination().vm.$emit('next');
+  const clickPreviousButton = () => findPagination().vm.$emit('prev');
 
   beforeEach(async () => {
     setWindowLocation(TEST_HOST);
@@ -275,6 +283,59 @@ describe('Branch rules app', () => {
 
       expect(expandSection).toHaveBeenCalledWith(PROTECTED_BRANCHES_ANCHOR);
       expect(scrollToElement).toHaveBeenCalledWith(PROTECTED_BRANCHES_ANCHOR);
+    });
+  });
+
+  describe('Pagination', () => {
+    let branchRulesQueryHandler;
+
+    beforeEach(async () => {
+      branchRulesQueryHandler = jest.fn().mockResolvedValue(branchRulesMockResponse);
+      await createComponent({ queryHandler: branchRulesQueryHandler });
+    });
+
+    it('displays correct pagination state on first page', () => {
+      expect(findPagination().props('hasNextPage')).toBe(true);
+      expect(findPagination().props('hasPreviousPage')).toBe(false);
+      expect(findPagination().props('prevText')).toBe('Prev');
+      expect(findPagination().props('nextText')).toBe('Next');
+    });
+
+    it('fetches next page when next button is clicked', async () => {
+      clickNextButton();
+      await nextTick();
+      await waitForPromises();
+
+      expect(branchRulesQueryHandler).toHaveBeenCalledWith({
+        projectPath: appProvideMock.projectPath,
+        first: 20,
+        after: null,
+      });
+    });
+
+    it('enables previous button after navigating to next page', async () => {
+      clickNextButton();
+      await nextTick();
+      await waitForPromises();
+
+      expect(findPagination().props('hasPreviousPage')).toBe(true);
+    });
+
+    it('fetches previous page when previous button is clicked', async () => {
+      // First navigate to next page to have a previous page to go back to
+      clickNextButton();
+      await nextTick();
+      await waitForPromises();
+
+      clickPreviousButton();
+      await nextTick();
+      await waitForPromises();
+
+      expect(branchRulesQueryHandler).toHaveBeenCalledWith({
+        projectPath: appProvideMock.projectPath,
+        first: 20,
+        after: null,
+      });
     });
   });
 });

@@ -25,7 +25,6 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 
 import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_change_type_modal.vue';
 import {
-  BASE_ALLOWED_CREATE_TYPES,
   CREATION_CONTEXT_RELATED_ITEM,
   NAME_TO_TEXT_LOWERCASE_MAP,
   STATE_CLOSED,
@@ -385,20 +384,6 @@ export default {
     showStateItem() {
       return this.canUpdate && !(this.workItemState === STATE_CLOSED && this.isDiscussionLocked);
     },
-    allowedWorkItemTypes() {
-      if (this.isGroup) {
-        return [];
-      }
-
-      if (this.glFeatures.okrsMvc && this.hasOkrsFeature) {
-        return BASE_ALLOWED_CREATE_TYPES.concat(
-          WORK_ITEM_TYPE_NAME_KEY_RESULT,
-          WORK_ITEM_TYPE_NAME_OBJECTIVE,
-        );
-      }
-
-      return BASE_ALLOWED_CREATE_TYPES;
-    },
     showMoveButton() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE && this.canMove;
     },
@@ -669,7 +654,7 @@ export default {
         @action="showChangeTypeModal"
       >
         <template #list-item>
-          <gl-icon name="issue-type-issue" class="gl-mr-2" variant="subtle" />
+          <gl-icon name="work-item-issue" class="gl-mr-2" variant="subtle" />
           {{ $options.i18n.changeWorkItemType }}
         </template>
       </gl-disclosure-dropdown-item>
@@ -842,7 +827,6 @@ export default {
     </gl-modal>
 
     <create-work-item-modal
-      :allowed-work-item-types="allowedWorkItemTypes"
       :always-show-work-item-type-select="!isGroup"
       :creation-context="$options.CREATION_CONTEXT_RELATED_ITEM"
       :full-path="fullPath"

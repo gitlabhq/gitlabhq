@@ -1,5 +1,6 @@
 <script>
 import { MEMBERS_TAB_TYPES } from 'ee_else_ce/members/constants';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import {
   isGroup,
   isCurrentUser,
@@ -9,7 +10,7 @@ import {
   canUpdate,
 } from '../../utils';
 
-export default {
+export default normalizeRender({
   name: 'MembersTableCell',
   inject: ['currentUserId', 'canManageMembers'],
   props: {
@@ -69,5 +70,5 @@ export default {
       },
     });
   },
-};
+});
 </script>

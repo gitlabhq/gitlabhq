@@ -34,7 +34,7 @@ RSpec.describe Namespaces::ArchiveHelper, feature_category: :groups_and_projects
 
       context 'when namespace is archived' do
         before do
-          namespace.archive
+          namespace.namespace_settings.update!(archived: true)
         end
 
         it { is_expected.to be(true) }
@@ -42,7 +42,7 @@ RSpec.describe Namespaces::ArchiveHelper, feature_category: :groups_and_projects
 
       context 'when has archived ancestor' do
         before do
-          parent.archive
+          parent.namespace_settings.update!(archived: true)
         end
 
         it { is_expected.to be(true) }
@@ -74,7 +74,7 @@ RSpec.describe Namespaces::ArchiveHelper, feature_category: :groups_and_projects
       let(:namespace) { namespace_type == :group ? group : project }
 
       before do
-        parent.archive if has_archived_ancestor
+        parent.namespace_settings.update!(archived: true) if has_archived_ancestor
       end
 
       it 'returns expected message' do

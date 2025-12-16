@@ -73,7 +73,7 @@ Note the following:
 - Pipeline execution policies remain in effect even if the project lacks a CI/CD configuration file.
 - The order of the policies matters for the applied suffix.
 - If any policy applied to a given project has `suffix: never`, the pipeline fails if another job with the same name is already present in the pipeline.
-- Pipeline execution policies are enforced on all branches and pipeline sources. However, for [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md#add-jobs-to-merge-request-pipelines), some `rules:` or `workflow:rules` configurations can prevent jobs from running. Use [workflow rules](../../../ci/yaml/workflow.md) to control when pipeline execution policies are enforced.
+- Pipeline execution policies are enforced on all branches and pipeline sources. However, for [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md#configure-merge-request-pipelines), some `rules:` or `workflow:rules` configurations can prevent jobs from running. Use [workflow rules](../../../ci/yaml/workflow.md) to control when pipeline execution policies are enforced.
 
 ### `.pipeline-policy-pre` stage
 
@@ -842,7 +842,7 @@ To recreate a pipeline execution policy:
 
 <!-- markdownlint-disable MD044 -->
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Policies**.
 1. Select the pipeline execution policy you want to recreate.
 1. On the right sidebar, select the **YAML** tab and copy the contents of the entire policy file.

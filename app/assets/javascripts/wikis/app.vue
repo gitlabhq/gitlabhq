@@ -17,7 +17,7 @@ export default {
     WikiNotesApp,
   },
   inject: {
-    isEditingPath: { default: null },
+    isEditingPath: { default: false },
     isPageHistorical: { default: null },
     wikiUrl: { default: null },
     historyUrl: { default: null },
@@ -34,6 +34,11 @@ export default {
       isEditing: false,
     };
   },
+  computed: {
+    showWikiNotes() {
+      return !(this.isEditingPath || this.isEditing) || this.pagePersisted;
+    },
+  },
   watch: {
     isEditing() {
       const url = new URL(window.location);
@@ -48,15 +53,24 @@ export default {
     },
   },
   mounted() {
-    const url = new URL(window.location);
-
-    if (url.searchParams.has('edit')) {
-      this.setEditingMode(true);
-    }
+    this.checkEditingMode();
+    window.addEventListener('popstate', this.checkEditingMode);
+  },
+  beforeDestroy() {
+    window.removeEventListener('popstate', this.checkEditingMode);
   },
   methods: {
     setEditingMode(value) {
       this.isEditing = value;
+    },
+    checkEditingMode() {
+      const url = new URL(window.location);
+
+      if (url.searchParams.has('edit')) {
+        this.setEditingMode(true);
+      } else {
+        this.setEditingMode(false);
+      }
     },
   },
 };
@@ -80,6 +94,6 @@ export default {
     <wiki-header v-if="!isEditing" @is-editing="setEditingMode" />
     <wiki-edit-form v-if="isEditingPath || isEditing" @is-editing="setEditingMode" />
     <wiki-content v-else :is-editing="isEditing" />
-    <wiki-notes-app v-if="pagePersisted" />
+    <wiki-notes-app v-if="showWikiNotes" />
   </div>
 </template>

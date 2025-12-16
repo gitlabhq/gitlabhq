@@ -436,7 +436,7 @@ module Gitlab
           service_desk_issues: count(
             ::Issue.where(
               project: projects_with_service_desk,
-              author: ::Users::Internal.support_bot,
+              author: User.support_bot,
               confidential: true
             )
           )

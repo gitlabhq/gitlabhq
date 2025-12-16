@@ -7,7 +7,7 @@ RSpec.describe Discussion, ResolvableDiscussion, feature_category: :code_review_
 
   let_it_be(:first_note, reload: true) { create(:discussion_note_on_merge_request) }
   let_it_be(:noteable) { first_note.noteable }
-  let_it_be(:project) { first_note.project }
+  let_it_be_with_reload(:project) { first_note.project }
   let_it_be(:second_note, reload: true) { create(:discussion_note_on_merge_request, noteable: noteable, project: project, in_reply_to: first_note) }
   let_it_be(:third_note, reload: true) { create(:discussion_note_on_merge_request, noteable: noteable, project: project) }
 
@@ -185,8 +185,40 @@ RSpec.describe Discussion, ResolvableDiscussion, feature_category: :code_review_
             subject.noteable.author = current_user
           end
 
-          it "returns true" do
-            expect(subject.can_resolve?(current_user)).to be true
+          context 'with access to the project' do
+            before_all do
+              project.add_developer(current_user)
+            end
+
+            it "returns true" do
+              expect(subject.can_resolve?(current_user)).to be true
+            end
+
+            context 'with confidential discussion' do
+              before_all do
+                first_note.confidential = true
+              end
+
+              it "returns true" do
+                expect(subject.can_resolve?(current_user)).to be true
+              end
+            end
+          end
+
+          context 'without access to the project' do
+            it "returns false" do
+              expect(subject.can_resolve?(current_user)).to be false
+            end
+
+            context 'with confidential discussion' do
+              before_all do
+                first_note.confidential = true
+              end
+
+              it "returns false" do
+                expect(subject.can_resolve?(current_user)).to be false
+              end
+            end
           end
 
           context 'when noteable is locked' do

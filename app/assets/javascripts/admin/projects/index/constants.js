@@ -6,7 +6,6 @@ import ResourceListsEmptyState, {
   TYPES,
 } from '~/vue_shared/components/resource_lists/empty_state.vue';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
-import { joinPaths } from '~/lib/utils/url_utility';
 import {
   SORT_LABEL_CREATED,
   SORT_LABEL_NAME,
@@ -67,12 +66,11 @@ const baseTab = {
   paginationType: PAGINATION_TYPE_KEYSET,
   formatter: (projects) =>
     formatGraphQLProjects(projects, (project) => {
-      const adminPath = joinPaths('/', gon.relative_url_root, '/admin/projects', project.fullPath);
       const canAdminAllResources = get(project.userPermissions, 'adminAllResources', true);
 
       return {
-        editPath: `${adminPath}/edit`,
-        avatarLabelLink: adminPath,
+        editPath: project.adminEditPath,
+        avatarLabelLink: project.adminShowPath,
         availableActions: canAdminAllResources ? project.availableActions : [],
       };
     }),
@@ -107,7 +105,7 @@ export const INACTIVE_TAB = {
 
 export const ADMIN_PROJECTS_TABS = [ACTIVE_TAB, INACTIVE_TAB];
 
-export const BASE_ROUTE = '/admin/projects';
+export const BASE_ROUTE = '/';
 
 export const ADMIN_PROJECTS_ROUTE_NAME = 'admin-projects';
 export const FIRST_TAB_ROUTE_NAMES = [ADMIN_PROJECTS_ROUTE_NAME];

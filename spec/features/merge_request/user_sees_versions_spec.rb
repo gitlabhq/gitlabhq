@@ -192,6 +192,32 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
       comment: 'Typo, please fix.'
   end
 
+  it 'downloads diff file from older version' do
+    visit diffs_project_merge_request_path(
+      project,
+      merge_request,
+      diff_id: merge_request_diff3.id,
+      start_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
+      format: :diff
+    )
+
+    changed_files = page.text.lines.count { |line| line.start_with? 'diff --git' }
+    expect(changed_files).to eq(4)
+  end
+
+  it 'downloads patch file from older version' do
+    visit diffs_project_merge_request_path(
+      project,
+      merge_request,
+      diff_id: merge_request_diff3.id,
+      start_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
+      format: :patch
+    )
+
+    changed_files = page.text.lines.count { |line| line.start_with? 'diff --git' }
+    expect(changed_files).to eq(4)
+  end
+
   describe 'compare with same version' do
     before do
       page.within '.mr-version-compare-dropdown' do

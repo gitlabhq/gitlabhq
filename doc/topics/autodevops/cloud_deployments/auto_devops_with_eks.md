@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Use Auto DevOps to deploy an application to Amazon Elastic Kubernetes Service (EKS)
 ---
@@ -50,7 +50,7 @@ Create the application project in the group hierarchy at the same level or below
 
 {{< /alert >}}
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Ruby on Rails** template.
 1. Give your project a name, optionally a description, and make it public so that
@@ -134,7 +134,7 @@ While Auto DevOps is enabled by default, Auto DevOps can be disabled for
 the entire instance (for GitLab Self-Managed instances) and for individual groups. Complete
 these steps to enable Auto DevOps if it's disabled:
 
-1. On the left sidebar, select **Search or go to** and find the application project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find the application project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select **Default to Auto DevOps pipeline** to display more options.
@@ -225,7 +225,7 @@ takes you to the pod's logs page.
 
 Although the example shows only one pod hosting the application at the moment, you can add
 more pods by defining the [`REPLICAS` CI/CD variable](../cicd_variables.md)
-in **Settings > CI/CD > Variables**.
+in **Settings** > **CI/CD** > **Variables**.
 
 ### Work with branches
 

@@ -17,20 +17,21 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
 
     shared_examples 'creating package file' do
       it 'creates a new package file with expected attributes' do
-        expect(response).to be_success
-        package_file = response[:package_file]
+        is_expected.to be_success
 
-        expect(package_file).to be_valid
-        expect(package_file.file_name).to eq(file_name)
-        expect(package_file.file_md5).to eq('12345')
-        expect(package_file.size).to eq(128)
-        expect(package_file.conan_file_metadatum).to be_valid
-        expect(package_file.conan_file_metadatum.conan_file_type).to eq(conan_file_type)
-        expect(package_file.file.read).to eq('content')
-
-        expect(package_file.conan_file_metadatum.recipe_revision_value).to eq(params[:recipe_revision])
-        expect(package_file.conan_file_metadatum.package_revision_value).to eq(params[:package_revision])
-        expect(package_file.conan_file_metadatum.package_reference_value).to eq(params[:conan_package_reference])
+        expect(response[:package_file]).to be_valid.and have_attributes(
+          file_name: file_name,
+          file_md5: '12345',
+          size: 128,
+          file: satisfy { |f| f.read == 'content' },
+          project_id: package.project_id,
+          conan_file_metadatum: be_valid.and(have_attributes(
+            conan_file_type: conan_file_type,
+            recipe_revision_value: params[:recipe_revision],
+            package_revision_value: params[:package_revision],
+            package_reference_value: params[:conan_package_reference]
+          ))
+        )
       end
 
       context 'with default revision' do

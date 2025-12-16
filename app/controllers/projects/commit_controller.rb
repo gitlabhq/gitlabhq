@@ -10,6 +10,7 @@ class Projects::CommitController < Projects::ApplicationController
   include DiffHelper
   include SourcegraphDecorator
   include RapidDiffs::Resource
+  include RapidDiffs::DiscussionActions
 
   # Authorize
   before_action :require_non_empty_project
@@ -17,8 +18,10 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :commit
   before_action :define_commit_vars, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
+  before_action :define_environment,
+    only: [:show, :rapid_diffs, :diff_for_path, :diff_files, :pipelines, :merge_requests]
   before_action :define_commit_box_vars, only: [:show, :pipelines, :rapid_diffs]
-  before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files, :discussions]
+  before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files, :discussions, :create_discussions]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
   before_action :rate_limit_for_expanded_diff_files, only: :diff_files
 
@@ -33,8 +36,8 @@ class Projects::CommitController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        @ref = params[:id]
-        render locals: { pagination_params: params.permit(:page) }
+        @ref = commit_params_safe[:id]
+        render locals: { pagination_params: pagination_params }
       end
       format.diff do
         send_git_diff(@project.repository, @commit.diff_refs)
@@ -63,6 +66,10 @@ class Projects::CommitController < Projects::ApplicationController
     render json: { discussions: serialized_discussions }
   end
 
+  def create_discussions
+    create_discussions_for_resource
+  end
+
   def diff_for_path
     render_diff_for_path(@commit.diffs(diff_options))
   end
@@ -83,10 +90,10 @@ class Projects::CommitController < Projects::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def pipelines
     @pipelines = @commit.pipelines.order(id: :desc)
-    @pipelines = @pipelines.where(ref: params[:ref]) if params[:ref]
+    @pipelines = @pipelines.where(ref: commit_params_safe[:ref]) if commit_params_safe[:ref]
     # Capture total count before pagination to ensure accurate count regardless of current page
     @pipelines_count = @pipelines.count
-    @pipelines = @pipelines.page(params[:page])
+    @pipelines = @pipelines.page(pagination_params[:page])
 
     respond_to do |format|
       format.html
@@ -172,13 +179,81 @@ class Projects::CommitController < Projects::ApplicationController
       diff_view,
       commit_diff_options,
       nil,
-      current_user
+      current_user,
+      define_environment
     )
 
     show
   end
 
   private
+
+  def rapid_diffs_enabled?
+    ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :wip)
+  end
+
+  def noteable
+    @commit
+  end
+
+  def noteable_params
+    {
+      noteable_type: 'Commit',
+      commit_id: @commit.id
+    }
+  end
+
+  def grouped_discussions
+    @grouped_diff_discussions
+  end
+
+  def timeline_discussions
+    @discussions
+  end
+
+  def create_note_params
+    params.require(:note).permit(
+      :type,
+      :note,
+      position: [:old_path, :new_path, :old_line, :new_line]
+    ).tap do |create_params|
+      enrich_note_params(create_params, params[:in_reply_to_discussion_id])
+    end
+  end
+
+  def enrich_note_params(create_params, in_reply_to_discussion_id)
+    if in_reply_to_discussion_id.present?
+      create_params[:in_reply_to_discussion_id] = in_reply_to_discussion_id
+    elsif create_params[:position].present?
+      create_params[:position][:old_line] = create_params[:position][:old_line]&.to_i.presence
+      create_params[:position][:new_line] = create_params[:position][:new_line]&.to_i.presence
+      create_params[:type] = 'DiffNote' if create_params[:type].blank?
+      create_params[:position] = enrich_position_data(create_params[:position])
+    end
+
+    create_params.merge!(noteable_params)
+  end
+
+  def enrich_position_data(position_data)
+    position = position_data.to_h
+
+    position.reverse_merge!(
+      'base_sha' => noteable.diff_refs.base_sha,
+      'start_sha' => noteable.diff_refs.start_sha,
+      'head_sha' => noteable.diff_refs.head_sha,
+      'position_type' => 'text'
+    )
+
+    position
+  end
+
+  def pagination_params
+    params.permit(:page)
+  end
+
+  def commit_params_safe
+    params.permit(:id, :start_branch, :create_merge_request, :merge_request_iid, :target_project_id, :ref)
+  end
 
   def commit_diff_options
     opts = diff_options
@@ -188,7 +263,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def create_new_branch?
-    params[:create_merge_request].present? || !can?(current_user, :push_code, @project)
+    commit_params_safe[:create_merge_request].present? || !can?(current_user, :push_code, @project)
   end
 
   def successful_change_path(target_project)
@@ -196,7 +271,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def failed_change_path
-    referenced_merge_request_url || project_commit_url(@project, params[:id])
+    referenced_merge_request_url || project_commit_url(@project, commit_params_safe[:id])
   end
 
   def referenced_merge_request_url
@@ -206,7 +281,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def commit
-    @noteable = @commit ||= @project.commit_by(oid: params[:id]).tap do |commit|
+    @noteable = @commit ||= @project.commit_by(oid: commit_params_safe[:id]).tap do |commit|
       # preload author and their status for rendering
       commit&.author&.status
     end
@@ -216,12 +291,6 @@ class Projects::CommitController < Projects::ApplicationController
     return git_not_found! unless commit
 
     @diffs = commit.diffs(commit_diff_options)
-    @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(
-      @project,
-      current_user,
-      commit: @commit,
-      find_latest: true
-    ).execute.last
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -237,7 +306,7 @@ class Projects::CommitController < Projects::ApplicationController
     @grouped_diff_discussions = commit.grouped_diff_discussions
     @discussions = commit.discussions
 
-    if merge_request_iid = params[:merge_request_iid]
+    if merge_request_iid = commit_params_safe[:merge_request_iid]
       @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).find_by(iid: merge_request_iid)
 
       if @merge_request
@@ -271,17 +340,17 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def assign_change_commit_vars
-    @start_branch = params[:start_branch]
+    @start_branch = commit_params_safe[:start_branch]
     @commit_params = { commit: @commit }
   end
 
   def find_cherry_pick_target_project
-    return @project if params[:target_project_id].blank?
+    return @project if commit_params_safe[:target_project_id].blank?
 
     MergeRequestTargetProjectFinder
       .new(current_user: current_user, source_project: @project, project_feature: :repository)
       .execute
-      .find_by_id(params[:target_project_id])
+      .find_by_id(commit_params_safe[:target_project_id])
   end
 
   def append_info_to_payload(payload)
@@ -309,6 +378,15 @@ class Projects::CommitController < Projects::ApplicationController
 
   def email_format_path
     project_commit_path(project, commit, format: :patch)
+  end
+
+  def define_environment
+    @environment ||= ::Environments::EnvironmentsByDeploymentsFinder.new(
+      @project,
+      current_user,
+      commit: @commit,
+      find_latest: true
+    ).execute.last
   end
 end
 

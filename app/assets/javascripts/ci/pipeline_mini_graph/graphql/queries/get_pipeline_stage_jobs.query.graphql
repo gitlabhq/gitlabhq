@@ -19,6 +19,7 @@ query getPipelineStageJobs($id: CiStageID!) {
           hasDetails
           icon
           tooltip
+          label
         }
         name
         scheduled

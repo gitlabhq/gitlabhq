@@ -38,4 +38,72 @@ RSpec.describe ActiveContext::Databases::Opensearch::Adapter do
       expect(adapter.prefix).to eq('custom')
     end
   end
+
+  describe '#indexer_connection_options' do
+    it 'returns normalized URLs with AWS options' do
+      adapter = described_class.new(connection, options: {
+        url: [{ scheme: 'https', host: 'search-test.us-east-1.es.amazonaws.com', port: 443 }],
+        aws: true,
+        aws_region: 'us-east-1',
+        aws_access_key: '********************',
+        aws_secret_access_key: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+        client_request_timeout: 60
+      })
+
+      result = adapter.indexer_connection_options
+
+      expect(result).to eq(
+        url: ['https://search-test.us-east-1.es.amazonaws.com/'],
+        aws: true,
+        aws_region: 'us-east-1',
+        aws_access_key: '********************',
+        aws_secret_access_key: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+        client_request_timeout: 60
+      )
+    end
+
+    it 'returns only URL when AWS is not enabled' do
+      adapter = described_class.new(connection, options: {
+        url: 'https://localhost:9200',
+        aws_region: 'us-east-1'
+      })
+
+      result = adapter.indexer_connection_options
+
+      expect(result).to eq(url: ['https://localhost:9200'])
+    end
+
+    it 'filters out nil AWS options' do
+      adapter = described_class.new(connection, options: {
+        url: 'https://localhost:9200',
+        aws: true,
+        aws_region: 'us-east-1',
+        aws_access_key: nil
+      })
+
+      result = adapter.indexer_connection_options
+
+      expect(result).to eq(
+        url: ['https://localhost:9200'],
+        aws: true,
+        aws_region: 'us-east-1'
+      )
+    end
+
+    it 'includes aws_role_arn when provided' do
+      adapter = described_class.new(connection, options: {
+        url: 'https://localhost:9200',
+        aws: true,
+        aws_role_arn: 'arn:aws:iam::123456789012:role/MyRole'
+      })
+
+      result = adapter.indexer_connection_options
+
+      expect(result).to eq(
+        url: ['https://localhost:9200'],
+        aws: true,
+        aws_role_arn: 'arn:aws:iam::123456789012:role/MyRole'
+      )
+    end
+  end
 end

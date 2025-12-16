@@ -6,67 +6,56 @@ module Gitlab
       class QueryPlan
         include ActiveModel::Validations
 
-        class DimensionPlan
-          attr_reader :configuration, :dimension
-
-          def initialize(configuration, dimension)
-            @configuration = configuration
-            @dimension = dimension
-          end
-        end
-
-        class MetricPlan
-          attr_reader :configuration, :metric
-
-          def initialize(configuration, metric)
-            @configuration = configuration
-            @metric = metric
-          end
-        end
-
         attr_reader :dimensions, :metrics, :order
 
-        def self.build(request, engine)
-          configured_dimensions = engine.dimensions.index_by(&:identifier)
-          configured_metrics = engine.metrics.index_by(&:identifier)
+        class << self
+          def build(request, engine)
+            engine_definition = engine.class
+            plan = new
 
-          plan = new
-          request.dimensions.each do |dimension|
-            dimension_column_configuration = configured_dimensions[dimension[:identifier]]
-            if dimension_column_configuration.nil?
-              add_error_for(plan, :dimensions, dimension[:identifier])
-              break
+            dimension_definitions = engine_definition.dimensions.index_by(&:identifier)
+            request.dimensions.each do |configuration|
+              dimension_definition = dimension_definitions[configuration[:identifier]]
+              if dimension_definition.nil?
+                add_error_for(plan, :dimensions, configuration[:identifier])
+                break
+              end
+
+              plan.add_dimension(dimension_definition, configuration)
             end
 
-            plan.add_dimension(dimension_column_configuration, dimension)
-          end
+            metric_definitions = engine_definition.metrics.index_by(&:identifier)
+            request.metrics.each do |configuration|
+              metric_definition = metric_definitions[configuration[:identifier]]
+              if metric_definition.nil?
+                add_error_for(plan, :metrics, configuration[:identifier])
+                break
+              end
 
-          request.metrics.each do |metric|
-            metric_column_configuration = configured_metrics[metric[:identifier]]
-            if metric_column_configuration.nil?
-              add_error_for(plan, :metrics, metric[:identifier])
-              break
+              plan.add_metric(metric_definition, configuration)
             end
 
-            plan.add_metric(metric_column_configuration, metric)
-          end
+            request.order.each do |configuration|
+              plan_part = plan.orderable_parts.detect do |plan_part|
+                configuration.except(:direction) == plan_part.configuration
+              end
 
-          request.order.each do |order|
-            unless configured_dimensions[order[:identifier]] || configured_metrics[order[:identifier]]
-              add_error_for(plan, :order, order[:identifier])
-              break
+              unless plan_part
+                add_error_for(plan, :order, configuration[:identifier])
+                break
+              end
+
+              plan.add_order(plan_part, configuration)
             end
 
-            plan.add_order(order)
+            plan
           end
 
-          plan
-        end
-
-        def self.add_error_for(plan, object, identifier)
-          plan.errors.add(object,
-            format(s_("AggregationEngine|the specified identifier is not available: '%{identifier}'"),
-              identifier: identifier))
+          def add_error_for(plan, object, identifier)
+            plan.errors.add(object,
+              format(s_("AggregationEngine|the specified identifier is not available: '%{identifier}'"),
+                identifier: identifier))
+          end
         end
 
         def initialize
@@ -75,16 +64,24 @@ module Gitlab
           @order = []
         end
 
-        def add_dimension(configuration, dimension)
-          @dimensions << DimensionPlan.new(configuration, dimension)
+        def orderable_parts
+          dimensions + metrics
         end
 
-        def add_metric(configuration, metric)
-          @metrics << MetricPlan.new(configuration, metric)
+        def parts
+          dimensions + metrics + order
         end
 
-        def add_order(kind)
-          @order << kind
+        def add_dimension(definition, configuration)
+          @dimensions << Dimension.new(definition, configuration)
+        end
+
+        def add_metric(definition, configuration)
+          @metrics << Metric.new(definition, configuration)
+        end
+
+        def add_order(plan_part, configuration)
+          @order << Order.new(plan_part, configuration)
         end
       end
     end

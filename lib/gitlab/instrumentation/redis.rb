@@ -4,10 +4,6 @@ module Gitlab
   module Instrumentation
     # Aggregates Redis measurements from different request storage sources.
     class Redis
-      # Actioncable has it's separate instrumentation, but isn't configurable
-      # in the same way as all the other instances using a class.
-      ActionCable = Class.new(RedisBase)
-
       STORAGES = (
         Gitlab::Redis::ALL_CLASSES.map do |redis_instance_class|
           instrumentation_class = Class.new(RedisBase)

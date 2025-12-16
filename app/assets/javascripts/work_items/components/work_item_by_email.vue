@@ -10,7 +10,7 @@ import {
   GlDisclosureDropdownItem,
 } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import namespaceRegenerateNewWorkItemEmailAddressMutation from '../graphql/namespace_regenerate_new_work_item_email_address.mutation.graphql';
 
 export default {
@@ -36,7 +36,7 @@ export default {
     GlSprintf,
     GlLink,
     GlFormInputGroup,
-    ModalCopyButton,
+    SimpleCopyButton,
     GlDisclosureDropdownItem,
   },
   directives: {
@@ -127,7 +127,7 @@ export default {
       </p>
       <gl-form-input-group :value="email" readonly select-on-click class="gl-mb-4">
         <template #append>
-          <modal-copy-button :text="email" :title="__('Copy')" :modal-id="$options.modalId" />
+          <simple-copy-button :text="email" :title="__('Copy')" />
           <gl-button
             v-gl-tooltip.hover
             :href="mailToLink"

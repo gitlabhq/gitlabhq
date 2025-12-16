@@ -15,7 +15,7 @@ RSpec.describe 'User views an open merge request', feature_category: :code_revie
     end
 
     it 'renders both the title and the description' do
-      node = find('.md h1 a#user-content-description-header')
+      node = find('.md h1#user-content-description-header a')
       expect(node[:href]).to end_with('#description-header')
 
       # Work around a weird Capybara behavior where calling `parent` on a node

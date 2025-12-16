@@ -24,7 +24,7 @@ Supported attributes:
 | `user_id`                     | string   | Yes      | The ID or username of the user. |
 | `archived`                    | boolean  | No       | Limit by archived status. |
 | `membership`                  | boolean  | No       | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer  | No       | Limit by current user minimal [role (`access_level`)](group_members.md#roles). |
+| `min_access_level`            | integer  | No       | Limit to projects where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `order_by`                    | string   | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean  | No       | Limit by projects explicitly owned by the current user. |
 | `search`                      | string   | No       | Return list of projects matching the search criteria. |

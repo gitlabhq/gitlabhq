@@ -403,7 +403,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
       it 'handles exceptions' do
         expect(service_instance.execute).to have_attributes(
           status: :error,
-          message: 'bad URI(is not URI?): "http://server.com/my path/"'
+          message: 'bad URI (is not URI?): "http://server.com/my path/"'
         )
         expect { service_instance.execute }.not_to raise_error
       end

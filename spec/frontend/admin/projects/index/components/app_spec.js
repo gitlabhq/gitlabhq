@@ -123,9 +123,7 @@ describe('AdminProjectsApp', () => {
     expect(wrapper.findByRole('button', { name: 'Delete immediately' }).exists()).toBe(true);
   });
 
-  it('renders relative URL that supports relative_url_root', async () => {
-    window.gon = { relative_url_root: '/gitlab' };
-
+  it('uses adminShowPath for avatar link', async () => {
     await createComponent({
       mountFn: mountExtended,
       handlers: [[adminProjectsQuery, jest.fn().mockResolvedValue(adminProjectsGraphQlResponse)]],
@@ -142,7 +140,29 @@ describe('AdminProjectsApp', () => {
 
     expect(
       wrapper.findByRole('link', { name: expectedProject.nameWithNamespace }).attributes('href'),
-    ).toBe(`/gitlab/admin/projects/${expectedProject.fullPath}`);
+    ).toBe(expectedProject.adminShowPath);
+  });
+
+  it('uses adminEditPath for edit link', async () => {
+    await createComponent({
+      mountFn: mountExtended,
+      handlers: [[adminProjectsQuery, jest.fn().mockResolvedValue(adminProjectsGraphQlResponse)]],
+    });
+    await waitForPromises();
+
+    const {
+      data: {
+        projects: {
+          nodes: [expectedProject],
+        },
+      },
+    } = adminProjectsGraphQlResponse;
+
+    await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
+
+    expect(wrapper.findByRole('link', { name: 'Edit' }).attributes('href')).toBe(
+      expectedProject.adminEditPath,
+    );
   });
 
   it('uses keyset pagination', async () => {

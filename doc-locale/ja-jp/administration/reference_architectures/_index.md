@@ -31,7 +31,7 @@ GitLabリファレンスアーキテクチャは、GitLabを大規模にデプ�
 
 ### GitLabパッケージ（Omnibus） {#gitlab-package-omnibus}
 
-Linuxパッケージベースのリファレンスアーキテクチャのリストを次に示します。
+Linuxパッケージベースのリファレンスアーキテクチャのリストを次に示します:
 
 - [最大20 RPSまたは1,000ユーザー](1k_users.md)<span style="color: #74717A;">_API: 20 RPS、Web: 2 RPS、Git（プル）: 2 RPS、Git（プッシュ）: 1 RPS_</span>
 - [最大40 RPSまたは2,000ユーザー](2k_users.md)<span style="color: #74717A;">_API: 40 RPS、Web: 4 RPS、Git（プル）: 4 RPS、Git（プッシュ）: 1 RPS_</span>
@@ -43,7 +43,7 @@ Linuxパッケージベースのリファレンスアーキテクチャのリス
 
 ### クラウドネイティブハイブリッド {#cloud-native-hybrid}
 
-次は、選択された推奨コンポーネントをKubernetesで実行できる、クラウドネイティブハイブリッドリファレンスアーキテクチャのリストです。
+次は、選択された推奨コンポーネントをKubernetesで実行できる、クラウドネイティブハイブリッドリファレンスアーキテクチャのリストです:
 
 - [最大40 RPSまたは2,000ユーザー](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)<span style="color: #74717A;">_API: 40 RPS、Web: 4 RPS、Git（プル）: 4 RPS、Git（プッシュ）: 1 RPS_</span>
 - [最大60 RPSまたは3,000ユーザー](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)<span style="color: #74717A;">_API: 60 RPS、Web: 6 RPS、Git（プル）: 6 RPS、Git（プッシュ）: 1 RPS_</span>
@@ -60,7 +60,7 @@ Linuxパッケージベースのリファレンスアーキテクチャのリス
 
 このアプローチを採用することを決定した場合、本番環境でのアプリケーションの実行と保守に関する実務知識が必要です。実務知識がない場合、[プロフェッショナルサービス](https://about.gitlab.com/services/#implementation-services)チームが導入サービスを提供します。より長期的なマネージドソリューションを希望する方は、[GitLab SaaS](../../subscriptions/gitlab_com/_index.md)や[GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md)などの他のプランをご検討ください。
 
-GitLab Self-Managedアプローチの使用を検討している場合は、このページ全体、特に次のセクションをよくお読みになることをおすすめします。
+GitLab Self-Managedアプローチの使用を検討している場合は、このページ全体、特に次のセクションをよくお読みになることをおすすめします:
 
 - [どのアーキテクチャを使用するかを決定する](#deciding-which-architecture-to-start-with)
 - [大規模なモノレポ](#large-monorepos)
@@ -80,9 +80,20 @@ GitLab Self-Managedアプローチの使用を検討している場合は、こ�
 
 各アーキテクチャは、さまざまなタイプのリクエスト（API、Web、Git）に対して特定のRPSターゲットを処理するように設計されています。これらの詳細については、各ページの**テスト手法**セクションで説明されています。
 
-RPSの特定は、特定の環境設定とモニタリングスタックによって大きく異なる場合があります。利用可能なオプションには、次のようなものがあります。
+包括的なRPS分析とデータに基づいたサイジングの決定については、[リファレンスアーキテクチャのサイジング](sizing.md)を参照してください。このセクションでは、次の情報を提供します:
 
-- [GitLab Prometheus](../monitoring/prometheus/_index.md#sample-prometheus-queries)と`sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController'}[1m])) by (controller, action)`のようなクエリ。
+- ピーク時および持続的なRPSメトリクスを抽出するための詳細なPromQLクエリ。
+- コンポーネント固有の調整を特定するためのワークロードパターン分析。
+- モノレポ、ネットワーキングの使用状況、および成長計画の評価開発手法。
+
+迅速なRPSの推定のために、いくつかの潜在的なオプションがあります:
+
+- 次のような[Prometheus](../monitoring/prometheus/_index.md#sample-prometheus-queries)のクエリ:
+
+  ```prometheus
+  sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController'}[1m])) by (controller, action)
+  ```
+
 - GitLabサポートからの[`get-rps`スクリプト](https://gitlab.com/gitlab-com/support/toolbox/dotfiles/-/blob/main/scripts/get-rps.rb?ref_type=heads)
 - その他のモニタリングソリューション。
 - ロードバランサーの統計。
@@ -91,7 +102,7 @@ RPSを特定できない場合は、負荷カテゴリごとの同等のユー�
 
 #### 初期サイズ設定ガイド {#initial-sizing-guide}
 
-予想される負荷に対してどのアーキテクチャを選択するかを判断するには、次の初期サイズ設定ガイドの表を参照してください。
+予想される負荷に対してどのアーキテクチャを選択するかを判断するには、次の初期サイズ設定ガイドの表を参照してください:
 
 <table class="ra-table">
   <col>
@@ -182,7 +193,7 @@ RPSを特定できない場合は、負荷カテゴリごとの同等のユー�
 
 必要な環境サイズが不明な場合は、大きめの設定で開始し、[モニタリング](#monitoring)してから、メトリクスが運用状況をサポートする場合は、それに応じて[スケールダウン](#scaling-an-environment)することを検討してください。
 
-大きめの設定で開始してからスケールダウンするのが賢明なアプローチであるのは、次のような場合です。
+大きめの設定で開始してからスケールダウンするのが賢明なアプローチであるのは、次のような場合です:
 
 - RPSを特定できない
 - 環境負荷が予想よりも異常に高い可能性がある
@@ -208,7 +219,7 @@ RPSを特定できない場合は、負荷カテゴリごとの同等のユー�
 
 ユーザー数が3,000未満のお客様の多くにとっては、バックアップ戦略で十分であり、その方が好ましいことがわかっています。リカバリー時間が長くなりますが、アーキテクチャがはるかに小さくなり、結果としてメンテナンスコストも削減されます。
 
-一般的なガイドラインとして、HAは次のシナリオでのみ採用してください。
+一般的なガイドラインとして、HAは次のシナリオでのみ採用してください:
 
 - ユーザーが3,000以上の場合。
 - GitLabがダウンすると、ワークフローに重大な影響を与える場合。
@@ -231,9 +242,9 @@ HAと復元性をさらに高めるために、クラウドネイティブハイ
 
 代わりにクラウドネイティブハイブリッドを使うことができますが、標準のリファレンスアーキテクチャと比較して**高度な**セットアップです。Kubernetesでのサービスの実行は複雑です。Kubernetesに関する十分な実務知識と経験がある場合にのみ、**このセットアップを使用**してください。
 
-### GitLab Geo（地域間分散/ディザスタリカバリー） {#gitlab-geo-cross-regional-distribution--disaster-recovery}
+### GitLab Geo（地域間分散/ディザスターリカバリー） {#gitlab-geo-cross-regional-distribution--disaster-recovery}
 
-[GitLab Geo](../geo/_index.md)を使用すると、完全なディザスターリカバリー（DR）セットアップを使って、さまざまな地域で分散環境を実現できます。GitLab Geoでは、少なくとも2つの個別の環境が必要です。
+[GitLab Geo](../geo/_index.md)を使用すると、完全なディザスターリカバリー（DR）セットアップを使って、さまざまな地域で分散環境を実現できます。GitLab Geoでは、少なくとも2つの個別の環境が必要です:
 
 - 1つのプライマリサイト。
 - レプリカとして機能する1つ以上のセカンダリサイト。
@@ -245,6 +256,12 @@ DRがご自身の環境にとって重要な要件である場合にのみ、こ
 ### 大規模なモノレポ/追加ワークロード {#large-monorepos--additional-workloads}
 
 [大規模なモノレポ](#large-monorepos)または大量の[追加ワークロード](#additional-workloads)は、環境のパフォーマンスに著しい影響を与える可能性があります。状況に応じて、何らかの調整が必要になる場合があります。
+
+これらの要因の包括的な分析については、[リファレンスアーキテクチャのサイジング](sizing.md)を参照してください。このセクションでは、次の情報を提供します:
+
+- インフラストラクチャに対するモノレポの影響に関する詳細な評価開発手法。
+- さまざまなワークロードパターンに対するコンポーネント固有のスケールに関する推奨事項。
+- 大量のデータ転送シナリオにおけるネットワーク帯域幅分析。
 
 この状況に該当する場合は、GitLabの担当者または[サポート](https://about.gitlab.com/support/)にご連絡いただき、詳細なガイダンスをお求めください。
 
@@ -259,8 +276,11 @@ DRがご自身の環境にとって重要な要件である場合にのみ、こ
 次の意思決定ツリーを参照する前に、前述のガイダンスをすべてお読みください。
 
 ```mermaid
-%%{init: { 'theme': 'base' } }%%
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
+    accTitle: Decision tree for reference architecture selection
+    accDescr: Key considerations for selecting architecture including expected load, HA requirements, and additional workload factors.
+
    L0A(<b>What Reference Architecture should I use?</b>)
    L1A(<b>What is your <a href=#expected-load-rps--user-count>expected load</a>?</b>)
 
@@ -309,7 +329,7 @@ linkStyle default fill:none,stroke:#7759C2
 
 これらのアーキテクチャは、一貫したパフォーマンスを確保しながら、柔軟にマシンタイプを選択できるように設計されています。各リファレンスアーキテクチャで特定のマシンタイプの例を示していますが、これらは推奨されるデフォルトを意図したものではありません。
 
-次の例のように、各コンポーネントに指定された要件を満たすか、それ以上の任意のマシンタイプを使用できます。
+次の例のように、各コンポーネントに指定された要件を満たすか、それ以上の任意のマシンタイプを使用できます:
 
 - 新世代のマシンタイプ（GCP `n2`シリーズやAWS `m6`シリーズなど）
 - ARMベースのインスタンス（AWS Gravitonなど）のような別のアーキテクチャ
@@ -331,7 +351,7 @@ linkStyle default fill:none,stroke:#7759C2
 
 ### サポートされているディスクタイプ {#supported-disk-types}
 
-ほとんどの標準ディスクタイプは、GitLabで動作することが期待されています。ただし、次の点に注意してください。
+ほとんどの標準ディスクタイプは、GitLabで動作することが期待されています。ただし、次の点に注意してください:
 
 - Gitalyには、Gitalyストレージに関する特定の[ディスク要件](../gitaly/_index.md#disk-requirements)があります。
 - パフォーマンスが一貫しないため、「バースト可能」なディスクタイプの使用は推奨しません。
@@ -340,7 +360,7 @@ linkStyle default fill:none,stroke:#7759C2
 
 ### サポートされているインフラストラクチャ {#supported-infrastructure}
 
-GitLabは、信頼できるクラウドプロバイダー（AWS、GCP、Azure）やそれらのサービス、または次の両方を満たすSelf-Managed（ESXi）などのほとんどのインフラストラクチャで実行できます。
+GitLabは、信頼できるクラウドプロバイダー（AWS、GCP、Azure）やそれらのサービス、または次の両方を満たすSelf-Managed（ESXi）などのほとんどのインフラストラクチャで実行できます:
 
 - 各アーキテクチャで詳述されている仕様。
 - このセクションのすべての要件。
@@ -391,7 +411,7 @@ GitLabは、信頼できるクラウドプロバイダー（AWS、GCP、Azure）
 
 {{< /alert >}}
 
-大規模なモノレポには、相応のコストがかかります。そのようなリポジトリがある場合は、パフォーマンスを良好に保ち、コストを抑制するために、次のガイダンスに従ってください。
+大規模なモノレポには、相応のコストがかかります。そのようなリポジトリがある場合は、パフォーマンスを良好に保ち、コストを抑制するために、次のガイダンスに従ってください:
 
 - [大規模なモノレポを最適化](../../user/project/repository/monorepos/_index.md)します。バイナリを保存しないように[LFS](../../user/project/repository/monorepos/_index.md#use-git-lfs-for-large-binary-files)などの機能を使用したり、リポジトリのサイズを縮小する別のアプローチを使用したりすると、パフォーマンスが大幅に向上し、コストを削減できる可能性があります。
 - モノレポによっては、それを補うために環境仕様を引き上げることが必要になる場合があります。Gitalyでは、Praefect、GitLab Rails、およびロードバランサーとともに、追加のリソースが必要になる場合があります。これは、モノレポ自体とその使用状況によって異なります。
@@ -402,7 +422,7 @@ GitLabは、信頼できるクラウドプロバイダー（AWS、GCP、Azure）
 
 これらのアーキテクチャは、実際のデータに基づいた標準的なGitLabのセットアップ用に[設計およびテスト](#validation-and-test-results)されています。
 
-ただし、追加のワークロードは、フォローアップアクションをトリガーすることにより、操作の影響を増幅させる可能性があります。以下を使用する場合は、処理能力を補うため、推奨される仕様を調整することが必要かもしれません。
+ただし、追加のワークロードは、フォローアップアクションをトリガーすることにより、操作の影響を増幅させる可能性があります。以下を使用する場合は、処理能力を補うため、推奨される仕様を調整することが必要かもしれません:
 
 - ノード上のセキュリティソフトウェア。
 - [大規模リポジトリ](../../user/project/repository/monorepos/_index.md)に対する数百もの同時CIジョブ。
@@ -415,7 +435,7 @@ GitLabは、信頼できるクラウドプロバイダー（AWS、GCP、Azure）
 
 ### ロードバランサー {#load-balancers}
 
-アーキテクチャでは、クラスに応じて最大2つのロードバランサーを使用します。
+アーキテクチャでは、クラスに応じて最大2つのロードバランサーを使用します:
 
 - 外部ロードバランサー - 外部に面したコンポーネント（主にRails）にトラフィックを送信します。
 - 内部ロードバランサー - PraefectやPgBouncerなど、HA構成でデプロイされたいくつかの内部コンポーネントにトラフィックを送信します。
@@ -436,7 +456,7 @@ GitLabは、信頼できるクラウドプロバイダー（AWS、GCP、Azure）
 
 マシンにデプロイされたときにロードバランサーが利用できる合計ネットワーク帯域幅は、クラウドプロバイダー間で著しく異なる場合があります。[AWS](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-network-bandwidth.html)などの一部のクラウドプロバイダーは、クレジットを使用したバーストシステムで動作するため、任意のタイミングで利用できる帯域幅が決まる場合があります。
 
-ロードバランサーに必要なネットワーク帯域幅は、データの形式やワークロードなどの要因によって異なります。各アーキテクチャクラスに推奨されるベースサイズは、実際のデータに基づいて選択されています。ただし、[大規模なモノレポ](#large-monorepos)の一貫したクローンのような一部のシナリオでは、サイズをそれに応じて調整する必要がある場合があります。
+ロードバランサーに必要なネットワーク帯域幅は、データの形式やワークロードなどの要因によって異なります。各アーキテクチャクラスに推奨されるベースサイズは、実際のデータに基づいて選択されています。ただし、[大規模なモノレポ](#large-monorepos)の一貫したクローン作成、[GitLabコンテナレジストリ](../../user/packages/container_registry/_index.md)の大量使用、大規模なCIアーティファクト、または大量のファイルの頻繁な転送を伴うワークロードなど、一部のシナリオでは、それに応じてサイズを調整する必要がある場合があります。
 
 ### スワップなし {#no-swap}
 
@@ -446,7 +466,7 @@ GitLabは、信頼できるクラウドプロバイダー（AWS、GCP、Azure）
 
 [Praefectには独自のデータベースサーバーが必要です](../gitaly/praefect/configure.md#postgresql)。完全なHAを実現するには、サードパーティのPostgreSQLデータベースソリューションが必要です。
 
-将来的には、これらの制限に対する組み込みソリューションを提供したいと考えています。それまでの間、仕様に反映されているようにLinuxパッケージを使用して、非HA PostgreSQLサーバーをセットアップできます。詳細については、次のイシューを参照してください。
+将来的には、これらの制限に対する組み込みソリューションを提供したいと考えています。それまでの間、仕様に反映されているようにLinuxパッケージを使用して、非HA PostgreSQLサーバーをセットアップできます。詳細については、次のイシューを参照してください:
 
 - [`omnibus-gitlab#7292`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292)。
 - [`gitaly#3398`](https://gitlab.com/gitlab-org/gitaly/-/issues/3398)。
@@ -459,7 +479,7 @@ GitLabは、信頼できるクラウドプロバイダー（AWS、GCP、Azure）
 
 {{< /alert >}}
 
-次のアーキテクチャは、テストと実際の使用状況に基づいて、次のクラウドプロバイダーに推奨されます。
+次のアーキテクチャは、テストと実際の使用状況に基づいて、次のクラウドプロバイダーに推奨されます:
 
 <table>
 <thead>
@@ -489,7 +509,7 @@ GitLabは、信頼できるクラウドプロバイダー（AWS、GCP、Azure）
 </tbody>
 </table>
 
-さらに、次のクラウドプロバイダーサービスをアーキテクチャの一部として使用することをおすすめします。
+さらに、次のクラウドプロバイダーサービスをアーキテクチャの一部として使用することをおすすめします:
 
 <table>
 <thead>
@@ -504,23 +524,23 @@ GitLabは、信頼できるクラウドプロバイダー（AWS、GCP、Azure）
 <tbody>
   <tr>
     <td>オブジェクトストレージ</td>
-    <td>🟢   <a href="https://cloud.google.com/storage" target="_blank">Cloud Storage</a></td>
-    <td>🟢   <a href="https://aws.amazon.com/s3/" target="_blank">S3</a></td>
-    <td>🟢   <a href="https://azure.microsoft.com/en-gb/products/storage/blobs" target="_blank">Azure Blob Storage</a></td>
-    <td>🟢   <a href="https://min.io/" target="_blank">MinIO</a></td>
+    <td>🟢 <a href="https://cloud.google.com/storage" target="_blank">Cloud Storage</a></td>
+    <td>🟢 <a href="https://aws.amazon.com/s3/" target="_blank">S3</a></td>
+    <td>🟢 <a href="https://azure.microsoft.com/en-gb/products/storage/blobs" target="_blank">Azure Blob Storage</a></td>
+    <td>🟢 <a href="https://min.io/" target="_blank">MinIO</a></td>
   </tr>
   <tr>
     <td>データベース</td>
-    <td>🟢   <a href="https://cloud.google.com/sql" target="_blank" rel="noopener noreferrer">Cloud SQL<sup>1</sup></a></td>
-    <td>🟢   <a href="https://aws.amazon.com/rds/" target="_blank" rel="noopener noreferrer">RDS</a></td>
-    <td>🟢   <a href="https://azure.microsoft.com/en-gb/products/postgresql/" target="_blank" rel="noopener noreferrer">Azure Database for PostgreSQLフレキシブルサーバー</a></td>
+    <td>🟢 <a href="https://cloud.google.com/sql" target="_blank" rel="noopener noreferrer">Cloud SQL<sup>1</sup></a></td>
+    <td>🟢 <a href="https://aws.amazon.com/rds/" target="_blank" rel="noopener noreferrer">RDS</a></td>
+    <td>🟢 <a href="https://azure.microsoft.com/en-gb/products/postgresql/" target="_blank" rel="noopener noreferrer">Azure Database for PostgreSQLフレキシブルサーバー</a></td>
     <td></td>
   </tr>
   <tr>
     <td>Redis</td>
-    <td>🟢   <a href="https://cloud.google.com/memorystore" target="_blank" rel="noopener noreferrer">Memorystore</a></td>
-    <td>🟢   <a href="https://aws.amazon.com/elasticache/" target="_blank" rel="noopener noreferrer">ElastiCache</a></td>
-      <td>🟢   <a href="https://azure.microsoft.com/en-gb/products/cache" target="_blank" rel="noopener noreferrer">Azure Cache for Redis (Premium)</a></td>
+    <td>🟢 <a href="https://cloud.google.com/memorystore" target="_blank" rel="noopener noreferrer">Memorystore</a></td>
+    <td>🟢 <a href="https://aws.amazon.com/elasticache/" target="_blank" rel="noopener noreferrer">ElastiCache</a></td>
+      <td>🟢 <a href="https://azure.microsoft.com/en-gb/products/cache" target="_blank" rel="noopener noreferrer">Azure Cache for Redis (Premium)</a></td>
     <td></td>
   </tr>
 </tbody>
@@ -534,19 +554,23 @@ GitLabは、信頼できるクラウドプロバイダー（AWS、GCP、Azure）
 
 ### データベースサービスのベストプラクティス {#best-practices-for-the-database-services}
 
-サードパーティの外部サービスを使用する場合は、標準的でパフォーマンスが良く、[サポートされているPostgreSQLバージョン](../../install/requirements.md#postgresql)を実行する[外部データベースサービス](../postgresql/external.md)を使用し、次の考慮事項に注意してください。
+LinuxパッケージにバンドルされているPostgreSQL、PgBouncer、およびConsulサービスディスカバリコンポーネントの代わりに、[PostgreSQL用のサードパーティの外部サービス](../postgresql/external.md)を使用できます。
 
-1. HA LinuxパッケージPostgreSQLのセットアップには、PostgreSQL、PgBouncer、Consulが含まれます。サードパーティの外部サービスを使用する場合、これらのコンポーネントはすべて不要になります。
-1. 最適なパフォーマンスを得るには、読み取りレプリカで[データベースロードバランシング](../postgresql/database_load_balancing.md)を有効にします。ノード数を標準のLinuxパッケージのデプロイで使用されている数に合わせます。このアプローチは、大規模環境（1秒あたり200を超えるリクエスト、または10,000を超えるユーザー）において特に重要です。
-1. オプションはサービスごとに異なるため、このセットアップではデータベース接続プーラーは必要ありません。その結果、環境サイズに応じて接続数の設定を調整する必要がある場合があります。プーリングが必要な場合は、GitLab LinuxパッケージにバンドルされているPgBouncerはパッケージにバンドルされているPostgresとのみ互換性があるため、サードパーティのオプションを検討する必要があります。[データベースロードバランシング](../postgresql/database_load_balancing.md)を使用して、負荷を適切に分散することもできます。
-   - プーラーがクラウドプロバイダーサービスに含まれている場合は、ボトルネックなしに総負荷を処理できることを確認してください。たとえば、Azure Database for PostgreSQLフレキシブルサーバーは、オプションでデータベースの前にPgBouncerプーラーをデプロイできます。ただし、PgBouncerはシングルスレッドであるため、高負荷時にはボトルネックが発生する可能性があります。この問題を軽減するには、データベースロードバランシングを使用して、プーラーを複数のノードに分散させることができます。
-1. HAに必要なノード数は、サービスによって異なる場合があります。あるデプロイの要件は、Linuxパッケージインストールとは異なる場合があります。
+[サポートされているPostgreSQLバージョン](../../install/requirements.md#postgresql)を実行する信頼できるプロバイダーを使用してください。これらのサービスは正常に動作することが知られています:
 
-1. [GitLab Geo](../geo/_index.md)を使用するには、サービスがリージョン間のレプリケーションをサポートしている必要があります。
+- [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal)。
+- [Amazon RDS](https://aws.amazon.com/rds/)。
+
+外部データベースサービスを使用する場合は、以下を考慮してください:
+
+- 最適なパフォーマンスを得るには、読み取りレプリカで[データベースロードバランシング](../postgresql/database_load_balancing.md)を有効にします。ノード数を標準のLinuxパッケージのデプロイで使用されている数に合わせます。このアプローチは、大規模環境（1秒あたり200を超えるリクエスト、または10,000を超えるユーザー）において特に重要です。
+- オプションはサービスごとに異なるため、データベース接続プーラーは必要ありません。環境のサイズに応じて、接続数の設定を調整する必要がある場合があります。プーリングが必要な場合は、サードパーティのオプションを調査するしてください。GitLabにバンドルされているPgBouncerは、バンドルされているPostgreSQLでのみ動作するためです。[データベースロードバランシング](../postgresql/database_load_balancing.md)もそれに応じて負荷を分散できます。クラウドプロバイダーのプーラーが、ボトルネックなしに総負荷を処理できることを確認してください。たとえば、Azure Database for PostgreSQLフレキシブルサーバーはオプションでPgBouncerをデプロイできますが、PgBouncerはシングルスレッドであるため、負荷が高いとボトルネックになる可能性があります。複数のノードにまたがるデータベースロードバランシングを使用して、この問題を軽減します。
+- 高可用性ノードの要件は、サービスによって異なり、Linuxパッケージのインストールとは異なる場合があります。
+- [GitLab Geo](../geo/_index.md)の場合、サービスがリージョン間レプリケーションをサポートしていることを確認してください。
 
 #### サポートされていないデータベースサービス {#unsupported-database-services}
 
-次のデータベースクラウドプロバイダーサービスは、サポートの欠如または既知の問題があるため推奨されません。
+次のデータベースクラウドプロバイダーサービスは、サポートの欠如または既知の問題があるため推奨されません:
 
 - [Amazon Aurora](https://aws.amazon.com/rds/aurora/)は互換性がなく、サポートされていません。詳細については、[14.4.0](https://archives.docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes/#1440)を参照してください。
 - [Azure Database for PostgreSQL単一サーバー](https://azure.microsoft.com/en-gb/products/postgresql/#overview)は、現在サービスが推奨されておらず、サポートされていないバージョンのPostgreSQLで実行されるため、サポートされていません。また、パフォーマンスと安定性の問題があります。
@@ -555,7 +579,7 @@ GitLabは、信頼できるクラウドプロバイダー（AWS、GCP、Azure）
 
 ### Redisサービスのベストプラクティス {#best-practices-for-redis-services}
 
-標準的でパフォーマンスが良く、サポートされているバージョンを実行する[外部Redisサービス](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider)を使用してください。サービスは以下をサポートしている必要があります。
+標準的でパフォーマンスが良く、サポートされているバージョンを実行する[外部Redisサービス](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider)を使用してください。サービスは以下をサポートしている必要があります:
 
 - Redisスタンドアロン（Primary x Replica）モード - Redis Clusterモードは特にサポートされていません
 - レプリケーションによる高可用性
@@ -589,11 +613,11 @@ GitLab環境デザインを幅広くサポートすることを目指してい�
 
 #### Kubernetesのステートフルコンポーネント {#stateful-components-in-kubernetes}
 
-[Gitaly Cluster（Praefect）などのステートフルコンポーネントをKubernetesで実行することはサポートされていません](https://docs.gitlab.com/charts/installation/#configure-the-helm-chart-to-use-external-stateful-data)。
+[PostgresやRedisなどのステートフルコンポーネントをKubernetesで実行することはサポートされていません](https://docs.gitlab.com/charts/installation/#configure-the-helm-chart-to-use-external-stateful-data)。
 
-Gitaly Cluster（Praefect）は、従来の仮想マシンでのみサポートされています。Kubernetesは、メモリ使用量を厳密に制限します。ただし、Gitのメモリ使用量は予測できないため、Gitalyポッドがメモリ不足（OOM）により突発的に終了する可能性があります。OOMによる終了は、大規模な混乱や潜在的なデータ損失につながります。したがって、KubernetesにおけるGitalyのテストおよびサポートはされていません。詳細については、[エピック6127](https://gitlab.com/groups/gitlab-org/-/epics/6127)を参照してください。
+特にサポートされていないと明示されていない限り、他のサポートされているクラウドプロバイダーのサービスを使用できます。
 
-これは、PostgresやRedisなどのステートフルコンポーネントに適用されます。特にサポートされていないと明示されていない限り、他のサポートされているクラウドプロバイダーのサービスを使用できます。
+個々のGitalyノードは、[利用が制限された状態](../gitaly/kubernetes.md#timeline)でKubernetesにデプロイできます。これにより、各リポジトリが単一のノードに格納される非HAソリューションが提供されます。Gitalyのデプロイオプションと制限事項のコンテキストについては、[Kubernetes上のGitaly](../gitaly/kubernetes.md#context)を参照してください。
 
 #### ステートフルノードのオートスケール {#autoscaling-of-stateful-nodes}
 
@@ -619,13 +643,13 @@ GitLabは、これらのアーキテクチャの定期的なスモークテス�
 
 ### テストの実施方法 {#how-we-perform-the-tests}
 
-テストは、サンプル顧客データから派生した特定のコード化されたワークロードを使用して実施され、TerraformおよびAnsibleを使用した環境デプロイには[GitLab Environment Toolkit（GET）](https://gitlab.com/gitlab-org/gitlab-environment-toolkit)、k6を使用したパフォーマンステストには[GitLab Performance Tool（GPT）](https://gitlab.com/gitlab-org/quality/performance)の両方を利用します。
+テストは、サンプル顧客データから派生した特定のコード化されたワークロードを使用して実施され、TerraformおよびAnsibleを使用した環境デプロイには[GitLab Environment Toolkit（GET）](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) 、k6を使用したパフォーマンステストには[GitLab Performance Tool（GPT）](https://gitlab.com/gitlab-org/quality/performance)の両方を利用します。
 
 テストは主にGCPおよびAWSで、ベースライン設定として標準のコンピューティングサービス（GCPの場合はn1シリーズ、AWSの場合はm5シリーズ）を使用して実行されます。これらのマシンタイプは、幅広い互換性を確保するために、もっとも標準的なターゲットとして選択されました。CPUとメモリの要件を満たす異なるマシンタイプまたは新しいマシンタイプの使用は完全にサポートされています。詳細については、[サポートされているマシンタイプ](#supported-machine-types)を参照してください。これらのアーキテクチャは、他のクラウドプロバイダーまたはオンプレミスであるかどうかにかかわらず、仕様を満たすハードウェア上では同様に機能することが期待されます。
 
 ### パフォーマンス目標 {#performance-targets}
 
-各リファレンスアーキテクチャは、実際の顧客データに基づいて特定のスループット目標に対してテストされます。1,000ユーザーごとに、以下をテストします。
+各リファレンスアーキテクチャは、実際の顧客データに基づいて特定のスループット目標に対してテストされます。1,000ユーザーごとに、以下をテストします:
 
 - API: 20 RPS
 - Web: 2 RPS
@@ -642,7 +666,7 @@ GitLabは、これらのアーキテクチャの定期的なスモークテス�
 
 ### テストカバレッジと結果 {#test-coverage-and-results}
 
-テストは効果的に設計されており、すべてのリファレンスアーキテクチャの目標に対して十分なカバレッジを提供します。テストの頻度は、アーキテクチャのタイプとサイズによって異なります。
+テストは効果的に設計されており、すべてのリファレンスアーキテクチャの目標に対して十分なカバレッジを提供します。テストの頻度は、アーキテクチャのタイプとサイズによって異なります:
 
 - Linuxパッケージ環境: GCPおよびAWS上のすべてのサイズで毎日または毎週。
 - クラウドネイティブ環境: GCPおよびAWSでの選択された設定の毎週のテスト。
@@ -665,7 +689,7 @@ GitLabは、これらのアーキテクチャの定期的なスモークテス�
 
 {{< /alert >}}
 
-ほとんどのコンポーネントでは、通常どおり、垂直スケーリングおよび水平スケーリングを適用できます。ただし、その前に、以下の注意事項を確認してください。
+ほとんどのコンポーネントでは、通常どおり、垂直スケーリングおよび水平スケーリングを適用できます。ただし、その前に、以下の注意事項を確認してください:
 
 - PumaまたはSidekiqを垂直方向にスケールする場合、追加の仕様を使用するようにワーカーの量を調整する必要があります。Pumaは、次回の再設定時に自動的にスケールされます。ただし、[事前にSidekiqの設定を変更](../sidekiq/extra_sidekiq_processes.md#start-multiple-processes)する必要があるかもしれません。
 - RedisとPgBouncerは、基本的にシングルスレッドです。これらのコンポーネントでCPUが枯渇している場合は、水平方向にスケールアウトする必要があるかもしれません。
@@ -676,7 +700,7 @@ GitLabは、これらのアーキテクチャの定期的なスモークテス�
 
 #### スケーリングの連鎖的な影響 {#scaling-knock-on-effects}
 
-場合によっては、コンポーネントを大幅にスケールすると、ダウンストリームコンポーネントに連鎖的な影響が生じ、パフォーマンスに影響を与える可能性があります。アーキテクチャは、相互に依存するコンポーネントの仕様が一致するように、バランスを考慮して設計されています。特に、コンポーネントをスケールすると、依存する他のコンポーネントに追加のスループットが渡される可能性があります。その結果、これらの依存する他のコンポーネントもスケールしなければならない場合があります。
+場合によっては、コンポーネントを大幅にスケールすると、ダウンストリームコンポーネントに連鎖的な影響が生じ、パフォーマンスに影響を与える可能性があります。アーキテクチャは、相互に依存するコンポーネントの仕様が一致するように、バランスを考慮して設計されています。特に、コンポーネントをスケールすると、依存する他のコンポーネントに追加のスループットが渡される可能性があります。その結果、これらの依存する他のコンポーネントもスケールしなければならない場合があります。これを確認するには、スケールする前に、すべての依存サービスの飽和メトリクスを監視します。相互に依存する複数のコンポーネントが飽和状態を示している場合は、ボトルネックがコンポーネント間で単純に移動するのを防ぐために、順番にではなく、調整された方法でまとめてスケールする必要があります。
 
 {{< alert type="note" >}}
 
@@ -684,7 +708,7 @@ GitLabは、これらのアーキテクチャの定期的なスモークテス�
 
 {{< /alert >}}
 
-次のコンポーネントは、大幅にスケールされた場合に他のコンポーネントに影響を与える可能性があります。
+次のコンポーネントは、大幅にスケールされた場合に他のコンポーネントに影響を与える可能性があります:
 
 - PumaとSidekiq - PumaまたはSidekiqワーカーを大幅にスケールアップすると、内部ロードバランサー、PostgreSQL（存在する場合はPgBouncer経由）、Gitaly（存在する場合はPraefect経由）、およびRedisへの同時接続数が増加します。
   - Redisは基本的にシングルスレッドです。スループットの増加により、結合されたクラスターでCPUが枯渇する場合は、Redisを個別のインスタンス（たとえば、キャッシュと永続）に分割する必要があるかもしれません。
@@ -695,7 +719,7 @@ GitLabは、これらのアーキテクチャの定期的なスモークテス�
 
 ほとんどの場合、環境のリソースを増やすには、垂直スケーリングのみが必要です。ただし、HA環境に移行する場合は、次のコンポーネントをHA形式に切り替えるために追加の手順が必要です。
 
-詳細については、次のドキュメントを参照してください。
+詳細については、次のドキュメントを参照してください:
 
 - [RedisからRedis Sentinelを使用したマルチノードRedisへ](../redis/replication_and_failover.md#switching-from-an-existing-single-machine-installation)
 - [PostgresからConsul + PgBouncerを使用したマルチノードPostgresへ](../postgresql/moving.md)
@@ -742,7 +766,7 @@ GitLabアプリケーションには、ソリューションに接続できる[P
 - [2024-05](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153716): Redis SentinelをRedis自体と併置することに関する最新のガイダンスを示すために、60 RPSまたは3,000ユーザーおよび100 RPSまたは5,000ユーザーのページを更新しました。
 - [2024-05](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153579): より正確なコスト見積もりを提供するために、計算ツールが開始点にすぎず、特定の用途に合わせて調整する必要があることをより適切に反映するように、`Cost to run`セクションの名前を`Cost calculator templates`に変更しました。
 - [2024-04](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149878): GCPのクラウドネイティブハイブリッドのWebserviceノードの推奨サイズを更新しました。また、NGINXポッドの推奨をDaemonSetとしてWebserviceノードプールで実行するように調整しました。
-- [2024-04](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149528): 16 GBの推奨メモリターゲットに従うように、20 RPS / 1,000ユーザーアーキテクチャ仕様を更新しました。
+- [2024-04](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149528): 16 GBの推奨メモリターゲットに従うように、20 RPS / 1,000ユーザーアーキテクチャ仕様を更新しました。
 - [2024-04](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148313): より明確にするため、また適切なサイズ設定に役立てるために、リファレンスアーキテクチャのタイトルを更新してRPSを含めました。
 - [2024-02](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145436): VMにデプロイする場合、ロードバランサーノードの推奨サイズを更新しました。また、ネットワーク帯域幅の考慮事項に関するノートを追加しました。
 - [2024-02](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143539): Sidekiqの最大同時実行設定は非推奨となり、明示的に設定する必要がなくなったため、例から削除しました。
@@ -777,9 +801,9 @@ GitLabアプリケーションには、ソリューションに接続できる[P
 - [2023-02-17](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110379): 新しい形式に従うようにPraefect設定例を更新しました。
 - [2023-02-14](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109798): 自動化が追加のワークロードと見なされる可能性がある例を追加しました。
 - [2023-02-13](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111018): 本番環境ソフトウェアのSelf-Managedの実行に関与することについてより多くのコンテキストを提供するはじめにセクションを新たに追加しました。また、意思決定ツリーセクションにスタンドアロンセットアップとクラウドプロバイダーサービスの詳細を追加しました。
-- [2023-02-01](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110641): あまり知られていない用語である**関与**の代わりに、より一般的な「複雑」という用語を使用するように切り替えました。
+- [2023-02-01](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110641): より明確にするために、「関係する」という言葉の代わりに「複雑」という言葉を使用するようにスイッチしました。
 - [2023-01-31](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110328): メインページの要件セクションを拡張および一元化しました。
-- [2023-01-26](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110183):NFSからGitデータを移行すること、オブジェクトデータがNFSで引き続きサポートされていること、および複数のRailsノード間でSSHキーを正しく処理することに関するノートを追加しました。
+- [2023-01-26](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110183): NFSからGitデータを移行すること、オブジェクトデータがNFSで引き続きサポートされていること、および複数のRailsノード間でSSHキーを正しく処理することに関するノートを追加しました。
 
 **2022**:
 
@@ -792,7 +816,7 @@ GitLabアプリケーションには、ソリューションに接続できる[P
 - [2022-11-09](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102746): 大規模なモノレポと追加のワークロードがパフォーマンスに与える影響に関するガイダンスを追加しました。また、SSLに関するロードバランサーのガイダンスと、最小接続ベースのルーティング方法の推奨事項を拡大しました。
 - [2022-10-18](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100826): オブジェクトストレージのガイダンスを調整して、NFSよりも推奨されることを明確にしました。
 - [2022-10-11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100305): パフォーマンスの問題のため、最大2,000のみを推奨するようにAzureのガイダンスを更新しました。
-- [2022-09-27](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98204):ユーザーが使用するアーキテクチャをより適切に決定できるように、意思決定ツリーセクションを追加しました。
+- [2022-09-27](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98204): ユーザーが使用するアーキテクチャをより適切に決定できるように、意思決定ツリーセクションを追加しました。
 - [2022-09-22](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98263): オブジェクトストレージのみを使用している場合に、増分ログの生成を有効にするための明示的な手順を追加しました。
 - [2022-09-22](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98184): 推奨されるクラウドプロバイダーとサービスに関するガイダンスを拡張しました。
 - [2022-09-09](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97245): オブジェクトストレージのガイダンスを拡張し、Gitデータに対するNFSのサポートが`15.6`で終了することを更新しました。

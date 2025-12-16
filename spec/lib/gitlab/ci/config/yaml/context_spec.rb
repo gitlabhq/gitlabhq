@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe ::Gitlab::Ci::Config::Yaml::Context, feature_category: :pipeline_composition do
   describe '#initialize' do

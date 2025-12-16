@@ -74,7 +74,7 @@ To declare a GitLab incident from Slack:
    project, that template is automatically applied to the description text box. The template is applied
    only if the description text box is empty.
 
-   You can also include GitLab [quick actions](../../user/project/quick_actions.md) in the description text box.
+   You can also include [quick actions](../../user/project/quick_actions.md) in the description text box.
    For example, entering `/link https://example.slack.com/archives/123456789 Dedicated Slack channel`
    adds a dedicated Slack channel to the incident you create. For a complete list of
    quick actions for incidents, see [Use GitLab quick actions](#use-gitlab-quick-actions).

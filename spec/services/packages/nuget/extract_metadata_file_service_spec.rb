@@ -44,7 +44,7 @@ RSpec.describe Packages::Nuget::ExtractMetadataFileService, feature_category: :p
       context 'with InputStream zip' do
         let(:package_zip_file) do
           Zip::InputStream.open(
-            temp_file('package.nupkg', content: File.open(package_file.file.path))
+            temp_file('package.nupkg', content: File.read(package_file.file.path))
           )
         end
 

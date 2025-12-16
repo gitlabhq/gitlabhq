@@ -9,7 +9,7 @@ class ProjectSetting < ApplicationRecord
   include AfterCommitQueue
   include SafelyChangeColumnDefault
 
-  columns_changing_default :auto_duo_code_review_enabled, :duo_remote_flows_enabled
+  columns_changing_default :auto_duo_code_review_enabled, :duo_remote_flows_enabled, :duo_sast_fp_detection_enabled
 
   ALLOWED_TARGET_PLATFORMS = %w[ios osx tvos watchos android].freeze
 

@@ -114,6 +114,7 @@ describe('HomepageApp', () => {
         authoredWorkItemsPath: MOCK_AUTHORED_WORK_ITEMS_PATH,
         activityPath: MOCK_ACTIVITY_PATH,
         lastPushEvent,
+        showFeedbackWidget: true,
       },
       stubs: {
         GlSprintf,
@@ -398,9 +399,18 @@ describe('HomepageApp', () => {
     });
   });
 
+  describe('when there is no create_mr_path', () => {
+    it('does not render the PickUpWidget component', () => {
+      createWrapper({
+        lastPushEvent: { ...lastPushEvent, create_mr_path: null },
+      });
+      expect(findPickUpWidget().exists()).toBe(false);
+    });
+  });
+
   describe('when lastPushEvent.show_widget is false but there is valid push event data', () => {
     it('shows the widget', () => {
-      createWrapper({ lastPushEvent: { show_widget: false, branch_name: 'feature_branch' } });
+      createWrapper({ lastPushEvent: { ...lastPushEvent, show_widget: false } });
 
       expect(findPickUpWidget().exists()).toBe(true);
     });

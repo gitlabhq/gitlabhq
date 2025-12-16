@@ -82,6 +82,37 @@ module HasRepository
     @default_branch ||= repository.empty? ? default_branch_from_preferences : repository.root_ref
   end
 
+  def default_branch=(branch_name)
+    return if branch_name.blank?
+
+    return unless instance_of?(Project) && importing?
+
+    # Store the desired default branch for later application
+    # This is used during project import to restore the default branch
+    @desired_default_branch = branch_name # rubocop:disable Gitlab/ModuleWithInstanceVariables -- no alternative without disabling cop
+
+    # Try to apply it immediately if the repository is ready
+    apply_desired_default_branch
+  end
+
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables -- no alternative without disabling cop
+  def apply_desired_default_branch
+    return unless @desired_default_branch
+    return if repository.empty?
+    return if repository.root_ref == @desired_default_branch
+
+    # Only change HEAD if the branch exists
+    if repository.branch_exists?(@desired_default_branch)
+      repository.change_head(@desired_default_branch)
+      reload_default_branch
+      @desired_default_branch = nil
+    end
+  rescue StandardError => e
+    # Log the error but don't fail the import
+    Import::Framework::Logger.warn("Failed to set default branch to #{@desired_default_branch}: #{e.message}")
+  end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
   def default_branch_from_preferences
     (default_branch_from_group_preferences || Gitlab::CurrentSettings.default_branch_name).presence
   end
@@ -94,7 +125,7 @@ module HasRepository
   end
 
   def reload_default_branch
-    @default_branch = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    @default_branch = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables -- no alternative without disabling cop
 
     default_branch
   end

@@ -2,6 +2,8 @@
 
 module MergeRequests
   class ReloadDiffsService
+    include Gitlab::Utils::StrongMemoize
+
     def initialize(merge_request, current_user)
       @merge_request = merge_request
       @current_user = current_user
@@ -16,6 +18,7 @@ module MergeRequests
       new_diff = merge_request.create_merge_request_diff(preload_gitaly: true)
 
       clear_cache(new_diff)
+
       update_diff_discussion_positions(old_diff_refs)
     end
 

@@ -15,7 +15,8 @@ module Types
         field :award_emoji,
           ::Types::AwardEmojis::AwardEmojiType.connection_type,
           null: true,
-          description: 'Emoji reactions on the work item.'
+          description: 'Emoji reactions on the work item.',
+          skip_type_authorization: [:read_emoji]
         field :downvotes,
           GraphQL::Types::Int,
           null: false,

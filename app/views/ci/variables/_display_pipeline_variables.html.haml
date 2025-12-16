@@ -8,7 +8,7 @@
     = form.gitlab_ui_checkbox_component :ci_display_pipeline_variables,
       s_('CiVariables|Display pipeline variables')
 
-    %p.gl-text-secondary.gl-font-sm.gl-mt-2
+    %p.gl-text-subtle.gl-font-sm.gl-mt-2
       = s_('CiVariables|All manually-defined CI/CD variables and their values are visible to maintainers, which is a security risk if including credentials or other secrets in variables. Do not enable this feature if variables could contain sensitive data. Developers can only view manually-defined variables in their own manual pipelines.')
     .gl-mt-5
       = form.submit _('Save changes'), pajamas_button: true

@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Deploy keys
 description: Public SSH keys, repository access, bot users, and read-only access.
@@ -83,7 +83,7 @@ To help detect a potential secret leak, you can use the
 
 To view the deploy keys available to a project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy keys**.
 
@@ -103,7 +103,7 @@ Prerequisites:
 - [Generate an SSH key pair](../../ssh.md#generate-an-ssh-key-pair). Put the private SSH
   key on the host that requires access to the repository.
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy keys**.
 1. Select **Add new key**.
@@ -134,7 +134,7 @@ Prerequisites:
 
 To create a public deploy key:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Deploy keys**.
 1. Select **New deploy key**.
 1. Complete the fields.
@@ -151,7 +151,7 @@ Prerequisites:
 
 To grant a public deploy key access to a project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy keys**.
 1. Select **Publicly accessible deploy keys**.
@@ -168,7 +168,7 @@ Prerequisites:
 
 To edit the project access permissions of a deploy key:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy keys**.
 1. In the key's row, select **Edit** ({{< icon name="pencil" >}}).
@@ -185,7 +185,7 @@ Prerequisites:
 
 To disable a deploy key:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy keys**.
 1. Select **Disable** ({{< icon name="cancel" >}}).
@@ -210,7 +210,7 @@ There are a few scenarios where a deploy key fails to push to a
 [protected branch](../repository/branches/protected.md).
 
 - The owner associated to a deploy key does not have [membership](../members/_index.md) to the project of the protected branch.
-- The owner associated to a deploy key has [project membership permissions](../../permissions.md#project-members-permissions) lower than required to **View project code**.
+- The owner associated to a deploy key has [project membership permissions](../../permissions.md#project-permissions) lower than required to **View project code**.
 - The deploy key does not have [read-write permissions for the project](#edit-project-access-permissions-of-a-deploy-key).
 - The deploy key has been [revoked](#revoke-project-access-of-a-deploy-key).
 - **No one** is selected in [the **Allowed to push and merge** section](../repository/branches/protected.md#protect-a-branch) of the protected branch.

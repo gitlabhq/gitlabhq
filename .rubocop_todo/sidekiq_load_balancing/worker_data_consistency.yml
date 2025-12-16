@@ -119,7 +119,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/issues/close_worker.rb'
     - 'app/workers/issues/placement_worker.rb'
     - 'app/workers/issues/rebalancing_worker.rb'
-    - 'app/workers/loose_foreign_keys/cleanup_worker.rb'
     - 'app/workers/mail_scheduler/issue_due_worker.rb'
     - 'app/workers/mail_scheduler/notification_service_worker.rb'
     - 'app/workers/member_invitation_reminder_emails_worker.rb'

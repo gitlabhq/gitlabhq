@@ -68,7 +68,7 @@ To learn how to create better OKRs and how we use them at GitLab, see the
 
 To create an objective:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**.
 1. In the upper-right corner, next to **New issue**, select the down arrow {{< icon name="chevron-lg-down" >}} and then select **New objective**.
 1. Select **New objective** again.
@@ -81,7 +81,7 @@ To create a key result, [add it as a child](#add-a-child-key-result) to an exist
 
 To view an objective:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
    for `Type = objective`.
@@ -91,7 +91,7 @@ To view an objective:
 
 To view a key result:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
    for `Type = key_result`.
@@ -276,7 +276,7 @@ Prerequisites:
 
 To set progress of an objective or key result:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
    for `Type = objective` or `Type = key result` and select your item.
@@ -326,7 +326,7 @@ To promote a key result:
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Promote to objective**.
 
-Alternatively, use the `/promote_to objective` [quick action](project/quick_actions.md).
+Alternatively, use the [`/promote_to objective` quick action](project/quick_actions.md#promote_to).
 
 ## Convert an OKR to another item type
 
@@ -357,14 +357,14 @@ Prerequisites:
 
 To convert an OKR into another item type:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue list, find your objective or key result and select it.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Change type**.
 1. Select the desired item type.
 1. If all conditions are met, select **Change type**.
 
-Alternatively, you can use the `/type` [quick action](project/quick_actions.md#work-items), followed
+Alternatively, you can use the [`/type` quick action](project/quick_actions.md#type), followed
 by `issue`, `task`, `objective` or `key result` in a comment.
 
 ## Copy objective or key result reference
@@ -380,9 +380,9 @@ To refer to an objective or key result elsewhere in GitLab, you can use its full
 
 To copy the objective or key result reference to your clipboard:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your objective or key result to view it.
-1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then select **Copy Reference**.
+1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then select **Copy reference**.
 
 You can now paste the reference into another description or comment.
 
@@ -404,7 +404,7 @@ For more information about creating comments by sending an email and the necessa
 
 To copy the objective's or key result's email address:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then select **Copy objective email address** or **Copy key result email address**.
 
@@ -549,26 +549,8 @@ Prerequisites:
   Scheduling a check-in reminder for child objectives has no effect.
   The setting from the top-level objective is inherited to all child objectives.
 
-To schedule a recurring reminder for an objective, in a new comment use the `/checkin_reminder <cadence>`
-[quick action](project/quick_actions.md#work-items).
-The options for `<cadence>` are:
-
-- `weekly`
-- `twice-monthly`
-- `monthly`
-- `never` (default)
-
-For example, to schedule a weekly check-in reminder, enter:
-
-```plaintext
-/checkin_reminder weekly
-```
-
-To turn off a check-in reminder, enter:
-
-```plaintext
-/checkin_reminder never
-```
+To schedule a recurring reminder for an objective, in a new comment use the
+[`/checkin_reminder` quick action](project/quick_actions.md#checkin_reminder).
 
 ## Set an objective as a parent
 
@@ -715,38 +697,6 @@ To lock an OKR:
 A system note is added to the page details.
 
 If an OKR is closed with a locked discussion, then you cannot reopen it until the discussion is unlocked.
-
-## Two-column layout
-
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags/_index.md) named `work_items_mvc_2`. Disabled by default. This feature is in [beta](../policy/development_stages_support.md).
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/446064) to feature flag named `work_items_beta` in GitLab 16.10. Disabled by default.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available per group, an administrator can [enable the feature flag](../administration/feature_flags/_index.md) named `work_items_beta`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
-
-{{< /alert >}}
-
-When enabled, OKRs use a two-column layout, similar to issues.
-The description and threads are on the left, and attributes, such as labels
-or assignees, on the right.
-
-This feature is in [beta](../policy/development_stages_support.md).
-If you find a bug, [comment on the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/442090).
-
-![OKR two column view](img/objective_two_column_view_v16_10.png)
 
 ## Linked items in OKRs
 

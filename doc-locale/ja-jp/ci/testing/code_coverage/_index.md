@@ -12,7 +12,7 @@ title: コードカバレッジ
 
 {{< /details >}}
 
-テストでカバーされているソースコードの量を追跡および可視化するように、コードカバレッジを設定します。以下を実行できます。
+テストでカバーされているソースコードの量を追跡および可視化するように、コードカバレッジを設定します。以下を実行できます:
 
 - `coverage`キーワードを使用して、全体的なカバレッジのメトリクスと傾向を追跡する。
 - `artifacts:reports:coverage_report`キーワードを使用して、行ごとのカバレッジを可視化する。
@@ -21,7 +21,7 @@ title: コードカバレッジ
 
 [`coverage`](../../yaml/_index.md#coverage)キーワードを使用して、テストカバレッジを監視し、マージリクエストでカバレッジ要件を適用します。
 
-カバレッジレポートでは、次のことが可能です。
+カバレッジレポートでは、次のことが可能です:
 
 - マージリクエストで全体的なカバレッジ率を表示する。
 - 複数のテストジョブからカバレッジを集約する。
@@ -30,7 +30,7 @@ title: コードカバレッジ
 
 カバレッジレポートを設定するには:
 
-1. `coverage`キーワードをパイプライン設定に追加します。
+1. `coverage`キーワードをパイプライン設定に追加します:
 
    ```yaml
    test-unit:
@@ -46,7 +46,7 @@ title: コードカバレッジ
 
 1. テスト出力形式に一致するように正規表現（regex）を設定します。一般的なパターンについては、[カバレッジの正規表現パターン](#coverage-regex-patterns)を参照してください。
 1. 複数のジョブからカバレッジを集約するには、含める各ジョブに`coverage`キーワードを追加します。
-1. オプション: [カバレッジチェックの承認ルールを追加](#add-a-coverage-check-approval-rule)します。
+1. オプション。[カバレッジチェックの承認ルールを追加](#add-a-coverage-check-approval-rule)します。
 
 ### カバレッジの正規表現パターン {#coverage-regex-patterns}
 
@@ -70,7 +70,7 @@ See: https://docs.gitlab.com/user/markdown/#tables
 | ツール       | 言語 | コマンド        | 正規表現パターン |
 |------------|----------|----------------|---------------|
 | pytest-cov | Python   | `pytest --cov` | `/TOTAL.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
-| Simplecov  | Ruby     | `rspec spec`   | `/(?:LOC\s\(\d+\.\d+%\|Line Coverage:\s\d+\.\d+%)/` |
+| Simplecov-html  | Ruby     | `rspec spec`   | `/Line\sCoverage:\s\d+\.\d+%/` |
 
 {{< /tab >}}
 
@@ -94,11 +94,12 @@ See: https://docs.gitlab.com/user/markdown/#tables
 
 {{< tab title="Node.js" >}}
 
-| ツール | コマンド                              | 正規表現パターン |
-|------|--------------------------------------|---------------|
-| tap  | `tap --coverage-report=text-summary` | `/^Statements\s*:\s*([^%]+)/` |
-| nyc  | `nyc npm test`                       | `/All files[^\|]*\|[^\|]*\s+([\d\.]+)/` |
-| jest | `jest --ci --coverage`               | `/All files[^\|]*\|[^\|]*\s+([\d\.]+)/` |
+| ツール      | コマンド                                    | 正規表現パターン |
+|-----------|--------------------------------------------|---------------|
+| tap       | `tap --coverage-report=text-summary`       | `/^Statements\s*:\s*([^%]+)/` |
+| nyc       | `nyc npm test`                             | `/All files[^\|]*\\|[^\|]*\s+([\d\.]+)/` |
+| jest      | `jest --ci --coverage`                     | `/All files[^\|]*\\|[^\|]*\s+([\d\.]+)/` |
+| node:test | `node --experimental-test-coverage --test` | `/all files[^\|]*\\|[^\|]*\s+([\d\.]+)/` |
 
 {{< /tab >}}
 
@@ -126,7 +127,7 @@ See: https://docs.gitlab.com/user/markdown/#tables
 |-----------|------------|---------|---------------|
 | OpenCover | .NET       | なし    | `/(Visited Points).*\((.*)\)/` |
 | dotnet test（[MSBuild](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md)） | .NET | `dotnet test` | `/Total\s*\\|*\s(\d+(?:\.\d+)?)/` |
-| Pester    | PowerShell | なし    | `/Covered (\d{1,3}(\.|,)?\d{0,2}%)/` |
+| Pester    | PowerShell | なし    | `/Covered (\d{1,3}(\.\|,)?\d{0,2}%)/` |
 
 {{< /tab >}}
 
@@ -148,12 +149,12 @@ See: https://docs.gitlab.com/user/markdown/#tables
 
 [`artifacts:reports:coverage_report`](../../yaml/artifacts_reports.md#artifactsreportscoverage_report)キーワードを使用して、マージリクエスト内のテストでカバーされる特定のコード行を表示します。
 
-次の形式でカバレッジレポートを生成できます。
+次の形式でカバレッジレポートを生成できます:
 
 - Cobertura: Java、JavaScript、Python、Rubyなどの複数の言語に対応。
 - JaCoCo: Javaプロジェクトにのみ対応。
 
-カバレッジの可視化では、[アーティファクトレポート](../../yaml/_index.md#artifactsreports)を使用して次のことを行います。
+カバレッジの可視化では、[アーティファクトレポート](../../yaml/_index.md#artifactsreports)を使用して次のことを行います:
 
 1. ワイルドカードパスなど、1つ以上のカバレッジレポートを収集する。
 1. すべてのレポートからカバレッジ情報を結合する。
@@ -168,7 +169,7 @@ See: https://docs.gitlab.com/user/markdown/#tables
 カバレッジの可視化を設定するには:
 
 1. カバレッジレポートを生成するようにテストツールを設定します。
-1. `artifacts:reports:coverage_report`設定をパイプラインに追加します。
+1. `artifacts:reports:coverage_report`設定をパイプラインに追加します:
 
    ```yaml
    test:
@@ -181,16 +182,16 @@ See: https://docs.gitlab.com/user/markdown/#tables
            path: coverage/coverage.xml
    ```
 
-言語固有の設定の詳細については、以下を参照してください。
+言語固有の設定の詳細については、以下を参照してください:
 
 - [Coberturaカバレッジレポート](cobertura.md)
 - [JaCoCoカバレッジレポート](jacoco.md)
 
-### 子パイプラインからのカバレッジレポート {#coverage-reports-from-child-pipelines}
+### 子パイプラインからのカバレッジレポート {#coverage-reports-for-child-pipelines}
 
-子パイプラインからのカバレッジレポートは、マージリクエストの差分注釈には表示されますが、マージリクエストウィジェットには表示されません。これは、親パイプラインが子パイプラインによって生成されたカバレッジレポートアーティファクトにアクセスできないことが原因です。
+子パイプラインのカバレッジレポートは、マージリクエストの差分の注釈に表示されます。ただし、親パイプラインは、これらのカバレッジレポートにアクセスして、独自のジョブで使用することはできません。
 
-子パイプラインからのカバレッジレポートをマージリクエストウィジェットに表示するサポートは、[エピック8205](https://gitlab.com/groups/gitlab-org/-/epics/8205)で提案されています。
+親パイプラインが子パイプラインのカバレッジレポートをフェッチするためのサポートが、[issue 285100](https://gitlab.com/gitlab-org/gitlab/-/issues/285100)で提案されています。
 
 ## カバレッジチェックの承認ルールを追加する {#add-a-coverage-check-approval-rule}
 
@@ -208,9 +209,9 @@ See: https://docs.gitlab.com/user/markdown/#tables
 
 `Coverage-Check`承認ルールを追加するには:
 
-1. プロジェクトに移動し、**設定 > マージリクエスト**を選択します。
-1. **マージリクエスト承認**で、次のいずれかを実行します。
-   - `Coverage-Check`承認ルールの横にある**有効化**を選択します。
+1. プロジェクトに移動し、**設定** > **マージリクエスト**を選択します。
+1. **マージリクエストの承認**で、次のいずれかを実行します:
+   - `Coverage-Check`承認ルールの横にある**有効**を選択します。
    - 手動セットアップの場合は、**承認ルールを追加**を選択し、**ルール名**に`Coverage-Check`と入力します。
 1. **ターゲットブランチ**を選択します。
 1. **必要な承認数**を設定します。
@@ -225,14 +226,14 @@ See: https://docs.gitlab.com/user/markdown/#tables
 
 ## カバレッジ結果を表示する {#view-coverage-results}
 
-パイプラインが正常に実行された後、次の場所でコードカバレッジの結果を確認できます。
+パイプラインが正常に実行された後、次の場所でコードカバレッジの結果を確認できます:
 
 - マージリクエストウィジェット: ターゲットブランチと比較して、カバレッジ率とその変化を確認します。
 
   ![コードカバレッジ率を示すマージリクエストウィジェット](img/pipelines_test_coverage_mr_widget_v17_3.png)
 
 - マージリクエストの差分: どの行がテストでカバーされているかを確認します。CoberturaレポートおよびJaCoCoレポートで使用できます。
-- パイプラインジョブ: 個々のジョブのカバレッジ結果を監視します。
+- パイプラインジョブ: 個々のジョブのカバレッジ結果をモニタリングします。
 
 ## カバレッジ履歴を表示する {#view-coverage-history}
 
@@ -242,10 +243,10 @@ See: https://docs.gitlab.com/user/markdown/#tables
 
 プロジェクトのコードカバレッジ履歴を表示するには:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **分析 > リポジトリ分析**を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオンにしている](../../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合、このフィールドは上部のバーにあります。
+1. **分析** > **リポジトリ分析**を選択します。
 1. ドロップダウンリストから、履歴データを表示するジョブを選択します。
-1. オプション: データのCSVファイルを表示するには、**元のデータをダウンロード（.csv）**を選択します。
+1. オプション。データのCSVファイルを表示するには、**元のデータをダウンロード (.csv)**を選択します。
 
 ### グループの場合 {#for-a-group}
 
@@ -257,9 +258,9 @@ See: https://docs.gitlab.com/user/markdown/#tables
 
 グループ内のすべてのプロジェクトのコードカバレッジ履歴を表示するには:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。
-1. **分析 > リポジトリ分析**を選択します。
-1. オプション: データのCSVファイルを表示するには、**過去のテストカバレッジデータをCSV形式でダウンロード**を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。[新しいナビゲーションをオンにしている](../../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合、このフィールドは上部のバーにあります。
+1. **分析** > **リポジトリ分析**を選択します。
+1. オプション。データのCSVファイルを表示するには、**過去のテストカバレッジデータをCSV形式でダウンロード**を選択します。
 
 ## カバレッジバッジを表示する {#display-coverage-badges}
 
@@ -275,7 +276,7 @@ See: https://docs.gitlab.com/user/markdown/#tables
 
 一部のカバレッジツールには、出力のカラーコードを無効にするオプションがありません。その場合は、カラーコードを削除する1行のスクリプトに、カバレッジツールの出力をパイプします。
 
-例:
+次に例を示します:
 
 ```shell
 lein cloverage | perl -pe 's/\e\[?.*?[\@-~]//g'

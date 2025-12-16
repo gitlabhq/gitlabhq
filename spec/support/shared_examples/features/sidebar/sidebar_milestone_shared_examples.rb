@@ -4,7 +4,7 @@ RSpec.shared_examples 'milestone sidebar widget' do
   context 'editing milestone' do
     # Ensure support bot user is created so creation doesn't count towards query limit
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    let_it_be(:support_bot) { Users::Internal.support_bot }
+    let_it_be(:support_bot) { create(:support_bot) }
     let_it_be(:milestone_expired) { create(:milestone, project: project, title: 'Foo - expired', due_date: 5.days.ago) }
     let_it_be(:milestone_no_duedate) { create(:milestone, project: project, title: 'Foo - No due date') }
     let_it_be(:milestone1) { create(:milestone, project: project, title: 'Milestone-1', due_date: 20.days.from_now) }

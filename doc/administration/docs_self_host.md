@@ -56,7 +56,7 @@ Make sure you either:
 
 - Allow port `4000` in your firewall.
 - Use a different port.
-In following examples, replace the leftmost `4000` with a different port number.
+  In following examples, replace the leftmost `4000` with a different port number.
 
 To run the GitLab product documentation website in a Docker container:
 
@@ -157,7 +157,7 @@ In this example:
 
 - `17.8/` is the directory where the documentation is hosted.
 - `index.html` is a simple HTML file that redirects to the directory containing the documentation.
-In this case, `17.8/`.
+  In this case, `17.8/`.
 
 To extract the HTML files of the documentation site:
 
@@ -203,7 +203,7 @@ documentation URL requests as needed. For example, if your GitLab version is
 
 To test the setting, in GitLab, select a **Learn more** link. For example:
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
 1. In the **Syntax highlighting theme** section, select **Learn more**.
 

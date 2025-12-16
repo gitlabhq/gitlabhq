@@ -50,7 +50,7 @@ Prerequisites:
 
 To view storage:
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Usage quotas**.
 1. Select the **Storage** tab to see namespace storage usage.
 1. To view storage usage for a project, in the table at the bottom, select a project. Storage usage is updated every 90 minutes.
@@ -69,7 +69,7 @@ A cost factor is applied to the storage consumed by project forks so that forks 
 
 To view the amount of namespace storage the fork has used:
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Usage quotas**.
 1. Select the **Storage** tab. The **Total** column displays the amount of namespace storage used by the fork as a portion of the actual size of the fork on disk.
 
@@ -152,7 +152,7 @@ In addition to managing your storage usage you can consider these options for in
   - GitLab for Education
   - GitLab for Open Source
   - GitLab for Startups
-- Consider a [GitLab Self-Managed subscription](../subscriptions/self_managed/_index.md), which does not have storage limits.
+- Consider a [GitLab Self-Managed subscription](../subscriptions/manage_subscription.md), which does not have storage limits.
 - [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) for more information about your options.
 
 ## Purchase more storage
@@ -213,7 +213,7 @@ To purchase additional storage for your group on GitLab.com:
 {{< tab title="Group owner" >}}
 
 1. Sign in to GitLab.com.
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Usage quotas**.
 1. Select the **Storage** tab.
 1. Select **Buy storage**. You are taken to the Customers Portal.
@@ -250,14 +250,12 @@ projects are unlocked and their excess usage is deducted from the additional sto
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
+- Tier: Premium, Ultimate
 
 {{< /details >}}
 
-Regardless of additional storage purchases, when a repository and LFS exceed 500 GiB,
-GitLab places the project in a read-only state. This limit applies to all tiers and
-cannot be increased. For example, purchasing 1 TB of storage does not allow a single
-project to exceed 500 GiB.
+When a project's repository and LFS exceed 500 GiB, GitLab places the project in a read-only state.
+You cannot push changes to a read-only project.
 
 When a project exceeds the storage limit, owners of the group and top-level namespace
 receive notifications through the UI and email. To manage storage usage, contact your

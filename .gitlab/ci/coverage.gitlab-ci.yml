@@ -1,0 +1,126 @@
+# Coverage export jobs for both RSpec and Jest test suites
+
+.coverage-export-base:
+  extends:
+    - .default-retry
+    - .ruby-cache
+  stage: post-test
+  allow_failure: true
+  before_script:
+    - !reference [.default-utils-before_script, before_script]
+    - eval "bundle install ${BUNDLE_INSTALL_FLAGS}"
+  variables:
+    CLICKHOUSE_URL: $GLCI_DA_CLICKHOUSE_URL
+    CLICKHOUSE_DATABASE: $GLCI_CLICKHOUSE_CODE_COVERAGE_DB
+    CLICKHOUSE_USERNAME: $GLCI_CLICKHOUSE_METRICS_USERNAME
+    # Note: GLCI_CLICKHOUSE_METRICS_PASSWORD is read directly from the environment
+    # by the test-coverage script and is not passed via CLI for security reasons
+
+test-coverage:export-rspec-and-e2e:
+  extends:
+    - .coverage-export-base
+    - .rails:rules:coverage-export-rspec-and-e2e
+  stage: post-qa
+  needs:
+    - job: e2e:test-on-gdk
+    - job: rspec:coverage
+    - job: update-tests-metadata
+  script:
+    - ruby scripts/coverage/download_e2e_coverage_from_child_pipeline.rb
+    - ruby scripts/coverage/merge_backend_coverage.rb
+    - echo "Merging E2E test mappings with Crystalball mappings..."
+    - ruby scripts/coverage/merge_e2e_backend_test_mapping.rb
+    - |
+      if [ ! -f "crystalball/merged-mapping.json.gz" ]; then
+        echo "Merged test mapping not found. Skipping export to ClickHouse..."
+        exit 0
+      fi
+
+      echo "Exporting merged RSpec + E2E coverage to ClickHouse..."
+      bundle exec test-coverage \
+        --test-reports 'rspec/rspec-*.json,e2e-test-reports/rspec-*.json' \
+        --coverage-report 'coverage-backend/coverage.lcov' \
+        --test-map 'crystalball/merged-mapping.json.gz' \
+        --clickhouse-url "${CLICKHOUSE_URL}" \
+        --clickhouse-database "${CLICKHOUSE_DATABASE}" \
+        --clickhouse-username "${CLICKHOUSE_USERNAME}"
+  artifacts:
+    paths:
+      - coverage-backend/
+      - coverage-e2e-backend/
+      - coverage/
+      - crystalball/
+      - rspec/
+      - e2e-test-reports/
+    expire_in: 7d
+
+# Job is temporary disabled as it relies on `process-frontend-coverage` job that
+# was causing master pipeline failures.
+# Example https://gitlab.com/gitlab-org/gitlab/-/jobs/12319670339
+.test-coverage:export-jest-and-e2e:
+  extends:
+    - .coverage-export-base
+    - .with-ci-node-image
+    - .yarn-cache
+    - .frontend:rules:coverage-export-jest-and-e2e
+  stage: post-qa
+  needs:
+    - job: e2e:test-on-gdk
+    - job: coverage-frontend
+  before_script:
+    - !reference [.default-utils-before_script, before_script]
+    - eval "bundle install ${BUNDLE_INSTALL_FLAGS}"
+    - source scripts/utils.sh
+    - yarn_install_script
+  script:
+    - ruby scripts/coverage/download_e2e_frontend_coverage_from_child_pipeline.rb
+    - |
+      echo "Merging Jest + E2E coverage..."
+      node scripts/frontend/merge_coverage_frontend.js
+    - |
+      echo "Merging E2E test mappings with Jest mappings..."
+      node scripts/frontend/merge_e2e_frontend_test_mapping.js
+
+      if [ ! -f "jest-test-mapping/merged-source-to-test.json" ]; then
+        echo "Merged test mapping not found. Skipping export to ClickHouse..."
+        exit 0
+      fi
+
+      echo "Exporting merged Jest + E2E coverage to ClickHouse..."
+      bundle exec test-coverage \
+        --test-reports 'jest-reports/**/*.json,e2e-test-reports/rspec-*.json' \
+        --coverage-report 'coverage-frontend/lcov.info' \
+        --test-map 'jest-test-mapping/merged-source-to-test.json' \
+        --clickhouse-url "${CLICKHOUSE_URL}" \
+        --clickhouse-database "${CLICKHOUSE_DATABASE}" \
+        --clickhouse-username "${CLICKHOUSE_USERNAME}"
+  artifacts:
+    paths:
+      - coverage-frontend/
+      - coverage-e2e-frontend/
+      - jest-reports/
+      - jest-test-mapping/
+      - e2e-test-reports/
+    expire_in: 7d
+
+test-coverage:export-workhorse:
+  extends:
+    - .coverage-export-base
+    - .workhorse:rules:workhorse-coverage
+  needs:
+    - job: workhorse-coverage
+  script:
+    - echo "Exporting Workhorse Go coverage to ClickHouse..."
+    - bundle exec test-coverage
+        --test-reports 'workhorse-test-reports/workhorse-tests.json'
+        --coverage-report 'workhorse/coverage.lcov'
+        --test-map 'workhorse-test-mapping/workhorse-source-to-test.json'
+        --clickhouse-url "${CLICKHOUSE_URL}"
+        --clickhouse-database "${CLICKHOUSE_DATABASE}"
+        --clickhouse-username "${CLICKHOUSE_USERNAME}"
+  artifacts:
+    paths:
+      - workhorse/
+      - workhorse-test-reports/
+      - workhorse-test-mapping/
+    expire_in: 7d

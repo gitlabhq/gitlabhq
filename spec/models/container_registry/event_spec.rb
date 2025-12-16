@@ -132,7 +132,11 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
         event_name = "i_container_registry_#{event}_deploy_token"
         expect { subject }
           .to trigger_internal_events(event_name)
-          .with(additional_properties: { property: originator.id.to_s })
+          .with(
+            project: project,
+            namespace: project.namespace,
+            additional_properties: { property: originator.id.to_s }
+          )
           .exactly(count).time
       end
     end
@@ -142,7 +146,11 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
         event_name = "i_container_registry_#{event}_user"
         expect { subject }
           .to trigger_internal_events(event_name)
-          .with(user: originator)
+          .with(
+            user: originator,
+            project: project,
+            namespace: project.namespace
+          )
           .exactly(count).time
       end
     end
@@ -179,10 +187,9 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
       end
 
       with_them do
-        it 'creates a tracking event' do
-          expect(::Gitlab::Tracking).to receive(:event).with('container_registry:notification', tracking_action)
-
-          subject
+        # Internal events are tested via the shared examples in the actor-specific contexts below
+        it 'processes the event' do
+          expect { subject }.not_to raise_error
         end
       end
     end
@@ -204,10 +211,9 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
       end
 
       with_them do
-        it 'creates a tracking event' do
-          expect(::Gitlab::Tracking).to receive(:event).with('container_registry:notification', tracking_action)
-
-          subject
+        # Internal events are tested via the shared examples in the actor-specific contexts below
+        it 'processes the event' do
+          expect { subject }.not_to raise_error
         end
       end
     end
@@ -257,10 +263,10 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
         end
 
         where(:target, :action, :event, :count) do
-          { 'tag' => 'latest' }          | 'push'     | 'push_tag'           |  1
-          { 'tag' => 'latest' }          | 'delete'   | 'delete_tag'         |  1
-          { 'repository' => 'foo/bar' }  | 'push'     | 'create_repository'  |  1
-          { 'repository' => 'foo/bar' }  | 'delete'   | 'delete_repository'  |  1
+          { 'tag' => 'latest', 'repository' => 'group/test/container' }     | 'push'     | 'push_tag'           |  1
+          { 'tag' => 'latest', 'repository' => 'group/test/container' }     | 'delete'   | 'delete_tag'         |  1
+          { 'repository' => 'group/test/newcontainer' }                     | 'push'     | 'create_repository'  |  1
+          { 'repository' => 'group/test/container' }                        | 'delete'   | 'delete_repository'  |  1
         end
 
         with_them do
@@ -331,10 +337,12 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
         end
 
         where(:target, :action, :event, :user_type, :count) do
-          { 'tag' => 'latest' }          | 'push'     | 'push_tag'           |  'personal_access_token'   |  1
-          { 'tag' => 'latest' }          | 'delete'   | 'delete_tag'         |  'personal_access_token'   |  1
-          { 'repository' => 'foo/bar' }  | 'push'     | 'create_repository'  |  'build'                   |  1
-          { 'repository' => 'foo/bar' }  | 'delete'   | 'delete_repository'  |  'gitlab_or_ldap'          |  1
+          { 'tag' => 'latest', 'repository' => 'group/test/container' } | 'push' | 'push_tag' |
+            'personal_access_token' | 1
+          { 'tag' => 'latest', 'repository' => 'group/test/container' } | 'delete' | 'delete_tag' |
+            'personal_access_token' | 1
+          { 'repository' => 'group/test/newcontainer' } | 'push' | 'create_repository' | 'build' | 1
+          { 'repository' => 'group/test/container' } | 'delete' | 'delete_repository' | 'gitlab_or_ldap' | 1
         end
 
         with_them do
@@ -384,11 +392,6 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
           'target' => { 'digest' => 'x', 'repository' => 'group/test/container' },
           'actor' => {}
         }
-      end
-
-      before do
-        # stub other Snowplow events that are getting triggered by this class
-        allow(::Gitlab::Tracking).to receive(:event).with(described_class::EVENT_TRACKING_CATEGORY, anything)
       end
 
       context 'when it is a manifest delete event' do

@@ -1,0 +1,24 @@
+---
+Gitlab/AvoidConstDefaultOrganizationId:
+  Details: grace period
+  Exclude:
+    - 'app/models/organizations/organization.rb'
+    - 'app/models/personal_access_token.rb'
+    - 'app/models/user.rb'
+    - 'db/migrate/20250618121819_add_organization_id_to_users.rb'
+    - 'db/post_migrate/20250625103818_change_default_organization_id_on_users.rb'
+    - 'db/post_migrate/20250925120459_backfill_jira_connect_installations_organization_id.rb'
+    - 'db/post_migrate/20251001091535_backfill_member_roles_organization_id.rb'
+    - 'db/post_migrate/20251009160119_backfill_admin_role_links_organization_id.rb'
+    - 'db/post_migrate/20251124121714_backfill_scim_oauth_access_tokens_organization_id.rb'
+    - 'ee/app/controllers/admin/application_settings/scim_oauth_controller.rb'
+    - 'ee/spec/lib/security/security_orchestration_policies/policy_sync_state/state_spec.rb'
+    - 'ee/spec/requests/admin/application_settings/scim_oauth_controller_spec.rb'
+    - 'ee/spec/workers/security/persist_security_policies_worker_spec.rb'
+    - 'lib/gitlab/background_migration/backfill_clusters_sharding_key.rb'
+    - 'lib/gitlab/database_importers/default_organization_importer.rb'
+    - 'spec/factories/organizations/organizations.rb'
+    - 'spec/lib/gitlab/background_migration/backfill_clusters_sharding_key_spec.rb'
+    - 'spec/lib/gitlab/database_importers/default_organization_importer_spec.rb'
+    - 'spec/models/personal_access_token_spec.rb'
+    - 'spec/services/snippets/create_service_spec.rb'

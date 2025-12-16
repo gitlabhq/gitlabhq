@@ -103,13 +103,13 @@ The Kubernetes agent must be running in your cluster to scan running container i
 
 {{< alert type="note" >}}
 
-Operational Container Scanning operates independently of GitLab pipelines. It is fully automated and managed by the Kubernetes Agent, which initiates new scans at the scheduled time configured in the Scan Execution Policy. The agent creates a dedicated Job within your cluster to perform the scan and report findings back to GitLab.
+Operational container scanning operates independently of GitLab pipelines. It is fully automated and managed by the Kubernetes Agent, which initiates new scans at the scheduled time configured in the Scan Execution Policy. The agent creates a dedicated Job within your cluster to perform the scan and report findings back to GitLab.
 {{< /alert >}}
 
 Here is an example of a policy which enables operational container scanning within the cluster the Kubernetes agent is attached to:
 
 ```yaml
-- name: Enforce Container Scanning in cluster connected through my-gitlab-agent for default and kube-system namespaces
+- name: Enforce container scanning in cluster connected through my-gitlab-agent for default and kube-system namespaces
   enabled: true
   rules:
   - type: schedule
@@ -184,8 +184,8 @@ When using a fractional value for CPU, format the value as a string.
 
 {{< alert type="note" >}}
 
-- Resource requirements can only be set by using the agent configuration. If you enabled Operational Container Scanning through scan execution policies and need to configure resource requirements, you should do so via the agent configuration file.
-- When using Google Kubernetes Engine (GKE) for Kubernetes orchestration, [the ephemeral storage limit value will always be set to equal the request value](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits). This is enforced by GKE.
+- Resource requirements must be set using the agent configuration file, even when operational container scanning is enabled through scan execution policies.
+- When using Google Kubernetes Engine (GKE) for Kubernetes orchestration, [ephemeral storage limits are automatically set to equal requests](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits).
 
 {{< /alert >}}
 
@@ -326,7 +326,7 @@ container_scanning:
 
 To view vulnerability information in GitLab:
 
-1. On the left sidebar, select **Search or go to** and find the project that contains the agent configuration file. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find the project that contains the agent configuration file.
 1. Select **Operate** > **Kubernetes clusters**.
 1. Select the **Agent** tab.
 1. Select an agent to view the cluster vulnerabilities.

@@ -32,7 +32,6 @@ import {
   DELETE_PACKAGE_FILES_ERROR_MESSAGE,
   GRAPHQL_PACKAGE_FILES_PAGE_SIZE,
 } from '~/packages_and_registries/package_registry/constants';
-import { NEXT, PREV } from '~/vue_shared/components/pagination/constants';
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -169,8 +168,6 @@ describe('Package Files', () => {
         startCursor,
         hasNextPage,
         hasPreviousPage,
-        prevText: PREV,
-        nextText: NEXT,
         disabled: false,
       });
     });

@@ -42,6 +42,8 @@ However, to help estimate the duration of your import, a project comprised of th
 
 {{< /history >}}
 
+- Bitbucket Server must be accessible from the GitLab instance. The Bitbucket Server URL must be
+  publicly resolvable or accessible on the network where GitLab is running.
 - [Bitbucket Server import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
   must be enabled. If not enabled, ask your GitLab administrator to enable it. The Bitbucket Server import source is enabled
   by default on GitLab.com.
@@ -54,7 +56,7 @@ However, to help estimate the duration of your import, a project comprised of th
 To import your Bitbucket repositories:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project**.
 1. Select **Bitbucket Server**.
 1. Sign in to Bitbucket and grant GitLab access to your Bitbucket account.
@@ -113,12 +115,12 @@ The following items are changed when they are imported:
 - User mapping by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36885) in GitLab 13.4 [with a flag](../../../administration/feature_flags/_index.md) named `bitbucket_server_user_mapping_by_username`. Disabled by default.
 - Mapping user mentions to GitLab users [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433008) in GitLab 16.8.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153041) to map users only by email address in GitLab 17.1.
-- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [user contribution and membership mapping](_index.md#user-contribution-and-membership-mapping) in GitLab 17.8.
+- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [user contribution and membership mapping](../../import/mapping.md) in GitLab 17.8.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
 
 {{< /history >}}
 
-The Bitbucket Server importer uses an [improved method](_index.md#user-contribution-and-membership-mapping)
+The Bitbucket Server importer uses an [improved method](../../import/mapping.md)
 of mapping user contributions for GitLab.com and GitLab Self-Managed.
 
 ### Old method of user contribution mapping
@@ -126,7 +128,7 @@ of mapping user contributions for GitLab.com and GitLab Self-Managed.
 You can use the old user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances.
 To use this method, `bitbucket_server_user_mapping` must be disabled.
 For imports to GitLab.com, you must
-use the [improved method](_index.md#user-contribution-and-membership-mapping) instead.
+use the [improved method](../../import/mapping.md) instead.
 
 Using the old method, the importer tries to match a Bitbucket Server user's email address with a confirmed email address in the GitLab user database. If no
 such user is found:
@@ -155,7 +157,7 @@ If the GUI-based import tool does not work, you can try to:
 - Set up [repository mirroring](../repository/mirror/_index.md).
   It provides verbose error output.
 
-See the [troubleshooting section](bitbucket.md#troubleshooting)
+See the [troubleshooting section](../../import/bitbucket_cloud.md#troubleshooting)
 for Bitbucket Cloud.
 
 ### LFS objects not imported
@@ -175,3 +177,10 @@ This value indicates the URL provided by the Bitbucket server to use for the imp
 
 To fix this problem, ensure that the Bitbucket server is aware of any proxy servers because proxy servers can impact how Bitbucket constructs and uses URLs.
 For more information, see [Proxy and secure Bitbucket](https://confluence.atlassian.com/bitbucketserver/proxy-and-secure-bitbucket-776640099.html).
+
+## Related topics
+
+- [Import and export settings](../../../administration/settings/import_and_export_settings.md).
+- [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
+- [Running multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md).
+- [Processing specific job classes](../../../administration/sidekiq/processing_specific_job_classes.md).

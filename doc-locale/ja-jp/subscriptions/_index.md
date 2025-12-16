@@ -12,11 +12,10 @@ description: お客様とその組織に最適なサブスクリプションを�
 
 - [GitLabプラン](choosing_subscription.md)
 - [サブスクリプションを管理する](manage_subscription.md)
-- [Manage users and seats](manage_users_and_seats.md)（ユーザーとシートの管理）
+- [請求先アカウントを管理する](billing_account.md)
+- [ユーザーとシートを管理する](manage_users_and_seats.md)
 - [GitLab Dedicated](gitlab_dedicated/_index.md)
 - [GitLab Duoアドオン](subscription-add-ons.md)
 - [コミュニティプログラム](community_programs.md)
-- [カスタマーポータル](customers_portal.md)
-- [四半期ごとの調整と毎年のTrue-up](quarterly_reconciliation.md)
 
 {{< /cards >}}

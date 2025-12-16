@@ -8,7 +8,6 @@ title: Retrieve GitLab Duo and SDLC trend data
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro, GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -19,7 +18,6 @@ Use the GraphQL API to retrieve and export GitLab Duo data.
 
 {{< details >}}
 
-- Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -33,11 +31,17 @@ Use the GraphQL API to retrieve and export GitLab Duo data.
 
 {{< /history >}}
 
-The `AiUsageData` endpoint provides raw event data. It exposes Code Suggestions-specific events through `codeSuggestionEvents` and all raw event data through `all`:
+The `AiUsageData` endpoint provides raw event data. It exposes Code Suggestions-specific events through `codeSuggestionEvents` and all raw event data through `all`.
 
-You can use this endpoint to import events into a BI tool or write scripts that aggregate the data, acceptance rates, and per-user metrics for all Duo events.
+You can use this endpoint to import events into a BI tool or write scripts that aggregate the data, acceptance rates, and per-user metrics for all GitLab Duo events.
 
 Data is retained for three months for customers without ClickHouse installed. For customers with ClickHouse configured, there is currently no data retention policy.
+
+The `all` attribute is filterable by `startDate`, `endDate`, `events`, `userIds`, and standard pagination values.
+
+To see which events are being tracked, you can examine the events declared in the [`ai_tracking.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/tracking/ai_tracking.rb) file.
+
+### For projects and groups
 
 For example, to retrieve usage data for all Code Suggestions events for the `gitlab-org` group:
 
@@ -105,7 +109,7 @@ The query returns the following output:
 }
 ```
 
-Alternatively, to retrieve usage data for all Duo events for the `gitlab-org` group:
+Alternatively, to retrieve usage data for all GitLab Duo events for the `gitlab-org` group:
 
 ```graphql
 query {
@@ -163,15 +167,80 @@ The query returns the following output:
 }
 ```
 
-The `all` attribute is filterable by `startDate`, `endDate`, `events`, `userIds`, and standard pagination values.
+### For instances
 
-To see which events are being tracked, you can examine the events declared in the [`ai_tracking.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/tracking/ai_tracking.rb) file.
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/582153) in GitLab 18.7. This feature is an [experiment](../../policy/development_stages_support.md).
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must be an administrator for the instance.
+
+For example, to retrieve all GitLab Duo usage events for the entire instance:
+
+```graphql
+query {
+  aiUsageData {
+    all(startDate: "2025-09-26", endDate: "2025-09-30") {
+      nodes {
+        event
+        timestamp
+        user {
+          username
+        }
+        extras
+      }
+    }
+  }
+}
+```
+
+The query returns the following output:
+
+```json
+{
+  "data": {
+    "aiUsageData": {
+      "all": {
+        "nodes": [
+          {
+            "event": "CODE_SUGGESTION_SHOWN_IN_IDE",
+            "timestamp": "2025-09-26T18:17:25Z",
+            "user": {
+              "username": "jasbourne"
+            },
+            "extras": {}
+          },
+          {
+            "event": "AGENT_PLATFORM_SESSION_STARTED",
+            "timestamp": "2025-09-26T18:13:44Z",
+            "user": {
+              "username": "johndoe"
+            },
+            "extras": {
+              "session_id": "abc123"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+```
 
 ## Retrieve AI user metrics
 
 {{< details >}}
 
-- Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Dedicated
 
 {{< /details >}}
@@ -179,29 +248,46 @@ To see which events are being tracked, you can examine the events declared in th
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/483049) in GitLab 17.6.
+- Feature-specific metric types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/483049) in GitLab 18.7
 
 {{< /history >}}
 
-The `AiUserMetrics` endpoint provides pre-aggregated per-user metrics for Code Suggestions and GitLab Duo Chat.
+The `AiUserMetrics` endpoint provides pre-aggregated per-user metrics for all registered GitLab Duo features, including Code Suggestions, GitLab Duo Chat, Code Review, Agent Platform (Agentic Chat), Job Troubleshooting, and Model Context Protocol (MCP) tool calls.
 
-You can use this endpoint to list all Duo users and their usage frequency for Code Suggestions and Duo Chat.
+You can use this endpoint to analyze GitLab Duo user engagement and measure usage frequency across different GitLab Duo features.
 
 Prerequisites:
 
 - You must have ClickHouse configured.
 
-For example, to retrieve the number of accepted Code Suggestions and interactions with Duo Chat for all users
-in the `gitlab-org` group:
+### Total event counts
+
+The `AiUserMetrics` endpoint provides the following levels of event count aggregation:
+
+- Top-level `totalEventCount`: Returns the sum of all event counts across all GitLab Duo features for a user.
+- Feature-level `totalEventCount`: Available in each feature metric type, returns the sum of all event counts for that specific feature.
+
+You can use these fields to get aggregate counts at different levels of granularity.
+
+For example, to retrieve both top-level and feature-level totals:
 
 ```graphql
 query {
   group(fullPath:"gitlab-org") {
     aiUserMetrics {
       nodes {
-        codeSuggestionsAcceptedCount
-        duoChatInteractionsCount
         user {
           username
+        }
+        totalEventCount
+        codeSuggestions {
+          totalEventCount
+          codeSuggestionAcceptedInIdeEventCount
+          codeSuggestionShownInIdeEventCount
+        }
+        chat {
+          totalEventCount
+          requestDuoChatResponseEventCount
         }
       }
     }
@@ -218,17 +304,158 @@ The query returns the following output:
       "aiUserMetrics": {
         "nodes": [
           {
-            "codeSuggestionsAcceptedCount": 10,
-            "duoChatInteractionsCount": 22,
             "user": {
               "username": "USER_1"
+            },
+            "totalEventCount": 82,
+            "codeSuggestions": {
+              "totalEventCount": 60,
+              "codeSuggestionAcceptedInIdeEventCount": 10,
+              "codeSuggestionShownInIdeEventCount": 50
+            },
+            "chat": {
+              "totalEventCount": 22,
+              "requestDuoChatResponseEventCount": 22
             }
           },
           {
-            "codeSuggestionsAcceptedCount": 12,
-            "duoChatInteractionsCount": 30,
             "user": {
               "username": "USER_2"
+            },
+            "totalEventCount": 102,
+            "codeSuggestions": {
+              "totalEventCount": 72,
+              "codeSuggestionAcceptedInIdeEventCount": 12,
+              "codeSuggestionShownInIdeEventCount": 60
+            },
+            "chat": {
+              "totalEventCount": 30,
+              "requestDuoChatResponseEventCount": 30
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+In this example:
+
+- The top-level `totalEventCount` (82 for USER_1) is the sum of all events across all features.
+- Each feature's `totalEventCount` represents the sum of events within that feature only.
+  - Code Suggestions: 60 events (10 accepted + 50 shown)
+  - Chat: 22 events
+
+### Feature-specific metric types
+
+The `AiUserMetrics` endpoint provides detailed metrics through feature-specific nested types. Each GitLab Duo feature has its own dedicated metric type that exposes event count fields for all tracked events related to that feature.
+
+Available feature metric types include:
+
+- `codeSuggestions`: Code Suggestions-specific metrics
+- `chat`: GitLab Duo Chat-specific metrics
+- `codeReview`: Code Review-specific metrics
+- `agentPlatform`: Agent Platform-specific metrics (includes Agentic Chat sessions)
+- `troubleshootJob`: Job troubleshooting-specific metrics
+- `mcp`: Model Context Protocol (MCP) tool call metrics
+
+Each feature metric type includes:
+
+- Individual event count fields for all tracked events in that feature
+- A `totalEventCount` field that sums all events for that specific feature
+
+The available event count fields are dynamically generated based on the events registered in the system. To see which events are tracked for each feature, examine the events declared in the [`ai_tracking.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/tracking/ai_tracking.rb) file.
+
+For example, to retrieve detailed metrics across multiple GitLab Duo features:
+
+```graphql
+query {
+  group(fullPath:"gitlab-org") {
+    aiUserMetrics {
+      nodes {
+        user {
+          username
+        }
+        codeSuggestions {
+          totalEventCount
+          codeSuggestionAcceptedInIdeEventCount
+          codeSuggestionShownInIdeEventCount
+        }
+        chat {
+          totalEventCount
+          requestDuoChatResponseEventCount
+        }
+        codeReview {
+          totalEventCount
+          requestReviewDuoCodeReviewOnMrByAuthorEventCount
+          findNoIssuesDuoCodeReviewAfterReviewEventCount
+        }
+        agentPlatform {
+          totalEventCount
+          agentPlatformSessionStartedEventCount
+          agentPlatformSessionFinishedEventCount
+        }
+      }
+    }
+  }
+}
+```
+
+The query returns the following output:
+
+```graphql
+{
+  "data": {
+    "group": {
+      "aiUserMetrics": {
+        "nodes": [
+          {
+            "user": {
+              "username": "USER_1"
+            },
+            "codeSuggestions": {
+              "totalEventCount": 60,
+              "codeSuggestionAcceptedInIdeEventCount": 10,
+              "codeSuggestionShownInIdeEventCount": 50
+            },
+            "chat": {
+              "totalEventCount": 22,
+              "requestDuoChatResponseEventCount": 22
+            },
+            "codeReview": {
+              "totalEventCount": 8,
+              "requestReviewDuoCodeReviewOnMrByAuthorEventCount": 5,
+              "findNoIssuesDuoCodeReviewAfterReviewEventCount": 3
+            },
+            "agentPlatform": {
+              "totalEventCount": 15,
+              "agentPlatformSessionStartedEventCount": 8,
+              "agentPlatformSessionFinishedEventCount": 7
+            }
+          },
+          {
+            "user": {
+              "username": "USER_2"
+            },
+            "codeSuggestions": {
+              "totalEventCount": 72,
+              "codeSuggestionAcceptedInIdeEventCount": 12,
+              "codeSuggestionShownInIdeEventCount": 60
+            },
+            "chat": {
+              "totalEventCount": 30,
+              "requestDuoChatResponseEventCount": 30
+            },
+            "codeReview": {
+              "totalEventCount": 5,
+              "requestReviewDuoCodeReviewOnMrByAuthorEventCount": 3,
+              "findNoIssuesDuoCodeReviewAfterReviewEventCount": 2
+            },
+            "agentPlatform": {
+              "totalEventCount": 20,
+              "agentPlatformSessionStartedEventCount": 12,
+              "agentPlatformSessionFinishedEventCount": 8
             }
           }
         ]
@@ -242,7 +469,6 @@ The query returns the following output:
 
 {{< details >}}
 
-- Add-on: GitLab Duo Pro, GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Dedicated
 
 {{< /details >}}
@@ -251,10 +477,11 @@ The query returns the following output:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11.
 - Add-on requirement [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/498497) from GitLab Duo Enterprise to GitLab Duo Pro in GitLab 17.6.
+- Add-on requirement [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/580174) in GitLab 18.7.
 
 {{< /history >}}
 
-The `AiMetrics` endpoint powers the GitLab Duo and SDLC trends dashboard and provides the following pre-aggregated metrics for Code Suggestions and Duo Chat:
+The `AiMetrics` endpoint powers the GitLab Duo and SDLC trends dashboard and provides the following pre-aggregated metrics for Code Suggestions and GitLab Duo Chat:
 
 - `codeSuggestionsShown`
 - `codeSuggestionsAccepted`
@@ -266,7 +493,7 @@ Prerequisites:
 
 - You must have ClickHouse configured.
 
-For example, to retrieve Code Suggestions and Duo Chat usage data for a specified time period for the `gitlab-org` group:
+For example, to retrieve Code Suggestions and GitLab Duo Chat usage data for a specified time period for the `gitlab-org` group:
 
 ```graphql
 query {

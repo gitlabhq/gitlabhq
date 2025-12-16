@@ -58,7 +58,7 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :navigation do
     end
   end
 
-  context 'logged out' do
+  context 'logged out', :with_current_organization do
     before do
       visit explore_root_path
     end

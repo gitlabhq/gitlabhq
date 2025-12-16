@@ -68,8 +68,7 @@ RSpec.describe 'Query.note(id)', feature_category: :team_planning do
         let_it_be(:email) { 'user@example.com' }
         let_it_be(:note_text) { "added #{email}" }
         let_it_be(:issue_email_participants_system_note) do
-          create(:note, :system,
-            project: project, noteable: issue, author: Users::Internal.support_bot, note: note_text)
+          create(:note, :system, project: project, noteable: issue, author: create(:support_bot), note: note_text)
         end
 
         let_it_be(:system_note_metadata) do

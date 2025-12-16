@@ -7,7 +7,7 @@ RSpec.describe Gitlab::SQL::CTE do
     it 'generates an Arel relation for the CTE body' do
       cte = described_class.new(:cte_name, relation)
       sql = cte.to_arel.to_sql
-      name = ApplicationRecord.connection.quote_table_name(:cte_name)
+      name = ApplicationRecord.adapter_class.quote_table_name(:cte_name)
 
       sql1 = ApplicationRecord.connection.unprepared_statement do
         relation.is_a?(String) ? relation : relation.to_sql
@@ -42,8 +42,8 @@ RSpec.describe Gitlab::SQL::CTE do
       cte = described_class.new(:cte_name, nil)
       table = Arel::Table.new(:kittens)
 
-      source_name = ApplicationRecord.connection.quote_table_name(:cte_name)
-      alias_name = ApplicationRecord.connection.quote_table_name(:kittens)
+      source_name = ApplicationRecord.adapter_class.quote_table_name(:cte_name)
+      alias_name = ApplicationRecord.adapter_class.quote_table_name(:kittens)
 
       expect(cte.alias_to(table).to_sql).to eq("#{source_name} AS #{alias_name}")
     end

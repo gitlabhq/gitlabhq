@@ -2,42 +2,46 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Build::Failed do
-  let(:build) { create(:ci_build, :script_failure) }
-  let(:status) { double('core status') }
-  let(:user) { double('user') }
+RSpec.describe Gitlab::Ci::Status::Build::Failed, feature_category: :continuous_integration do
+  let_it_be(:project, freeze: true) { create(:project) }
 
-  subject { described_class.new(status) }
+  let(:build) { create(:ci_build, :script_failure, project: project) }
+  let(:core_status) { instance_double(Gitlab::Ci::Status::Core) }
+  let(:user) { build_stubbed(:user) }
+
+  subject(:status) { described_class.new(core_status) }
 
   describe '#text' do
-    it 'does not override status text' do
-      expect(status).to receive(:text)
+    let(:core_status) { double('core status') }
 
-      subject.text
+    it 'does not override status text' do
+      expect(core_status).to receive(:text)
+
+      status.text
     end
   end
 
   describe '#icon' do
     it 'does not override status icon' do
-      expect(status).to receive(:icon)
+      expect(core_status).to receive(:icon)
 
-      subject.icon
+      status.icon
     end
   end
 
   describe '#group' do
     it 'does not override status group' do
-      expect(status).to receive(:group)
+      expect(core_status).to receive(:group)
 
-      subject.group
+      status.group
     end
   end
 
   describe '#favicon' do
-    it 'does not override status label' do
-      expect(status).to receive(:favicon)
+    it 'does not override status favicon' do
+      expect(core_status).to receive(:favicon)
 
-      subject.favicon
+      status.favicon
     end
   end
 
@@ -45,47 +49,47 @@ RSpec.describe Gitlab::Ci::Status::Build::Failed do
     it 'does not override label' do
       expect(status).to receive(:label)
 
-      subject.label
+      status.label
     end
   end
 
   describe '#badge_tooltip' do
     let(:user) { create(:user) }
-    let(:status) { Gitlab::Ci::Status::Failed.new(build, user) }
+    let(:core_status) { Gitlab::Ci::Status::Failed.new(build, user) }
 
     it 'does override badge_tooltip' do
-      expect(subject.badge_tooltip).to eq 'Failed - (script failure)'
+      expect(status.badge_tooltip).to eq 'Failed - (script failure)'
     end
   end
 
   describe '#status_tooltip' do
     let(:user) { create(:user) }
-    let(:status) { Gitlab::Ci::Status::Failed.new(build, user) }
+    let(:core_status) { Gitlab::Ci::Status::Failed.new(build, user) }
 
     it 'does override status_tooltip' do
-      expect(subject.status_tooltip).to eq 'Failed - (script failure)'
+      expect(status.status_tooltip).to eq 'Failed - (script failure)'
     end
   end
 
   describe '.matches?' do
     context 'with a failed build' do
       it 'returns true' do
-        expect(described_class.matches?(build, user)).to be_truthy
+        expect(described_class.matches?(build, user)).to be true
       end
     end
 
     context 'with any other type of build' do
-      let(:build) { create(:ci_build, :success) }
+      let(:build) { create(:ci_build, :success, project: project) }
 
       it 'returns false' do
-        expect(described_class.matches?(build, user)).to be_falsy
+        expect(described_class.matches?(build, user)).to be false
       end
     end
   end
 
   describe 'covers all failure reasons' do
-    let(:status) { Gitlab::Ci::Status::Failed.new(build, user) }
-    let(:tooltip) { subject.status_tooltip }
+    let(:core_status) { Gitlab::Ci::Status::Failed.new(build, user) }
+    let(:tooltip) { status.status_tooltip }
 
     CommitStatus.failure_reasons.keys.each do |failure_reason|
       context failure_reason do

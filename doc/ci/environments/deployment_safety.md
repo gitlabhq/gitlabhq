@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Deployment safety
 ---
@@ -19,7 +19,7 @@ that help maintain deployment security and stability.
 
 You can:
 
-- Set appropriate roles to your project. See [Project members permissions](../../user/permissions.md#project-members-permissions)
+- Set appropriate roles to your project. See [Project members permissions](../../user/permissions.md#project-permissions)
   for the different user roles GitLab supports and the permissions of each.
 - [Restrict write-access to a critical environment](#restrict-write-access-to-a-critical-environment)
 - [Prevent deployments during deploy freeze windows](#prevent-deployments-during-deploy-freeze-windows)

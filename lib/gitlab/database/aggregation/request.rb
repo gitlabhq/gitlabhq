@@ -6,10 +6,10 @@ module Gitlab
       class Request
         attr_reader :metrics, :dimensions, :order
 
-        def initialize(metrics:, dimensions:, order: [])
+        def initialize(metrics:, dimensions: [], order: [])
           @metrics = metrics
-          @dimensions = dimensions
-          @order = order
+          @dimensions = dimensions || []
+          @order = order || []
         end
       end
     end

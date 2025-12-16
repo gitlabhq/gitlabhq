@@ -22,21 +22,23 @@ Every API call to group security settings must be [authenticated](rest/authentic
 
 If a user isn't a member of a private group, requests to the private group return a `404 Not Found` status code.
 
-## Update `secret_push_protection_enabled` setting
+## Update the `secret_push_protection_enabled` setting
 
-Update the `secret_push_protection_enabled` setting for the all projects in a group to the provided value.
-
-Set to `true` to enable [secret push protection](../user/application_security/secret_detection/secret_push_protection/_index.md) for the all projects in the group.
+Updates the `secret_push_protection_enabled` setting for all projects in a specified group.
 
 Prerequisites:
 
 - You must have at least the Maintainer role for the group.
 
-| Attribute           | Type              | Required   | Description                                                                                                                  |
-| ------------------- | ----------------- | ---------- | -----------------------------------------------------------------------------------------------------------------------------|
-| `id`                | integer or string | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group which the authenticated user is a member of  |
-| `secret_push_protection_enabled`        | boolean | yes        | Whether secret push protection is enabled for the group. |
-| `projects_to_exclude`        | array of integers | no        | The IDs of projects to exclude from the feature.  |
+```plaintext
+PUT /groups/:id/security_settings
+```
+
+| Attribute                        | Type              | Required | Description |
+| -------------------------------- | ----------------- | -------- | ----------- |
+| `id`                             | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a group. |
+| `secret_push_protection_enabled` | boolean           | Yes      | Enables secret push protection for projects in the group. |
+| `projects_to_exclude`            | array of integers | No       | IDs of projects to exclude from secret push protection. |
 
 ```shell
 curl --request PUT \

@@ -422,8 +422,13 @@ To replicate the database:
 1. Choose a [database-friendly name](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION-SLOTS-MANIPULATION)  for your secondary site to
    use as the replication slot name. For example, if your domain is
    `secondary.geo.example.com`, use `secondary_example` as the slot
-   name. Replication slot names must only contain lowercase letters,
+   name.
+
+   {{< alert type="note" >}}
+   Replication slot names must only contain lowercase letters,
    numbers, and the underscore character.
+
+   {{< /alert >}}
 
 1. Execute the following command to back up and restore the database, and begin the replication.
 
@@ -436,7 +441,7 @@ To replicate the database:
 
    ```shell
    gitlab-ctl replicate-geo-database \
-      --slot-name=<secondary_site_name> \
+      --slot-name=<secondary_slot_name> \
       --host=<primary_site_ip> \
       --sslmode=verify-ca
    ```
@@ -624,7 +629,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    ```
 
 1. Go to the primary node GitLab instance:
-   1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+   1. In the upper-right corner, select **Admin**.
    1. Select **Geo** > **Sites**.
    1. Select **Add site**.
 
@@ -671,6 +676,30 @@ that the secondary site can act on the notifications immediately.
 Be sure the secondary site is running and accessible. You can sign in to the
 secondary site with the same credentials as were used with the primary site.
 
+### Add primary and secondary URLs as allowed ActionCable origins
+
+This step allows websockets to work seamlessly from primary and secondary sites.
+
+1. Collect the **external URLs** of your sites (primary and secondary). You can find them in the Site pages in the Admin area, as mentioned in the section above.
+1. SSH into each Rails and Sidekiq node on your **primary site** and sign in as root:
+
+   ```shell
+   sudo -i
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb` to add the URLs collected in step 1 to the `action_cable_allowed_origins` setting:
+
+   ```ruby
+   gitlab_rails['action_cable_allowed_origins'] = ['https://secondary.example.com', 'https://primary.example.com']
+   ```
+
+1. To apply the changes, reconfigure each Rails and Sidekiq node and restart the service:
+
+   ```shell
+   gitlab-ctl reconfigure
+   gitlab-ctl restart
+   ```
+
 ### Enable Git access over HTTP/HTTPS and SSH
 
 Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
@@ -679,7 +708,7 @@ If you convert an existing site to Geo, you should check that the clone method i
 
 On the primary site:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. If you use Git over SSH:
@@ -694,7 +723,7 @@ the primary site.
 
 After you sign in:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Verify that the site is correctly identified as a secondary Geo site, and that
    Geo is enabled.
@@ -760,6 +789,9 @@ gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '10.0.0.0/8']
 gitaly['configuration'] = {
   prometheus_listen_addr: '0.0.0.0:9236',
 }
+
+## ActionCable allowed origins
+gitlab_rails['action_cable_allowed_origins'] = ['https://secondary.example.com', 'https://primary.example.com']
 ```
 
 ### Complete secondary site

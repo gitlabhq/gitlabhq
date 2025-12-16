@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-gitlab_dedicated: no
+gitlab_dedicated: yes
 description: PlantUMLとGitLab Self-Managedのインテグレーションを設定します。
 title: PlantUML
 ---
@@ -18,7 +18,7 @@ title: PlantUML
 
 GitLab Self-Managedインスタンスでインテグレーションをセットアップするには、[PlantUMLサーバーを設定](#configure-your-plantuml-server)する必要があります。
 
-インテグレーションが完了すると、PlantUMLは、`plantuml`ブロックをHTML画像タグに変換します。このとき、ソースはPlantUMLインスタンスを指しています。PlantUMLダイアグラムの区切り文字`@startuml`/`@enduml`は`plantuml`ブロックに置き換えられるため、これらの区切り文字は不要です。
+インテグレーションが完了すると、PlantUMLは、`plantuml`ブロックをHTML画像タグに変換します。このとき、ソースはPlantUMLインスタンスを指しています。PlantUMLダイアグラムの区切り文字`@startuml`/`@enduml`は`plantuml`ブロックに置き換えられるため、これらの区切り文字は不要です:
 
 - 拡張子`.md`が付いたMarkdownファイル:
 
@@ -53,14 +53,14 @@ GitLab Self-Managedインスタンスでインテグレーションをセット�
 
    [`sphinxcontrib-plantuml`](https://pypi.org/project/sphinxcontrib-plantuml/)との互換性を保つために`uml::`ディレクティブを使用できますが、GitLabは`caption`オプションのみをサポートします。
 
-PlantUMLサーバーが正しく設定されている場合、これらの例では、コードブロックではなく、ダイアグラムがレンダリングされます。
+PlantUMLサーバーが正しく設定されている場合、これらの例では、コードブロックではなく、ダイアグラムがレンダリングされます:
 
 ```plantuml
 Bob -> Alice : hello
 Alice -> Bob : hi
 ```
 
-ブロック内には、PlantUMLがサポートする次のようなダイアグラムを追加します。
+ブロック内には、PlantUMLがサポートする次のようなダイアグラムを追加します:
 
 - [アクティビティー](https://plantuml.com/activity-diagram-legacy)
 - [クラス](https://plantuml.com/class-diagram)
@@ -70,7 +70,7 @@ Alice -> Bob : hi
 - [ステート](https://plantuml.com/state-diagram)
 - [ユースケース](https://plantuml.com/use-case-diagram)
 
-ブロック定義にパラメータを追加します。
+ブロック定義にパラメータを追加します:
 
 - `id`: ダイアグラムHTMLタグに追加されたCSS ID。
 - `width`: 画像タグに追加された幅属性。
@@ -80,7 +80,7 @@ Markdownはパラメータをサポートしておらず、常にPNG形式を使
 
 ## ダイアグラムファイルをインクルードする {#include-diagram-files}
 
-リポジトリ内の別のファイルからPlantUMLダイアグラムをインクルードするかまたは埋め込むには、`include`ディレクティブを使用します。これを使用して、専用ファイルで複雑なダイアグラムを管理したり、ダイアグラムを再利用したりします。次に例を示します。
+リポジトリ内の別のファイルからPlantUMLダイアグラムをインクルードするかまたは埋め込むには、`include`ディレクティブを使用します。これを使用して、専用ファイルで複雑なダイアグラムを管理したり、ダイアグラムを再利用したりします。次に例を示します:
 
 - Markdown:
 
@@ -101,14 +101,14 @@ Markdownはパラメータをサポートしておらず、常にPNG形式を使
 
 ## PlantUMLサーバーを設定する {#configure-your-plantuml-server}
 
-GitLabでPlantUMLを有効にする前に、ダイアグラムを生成するために、独自のPlantUMLサーバーを設定します。
+GitLabでPlantUMLを有効にする前に、ダイアグラムを生成するために、独自のPlantUMLサーバーを設定します:
 
 - [Docker](#docker)（推奨）
 - [Debian/Ubuntu](#debianubuntu)
 
 ### Docker {#docker}
 
-DockerでPlantUMLコンテナを実行するには、次のコマンドを実行します。
+DockerでPlantUMLコンテナを実行するには、次のコマンドを実行します:
 
 ```shell
 docker run -d --name plantuml -p 8005:8080 plantuml/plantuml-server:tomcat
@@ -116,7 +116,7 @@ docker run -d --name plantuml -p 8005:8080 plantuml/plantuml-server:tomcat
 
 **PlantUML URL**は、コンテナを実行しているサーバーのホスト名です。
 
-DockerでGitLabを実行する場合、PlantUMLコンテナにアクセスできる必要があります。アクセスできるようにするには、[Docker Compose](https://docs.docker.com/compose/)を使用します。この基本的な`docker-compose.yml`ファイルで、GitLabはURL `http://plantuml:8005/`でPlantUMLにアクセスできます。
+DockerでGitLabを実行する場合、PlantUMLコンテナにアクセスできる必要があります。アクセスできるようにするには、[Docker Compose](https://docs.docker.com/compose/)を使用します。この基本的な`docker-compose.yml`ファイルで、GitLabはURL `http://plantuml:8005/`でPlantUMLにアクセスできます:
 
 ```yaml
 version: "3"
@@ -134,7 +134,7 @@ services:
      - "8005:8080"
 ```
 
-その後、次のことができるようになります。
+その後、次のことができるようになります:
 
 1. [ローカルPlantUMLアクセスを設定する](#configure-local-plantuml-access)
 1. [PlantUMLのインストールが成功したことを確認する](#verify-the-plantuml-installation)
@@ -153,20 +153,20 @@ TomcatまたはJettyを使用して、Debian/Ubuntuディストリビューシ�
 
 PlantUMLでは、Tomcat 10.1以降をインストールすることをお勧めします。このページでは、基本的なTomcatサーバーのセットアップのみを扱います。本番環境により適合した設定については、[Tomcatのドキュメント](https://tomcat.apache.org/tomcat-10.1-doc/index.html)を参照してください。
 
-1. JDK/JRE 11をインストールします。
+1. JDK/JRE 11をインストールします:
 
    ```shell
    sudo apt update
    sudo apt install default-jre-headless graphviz git
    ```
 
-1. Tomcatのユーザーを追加します。
+1. Tomcatのユーザーを追加します:
 
    ```shell
    sudo useradd -m -d /opt/tomcat -U -s /bin/false tomcat
    ```
 
-1. Tomcat 10.1をインストールして設定します。
+1. Tomcat 10.1をインストールして設定します:
 
    ```shell
    wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.33/bin/apache-tomcat-10.1.33.tar.gz -P /tmp
@@ -175,7 +175,7 @@ PlantUMLでは、Tomcat 10.1以降をインストールすることをお勧め�
    sudo chmod -R u+x /opt/tomcat/bin
    ```
 
-1. systemdサービスを作成します。`/etc/systemd/system/tomcat.service`ファイルを編集して追加します。
+1. systemdサービスを作成します。`/etc/systemd/system/tomcat.service`ファイルを編集して追加します:
 
    ```shell
    [Unit]
@@ -207,7 +207,7 @@ PlantUMLでは、Tomcat 10.1以降をインストールすることをお勧め�
 
    `JAVA_HOME`は、`sudo update-java-alternatives -l`に表示されるパスと同じである必要があります。
 
-1. ポートを設定するには、`/opt/tomcat/conf/server.xml`を編集してポートを選択します。次の操作を行うことをおすすめします。
+1. ポートを設定するには、`/opt/tomcat/conf/server.xml`を編集してポートを選択します。次の操作を行うことをおすすめします:
 
    - Tomcatシャットダウンポートを`8005`から`8006`に変更します。
    - Tomcat HTTPエンドポイントにポート`8005`を使用します。[Puma](../operations/puma.md)がポート`8080`でメトリクスをリッスンするため、デフォルトのポート`8080`は避ける必要があります。
@@ -220,7 +220,7 @@ PlantUMLでは、Tomcat 10.1以降をインストールすることをお勧め�
    + <Connector port="8080" protocol="HTTP/1.1"
    ```
 
-1. Tomcatを再読み込みして起動します。
+1. Tomcatを再読み込みして起動します:
 
    ```shell
    sudo systemctl daemon-reload
@@ -229,7 +229,7 @@ PlantUMLでは、Tomcat 10.1以降をインストールすることをお勧め�
    sudo systemctl enable tomcat
    ```
 
-   Javaプロセスはこれらのポートでリッスンする必要があります。
+   Javaプロセスはこれらのポートでリッスンする必要があります:
 
    ```shell
    root@gitlab-omnibus:/plantuml-server# ❯ ss -plnt | grep java
@@ -237,7 +237,7 @@ PlantUMLでは、Tomcat 10.1以降をインストールすることをお勧め�
    LISTEN   0        100                         *:8005                   *:*       users:(("java",pid=27338,fd=43))
    ```
 
-1. PlantUMLをインストールし、`.war`ファイルをコピーします。
+1. PlantUMLをインストールし、`.war`ファイルをコピーします:
 
    `plantuml-jsp`の[最新リリース](https://github.com/plantuml/plantuml-server/releases)（例: `plantuml-jsp-v1.2024.8.war`）を使用します。詳細については、[イシュー265](https://github.com/plantuml/plantuml-server/issues/265)を参照してください。
 
@@ -258,14 +258,14 @@ Tomcatのデフォルトを変更するには、`/opt/tomcat/conf/server.xml`フ
 
 {{< /alert >}}
 
-その後、次のことができるようになります。
+その後、次のことができるようになります:
 
 1. [ローカルPlantUMLアクセスを設定します](#configure-local-plantuml-access)。リンクで設定された`proxy_pass`ポートが`server.xml`のコネクタポートと一致していることを確認します。
 1. [PlantUMLのインストールが成功したことを確認します](#verify-the-plantuml-installation)。
 
 ### ローカルPlantUMLアクセスを設定する {#configure-local-plantuml-access}
 
-PlantUMLサーバーはサーバーでローカルに実行されます。そのため、デフォルトでは外部からアクセスできません。サーバーは、`https://gitlab.example.com/-/plantuml/`への外部PlantUML呼び出しをキャッチして、ローカルPlantUMLサーバーにリダイレクトする必要があります。セットアップに応じて、URLは次のいずれかになります。
+PlantUMLサーバーはサーバーでローカルに実行されます。そのため、デフォルトでは外部からアクセスできません。サーバーは、`https://gitlab.example.com/-/plantuml/`への外部PlantUML呼び出しをキャッチして、ローカルPlantUMLサーバーにリダイレクトする必要があります。セットアップに応じて、URLは次のいずれかになります:
 
 - `http://plantuml:8080/`
 - `http://localhost:8080/plantuml/`
@@ -276,9 +276,9 @@ PlantUMLサーバーはサーバーでローカルに実行されます。その
 
 #### バンドルされているGitLab NGINXを使用する {#use-bundled-gitlab-nginx}
 
-`/etc/gitlab/gitlab.rb`を変更できる場合は、リダイレクトを処理するようにバンドルされているNGINXを設定します。
+`/etc/gitlab/gitlab.rb`を変更できる場合は、リダイレクトを処理するようにバンドルされているNGINXを設定します:
 
-1. セットアップ方法に応じて、`/etc/gitlab/gitlab.rb`に次の行を追加します。
+1. セットアップ方法に応じて、`/etc/gitlab/gitlab.rb`に次の行を追加します:
 
    ```ruby
    # Docker install
@@ -288,7 +288,7 @@ PlantUMLサーバーはサーバーでローカルに実行されます。その
    nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n  rewrite ^/-/plantuml/(.*) /$1 break;\n  proxy_cache off; \n    proxy_pass  http://localhost:8005/plantuml; \n}\n"
    ```
 
-1. 変更を有効にするには、次のコマンドを実行します。
+1. 変更を有効にするには、次のコマンドを実行します:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -300,7 +300,7 @@ PlantUMLサーバーはサーバーでローカルに実行されます。その
 
 この設定では、NGINXを使用してSSLターミネーションを処理し、PlantUMLコンテナへのリクエストをプロキシします。SSLターミネーションには、AWS Applicationロードバランサー (ALB)のようなクラウドベースのロードバランサーも使用できます。
 
-1. `nginx.conf`ファイルを作成します。
+1. `nginx.conf`ファイルを作成します:
 
    ```nginx
    events {
@@ -326,7 +326,7 @@ PlantUMLサーバーはサーバーでローカルに実行されます。その
 
 1. `plantuml.crt`ファイルと`plantuml.key`ファイルを`ssl`ディレクトリに追加します。
 
-1. `docker-compose.yml`ファイルを設定します。
+1. `docker-compose.yml`ファイルを設定します:
 
    ```yaml
    version: '3.8'
@@ -361,9 +361,9 @@ PlantUMLサーバーはサーバーでローカルに実行されます。その
 
 ### PlantUMLのインストールを確認する {#verify-the-plantuml-installation}
 
-インストールが成功したことを確認するには、次の手順に従います。
+インストールが成功したことを確認するには、次の手順に従います:
 
-1. PlantUMLサーバーを直接テストします。
+1. PlantUMLサーバーを直接テストします:
 
    ```shell
    # Docker install
@@ -375,7 +375,7 @@ PlantUMLサーバーはサーバーでローカルに実行されます。その
 
    テキスト`hello`が含まれるSVG出力を受け取るはずです。
 
-1. 次の場所にアクセスして、GitLabがNGINXを介してPlantUMLにアクセスできることをテストします。
+1. 次の場所にアクセスして、GitLabがNGINXを介してPlantUMLにアクセスできることをテストします:
 
    ```plaintext
    http://gitlab.example.com/-/plantuml/svg/SyfFKj2rKt3CoKnELR1Io4ZDoSa70000
@@ -404,7 +404,7 @@ stop;
 
 PlantUMLダイアグラムをSVG形式で生成する際は、サーバーを設定してセキュリティを強化します。発生のおそれがあるセキュリティ上の問題を回避するために、NGINX設定でSVG出力ルートを無効にします。
 
-SVG出力ルートを無効にするには、PlantUMLサービスをホストしているNGINXサーバーにこの設定を追加します。
+SVG出力ルートを無効にするには、PlantUMLサービスをホストしているNGINXサーバーにこの設定を追加します:
 
 ```nginx
 location ~ ^/-/plantuml/svg/ {
@@ -416,23 +416,23 @@ location ~ ^/-/plantuml/svg/ {
 
 ## PlantUMLインテグレーションを有効にする {#enable-plantuml-integration}
 
-ローカルPlantUMLサーバーを設定したら、PlantUMLインテグレーションを有効にする準備が整います。
+ローカルPlantUMLサーバーを設定したら、PlantUMLインテグレーションを有効にする準備が整います:
 
 1. [管理者](../../user/permissions.md)ユーザーとしてGitLabにサインインします。
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. 左側のサイドバーで、**設定 > 一般**に移動し、**PlantUML**セクションを展開します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオンにした](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合は、右上隅でアバターを選択し、次に**管理者**を選択します。
+1. 左側のサイドバーで、**設定** > **一般**に移動し、**PlantUML**セクションを展開する。
 1. **PlantUMLを有効化**チェックボックスをオンにします。
 1. PlantUMLインスタンスを`https://gitlab.example.com/-/plantuml/`として設定し、**変更を保存**を選択します。
 
-PlantUMLとGitLabのバージョン番号によっては、次の手順も実行する必要がある場合があります。
+PlantUMLとGitLabのバージョン番号によっては、次の手順も実行する必要がある場合があります:
 
-- [plantuml.com](https://plantuml.com)など、v1.2020.9以降を実行しているPlantUMLサーバーの場合、`PLANTUML_ENCODING`環境変数を設定して、`deflate`圧縮を有効にする必要があります。Linuxパッケージインストールでは、次のコマンドを使用して、この値を`/etc/gitlab/gitlab.rb`に設定できます。
+- [plantuml.com](https://plantuml.com)など、v1.2020.9以降を実行しているPlantUMLサーバーの場合、`PLANTUML_ENCODING`環境変数を設定して、`deflate`圧縮を有効にする必要があります。Linuxパッケージインストールでは、次のコマンドを使用して、この値を`/etc/gitlab/gitlab.rb`に設定できます:
 
   ```ruby
   gitlab_rails['env'] = { 'PLANTUML_ENCODING' => 'deflate' }
   ```
 
-  GitLab Helmチャートでは、次のように、変数を[global.extraEnv](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/charts/globals.md#extraenv)セクションに追加して値を設定できます。
+  GitLab Helmチャートでは、次のように、変数を[global.extraEnv](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/charts/globals.md#extraenv)セクションに追加して値を設定できます:
 
   ```yaml
   global:
@@ -446,12 +446,12 @@ PlantUMLとGitLabのバージョン番号によっては、次の手順も実行
 
 ### 更新後もレンダリングされたダイアグラムのURLが同じままである {#rendered-diagram-url-remains-the-same-after-update}
 
-レンダリングされたダイアグラムはキャッシュされます。更新を表示するには、次の手順を試してください。
+レンダリングされたダイアグラムはキャッシュされます。更新を表示するには、次の手順を試してください:
 
 - ダイアグラムがMarkdownファイルにある場合は、Markdownファイルに小さな変更を加えてコミットします。これにより、再レンダリングがトリガーされます。
 - [Markdownキャッシュを無効にして](../invalidate_markdown_cache.md#invalidate-the-cache)、データベースまたはRedisにキャッシュされたMarkdownを強制的にクリアします。
 
-更新されたURLがまだ表示されない場合は、以下を確認してください。
+更新されたURLがまだ表示されない場合は、以下を確認してください:
 
 - PlantUMLサーバーがGitLabインスタンスからアクセスできることを確認します。
 - PlantUMLインテグレーションがGitLabの設定で有効になっていることを確認します。

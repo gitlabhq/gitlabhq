@@ -31,6 +31,11 @@ export default {
       type: String,
       required: true,
     },
+    showActionButtons: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   mlflowDocs: s__('MlModelRegistry|Create using MLflow'),
   helpPath: helpPagePath('user/project/ml/model_registry/_index', {
@@ -48,7 +53,7 @@ export default {
     class="gl-py-8"
     :description="description"
   >
-    <template #actions>
+    <template v-if="showActionButtons" #actions>
       <gl-button :href="primaryLink" variant="confirm" class="gl-mx-2 gl-mb-3">{{
         primaryText
       }}</gl-button>

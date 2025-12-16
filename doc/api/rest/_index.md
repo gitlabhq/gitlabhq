@@ -54,8 +54,7 @@ REST API requests are subject to rate limit settings. These settings reduce the 
 instance being overloaded.
 
 - For details, see [Rate limits](../../security/rate_limits.md).
-- For details of the rate limit settings used by
-GitLab.com, see
+- For details of the rate limit settings used by GitLab.com, see
   [GitLab.com-specific rate limits](../../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
 
 ## Response format
@@ -441,6 +440,10 @@ Status: 200 OK
 
 The link to the next page contains an additional filter `cursor=eyJuYW1lIjoiRmxpZ2h0anMiLCJpZCI6IjI2IiwiX2tkIjoibiJ9` that
 excludes already-retrieved records.
+
+The `X-NEXT-CURSOR` header contains the cursor value for retrieving the next page's records,
+while the `X-PREV-CURSOR` header contains the cursor value for retrieving the previous page's,
+when available.
 
 The type of filter depends on the
 `order_by` option used, and you can have more than one additional filter.

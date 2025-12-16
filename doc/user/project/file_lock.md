@@ -70,7 +70,7 @@ The method for locking depends on whether you're locking a file or directory:
 
 {{< tab title="Lock a directory" >}}
 
-1. In the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Go to the directory you want to lock.
 1. In the upper-right corner, select **Lock**.
 1. In the confirmation dialog, select **OK**.
@@ -81,7 +81,7 @@ To view the user who locked the directory, hover over the **Lock** icon.
 
 {{< tab title="Lock a file" >}}
 
-1. In the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Go to the file you want to lock.
 1. In the upper-right corner, next to the filename, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Lock**.
 1. In the confirmation dialog, select **OK**.
@@ -96,7 +96,7 @@ If the lock option is not available or is disabled, you don't have the required 
 
 To view locked files:
 
-1. In the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Code** > **Locked files**.
 
 The **Locked files** page displays all files locked with either Git LFS exclusive locks or the GitLab UI.
@@ -115,7 +115,7 @@ To remove a lock:
 
 {{< tab title="From a file" >}}
 
-1. In the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Go to the file you want to unlock.
 1. Select **Unlock**.
 1. On the confirmation dialog, select **Unlock**.
@@ -124,7 +124,7 @@ To remove a lock:
 
 {{< tab title="From the Locked file page" >}}
 
-1. In the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Code** > **Locked files**.
 1. To the right of the file you want to unlock, select **Unlock**.
 1. On the confirmation dialog, select **OK**.
@@ -135,6 +135,32 @@ To remove a lock:
 
 To remove an exclusive file lock, see
 [Lock and unlock files](../../topics/git/file_management.md#lock-and-unlock-files).
+
+## Merge request checks and lock ownership
+
+When a merge request, that includes changes to locked files or directories, is set to merge,
+GitLab checks if the merge request author is the lock owner.
+GitLab does not check individual commit authors.
+
+For example:
+
+- If the merge request author is the same user who locked the file or directory, the merge
+  request can be merged.
+- If the merge request author is different from the lock owner, the merge request is blocked.
+
+{{< alert type="note" >}}
+
+Users other than the merge request author can push changes to the merge request branch that
+update or change locked files or directories. The lock check only considers the merge request
+author, so the merge request is not blocked.
+
+{{< /alert >}}
+
+To prevent unauthorized changes to locked files:
+
+- Use [merge request approval rules](merge_requests/approvals/rules.md) that require review before merging.
+- Monitor merge requests to locked files to ensure only authorized changes are included.
+- Consider who has permission to push to existing merge request branches in your workflow.
 
 ## Related topics
 

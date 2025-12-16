@@ -1,0 +1,8 @@
+---
+name: delete_trigger
+description: Grants the ability to delete pipeline triggers
+feature_category: pipeline_composition
+boundaries:
+  - project
+permissions:
+  - delete_trigger

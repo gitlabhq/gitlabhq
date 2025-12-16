@@ -37,8 +37,14 @@ class User < ApplicationRecord
   include Ci::PipelineScheduleOwnershipValidator
   include Users::DependentAssociations
   include Users::EmailOtpEnrollment
+  include Cells::Claimable
 
-  ignore_column %i[role skype], remove_after: '2025-09-18', remove_with: '18.4'
+  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::USER_IDS
+  cells_claims_attribute :username, type: CLAIMS_BUCKET_TYPE::USERNAMES
+
+  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::USER, subject_key: :id
+
+  ignore_column :skype, remove_after: '2025-09-18', remove_with: '18.4'
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -53,6 +59,7 @@ class User < ApplicationRecord
 
   MAX_USERNAME_LENGTH = 255
   MIN_USERNAME_LENGTH = 2
+  MAX_NAME_LENGTH = 127
 
   SECONDARY_EMAIL_ATTRIBUTES = [
     :commit_email,
@@ -72,6 +79,8 @@ class User < ApplicationRecord
 
   CI_PROJECT_RUNNERS_BATCH_SIZE = 15_000
   CI_RUNNERS_PROJECT_COUNT_LIMIT = 10_000
+
+  RESERVED_AI_USERNAME_PREFIXES = %w[duo- duo_ ai- ai_].freeze
 
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
   add_authentication_token_field :incoming_email_token, insecure: true, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
@@ -140,7 +149,7 @@ class User < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  attr_accessor :force_random_password
+  attr_accessor :force_random_password, :skip_ai_prefix_validation
 
   # Virtual attribute for authenticating by either username or email
   attr_accessor :login
@@ -156,27 +165,27 @@ class User < ApplicationRecord
   has_one :namespace,
     -> { where(type: Namespaces::UserNamespace.sti_name) },
     required: false,
-    dependent: :destroy, # rubocop:disable Cop/ActiveRecordDependent
+    dependent: :destroy,
     foreign_key: :owner_id,
     inverse_of: :owner,
     autosave: true
 
   # Profile
-  has_many :keys, -> { regular_keys }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :keys, -> { regular_keys }, dependent: :destroy
   has_many :expired_today_and_unnotified_keys, -> { expired_today_and_not_notified }, class_name: 'Key'
   has_many :expiring_soon_and_unnotified_keys, -> { expiring_soon_and_not_notified }, class_name: 'Key'
-  has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
-  has_many :gpg_keys
+  has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify
+  has_many :gpg_keys, dependent: :destroy
 
-  has_many :emails
-  has_many :personal_access_tokens, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :emails, dependent: :destroy
+  has_many :personal_access_tokens, dependent: :destroy
   has_many :expiring_soon_and_unnotified_personal_access_tokens, -> { expiring_and_not_notified_without_impersonation }, class_name: 'PersonalAccessToken'
 
-  has_many :identities, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
+  has_many :identities, dependent: :destroy, autosave: true
   has_many :webauthn_registrations
   has_many :passkeys, -> { passkey }, class_name: 'WebauthnRegistration'
   has_many :second_factor_webauthn_registrations, -> { second_factor_authenticator }, class_name: 'WebauthnRegistration'
-  has_many :chat_names, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :chat_names, dependent: :destroy
   has_many :saved_replies, class_name: '::Users::SavedReply'
   has_one :user_synced_attributes_metadata, autosave: true
   has_one :aws_role, class_name: 'Aws::Role'
@@ -222,54 +231,54 @@ class User < ApplicationRecord
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :project_members, -> { where(requested_at: nil) }
   has_many :projects, through: :project_members
-  has_many :created_projects, foreign_key: :creator_id, class_name: 'Project', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
+  has_many :created_projects, foreign_key: :creator_id, class_name: 'Project', dependent: :nullify
   has_many :created_namespace_details, foreign_key: :creator_id, class_name: 'Namespace::Detail'
   has_many :projects_with_active_memberships, -> { where(members: { state: ::Member::STATE_ACTIVE }) }, through: :project_members, source: :project
-  has_many :users_star_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :users_star_projects, dependent: :destroy
   has_many :starred_projects, through: :users_star_projects, source: :project
-  has_many :project_authorizations, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :project_authorizations, dependent: :delete_all
   has_many :authorized_projects, through: :project_authorizations, source: :project
 
-  has_many :snippets,                 dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :notes,                    dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :issues,                   dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :legacy_assigned_merge_requests, class_name: 'MergeRequest', dependent: :nullify, foreign_key: :assignee_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :merged_merge_requests, class_name: 'MergeRequest::Metrics', dependent: :nullify, foreign_key: :merged_by_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :closed_merge_requests, class_name: 'MergeRequest::Metrics', dependent: :nullify, foreign_key: :latest_closed_by_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :updated_merge_requests, class_name: 'MergeRequest', dependent: :nullify, foreign_key: :updated_by_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :updated_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :updated_by_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :closed_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :closed_by_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :events,                   dependent: :delete_all, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :releases,                 dependent: :nullify, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :subscriptions,            dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :oauth_applications, class_name: 'Authn::OauthApplication', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent -- This association is from a third party gem
-  has_many :abuse_reports, dependent: :nullify, foreign_key: :user_id, inverse_of: :user # rubocop:disable Cop/ActiveRecordDependent
-  has_many :reported_abuse_reports,   dependent: :nullify, foreign_key: :reporter_id, class_name: "AbuseReport", inverse_of: :reporter # rubocop:disable Cop/ActiveRecordDependent
+  has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
+  has_many :notes,                    dependent: :destroy, foreign_key: :author_id
+  has_many :issues,                   dependent: :destroy, foreign_key: :author_id
+  has_many :legacy_assigned_merge_requests, class_name: 'MergeRequest', dependent: :nullify, foreign_key: :assignee_id
+  has_many :merged_merge_requests, class_name: 'MergeRequest::Metrics', dependent: :nullify, foreign_key: :merged_by_id
+  has_many :closed_merge_requests, class_name: 'MergeRequest::Metrics', dependent: :nullify, foreign_key: :latest_closed_by_id
+  has_many :updated_merge_requests, class_name: 'MergeRequest', dependent: :nullify, foreign_key: :updated_by_id
+  has_many :updated_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :updated_by_id
+  has_many :closed_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :closed_by_id
+  has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
+  has_many :events,                   dependent: :delete_all, foreign_key: :author_id
+  has_many :releases,                 dependent: :nullify, foreign_key: :author_id
+  has_many :subscriptions,            dependent: :destroy
+  has_many :oauth_applications, class_name: 'Authn::OauthApplication', as: :owner, dependent: :destroy
+  has_many :abuse_reports, dependent: :nullify, foreign_key: :user_id, inverse_of: :user
+  has_many :reported_abuse_reports,   dependent: :nullify, foreign_key: :reporter_id, class_name: "AbuseReport", inverse_of: :reporter
   has_many :resolved_abuse_reports,   foreign_key: :resolved_by_id, class_name: "AbuseReport", inverse_of: :resolved_by
   has_many :abuse_events,             foreign_key: :user_id, class_name: 'AntiAbuse::Event', inverse_of: :user
-  has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :spam_logs,                dependent: :destroy
   has_many :builds,                   class_name: 'Ci::Build'
   has_many :pipelines,                class_name: 'Ci::Pipeline'
   has_many :pipeline_schedules,       foreign_key: :owner_id, class_name: 'Ci::PipelineSchedule'
-  has_many :todos,                    dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent -- legacy behavior
-  has_many :authored_todos, class_name: 'Todo', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :todos,                    dependent: :delete_all
+  has_many :authored_todos, class_name: 'Todo', dependent: :destroy, foreign_key: :author_id
   has_many :notification_settings
-  has_many :award_emoji, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :award_emoji, dependent: :destroy
   has_many :triggers, -> { not_expired }, class_name: 'Ci::Trigger', foreign_key: :owner_id
   has_many :audit_events, foreign_key: :author_id, inverse_of: :user
   has_many :uploaded_uploads, class_name: 'Upload', foreign_key: :uploaded_by_user_id
 
   has_many :alert_assignees, class_name: '::AlertManagement::AlertAssignee', inverse_of: :assignee
-  has_many :issue_assignees, inverse_of: :assignee, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent -- required by https://gitlab.com/groups/gitlab-org/-/epics/19085
-  has_many :merge_request_assignees, inverse_of: :assignee, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :merge_request_reviewers, inverse_of: :reviewer, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :issue_assignees, inverse_of: :assignee, dependent: :delete_all
+  has_many :merge_request_assignees, inverse_of: :assignee, dependent: :destroy
+  has_many :merge_request_reviewers, inverse_of: :reviewer, dependent: :destroy
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
   has_many :assigned_merge_requests, class_name: "MergeRequest", through: :merge_request_assignees, source: :merge_request
   has_many :created_custom_emoji, class_name: 'CustomEmoji', inverse_of: :creator
 
   has_many :bulk_imports
-  has_many :import_offline_exports, class_name: 'Import::Offline::Export', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent -- required by https://gitlab.com/groups/gitlab-org/-/epics/19085, fk cascade delete implemented
+  has_many :import_offline_exports, class_name: 'Import::Offline::Export', dependent: :delete_all
   has_one :namespace_import_user, class_name: 'Import::NamespaceImportUser', inverse_of: :import_user
   has_one :placeholder_user_detail, class_name: 'Import::PlaceholderUserDetail', foreign_key: :placeholder_user_id, inverse_of: :placeholder_user
 
@@ -304,11 +313,14 @@ class User < ApplicationRecord
 
   has_many :timelogs
 
-  has_many :resource_label_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
-  has_many :resource_state_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
-  has_many :issue_assignment_events, class_name: 'ResourceEvents::IssueAssignmentEvent', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
-  has_many :merge_request_assignment_events, class_name: 'ResourceEvents::MergeRequestAssignmentEvent', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
-  has_many :authored_events, class_name: 'Event', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :created_saved_views, class_name: 'WorkItems::SavedViews::SavedView', foreign_key: :created_by_id, dependent: :nullify
+  has_many :user_saved_views, class_name: 'WorkItems::SavedViews::UserSavedView', dependent: :delete_all
+
+  has_many :resource_label_events, dependent: :nullify
+  has_many :resource_state_events, dependent: :nullify
+  has_many :issue_assignment_events, class_name: 'ResourceEvents::IssueAssignmentEvent', dependent: :nullify
+  has_many :merge_request_assignment_events, class_name: 'ResourceEvents::MergeRequestAssignmentEvent', dependent: :nullify
+  has_many :authored_events, class_name: 'Event', dependent: :destroy, foreign_key: :author_id
   has_many :early_access_program_tracking_events, class_name: 'EarlyAccessProgram::TrackingEvent', inverse_of: :user
   has_many :namespace_commit_emails, class_name: 'Users::NamespaceCommitEmail'
   has_many :user_achievements, class_name: 'Achievements::UserAchievement', inverse_of: :user
@@ -319,7 +331,7 @@ class User < ApplicationRecord
 
   has_many :broadcast_message_dismissals, class_name: 'Users::BroadcastMessageDismissal'
 
-  has_many :lfs_file_locks, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :lfs_file_locks, dependent: :delete_all
   #
   # Validations
   #
@@ -328,10 +340,11 @@ class User < ApplicationRecord
     presence: true,
     exclusion: { in: Gitlab::PathRegex::TOP_LEVEL_ROUTES, message: N_('%{value} is a reserved name') }
   validates :username, uniqueness: true, unless: :namespace
+  validate :username_not_reserved_ai_prefix, if: :username_changed?
   validate :username_not_assigned_to_pages_unique_domain, if: :username_changed?
   validates :name, presence: true, length: { maximum: 255 }
-  validates :first_name, length: { maximum: 127 }
-  validates :last_name, length: { maximum: 127 }
+  validates :first_name, length: { maximum: MAX_NAME_LENGTH }
+  validates :last_name, length: { maximum: MAX_NAME_LENGTH }
   validates :email, confirmation: true, devise_email: true
   validates :notification_email, devise_email: true, allow_blank: true
   validates :public_email, uniqueness: true, devise_email: true, allow_blank: true
@@ -502,8 +515,7 @@ class User < ApplicationRecord
     :enabled_following, :enabled_following=,
     :dpop_enabled, :dpop_enabled=,
     :use_work_items_view, :use_work_items_view=,
-    :project_studio_enabled, :project_studio_enabled=,
-    :new_ui_enabled,
+    :new_ui_enabled, :new_ui_enabled=,
     :text_editor, :text_editor=,
     :default_text_editor_enabled, :default_text_editor_enabled=,
     :merge_request_dashboard_list_type, :merge_request_dashboard_list_type=,
@@ -763,6 +775,10 @@ class User < ApplicationRecord
     where(feed_token: Array.wrap(token_values))
   end
 
+  scope :member_of_organization, ->(organization) do
+    joins(:organization_users).where(organization_users: { organization: organization })
+  end
+
   def self.supported_keyset_orderings
     {
       id: [:asc, :desc],
@@ -919,12 +935,6 @@ class User < ApplicationRecord
       items << where(id: user_ids) if user_ids.present?
 
       from_union(items)
-    end
-
-    def find_by_private_commit_email(email)
-      user_id = Gitlab::PrivateCommitEmail.user_id_for_email(email)
-
-      find_by(id: user_id)
     end
 
     def filter_items(filter_name)
@@ -1848,11 +1858,6 @@ class User < ApplicationRecord
     organization_users.many?
   end
 
-  def can_leave_project?(project)
-    project.namespace != namespace &&
-      project.member(self)
-  end
-
   def full_website_url
     return "http://#{website_url}" unless %r{\Ahttps?://}.match?(website_url)
 
@@ -2450,11 +2455,13 @@ class User < ApplicationRecord
 
   def owns_organization?(organization)
     strong_memoize_with(:owns_organization, organization) do
-      break false unless organization
+      organization_membership_exists?(organization, :owner)
+    end
+  end
 
-      organization_id = organization.is_a?(Integer) ? organization : organization.id
-
-      organization_users.where(organization_id: organization_id).owner.exists?
+  def member_of_organization?(organization)
+    strong_memoize_with(:in_organization, organization) do
+      organization_membership_exists?(organization)
     end
   end
 
@@ -2744,7 +2751,7 @@ class User < ApplicationRecord
   end
 
   def uploads_sharding_key
-    {}
+    { organization_id: organization_id }
   end
 
   def add_admin_note(new_note)
@@ -2873,25 +2880,6 @@ class User < ApplicationRecord
 
   def block_or_ban
     block
-  end
-
-  def ban_and_report
-    msg = 'Potential spammer account deletion'
-    attrs = { user_id: id, reporter: Users::Internal.for_organization(organization).security_bot, category: 'spam' }
-    abuse_report = AbuseReport.find_by(attrs)
-
-    if abuse_report.nil?
-      # rubocop: disable CodeReuse/ServiceClass -- TODO: this is legacy code
-      response = AntiAbuse::AbuseReport::CreateService.new(attrs.merge(message: msg)).execute
-      # rubocop: enable CodeReuse/ServiceClass
-      abuse_report = response.payload
-    else
-      abuse_report.update(message: "#{abuse_report.message}\n\n#{msg}")
-    end
-
-    UserCustomAttribute.set_banned_by_abuse_report(abuse_report)
-
-    ban
   end
 
   def has_possible_spam_contributions?
@@ -3110,8 +3098,26 @@ class User < ApplicationRecord
     end
   end
 
+  def username_not_reserved_ai_prefix
+    return if skip_ai_prefix_validation
+    return if internal?
+
+    return unless RESERVED_AI_USERNAME_PREFIXES.any? { |prefix| username.downcase.start_with?(prefix) }
+
+    errors.add(:username, _("starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."))
+  end
+
   def groups_allowing_project_creation
     Groups::AcceptingProjectCreationsFinder.new(self).execute
+  end
+
+  def organization_membership_exists?(organization, scope = nil)
+    return false unless organization
+
+    organization_id = organization.is_a?(Integer) ? organization : organization.id
+    query = organization_users.where(organization_id: organization_id)
+    query = query.try(scope) if scope
+    query.exists?
   end
 end
 

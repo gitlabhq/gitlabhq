@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillDefaultBranchProtectionSettings
-description: This migration backfills column default_branch_protection_defaults of
-  namespace settings table
-feature_category: source_code_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153306
-milestone: '17.1'
-queued_migration_version: 20240516160731
-finalized_by: '20241103232348'

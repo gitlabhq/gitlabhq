@@ -1,5 +1,7 @@
 <script>
-export default {
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+
+export default normalizeRender({
   functional: true,
   render(h, context) {
     const slotKeys = context.props.slotKeys ?? context.props['slot-keys'];
@@ -8,5 +10,5 @@ export default {
 
     return children;
   },
-};
+});
 </script>

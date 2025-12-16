@@ -3,6 +3,7 @@ import { GlToggle, GlIcon, GlSprintf, GlLink } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { REQUIRED_ICON, NOT_REQUIRED_ICON } from './constants';
 import GroupInheritancePopover from './group_inheritance_popover.vue';
+import DisabledByPolicyPopover from './disabled_by_policy_popover.vue';
 
 export default {
   components: {
@@ -11,6 +12,7 @@ export default {
     GlSprintf,
     GlLink,
     GroupInheritancePopover,
+    DisabledByPolicyPopover,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
@@ -48,6 +50,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    isProtectedByPolicy: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isLoading: {
       type: Boolean,
       required: true,
@@ -59,6 +66,9 @@ export default {
     },
   },
   computed: {
+    toggleDisabled() {
+      return this.isGroupLevel || this.isProtectedByPolicy;
+    },
     iconName() {
       return this.isProtected ? REQUIRED_ICON : NOT_REQUIRED_ICON;
     },
@@ -90,14 +100,15 @@ export default {
       :help="help"
       :value="isProtected"
       :is-loading="isLoading"
-      :disabled="isGroupLevel"
+      :disabled="toggleDisabled"
       class="gl-flex-grow-1 gl-mb-5"
       @change="$emit('toggle', $event)"
     >
       <template #label>
         <div class="gl-flex gl-items-center">
           {{ label }}
-          <group-inheritance-popover v-if="isGroupLevel" />
+          <disabled-by-policy-popover v-if="isProtectedByPolicy" />
+          <group-inheritance-popover v-else-if="isGroupLevel" />
         </div>
       </template>
       <template v-if="hasDescription" #description>

@@ -49,10 +49,12 @@ module AuthenticatesWithTwoFactorForAdminMode
   end
 
   def admin_mode_authenticate_with_two_factor_via_webauthn(user)
-    if Webauthn::AuthenticateService.new(user, user_params[:device_response], session[:challenge]).execute
+    result = Webauthn::AuthenticateService.new(user, user_params[:device_response], session[:challenge]).execute
+
+    if result.success?
       admin_handle_two_factor_success
     else
-      admin_handle_two_factor_failure(user, 'WebAuthn', _('Authentication via WebAuthn device failed.'))
+      admin_handle_two_factor_failure(user, 'WebAuthn', result.message)
     end
   end
 

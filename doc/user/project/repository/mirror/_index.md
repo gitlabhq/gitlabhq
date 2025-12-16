@@ -49,7 +49,7 @@ Prerequisites:
 - If your mirror connects with `ssh://`, the host key must be detectable on the server,
   or you must have a local copy of the key.
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Mirroring repositories**.
 1. Select **Add new**.
@@ -82,7 +82,7 @@ For more information, see [Get your SSH public key](#get-your-ssh-public-key).
 
 To mirror a repository with SSH authentication:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Mirroring repositories**.
 1. Select **Add new**.
@@ -161,7 +161,7 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Mirroring repositories**.
 1. Scroll to **Mirrored repositories** and identify the mirror to update.
@@ -202,7 +202,7 @@ When you mirror a repository and select the **SSH public key** as your
 authentication method, GitLab generates a public key for you. The non-GitLab server
 needs this key to establish trust with your GitLab repository. To copy your SSH public key:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Mirroring repositories**.
 1. Scroll to **Mirrored repositories**.
@@ -236,7 +236,7 @@ for you to check:
 - [Codeberg](https://docs.codeberg.org/security/ssh-fingerprint/)
 - [GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints)
 - [GitLab.com](../../../gitlab_com/_index.md#ssh-host-keys-fingerprints)
-- [Launchpad](https://help.launchpad.net/SSHFingerprints)
+- [Launchpad](https://documentation.ubuntu.com/launchpad/user/reference/ssh-fingerprints/)
 - [Savannah](https://savannah.gnu.org/maintenance/SshAccess/)
 - [SourceForge](https://sourceforge.net/p/forge/documentation/SSH%20Key%20Fingerprints/)
 

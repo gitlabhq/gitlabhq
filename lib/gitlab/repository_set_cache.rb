@@ -47,7 +47,7 @@ module Gitlab
 
       return smembers if exists
 
-      log_cache_operation(key) if Feature.enabled?(:repository_set_cache_logging, repository.project)
+      log_cache_operation(key)
 
       write(key, yield)
     end

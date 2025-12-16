@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 API/DescriptionTags:
-  Details: grace period
   Exclude:
     - 'ee/lib/api/admin/ai/active_context.rb'
     - 'ee/lib/api/admin/search/migrations.rb'
@@ -31,7 +30,6 @@ API/DescriptionTags:
     - 'ee/lib/api/iterations.rb'
     - 'ee/lib/api/manage/groups.rb'
     - 'ee/lib/api/managed_licenses.rb'
-    - 'ee/lib/api/merge_trains.rb'
     - 'ee/lib/api/project_google_cloud_integration.rb'
     - 'ee/lib/api/project_mirror.rb'
     - 'ee/lib/api/provider_identity.rb'
@@ -71,11 +69,9 @@ API/DescriptionTags:
     - 'lib/api/applications.rb'
     - 'lib/api/avatar.rb'
     - 'lib/api/boards.rb'
-    - 'lib/api/bulk_imports.rb'
     - 'lib/api/ci/catalog.rb'
     - 'lib/api/ci/job_artifacts.rb'
     - 'lib/api/ci/jobs.rb'
-    - 'lib/api/ci/pipeline_schedules.rb'
     - 'lib/api/ci/pipelines.rb'
     - 'lib/api/ci/runner.rb'
     - 'lib/api/ci/runners.rb'
@@ -94,7 +90,6 @@ API/DescriptionTags:
     - 'lib/api/hooks/events.rb'
     - 'lib/api/hooks/resend_hook.rb'
     - 'lib/api/hooks/trigger_test.rb'
-    - 'lib/api/import_github.rb'
     - 'lib/api/integrations.rb'
     - 'lib/api/integrations/slack/events.rb'
     - 'lib/api/internal/auto_flow.rb'
@@ -132,7 +127,6 @@ API/DescriptionTags:
     - 'lib/api/statistics.rb'
     - 'lib/api/submodules.rb'
     - 'lib/api/subscriptions.rb'
-    - 'lib/api/supply_chain/attestations.rb'
     - 'lib/api/templates.rb'
     - 'lib/api/todos.rb'
     - 'lib/api/topics.rb'

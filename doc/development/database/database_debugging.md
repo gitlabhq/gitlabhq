@@ -141,7 +141,7 @@ To create a database connection:
    - As you are logged in to the same machine that the Postgres server is running on, a password is not required.
 1. Enter**Port number to connect to**. The default port number is`5432`.
 1. In the **use an SSL connection?** field, select the appropriate connection for your
-installation. The options are:
+   installation. The options are:
    - **Use Secure Connection**
    - **Standard Connection** (default)
 1. In the optional **database to connect to** field, enter `gitlabhq_development`.

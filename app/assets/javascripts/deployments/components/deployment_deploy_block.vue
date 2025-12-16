@@ -31,9 +31,6 @@ export default {
         ? { name: 'check-circle-filled', variant: 'success' }
         : { name: 'timer', variant: 'current' };
     },
-    text() {
-      return this.canPlay ? this.$options.i18n.ready : this.$options.i18n.waiting;
-    },
     hasError() {
       return Boolean(this.errorMessage);
     },
@@ -66,9 +63,6 @@ export default {
     },
   },
   i18n: {
-    waiting: s__('Deployment|Waiting to be deployed.'),
-    ready: s__('Deployment|Ready to be deployed.'),
-    deploy: s__('Deployment|Deploy'),
     genericError: s__(
       'Deployment|Something went wrong starting the deployment. Please try again later.',
     ),
@@ -82,9 +76,16 @@ export default {
     </gl-alert>
     <template v-else>
       <gl-icon v-bind="icon" />
-      <span class="gl-ml-4 gl-grow gl-font-bold">{{ text }}</span>
+      <span v-if="canPlay" class="gl-ml-4 gl-grow gl-font-bold">{{
+        s__('Deployment|Ready to be deployed.')
+      }}</span>
+      <span v-else class="gl-ml-4">
+        <span class="gl-font-bold">{{ s__('Deployment|Waiting to be deployed.') }}</span>
+        {{ s__('Deployment|You are not authorized to trigger this deployment.') }}
+      </span>
+
       <gl-button v-if="canPlay" :loading="loading" variant="confirm" @click="playJob">
-        {{ $options.i18n.deploy }}
+        {{ s__('Deployment|Deploy') }}
       </gl-button>
     </template>
   </div>

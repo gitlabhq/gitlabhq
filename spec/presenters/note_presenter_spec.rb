@@ -7,7 +7,8 @@ RSpec.describe NotePresenter, feature_category: :team_planning do
   let_it_be(:email) { 'user@example.com' }
   let_it_be(:note_text) { "added #{email}" }
   # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Notes::RenderService updates #note and #cached_markdown_version
-  let_it_be_with_reload(:note) { create(:note, :system, author: Users::Internal.support_bot, note: note_text) }
+  let_it_be_with_reload(:note) { create(:note, :system, note: note_text, author: create(:support_bot)) }
+
   let_it_be(:system_note_metadata) { create(:system_note_metadata, note: note, action: :issue_email_participants) }
   # rubocop:enable RSpec/FactoryBot/AvoidCreate
 
@@ -76,7 +77,8 @@ RSpec.describe NotePresenter, feature_category: :team_planning do
 
   describe '#external_author' do
     let!(:note_text) { "note body" }
-    let!(:note) { build(:note, :system, author: Users::Internal.support_bot, note: note_text) }
+    let!(:note) { build(:note, :system, note: note_text, author: build(:support_bot)) }
+
     let!(:note_metadata) { build(:note_metadata, note: note) }
 
     subject { presenter.external_author }

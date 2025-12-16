@@ -4,31 +4,30 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Status::Build::Canceling, feature_category: :continuous_integration do
   let(:user) { build_stubbed(:user) }
+  let(:core_status) { instance_double(Gitlab::Ci::Status::Core) }
 
-  subject(:status_instance) do
-    described_class.new(double)
-  end
+  subject(:status) { described_class.new(core_status) }
 
   describe '#illustration' do
-    it { expect(status_instance.illustration).to include(:image, :size, :title) }
+    it { expect(status.illustration).to include(:image, :size, :title) }
   end
 
   describe '.matches?' do
     subject(:matches?) { described_class.matches?(build, user) }
 
-    context 'when build is canceled' do
+    context 'when build is canceling' do
       let(:build) { build_stubbed(:ci_build, :canceling) }
 
       it 'is a correct match' do
-        expect(matches?).to be true
+        is_expected.to be true
       end
     end
 
-    context 'when build is not canceled' do
+    context 'when build is not canceling' do
       let(:build) { build_stubbed(:ci_build) }
 
       it 'does not match' do
-        expect(matches?).to be false
+        is_expected.to be false
       end
     end
   end

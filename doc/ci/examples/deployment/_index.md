@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Using Dpl as a deployment tool
 ---
@@ -126,7 +126,7 @@ The jobs also use two secure variables:
 
 To store API keys as secure variables:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 

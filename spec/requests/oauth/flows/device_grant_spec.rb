@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Gitlab OAuth2 Device Authorization Grant', :with_current_organization, feature_category: :system_access do
-  let_it_be(:organization) { current_organization }
+RSpec.describe 'Gitlab OAuth2 Device Authorization Grant', feature_category: :system_access do
+  let_it_be(:organization) { create(:organization) }
   let_it_be(:application) do
     create(:oauth_application, redirect_uri: 'urn:ietf:wg:oauth:2.0:oob', confidential: false, scopes: 'read_user')
   end
@@ -27,6 +27,9 @@ RSpec.describe 'Gitlab OAuth2 Device Authorization Grant', :with_current_organiz
   end
 
   before do
+    allow_next_instance_of(Gitlab::Current::Organization) do |instance|
+      allow(instance).to receive(:organization).and_return(organization)
+    end
     sign_in(user)
   end
 

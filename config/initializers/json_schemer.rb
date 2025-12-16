@@ -11,4 +11,8 @@ JSONSchemer.configure do |config|
   config.formats['known_permissions'] = proc do |permission, _format|
     Authz::Permission.defined?(permission)
   end
+
+  config.formats['known_assignable_permissions'] = proc do |permission, _format|
+    Authz::PermissionGroups::Assignable.defined?(permission)
+  end
 end

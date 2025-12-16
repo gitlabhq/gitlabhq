@@ -347,7 +347,8 @@ RSpec.describe AuditEvents::Processor, feature_category: :audit_events do
 
       let(:audit_event_json) do
         base_json.merge(
-          group_id: group.id
+          group_id: group.id,
+          event_name: 'some_event_name'
         ).to_json
       end
 
@@ -357,12 +358,15 @@ RSpec.describe AuditEvents::Processor, feature_category: :audit_events do
         expect(result).to be_a(::AuditEvent)
       end
 
-      it 'filters out group_id, project_id, and user_id fields' do
-        result = described_class.fetch_from_json(audit_event_json)
+      it 'filters out group_id, project_id, user_id, and evnet_name fields' do
+        expect do
+          result = described_class.fetch_from_json(audit_event_json)
 
-        expect(result.attributes).not_to include('group_id')
-        expect(result.attributes).not_to include('project_id')
-        expect(result.attributes).not_to include('user_id')
+          expect(result.attributes).not_to include('group_id')
+          expect(result.attributes).not_to include('project_id')
+          expect(result.attributes).not_to include('user_id')
+          expect(result.attributes).not_to include('event_name')
+        end.not_to raise_error
       end
     end
 

@@ -3,6 +3,7 @@
 module Experimental
   class O11yServiceSettingsController < ApplicationController
     include Gitlab::Utils::StrongMemoize
+    include StrongPaginationParams
 
     before_action :authenticate_user!
     before_action :authorize_experimental_access!
@@ -10,13 +11,16 @@ module Experimental
     feature_category :observability
     urgency :low
 
+    MAX_PER_PAGE = 100
+
     def index
       @o11y_service_settings = Observability::GroupO11ySetting.with_group
+
       if search_params[:group_id].present?
         @o11y_service_settings = @o11y_service_settings.search_by_group_id(search_params[:group_id])
       end
 
-      @o11y_service_settings = @o11y_service_settings.page(pagination_params[:page])
+      @o11y_service_settings = @o11y_service_settings.page(pagination_params[:page]).per(per_page_param)
     end
 
     def new
@@ -119,6 +123,13 @@ module Experimental
 
     def search_params
       params.permit(:group_id)
+    end
+
+    def per_page_param
+      per_page = pagination_params[:per_page].to_i
+      return Kaminari.config.default_per_page unless per_page > 0
+
+      [per_page, MAX_PER_PAGE].min
     end
   end
 end

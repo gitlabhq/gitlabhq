@@ -25,6 +25,7 @@ import {
   SEARCH_DESCRIBED_BY_UPDATED,
   SEARCH_RESULTS_LOADING,
   COMMAND_PALETTE_TIP,
+  EVENT_OPEN_GLOBAL_SEARCH,
 } from '~/vue_shared/global_search/constants';
 import modalKeyboardNavigationMixin from '~/vue_shared/mixins/modal_keyboard_navigation_mixin';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
@@ -49,6 +50,7 @@ import {
   KEY_P,
   SEARCH_INPUT_SELECTOR,
   SEARCH_RESULTS_ITEM_SELECTOR,
+  GLOBAL_SEARCH_MODAL_CLASS,
 } from '../constants';
 import CommandPaletteItems from '../command_palette/command_palette_items.vue';
 import FakeSearchInput from '../command_palette/fake_search_input.vue';
@@ -169,8 +171,17 @@ export default {
   created() {
     addStopCallback(this.allowMousetrapBindingOnSearchInput);
   },
+  mounted() {
+    document.addEventListener(EVENT_OPEN_GLOBAL_SEARCH, this.showModal);
+  },
+  beforeDestroy() {
+    document.removeEventListener(EVENT_OPEN_GLOBAL_SEARCH, this.showModal);
+  },
   methods: {
     ...mapActions(['setSearch', 'setCommand', 'fetchAutocompleteOptions', 'clearAutocomplete']),
+    showModal() {
+      this.$refs.modal?.show();
+    },
     getAutocompleteOptions: debounce(function debouncedSearch(searchTerm) {
       if (this.isCommandMode) {
         return;
@@ -427,6 +438,7 @@ export default {
   MODAL_CLOSE_ESC,
   MODAL_CLOSE_BACKGROUND,
   MODAL_CLOSE_HEADERCLOSE,
+  GLOBAL_SEARCH_MODAL_CLASS,
 };
 </script>
 
@@ -440,7 +452,7 @@ export default {
     scrollable
     :title="$options.i18n.COMMAND_PALETTE"
     body-class="!gl-p-0"
-    modal-class="global-search-modal"
+    :modal-class="$options.GLOBAL_SEARCH_MODAL_CLASS"
     content-class="gl-mt-2"
     :centered="false"
     @shown="onSearchModalShown"

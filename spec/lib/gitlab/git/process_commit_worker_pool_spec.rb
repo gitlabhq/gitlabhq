@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Git::ProcessCommitWorkerPool, feature_category: :source_code_management do
   describe '#get_and_increment_delay' do

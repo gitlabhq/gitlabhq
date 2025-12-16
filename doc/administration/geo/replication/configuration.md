@@ -234,7 +234,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    ```
 
 1. Go to the primary node GitLab instance:
-   1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+   1. In the upper-right corner, select **Admin**.
    1. On the left sidebar, select **Geo** > **Sites**.
    1. Select **Add site**.
       ![Adding a secondary site in Geo configuration interface](img/adding_a_secondary_v15_8.png)
@@ -280,6 +280,30 @@ that the **secondary** site can act on those notifications immediately.
 
 Be sure the secondary site is running and accessible. You can sign in to the
 secondary site with the same credentials as were used with the primary site.
+
+### Add primary and secondary URLs as allowed ActionCable origins
+
+This step allows websockets to work seamlessly from primary and secondary sites.
+
+1. Collect the **external URLs** of your sites (primary and secondary). You can find them in the Site pages in the Admin area, as mentioned in the section above.
+1. SSH into each Rails and Sidekiq node on your **primary site** and sign in as root:
+
+   ```shell
+   sudo -i
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb` to add the URLs collected in step 1 to the `action_cable_allowed_origins` setting:
+
+   ```ruby
+   gitlab_rails['action_cable_allowed_origins'] = ['https://secondary.example.com', 'https://primary.example.com']
+   ```
+
+1. To apply the changes, reconfigure each Rails and Sidekiq node and restart the service:
+
+   ```shell
+   gitlab-ctl reconfigure
+   gitlab-ctl restart
+   ```
 
 ## Step 4. (Optional) Using custom certificates
 
@@ -343,7 +367,7 @@ method to be enabled. This is enabled by default, but if converting an existing 
 
 On the **primary** site:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. If using Git over SSH, then:
@@ -358,7 +382,7 @@ On the **primary** site:
 You can sign in to the **secondary** site with the same credentials you used with
 the **primary** site. After you sign in:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Verify that it's correctly identified as a **secondary** Geo site, and that
    Geo is enabled.

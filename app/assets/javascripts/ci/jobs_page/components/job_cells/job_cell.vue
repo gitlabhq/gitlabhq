@@ -6,6 +6,7 @@ import LinkCell from '~/ci/runner/components/cells/link_cell.vue';
 import { SUCCESS_STATUS } from '../../../constants';
 
 export default {
+  name: 'JobCell',
   iconSize: 12,
   i18n: {
     stuckText: s__('Jobs|Job is stuck. Check runners.'),

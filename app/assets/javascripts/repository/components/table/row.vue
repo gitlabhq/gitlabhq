@@ -238,7 +238,7 @@ export default {
           :submodule="isSubmodule"
           :loading="path === loadingPath"
           css-classes="gl-relative file-icon"
-          class="gl-relative gl-mr-2 gl-text-secondary"
+          class="gl-relative gl-mr-2 gl-text-subtle"
         /><gl-truncate
           :text="fullPath"
           position="end"

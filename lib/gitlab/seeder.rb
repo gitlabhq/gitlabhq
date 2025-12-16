@@ -17,7 +17,7 @@ module Gitlab
 
       included do
         scope :not_mass_generated, -> do
-          where.not("path LIKE '#{sanitize_sql_like(MASS_INSERT_GROUP_START)}%'")
+          where.not("namespaces.path LIKE '#{sanitize_sql_like(MASS_INSERT_GROUP_START)}%'")
         end
       end
     end
@@ -27,7 +27,7 @@ module Gitlab
 
       included do
         scope :not_mass_generated, -> do
-          where.not("path LIKE '#{sanitize_sql_like(MASS_INSERT_PROJECT_START)}%'")
+          where.not("projects.path LIKE '#{sanitize_sql_like(MASS_INSERT_PROJECT_START)}%'")
         end
       end
     end

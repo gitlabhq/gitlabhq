@@ -1,8 +1,9 @@
 <script>
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { linkRegex } from './utils';
 import LineNumber from './line_number.vue';
 
-export default {
+export default normalizeRender({
   functional: true,
   props: {
     line: {
@@ -63,5 +64,5 @@ export default {
       ],
     );
   },
-};
+});
 </script>

@@ -3,42 +3,64 @@
 module Tooling
   module Danger
     module DatabaseUpgradeDdlLock
+      BACKGROUND_ISSUE_URL = 'https://gitlab.com/gitlab-org/gitlab/-/issues/579388'
       LOCK_CONFIG_PATH = 'config/database_upgrade_ddl_lock.yml'
+      SCHEMA_FILE_PATTERN = %r{\Adb/structure\.sql}
       SECONDS_PER_DAY = 86400
 
       def check_ddl_lock_contention
-        return unless config_file_exists?
+        return unless config_file_exists? && config_valid?
 
-        return unless config_valid?
-
-        # Always warn if within warning period.
-        warn warning_message if within_warning_period? && schema_modified?
-
-        fail lock_message if schema_modified? && ddl_lock_active? && helper.ci?
+        warn warning_message if should_warn?
+        fail lock_message if should_fail?
       end
 
       private
+
+      def should_warn?
+        within_warning_period? && schema_modified?
+      end
+
+      def should_fail?
+        schema_modified? && ddl_lock_active? && helper.ci?
+      end
 
       def config_file_exists?
         File.exist?(LOCK_CONFIG_PATH)
       end
 
       def config
-        @config ||= begin
-          now = time_current
-          lock_configs = YAML.safe_load_file(LOCK_CONFIG_PATH)['locks']
+        @config ||= load_active_lock_config
+      end
 
-          lock_configs.find do |config|
-            next unless config['start_date'] && config['end_date']
+      def load_active_lock_config
+        lock_configs = YAML.safe_load_file(LOCK_CONFIG_PATH)['locks']
+        find_active_lock(lock_configs) || {}
+      rescue Errno::ENOENT
+        {}
+      end
 
-            start_date = parse_date(config['start_date'].to_s) - (config['warning_days'].to_i * SECONDS_PER_DAY)
-            end_date = parse_date(config['end_date'].to_s)
+      def find_active_lock(lock_configs)
+        now = time_current
 
-            now.between?(start_date, end_date)
-          end || {}
-        rescue Errno::ENOENT
-          {}
+        lock_configs.find do |lock_config|
+          next unless valid_lock_config?(lock_config)
+
+          time_range = calculate_time_range(lock_config)
+          now.between?(time_range[:start], time_range[:end])
         end
+      end
+
+      def valid_lock_config?(lock_config)
+        lock_config['start_date'] && lock_config['end_date']
+      end
+
+      def calculate_time_range(lock_config)
+        warning_offset = lock_config['warning_days'].to_i * SECONDS_PER_DAY
+        {
+          start: parse_date(lock_config['start_date'].to_s) - warning_offset,
+          end: parse_date(lock_config['end_date'].to_s)
+        }
       end
 
       def start_date
@@ -67,11 +89,15 @@ module Tooling
 
       def within_warning_period?
         warning_start = start_date - (warning_days * SECONDS_PER_DAY)
-        time_current >= warning_start && time_current < start_date
+        time_current.between?(warning_start, start_date - 1)
       end
 
       def lock_message
-        msg = <<~MSG
+        format(lock_message_template, message_params)
+      end
+
+      def lock_message_template
+        <<~MSG
           Merging migrations that change schema is currently disabled while a major database upgrade is
           performed. After the lock expires, retry this job and danger will pass.
 
@@ -80,14 +106,16 @@ module Tooling
           Started at: %<start_date>s
           Locked until: %<end_date>s
           Details: %<details>s
-          Background: https://gitlab.com/gitlab-org/gitlab/-/issues/579388
+          Background: #{BACKGROUND_ISSUE_URL}
         MSG
-
-        format(msg, start_date: start_date, end_date: end_date, details: details, upgrade_issue_url: upgrade_issue_url)
       end
 
       def warning_message
-        msg = <<~MSG
+        format(warning_message_template, message_params.merge(days_until_lock: days_until_lock))
+      end
+
+      def warning_message_template
+        <<~MSG
           A database upgrade lock will be active in %<days_until_lock>s day(s). Starting at %<start_date>s, merging
           migrations that changes the schema (DDL) will be disabled while a major database upgrade is performed.
           Plan accordingly or consider merging your changes before the lock begins.
@@ -97,21 +125,21 @@ module Tooling
           Starts at: %<start_date>s
           Locked until: %<end_date>s
           Details: %<details>s
-          Background: https://gitlab.com/gitlab-org/gitlab/-/issues/579388
+          Background: #{BACKGROUND_ISSUE_URL}
         MSG
+      end
 
-        format(
-          msg,
-          days_until_lock: days_until_lock,
+      def message_params
+        {
           start_date: start_date,
           end_date: end_date,
           details: details,
           upgrade_issue_url: upgrade_issue_url
-        )
+        }
       end
 
       def schema_modified?
-        helper.all_changed_files.grep(%r{\Adb/structure\.sql}).any?
+        helper.all_changed_files.grep(SCHEMA_FILE_PATTERN).any?
       end
 
       def config_valid?
@@ -119,13 +147,13 @@ module Tooling
       end
 
       def valid_dates?
-        !start_date.nil? && !end_date.nil? && start_date < end_date && end_date >= time_current
+        start_date && end_date && start_date < end_date && end_date >= time_current
       end
 
       def days_until_lock
         return unless start_date
 
-        ((start_date - time_current) / (24 * 60 * 60)).to_i
+        ((start_date - time_current) / SECONDS_PER_DAY).to_i
       end
 
       def parse_date(date)

@@ -21,6 +21,20 @@ module ActiveContext
         def executor_klass
           ActiveContext::Databases::Opensearch::Executor
         end
+
+        def indexer_connection_options
+          { url: normalize_urls(options[:url]) }.merge(aws_connection_options)
+        end
+
+        private
+
+        def aws_connection_options
+          return {} unless options[:aws]
+
+          options.slice(
+            :aws, :aws_region, :aws_access_key, :aws_secret_access_key, :aws_role_arn, :client_request_timeout
+          ).compact
+        end
       end
     end
   end

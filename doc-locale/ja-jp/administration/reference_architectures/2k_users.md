@@ -16,10 +16,10 @@ title: 'リファレンスアーキテクチャ: 最大40 RPSまたは2,000ユ�
 
 リファレンスアーキテクチャの完全なリストについては、[利用可能なリファレンスアーキテクチャ](_index.md#available-reference-architectures)を参照してください。
 
-- **目標負荷**: API: 40 RPS、Web: 4 RPS、Git（プル）: 4 RPS、Git（プッシュ）: 1 RPS
-- **HA**: 不可。HA環境には、変更された[3,000または60 RPSのリファレンスアーキテクチャ](3k_users.md#supported-modifications-for-lower-user-counts-ha)を参照してください。
-- **クラウドネイティブハイブリッド**: [可](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-- **どのリファレンスアーキテクチャを使用すればよいかわからない場合**: [詳細については、こちらのガイドをご覧ください](_index.md#deciding-which-architecture-to-start-with)。
+- **Target Load**（目標負荷）: API: 40 RPS、Web: 4 RPS、Git（プル）: 4 RPS、Git（プッシュ）: 1 RPS
+- **High Availability**（HA）: 不可。HA環境には、変更された[3,000または60 RPSのリファレンスアーキテクチャ](3k_users.md#supported-modifications-for-lower-user-counts-ha)を参照してください。
+- **Cloud Native Hybrid**（クラウドネイティブハイブリッド）: [はい](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
+- **Unsure which Reference Architecture to use**（どのリファレンスアーキテクチャを使用すればよいかわからない場合）: [詳細については、こちらのガイドをご覧ください](_index.md#deciding-which-architecture-to-start-with)。
 
 | サービス                            | ノード | 設定          | GCPの例<sup>1</sup> | AWSの例<sup>1</sup> | Azureの例<sup>1</sup> |
 |------------------------------------|-------|------------------------|-----------------|--------------|----------|
@@ -32,7 +32,7 @@ title: 'リファレンスアーキテクチャ: 最大40 RPSまたは2,000ユ�
 | モニタリングノード                    | 1     | 2 vCPU、1.8 GBメモリ  | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | オブジェクトストレージ<sup>5</sup>         | –     | –                      | –               | –            | –        |
 
-**補足説明**:
+**Footnotes**（補足説明）:
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -41,7 +41,7 @@ title: 'リファレンスアーキテクチャ: 最大40 RPSまたは2,000ユ�
 3. 定評のあるサードパーティの外部PaaS Redisソリューションでオプションで実行できます。詳細については、[独自のRedisインスタンスを提供する](#provide-your-own-redis-instance)と[推奨クラウドプロバイダーとサービス](_index.md#recommended-cloud-providers-and-services)を参照してください。
 4. 定評のあるサードパーティのロードバランサーまたはサービス（LB PaaS）で実行することをおすすめします。サイジングは、選択したロードバランサーと、ネットワーク帯域幅などの追加要因によって異なります。詳細については、[ロードバランサー](_index.md#load-balancers)を参照してください。
 5. 定評のあるクラウドプロバイダーまたはSelf-Managedソリューションで実行する必要があります。詳細については、[オブジェクトストレージを設定する](#configure-the-object-storage)を参照してください。
-6. Gitalyの仕様は、正常な状態の通常サイズのリポジトリの使用に基づいています。ただし、（数ギガバイトを超える）大規模なモノレポがある場合、GitとGitalyのパフォーマンスに**大幅に**影響を与えることがあり、仕様の引き上げが必要になる可能性があります。詳細については、[大規模なモノレポ](_index.md#large-monorepos)を参照してください。
+6. Gitalyの仕様は、正常な状態の通常サイズのリポジトリの使用に基づいています。ただし、（数ギガバイトを超える）大規模なモノレポがある場合、GitとGitalyのパフォーマンスに**significantly**（大幅に）影響を与えることがあり、仕様の引き上げが必要になる可能性があります。詳細については、[大規模なモノレポ](_index.md#large-monorepos)を参照してください。
 7. コンポーネントは[ステートフルデータ](_index.md#autoscaling-of-stateful-nodes)を保存しないため、Auto Scaling Groups（ASG）に配置できます。ただし、[クラウドネイティブハイブリッドセットアップ](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)が一般的に推奨されます。[移行](#gitlab-rails-post-configuration)や[Mailroom](../incoming_email.md)などの特定のコンポーネントは、1つのノードでしか実行できないためであり、これらのコンポーネントは、Kubernetesでより適切に処理されます。
 <!-- markdownlint-enable MD029 -->
 
@@ -97,7 +97,7 @@ monitor .[#7FFFD4]u-> sidekiq
 
 ## テスト手法 {#testing-methodology}
 
-40 RPS/2000ユーザーのリファレンスアーキテクチャは、最も一般的なワークフローに対応するように設計されています。GitLabは、次のエンドポイントスループットの目標に対して、定期的にスモークテストとパフォーマンステストを実施しています。
+40 RPS/2000ユーザーのリファレンスアーキテクチャは、最も一般的なワークフローに対応するように設計されています。GitLabは、次のエンドポイントスループットの目標に対して、定期的にスモークテストとパフォーマンステストを実施しています:
 
 | エンドポイントの種類 | 目標スループット |
 | ------------- | ----------------- |
@@ -112,31 +112,31 @@ monitor .[#7FFFD4]u-> sidekiq
 
 ### パフォーマンスに関する考慮事項 {#performance-considerations}
 
-環境に次の要素がある場合、追加の調整が必要になる場合があります。
+環境に次の要素がある場合、追加の調整が必要になる場合があります:
 
 - リスト上の目標よりも一貫して高いスループット
 - [大規模なモノレポ](_index.md#large-monorepos)
-- 大幅に[追加されたワークロード](_index.md#additional-workloads)
+- 大幅な[追加のワークロード](_index.md#additional-workloads)
 
-これらの場合は、詳細について[環境のスケーリング](_index.md#scaling-an-environment)を参照してください。これらの考慮事項がお客様にあてはまると思われる場合は、必要に応じて追加のガイダンスについてお問い合わせください。
+これらの場合は、詳細について[環境をスケーリングする](_index.md#scaling-an-environment)を参照してください。これらの考慮事項がお客様にあてはまると思われる場合は、必要に応じて追加のガイダンスについてお問い合わせください。
 
 ### ロードバランサーの設定 {#load-balancer-configuration}
 
-当社のテスト環境では、以下を使用します。
+当社のテスト環境では、以下を使用します:
 
 - Linuxパッケージ環境用のHAProxy
 - クラウドネイティブハイブリッド用のNGINX Ingressと同等のクラウドプロバイダー
 
 ## コンポーネントをセットアップする {#set-up-components}
 
-GitLabとそのコンポーネントをセットアップして、最大40 RPSまたは2,000ユーザーに対応するには、次の手順に従います。
+GitLabとそのコンポーネントをセットアップして、最大40 RPSまたは2,000ユーザーに対応するには、次の手順に従います:
 
 1. [外部ロードバランシングノードを設定](#configure-the-external-load-balancer)して、GitLabアプリケーションサービスノードのロードバランシングを処理します。
 1. GitLabのデータベースである[PostgreSQLを設定](#configure-postgresql)します。
 1. セッションデータ、一時キャッシュ情報、バックグラウンドジョブキューを保存する[Redisを設定](#configure-redis)します。
 1. Gitリポジトリへのアクセスを提供する[Gitalyを設定](#configure-gitaly)します。
 1. バックグラウンドジョブの処理のために[Sidekiqを設定](#configure-sidekiq)します。
-1. Puma、Workhorse、GitLab Shellを実行し、すべてのフロントエンドリクエスト（UI、API、およびHTTP/SSH経由のGitを含む）を処理するように[メインのGitLab Railsアプリケーションを設定](#configure-gitlab-rails)します。
+1. Puma、Workhorse、GitLab Shellを実行して、すべてのフロントエンドリクエスト（UI、API、およびHTTP/SSH経由のGitを含む）を処理するために、[メインのGitLab Railsアプリケーションを設定](#configure-gitlab-rails)します。
 1. GitLab環境をモニタリングするために、[Prometheus](#configure-prometheus)を設定します。
 1. 共有データオブジェクトに使用される[オブジェクトストレージを設定](#configure-the-object-storage)します。
 1. GitLabインスタンス全体でより高速かつ高度なコード検索を行うために、[高度な検索を設定](#configure-advanced-search)します（オプション）。
@@ -149,7 +149,7 @@ GitLabとそのコンポーネントをセットアップして、最大40 RPS�
 
 ### 準備完了チェック {#readiness-checks}
 
-外部ロードバランサーが、組み込みのモニタリングエンドポイントを使用して、動作中のサービスにのみルーティングするようにします。すべての[準備完了チェック](../monitoring/health_check.md)には、チェックされるノードに対する[追加の設定](../monitoring/ip_allowlist.md)が必要です。そうしないと、外部ロードバランサーは接続できません。
+外部ロードバランサーが、組み込みのモニタリングエンドポイントを使用して、動作中のサービスにのみルーティングするようにします。すべての[準備完了チェック](../monitoring/health_check.md)には、チェックされるノードに[追加の設定](../monitoring/ip_allowlist.md)が必要です。そうしないと、外部ロードバランサーは接続できません。
 
 ### ポート {#ports}
 
@@ -186,7 +186,7 @@ GitLabとそのコンポーネントをセットアップして、最大40 RPS�
 
 ### SSL {#ssl}
 
-次の課題は、ご使用の環境でSSLをどのように処理するかです。次のようないくつかの選択肢があります。
+次の課題は、ご使用の環境でSSLをどのように処理するかです。次のようないくつかの選択肢があります:
 
 - [アプリケーションノードがSSLを終了する](#application-node-terminates-ssl)。
 - [ロードバランサーがバックエンドSSLなしでSSLを終了](#load-balancer-terminates-ssl-without-backend-ssl)し、ロードバランサーとアプリケーションノード間の通信が安全ではなくなる。
@@ -220,18 +220,23 @@ SSL証明書の管理とNGINXの設定の詳細については、[HTTPSのドキ
 
 ### 独自のPostgreSQLインスタンスを提供する {#provide-your-own-postgresql-instance}
 
-オプションで、[PostgreSQL用のサードパーティの外部サービス](../postgresql/external.md)を使用できます。
+LinuxパッケージにバンドルされているPostgreSQL、PgBouncer、Consulサービスディスカバリコンポーネントの代わりに、[PostgreSQL用のサードパーティの外部サービス](../postgresql/external.md)を使用できます。
 
-そのためには、信頼できるプロバイダーまたはソリューションを使用する必要があります。[Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal)と[Amazon RDS](https://aws.amazon.com/rds/)は動作が確認されています。ただし、Amazon Auroraは、[14.4.0](https://archives.docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes/#1440)からデフォルトで有効になっているロードバランシングと**互換性がありません**。
+[サポートされているPostgreSQLバージョン](../../install/requirements.md#postgresql)を実行する信頼できるプロバイダーを使用してください。これらのサービスは正常に動作することがわかっています:
 
-詳細については、[推奨されるクラウドプロバイダーとサービス](_index.md#recommended-cloud-providers-and-services)を参照してください。
+- [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal)。
+- [Amazon RDS](https://aws.amazon.com/rds/)。
+
+高可用性とデータベースのロードバランシングに関するガイダンスを含む詳細については、以下を参照してください:
+
+- [推奨されるクラウドプロバイダーとサービス](_index.md#recommended-cloud-providers-and-services)。
+- [データベースサービスのベストプラクティス](_index.md#best-practices-for-the-database-services)。
 
 サードパーティの外部サービスを使用する場合:
 
-1. HA LinuxパッケージPostgreSQLのセットアップには、PostgreSQL、PgBouncer、およびConsulが含まれます。サードパーティの外部サービスを使用する場合、これらのコンポーネントはすべて不要になります。
 1. [データベース要件に関するドキュメント](../../install/requirements.md#postgresql)に従ってPostgreSQLをセットアップします。
-1. `gitlab`ユーザー名と任意のパスワードを設定します。`gitlab`ユーザーには、`gitlabhq_production`データベースを作成する権限が必要です。
-1. 適切な詳細を使用してGitLabアプリケーションサーバーを設定します。この手順については、[GitLab Railsアプリケーションの設定](#configure-gitlab-rails)で説明します。
+1. 必要な[ユーザーとデータベース](../postgresql/external.md)を構成します。
+1. [GitLab Railsの構成](#configure-gitlab-rails)に従って、適切な接続詳細でGitLabアプリケーションサーバーを構成します。
 
 ### Linuxパッケージを使用したスタンドアロンPostgreSQL {#standalone-postgresql-using-the-linux-package}
 
@@ -295,7 +300,7 @@ Redisは主にシングルスレッドであり、CPUコアを増やしても大
 
 ### 独自のRedisインスタンスを提供する {#provide-your-own-redis-instance}
 
-オプションで、次のガイダンスに従って、[サードパーティの外部サービスをRedisインスタンス](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider)に使用できます。
+オプションで、次のガイダンスに従って、[サードパーティの外部サービスをRedisインスタンス](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider)に使用できます:
 
 - そのためには、信頼できるプロバイダーまたはソリューションを使用する必要があります。[Google Memorystore](https://cloud.google.com/memorystore/docs/redis/memorystore-for-redis-overview)と[AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html)は動作が確認されています。
 - Redisクラスターモードは特にサポートされていませんが、HAのRedisスタンドアロンはサポートされています。
@@ -305,11 +310,11 @@ Redisは主にシングルスレッドであり、CPUコアを増やしても大
 
 ### Linuxパッケージを使用したスタンドアロンRedis {#standalone-redis-using-the-linux-package}
 
-Linuxパッケージを使用して、スタンドアロンRedisサーバーを設定できます。LinuxパッケージでRedisサーバーを設定するには、以下の手順が最低限必要です。
+Linuxパッケージを使用して、スタンドアロンRedisサーバーを設定できます。LinuxパッケージでRedisサーバーを設定するには、以下の手順が最低限必要です:
 
 1. SSHでRedisサーバーに接続します。
 1. 利用したいLinuxパッケージを[ダウンロードしてインストール](../../install/package/_index.md#supported-platforms)します。必ずGitLabパッケージリポジトリのみを追加し、選択したオペレーティングシステム用にGitLabをインストールしてください。
-1. `/etc/gitlab/gitlab.rb`を編集し、次の内容を追加します。
+1. `/etc/gitlab/gitlab.rb`を編集し、次の内容を追加します:
 
    ```ruby
    ## Enable Redis
@@ -349,13 +354,13 @@ Linuxパッケージを使用して、スタンドアロンRedisサーバーを�
 
 {{< alert type="warning" >}}
 
-**Gitalyの仕様は、正常に稼働する環境での利用パターンとリポジトリサイズの上位パーセンタイルに基づいています**。**ただし、（数ギガバイトを超える）[大規模なモノレポ](_index.md#large-monorepos)または[追加のワークロード](_index.md#additional-workloads)がある場合、これらは環境のパフォーマンスに大きく影響することがあり、さらなる調整が必要になる場合があります**。これがあてはまると思われる場合は、必要に応じて追加のガイダンスについてお問い合わせください。
+Gitalyの仕様は、正常に稼働する環境での利用パターンとリポジトリサイズの上位パーセンタイルに基づいています。[ただし、数ギガバイトを超える](_index.md#large-monorepos) [大規模なモノレポ](_index.md#additional-workloads)またはワークロードが追加されている場合、これらは環境のパフォーマンスに大きく影響することがあり、さらなる調整が必要になる場合があります。これがあてはまると思われる場合は、必要に応じて追加のガイダンスについてお問い合わせください。
 
 {{< /alert >}}
 
 Gitalyには、Gitalyストレージに関する特定の[ディスク要件](../gitaly/_index.md#disk-requirements)があります。
 
-次の項目に注意してください。
+次の項目に注意してください:
 
 - GitLab Railsアプリケーションは、リポジトリを[リポジトリストレージパス](../repository_storage_paths.md)にシャードします。
 - Gitalyサーバーは、1つ以上のストレージパスをホストできます。
@@ -371,10 +376,10 @@ Gitalyドキュメント全体で参照されているトークンは、管理�
 
 次の手順では、シークレットトークン`gitalysecret`を持つ`gitaly1.internal`という名前の単一のGitalyサーバーを設定する方法について説明します。GitLabインストールには、`default`と`storage1`の2つのリポジトリストレージがあると想定しています。
 
-Gitalyサーバーを設定するには、Gitalyに使用するサーバーノードで、次の手順を実行します。
+Gitalyサーバーを設定するには、Gitalyに使用するサーバーノードで、次の手順を実行します:
 
-1. 利用したいLinuxパッケージを[ダウンロードしてインストール](../../install/package/_index.md#supported-platforms)します。必ずGitLabパッケージリポジトリのみを追加し、選択したオペレーティングシステム用にGitLabをインストールしてください。ただし、`EXTERNAL_URL`値は**指定しないでください**。
-1. Gitalyサーバーノードの`/etc/gitlab/gitlab.rb`ファイルを編集して、ストレージパスを設定し、ネットワークリスナーを有効にして、トークンを設定します。
+1. 利用したいLinuxパッケージを[ダウンロードしてインストール](../../install/package/_index.md#supported-platforms)します。必ずGitLabパッケージリポジトリのみを追加し、選択したオペレーティングシステム用にGitLabをインストールしてください。ただし、`EXTERNAL_URL`値は**not**（指定しないでください）。
+1. Gitalyサーバーノードの`/etc/gitlab/gitlab.rb`ファイルを編集して、ストレージパスを設定し、ネットワークリスナーを有効にして、トークンを設定します:
 
    {{< alert type="note" >}}
 
@@ -445,7 +450,7 @@ Gitalyサーバーを設定するには、Gitalyに使用するサーバーノ�
 
 1. 変更を有効にするには、[GitLabを再設定します](../restart_gitlab.md#reconfigure-a-linux-package-installation)。
 
-1. Gitalyが内部APIにコールバックを実行できることを確認します。
+1. Gitalyが内部APIにコールバックを実行できることを確認します:
    - GitLab 15.3以降の場合は、`sudo -u git -- /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`を実行します。
    - GitLab 15.2以前の場合は、`sudo -u git -- /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`を実行します。
 
@@ -463,9 +468,9 @@ GitalyはTLS暗号化をサポートしています。セキュアな接続を�
 
 Gitalyサーバーは、暗号化されていないリスニングアドレス（`listen_addr`）と暗号化されたリスニングアドレス（`tls_listen_addr`）の両方で同時に設定できます。これにより、必要に応じて、暗号化されていないトラフィックから暗号化されたトラフィックへの段階的な移行を行うことができます。
 
-TLSを使用してGitalyを設定するには、次の手順に従います。
+TLSを使用してGitalyを設定するには、次の手順に従います:
 
-1. `/etc/gitlab/ssl`ディレクトリを作成し、キーと証明書をそこにコピーします。
+1. `/etc/gitlab/ssl`ディレクトリを作成し、キーと証明書をそこにコピーします:
 
    ```shell
    sudo mkdir -p /etc/gitlab/ssl
@@ -474,13 +479,13 @@ TLSを使用してGitalyを設定するには、次の手順に従います。
    sudo chmod 644 key.pem cert.pem
    ```
 
-1. Gitalyがそれ自体を呼び出すときに証明書を信頼するように、証明書を`/etc/gitlab/trusted-certs`にコピーします。
+1. Gitalyがそれ自体を呼び出すときに証明書を信頼するように、証明書を`/etc/gitlab/trusted-certs`にコピーします:
 
    ```shell
    sudo cp /etc/gitlab/ssl/cert.pem /etc/gitlab/trusted-certs/
    ```
 
-1. `/etc/gitlab/gitlab.rb`を編集して、以下を追加します。
+1. `/etc/gitlab/gitlab.rb`を編集して、以下を追加します:
 
    <!-- Updates to following example must also be made at https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab -->
 
@@ -504,7 +509,7 @@ TLSを使用してGitalyを設定するには、次の手順に従います。
 
 ## Sidekiqを設定する {#configure-sidekiq}
 
-Sidekiqには、[Redis](#configure-redis)、[PostgreSQL](#configure-postgresql)、および[Gitaly](#configure-gitaly)インスタンスへの接続が必要です。また、推奨されているように、[オブジェクトストレージ](#configure-the-object-storage)への接続も必要です。
+Sidekiqには、[Redis](#configure-redis) 、[PostgreSQL](#configure-postgresql) 、および[Gitaly](#configure-gitaly)インスタンスへの接続が必要です。また、推奨されているように、[オブジェクトストレージ](#configure-the-object-storage)への接続も必要です。
 
 {{< alert type="note" >}}
 
@@ -516,10 +521,10 @@ Sidekiqには、[Redis](#configure-redis)、[PostgreSQL](#configure-postgresql)�
 
 コンテナレジストリ、SAML、LDAPなどの追加のGitLab機能を設定する場合は、Rails設定に加えて、Sidekiq設定も更新します。詳細については、[外部Sidekiqのドキュメント](../sidekiq/_index.md)を参照してください。{{< /alert >}}
 
-Sidekiqサーバーを設定するには、Sidekiqに使用するサーバーノードで、次の手順を実行します。
+Sidekiqサーバーを設定するには、Sidekiqに使用するサーバーノードで、次の手順を実行します:
 
-1. SidekiqサーバーにSSHで接続します。
-1. PostgreSQL、Gitaly、およびRedisポートにアクセスできることを確認します。
+1. SidekiqサーバーSSHでに接続します。
+1. PostgreSQL、Gitaly、およびRedisポートにアクセスできることを確認します:
 
    ```shell
    telnet <GitLab host> 5432 # PostgreSQL
@@ -528,7 +533,7 @@ Sidekiqサーバーを設定するには、Sidekiqに使用するサーバーノ
    ```
 
 1. 利用したいLinuxパッケージを[ダウンロードしてインストール](../../install/package/_index.md#supported-platforms)します。必ずGitLabパッケージリポジトリのみを追加し、選択したオペレーティングシステム用にGitLabをインストールしてください。
-1. `/etc/gitlab/gitlab.rb`を作成または編集し、次の設定を使用します。
+1. `/etc/gitlab/gitlab.rb`を作成または編集し、次の設定を使用します:
 
    ```ruby
    # https://docs.gitlab.com/omnibus/roles/#sidekiq-roles
@@ -596,7 +601,7 @@ Sidekiqサーバーを設定するには、Sidekiqに使用するサーバーノ
    }
    gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
    gitlab_rails['ci_secure_files_object_store_enabled'] = true
-   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "gcp-ci_secure_files-bucket-name"
+   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "<gcp-ci_secure_files-bucket-name>"
 
    gitlab_rails['ci_secure_files_object_store_connection'] = {
       'provider' => 'Google',
@@ -607,7 +612,7 @@ Sidekiqサーバーを設定するには、Sidekiqに使用するサーバーノ
 
 1. 最初に設定したLinuxパッケージノードから`/etc/gitlab/gitlab-secrets.json`ファイルをコピーして、このサーバーに追加するか、サーバー上の同じ名前のファイルを置換します。これが最初に設定するLinuxパッケージノードである場合は、この手順を省略できます。
 
-1. データベースの移行が再設定中にのみ実行され、アップグレード時に自動的に実行されないようにするには、以下を実行します。
+1. データベースの移行が再設定中にのみ実行され、アップグレード時に自動的に実行されないようにするには、以下を実行します:
 
    ```shell
    sudo touch /etc/gitlab/skip-auto-reconfigure
@@ -617,13 +622,13 @@ Sidekiqサーバーを設定するには、Sidekiqに使用するサーバーノ
 
 1. ファイルを保存して[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
 
-1. GitLabサービスが実行されていることを確認します。
+1. GitLabサービスが実行されていることを確認します:
 
    ```shell
    sudo gitlab-ctl status
    ```
 
-   出力は次のようになります。
+   出力は次のようになります:
 
    ```plaintext
    run: logrotate: (pid 192292) 2990s; run: log: (pid 26374) 93048s
@@ -639,12 +644,12 @@ Sidekiqサーバーを設定するには、Sidekiqに使用するサーバーノ
 
 このセクションでは、GitLabアプリケーション（Rails）コンポーネントを設定する方法について説明します。
 
-このアーキテクチャでは、各GitLab RailsノードをPuma Webサーバーを使用して実行し、ワーカーの数を利用可能なCPUの90％に設定し、スレッド数を4に設定します。他のコンポーネントとともにRailsを実行するノードの場合、ワーカーの値をそれに応じて減らす必要があります。ワーカーの値が50％でバランスが取れていることを確認しましたが、これはワークロードによって異なります。
+このアーキテクチャでは、各GitLab RailsノードをPuma Webサーバーを使用して実行し、ワーカーの数を利用可能なCPUの90%に設定し、スレッド数を4に設定します。他のコンポーネントとともにRailsを実行するノードの場合、ワーカーの値をそれに応じて減らす必要があります。ワーカーの値が50%でバランスが取れていることを確認しましたが、これはワークロードによって異なります。
 
-各ノードで、次の手順を実行します。
+各ノードで、次の手順を実行します:
 
 1. 利用したいLinuxパッケージを[ダウンロードしてインストール](../../install/package/_index.md#supported-platforms)します。必ずGitLabパッケージリポジトリのみを追加し、選択したオペレーティングシステム用にGitLabをインストールしてください。
-1. `/etc/gitlab/gitlab.rb`を作成または編集し、以下の設定を使用します。ノード間のリンクの一貫性を維持するため、アプリケーションサーバーの`external_url`は、ユーザーがGitLabへのアクセスに使用する外部URLを指す必要があります。これは、GitLabアプリケーションサーバーへのトラフィックをルーティングする[ロードバランサー](#configure-the-external-load-balancer)のURLになります。
+1. `/etc/gitlab/gitlab.rb`を作成または編集し、次の設定を使用します。ノード間のリンクの一貫性を維持するため、アプリケーションサーバーの`external_url`は、ユーザーがGitLabへのアクセスに使用する外部URLを指す必要があります。これは、GitLabアプリケーションサーバーへのトラフィックをルーティングする[ロードバランサー](#configure-the-external-load-balancer)のURLになります:
 
    ```ruby
    external_url 'https://gitlab.example.com'
@@ -713,7 +718,7 @@ Sidekiqサーバーを設定するには、Sidekiqに使用するサーバーノ
    gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
 
    gitlab_rails['ci_secure_files_object_store_enabled'] = true
-   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "gcp-ci_secure_files-bucket-name"
+   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "<gcp-ci_secure_files-bucket-name>"
 
    gitlab_rails['ci_secure_files_object_store_connection'] = {
       'provider' => 'Google',
@@ -737,7 +742,7 @@ Sidekiqサーバーを設定するには、Sidekiqに使用するサーバーノ
    #registry['gid'] = 9002
    ```
 
-1. [TLSサポートでGitaly](#gitaly-tls-support)を使用している場合は、`gitlab_rails['repositories_storages']`エントリが、`tcp`ではなく、`tls`で設定されていることを確認してください。
+1. [TLSサポートでGitaly](#gitaly-tls-support)を使用している場合は、`gitlab_rails['repositories_storages']`エントリが、`tcp`ではなく、`tls`で設定されていることを確認してください:
 
    ```ruby
    gitlab_rails['repositories_storages'] = {
@@ -747,7 +752,7 @@ Sidekiqサーバーを設定するには、Sidekiqに使用するサーバーノ
    }
    ```
 
-   1. 証明書を`/etc/gitlab/trusted-certs`にコピーします。
+   1. 証明書を`/etc/gitlab/trusted-certs`にコピーします:
 
       ```shell
       sudo cp cert.pem /etc/gitlab/trusted-certs/
@@ -755,7 +760,7 @@ Sidekiqサーバーを設定するには、Sidekiqに使用するサーバーノ
 
 1. 最初に設定したLinuxパッケージノードから`/etc/gitlab/gitlab-secrets.json`ファイルをコピーして、このサーバーに追加するか、サーバー上の同じ名前のファイルを置換します。これが最初に設定するLinuxパッケージノードである場合は、この手順を省略できます。
 1. 最初に設定したRailsノードからSSHホストキー（すべて`/etc/ssh/ssh_host_*_key*`という名前形式）をコピーして、このサーバーに追加するか、サーバー上の同じ名前のファイルを置換します。これにより、ユーザーがロードバランシングされたRailsノードにアクセスしたときに、ホストの不一致エラーが発生しなくなります。これが最初に設定するLinuxパッケージノードである場合は、この手順をスキップできます。
-1. データベースの移行が再設定中にのみ実行され、アップグレード時に自動的に実行されないようにするには、以下を実行します。
+1. データベースの移行が再設定中にのみ実行され、アップグレード時に自動的に実行されないようにするには、以下を実行します:
 
    ```shell
    sudo touch /etc/gitlab/skip-auto-reconfigure
@@ -767,7 +772,7 @@ Sidekiqサーバーを設定するには、Sidekiqに使用するサーバーノ
 1. [増分ログの生成を有効にします](#enable-incremental-logging)。
 1. `sudo gitlab-rake gitlab:gitaly:check`を実行して、ノードがGitalyに接続できることを確認します。
 
-1. ログを追跡してリクエストを確認します。
+1. ログを追跡してリクエストを確認します:
 
    ```shell
    sudo gitlab-ctl tail gitaly
@@ -777,7 +782,7 @@ Sidekiqサーバーを設定するには、Sidekiqに使用するサーバーノ
 
 ### GitLab Railsの設定後の手順 {#gitlab-rails-post-configuration}
 
-1. インストールおよび更新中にデータベースの移行を実行するために、1つのアプリケーションノードを指定します。GitLabデータベースを初期化し、すべての移行が実行されたことを確認します。
+1. インストールおよび更新中にデータベースの移行を実行するために、1つのアプリケーションノードを指定します。GitLabデータベースを初期化し、すべての移行が実行されたことを確認します:
 
    ```shell
    sudo gitlab-rake gitlab:db:configure
@@ -793,11 +798,11 @@ Sidekiqサーバーを設定するには、Sidekiqに使用するサーバーノ
 
 ## Prometheusを設定する {#configure-prometheus}
 
-Linuxパッケージを使用して、[Prometheus](../monitoring/prometheus/_index.md)を実行するスタンドアロンのモニタリングノードを設定できます。
+Linuxパッケージを使用して、[Prometheus](../monitoring/prometheus/_index.md)を実行するスタンドアロンのモニタリングノードを設定できます:
 
 1. モニタリングノードにSSHで接続します。
 1. 利用したいLinuxパッケージを[ダウンロードしてインストール](../../install/package/_index.md#supported-platforms)します。必ずGitLabパッケージリポジトリのみを追加し、選択したオペレーティングシステム用にGitLabをインストールしてください。
-1. `/etc/gitlab/gitlab.rb`を編集し、次の内容を追加します。
+1. `/etc/gitlab/gitlab.rb`を編集し、次の内容を追加します:
 
    ```ruby
    roles(['monitoring_role'])
@@ -810,7 +815,7 @@ Linuxパッケージを使用して、[Prometheus](../monitoring/prometheus/_ind
    prometheus['monitor_kubernetes'] = false
    ```
 
-1. Prometheusには、exporterを設定したさまざまなノードからすべてのデータをプルするためのスクレイプ設定も必要です。ノードのIPが以下であると仮定します。
+1. Prometheusには、exporterを設定したさまざまなノードからすべてのデータをプルするためのスクレイプ設定も必要です。ノードのIPが以下であると仮定します:
 
    ```plaintext
    1.1.1.1: postgres
@@ -821,7 +826,7 @@ Linuxパッケージを使用して、[Prometheus](../monitoring/prometheus/_ind
    1.1.1.6: sidekiq
    ```
 
-   次の内容を`/etc/gitlab/gitlab.rb`に追加します。
+   次の内容を`/etc/gitlab/gitlab.rb`に追加します:
 
    ```ruby
    prometheus['scrape_configs'] = [
@@ -887,7 +892,7 @@ Linuxパッケージを使用して、[Prometheus](../monitoring/prometheus/_ind
 
 GitLabは、さまざまな種類のデータを保持するために、[オブジェクトストレージ](../object_storage.md)サービスの使用をサポートしています。オブジェクトストレージは、データオブジェクトに対しては[NFS](../nfs.md)よりも推奨され、通常、パフォーマンス、信頼性、スケーラビリティがはるかに高いため、一般的に大規模なセットアップに適しています。詳細については、[推奨されるクラウドプロバイダーとサービス](_index.md#recommended-cloud-providers-and-services)を参照してください。
 
-GitLabでオブジェクトストレージの設定を指定する方法は2つあります。
+GitLabでオブジェクトストレージの設定を指定する方法は2つあります:
 
 - [統合された形式](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form): サポートされているすべてのオブジェクトタイプで1つの認証情報が共有されます。
 - [ストレージ固有の形式](../object_storage.md#configure-each-object-type-to-define-its-own-storage-connection-storage-specific-form): オブジェクトごとに、個別のオブジェクトストレージの[接続と設定](../object_storage.md#configure-the-connection-settings)を定義します。
@@ -902,7 +907,7 @@ GitLabでは、データタイプごとに個別のバケットを使用する�
 
 ### 増分ログの生成を有効にする {#enable-incremental-logging}
 
-GitLab Runnerは、統合オブジェクトストレージを使用している場合でも、デフォルトでは、Linuxパッケージが`/var/opt/gitlab/gitlab-ci/builds`のディスクに一時的にキャッシュしたジョブログをチャンクで返します。デフォルトの設定では、このディレクトリは、GitLab RailsノードとSidekiqノード上のNFSを介して共有する必要があります。
+GitLab Runnerは、統合オブジェクトストレージを使用している場合でも、デフォルトで、Linuxパッケージが`/var/opt/gitlab/gitlab-ci/builds`のディスクに一時的にキャッシュしたジョブログをチャンクで返します。デフォルトの設定では、このディレクトリは、GitLab RailsノードとSidekiqノード上のNFSを介して共有する必要があります。
 
 NFS経由でジョブログを共有することはサポートされていますが、（NFSノードがデプロイされていない場合に必須となる）[増分ログの生成](../cicd/job_logs.md#incremental-logging)を有効にして、NFSを使用する要件を回避してください。増分ログの生成では、ジョブログの一時的なキャッシュのため、ディスク容量の代わりにRedisを使用します。
 
@@ -925,7 +930,7 @@ Elasticsearchクラスターの設計と要件は、特定のデータによっ�
 
 ## Helmチャートを使用したクラウドネイティブハイブリッドリファレンスアーキテクチャ（代替） {#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative}
 
-別の方法として、特定のGitLabコンポーネントをKubernetesで実行できます。次のサービスがサポートされています。
+別の方法として、特定のGitLabコンポーネントをKubernetesで実行できます。次のサービスがサポートされています:
 
 - GitLab Rails
 - Sidekiq
@@ -940,7 +945,7 @@ Kubernetesとバックエンドコンポーネント間で同期するGitLabシ�
 
 {{< alert type="note" >}}
 
-これは**高度な**設定です。Kubernetesでサービスを実行することは、複雑であることがよく知られています。Kubernetesに関する十分な実務知識と経験がある場合にのみ、**この設定が推奨**されます。このセクションの残りの部分では、このことを前提としています。
+これは**advanced**（高度な）設定です。Kubernetesでサービスを実行することは、複雑であることがよく知られています。Kubernetesに関する十分な実務知識と経験がある場合にのみ、**This setup is only recommended**（この設定が推奨）されます。このセクションの残りの部分では、このことを前提としています。
 
 {{< /alert >}}
 
@@ -948,11 +953,7 @@ Kubernetesとバックエンドコンポーネント間で同期するGitLabシ�
 
 2,000のリファレンスアーキテクチャは、高可用性設定ではありません。HAを実現するには、変更された[3000または60 RPSリファレンスアーキテクチャ](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)に従うことができます。{{< /alert >}}
 
-{{< alert type="warning" >}}
-
-**Gitaly Cluster (Praefect)をKubernetes上で実行することはサポートされていません**。詳細については、[エピック6127](https://gitlab.com/groups/gitlab-org/-/epics/6127)を参照してください。
-
-{{< /alert >}}
+KubernetesでのGitalyの可用性、制限事項、およびデプロイに関する考慮事項については、[KubernetesでのGitaly](../gitaly/kubernetes.md)を参照してください。
 
 ### クラスタートポロジー {#cluster-topology}
 
@@ -971,9 +972,9 @@ Kubernetesとバックエンドコンポーネント間で同期するGitLabシ�
 - [Webservice](#webservice)および[Sidekiq](#sidekiq)のターゲットノードプールの合計は、GitLabコンポーネントに対してのみ提供されます。選択したKubernetesプロバイダーのシステムプロセスには、追加のリソースが必要です。例では、これを考慮に入れています。
 - [サポート用](#supporting)ターゲットノードプールの合計は、通常、GitLabデプロイのサポートに必要ないくつかのリソースに加えて、要件に応じて実施する場合がある追加デプロイに対応するために提供されています。他のノードプールと同様に、選択したKubernetesプロバイダーのシステムプロセスにもリソースが必要です。例では、これを考慮に入れています。
 - 本番環境デプロイでは、ポッドを特定のノードに割り当てる必要はありません。ただし、回復力のあるクラウドアーキテクチャプラクティスに従って、異なる可用性ゾーンに分散された各プールにいくつかのノードを配置することをおすすめします。
-- 効率を高めるためCluster Autoscalerなどのオートスケールを有効にすることをおすすめしますが、継続的なパフォーマンスを確保するために、WebserviceおよびSidekiqポッドの下限を75％程度にすることが推奨されています。
+- 効率を高めるためにCluster Autoscalerなどのオートスケールを有効にすることをおすすめしますが、継続的なパフォーマンスを確保するために、WebserviceおよびSidekiqポッドの下限を75％程度にすることが推奨されています。
 
-次は、Linuxパッケージ（または該当する場合は外部PaaSサービス）を使用して、静的コンピューティング仮想マシンで実行するバックエンドコンポーネントです。
+次は、Linuxパッケージ（または該当する場合は外部PaaSサービス）を使用して、静的コンピューティング仮想マシンで実行するバックエンドコンポーネントです:
 
 | サービス                     | ノード | 設定          | GCPの例<sup>1</sup> | AWSの例<sup>1</sup> |
 |-----------------------------|-------|------------------------|-----------------|-------------|
@@ -982,7 +983,7 @@ Kubernetesとバックエンドコンポーネント間で同期するGitLabシ�
 | Gitaly<sup>5</sup>          | 1     | 4 vCPU、15 GBメモリ   | `n1-standard-4` | `m5.xlarge` |
 | オブジェクトストレージ<sup>4</sup>  | –     | –                      | –               | –           |
 
-**補足説明**:
+**Footnotes**（補足説明）:
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -990,7 +991,7 @@ Kubernetesとバックエンドコンポーネント間で同期するGitLabシ�
 2. 定評のあるサードパーティの外部PaaS PostgreSQLソリューションでオプションで実行できます。詳細については、[独自のPostgreSQLインスタンスを提供する](#provide-your-own-postgresql-instance)と[推奨クラウドプロバイダーとサービス](_index.md#recommended-cloud-providers-and-services)を参照してください。
 3. 定評のあるサードパーティの外部PaaS Redisソリューションでオプションで実行できます。詳細については、[独自のRedisインスタンスを提供する](#provide-your-own-redis-instance)と[推奨クラウドプロバイダーとサービス](_index.md#recommended-cloud-providers-and-services)を参照してください。
 4. 定評のあるクラウドプロバイダーまたはSelf-Managedソリューションで実行する必要があります。詳細については、[オブジェクトストレージを設定する](#configure-the-object-storage)を参照してください。
-5. Gitalyの仕様は、正常な状態の通常サイズのリポジトリの使用に基づいています。ただし、（数ギガバイトを超える）大規模なモノレポがある場合、GitとGitalyのパフォーマンスに**大幅に**影響を与えることがあり、仕様の引き上げが必要になる可能性があります。詳細については、[大規模なモノレポ](_index.md#large-monorepos)を参照してください。
+5. Gitalyの仕様は、正常な状態の通常サイズのリポジトリの使用に基づいています。ただし、（数ギガバイトを超える）大規模なモノレポがある場合、GitとGitalyのパフォーマンスに**significantly**（大幅に）影響を与えることがあり、仕様の引き上げが必要になる可能性があります。詳細については、[大規模なモノレポ](_index.md#large-monorepos)を参照してください。
 <!-- markdownlint-enable MD029 -->
 
 {{< alert type="note" >}}
@@ -1040,7 +1041,7 @@ sidekiq -[#ff8dd1]--> redis
 
 #### Webservice {#webservice}
 
-各Webserviceポッド（PumaおよびWorkhorse）は、次の設定で実行することをおすすめします。
+各Webserviceポッド（PumaおよびWorkhorse）は、次の設定で実行することをおすすめします:
 
 - 4 Pumaワーカー
 - 4 vCPU
@@ -1059,7 +1060,7 @@ NGINXコントローラーポッドをWebserviceノード全体にDaemonSetと�
 
 #### Sidekiq {#sidekiq}
 
-各Sidekiqポッドは、次の設定で実行することをおすすめします。
+各Sidekiqポッドは、次の設定で実行することをおすすめします:
 
 - 1 Sidekiqワーカー
 - 900m vCPU

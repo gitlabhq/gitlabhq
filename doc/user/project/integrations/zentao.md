@@ -27,7 +27,7 @@ This integration requires a ZenTao API secret key.
 
 Complete these steps in ZenTao:
 
-1. Go to your **Admin** page and select **Develop > Application**.
+1. Go to your **Admin** page and select **Develop** > **Application**.
 1. Select **Add Application**.
 1. Under **Name** and **Code**, enter a name and a code for the new secret key.
 1. Under **Account**, select an existing account name.

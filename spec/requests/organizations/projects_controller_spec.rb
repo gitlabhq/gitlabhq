@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::ProjectsController, feature_category: :organization do
-  let_it_be(:organization) { create(:organization) }
+  let_it_be(:organization) { create(:common_organization) }
   let_it_be(:project) { create(:project, organization: organization) }
 
   describe 'GET #edit' do

@@ -151,6 +151,7 @@ export default {
     emptyStateDescription() {
       return this.hasFilters ? NO_TAGS_MATCHING_FILTERS_DESCRIPTION : NO_TAGS_MESSAGE;
     },
+    // eslint-disable-next-line vue/no-unused-properties -- tracking() is required by Tracking mixin.
     tracking() {
       return {
         label:

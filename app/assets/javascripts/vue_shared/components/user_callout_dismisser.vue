@@ -1,6 +1,7 @@
 <script>
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import getUserCalloutsQuery from '~/graphql_shared/queries/get_user_callouts.query.graphql';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 /**
  * A renderless component for querying/dismissing UserCallouts via GraphQL.
@@ -37,29 +38,13 @@ import getUserCalloutsQuery from '~/graphql_shared/queries/get_user_callouts.que
  *       </template>
  *     </user-callout-dismisser>
  *
- * The component exposes various scoped slot props on the default slot,
- * allowing for granular rendering behaviors based on the state of the initial
- * query and user-initiated mutation:
+ *  The component exposes scoped slot props on the default slot:
  *
  *  - dismiss: Function
- *    - Triggers mutation to dismiss the user callout.
- *  - isAnonUser: boolean
- *    - Whether the current user is anonymous or not (i.e., whether or not
- *      they're logged in).
- *  - isDismissed: boolean
- *    - Whether the given user callout has been dismissed or not.
- *  - isLoadingMutation: boolean
- *    - Whether the mutation is loading.
- *  - isLoadingQuery: boolean
- *    - Whether the initial query is loading.
- *  - mutationError: string[] | null
- *    - The mutation's errors, if any; otherwise `null`.
- *  - queryError: Error | null
- *    - The query's error, if any; otherwise `null`.
+ *    - Triggers a mutation to dismiss the user callout.
  *  - shouldShowCallout: boolean
- *    - A combination of the above which should cover 95% of use cases: `true`
- *      if the query has loaded without error, and the user is logged in, and
- *      the callout has not been dismissed yet; `false` otherwise
+ *    - `true` if the query has loaded without error, the user is logged in,
+ *      and the callout has not been dismissed yet; `false` otherwise.
  *
  * The component emits a `queryResult` event when the GraphQL query
  * completes. The payload is a combination of the ApolloQueryResult object and
@@ -67,7 +52,7 @@ import getUserCalloutsQuery from '~/graphql_shared/queries/get_user_callouts.que
  * like cleaning up/unmounting the component if the callout shouldn't be
  * displayed.
  */
-export default {
+export default normalizeRender({
   name: 'UserCalloutDismisser',
   props: {
     featureName: {
@@ -84,8 +69,6 @@ export default {
     return {
       currentUser: null,
       isDismissedLocal: false,
-      isLoadingMutation: false,
-      mutationError: null,
       queryError: null,
     };
   },
@@ -125,25 +108,10 @@ export default {
       return this.isDismissedLocal || this.isDismissedRemote;
     },
     slotProps() {
-      const {
-        dismiss,
-        isAnonUser,
-        isDismissed,
-        isLoadingMutation,
-        isLoadingQuery,
-        mutationError,
-        queryError,
-        shouldShowCallout,
-      } = this;
+      const { dismiss, shouldShowCallout } = this;
 
       return {
         dismiss,
-        isAnonUser,
-        isDismissed,
-        isLoadingMutation,
-        isLoadingQuery,
-        mutationError,
-        queryError,
         shouldShowCallout,
       };
     },
@@ -153,35 +121,26 @@ export default {
   },
   methods: {
     async dismiss() {
-      this.isLoadingMutation = true;
       this.isDismissedLocal = true;
 
-      try {
-        const { data } = await this.$apollo.mutate({
-          mutation: dismissUserCalloutMutation,
-          variables: {
-            input: {
-              featureName: this.featureName,
-            },
+      const mutationOptions = {
+        mutation: dismissUserCalloutMutation,
+        variables: {
+          input: {
+            featureName: this.featureName,
           },
-        });
+        },
+      };
 
-        const errors = data?.userCalloutCreate?.errors ?? [];
-        if (errors.length > 0) {
-          this.onDismissalError(errors);
-        }
-      } catch (err) {
-        this.onDismissalError([err.message]);
-      } finally {
-        this.isLoadingMutation = false;
+      if (!this.skipQuery) {
+        mutationOptions.refetchQueries = [{ query: getUserCalloutsQuery }];
       }
-    },
-    onDismissalError(errors) {
-      this.mutationError = errors;
+
+      await this.$apollo.mutate(mutationOptions);
     },
   },
   render() {
     return this.$scopedSlots.default(this.slotProps);
   },
-};
+});
 </script>

@@ -6,15 +6,8 @@ description: Learn how to use and administer GitLab, the most scalable Git-based
 title: GitLab Docs
 ---
 
-<!-- markdownlint-disable MD041 MD044-->
-
-<div class="d-none">
-  <h3>Visit <a href="https://docs.gitlab.com/ee/">docs.gitlab.com</a> for the latest version
-  of this help information with enhanced navigation, formatting, and search.</h3>
-</div>
-<!-- the div tag will not display on the docs site but will display on /help -->
-
-<!-- markdownlint-enable MD044 -->
+Visit <https://docs.gitlab.com> for the latest version of this help information with enhanced navigation,
+formatting, and search.
 
 Explore the different areas of the documentation:
 
@@ -56,10 +49,10 @@ Learn about GitLab account management:
 
 If you are coming to GitLab from another platform:
 
-| Topic                                                                                  | Description |
-|:---------------------------------------------------------------------------------------|:------------|
-| [Import to GitLab](user/project/import/_index.md)                                       | Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz, and SVN into GitLab. |
-| [Migrate from SVN](user/project/import/_index.md#import-repositories-from-subversion)   | Convert a SVN repository to Git and GitLab. |
+| Topic                                                             | Description |
+|:------------------------------------------------------------------|:------------|
+| [Import and migrate to GitLab](user/import/_index.md)             | Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz, and SVN into GitLab. |
+| [Migrate from SVN](user/import/_index.md#migrate-from-subversion) | Convert a SVN repository to Git and GitLab. |
 
 ## Build an integration with GitLab
 

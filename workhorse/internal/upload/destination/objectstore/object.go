@@ -53,8 +53,15 @@ func newObject(putURL, deleteURL string, putHeaders map[string]string, size int6
 
 // Upload uploads the content of the object using the provided reader.
 func (o *Object) Upload(ctx context.Context, r io.Reader) error {
-	// we should prevent pr.Close() otherwise it may shadow error set with pr.CloseWithError(err)
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, o.putURL, io.NopCloser(r))
+	var body io.Reader
+
+	if o.size == 0 {
+		body = http.NoBody
+	} else {
+		body = r
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPut, o.putURL, body)
 
 	if err != nil {
 		return fmt.Errorf("PUT %q: %v", mask.URL(o.putURL), err)

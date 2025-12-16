@@ -73,12 +73,12 @@ export default {
       const { fetchLabels } = issueBoardFilters(this.$apollo, this.fullPath, this.isGroupBoard);
 
       const typeOptions = [
-        { icon: 'issue-type-issue', value: types.ISSUE, title: issue },
-        { icon: 'issue-type-incident', value: types.INCIDENT, title: incident },
+        { icon: 'work-item-issue', value: types.ISSUE, title: issue },
+        { icon: 'work-item-incident', value: types.INCIDENT, title: incident },
       ];
 
       if (this.glFeatures.workItemTasksOnBoards) {
-        typeOptions.push({ icon: 'issue-type-task', value: types.TASK, title: task });
+        typeOptions.push({ icon: 'work-item-task', value: types.TASK, title: task });
       }
 
       const tokens = [
@@ -168,7 +168,7 @@ export default {
           fullPath: this.fullPath,
         },
         {
-          icon: 'issue-type-issue',
+          icon: 'work-item-issue',
           title: TOKEN_TITLE_TYPE,
           type: TOKEN_TYPE_TYPE,
           token: GlFilteredSearchToken,

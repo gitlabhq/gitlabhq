@@ -3,6 +3,8 @@ data_category: operational
 key_path: counts.source_code_pushes
 description: Count of total Git push operations
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: all

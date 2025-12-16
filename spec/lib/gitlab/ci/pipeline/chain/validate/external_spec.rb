@@ -97,6 +97,22 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
       perform!
     end
 
+    context 'when the FF ci_refactor_jobs_count_in_alive_pipelines is disabled' do
+      before do
+        stub_feature_flags(ci_refactor_jobs_count_in_alive_pipelines: false)
+      end
+
+      it 'respects the defined payload schema' do
+        expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
+          expect(params[:body]).to match_schema('/external_validation')
+          expect(params[:timeout]).to eq(described_class::DEFAULT_VALIDATION_REQUEST_TIMEOUT)
+          expect(params[:headers]).to eq({ 'X-Gitlab-Correlation-id' => 'correlation-id' })
+        end
+
+        perform!
+      end
+    end
+
     context 'with EXTERNAL_VALIDATION_SERVICE_TIMEOUT defined' do
       before do
         stub_env('EXTERNAL_VALIDATION_SERVICE_TIMEOUT', validation_service_timeout)

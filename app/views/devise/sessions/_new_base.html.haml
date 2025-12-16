@@ -25,7 +25,12 @@
 
     - if remember_me_enabled?
       .gl-mb-3
-        = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { autocomplete: 'off' }
+        = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { autocomplete: 'off', class: 'js-remember-me-passkey' }
 
     = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { class: 'js-sign-in-button', data: { testid: 'sign-in-button' } }) do
       = _('Sign in')
+
+  - if Feature.enabled?(:passkeys, :instance)
+    = render Pajamas::ButtonComponent.new(href: users_passkeys_sign_in_path, method: :post, form: true, block: true, icon: 'passkey', button_options: { class: 'gl-mt-3', data: {testid: 'passkey-login-button' }}) do
+      = hidden_field_tag :remember_me, '0', id: 'js-remember-me-passkey-hidden-field'
+      = s_('PasskeyAuthentication|Passkey')

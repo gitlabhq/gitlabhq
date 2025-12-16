@@ -329,28 +329,11 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
       end
     end
 
-    context 'when current_user is admin but has dismissed the callout' do
+    context 'when current_user is admin' do
       let(:current_user) { admin }
 
       before do
         allow(admin).to receive(:can_admin_all_resources?).and_return(true)
-        allow(helper).to receive(:user_dismissed?)
-          .with(described_class::PRODUCT_USAGE_DATA_COLLECTION_CHANGES).and_return(true)
-      end
-
-      it 'does not render the callout' do
-        expect(helper).not_to receive(:render)
-        render_callout
-      end
-    end
-
-    context 'when current_user is admin and has not dismissed the callout' do
-      let(:current_user) { admin }
-
-      before do
-        allow(admin).to receive(:can_admin_all_resources?).and_return(true)
-        allow(helper).to receive(:user_dismissed?)
-          .with(described_class::PRODUCT_USAGE_DATA_COLLECTION_CHANGES).and_return(false)
       end
 
       it 'renders the callout' do
@@ -363,7 +346,7 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
   describe '#show_email_otp_enrollment_callout?' do
     subject { helper.show_email_otp_enrollment_callout? }
 
-    let(:email_otp_required_after) { 31.days.from_now }
+    let(:email_otp_required_after) { 8.days.from_now }
 
     before do
       user.update!(email_otp_required_after: email_otp_required_after)

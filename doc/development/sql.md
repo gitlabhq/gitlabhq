@@ -243,10 +243,10 @@ which will make PostgreSQL pluck the values into an internal array.
 Some pluck-related mistakes that you should avoid:
 
 - Passing too many integers into a query. While not explicitly limited, PostgreSQL has a
-practical arity limit of a couple thousand IDs. We don't want to run up against this limit.
+  practical arity limit of a couple thousand IDs. We don't want to run up against this limit.
 - Generating gigantic query text that can cause problems for our logging infrastructure.
 - Accidentally scanning an entire table. For example, this executes an
-extra unnecessary database query and load a lot of unnecessary data into memory:
+  extra unnecessary database query and load a lot of unnecessary data into memory:
 
 ```ruby
 projects = Project.all.pluck(:id)

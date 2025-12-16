@@ -46,7 +46,13 @@ module Gitlab
 
         def uses_keyword?(keyword)
           jobs.values.any? do |job|
-            job[keyword].present?
+            job.key?(keyword)
+          end
+        end
+
+        def uses_nested_keyword?(path)
+          jobs.values.any? do |job|
+            has_nested_key?(job, *path)
           end
         end
 
@@ -80,6 +86,18 @@ module Gitlab
         end
 
         private
+
+        def has_nested_key?(hash, *keys)
+          current = hash
+
+          keys.each do |key|
+            return false unless current.is_a?(Hash) && current.key?(key)
+
+            current = current[key]
+          end
+
+          true
+        end
 
         def assign_valid_attributes
           @root_variables = transform_to_array(@ci_config.variables_with_data)

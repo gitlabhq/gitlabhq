@@ -64,7 +64,7 @@ You might have to import projects from external sources like GitHub, Bitbucket, 
 
 - Review the [GitLab projects documentation](../user/project/_index.md).
 - Consider [Repository Mirroring](../user/project/repository/mirror/_index.md), an [alternative to project migrations](../ci/ci_cd_for_external_repos/_index.md).
-- Check out our [migration index](../user/project/import/_index.md) for documentation on common migration paths.
+- Check out [import and migrate to GitLab](../user/import/_index.md) for documentation on common migration paths.
 - Schedule your project exports with our [import/export API](../api/project_import_export.md#schedule-an-export).
 
 ### Popular project imports

@@ -1,0 +1,17 @@
+---
+description: Retrying a job with user-provided input values that differ from defaults
+internal_events: true
+action: retry_job_with_new_input_values
+identifiers:
+- project
+- namespace
+- user
+product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
+milestone: '18.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213894
+tiers:
+- free
+- premium
+- ultimate

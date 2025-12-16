@@ -111,6 +111,38 @@ Some routes are not currently available under the organization scope:
 - **Devise OmniAuth callbacks** - Devise does not support scoping OmniAuth callbacks under a dynamic segment, so these remain at the global level
 - **API routes** - API endpoints are not yet organization-scoped
 
+## Organization URL helpers
+
+Organization URL helpers automatically switch between organization-scoped routes (`/o/:organization_path/...`) and global routes based on the current organization context. This allows you to use standard Rails URL helpers like `projects_path` throughout your code, and they automatically generate the correct URL based on whether an organization context is present.
+
+### How it works
+
+The organization URL helper system is implemented in [`Routing::OrganizationsHelper::MappedHelpers`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/helpers/routing/organizations_helper.rb). When routes are loaded, the system:
+
+1. Scans all routes to find organization-scoped routes (those containing `/o/:organization_path`)
+1. Builds a mapping between global route names and organization route names
+1. Overrides standard Rails URL helpers (like `projects_path`, `groups_url`, etc.) to be organization-aware
+1. When `Current.organization` is present and the organization has scoped paths enabled, the helpers automatically use the organization-scoped version of the route
+1. Preserves the original `root_path` and `root_url` as `unscoped_root_path` and `unscoped_root_url`
+
+### Usage
+
+Use standard global route helpers and let the system automatically switch to organization-scoped routes when appropriate:
+
+```ruby
+# Recommended: Use global route helpers
+projects_path                    # Automatically becomes /o/my-org/projects if Current.organization is set
+project_issues_path(@project)    # Automatically becomes /o/my-org/namespace/project/-/issues
+```
+
+Use explicit organization helpers only when you need to generate a URL for a specific organization that differs from `Current.organization`, or when working outside the request layer (services, workers, Rake tasks) where `Current.organization` is not available:
+
+```ruby
+# Explicit organization helpers
+organization_projects_path(organization_path: 'my-org')           # /o/my-org/projects
+organization_project_issues_path(@project, organization_path: 'my-org')  # /o/my-org/namespace/project/-/issues
+```
+
 ## Organizations & cells
 
 For the [Cells](../cells) project, GitLab will rely on organizations. A cell will host one or more organizations. When a request is made, the [HTTP Router Service](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/http_routing_service/) will route it to the correct cell.
@@ -275,7 +307,7 @@ For more information about development with organizations, see [Organization](..
 
 See the following [guidance](sharding/_index.md).
 
-#### Define a `desired_sharding_key` to automatically backfill a `sharding_key`
+#### Define a `desired_sharding_key` to backfill a `sharding_key`
 
 We need to backfill a `sharding_key` to hundreds of tables that do not have one.
 This process will involve creating a merge request like
@@ -286,8 +318,8 @@ constraints.
 
 In order to minimize the amount of repetitive effort for developers we've
 introduced a concise declarative way to describe how to backfill the
-`sharding_key` for this specific table. This content will later be used in
-automation to create all the necessary merge requests.
+`sharding_key` for this specific table. With the help of [`gitlab-housekeeper`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper) you can
+create the MRs with the desired changes rather than manually doing it.
 
 An example of the `desired_sharding_key` was added in
 <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139336> and it looks like:
@@ -314,11 +346,10 @@ desired_sharding_key:
 
 To understand best how this YAML data will be used you can map it onto
 the merge request we created manually in GraphQL
-<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136800>. The idea
-will be to automatically create this. The content of the YAML specifies
+<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136800>. The content of the YAML specifies
 the parent table and its `sharding_key` to backfill from in the batched
 background migration. It also specifies a `belongs_to` relation which
-will be added to the model to automatically populate the `sharding_key` in
+will be added to the model to populate the `sharding_key` in
 the `before_save`.
 
 ##### Define a `desired_sharding_key` when the parent table also has one

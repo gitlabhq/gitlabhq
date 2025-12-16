@@ -20,7 +20,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
 
   before do
     stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
-    stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_planning_view: false, okrs_mvc: false, service_desk_ticket: false)
 
     sign_in(current_user)
   end

@@ -12,6 +12,7 @@ import { InternalEvents } from '~/tracking';
 import {
   EVENT_USER_CLICKS_LINK_ON_ACTIVITY_FEED,
   TRACKING_SCOPE_YOUR_ACTIVITY,
+  TRACKING_SCOPE_YOUR_PROJECTS,
   TRACKING_SCOPE_STARRED_PROJECTS,
   TRACKING_SCOPE_FOLLOWED_USERS,
 } from '~/homepage/tracking_constants';
@@ -150,6 +151,12 @@ describe('ActivityWidget', () => {
         description: 'Your contributions, like commits and work on issues and merge requests.',
       },
       {
+        text: 'Your projects',
+        value: 'your_projects',
+        scope: 'Your projects',
+        description: 'Activity in projects you own or are a member of.',
+      },
+      {
         text: 'Starred projects',
         value: 'starred',
         scope: 'Starred projects',
@@ -162,6 +169,24 @@ describe('ActivityWidget', () => {
         description: 'Activity from users you follow.',
       },
     ]);
+  });
+
+  it("fetches the your projects' activity feed", async () => {
+    mockAxios.onGet('*').reply(200, {
+      html: '',
+    });
+    createWrapper();
+    await waitForPromises();
+
+    expect(mockAxios.history.get).toHaveLength(1);
+
+    findActivityFeedSelector().vm.$emit('select', 'your_projects');
+    await waitForPromises();
+
+    expect(mockAxios.history.get).toHaveLength(2);
+    expect(mockAxios.history.get[1].url).toBe(
+      '/dashboard/activity?limit=5&offset=0&filter=your_projects',
+    );
   });
 
   it("fetches the starred projects' activity feed", async () => {
@@ -329,6 +354,39 @@ describe('ActivityWidget', () => {
       );
     });
 
+    it('tracks event when clicking on a link with "Your projects" filter', async () => {
+      mockAxios.reset();
+
+      mockAxios
+        .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
+        .reply(200, {
+          html: '<li><a href="/project/1">Project Link</a></li>',
+        });
+      mockAxios.onGet('/dashboard/activity?limit=5&offset=0&filter=your_projects').reply(200, {
+        html: '<li><a href="/project/1">Project Link</a></li>',
+      });
+
+      createWrapper();
+      await waitForPromises();
+
+      findActivityFeedSelector().vm.$emit('select', 'your_projects');
+      await waitForPromises();
+
+      const projectLink = wrapper.findByText('Project Link');
+      expect(projectLink.exists()).toBe(true);
+
+      projectLink.element.addEventListener('click', (e) => e.preventDefault());
+      await projectLink.trigger('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_USER_CLICKS_LINK_ON_ACTIVITY_FEED,
+        {
+          label: TRACKING_SCOPE_YOUR_PROJECTS,
+        },
+        undefined,
+      );
+    });
+
     it('tracks event when clicking on a link with "Starred projects" filter', async () => {
       mockAxios
         .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
@@ -440,6 +498,7 @@ describe('ActivityWidget', () => {
     it('imports and uses correct tracking constants', () => {
       expect(EVENT_USER_CLICKS_LINK_ON_ACTIVITY_FEED).toBe('user_clicks_link_in_activity_feed');
       expect(TRACKING_SCOPE_YOUR_ACTIVITY).toBe('Your activity');
+      expect(TRACKING_SCOPE_YOUR_PROJECTS).toBe('Your projects');
       expect(TRACKING_SCOPE_STARRED_PROJECTS).toBe('Starred projects');
       expect(TRACKING_SCOPE_FOLLOWED_USERS).toBe('Followed users');
     });
@@ -449,8 +508,9 @@ describe('ActivityWidget', () => {
       const filterOptions = findActivityFeedSelector().props('items');
 
       expect(filterOptions[0].scope).toBe(TRACKING_SCOPE_YOUR_ACTIVITY);
-      expect(filterOptions[1].scope).toBe(TRACKING_SCOPE_STARRED_PROJECTS);
-      expect(filterOptions[2].scope).toBe(TRACKING_SCOPE_FOLLOWED_USERS);
+      expect(filterOptions[1].scope).toBe(TRACKING_SCOPE_YOUR_PROJECTS);
+      expect(filterOptions[2].scope).toBe(TRACKING_SCOPE_STARRED_PROJECTS);
+      expect(filterOptions[3].scope).toBe(TRACKING_SCOPE_FOLLOWED_USERS);
     });
   });
 

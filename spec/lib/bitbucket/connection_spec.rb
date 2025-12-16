@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Bitbucket::Connection, feature_category: :integrations do
   subject(:bitbucket_connection) { described_class.new(options) }

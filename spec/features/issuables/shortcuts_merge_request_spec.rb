@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Blob shortcuts', :js, feature_category: :team_planning do
+RSpec.describe 'Merge request shortcuts', :js, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }

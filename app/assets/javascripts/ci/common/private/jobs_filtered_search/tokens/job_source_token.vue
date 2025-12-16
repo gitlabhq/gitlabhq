@@ -3,6 +3,7 @@ import { GlFilteredSearchToken, GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { JOB_SOURCES } from 'ee_else_ce/ci/common/private/jobs_filtered_search/tokens/constants';
 
 export default {
+  name: 'JobSourceToken',
   JOB_SOURCES,
   components: {
     GlFilteredSearchToken,

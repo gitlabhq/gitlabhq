@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
   let_it_be_with_reload(:user) { create(:user, :with_namespace) }
+  let(:error_message) { { message: _('You must provide a valid current password.') } }
 
   before do
     sign_in(user)
@@ -12,22 +13,10 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
   end
 
   shared_examples 'user must enter a valid current password' do
-    let(:error_message) { { message: _('You must provide a valid current password.') } }
-
-    it 'shows an error message' do
-      bad
-
-      error = assigns[:error] || assigns[:webauthn_error]
-
-      expect(error).to eq(error_message)
-    end
-
     it "validates password attempts" do
       expect { bad }.to change { user.failed_attempts }.from(0).to(1)
       expect { go }.not_to change { user.failed_attempts }
     end
-
-    it_behaves_like 'prepares the .setup_passkey_registration_page'
 
     context 'when user authenticates with an external service' do
       before do
@@ -128,6 +117,16 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
     end
   end
 
+  shared_examples 'tracks a passkey interval event' do
+    it 'calls the interval event' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:track_passkey_internal_event)
+      end
+
+      go
+    end
+  end
+
   context 'when passkeys flag is off' do
     before do
       stub_feature_flags(passkeys: false)
@@ -171,6 +170,7 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
       end
 
       it_behaves_like 'successfully loads the page'
+      it_behaves_like 'tracks a passkey interval event'
     end
 
     describe 'POST create' do
@@ -227,6 +227,16 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
 
       it_behaves_like 'user must enter a valid current password'
 
+      context 'when wrong password is entered' do
+        it 'shows an error message' do
+          bad
+
+          expect(assigns[:webauthn_error]).to eq(error_message)
+        end
+
+        it_behaves_like 'prepares the .setup_passkey_registration_page'
+      end
+
       context "when valid password is given" do
         context "when registration succeeds" do
           it "registers and redirects back to the 2FA profile page" do
@@ -239,6 +249,18 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
             expect(flash[:notice]).to match(
               /Passkey added successfully! Next time you sign in, select the sign-in with passkey option./
             )
+          end
+
+          context 'with an interval event' do
+            before do
+              allow_next_instance_of(Authn::Passkey::RegisterService) do |instance|
+                allow(instance).to receive(:execute).and_return(
+                  ServiceResponse.success(message: _('Passkey successfully registered.'), payload: user)
+                )
+              end
+            end
+
+            it_behaves_like 'tracks a passkey interval event'
           end
         end
 
@@ -255,6 +277,18 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
               expect(response).to redirect_to(profile_two_factor_auth_path)
               expect(flash[:alert]).to be_present
             end
+          end
+
+          context 'with an interval event' do
+            before do
+              allow_next_instance_of(Authn::Passkey::RegisterService) do |instance|
+                allow(instance).to receive(:execute).and_return(
+                  ServiceResponse.error(message: _('Passkey registration failed.'))
+                )
+              end
+            end
+
+            it_behaves_like 'tracks a passkey interval event'
           end
         end
       end
@@ -278,8 +312,29 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
 
       it_behaves_like 'user must enter a valid current password'
 
+      context 'when wrong password is entered' do
+        it 'redirects back to the 2FA profile page with an alert' do
+          bad
+
+          expect(response).to redirect_to(profile_two_factor_auth_path)
+          expect(flash[:alert]).to eq(error_message[:message])
+        end
+      end
+
       context "when a valid password is given" do
         context 'when authentication succeeds' do
+          it 'destroys the passkey' do
+            expect { go }.to change { user.passkeys.count }.by(-1)
+          end
+
+          it 'invalidates all but the current_user ActiveSession' do
+            expect_next_instance_of(described_class) do |instance|
+              expect(instance).to receive(:destroy_all_but_current_user_session!)
+            end
+
+            go
+          end
+
           it "redirects back to the 2FA profile page with a backend service notice" do
             go
 
@@ -287,14 +342,6 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
             expect(flash[:notice]).to match(
               /Passkey has been deleted!/
             )
-          end
-
-          it 'destroys the passkey' do
-            count = user.passkeys.count
-
-            go
-
-            expect(user.passkeys.count).to eq(count - 1)
           end
         end
 

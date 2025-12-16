@@ -1,9 +1,8 @@
 ---
 table_name: p_knowledge_graph_tasks
-classes:
-  - Ai::KnowledgeGraph::Task
+classes: []
 feature_categories:
-  - code_suggestions
+- code_suggestions
 description: Represents a knowledge graph task for a project namespace
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192114
 milestone: '18.1'

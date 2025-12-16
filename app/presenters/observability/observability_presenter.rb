@@ -59,12 +59,13 @@ module Observability
       auth_tokens&.dig('status') == :provisioning
     end
 
-    private
-
-    attr_reader :group, :path
-
     def observability_setting
       @observability_setting ||= @group.observability_group_o11y_setting
     end
+    strong_memoize_attr :observability_setting
+
+    private
+
+    attr_reader :group, :path
   end
 end

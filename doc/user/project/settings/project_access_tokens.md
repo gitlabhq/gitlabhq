@@ -83,7 +83,7 @@ The ability to create project access tokens without an expiry date was [deprecat
 
 To create a project access token:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Access tokens**.
 1. Select **Add new token**.
 1. In **Token name**, enter a name. The token name is visible to any user with permissions to view the project.
@@ -123,7 +123,7 @@ The inactive project access tokens table displays revoked and expired tokens unt
 
 To revoke or rotate a project access token:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Access tokens**.
 1. For the relevant token, select **Revoke** ({{< icon name="remove" >}}) or **Rotate** ({{< icon name="retry" >}}).
 1. On the confirmation dialog, select **Revoke** or **Rotate**.
@@ -164,7 +164,7 @@ See the warning in [create a project access token](#create-a-project-access-toke
 
 To limit potential abuse, you can restrict users from creating tokens for a group hierarchy. This setting is only configurable for a top-level group and applies to every downstream project and subgroup. Any existing project access tokens remain valid until their expiration date or until manually revoked.
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
@@ -239,7 +239,7 @@ Bot users for projects are [GitLab-created non-billable users](../../../subscrip
 Each time you create a project access token, a bot user is created and added to the project.
 This user is not a billable user, so it does not count toward the license limit.
 
-The bot users for projects have [permissions](../../permissions.md#project-members-permissions) that correspond with the
+The bot users for projects have [permissions](../../permissions.md#project-permissions) that correspond with the
 selected role and [scope](#scopes-for-a-project-access-token) of the project access token.
 
 - The name is set to the name of the token.
@@ -258,7 +258,13 @@ Bot users for projects:
 When the project access token is [revoked](#revoke-or-rotate-a-project-access-token):
 
 - The bot user is retained as per [inactive token retention setting](#inactive-token-retention).
-- After 30 days the bot user is deleted. All records are moved to a system-wide user with the username [Ghost User](../../profile/account/delete_account.md#associated-records).
+- The bot user is deleted 30 days after the token expiration date. This applies even if the token is revoked before the expiration date. After deletion, all existing user records are associated to a system-wide [ghost user](../../profile/account/delete_account.md#associated-records).
+
+{{< alert type="note" >}}
+
+The original expiration date of the token always defines when the bot user is deleted. For example, if a token is revoked on April 5 but expires on April 20, the bot user will be deleted around May 20 (30 days after the expiration date).
+
+{{< /alert >}}
 
 For more information, see [bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups).
 
@@ -268,7 +274,7 @@ By default, GitLab deletes group and project access tokens and their [token fami
 
 To modify the retention period for inactive tokens:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Account and limit**.
 1. In the **Inactive project and group access token retention period** text box, modify the retention period.

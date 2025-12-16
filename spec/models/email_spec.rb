@@ -5,6 +5,12 @@ require 'spec_helper'
 RSpec.describe Email do
   let_it_be(:user) { create(:user) }
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::USER,
+    subject_key: :user_id,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_EMAILS,
+    claiming_attributes: [:email]
+
   describe 'modules' do
     subject { described_class }
 

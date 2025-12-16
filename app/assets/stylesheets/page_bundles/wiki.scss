@@ -218,7 +218,7 @@
 }
 
 .layout-fluid .wiki-page-details {
-  max-width: 100%;
+  max-width: $wiki-content-max-width;
 }
 
 ul.wiki-pages-list.content-list {
@@ -276,6 +276,11 @@ ul.wiki-pages-list.content-list {
   }
 }
 
+/** Remove the below when the vue-wiki-sidebar FF is removed */
+.blocks-container:has(.wiki-list.collapsed) {
+  flex-grow: 0;
+}
+
 .drawio-editor {
   position: fixed;
   top: 0;
@@ -293,8 +298,12 @@ ul.wiki-pages-list.content-list {
     display: none;
   }
 
+  .wiki-sidebar {
+    display: none;
+  }
+
   .content-wrapper {
-    padding: 0 !important;
+    padding: 0;
   }
 
   .container-limited.limit-container-width {

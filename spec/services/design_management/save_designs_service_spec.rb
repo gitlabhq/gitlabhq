@@ -459,6 +459,99 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
           expect { run_service(two) }.not_to exceed_query_limit(baseline)
         end
       end
+
+      context 'with work item tracking' do
+        let(:current_user) { user }
+
+        def execute_service
+          run_service
+        end
+
+        context 'when by_action is nil' do
+          it 'does not raise an error' do
+            service = described_class.new(project, user, issue: issue, files: files)
+            expect(Gitlab::WorkItems::Instrumentation::TrackingService).not_to receive(:new)
+
+            expect { service.send(:track_design_actions, nil) }.not_to raise_error
+          end
+        end
+
+        context 'when action type is not tracked' do
+          it 'skips tracking for unknown actions' do
+            design = instance_double(DesignManagement::Design)
+            service = described_class.new(project, user, issue: issue, files: files)
+            by_action = { delete: [design] }
+
+            expect(Gitlab::WorkItems::Instrumentation::TrackingService).not_to receive(:new)
+
+            service.send(:track_design_actions, by_action)
+          end
+        end
+
+        context 'when creating a design' do
+          it_behaves_like 'tracks work item event', :issue, :current_user,
+            Gitlab::WorkItems::Instrumentation::EventActions::DESIGN_CREATE,
+            :execute_service
+        end
+
+        context 'when creating multiple designs' do
+          let(:files) { [rails_sample, dk_png] }
+
+          it 'tracks event for each design' do
+            tracking_service = instance_double(Gitlab::WorkItems::Instrumentation::TrackingService)
+
+            expect(Gitlab::WorkItems::Instrumentation::TrackingService).to receive(:new).twice.with(
+              work_item: issue,
+              current_user: user,
+              event: Gitlab::WorkItems::Instrumentation::EventActions::DESIGN_CREATE
+            ).and_return(tracking_service)
+
+            expect(tracking_service).to receive(:execute).twice
+
+            execute_service
+          end
+        end
+
+        context 'when updating a design' do
+          before do
+            run_service
+            touch_files
+          end
+
+          it_behaves_like 'tracks work item event', :issue, :current_user,
+            Gitlab::WorkItems::Instrumentation::EventActions::DESIGN_UPDATE,
+            :execute_service
+        end
+
+        context 'when mixing creates and updates' do
+          let(:files) { [rails_sample, dk_png] }
+
+          before do
+            run_service([files.first])
+            touch_files([files.first])
+          end
+
+          it 'tracks both create and update events' do
+            tracking_service = instance_double(Gitlab::WorkItems::Instrumentation::TrackingService)
+
+            expect(Gitlab::WorkItems::Instrumentation::TrackingService).to receive(:new).with(
+              work_item: issue,
+              current_user: user,
+              event: Gitlab::WorkItems::Instrumentation::EventActions::DESIGN_UPDATE
+            ).and_return(tracking_service)
+
+            expect(Gitlab::WorkItems::Instrumentation::TrackingService).to receive(:new).with(
+              work_item: issue,
+              current_user: user,
+              event: Gitlab::WorkItems::Instrumentation::EventActions::DESIGN_CREATE
+            ).and_return(tracking_service)
+
+            expect(tracking_service).to receive(:execute).twice
+
+            execute_service
+          end
+        end
+      end
     end
   end
 end

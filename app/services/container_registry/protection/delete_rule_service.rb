@@ -4,6 +4,7 @@ module ContainerRegistry
   module Protection
     class DeleteRuleService
       include Gitlab::Allowable
+      include ContainerRegistry::Protection::InternalEventsTracking
 
       def initialize(container_registry_protection_rule, current_user:)
         if container_registry_protection_rule.blank? || current_user.blank?
@@ -22,6 +23,8 @@ module ContainerRegistry
         end
 
         deleted_container_registry_protection_rule = container_registry_protection_rule.destroy!
+
+        track_repository_rule_deletion(deleted_container_registry_protection_rule)
 
         ServiceResponse.success(
           payload: { container_registry_protection_rule: deleted_container_registry_protection_rule }

@@ -5,6 +5,8 @@ fragment AdminProject on Project {
     adminAllResources
   }
   ... on Project {
+    adminShowPath
+    adminEditPath
     statistics {
       storageSize
     }

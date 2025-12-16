@@ -19,7 +19,6 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
   let_it_be(:owner) { create(:user) }
   let_it_be(:reporter_from_group_link) { create(:user) }
   let_it_be(:non_member) { create(:user) }
-  let(:support_bot) { Users::Internal.support_bot }
   let(:alert_bot) { Users::Internal.alert_bot }
 
   def permissions(user, issue)
@@ -97,9 +96,11 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
 
   context 'a private project' do
     let_it_be(:project) { create(:project, :private) }
+    let_it_be(:support_bot) { Users::Internal.for_organization(project.organization_id).support_bot }
     let_it_be_with_reload(:group_issue) { create(:issue, :group_level, namespace: group) }
     let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
     let_it_be_with_reload(:issue_no_assignee) { create(:issue, project: project) }
+
     let(:new_issue) { build(:issue, project: project, assignees: [assignee], author: author) }
 
     before_all do
@@ -346,6 +347,9 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     let_it_be_with_reload(:group_issue) { create(:issue, :group_level, namespace: group) }
     let_it_be_with_reload(:issue_no_assignee) { create(:issue, project: project) }
     let_it_be_with_reload(:issue_locked) { create(:issue, :locked, project: project, author: author, assignees: [assignee]) }
+
+    let_it_be(:support_bot) { Users::Internal.for_organization(project.organization_id).support_bot }
+
     let(:new_issue) { build(:issue, project: project) }
 
     before_all do

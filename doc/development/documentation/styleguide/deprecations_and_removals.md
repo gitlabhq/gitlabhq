@@ -212,9 +212,8 @@ removed in GitLab 17.3.
 
 Instead of removing the unsupported page:
 
-- [Add a note](#remove-a-topic) with a date three months
-in the future to ensure the page is removed during the
-[monthly maintenance task](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
+- [Add a note](#remove-a-topic) with a date three months in the future to ensure the page is removed during the
+  [monthly maintenance task](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
 - Do not add `Removed` to the title.
 
 If the `X_changes.md` page contains relative links to other sections

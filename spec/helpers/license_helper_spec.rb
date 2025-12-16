@@ -7,7 +7,7 @@ RSpec.describe LicenseHelper, feature_category: :team_planning do
 
   before do
     allow(helper).to receive(:subscription_portal_new_trial_url).with(
-      return_to: CGI.escape(Gitlab.config.gitlab.url)
+      return_to: helper.general_admin_application_settings_url(anchor: 'js-add-license-toggle')
     ).and_return('subscription_portal_trial_url')
   end
 

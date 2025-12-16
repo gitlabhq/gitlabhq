@@ -12,15 +12,17 @@ RSpec.describe 'kaminari/gitlab/_without_count', feature_category: :groups_and_p
   context 'when previous_path and next_path are set' do
     it 'renders next link' do
       expect(rendered).to have_selector(
-        'a[href="/next"][data-event-tracking="foo_bar"][data-event-label="next"]',
-        text: 'Next'
+        # rubocop:disable Layout/LineLength -- A reason is required but it's quite obvious why this is being disabled.
+        'a[href="/next"][data-event-tracking="foo_bar"][data-event-label="next"][data-testid="kaminari-pagination-next"]'
+        # rubocop:enable Layout/LineLength
       )
     end
 
     it 'renders prev link' do
       expect(rendered).to have_selector(
-        'a[href="/prev"][data-event-tracking="foo_bar"][data-event-label="prev"]',
-        text: 'Previous'
+        # rubocop:disable Layout/LineLength -- A reason is required but it's quite obvious why this is being disabled.
+        'a[href="/prev"][data-event-tracking="foo_bar"][data-event-label="prev"][data-testid="kaminari-pagination-prev"]'
+        # rubocop:enable Layout/LineLength
       )
     end
   end
@@ -30,8 +32,7 @@ RSpec.describe 'kaminari/gitlab/_without_count', feature_category: :groups_and_p
 
     it 'renders prev as disabled' do
       expect(rendered).to have_selector(
-        'li[aria-disabled="true"]',
-        text: 'Previous'
+        'li[aria-disabled="true"] [data-testid="kaminari-pagination-prev"]'
       )
     end
   end
@@ -41,8 +42,7 @@ RSpec.describe 'kaminari/gitlab/_without_count', feature_category: :groups_and_p
 
     it 'renders next as disabled' do
       expect(rendered).to have_selector(
-        'li[aria-disabled="true"]',
-        text: 'Next'
+        'li[aria-disabled="true"] [data-testid="kaminari-pagination-next"]'
       )
     end
   end

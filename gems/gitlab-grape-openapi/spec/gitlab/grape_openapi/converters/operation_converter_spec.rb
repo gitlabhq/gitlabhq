@@ -23,7 +23,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         end
 
         it 'extracts tags' do
-          expect(operation.tags).to eq(['users_api'])
+          expect(operation.tags).to eq(['Users Api'])
         end
 
         it 'extracts parameters' do
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         end
 
         it 'extracts tags' do
-          expect(operation.tags).to eq(['users_api'])
+          expect(operation.tags).to eq(['Users Api'])
         end
 
         it 'extracts summary from description' do
@@ -166,7 +166,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         end
 
         it 'extracts tags with different format' do
-          expect(operation.tags).to eq(['users'])
+          expect(operation.tags).to eq(['Users'])
         end
       end
     end
@@ -359,7 +359,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         subject(:operation) { described_class.convert(route, schema_registry) }
 
         it 'returns nil for tags when not specified' do
-          expect(operation.tags).to be_nil
+          expect(operation.tags).to be_empty
         end
       end
 
@@ -406,6 +406,35 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
           expect(operation.operation_id).to include('ProjectId')
           expect(operation.operation_id).to include('MergeRequestId')
         end
+      end
+    end
+  end
+
+  context 'with deprecated endpoints' do
+    let(:api_classes) { [TestApis::DeprecatedApi] }
+    let(:schema_registry) { Gitlab::GrapeOpenapi::SchemaRegistry.new }
+
+    context 'with deprecated true directive' do
+      let(:route) { routes.find { |r| r.path.include?('directive') } }
+
+      subject(:operation) { described_class.convert(route, schema_registry) }
+
+      it 'sets deprecated to true' do
+        expect(operation.deprecated).to be true
+      end
+
+      it 'includes deprecated in output' do
+        expect(operation.to_h[:deprecated]).to be true
+      end
+    end
+
+    context 'with non-deprecated endpoint' do
+      let(:route) { routes.find { |r| r.path.include?('normal') } }
+
+      subject(:operation) { described_class.convert(route, schema_registry) }
+
+      it 'does not set deprecated' do
+        expect(operation.deprecated).to be_falsey
       end
     end
   end

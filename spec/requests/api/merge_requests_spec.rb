@@ -2007,6 +2007,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         end
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_merge_request_diff do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/changes", personal_access_token: pat)
+      end
+    end
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/diffs' do
@@ -2084,6 +2091,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         end
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_merge_request_diff do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs", personal_access_token: pat)
+      end
+    end
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/raw_diffs' do
@@ -2124,6 +2138,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-diff:")
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_merge_request_diff do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/raw_diffs", personal_access_token: pat)
+      end
+    end
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/pipelines' do
@@ -2132,6 +2153,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     context 'when authorized' do
       let!(:pipeline) { create(:ci_empty_pipeline, project: project, user: user, ref: merge_request.source_branch, sha: merge_request.diff_head_sha) }
       let!(:pipeline2) { create(:ci_empty_pipeline, project: project) }
+
+      it_behaves_like 'authorizing granular token permissions', :read_merge_request_pipeline do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines", personal_access_token: pat)
+        end
+      end
 
       it 'returns a paginated array of corresponding pipelines' do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines")
@@ -2231,6 +2259,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect { request }.to change(Ci::Pipeline, :count).by(1)
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_a Hash
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :create_merge_request_pipeline do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines", personal_access_token: pat)
+        end
       end
 
       context 'when async is requested', :sidekiq_inline do
@@ -2630,6 +2665,34 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           post api("/projects/#{project.id}/merge_requests", user), params: params.merge(remove_source_branch: true)
 
           expect(json_response['force_remove_source_branch']).to be_truthy
+        end
+      end
+
+      context 'with project squash settings' do
+        let(:params) do
+          {
+            title: 'Test merge_request',
+            source_branch: 'feature_conflict',
+            target_branch: 'master'
+          }
+        end
+
+        it 'defaults squash to project setting when not provided' do
+          project.project_setting.update!(squash_option: :default_on)
+
+          post api("/projects/#{project.id}/merge_requests", user), params: params
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['squash']).to be true
+        end
+
+        it 'respects explicit squash param over project default' do
+          project.project_setting.update!(squash_option: :default_on)
+
+          post api("/projects/#{project.id}/merge_requests", user), params: params.merge(squash: false)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['squash']).to be false
         end
       end
     end

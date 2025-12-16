@@ -38,9 +38,6 @@
           .js-sidebar-escalation-status-root{ data: { can_update: issuable_sidebar.dig(:current_user, :can_update_escalation_status).to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
         = render_if_exists 'shared/issuable/sidebar_escalation_policy', issuable_sidebar: issuable_sidebar
 
-      - if @project.group.present?
-        = render_if_exists 'shared/issuable/sidebar_item_epic', issuable_sidebar: issuable_sidebar, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type
-
       .js-sidebar-labels-widget-root{ data: sidebar_labels_data(issuable_sidebar, @project) }
 
       - if issuable_sidebar[:supports_milestone]

@@ -1066,6 +1066,28 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
           expect_paginated_array_response(active_issue.id, archived_issue.id, issue.id, closed_issue.id)
         end
+
+        context 'with archived ancestor groups' do
+          let_it_be(:archived_group) { create(:group, :archived) }
+          let_it_be(:project_in_archived_group) { create(:project, group: archived_group) }
+          let_it_be(:issue_in_archived_group) { create(:issue, author: user, project: project_in_archived_group) }
+
+          before do
+            project_in_archived_group.add_developer(user)
+          end
+
+          it 'excludes issues from projects in archived groups by default' do
+            get api('/issues', user)
+
+            expect_paginated_array_response(active_issue.id, issue.id, closed_issue.id)
+          end
+
+          it 'includes issues from projects in archived groups with non_archived set as false' do
+            get api('/issues', user), params: { non_archived: false }
+
+            expect_paginated_array_response(active_issue.id, archived_issue.id, issue_in_archived_group.id, issue.id, closed_issue.id)
+          end
+        end
       end
     end
 

@@ -11,7 +11,7 @@ pre-push:
       tags: frontend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{js,vue}'
-      run: yarn run lint:eslint --no-warn-ignored {files}
+      run: REVEAL_ESLINT_TODO=0 yarn run lint:eslint --no-warn-ignored {files}
     circular-dependencies:
       tags: frontend
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -159,6 +159,11 @@ pre-push:
     check-deprecated-files:
       tags: backend frontend view haml
       run: scripts/lint/check_deprecated_files.rb
+    validate-fast-spec-helper:
+      tags: backend test
+      files: git diff --name-only --diff-filter=A $(git merge-base origin/master HEAD)..HEAD
+      glob: '{spec,ee/spec}/**/*_spec.rb'
+      run: scripts/lint/validate_fast_spec_helper_usage.rb
 
   scripts:
     'merge_conflicts':
@@ -206,6 +211,11 @@ pre-commit:
       files: git diff --name-only --diff-filter=d --staged
       glob: '{app,lib,ee,spec,doc,scripts}/*.md'
       run: scripts/lint/check_mermaid.mjs {files}
+    loose-foreign-keys-ordering:
+      tags: database
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
+      glob: 'config/gitlab_loose_foreign_keys.yml'
+      run: scripts/validate_loose_foreign_keys_ordering
     vale: # Requires Vale: https://docs.gitlab.com/development/documentation/testing/vale/
       tags: documentation style
       files: git diff --name-only --diff-filter=d --staged
@@ -221,7 +231,6 @@ pre-commit:
     type-check-fe-islands:
       tags: frontend
       root: ee/frontend_islands
-      files: git diff --name-only --diff-filter=d --staged
       glob: 'ee/frontend_islands/apps/**/*.{ts,vue}'
       run: 'yarn run lint:types'
 
@@ -232,7 +241,7 @@ auto-fix:
       tags: frontend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
       glob: '*.{js,vue}'
-      run: 'yarn run lint:eslint:fix {files} && yarn run prettier --write --list-different {files}'
+      run: 'REVEAL_ESLINT_TODO=0 yarn run lint:eslint:fix {files} && yarn run prettier --write --list-different {files}'
     jsonlint:
       tags: style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached

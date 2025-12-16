@@ -123,7 +123,9 @@ describe('~/deployments/components/deployment_deploy_block.vue', () => {
 
     it('displays text and icon saying deploy is pending', () => {
       expect(findIcon().props('name')).toBe('timer');
-      expect(wrapper.findByText('Waiting to be deployed.').exists()).toBe(true);
+      expect(wrapper.text()).toMatchInterpolatedText(
+        'Waiting to be deployed. You are not authorized to trigger this deployment.',
+      );
     });
   });
 

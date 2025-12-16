@@ -78,7 +78,7 @@ module Resolvers
       base_preloads = {
         previous_stage_jobs_or_needs: [:needs, :pipeline],
         pipeline: [:user],
-        build_source: [:source]
+        job_source: [:source]
       }
 
       base_preloads[:artifacts] = [:job_artifacts] if should_preload_artifacts?

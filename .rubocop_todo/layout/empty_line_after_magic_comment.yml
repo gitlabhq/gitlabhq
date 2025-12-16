@@ -83,7 +83,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/app/controllers/groups/security/merge_commit_reports_controller.rb'
     - 'ee/app/controllers/groups/two_factor_auths_controller.rb'
     - 'ee/app/controllers/projects/protected_environments_controller.rb'
-    - 'ee/app/finders/groups_with_templates_finder.rb'
     - 'ee/app/finders/status_page/incidents_finder.rb'
     - 'ee/app/graphql/ee/types/repository/blob_type.rb'
     - 'ee/app/graphql/types/analytics/devops_adoption/enabled_namespace_type.rb'

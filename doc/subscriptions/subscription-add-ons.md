@@ -43,7 +43,7 @@ you must [turn on features for GitLab Duo Core](../user/gitlab_duo/turn_on_off.m
 
 If you are a new customer in GitLab 18.0 or later, GitLab Duo Core features are automatically turned on and no further action is needed.
 
-To view which roles can access GitLab Duo Core, see [GitLab Duo group permissions](../user/permissions.md#gitlab-duo-group-permissions).
+To view which roles can access GitLab Duo Core, see [GitLab Duo group permissions](../user/permissions.md#group-gitlab-duo).
 
 ### GitLab Duo Self-Hosted
 
@@ -108,7 +108,7 @@ Prerequisites:
 
 - You must have the Owner role.
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. By **Seat utilization**, select **Assign seats**.
 1. Select **Purchase seats**.
@@ -151,7 +151,7 @@ Prerequisites:
 
 To use GitLab Duo features in any project or group, you must assign the user to a seat in at least one top-level group.
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. By **Seat utilization**, select **Assign seats**.
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
@@ -164,8 +164,8 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **GitLab Duo**.
+1. In the upper-right corner, select **Admin**.
+1. On the left sidebar, select **GitLab Duo**.
    - If the **GitLab Duo** menu item is not available, synchronize your subscription
      after purchase:
      1. On the left sidebar, select **Subscription**.
@@ -180,7 +180,7 @@ The user is sent a confirmation email.
   This flag is enabled by default.
 
 After you assign seats,
-[ensure GitLab Duo is set up for your GitLab Self-Managed instance](../user/gitlab_duo/setup.md).
+[ensure GitLab Duo is set up for your GitLab Self-Managed instance](../administration/gitlab_duo/setup.md).
 
 ## Assign and remove GitLab Duo seats in bulk
 
@@ -192,7 +192,7 @@ GitLab.com groups can use SAML Group Sync to [manage GitLab Duo seat assignments
 
 ### For GitLab.com
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. On the bottom right, you can adjust the page display to show **50** or **100** items to increase the number of users available for selection.
 1. Select the users to assign or remove seats for:
@@ -209,8 +209,8 @@ Prerequisites:
 - You must be an administrator.
 - You must have GitLab 17.5 or later.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **GitLab Duo**.
+1. In the upper-right corner, select **Admin**.
+1. On the left sidebar, select **GitLab Duo**.
 1. On the bottom right, you can adjust the page display to show **50** or **100** items to increase the number of users available for selection.
 1. Select the users to assign or remove seats for:
    - To select multiple users, to the left of each user, select the checkbox.
@@ -228,10 +228,10 @@ You can automatically assign and remove GitLab Duo seats for LDAP-enabled users 
 
 To enable this functionality, you must [configure the `duo_add_on_groups` property](../administration/auth/ldap/ldap_synchronization.md#gitlab-duo-add-on-for-groups) in your LDAP settings.
 
-When `duo_add_on_groups` is configured, it becomes the single source of truth for Duo seat management among LDAP-enabled users.
+When `duo_add_on_groups` is configured, it becomes the single source of truth for GitLab Duo seat management among LDAP-enabled users.
 For more information, see [seat assignment workflow](../administration/duo_add_on_seat_management_with_ldap.md#seat-management-workflow).
 
-This automated process ensures that Duo seats are efficiently allocated based on your organization's LDAP group structure.
+This automated process ensures that GitLab Duo seats are efficiently allocated based on your organization's LDAP group structure.
 For more information, see [GitLab Duo add-on seat management with LDAP](../administration/duo_add_on_seat_management_with_ldap.md).
 
 ## View assigned GitLab Duo users
@@ -265,7 +265,7 @@ Prerequisites:
 
 - You must have the Owner role.
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. By **Seat utilization**, select **Assign seats**.
 1. From the filter bar, select **Assigned seat** and **Yes**.
@@ -278,8 +278,8 @@ Prerequisites:
 - You must be an administrator.
 - You must have GitLab 17.5 or later.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **GitLab Duo**.
+1. In the upper-right corner, select **Admin**.
+1. On the left sidebar, select **GitLab Duo**.
    - If the **GitLab Duo** menu item is not available, synchronize your subscription
      after purchase:
      1. On the left sidebar, select **Subscription**.

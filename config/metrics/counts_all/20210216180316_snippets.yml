@@ -3,6 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage.create.snippets
 description: Count of distinct author_id from snippets
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: all

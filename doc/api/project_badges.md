@@ -14,8 +14,8 @@ title: Project badges API
 
 Use this API to manage project [badges](../user/project/badges.md).
 
-Badges can include placeholders that are replaced in both the
-link and image URL. The available placeholders are:
+Badges support placeholders that are replaced in real time in both the link and image URL.
+The following placeholders are available:
 
 - `%{project_path}`: Replaced by the project path.
 - `%{project_title}`: Replaced by the project title.

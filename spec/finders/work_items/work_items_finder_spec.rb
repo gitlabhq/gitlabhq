@@ -53,6 +53,16 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
       expect(items).to contain_exactly(item1, item4, item5, group_project_work_item)
     end
 
+    context 'with a search param and attempt_group_search_optimizations = true' do
+      let(:params) do
+        { group_id: group, include_descendants: true, search: "test", attempt_group_search_optimizations: true }
+      end
+
+      it 'overrides use_cte_for_search?' do
+        expect(finder.use_cte_for_search?).to be_falsey
+      end
+    end
+
     it 'generates query with condition to filter out work_items without project_id' do
       result_sql = items.to_sql
       expect(result_sql).to include('"issues"."project_id" IS NOT NULL')

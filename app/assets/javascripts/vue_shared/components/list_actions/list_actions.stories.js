@@ -10,6 +10,8 @@ import {
   ACTION_LEAVE,
   ACTION_RESTORE,
   ACTION_UNARCHIVE,
+  ACTION_REQUEST_ACCESS,
+  ACTION_WITHDRAW_ACCESS_REQUEST,
 } from './constants';
 
 export default {
@@ -81,6 +83,14 @@ Default.args = {
       // eslint-disable-next-line no-alert
       action: () => alert('Group left'),
     },
+    [ACTION_REQUEST_ACCESS]: {
+      // eslint-disable-next-line no-alert
+      action: () => alert('Access requested'),
+    },
+    [ACTION_WITHDRAW_ACCESS_REQUEST]: {
+      // eslint-disable-next-line no-alert
+      action: () => alert('Access request withdrawn'),
+    },
   },
   availableActions: [
     ACTION_COPY_ID,
@@ -91,5 +101,7 @@ Default.args = {
     ACTION_LEAVE,
     ACTION_RESTORE,
     ACTION_UNARCHIVE,
+    ACTION_REQUEST_ACCESS,
+    ACTION_WITHDRAW_ACCESS_REQUEST,
   ],
 };

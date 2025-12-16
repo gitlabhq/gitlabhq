@@ -14,7 +14,6 @@ module Packages
     ENCODED_SLASH = "%2F"
     SORTABLE_COLUMNS = %w[id file_name created_at].freeze
 
-    delegate :project, :project_id, to: :package
     delegate :conan_file_type, to: :conan_file_metadatum
     delegate :file_type, :dsc?, :component, :architecture, :fields, to: :debian_file_metadatum, prefix: :debian
     delegate :channel, :metadata, to: :helm_file_metadatum, prefix: :helm, allow_nil: true
@@ -22,6 +21,7 @@ module Packages
     enum :status, { default: 0, pending_destruction: 1, processing: 2, error: 3 }
 
     belongs_to :package
+    belongs_to :project
 
     # used to move the linked file within object storage
     attribute :new_file_path, default: nil
@@ -31,6 +31,7 @@ module Packages
     has_many :pipelines, through: :package_file_build_infos, disable_joins: true
     has_one :debian_file_metadatum, inverse_of: :package_file, class_name: 'Packages::Debian::FileMetadatum'
     has_one :helm_file_metadatum, inverse_of: :package_file, class_name: 'Packages::Helm::FileMetadatum'
+    has_one :pypi_file_metadatum, inverse_of: :package_file, class_name: 'Packages::Pypi::FileMetadatum'
 
     accepts_nested_attributes_for :conan_file_metadatum
     accepts_nested_attributes_for :debian_file_metadatum
@@ -58,7 +59,7 @@ module Packages
     }
 
     scope :preload_package, -> { preload(:package) }
-    scope :preload_project, -> { preload(package: :project) }
+    scope :preload_project, -> { preload(:project) }
     scope :preload_pipelines, -> { preload(pipelines: :user) }
 
     scope :preload_pipelines_with_user_project_namespace_route, -> do

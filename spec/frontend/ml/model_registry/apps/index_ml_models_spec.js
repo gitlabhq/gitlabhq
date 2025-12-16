@@ -81,7 +81,17 @@ describe('ml/model_registry/apps/index_ml_models', () => {
         description:
           'Create your machine learning using GitLab directly or using the MLflow client',
         primaryText: 'Create model',
+        showActionButtons: true,
       });
+    });
+
+    it('passes showActionButtons prop as false when user has no permission to write model registry', async () => {
+      await createWrapper({
+        resolver: emptyQueryResolver(),
+        props: { canWriteModelRegistry: false },
+      });
+
+      expect(findEmptyState().props('showActionButtons')).toBe(false);
     });
   });
 

@@ -30,9 +30,7 @@ class AbuseReport < ApplicationRecord
   has_many :events, class_name: 'ResourceEvents::AbuseReportEvent', inverse_of: :abuse_report
   has_many :admin_abuse_report_assignees, class_name: "Admin::AbuseReportAssignee"
   has_many :assignees, class_name: "User", through: :admin_abuse_report_assignees
-
   has_many :abuse_events, class_name: 'AntiAbuse::Event', inverse_of: :abuse_report
-
   has_many :user_mentions, class_name: 'AntiAbuse::Reports::UserMention'
 
   validates :reporter, presence: true
@@ -170,7 +168,7 @@ class AbuseReport < ApplicationRecord
   end
 
   def uploads_sharding_key
-    {}
+    { organization_id: organization_id }
   end
 
   private
@@ -183,8 +181,19 @@ class AbuseReport < ApplicationRecord
     Group.find_by_full_path(route_hash[:group_id])
   end
 
+  # NOTE: recognize_path uses RFC3986 URI parser, which is stricter and
+  # raises URI::InvalidURIError on malformed URLs. We pre-parse the input
+  # so we can fall back to stripping fragments, avoiding "bad URI (is not URI?)".
+  # Rack's RFC2396 parser can't be used here because recognize_path doesn't expose it.
   def route_hash
-    match = Rails.application.routes.recognize_path(reported_from_url)
+    url = begin
+      URI.parse(reported_from_url)
+      reported_from_url
+    rescue URI::InvalidURIError
+      reported_from_url.to_s.split('#').first
+    end
+
+    match = Rails.application.routes.recognize_path(url)
     return {} if match[:unmatched_route].present?
 
     match

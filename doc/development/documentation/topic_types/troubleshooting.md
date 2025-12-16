@@ -67,14 +67,16 @@ For more guidance on solution types, see [workaround](../styleguide/word_list.md
 For the title of a **Troubleshooting reference** topic:
 
 - Consider including at least a partial output message.
-  If the message is more than 70 characters, include the text that's most important, or describe the message instead.
+  If the message is more than 70 characters, include the text that's most important, or describe the message instead. Don't disable the `line-length` markdownlint rule.
+- If you need to shorten a title that contains an error message, use an ellipsis (`...`) to
+  indicate that some detail was removed.
 - State the type of message at the start of the title. This indicates the severity. For example, `Error:`, `Warning:`.
 - Do not use links in the title.
 
 If you do not put the full message in the title, include it in the body text. For example:
 
 ````markdown
-## Error: `unexpected disconnect while reading sideband packet`
+## Error: `... unexpected disconnect while reading sideband packet`
 
 Unstable networking conditions can cause Gitaly to fail when trying to fetch large repository
 data from the primary site. Those conditions can result in this error:

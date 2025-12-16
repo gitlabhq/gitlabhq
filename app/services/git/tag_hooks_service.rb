@@ -11,6 +11,8 @@ module Git
     # blob object. We cannot run pipelines against trees and blobs so we skip
     # the creation.
     def create_pipeline?
+      return super if Feature.enabled?(:bypass_tag_commit_check_during_tag_hooks, project)
+
       super && tag_commit.present?
     end
 

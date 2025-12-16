@@ -15,6 +15,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   include SafeFormatHelper
   include BaseServiceUtility
   include AuthHelper
+  include AuthenticatesWithTwoFactor
 
   def show
     setup_show_page
@@ -28,11 +29,11 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     notify_on_success(:otp) if validated
 
     if validated && current_user.otp_backup_codes?
-      ActiveSession.destroy_all_but_current(current_user, session)
+      destroy_all_but_current_user_session!(current_user, session)
       Users::UpdateService.new(current_user, user: current_user, otp_required_for_login: true).execute!
       redirect_to profile_two_factor_auth_path, notice: _("Your Time-based OTP device was registered!")
     elsif validated
-      ActiveSession.destroy_all_but_current(current_user, session)
+      destroy_all_but_current_user_session!(current_user, session)
 
       Users::UpdateService.new(current_user, user: current_user, otp_required_for_login: true).execute! do |user|
         @codes = user.generate_otp_backup_codes!
@@ -52,14 +53,16 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def create_webauthn
-    @webauthn_registration = Webauthn::RegisterService.new(
+    result = Webauthn::RegisterService.new(
       current_user,
       device_registration_params,
       session[:challenge]
     ).execute
 
-    notice = _("Your WebAuthn device was registered!")
-    if @webauthn_registration.persisted?
+    @webauthn_registration = result.payload
+
+    notice = result.message
+    if result.success?
       session.delete(:challenge)
 
       notify_on_success(:webauthn, device_name: @webauthn_registration.name)
@@ -80,6 +83,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
       setup_webauthn_registration
 
+      flash.now[:alert] = notice
       render :show
     end
   end
@@ -96,11 +100,11 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     result = TwoFactor::DestroyService.new(current_user, user: current_user).execute
 
     if result[:status] == :success
-      redirect_to profile_account_path,
+      redirect_to profile_two_factor_auth_url,
         status: :found,
         notice: _('Two-factor authentication has been disabled successfully!')
     else
-      redirect_to profile_account_path, status: :found, alert: result[:message]
+      redirect_to profile_two_factor_auth_url, status: :found, alert: result[:message]
     end
   end
 

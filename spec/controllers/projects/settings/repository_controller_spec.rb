@@ -19,6 +19,28 @@ RSpec.describe Projects::Settings::RepositoryController, feature_category: :sour
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:show)
     end
+
+    context 'with remote mirrors pagination' do
+      let!(:remote_mirrors) { create_list(:remote_mirror, 3, project: project) }
+
+      before do
+        allow(Kaminari.config).to receive(:default_per_page).and_return(2)
+      end
+
+      it 'paginates remote mirrors' do
+        get :show, params: base_params
+
+        expect(assigns(:remote_mirrors).count).to eq(2)
+        expect(assigns(:remote_mirrors)).to be_a(ActiveRecord::Relation)
+      end
+
+      it 'returns second page of remote mirrors' do
+        get :show, params: base_params.merge(page: 2)
+
+        expect(assigns(:remote_mirrors).count).to eq(1)
+        expect(assigns(:remote_mirrors).current_page).to eq(2)
+      end
+    end
   end
 
   describe 'PUT cleanup' do

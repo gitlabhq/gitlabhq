@@ -113,7 +113,7 @@ can also view high-level project information such as:
 - Issues and epics.
 - Licenses.
 
-For more information, see [project member permissions](../../user/permissions.md#project-members-permissions).
+For more information, see [project member permissions](../../user/permissions.md#project-permissions).
 
 ### Confidential issues
 

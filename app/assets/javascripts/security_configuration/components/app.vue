@@ -1,5 +1,5 @@
 <script>
-import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
+import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert, GlButton, GlExperimentBadge } from '@gitlab/ui';
 import Api from '~/api';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
@@ -9,7 +9,6 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT } from '~/tracking/constants';
 import { REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY } from '~/vue_shared/security_reports/constants';
-import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
@@ -46,7 +45,8 @@ export default {
     GlTabs,
     LocalStorageSync,
     SectionLayout,
-    BetaBadge,
+    GlButton,
+    GlExperimentBadge,
     UpgradeBanner: () =>
       import('ee_component/security_configuration/components/upgrade_banner.vue'),
     UserCalloutDismisser,
@@ -233,7 +233,7 @@ export default {
           @dismiss="dismissAutoDevopsEnabledAlert"
         />
 
-        <section-layout class="gl-border-b-0" :heading="$options.i18n.securityTesting">
+        <section-layout stacked class="gl-border-b-0" :heading="$options.i18n.securityTesting">
           <template #description>
             <p>
               <span>
@@ -249,24 +249,36 @@ export default {
 
               {{ $options.i18n.description }}
             </p>
-            <p v-if="canViewCiHistory">
-              <gl-link data-testid="security-view-history-link" :href="gitlabCiHistoryPath">{{
-                $options.i18n.configurationHistory
-              }}</gl-link>
-            </p>
-          </template>
-
-          <template #features>
-            <component
-              :is="getComponentName(feature)"
-              v-for="feature in augmentedSecurityFeatures"
-              :id="feature.anchor"
-              :key="feature.type"
-              data-testid="security-testing-card"
-              :feature="feature"
+            <gl-button
+              v-if="canViewCiHistory"
+              icon="external-link"
+              :href="gitlabCiHistoryPath"
+              data-testid="security-view-history-link"
               class="gl-mb-6"
-              @error="onError"
-            />
+            >
+              {{ $options.i18n.configurationHistory }}
+            </gl-button>
+          </template>
+          <template #features>
+            <div
+              class="gl-grid gl-grid-cols-1 gl-items-stretch gl-gap-5 @lg/panel:gl-grid-cols-2"
+              data-testid="security-testing-features"
+            >
+              <div
+                v-for="feature in augmentedSecurityFeatures"
+                :key="feature.type"
+                class="md:gl-w-half gl-h-full gl-w-full"
+              >
+                <component
+                  :is="getComponentName(feature)"
+                  :id="feature.anchor"
+                  data-testid="security-testing-card"
+                  :feature="feature"
+                  class="gl-flex gl-h-full gl-flex-col"
+                  @error="onError"
+                />
+              </div>
+            </div>
           </template>
         </section-layout>
       </gl-tab>
@@ -277,6 +289,7 @@ export default {
       >
         <section-layout
           v-if="shouldShowRefsTracking"
+          stacked
           :heading="__('Refs')"
           data-testid="refs-tracking-section"
         >
@@ -306,6 +319,7 @@ export default {
           </template>
         </section-layout>
         <section-layout
+          stacked
           :heading="$options.i18n.securityTraining"
           data-testid="security-training-section"
         >
@@ -327,7 +341,8 @@ export default {
       </gl-tab>
       <gl-tab v-if="shouldShowSecurityAttributes" query-param-value="security-attributes">
         <template #title>
-          {{ s__('SecurityAttributes|Security attributes') }} <beta-badge class="gl-ml-2" />
+          {{ s__('SecurityAttributes|Security attributes') }}
+          <gl-experiment-badge type="beta" class="gl-ml-2" />
         </template>
         <project-security-attributes-list />
       </gl-tab>

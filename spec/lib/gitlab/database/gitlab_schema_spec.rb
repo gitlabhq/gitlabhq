@@ -224,6 +224,22 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
     end
   end
 
+  describe 'disallow_sequences' do
+    let(:gitlab_schemas) do
+      Gitlab::Database.all_gitlab_schemas.select { |_, schema| schema.disallow_sequences }.keys
+    end
+
+    it 'does not allow auto-incrementing sequences for schemas marked as disallow_sequences', :aggregate_failures do
+      Gitlab::Database::Dictionary.entries.each do |entry|
+        next unless gitlab_schemas.include?(entry.gitlab_schema)
+
+        sequences = Gitlab::Database::PostgresSequence.where(table_name: entry.table_name).to_a
+        expect(sequences).to be_empty,
+          "Expected table `#{entry.table_name}` to have no auto-incrementing sequences: #{sequences}"
+      end
+    end
+  end
+
   describe '.sharding_root_tables' do
     context 'schemas where require_sharding_key is true' do
       using RSpec::Parameterized::TableSyntax

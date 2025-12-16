@@ -9,7 +9,7 @@ title: Billable Events Schema
 
 The billable events schema defines the structure and fields for tracking usage events that contribute to customer billing. This schema is used across GitLab SaaS, Dedicated, and Self-Managed deployments to capture standardized usage data for billing purposes.
 
-This document serves as the reference for the billable usage event schema based on the [billable_usage jsonschema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/billable_usage/jsonschema).
+This document serves as the reference for the billable usage event schema based on the [`billable_usage` jsonschema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/billable_usage/jsonschema).
 
 ## Field Descriptions
 
@@ -20,7 +20,7 @@ Fields that uniquely identify and categorize the billable event.
 | Field | Description | Snowplow Field | Type |
 |-------|-------------|----------------|------|
 | `event_id` | Unique identifier for the event (RFC9562 UUID) | `event_id` | UUID (String) |
-| `app_id` | Identifier for the application (e.g., Duo Workflow, Dedicated Hosted Runners) | `app_id` | String |
+| `app_id` | Identifier for the application (e.g., GitLab Duo Workflow, Dedicated Hosted Runners) | `app_id` | String |
 | `event_type` | Name of the billable event (breakdown of feature, e.g., `code_review`) | `event_type` | String |
 | `timestamp` | Timestamp when the event occurred | `context_generated_at` | String |
 | `correlation_id` | Unique request ID for each request | `correlation_id` | String |
@@ -45,7 +45,7 @@ Fields that identify users, seats, and resources associated with the billable ev
 |-------|-------------|----------------|------|
 | `subject` | Identifier for the user in the customer organization or identifier for runner where user identification is not present | `subject` | String |
 | `global_user_id` | Anonymized global user ID which is unique across instances | `global_user_id` | String |
-| `assignments` | Product assignments associated with the user at the time of event creation (e.g., 'Duo Pro', 'Duo Enterprise') | - | Array[String] |
+| `assignments` | Product assignments associated with the user at the time of event creation (e.g., `Duo Pro`, `Duo Enterprise`) | - | Array[String] |
 | `project_id` | ID of the associated project (e.g., `122344`) | `project_id` | Integer |
 | `namespace_id` | ID of the associated namespace (e.g., `3445555`) | `namespace_id` | Integer |
 | `root_namespace_id` | ID of the associated ultimate parent namespace (e.g., `5343322`) | `root_namespace_id` | Integer |
@@ -81,7 +81,7 @@ The following fields are critical for billing calculations and must be present i
 1. **Quantity**: Must be a non-negative, non-zero number representing actual usage
 1. **Metadata**: Use for additional context that aids in analytics but is not required for billing
 
-### Metadata fields for Duo Agent Platform
+### Metadata fields for GitLab Duo Agent Platform
 
 | Field | Type | Description | Required |
 |-------|------|-------------|----------|

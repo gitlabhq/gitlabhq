@@ -137,6 +137,9 @@ RSpec.describe Issues::ReopenService, feature_category: :team_planning do
           execute
         end
       end
+
+      it_behaves_like 'tracks work item event', :issue, :user,
+        Gitlab::WorkItems::Instrumentation::EventActions::REOPEN, :execute
     end
   end
 end

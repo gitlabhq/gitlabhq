@@ -32,7 +32,7 @@ module Tooling
       release_name = Array(release_name)
 
       release_name.each do |release|
-        run_command(['uninstall', '--namespace', (namespace || release), release])
+        run_command(['uninstall', '--namespace', namespace || release, release])
       end
     end
 

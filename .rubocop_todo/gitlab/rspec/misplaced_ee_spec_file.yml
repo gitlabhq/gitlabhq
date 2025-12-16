@@ -1,6 +1,5 @@
 ---
 Gitlab/RSpec/MisplacedEeSpecFile:
-  Details: grace period
   Exclude:
     - 'ee/spec/channels/graphql_channel_spec.rb'
     - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'
@@ -52,7 +51,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/lib/gitlab/auth/saml/config_spec.rb'
     - 'ee/spec/lib/gitlab/auth/saml/user_spec.rb'
     - 'ee/spec/lib/gitlab/background_migration/create_missing_external_links_for_vulnerabilities_spec.rb'
-    - 'ee/spec/lib/gitlab/background_migration/update_workspaces_config_version3_spec.rb'
     - 'ee/spec/lib/gitlab/cache_spec.rb'
     - 'ee/spec/lib/gitlab/checks/changes_access_spec.rb'
     - 'ee/spec/lib/gitlab/checks/diff_check_spec.rb'

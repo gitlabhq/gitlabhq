@@ -86,9 +86,7 @@ It is important to note that disabling Arkose also disables phone number and cre
 
 You can triage and debug issues raised by ArkoseLabs with:
 
-<!-- markdownlint-disable MD044 -->
-- ArkoseLabs and GitLab collaboration channel on Slack: [#ext-gitlab-arkose](https://gitlab.slack.com/archives/C02SGF6RLPQ)
-<!-- markdownlint-enable MD044 -->
+- ArkoseLabs and GitLab collaboration channel on Slack: [`#ext-gitlab-arkose`](https://gitlab.slack.com/archives/C02SGF6RLPQ)
 
 - The [GitLab production logs](https://log.gprd.gitlab.net).
 - The [Arkose logging service](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/arkose/logger.rb)
@@ -100,11 +98,9 @@ You can triage and debug issues raised by ArkoseLabs with:
   telltales to prevent malicious users from signing up.
 - When functioning normally, less than 10% of users should be classified as `high` risk
   and over 90% of sessions should be verified.
-<!-- markdownlint-disable MD044 -->
 - If the percentage of `high` risk users or verified sessions is significantly different
-  from the expected percentages, contact the [#ext-gitlab-arkose](https://gitlab.slack.com/archives/C02SGF6RLPQ)
+  from the expected percentages, contact the [`#ext-gitlab-arkose`](https://gitlab.slack.com/archives/C02SGF6RLPQ)
  Slack channel.
-<!-- markdownlint-enable MD044 -->
 
 ### View ArkoseLabs Verify API response for a user session
 

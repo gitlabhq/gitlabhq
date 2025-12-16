@@ -5,16 +5,16 @@ module Gitlab
     module Aggregation
       module ActiveRecord
         class Count < Column
-          def initialize(name = nil, type = :integer, formatter: nil, description: nil)
+          def initialize(name = 'total', type = :integer, formatter: nil, description: nil)
             super
+          end
+
+          def identifier
+            :"#{name}_count"
           end
 
           def to_hash
             super.merge(kind: :column)
-          end
-
-          def identifier
-            :count
           end
 
           def to_arel(_context)

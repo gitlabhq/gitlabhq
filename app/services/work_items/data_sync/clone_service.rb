@@ -6,6 +6,7 @@ module WorkItems
       class << self
         def transaction_callback(new_work_item, work_item, current_user)
           clone_system_notes(current_user, new_work_item, work_item)
+          track_work_item_clone(work_item, current_user)
         end
 
         private
@@ -27,6 +28,14 @@ module WorkItems
             current_user,
             direction: :to
           )
+        end
+
+        def track_work_item_clone(work_item, current_user)
+          ::Gitlab::WorkItems::Instrumentation::TrackingService.new(
+            work_item: work_item,
+            current_user: current_user,
+            event: Gitlab::WorkItems::Instrumentation::EventActions::CLONE
+          ).execute
         end
       end
 

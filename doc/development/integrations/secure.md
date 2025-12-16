@@ -470,6 +470,7 @@ The `identifiers` array describes the detected vulnerability. An identifier obje
 The user interface uses the object's `name` and `url` fields to display the identifier.
 
 <a id="primary-identifier"></a>
+
 {{< alert type="note" >}}
 
 The first item of the `identifiers` array is called the

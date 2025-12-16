@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Diff::ViewerHunk, feature_category: :code_review_workflow do
   let(:header) { match_line }

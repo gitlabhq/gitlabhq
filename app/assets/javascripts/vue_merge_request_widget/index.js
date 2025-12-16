@@ -47,6 +47,7 @@ export default () => {
       ),
       commitPathTemplate: gl.mrWidgetData.commit_path_template,
       dismissalDescriptions,
+      customizeJiraIssueEnabled: parseBoolean(gl.mrWidgetData.customize_jira_issue_enabled),
       validityChecksEnabled: parseBoolean(gl.mrWidgetData.validity_checks_enabled),
     },
     ...MrWidgetOptions,

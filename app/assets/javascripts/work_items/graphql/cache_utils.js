@@ -1,7 +1,7 @@
 import { produce } from 'immer';
 import { map, isEqual } from 'lodash';
-import { getApolloProvider } from '~/issues/list/issue_client';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getBaseURL } from '~/lib/utils/url_utility';
 import { convertEachWordToTitleCase } from '~/lib/utils/text_utility';
@@ -632,7 +632,7 @@ export const getNewWorkItemSharedCache = ({
   };
 };
 
-export const setNewWorkItemCache = async ({
+export const setNewWorkItemCache = ({
   fullPath,
   context,
   widgetDefinitions,
@@ -693,8 +693,6 @@ export const setNewWorkItemCache = async ({
   const { draftTitle } = sharedCache;
   widgets.push(...sharedCache.widgets);
 
-  const cacheProvider = await getApolloProvider();
-
   const newWorkItemPath = newWorkItemFullPath(fullPath, workItemType);
 
   // get the widgets stored in draft data
@@ -719,7 +717,7 @@ export const setNewWorkItemCache = async ({
     clearDraft(autosaveKey);
   }
 
-  cacheProvider.clients.defaultClient.cache.writeQuery({
+  apolloProvider.clients.defaultClient.cache.writeQuery({
     query: workItemByIidQuery,
     variables: {
       fullPath: newWorkItemPath,

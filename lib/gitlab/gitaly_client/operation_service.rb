@@ -145,7 +145,7 @@ module Gitlab
         end
       end
 
-      def user_merge_to_ref(user, source_sha:, branch:, target_ref:, message:, first_parent_ref:, expected_old_oid: "")
+      def user_merge_to_ref(user, source_sha:, branch:, target_ref:, message:, first_parent_ref:, expected_old_oid: '', sign: false)
         request = Gitaly::UserMergeToRefRequest.new(
           repository: @gitaly_repo,
           source_sha: source_sha,
@@ -155,7 +155,8 @@ module Gitlab
           message: encode_binary(message),
           first_parent_ref: encode_binary(first_parent_ref),
           expected_old_oid: expected_old_oid,
-          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i),
+          sign: sign
         )
 
         response = gitaly_client_call(@repository.storage, :operation_service,
@@ -164,7 +165,7 @@ module Gitlab
         response.commit_id
       end
 
-      def user_merge_branch(user, source_sha:, target_branch:, message:, target_sha: nil)
+      def user_merge_branch(user, source_sha:, target_branch:, message:, target_sha: nil, sign: true)
         request_enum = QueueEnumerator.new
         response_enum = gitaly_client_call(
           @repository.storage,
@@ -182,7 +183,8 @@ module Gitlab
             branch: encode_binary(target_branch),
             expected_old_oid: target_sha,
             message: encode_binary(message),
-            timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+            timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i),
+            sign: sign
           )
         )
 
@@ -268,7 +270,7 @@ module Gitlab
       # rubocop:disable Metrics/ParameterLists
       def user_cherry_pick(
         user:, commit:, branch_name:, message:,
-        start_branch_name:, start_repository:, author_name: nil, author_email: nil, dry_run: false, target_sha: nil
+        start_branch_name:, start_repository:, author_name: nil, author_email: nil, dry_run: false, target_sha: nil, sign: false
       )
         request = Gitaly::UserCherryPickRequest.new(
           repository: @gitaly_repo,
@@ -282,7 +284,8 @@ module Gitlab
           commit_author_email: encode_binary(author_email),
           dry_run: dry_run,
           timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i),
-          expected_old_oid: target_sha
+          expected_old_oid: target_sha,
+          sign: sign
         )
 
         response = gitaly_client_call(
@@ -316,9 +319,8 @@ module Gitlab
           raise e
         end
       end
-      # rubocop:enable Metrics/ParameterLists
 
-      def user_revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false, target_sha: nil)
+      def user_revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false, target_sha: nil, sign: true)
         request = Gitaly::UserRevertRequest.new(
           repository: @gitaly_repo,
           user: gitaly_user(user),
@@ -329,7 +331,8 @@ module Gitlab
           start_repository: start_repository.gitaly_repository,
           dry_run: dry_run,
           expected_old_oid: target_sha,
-          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i),
+          sign: sign
         )
 
         response = gitaly_client_call(
@@ -375,6 +378,7 @@ module Gitlab
           raise e
         end
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:, push_options: [])
         request_enum = QueueEnumerator.new
@@ -452,7 +456,7 @@ module Gitlab
         response.commit_id
       end
 
-      def user_squash(user, start_sha, end_sha, author, message, time = Time.now.utc)
+      def user_squash(user, start_sha:, end_sha:, author:, message:, time: Time.now.utc, sign: true)
         request = Gitaly::UserSquashRequest.new(
           repository: @gitaly_repo,
           user: gitaly_user(user),
@@ -460,7 +464,8 @@ module Gitlab
           end_sha: end_sha,
           author: Gitlab::Git::User.from_gitlab(author).to_gitaly,
           commit_message: encode_binary(message),
-          timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i)
+          timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i),
+          sign: sign
         )
 
         response = gitaly_client_call(

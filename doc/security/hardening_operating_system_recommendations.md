@@ -116,7 +116,8 @@ some of the advantages for these adjustments.
 ## buffer overflow bugs, use-after-free etc from being exploited. It does not 100%
 ## fix the issues, but seriously hampers exploitation.
 ##
-# Default is 65536, 4096 helps mitigate memory issues used in exploitation
+# Default is 65536. Higher values provide stronger protection against NULL-pointer dereference exploits.
+# Use 4096 only if required for application compatibility, as it reduces the range of protected low memory addresses.
 vm.mmap_min_addr=4096
 # Default is 0, randomize virtual address space in memory, makes vuln exploitation
 # harder

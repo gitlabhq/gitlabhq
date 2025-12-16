@@ -76,12 +76,6 @@ RSpec.describe Ci::UpdateBuildQueueService, feature_category: :continuous_integr
           expect(dequeued).to eq build.id
         end
 
-        it 'calls cancel_wait_for_runner_ack on build' do
-          expect(build).to receive(:cancel_wait_for_runner_ack)
-
-          subject.pop(build, transition)
-        end
-
         it 'increments queue pop metric' do
           metrics = spy('metrics')
 

@@ -4,6 +4,8 @@ key_path: usage_activity_by_stage_monthly.create.protected_branches
 description: Count of users creating projects with repositories making use of at least
   one protected branch in last 28 days.
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: 28d

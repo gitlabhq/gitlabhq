@@ -12,27 +12,9 @@ title: Project snippets
 
 {{< /details >}}
 
-Use this API to manage [project snippets](../user/snippets.md).
-
-## Snippet visibility level
-
-[Snippets](project_snippets.md) in GitLab can be either private, internal or public.
-You can set it with the `visibility` field in the snippet.
-
-Constants for snippet visibility levels are:
-
-- **Private**: The snippet is visible only to project members.
-- **Internal**: The snippet is visible for any authenticated user except [external users](../administration/external_users.md).
-- **Public**: The snippet can be accessed without any authentication.
-
-{{< alert type="note" >}}
-
-From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
-and snippets on GitLab.com. Existing projects, groups, and snippets using the `Internal`
-visibility setting keep this setting. You can read more about the change in the
-[relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
-
-{{< /alert >}}
+Use this API to manage [project snippets](../user/snippets.md). Related APIs exist for
+[personal snippets](snippets.md) and
+[moving snippets between storages](snippet_repository_storage_moves.md).
 
 ## List snippets
 
@@ -218,7 +200,7 @@ Supported attributes:
 | `content`         | string            | No       | Deprecated: Use `files` instead. Content of a snippet. |
 | `description`     | string            | No       | Description of a snippet. |
 | `file_name`       | string            | No       | Deprecated: Use `files` instead. Name of a snippet file. |
-| `visibility`      | string            | No       | Snippet's [visibility](#snippet-visibility-level). |
+| `visibility`      | string            | No       | Visibility level for the snippet. Possible values: `public`, `private`, and `internal`. On GitLab.com, the `internal` value is not available. |
 
 If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
@@ -292,7 +274,7 @@ PUT /projects/:id/snippets/:snippet_id
 Supported attributes:
 
 | Attribute             | Type              | Required      | Description |
-|-----------------------|-------------------|---------------|-------------|
+| --------------------- | ----------------- | ------------- | ----------- |
 | `id`                  | integer or string | Yes           | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `snippet_id`          | integer           | Yes           | ID of a project's snippet. |
 | `files:action`        | string            | Conditionally | Type of action to perform on the file. One of: `create`, `update`, `delete`, `move`. Required when using the `files` attribute. |
@@ -304,7 +286,7 @@ Supported attributes:
 | `files:file_path`     | string            | No            | File path of the snippet file. |
 | `files:previous_path` | string            | No            | Previous path of the snippet file. |
 | `title`               | string            | No            | Title of a snippet. |
-| `visibility`          | string            | No            | Snippet's [visibility](#snippet-visibility-level). |
+| `visibility`      | string            | No       | Visibility level for the snippet. Possible values: `public`, `private`, and `internal`. On GitLab.com, the `internal` value is not available. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:

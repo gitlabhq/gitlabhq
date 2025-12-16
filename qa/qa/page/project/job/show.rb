@@ -87,7 +87,7 @@ module QA
 
           private
 
-          def loaded?(wait: 60)
+          def loaded?(wait: 180)
             wait_until(reload: true, max_duration: wait, sleep_interval: 1) do
               has_job_log?
             end

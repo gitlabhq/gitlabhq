@@ -27,6 +27,11 @@ RSpec.shared_context 'with expected presenters dependency groups' do
             type: 'PackageDependency'
           }
         ]
+      },
+      {
+        id: "http://localhost/api/v4/projects/#{project_id}/packages/nuget/metadata/#{package_name}/#{package_version}.json#dependencyGroup/.netcore4.5",
+        type: 'PackageDependencyGroup',
+        target_framework: '.NETCore4.5'
       }
     ]
   end
@@ -37,7 +42,14 @@ RSpec.shared_context 'with expected presenters dependency groups' do
     dependency2 = Packages::Dependency.find_by(name: 'Castle.Core', version_pattern: '4.4.1') ||
       create(:packages_dependency, name: 'Castle.Core', version_pattern: '4.4.1')
 
+    empty_dep_name = "#{::Packages::Nuget::EMPTY_DEPENDENCY_PREFIX}-.NETCore4.5"
+    dependency3 = Packages::Dependency.find_by(name: empty_dep_name) ||
+      create(:packages_dependency, name: empty_dep_name)
+
     create(:packages_dependency_link, :with_nuget_metadatum, package: package, dependency: dependency1)
     create(:packages_dependency_link, package: package, dependency: dependency2)
+    create(:packages_dependency_link, package: package, dependency: dependency3).tap do |link|
+      create(:nuget_dependency_link_metadatum, dependency_link: link, target_framework: '.NETCore4.5')
+    end
   end
 end

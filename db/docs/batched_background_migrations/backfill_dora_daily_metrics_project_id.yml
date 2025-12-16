@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillDoraDailyMetricsProjectId
-description: Backfills sharding key `dora_daily_metrics.project_id` from `environments`.
-feature_category: continuous_delivery
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154616
-milestone: '17.1'
-queued_migration_version: 20240529185029
-finalized_by: '20241104232444'

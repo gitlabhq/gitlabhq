@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe SentNotificationsController, feature_category: :shared do
-  include SentNotificationHelpers
-
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:private_project) { create(:project, :private) }
@@ -34,7 +32,7 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
   let(:target_project) { project }
 
   let(:sent_notification) do
-    create_sent_notification(project: target_project, noteable: noteable, recipient: user)
+    create(:sent_notification, project: target_project, noteable: noteable, recipient: user)
   end
 
   let(:id) { sent_notification.partitioned_reply_key }
@@ -104,8 +102,9 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
 
   shared_examples 'unsubscribes an external participant' do
     context 'when support bot is the notification recipient' do
+      let(:support_bot) { create(:support_bot) }
       let(:sent_notification) do
-        create_sent_notification(project: target_project, noteable: noteable, recipient: Users::Internal.support_bot)
+        create(:sent_notification, project: target_project, noteable: noteable, recipient: support_bot)
       end
 
       it 'deletes the external author on the issue' do
@@ -118,10 +117,11 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
         end
 
         let(:sent_notification) do
-          create_sent_notification(
+          create(
+            :sent_notification,
             project: target_project,
             noteable: noteable,
-            recipient: Users::Internal.support_bot,
+            recipient: support_bot,
             issue_email_participant: other_issue_email_participant
           )
         end
@@ -314,7 +314,7 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
         end
 
         let(:sent_notification) do
-          create_sent_notification(project: project, noteable: merge_request, recipient: user)
+          create(:sent_notification, project: project, noteable: merge_request, recipient: user)
         end
 
         before do
@@ -342,7 +342,7 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
           end
 
           let(:sent_notification) do
-            create_sent_notification(project: project, noteable: design, recipient: user)
+            create(:sent_notification, project: project, noteable: design, recipient: user)
           end
 
           before do

@@ -289,7 +289,7 @@ module SystemNotes
 
     # Called when the status of a Task has changed
     #
-    # new_task  - TaskList::Item object.
+    # new_task  - Taskable::Item object.
     #
     # Example Note text:
     #
@@ -298,7 +298,7 @@ module SystemNotes
     # Returns the created Note object
     def change_task_status(new_task)
       status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
-      body = "marked the checklist item **#{new_task.source}** as #{status_label}"
+      body = "marked the checklist item **#{::GLFMMarkdown.escape_commonmark_inline(new_task.text)}** as #{status_label}"
 
       track_issue_event(:track_issue_description_changed_action)
 

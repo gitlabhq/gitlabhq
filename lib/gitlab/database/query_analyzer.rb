@@ -15,11 +15,17 @@ module Gitlab
 
         attr_reader :raw, :connection, :event_name, :error
 
-        def initialize(raw, connection, event_name)
+        def initialize(raw, connection, event_name, cached)
           @raw = raw
           @connection = connection
           @event_name = normalize_event_name(event_name)
+          @cached = cached
           @error = nil
+        end
+
+        # Returns true if the query was using the ActiveRecord Query Cache
+        def cached?
+          !!@cached
         end
 
         def sql
@@ -71,7 +77,12 @@ module Gitlab
           # In some cases analyzer code might trigger another SQL call
           # to avoid stack too deep this detects recursive call of subscriber
           with_ignored_recursive_calls do
-            process_sql(event.payload[:sql], event.payload[:connection], event.payload[:name].to_s)
+            process_sql(
+              event.payload[:sql],
+              event.payload[:connection],
+              event.payload[:name].to_s,
+              event.payload[:cached]
+            )
           end
         end
       end
@@ -122,13 +133,14 @@ module Gitlab
         Thread.current[:query_analyzer_enabled_analyzers] ||= []
       end
 
-      def process_sql(sql, connection, event_name)
+      def process_sql(sql, connection, event_name, cached = false)
         analyzers = enabled_analyzers
         return unless analyzers&.any?
 
-        parsed = Parsed.new(sql, connection, event_name)
+        parsed = Parsed.new(sql, connection, event_name, cached)
 
         analyzers.each do |analyzer|
+          next if analyzer.skip_cached?(parsed)
           next if analyzer.suppressed? && !analyzer.requires_tracking?(parsed)
 
           analyzer.analyze(parsed)

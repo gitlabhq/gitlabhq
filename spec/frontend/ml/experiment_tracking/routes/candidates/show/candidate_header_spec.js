@@ -56,7 +56,7 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_header.vue', (
 
     it('renders the status icon', () => {
       expect(findStatusIcon().exists()).toBe(true);
-      expect(findStatusIcon().props('name')).toBe('issue-type-test-case');
+      expect(findStatusIcon().props('name')).toBe('work-item-test-case');
     });
 
     it('renders the author information', () => {

@@ -8,7 +8,6 @@ title: GitLab Duo and SDLC trends
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta for GitLab Self-Managed
 
@@ -23,6 +22,7 @@ title: GitLab Duo and SDLC trends
 - Changed to support Amazon Q in GitLab 18.2.1.
 - Pipeline metrics table [added](https://gitlab.com/gitlab-org/gitlab/-/issues/550356) in GitLab 18.4.
 - Renamed from `AI impact analytics` to `GitLab Duo and SDLC trends` in GitLab 18.4.
+- Changed to not require add-ons in GitLab 18.7.
 
 {{< /history >}}
 
@@ -35,7 +35,7 @@ You can use the dashboard to measure which metrics have improved from your AI in
 
 Use GitLab Duo and SDLC trends to:
 
-- Track SDLC trends in relation to your Duo journey: Examine how trends in GitLab Duo usage in a project or group influence other crucial productivity metrics such as mean time to merge and CI/CD statistics. Duo usage metrics are displayed for the last six months, including the current one.
+- Track SDLC trends in relation to your GitLab Duo journey: Examine how trends in GitLab Duo usage in a project or group influence other crucial productivity metrics such as mean time to merge and CI/CD statistics. GitLab Duo usage metrics are displayed for the last six months, including the current one.
 - Monitor GitLab Duo feature adoption: Track the use of seats and features in a project or group over the last 30 days.
 
 To learn how you can optimize your license utilization,
@@ -52,21 +52,21 @@ For an overview, see [GitLab Duo AI Impact Dashboard](https://youtu.be/FxSWX64aU
 
 ## Key metrics
 
-- **Assigned Duo seat engagement**: Percentage of users that are assigned a Duo seat and used at least one AI feature in the last 30 days.
-It is calculated as the number of users with Duo seats that use AI features divided by the total number of assigned Duo seats.
-- **Code Suggestions usage**: Percentage of users with assigned Duo seats that used Code Suggestions in the last 30 days.
-It is calculated as the number of unique users with Duo seats that interact with Code Suggestions divided by the total number of unique code contributors (users with `pushed` events) with Duo seats.
-For calculating Code Suggestions metrics, GitLab collects data only from code editor extensions.
+- **Assigned Duo seat engagement**: Percentage of users that are assigned a GitLab Duo seat and used at least one AI feature in the last 30 days.
+  It is calculated as the number of users with GitLab Duo seats that use AI features divided by the total number of assigned GitLab Duo seats.
+- **Code Suggestions usage**: Percentage of users with assigned GitLab Duo seats that used Code Suggestions in the last 30 days.
+  It is calculated as the number of unique users with GitLab Duo seats that interact with Code Suggestions divided by the total number of unique code contributors (users with `pushed` events) with GitLab Duo seats.
+  For calculating Code Suggestions metrics, GitLab collects data only from code editor extensions.
 - **Code Suggestions acceptance rate**: Percentage of code suggestions provided by GitLab Duo that have been accepted by code contributors in the last 30 days.
-It is calculated as the number of accepted code suggestions divided by the total number of generated code suggestions.
+  It is calculated as the number of accepted code suggestions divided by the total number of generated code suggestions.
 - **Duo Chat usage**: Percentage of users that engage with GitLab Duo Chat every month.
-It is calculated as the number of monthly unique GitLab Duo Chat users divided by the total GitLab Duo assigned users.
+  It is calculated as the number of monthly unique GitLab Duo Chat users divided by the total GitLab Duo assigned users.
 
 ## Metric trends
 
 The **Metric trends** table displays metrics for the last six months, with monthly values, percentage changes in the past six months, and trend sparklines.
 
-### Duo usage metrics
+### GitLab Duo usage metrics
 
 {{< history >}}
 
@@ -74,6 +74,8 @@ The **Metric trends** table displays metrics for the last six months, with month
 - Duo RCA usage [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/543987) in GitLab 18.3.
 - Duo RCA usage [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/556726) in GitLab 18.4. Feature flag `duo_rca_usage_rate` removed.
 - Duo features usage [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207562) in GitLab 18.6.
+- Duo Code Review requests and GitLab Duo Code Review comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573979) in GitLab 18.7.
+- Duo Agent Platform chats and flows [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/583375) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -94,16 +96,37 @@ The **Metric trends** table displays metrics for the last six months, with month
 
   {{< /alert >}}
 
-- **Duo RCA usage**: Monthly user engagement with Duo Root Cause Analysis.
-  Tracks the percentage of Duo users who use GitLab Duo Chat to troubleshoot a failed CI/CD job from a merge request.
+- **Duo RCA usage**: Monthly user engagement with GitLab Duo Root Cause Analysis.
+  Tracks the percentage of GitLab Duo users who use GitLab Duo Chat to troubleshoot a failed CI/CD job from a merge request.
 
   {{< alert type="note" >}}
 
-  Usage rate for Duo RCA is calculated with data starting from GitLab 18.0.
+  Usage rate for GitLab Duo RCA is calculated with data starting from GitLab 18.0.
 
   {{< /alert >}}
 
 - **Duo features usage**: Number of contributors who used any GitLab Duo feature.
+
+- **Duo Code Review requests**: Number of GitLab Duo Code Review requests made on merge requests.
+  This includes requests initiated by both merge request authors and non-authors.
+
+- **Duo Code Review comments**: Number of comments posted by GitLab Duo Code Review on merge request diffs.
+
+  {{< alert type="note" >}}
+
+  Usage data for Duo Code Review requests and comments is calculated with data starting from GitLab 18.3.
+
+  {{< /alert >}}
+
+- **Duo Agent Platform chats**: Number of chat sessions initiated through GitLab Duo Agent Platform.
+
+- **Duo Agent Platform flows**: Number of agent flows (excluding chats) executed through GitLab Duo Agent Platform.
+
+{{< alert type="note" >}}
+
+Usage data for Duo Agent Platform chats and flows is calculated with data starting from GitLab 18.7.
+
+{{< /alert >}}
 
 ### Development metrics
 
@@ -135,6 +158,23 @@ The **Code Suggestions acceptance rate by language** chart displays the acceptan
 
 The acceptance rate for each language is calculated as the number of accepted code suggestions divided by the total number of code suggestions shown.
 
+## GitLab Duo Code Suggestions acceptance by IDE
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/550064) in GitLab 18.7.
+
+{{< /history >}}
+
+The **GitLab Duo Code Suggestions acceptance by IDE** chart displays the number of Code Suggestions accepted by IDE for the last 30 days.
+
+Hover over a bar to view for each IDE:
+
+- **Suggestions accepted**: Number of suggestions accepted by users.
+- **Suggestions shown**: Number of suggestions shown to users.
+- **Acceptance rate**: Percentage of suggestions accepted.
+  Calculated as the number of accepted code suggestions divided by the total number of code suggestions shown.
+
 ## Code generation volume trends
 
 {{< history >}}
@@ -148,6 +188,42 @@ The **Code generation volume trends** chart displays the volume of code generate
 - **Lines of code accepted**: Lines of code from Code Suggestions that were accepted.
 - **Lines of code shown**: Lines of code displayed in Code Suggestions.
 
+## GitLab Duo Code Review requests by role
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/574003) in GitLab 18.7.
+
+{{< /history >}}
+
+The **GitLab Duo Code Review requests by role** chart displays the number of GitLab Duo Code Review requests over the last 180 days, aggregated by month. The chart shows:
+
+- **Review requests by authors**: Number of GitLab Duo Code Review requests made by the merge request author. This includes code reviews requested automatically through the project setting and manually in the merge request by the author.
+- **Review requests by non-authors**: Number of GitLab Duo Code Review requests made by users other than the merge request author. For example, reviewers who ask GitLab Duo to review the merge request changes.
+
+Higher author adoption indicates teams embracing automated review workflows.
+
+## GitLab Duo metrics by user
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/574420) in GitLab 18.7.
+
+{{< /history >}}
+
+The user metrics tables display usage of different GitLab Duo features by individual users over the last 30 days.
+
+- **GitLab Duo Code Suggestions usage by user**: Number of code suggestions accepted, and the code suggestions acceptance rate.
+- **GitLab Duo Code Review usage by user**: Number of code reviews requested as the merge request author from GitLab Duo, and number of reactions (:thumbsup: and :thumbsdown:) to code review comments.
+- **GitLab Duo Root Cause Analysis usage by user**: Number of troubleshooting requests from GitLab Duo.
+- **GitLab Duo usage by user**: Number of Duo events made by the user.
+
+{{< alert type="note" >}}
+
+Usage data for Code Review requests is calculated with data starting from GitLab 18.3.
+
+{{< /alert >}}
+
 ## View GitLab Duo and SDLC trends
 
 Prerequisites:
@@ -155,7 +231,7 @@ Prerequisites:
 - [Code Suggestions](../project/repository/code_suggestions/_index.md) must be enabled.
 - For GitLab Self-Managed, [ClickHouse for contribution analytics](../group/contribution_analytics/_index.md#contribution-analytics-with-clickhouse) must be configured.
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Analyze** > **Analytics Dashboards**.
 1. Select **GitLab Duo and SDLC trends**.
 

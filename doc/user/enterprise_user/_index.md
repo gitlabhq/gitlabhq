@@ -35,12 +35,13 @@ at a time. If you move your domain to another paid group, all enterprise users a
 claimed by the new group.
 
 Group domains are linked to a project in your top-level group. The linked project needs
-[GitLab Pages](../project/pages/_index.md), but does not need to create a GitLab Pages website.
-If GitLab Pages is turned off, you cannot verify the domain.
+to have [GitLab Pages](../project/pages/_index.md) enabled to verify the domain, but does not need
+to create or deploy a GitLab Pages website. On GitLab.com, GitLab Pages is enabled by default
+for all projects, so no configuration is required.
 
 Even though the domain is linked to a project, it is available to the entire group hierarchy
 including all nested subgroups and projects. Members in the linked project with
-[at least the Maintainer role](../permissions.md#project-members-permissions) can modify or remove
+[at least the Maintainer role](../permissions.md#project-permissions) can modify or remove
 the domain. If this project is deleted, your associated domains are also removed.
 
 For more information on group domains, see [epic 5299](https://gitlab.com/groups/gitlab-org/-/epics/5299).
@@ -57,7 +58,7 @@ Prerequisites:
 
 To add a custom domain for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Domain Verification**.
 1. In the upper-right corner, select **Add Domain**.
 1. Configure the domain settings:
@@ -81,7 +82,7 @@ To add a custom domain for a group:
 1. Verify ownership of the domain:
    1. In **TXT**, copy the verification code.
    1. In your domain provider DNS settings, add the verification code as a `TXT` record.
-   1. In GitLab, on the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+   1. In GitLab, on the top bar, select **Search or go to** and find your group.
    1. Select **Settings** > **Domain Verification**.
    1. Next to the domain name, select **Retry verification** ({{< icon name="retry" >}}).
 
@@ -103,14 +104,14 @@ maintain the `TXT` record on your domain provider.
 
 To view all custom domains for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Domain Verification**.
 
 ### Edit group domains
 
 To edit a custom domain for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Domain Verification**.
 1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
 
@@ -132,14 +133,14 @@ Deleting a group domain can impact enterprise users in your group. After you del
 
 To delete a custom domain for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Domain Verification**.
 1. Next to the domain name, select **Remove domain** ({{< icon name="remove" >}}).
 1. When prompted, select **Delete domain**.
 
 ## Manage enterprise users
 
-In addition to the standard [group member permissions](../permissions.md#group-members-permissions),
+In addition to the standard [group member permissions](../permissions.md#group-permissions),
 Owners of a top-level group can also manage enterprise users in their group.
 
 You can also [use the API](../../api/group_enterprise_users.md) to interact with enterprise users.
@@ -219,7 +220,7 @@ Prerequisites:
 
 To view an enterprise user's email address:
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Manage** > **Members**.
 1. Hover over the enterprise user's name.
 
@@ -234,14 +235,8 @@ Enterprise users can follow the same process as other GitLab users to
 The new email address must be from a verified domain. If your organization has no verified
 domains, your enterprise users cannot change their primary email address.
 
-Enterprise users can follow the same process as other GitLab users to
-[change their primary email address](../../user/profile/_index.md#change-your-primary-email).
-
 Group Owners can modify the email address for enterprise users in their group with the
 [group enterprise users API](../../api/group_enterprise_users.md#modify-an-enterprise-user).
-
-The new email address must be from a verified domain. If your group has no verified
-domains, your enterprise users cannot change their primary email address.
 
 Only GitLab support can change the primary email address to an email address from a
 non-verified domain. This action [releases the enterprise user](#release-an-enterprise-user).
@@ -302,7 +297,7 @@ Prerequisites:
 
 To enable the Extension Marketplace for enterprise users:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Web IDE and workspaces**, select the **Enable extension marketplace** checkbox.

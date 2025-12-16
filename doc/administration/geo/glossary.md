@@ -85,96 +85,59 @@ or when using Geo-related console commands.
 
 ### Single-node site
 
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-graph TD
-    accTitle: Single-node site architecture
-    accDescr: A site with one node running GitLab.
+A site with one node running GitLab:
 
-   subgraph S-Site[Single-node site]
-    Node_3[GitLab node]
-  end
-```
+- GitLab node
 
 ### Multi-node site
 
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-graph TD
-    accTitle: Multi-node site architecture
-    accDescr: A site with multiple nodes running different GitLab components.
+A site with multiple nodes running different GitLab components:
 
-   subgraph MN-Site[Multi-node site]
-    Node_1[Application node]
-    Node_2[Database node]
-    Node_3[Gitaly node]
-  end
-```
+- Application node
+- Database node
+- Gitaly node
 
 ### Geo deployment - Single-node sites
 
-This Geo deployment has a single-node primary site, a single-node secondary site:
+This Geo deployment has a single-node primary site and a single-node secondary site:
 
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-graph TD
-    accTitle: Geo deployment with single-node sites
-    accDescr: A single-node primary site replicating to a single-node secondary site.
+Primary Site (Single-node):
 
-   subgraph Geo deployment
-   subgraph Primary[Primary site, single-node]
-    Node_1[GitLab node]
-  end
-  subgraph Secondary1[Secondary site 1, single-node]
-    Node_2[GitLab node]
-   end
-   end
-```
+- GitLab node
+
+Secondary Site 1 (Single-node):
+
+- GitLab node
 
 ### Geo deployment - Multi-node sites
 
-This Geo deployment has a multi-node primary site, a multi-node secondary site:
+This Geo deployment has a multi-node primary site and a multi-node secondary site:
 
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-graph TD
-    accTitle: Geo deployment with multi-node sites
-    accDescr: A multi-node primary site replicating to a multi-node secondary site.
+Primary Site (Multi-node):
 
-   subgraph Geo deployment
-   subgraph Primary[Primary site, multi-node]
-    Node_1[Application node]
-    Node_2[Database node]
-  end
-  subgraph Secondary1[Secondary site 1, multi-node]
-    Node_5[Application node]
-    Node_6[Database node]
-   end
-   end
-```
+- Application node
+- Database node
+
+Secondary Site 1 (Multi-node):
+
+- Application node
+- Database node
 
 ### Geo deployment - Mixed sites
 
-This Geo deployment has a multi-node primary site, a multi-node secondary site and another single-node secondary site:
+This Geo deployment has a multi-node primary site, a multi-node secondary site, and a single-node secondary site:
 
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-graph TD
-    accTitle: Geo deployment with mixed site types
-    accDescr: A multi-node primary site replicating to both multi-node and single-node secondary sites.
+Primary Site (Multi-node):
 
-   subgraph Geo deployment
-   subgraph Primary[Primary site, multi-node]
-    Node_1[Application node]
-    Node_2[Database node]
-    Node_3[Gitaly node]
-  end
-  subgraph Secondary1[Secondary site 1, multi-node]
-    Node_5[Application node]
-    Node_6[Database node]
-   end
-  subgraph Secondary2[Secondary site 2, single-node]
-    Node_7[Single GitLab node]
-   end
-   end
-```
+- Application node
+- Database node
+- Gitaly node
+
+Secondary Site 1 (Multi-node):
+
+- Application node
+- Database node
+
+Secondary Site 2 (Single-node):
+
+- Single GitLab node

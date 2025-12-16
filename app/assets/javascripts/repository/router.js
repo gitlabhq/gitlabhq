@@ -33,7 +33,7 @@ export default function createRouter(base, baseRef, fullName) {
     component: BlobPage,
     props: (route) => {
       return {
-        path: route.params.path,
+        path: normalizePathParam(route.params.path),
         projectPath: base,
         refType: getRefType(route.query.ref_type || null),
       };

@@ -163,8 +163,27 @@ class Issue < ApplicationRecord
   end
 
   scope :non_archived, ->(use_existing_join: false) do
-    relation = use_existing_join ? self : left_joins(:project)
-    relation.where(project_id: nil).or(relation.where(projects: { archived: false }))
+    if Feature.enabled?(:optimize_issuable_non_archived_scope, Feature.current_request, type: :gitlab_com_derisk)
+      relation = left_joins(:project)
+      relation_with_namespace = relation.joins(
+        "LEFT OUTER JOIN namespaces ON namespaces.type = 'Group' AND " \
+          "(namespaces.id = projects.namespace_id OR namespaces.id = issues.namespace_id)"
+      )
+
+      project_condition = relation_with_namespace
+        .where.not(project_id: nil)
+        .where(projects: { archived: false })
+        .where.not(Group.self_or_ancestors_archived_setting_subquery.exists)
+
+      group_condition = relation_with_namespace
+        .where(project_id: nil)
+        .where.not(Group.self_or_ancestors_archived_setting_subquery.exists)
+
+      project_condition.or(group_condition)
+    else
+      relation = use_existing_join ? self : left_joins(:project)
+      relation.where(project_id: nil).or(relation.where(projects: { archived: false }))
+    end
   end
 
   scope :with_due_date, -> { where.not(due_date: nil) }
@@ -257,12 +276,14 @@ class Issue < ApplicationRecord
 
   scope :service_desk, -> {
     where(
-      "(author_id = ? AND work_item_type_id = ?) OR work_item_type_id = ?",
-      Users::Internal.support_bot.id,
-      WorkItems::Type.default_issue_type.id,
-      WorkItems::Type.default_by_type(:ticket).id
+      author: User.support_bot,
+      work_item_type: WorkItems::Type.default_issue_type
+    )
+    .or(
+      where(work_item_type: WorkItems::Type.default_by_type(:ticket))
     )
   }
+
   scope :inc_relations_for_view, -> do
     includes(author: :status, assignees: :status)
     .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422155')
@@ -727,7 +748,7 @@ class Issue < ApplicationRecord
   end
 
   def from_service_desk?
-    author_id == Users::Internal.support_bot_id
+    author.support_bot?
   end
 
   def issue_link_type
@@ -881,12 +902,11 @@ class Issue < ApplicationRecord
     epic_work_item? && group_level?
   end
 
+  # Service Desk issues and incidents should not use the work item view,
+  # since these have not been migrated over to using the work items framework.
+  # These should continue to use the .../issues/... path and render as issues.
   def show_as_work_item?
-    # Service Desk issues and incidents should not use the work item view, since these have not been migrated over to
-    # using the work items framework. These should continue to use the .../issues/... path and render as issues.
-    !from_service_desk? &&
-      !work_item_type&.incident? &&
-      Feature.enabled?(:work_item_view_for_issues, project&.group)
+    !from_service_desk? && !work_item_type&.incident?
   end
 
   def ensure_work_item_description
@@ -901,6 +921,13 @@ class Issue < ApplicationRecord
       cached_markdown_version: cached_markdown_version
     )
   end
+
+  def ==(other)
+    return super unless id.present?
+
+    other.is_a?(Issue) && other.id == id
+  end
+  alias_method :eql?, :==
 
   private
 

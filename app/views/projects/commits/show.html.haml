@@ -18,7 +18,7 @@
     .tree-holder.gl-mt-5
       .nav-block
         .tree-ref-container
-          .tree-ref-holder.gl-max-w-26
+          .tree-ref-holder{ class: "gl-max-w-full @sm/panel:gl-max-w-4/10 @md/panel:gl-max-w-xs" }
             #js-project-commits-ref-switcher{ data: { "project-id" => @project.id, "ref" => @ref, "commits_path": project_commits_path(@project), "ref_type": @ref_type.to_s, "tree_path": @path } }
 
           %ul.breadcrumb.repo-breadcrumb

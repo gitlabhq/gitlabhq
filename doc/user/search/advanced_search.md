@@ -47,7 +47,7 @@ Prerequisites:
 
 To use advanced search:
 
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to**.
 1. In the search box, enter your search term.
 
 You can also use advanced search in a project or group.
@@ -60,31 +60,25 @@ You can also use advanced search in a project or group.
 - Searching comments on issues [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/536912) in GitLab 18.1.
 - Searching comments on issues [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191369) in GitLab 18.6. Feature flag `search_work_item_queries_notes` removed.
 - Searching comments on merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572590) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `search_merge_request_queries_notes`. Disabled by default.
+- Searching comments on merge requests [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/573750) in GitLab 18.7. Feature flag `search_merge_request_queries_notes` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 Scopes describe the type of data you're searching.
 The following scopes are available for advanced search:
 
-| Scope                       | Global <sup>1</sup> <sup>2</sup>            | Group                                       | Project |
-|-----------------------------|---------------------------------------------|---------------------------------------------|---------|
-| Code                        | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Comments                    | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Commits                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Epics                       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| Issues <sup>3</sup>         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Merge requests <sup>3</sup> | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Milestones                  | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Projects                    | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| Users                       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Wikis                       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Scope                       | Global <sup>1</sup> <sup>2</sup> | Group       | Project     |
+|-----------------------------|----------------------------------|-------------|-------------|
+| Code                        | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Comments                    | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Commits                     | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Epics                       | {{< yes >}}                      | {{< yes >}} | {{< no >}}  |
+| Issues <sup>3</sup>         | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Merge requests <sup>3</sup> | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Milestones                  | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Projects                    | {{< yes >}}                      | {{< yes >}} | {{< no >}}  |
+| Users                       | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Wikis                       | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 
 **Footnotes**:
 
@@ -128,8 +122,6 @@ You can refine user search with `simple_query_string`.
 
 ### Examples
 
-<!-- markdownlint-disable MD044 -->
-
 | Query                                 | Description |
 |---------------------------------------|-------------|
 | `rails -filename:gemfile.lock`        | Returns `rails` in all files except the `gemfile.lock` file. |
@@ -137,8 +129,6 @@ You can refine user search with `simple_query_string`.
 | `bug \| (display +banner)`            | Returns `bug` or both `display` and `banner`. |
 | `helper -extension:yml -extension:js` | Returns `helper` in all files except files with a `.yml` or `.js` extension. |
 | `helper path:lib/git`                 | Returns `helper` in all files with a `lib/git*` path (for example, `spec/lib/gitlab`). |
-
-<!-- markdownlint-enable MD044 -->
 
 ## Known issues
 
@@ -154,3 +144,7 @@ You can refine user search with `simple_query_string`.
   ```
 
 - Search results show only the first match in a file.
+
+## Related topics
+
+- [Locate security vulnerabilities](../application_security/vulnerability_report/_index.md#advanced-vulnerability-management)

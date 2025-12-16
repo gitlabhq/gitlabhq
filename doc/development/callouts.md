@@ -228,6 +228,187 @@ When migrating from manual `Pajamas::AlertComponent` usage:
     = _('Alert content')
 ```
 
+## Dismissible banner components
+
+### Haml
+
+When implementing dismissible banners in HAML views, use the dismissible banner components. These components
+extend `Pajamas::BannerComponent` and provide strong validation, simplified setup, and automatic handling of dismissal
+logic.
+
+#### Available components
+
+- `Users::DismissibleBannerComponent` - For user(global) context callouts
+- `Users::GroupDismissibleBannerComponent` - For group context callouts
+- `Users::ProjectDismissibleBannerComponent` - For project context callouts
+
+All components inherit from `Pajamas::BannerComponent` and support the same interface, with the addition of
+`dismiss_options` and optional `wrapper_options` parameters.
+
+#### Basic usage
+
+##### User (global) callouts
+
+```haml
+= render Users::DismissibleBannerComponent.new(
+button_text: _('Learn more'),
+button_link: 'https://about.gitlab.com/',
+svg_path: 'illustrations/devops-sm.svg',
+variant: :promotion,
+dismiss_options: { user: current_user, feature_id: 'my_user_callout' }
+) do |c|
+
+- c.with_title do
+  = _('Banner title')
+%p
+  = _('Banner message content goes here.')
+```
+
+##### Group callouts
+
+```haml
+= render Users::GroupDismissibleBannerComponent.new(
+button_text: _('Learn more'),
+button_link: 'https://about.gitlab.com/',
+svg_path: 'illustrations/devops-sm.svg',
+variant: :promotion,
+dismiss_options: { user: current_user, group: @group, feature_id: 'my_group_callout' }
+) do |c|
+
+- c.with_title do
+  = _('Group-specific banner')
+%p
+  = _('This banner is specific to the current group.')
+```
+
+##### Project callouts
+
+```haml
+= render Users::ProjectDismissibleBannerComponent.new(
+button_text: _('Learn more'),
+button_link: 'https://about.gitlab.com/',
+svg_path: 'illustrations/devops-sm.svg',
+variant: :promotion,
+dismiss_options: { user: current_user, project: @project, feature_id: 'my_project_callout' }
+) do |c|
+
+- c.with_title do
+  = _('Project notification')
+%p
+  = _('This banner is specific to the current project.')
+
+```
+
+#### Additional parameters
+
+##### `dismiss_options` (required)
+
+All dismissible banner components require a `dismiss_options` hash:
+
+- **User callouts**: `{ user: current_user, feature_id: 'callout_name' }`
+- **Group callouts**: `{ user: current_user, group: @group, feature_id: 'callout_name' }`
+- **Project callouts**: `{ user: current_user, project: @project, feature_id: 'callout_name' }`
+
+##### `ignore_dismissal_earlier_than` (optional)
+
+Add `ignore_dismissal_earlier_than` to make callouts reappear after a certain time period:
+
+```haml
+= render Users::DismissibleBannerComponent.new(
+    button_text: _('Learn more'),
+    svg_path: 'illustrations/devops-sm.svg',
+    variant: :promotion,
+    dismiss_options: {
+      user: current_user,
+      feature_id: 'recurring_callout',
+      ignore_dismissal_earlier_than: 30.days.ago
+    }
+  ) do |c|
+
+    - c.with_title do
+      = _('Recurring banner')
+    %p
+      = _('This banner will reappear every 30 days.')
+```
+
+You can use Time, Date, DateTime objects, or valid date/time strings:
+
+```haml
+# Using Time objects (recommended)
+ignore_dismissal_earlier_than: 30.days.ago
+ignore_dismissal_earlier_than: 1.week.ago
+
+# Using date strings
+ignore_dismissal_earlier_than: '2023-01-01'
+ignore_dismissal_earlier_than: '2023-01-01 12:00:00'
+```
+
+Without this parameter, dismissals are permanent. With it, the banner reappears if it was dismissed before the specified
+time.
+
+##### `wrapper_options` (optional)
+
+Use `wrapper_options` to wrap the banner in a custom container:
+
+```haml
+= render Users::GroupDismissibleBannerComponent.new(
+    button_text: _('Learn more'),
+    svg_path: 'illustrations/devops-sm.svg',
+    variant: :promotion,
+    dismiss_options: { user: current_user, group: @group, feature_id: 'wrapped_callout' },
+    wrapper_options: { tag: :section, class: 'custom-wrapper' }
+  ) do |c|
+
+    - c.with_title do
+      = _('Banner with wrapper')
+    %p
+      = _('This banner is wrapped in a custom container.')
+```
+
+#### Benefits of dismissible banner components
+
+1. **Strong validation**: Components verify that feature IDs exist in the appropriate callout model and that required parameters are provided
+1. **Simplified setup**: No need to manually configure CSS classes, data attributes, or dismissal endpoints
+1. **Automatic handling**: Dismissal logic, rendering conditions, and JavaScript integration are handled automatically
+1. **Type safety**: Components enforce correct parameter types and catch configuration errors early
+1. **Consistent behavior**: All dismissible banners follow the same patterns and conventions
+1. **Full BannerComponent compatibility**: Supports all existing `BannerComponent` parameters and functionality
+
+#### Migration from manual implementation
+
+When migrating from manual `Pajamas::BannerComponent` usage:
+
+**Before:**
+
+```haml
+= render Pajamas::BannerComponent.new(
+  button_text: _('Learn more'),
+  svg_path: 'illustrations/devops-sm.svg',
+  variant: :promotion,
+  banner_options: {
+    class: 'js-persistent-callout',
+    data: { feature_id: 'my_callout', dismiss_endpoint: callouts_path }
+  }
+) do |c|
+  - c.with_body do
+    = _('Banner content')
+```
+
+**After:**
+
+```haml
+= render Users::DismissibleBannerComponent.new(
+button_text: _('Learn more'),
+svg_path: 'illustrations/devops-sm.svg',
+variant: :promotion,
+dismiss_options: { user: current_user, feature_id: 'my_callout' }
+) do |c|
+
+- c.with_title do
+  = _('Banner title')
+  = _('Banner content')
+```
+
 ### Vue
 
 This section describes using callouts when they are rendered on the client in `.vue` components.

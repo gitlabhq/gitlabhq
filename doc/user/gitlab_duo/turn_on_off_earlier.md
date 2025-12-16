@@ -40,7 +40,7 @@ When GitLab Duo is turned off for a group, project, or instance:
 
 {{< tab title="In 17.8 to 18.1" >}}
 
-In GitLab 17.8 and later, follow these instructions to turn GitLab Duo on or off
+In GitLab 17.8 to 18.1, follow these instructions to turn GitLab Duo on or off
 for a group, including its subgroups and projects.
 
 Prerequisites:
@@ -147,7 +147,7 @@ To turn GitLab Duo on or off for a group or subgroup:
 
 {{< tab title="In 17.4 to 18.1" >}}
 
-In GitLab 17.4 and later, follow these instructions to turn GitLab Duo on or off for a project.
+In GitLab 17.4 to 18.1, follow these instructions to turn GitLab Duo on or off for a project.
 
 Prerequisites:
 
@@ -190,7 +190,7 @@ In GitLab 17.3 and earlier, follow these instructions to turn GitLab Duo on or o
 
 {{< tab title="In 17.7 to 18.1" >}}
 
-In GitLab 17.7 and later, follow these instructions to turn GitLab Duo on or off for an instance.
+In GitLab 17.7 to 18.1, follow these instructions to turn GitLab Duo on or off for an instance.
 
 Prerequisites:
 

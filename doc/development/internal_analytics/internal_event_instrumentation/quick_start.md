@@ -590,7 +590,7 @@ This asserts that no tracking attributes are in use.
 ### Using Internal Events API
 
 You can also use our API to track events from other systems connected to a GitLab instance.
-See the [Usage Data API documentation](../../../api/usage_data.md#events-tracking-api) for more information.
+For more information, see [Usage Data API documentation](../../../api/usage_data.md#track-internal-events).
 
 ### Internal Events on other systems
 

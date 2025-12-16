@@ -9,14 +9,14 @@ module Types
 
       PERCENTILES = ::Ci::CollectPipelineAnalyticsServiceBase::ALLOWED_PERCENTILES
 
-      PERCENTILES.each do |p|
-        field "p#{p}", Types::DurationType,
-          null: true, description: "#{p}th percentile. #{p}% of the durations are lower than this value.",
-          experiment: { milestone: '15.8' }
+      field :mean, Types::DurationType,
+        null: true, description: 'Mean (average) duration.',
+        experiment: { milestone: '18.7' }
 
-        define_method(:"p#{p}") do
-          object[:"p#{p}"]
-        end
+      PERCENTILES.each do |p|
+        field :"p#{p}", Types::DurationType,
+          null: true, description: "#{p}th percentile. #{p}% of the durations are lower than this value.",
+          experiment: { milestone: '15.8' }, hash_key: :"p#{p}"
       end
     end
     # rubocop: enable Graphql/AuthorizeTypes

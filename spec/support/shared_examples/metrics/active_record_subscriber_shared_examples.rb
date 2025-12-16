@@ -73,7 +73,7 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role, inc
           subscriber_hash = {
             "db_#{db_config_name}_cached_count": record_cached_query ? 1 : 0,
             "db_#{db_config_name}_count": record_query ? 1 : 0,
-            "db_#{db_config_name}_write_count": record_write_query ? 1 : 0,
+            "db_#{db_config_name}_write_count": 0,
             "db_#{db_config_name}_duration_s": record_query ? 0.002 : 0.0,
             "db_#{db_config_name}_wal_count": record_wal_query ? 1 : 0,
             "db_#{db_config_name}_wal_cached_count": record_wal_query && record_cached_query ? 1 : 0
@@ -82,11 +82,11 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role, inc
           if include_aggregated
             subscriber_hash = subscriber_hash.merge({
               db_count: record_query ? 1 : 0,
-              db_write_count: record_write_query ? 1 : 0,
+              db_write_count: 0,
               db_cached_count: record_cached_query ? 1 : 0,
               db_replica_cached_count: record_cached_query ? 1 : 0,
               db_replica_count: record_query ? 1 : 0,
-              db_replica_write_count: record_write_query ? 1 : 0,
+              db_replica_write_count: 0,
               db_replica_duration_s: record_query ? 0.002 : 0.0,
               db_replica_wal_count: record_wal_query ? 1 : 0,
               db_replica_wal_cached_count: record_wal_query && record_cached_query ? 1 : 0
@@ -139,7 +139,7 @@ RSpec.shared_examples 'record ActiveRecord metrics in a metrics transaction' do 
       expect(transaction).not_to receive(:increment).with("gitlab_transaction_db_#{db_role}_count_total".to_sym, 1, { db_config_name: db_config_name }) if db_role
     end
 
-    if record_write_query
+    if record_write_query && db_role != :replica
       expect(transaction).to receive(:increment).with(:gitlab_transaction_db_write_count_total, 1, { db_config_name: db_config_name })
     else
       expect(transaction).not_to receive(:increment).with(:gitlab_transaction_db_write_count_total, 1, { db_config_name: db_config_name })

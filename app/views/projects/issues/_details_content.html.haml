@@ -21,8 +21,6 @@
   .js-issue-widgets
     = render 'projects/issues/sentry_stack_trace', issuable: issuable
 
-    = render 'projects/issues/design_management'
-
     = render_if_exists 'projects/issues/work_item_links'
     = render_if_exists 'projects/issues/linked_resources'
     = render 'projects/issues/related_issues'

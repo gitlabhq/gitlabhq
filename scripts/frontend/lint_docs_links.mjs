@@ -2,7 +2,7 @@
 
 import { ESLint } from 'eslint';
 import pluginVue from 'eslint-plugin-vue';
-import localRules from 'eslint-plugin-local-rules';
+import { eslintLocalRules } from '../../tooling/eslint-config/eslint-local-rules/index.mjs';
 
 const RULE_REQUIRE_VALID_HELP_PAGE_PATH = 'local-rules/require-valid-help-page-path';
 const RULE_VUE_REQUIRE_VALID_HELP_PAGE_LINK_COMPONENT =
@@ -51,7 +51,7 @@ async function lintFiles(filePaths) {
         sourceType: 'module',
       },
       plugins: {
-        'local-rules': localRules,
+        'local-rules': eslintLocalRules,
       },
     },
     {

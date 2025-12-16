@@ -170,6 +170,13 @@ Style/SignalException:
     - '**/*/Dangerfile'
     - 'tooling/danger/**/*.rb'
 
+# See https://gitlab.com/groups/gitlab-org/-/epics/5076
+RSpec/RailsControllerTesting:
+  Enabled: true
+  Include:
+    - '{,ee/,jh/}spec/controllers/**/*'
+    - '{,ee/,jh/}spec/requests/**/*'
+
 RSpec/SpecFilePathFormat:
   Exclude:
     - 'qa/**/*'
@@ -848,6 +855,13 @@ API/DescriptionSuccessResponse:
     - 'lib/**/api/**/*.rb'
     - 'ee/lib/**/api/**/*.rb'
 
+API/DescriptionSummary:
+  Enabled: true
+  SafeAutoCorrect: false
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
 API/DescriptionTags:
   Enabled: true
   SafeAutoCorrect: false
@@ -855,7 +869,19 @@ API/DescriptionTags:
     - 'lib/**/api/**/*.rb'
     - 'ee/lib/**/api/**/*.rb'
 
+API/EntityFieldType:
+  Enabled: true
+  Include:
+    - 'lib/**/api/entities/**/*.rb'
+    - 'ee/lib/**/api/entities/**/*.rb'
+
 API/ParameterDescription:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
+API/ParameterType:
   Enabled: true
   Include:
     - 'lib/**/api/**/*.rb'
@@ -1417,6 +1443,10 @@ Tailwind/StringInterpolation:
   - '{,ee/,jh/}app/views/**/*.haml'
 
 Cop/ActiveRecordDependent:
+  Exclude:
+    # We need to allow `dependent:` clauses in the `User` model for batched deletion
+    # during `User#destroy`. See: https://gitlab.com/gitlab-org/gitlab/-/issues/378217
+    - app/models/user.rb
   Include:
     - ee/app/models/**/*.rb
 
@@ -1474,4 +1504,10 @@ Gitlab/NoHelpersInPresenters:
     - '{,ee/,jh/}app/presenters/**/*.rb'
 
 Gitlab/PreventOrganizationFirst:
+  Enabled: true
+
+Gitlab/AvoidDefaultOrganization:
+  Enabled: true
+
+Gitlab/AvoidConstDefaultOrganizationId:
   Enabled: true

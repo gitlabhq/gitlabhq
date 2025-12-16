@@ -76,12 +76,6 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
                       name
                     }
                   }
-                  previousStageJobs {
-                    nodes {
-                      id
-                      name
-                    }
-                  }
                   scheduled
                   scheduledAt
                   status: detailedStatus {

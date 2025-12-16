@@ -23,7 +23,8 @@ title: Secret detection exclusions
 Secret detection may detect something that's not actually a secret. For example, if you use
 a fake value as a placeholder in your code, it might be detected and possibly blocked.
 
-To avoid false positives you can exclude from secret detection:
+To avoid false positives and [optimize performance](secret_push_protection/_index.md#optimize-performance),
+you can exclude from secret detection:
 
 - A path.
 - A raw value.
@@ -54,7 +55,7 @@ Prerequisites:
 
 To define an exclusion:
 
-1. In the left sidebar, select **Search or go to** and go to your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Secure** > **Security configuration**.
 1. Scroll down to **Secret push protection**.
 1. Turn on the **Secret push protection** toggle.

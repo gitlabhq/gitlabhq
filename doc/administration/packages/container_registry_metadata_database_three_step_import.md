@@ -17,7 +17,7 @@ Import your existing container registry metadata.
 The following procedure is recommended for larger registries (200 GiB or more), or if you want to
 minimize downtime while completing the import.
 
-### Pre-import repositories (step one)
+## Pre-import repositories (step one)
 
 Users have reported step one import completed at [rates of 2 to 4 TB per hour](https://gitlab.com/gitlab-org/gitlab/-/issues/423459).
 At the slower speed, registries with over 100TB of data could take longer than 48 hours.
@@ -90,7 +90,7 @@ causes step two to take more time.
 
 {{< /alert >}}
 
-### Import all repository data (step two)
+## Import all repository data (step two)
 
 This step requires the registry to be shut down or set in `read-only` mode;
 however, you can expect this step to complete around 90% faster than step one.
@@ -225,7 +225,7 @@ Allow enough time for downtime while step two is being executed.
 
 You can now use the metadata database for all operations!
 
-### Import remaining data (step three)
+## Import remaining data (step three)
 
 Even though the registry is now fully using the database for its metadata, it
 does not yet have access to any potentially unused layer blobs, preventing these

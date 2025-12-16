@@ -5,4 +5,3 @@ feature_category: system_access
 boundaries:
   - group
   - instance
-available_for_tokens: true

@@ -1,0 +1,21 @@
+---
+description: A reviewer is removed from an MR
+internal_events: true
+status: active
+action: reviewer_removed_from_mr
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  via:
+    description: The source of the removal ('ui_simple', 'ui_complex')
+product_group: code_review
+product_categories:
+- code_review_workflow
+milestone: '18.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214295
+tiers:
+- free
+- premium
+- ultimate

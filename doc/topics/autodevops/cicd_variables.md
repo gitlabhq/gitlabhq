@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: CI/CD variables
 ---
@@ -11,8 +11,6 @@ Helm chart, or scale your application.
 ## Build and deployment variables
 
 Use these variables to customize and deploy your build.
-
-<!-- markdownlint-disable MD056 -->
 
 | **CI/CD variable**                      | **Description** |
 |-----------------------------------------|-----------------|
@@ -62,8 +60,6 @@ Use these variables to customize and deploy your build.
 | `ROLLOUT_STATUS_DISABLED`               | Used to disable rollout status check because it does not support all resource types, for example, `cronjob`. |
 | `STAGING_ENABLED`                       | Used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
 | `TRACE`                                 | Set to any value to make Helm commands produce verbose output. You can use this setting to help diagnose Auto DevOps deployment problems. |
-
-<!-- markdownlint-enable MD056 -->
 
 ## Database variables
 
@@ -145,7 +141,7 @@ Prerequisites:
 
 To configure secret variables:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Create a CI/CD variable with the prefix `K8S_SECRET_`. For example, you

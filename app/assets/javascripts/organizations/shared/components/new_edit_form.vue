@@ -7,7 +7,6 @@ import AvatarUploadDropzone from '~/organizations/shared/components/avatar_uploa
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY } from '~/vue_shared/components/markdown/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import VisibilityLevelRadioButtons from '~/visibility_level/components/visibility_level_radio_buttons.vue';
 import {
   ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS,
@@ -35,7 +34,6 @@ export default {
     OrganizationUrlField,
     AvatarUploadDropzone,
     MarkdownField,
-    HelpPageLink,
     VisibilityLevelRadioButtons,
   },
   i18n: {
@@ -152,10 +150,6 @@ export default {
         },
         [FORM_FIELD_VISIBILITY_LEVEL]: {
           label: s__('Organization|Organization visibility level'),
-          labelDescription: {
-            text: s__('Organization|Who can see this organization?'),
-            linkText: s__('Organization|Learn more about visibility levels'),
-          },
         },
       };
 
@@ -259,14 +253,6 @@ export default {
         />
       </template>
 
-      <template #group(visibilityLevel)-label-description>
-        {{ fields.visibilityLevel.labelDescription.text }}
-        <help-page-link
-          href="user/organization/_index"
-          anchor="view-an-organizations-visibility-level"
-          >{{ fields.visibilityLevel.labelDescription.linkText }}</help-page-link
-        >.
-      </template>
       <template #input(visibilityLevel)="{ value, input }">
         <visibility-level-radio-buttons
           :checked="value"

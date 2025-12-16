@@ -235,23 +235,23 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, :use_cl
             }
           }
         },
-        "does insert into software_licenses" => {
+        "does insert into features" => {
           migration: ->(klass) do
             def up
-              software_license_class.create!(name: 'aaa')
+              features_class.create!(key: 'aaa')
             end
 
             def down
-              software_license_class.where(name: 'aaa').delete_all
+              features_class.where(key: 'aaa').delete_all
             end
 
-            def software_license_class
+            def features_class
               Class.new(Gitlab::Database::Migration[2.0]::MigrationRecord) do
-                self.table_name = 'software_licenses'
+                self.table_name = 'features'
               end
             end
           end,
-          query_matcher: /INSERT INTO "software_licenses"/,
+          query_matcher: /INSERT INTO "features"/,
           expected: {
             no_gitlab_schema: {
               main: :dml_not_allowed,

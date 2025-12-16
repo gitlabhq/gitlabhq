@@ -5,7 +5,7 @@ module QA
     module Project
       module WorkItem
         class Show < Page::Base
-          include Page::Component::WorkItem::Common
+          include Page::Component::DesignManagement
           include Page::Component::WorkItem::Note
           include Page::Component::WorkItem::Widgets
 
@@ -25,6 +25,10 @@ module QA
             element 'work-item-actions-dropdown'
             element 'delete-action'
             element 'state-toggle-action'
+          end
+
+          view 'app/assets/javascripts/work_items/components/work_item_created_updated.vue' do
+            element 'work-item-author'
           end
 
           view 'app/assets/javascripts/work_items/components/work_item_description.vue' do
@@ -63,6 +67,12 @@ module QA
             within_element('work-item-description-wrapper') do
               fill_editor_element('markdown-editor-form-field', new_description)
               click_element('save-description')
+            end
+          end
+
+          def has_author?(author_username)
+            within_element('work-item-author') do
+              has_text?(author_username)
             end
           end
 

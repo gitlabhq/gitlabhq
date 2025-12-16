@@ -150,7 +150,7 @@ module Gitlab
           printer = ClientFieldRedactor.new
           redacted = doc.dup.to_query_string(printer: printer)
 
-          return redacted if printer.fields_printed > 0
+          redacted if printer.fields_printed > 0
         end
 
         def complexity(schema)

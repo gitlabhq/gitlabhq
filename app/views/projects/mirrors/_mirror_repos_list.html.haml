@@ -1,4 +1,5 @@
 - mirror_settings_enabled = can?(current_user, :admin_remote_mirror, @project)
+- display_pull_mirrors = params.fetch(:page, '1').to_s == '1'
 
 .table-responsive.gl-mb-0
   - if !@project.mirror? && @project.remote_mirrors.count == 0
@@ -14,28 +15,8 @@
           %th
           %th
       %tbody.js-mirrors-table-body
-        = render_if_exists 'projects/mirrors/table_pull_row'
-        - @project.remote_mirrors.each_with_index do |mirror, index|
-          - next if mirror.new_record?
-          %tr.rspec-mirrored-repository-row{ class: ('bg-secondary' if mirror.disabled?), data: { testid: 'mirrored-repository-row-container' } }
-            %td{ data: { testid: 'mirror-repository-url-content' } }
-              = mirror.safe_url || _('Invalid URL')
-              = render_if_exists 'projects/mirrors/mirror_branches_setting_badge', record: mirror
-            %td= _('Push')
-            %td
-              = mirror.last_update_started_at.present? ? time_ago_with_tooltip(mirror.last_update_started_at) : _('Never')
-            %td{ data: { testid: 'mirror-last-update-at-content' } }= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : _('Never')
-            %td
-              - if mirror.disabled?
-                = render 'projects/mirrors/disabled_mirror_badge'
-              - if mirror.last_error.present?
-                = gl_badge_tag _('Error'), { variant: :danger }, { data: { toggle: 'tooltip', html: 'true', testid: 'mirror-error-badge-content' }, title: html_escape(mirror.last_error.try(:strip)), tabindex: 0 }
-            %td
-              - if mirror_settings_enabled
-                .btn-group.mirror-actions-group{ role: 'group' }
-                  - if mirror.ssh_key_auth?
-                    = clipboard_button(text: mirror.ssh_public_key, variant: :default, category: :primary, size: :medium, title: _('Copy SSH public key'), testid: 'copy-public-key-button')
-                  = render 'shared/remote_mirror_update_button', remote_mirror: mirror
-                  = render Pajamas::ButtonComponent.new(variant: :danger,
-                    icon: 'remove',
-                    button_options: { class: 'js-delete-mirror rspec-delete-mirror', title: _('Remove'), data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' } })
+        = render_if_exists 'projects/mirrors/table_pull_row' if display_pull_mirrors
+        - @remote_mirrors.each do |remote_mirror|
+          = render 'projects/mirrors/remote_mirror', remote_mirror: remote_mirror, mirror_settings_enabled: mirror_settings_enabled
+
+    = paginate @remote_mirrors, theme: 'gitlab', params: { anchor: 'js-push-remote-settings' }

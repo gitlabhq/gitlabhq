@@ -23,15 +23,14 @@ module RapidDiffs
               sides: [
                 {
                   line: pair[:left],
-                  position: :old,
-                  border: :right
+                  position: :old
                 },
                 {
                   line: pair[:right],
-                  position: :new,
-                  border: :both
+                  position: :new
                 }
-              ]
+              ],
+              expanded: pair[:left]&.expanded? || pair[:right]&.expanded?
             }
           end
         end

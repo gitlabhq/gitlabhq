@@ -32,6 +32,43 @@ to access them as we do in Rails views), local variables are fine.
 
 Always use an [Entity](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/api/entities) to present the endpoint's payload.
 
+### Definining entity fields
+
+Every exposed field in an entity must include or reference a valid type.
+
+#### Referencing another entity
+
+When exposing a field that references another entity, use the `using` option.
+The using option only accepts a constant that points to an API::Entities class.
+A good example is as follows,
+
+```ruby
+  expose :project, using: ::API::Entities::BasicProjectDetails
+```
+
+#### Valid field types
+
+Field types must be specified as strings.
+The following types are accepted:
+
+| Category | Types |
+|----------|-------|
+| Scalar | `Integer`, `Float`, `BigDecimal`, `Numeric`, `Date`, `DateTime`, `Time`, `String`, `Symbol`, `Boolean` |
+| Structures | `Hash`, `Array`, `Set` |
+| Special | `JSON`, `File` |
+| Entity references | Any `API::Entities::*` class (as a string) |
+
+#### Field types definition
+
+Field types should be defined in the `documentation` hash:
+
+```ruby
+  expose :id, documentation: { type: 'Integer', example: 1 }
+  expose :name, documentation: { type: 'String', example: 'John Doe' }
+  expose :active, documentation: { type: 'Boolean', example: true }
+  expose :project, documentation: { type: 'API::Entities::BasicProject'}
+```
+
 ## Documentation
 
 Each new or updated API endpoint must come with documentation.
@@ -46,7 +83,7 @@ Every method must be described using the [Grape DSL](https://github.com/ruby-gra
 (see [`environments.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/environments.rb)
 for a good example):
 
-- `desc` for the method summary.
+- `desc` for the method summary. This must include a summary string no more than 120 characters.
 - `detail` for each `desc` block. This must be a string.
 - `success` for each `desc` block. This defines the success response.
 - `tags` for each `desc` block. This should be a string, or array of strings.
@@ -72,6 +109,40 @@ get do
 end
 ```
 
+### Defining endpoint desc
+
+Every endpoint must include a summary string in the `desc` block.
+The summary describes the operation on the REST resource and is used in the generated OpenAPI documentation.
+
+The summary _should_:
+
+- Begin with an action verb aligned to the HTTP method (Get, List, Create, Update, Delete)
+- Identify the resource being operated on
+- Include qualifiers when needed to distinguish similar endpoints
+
+The summary _must_:
+
+- Be a string literal or interpolated string (not a variable or method call)
+- Not exceed 120 characters
+
+A good example is as follows:
+
+```ruby
+  desc 'Get a specific environment' do
+    detail 'Returns environment details. This feature was introduced in GitLab 18.12.'
+    success Entities::Environment
+  end
+```
+
+A bad example is as follows:
+
+```ruby
+  desc 'Get a specific environment. Returns environment details. This feature was introduced in GitLab 18.12.' do
+    detail 'Only available to authenticated project owner.'
+    success Entities::Environment
+  end
+```
+
 ### Defining endpoint details
 
 Every endpoint must have a `detail` value for each `desc` block. The value must be a string.
@@ -93,6 +164,24 @@ Instead, format the response based on the endpoint response:
   For example, `success Entities::System::BroadcastMessage`
 - If the endpoint does not respond with an object, include a status code and message.
   For example, `success code: 204, message: 'Record was deleted'`
+
+### Marking endpoints as deprecated
+
+When deprecating an endpoint, add the following to the `desc` block:
+
+- Add a `deprecated true` [option](https://github.com/ruby-grape/grape-swagger?tab=readme-ov-file#deprecating-routes).
+- Add a note on the deprecation timing to the detail option.
+
+```ruby
+desc 'Get legacy broadcast messages' do
+  detail 'Deprecated in GitLab 17.0. Use /api/v4/broadcast_messages instead.'
+  deprecated true
+  success Entities::System::BroadcastMessage
+  tags ['broadcast_messages']
+end
+```
+
+Together, these make the deprecation programmatically discoverable in the OpenAPI specification.
 
 ### Choosing a tag
 
@@ -303,6 +392,12 @@ pass `params` to be `{ user_ids: [] }`.
 
 There is [an open issue in the Grape tracker](https://github.com/ruby-grape/grape/issues/2068)
 to make this easier.
+
+## Workhorse-assisted uploads
+
+All REST API endpoints that accept file content must use Workhorse-assisted uploads.
+
+See the [Workhorse uploads documentation](uploads/_index.md#workhorse-assisted-uploads) for implementation details.
 
 ## Using HTTP status helpers
 

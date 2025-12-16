@@ -17,10 +17,10 @@ title: GitLabの保護
 
 このセクションでは、プラットフォームに関する一般的な情報と推奨事項について説明します。
 
-- [パスワードとOAuthトークンの保存方法](password_storage.md)。
-- [統合認証で作成されたユーザーのパスワードの生成方法](passwords_for_integrated_authentication_methods.md)。
-- [CRIME脆弱性の管理方法](crime_vulnerability.md)。
-- [サードパーティインテグレーションのシークレットの定期的なローテーションの必要性](rotate_integrations_secrets.md)。
+- [パスワードとOAuthトークンのストレージ](password_storage.md)
+- 統合[認証](passwords_for_integrated_authentication_methods.md)で作成されたユーザーのパスワード生成
+- [CRIME](crime_vulnerability.md)脆弱性管理
+- [サードパーティのインテグレーションに対するシークレットのローテーション](rotate_integrations_secrets.md)
 
 ## 推奨事項 {#recommendations}
 
@@ -32,7 +32,7 @@ GitLab環境におけるセキュリティ対策状況を改善する方法に�
 
 ただし、使用する必要がある場合は、システム上のGitLabに関連するすべての場所をスキャン対象から除外する必要があります。誤検出によりファイルが隔離される可能性があるためです。
 
-具体的には、次のGitLabディレクトリをスキャン対象から除外してください。
+具体的には、次のGitLabディレクトリをスキャン対象から除外してください:
 
 - `/var/opt/gitlab`
 - `/etc/gitlab/`
@@ -48,7 +48,7 @@ GitLab環境におけるセキュリティ対策状況を改善する方法に�
 - [SSHキー方式を制限し、最小キー長を要求する](ssh_keys_restrictions.md)。
 - [サインアップ制限でアカウント作成を制限する](../administration/settings/sign_up_restrictions.md)。
 - [サインアップ時に確認メールを送信する](user_email_confirmation.md)
-- [2要素認証を必須にして](two_factor_authentication.md)、ユーザーに[2要素認証を実施する](../user/profile/account/two_factor_authentication.md)を求める。
+- [2要素認証を必須にして](two_factor_authentication.md) 、ユーザーに[2要素認証を実施する](../user/profile/account/two_factor_authentication.md)を求める。
 - [複数のIPからのログインを制限する](../administration/reporting/ip_addr_restrictions.md)。
 - [ユーザーパスワードをリセットする方法](reset_user_password.md)。
 - [ロックされたユーザーのロックを解除する方法](unlock_user.md)。
@@ -67,7 +67,7 @@ GitLab環境におけるセキュリティ対策状況を改善する方法に�
 - [インポートおよびエクスポートの制限とタイムアウトを設定する方法](../administration/settings/import_and_export_settings.md)。
 - [Runnerのセキュリティに関する考慮事項と推奨事項を確認する](https://docs.gitlab.com/runner/security/)。
 - [CI/CD変数のセキュリティに関する考慮事項を確認する](../ci/variables/_index.md#cicd-variable-security)。
-- [CI/CDパイプラインでのシークレットの使用と保護に関するパイプラインセキュリティを確認する](../ci/pipelines/pipeline_security.md)。
+- [CI/CDパイプラインでのシークレットの使用と保護に関するパイプラインセキュリティを確認する](../ci/pipeline_security/_index.md)。
 - [インスタンス全体のコンプライアンスとセキュリティポリシーの管理](compliance_security_policy_management.md)。
 
 ### パッチ {#patching}

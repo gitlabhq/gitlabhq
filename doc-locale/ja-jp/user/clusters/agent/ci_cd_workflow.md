@@ -22,14 +22,14 @@ GitLab CI/CDを使用して、Kubernetesクラスターに安全に接続、デ�
 
 そのためには、[クラスターにエージェントをインストール](install/_index.md)します。完了すると、Kubernetesコンテキストが作成され、GitLab CI/CDパイプラインでKubernetes APIコマンドを実行できます。
 
-クラスターへのアクセスを安全にするには:
+クラスターへのアクセスを安全にするには: 
 
 - 各エージェントには、個別のコンテキスト(`kubecontext`)があります。
 - エージェントが設定されているプロジェクトと、承認した追加のプロジェクトのみが、クラスター内のエージェントにアクセスできます。
 
 GitLab CI/CDを使用してクラスターとやり取りするには、RunnerをGitLabに登録する必要があります。ただし、これらのRunnerは、エージェントが存在するクラスター内にある必要はありません。
 
-前提要件: 
+前提要件:
 
 - [GitLab CI/CDが有効になっている](../../../ci/pipelines/settings.md#disable-gitlab-cicd-pipelines)ことを確認してください。
 
@@ -46,7 +46,7 @@ Kubernetesマニフェストを含む複数のGitLabプロジェクトがある�
 
 1. 独自のGitLabプロジェクトで、またはKubernetesマニフェストを保持するGitLabプロジェクトの1つで[Kubernetes向けGitLabエージェントをインストール](install/_index.md)します。
 1. GitLabプロジェクトで[エージェントアクセスを承認](#authorize-agent-access)します。
-1. オプション: セキュリティを強化するには、[代理を使用](#restrict-project-and-group-access-by-using-impersonation)します。
+1. オプション。セキュリティを強化するには、[代理を使用](#restrict-project-and-group-access-by-using-impersonation)します。
 1. [`.gitlab-ci.yml`ファイルを更新](#update-your-gitlab-ciyml-file-to-run-kubectl-commands)して、エージェントのKubernetesコンテキストを選択し、Kubernetes APIコマンドを実行します。
 1. パイプラインを実行して、クラスターにデプロイするか、クラスターを更新します。
 
@@ -66,9 +66,9 @@ Kubernetesマニフェストを含む複数のGitLabプロジェクトがある�
 
 {{< /history >}}
 
-Kubernetesマニフェストを保持するGitLabプロジェクトに、エージェントへのアクセスをを承認するには:
+Kubernetesマニフェストを保持するGitLabプロジェクトに、エージェントへのアクセスをを承認するには: 
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、[エージェント設定ファイル](install/_index.md#create-an-agent-configuration-file)(`config.yaml`)を含むプロジェクトを見つけます。
+1. 左側のサイドバーで、**検索または移動先**を選択して、[エージェント設定ファイル](install/_index.md#create-an-agent-configuration-file)(`config.yaml`)を含むプロジェクトを見つけます。[新しいナビゲーションをオンにしている](../../interface_redesign.md#turn-new-navigation-on-or-off)場合、このフィールドは上部のバーにあります。
 1. `config.yaml`ファイルを編集します。`ci_access`キーワードの下に、`projects`属性を追加します。
 1. `id`には、プロジェクトへのパスを追加します。
 
@@ -82,7 +82,7 @@ Kubernetesマニフェストを保持するGitLabプロジェクトに、エー�
    - 追加の階層に対応するために、同じクラスターに追加のエージェントをインストールできます。
    - 最大500個のプロジェクトを承認できます。
 
-これらの変更を行った後:
+これらの変更を行った後: 
 
 - すべてのCI/CDジョブに、すべての共有エージェント接続のコンテキストを含む`kubeconfig`ファイルが含まれるようになりました。
 - `kubeconfig`パスは、`$KUBECONFIG`環境変数で使用できます。
@@ -99,7 +99,7 @@ Kubernetesマニフェストを保持するGitLabプロジェクトに、エー�
 
 エージェントにアクセスするようにグループまたはサブグループ内のすべてのGitLabプロジェクトを承認するには: 
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、[エージェント設定ファイル](install/_index.md#create-an-agent-configuration-file)(`config.yaml`)を含むプロジェクトを見つけます。
+1. 左側のサイドバーで、**検索または移動先**を選択して、[エージェント設定ファイル](install/_index.md#create-an-agent-configuration-file)(`config.yaml`)を含むプロジェクトを見つけます。[新しいナビゲーションをオンにしている](../../interface_redesign.md#turn-new-navigation-on-or-off)場合、このフィールドは上部のバーにあります。
 1. `config.yaml`ファイルを編集します。`ci_access`キーワードの下に、`groups`属性を追加します。
 1. `id`には、パスを追加します: 
 
@@ -109,12 +109,12 @@ Kubernetesマニフェストを保持するGitLabプロジェクトに、エー�
        - id: path/to/group/subgroup
    ```
 
-   - [インスタンスレベルの認証](#authorize-all-projects-in-your-gitlab-instance-to-access-the-agent)アプリケーション設定が有効になっていない限り、認証されたグループは、エージェントの構成プロジェクトと同じトップレベルグループを持っている必要があります。
+   - [インスタンスレベルの承認](#authorize-all-projects-in-your-gitlab-instance-to-access-the-agent)アプリケーション設定が有効になっていない限り、承認されたグループは、エージェントの設定プロジェクトと同じトップレベルグループを持っている必要があります。
    - 追加の階層に対応するために、同じクラスターに追加のエージェントをインストールできます。
    - 承認されたグループのすべてのサブグループも、（個別に指定されなくても）同じエージェントにアクセスできます。
    - 最大500個のグループを承認できます。
 
-これらの変更を行った後:
+これらの変更を行った後: 
 
 - グループとそのサブグループに属するすべてのプロジェクトが、エージェントにアクセスできるようになりました。
 - すべてのCI/CDジョブに、すべての共有エージェント接続のコンテキストを含む`kubeconfig`ファイルが含まれるようになりました。
@@ -136,7 +136,7 @@ Kubernetesマニフェストを保持するGitLabプロジェクトに、エー�
 
 {{< /history >}}
 
-前提要件: 
+前提要件:
 
 - 管理者である必要があります。
 
@@ -146,7 +146,7 @@ GitLabインスタンス内のすべてのプロジェクトを承認するよ�
 
 {{< tab title="UIを使用する" >}}
 
-1. **管理者**エリアで、**設定 > 一般**を選択し、**Kubernetes向けGitLabエージェント**セクションを展開します。
+1. **管理者**エリアで、**設定** > **一般**を選択し、**GitLab Agent for Kubernetes**セクションを展開します。
 1. **インスタンスレベルの認証を有効にする**を選択します。
 1. **変更を保存**を選択します。
 
@@ -162,8 +162,8 @@ GitLabインスタンス内のすべてのプロジェクトを承認するよ�
 
 すべてのGitLabプロジェクトにアクセスするようにエージェントを承認するには: 
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、[エージェント設定ファイル](install/_index.md#create-an-agent-configuration-file)(`config.yaml`)を含むプロジェクトを見つけます。
-1. `config.yaml`ファイルを編集します。`ci_access`キーワードの下に、`instance`属性を追加します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、[エージェント設定ファイル](install/_index.md#create-an-agent-configuration-file)(`config.yaml`)を含むプロジェクトを見つけます。[新しいナビゲーションをオンにしている](../../interface_redesign.md#turn-new-navigation-on-or-off)場合、このフィールドは上部のバーにあります。
+1. `config.yaml`ファイルを編集します。`ci_access`キーワードの下に、`instance`属性を追加します:
 
    ```yaml
    ci_access:
@@ -181,14 +181,24 @@ GitLabインスタンス内のすべてのプロジェクトを承認するよ�
 
 Kubernetesコマンドを実行するプロジェクトで、プロジェクトの`.gitlab-ci.yml`ファイルを編集します。
 
-`script`キーワードの下の最初のコマンドで、エージェントのコンテキストを設定します。`<path/to/agent/project>:<agent-name>`形式を使用します。次に例を示します: 
+`script`キーワードの下の最初のコマンドで、エージェントのコンテキストを設定します。`<path/to/agent/project>:<agent-name>`形式を使用します。次に例を示します:
 
 ```yaml
 deploy:
-  image:
-    name: bitnami/kubectl:latest
-    entrypoint: ['']
+  image: debian:13-slim
+  variables:
+    KUBECTL_VERSION: v1.34
+    DEBIAN_FRONTEND: noninteractive
   script:
+    # Follows https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management
+    - apt-get update
+    - apt-get install -y --no-install-recommends apt-transport-https ca-certificates curl gnupg
+    - curl --fail --silent --show-error --location "https://pkgs.k8s.io/core:/stable:/${KUBECTL_VERSION}/deb/Release.key" | gpg --dearmor --output /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    - chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    - echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/${KUBECTL_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list
+    - chmod 644 /etc/apt/sources.list.d/kubernetes.list
+    - apt-get update
+    - apt-get install -y --no-install-recommends kubectl
     - kubectl config get-contexts
     - kubectl config use-context path/to/agent/project:agent-name
     - kubectl get pods
@@ -198,7 +208,7 @@ deploy:
 
 ### Auto DevOpsを使用する環境 {#environments-that-use-auto-devops}
 
-Auto DevOpsが有効になっている場合は、CI/CD変数`KUBE_CONTEXT`を定義する必要があります。Auto DevOpsで使用するエージェントのコンテキストに`KUBE_CONTEXT`の値を設定します: 
+Auto DevOpsが有効になっている場合は、CI/CD変数`KUBE_CONTEXT`を定義する必要があります。Auto DevOpsで使用するエージェントのコンテキストに`KUBE_CONTEXT`の値を設定します:
 
 ```yaml
 deploy:
@@ -206,13 +216,13 @@ deploy:
     KUBE_CONTEXT: path/to/agent/project:agent-name
 ```
 
-異なるエージェントを別々のAuto DevOpsジョブに割り当てることができます。インスタンスのために、Auto DevOpsでは、`staging`ジョブに1つのエージェントを使用し、`production`ジョブに別のエージェントを使用できます。複数のエージェントを使用するには、各エージェントに[環境スコープのCI/CD変数](../../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable)を定義します。次に例を示します: 
+異なるエージェントを別々のAuto DevOpsジョブに割り当てることができます。インスタンスのために、Auto DevOpsでは、`staging`ジョブに1つのエージェントを使用し、`production`ジョブに別のエージェントを使用できます。複数のエージェントを使用するには、各エージェントに[環境スコープのCI/CD変数](../../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable)を定義します。次に例を示します:
 
 1. `KUBE_CONTEXT`という名前の2つの変数を定義します。
 1. 最初の変数: 
    1. `environment`を`staging`に設定します。
    1. 値をステージングエージェントのコンテキストに設定します。
-1. 2番目の変数:
+1. 2番目の変数: 
    1. `environment`を`production`に設定します。
    1. 値を本番環境エージェントのコンテキストに設定します。
 
@@ -223,7 +233,7 @@ deploy:
 - 証明書ベースのクラスターのコンテキストは`gitlab-deploy`と呼ばれます。このコンテキストは、デフォルトで常に選択されます。
 - エージェントのコンテキストは`$KUBECONFIG`に含まれています。それらは`kubectl config use-context <path/to/agent/project>:<agent-name>`を使用して選択できます。
 
-証明書ベースの接続が存在する場合にエージェント接続を使用するには、新しい`kubectl`設定コンテキストを手動で設定できます。次に例を示します: 
+証明書ベースの接続が存在する場合にエージェント接続を使用するには、新しい`kubectl`設定コンテキストを手動で設定できます。次に例を示します:
 
 ```yaml
 deploy:
@@ -271,7 +281,7 @@ KASを使用する環境と自己署名証明書を使用する場合は、証�
 
 代理を指定するには、エージェント設定ファイルで`access_as`属性を使用し、Kubernetes RBACルールを使用して代理アカウントの権限を管理します。
 
-代理にできるもの:
+代理にできるもの: 
 
 - エージェント自体（デフォルト）。
 - クラスターにアクセスするCI/CDジョブ。
@@ -297,7 +307,7 @@ KASを使用する環境と自己署名証明書を使用する場合は、証�
   - プロジェクトID。
   - このジョブが属する環境のslugとプラン。
 
-    `group1/group1-1/project1`のCIジョブの例:
+    `group1/group1-1/project1`のCIジョブの例: 
 
     - グループ`group1`のIDは23です。
     - グループ`group1/group1-1`のIDは25です。
@@ -306,7 +316,7 @@ KASを使用する環境と自己署名証明書を使用する場合は、証�
 
   グループリストは`[gitlab:ci_job, gitlab:group:23, gitlab:group_env_tier:23:production, gitlab:group:25, gitlab:group_env_tier:25:production, gitlab:project:150, gitlab:project_env:150:prod, gitlab:project_env_tier:150:production]`になります。
 
-- `Extra`は、リクエストに関する追加情報を伝えます。代理化されたIDには、次のプロパティが設定されます:
+- `Extra`は、リクエストに関する追加情報を伝えます。代理化されたIDには、次のプロパティが設定されます: 
 
 | プロパティ                             | 説明                                                                  |
 | ------------------------------------ | ---------------------------------------------------------------------------- |
@@ -319,7 +329,7 @@ KASを使用する環境と自己署名証明書を使用する場合は、証�
 | `agent.gitlab.com/environment_slug`  | 環境のslugが含まれています。環境で実行されている場合にのみ設定されます。 |
 | `agent.gitlab.com/environment_tier`  | 環境のプランが含まれています。環境で実行されている場合にのみ設定されます。 |
 
-CI/CDジョブのIDでアクセスを制限する例`config.yaml`:
+CI/CDジョブのIDでアクセスを制限する例`config.yaml`: 
 
 ```yaml
 ci_access:
@@ -379,7 +389,7 @@ IDは、次のキーで指定できます:
 
 デフォルトでは、エージェントが[プロジェクトで利用できる](#authorize-agent-access)場合、プロジェクトのすべてのCI/CDジョブはそのエージェントを使用できます。
 
-特定環境でのジョブのみにエージェントへのアクセスを制限するには、`environments`を`ci_access.projects`または`ci_access.groups`に追加します。次に例を示します: 
+特定環境でのジョブのみにエージェントへのアクセスを制限するには、`environments`を`ci_access.projects`または`ci_access.groups`に追加します。次に例を示します:
 
   ```yaml
   ci_access:
@@ -426,7 +436,7 @@ IDは、次のキーで指定できます:
 
 [保護ブランチ](../../project/repository/branches/protected.md)で実行されるジョブのみにエージェントへのアクセスを制限するには: 
 
-- `protected_branches_only: true`を`ci_access.projects`または`ci_access.groups`に追加します。次に例を示します: 
+- `protected_branches_only: true`を`ci_access.projects`または`ci_access.groups`に追加します。次に例を示します:
 
   ```yaml
   ci_access:
@@ -444,7 +454,7 @@ IDは、次のキーで指定できます:
 
 セキュリティを強化するために、この機能を[環境制限](#restrict-project-and-group-access-to-specific-environments)と組み合わせることができます。
 
-プロジェクトに複数の設定がある場合、最も具体的な設定のみが使用されます。たとえば、次の設定では、`example`グループが保護ブランチへのアクセスのみを許可するように設定されている場合でも、`example/my-project`の保護されていないブランチへのアクセスが許可されます:
+プロジェクトに複数の設定がある場合、最も具体的な設定のみが使用されます。たとえば、次の設定では、`example`グループが保護ブランチへのアクセスのみを許可するように設定されている場合でも、`example/my-project`の保護されていないブランチへのアクセスが許可されます: 
 
 ```yaml
 # .gitlab/agents/my-agent/config.yaml
@@ -496,7 +506,7 @@ Unable to connect to the server: x509: certificate signed by unknown authority
 
 このエラーは、ジョブがKAS証明書に署名した認証局（CA）を信頼しないために発生します。
 
-問題を解決するには、[CAを信頼するように `kubectl`を設定](#environments-with-kas-that-use-self-signed-certificates)します。
+問題を解決するには、[CAを信頼するように`kubectl`を設定](#environments-with-kas-that-use-self-signed-certificates)します。
 
 ### 検証エラー {#validation-errors}
 

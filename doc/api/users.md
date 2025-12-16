@@ -1278,7 +1278,16 @@ Lists all projects and groups a user is a member of.
 
 Returns the `source_id`, `source_name`, `source_type`, and `access_level` of a membership.
 Source can be of type `Namespace` (representing a group) or `Project`. The response represents only direct memberships. Inherited memberships, for example in subgroups, are not included.
-Access levels are represented by an integer value. For more details, read about the meaning of [access level values](access_requests.md#valid-access-levels).
+Access levels are represented by an integer value:
+
+- `0`: No access
+- `5`: Minimal access
+- `10`: Guest
+- `15`: Planner
+- `20`: Reporter
+- `30`: Developer
+- `40`: Maintainer
+- `50`: Owner
 
 ```plaintext
 GET /users/:id/memberships

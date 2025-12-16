@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlModal, GlCollapsibleListbox, GlToast, GlSprintf } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlModal, GlPopover, GlSprintf, GlToast } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import * as util from '~/lib/utils/url_utility';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
@@ -160,6 +160,7 @@ describe('View branch rules', () => {
   const findAllowForcePushToggle = () => wrapper.findByTestId('force-push-content');
   const findStatusChecksTitle = () => wrapper.findByText(I18N.statusChecksTitle);
   const findDeleteRuleButton = () => wrapper.findByTestId('delete-rule-button');
+  const findDeleteRuleButtonPopover = () => wrapper.findComponent(GlPopover);
   const findEditRuleNameButton = () => wrapper.findByTestId('edit-rule-name-button');
   const findDeleteRuleModal = () => wrapper.findComponent(GlModal);
   const findBranchRuleModal = () => wrapper.findComponent(BranchRuleModal);
@@ -415,6 +416,7 @@ describe('View branch rules', () => {
       roles: protectionPropsMock.roles,
       header: 'Allowed to push and merge',
       count: 2,
+      isProtectedByPolicy: false,
     });
   });
 
@@ -663,6 +665,10 @@ describe('View branch rules', () => {
         error: expect.any(Error),
       });
     });
+
+    it('does not render prevent delete by security policy popover', () => {
+      expect(findDeleteRuleButtonPopover().exists()).toBe(false);
+    });
   });
 
   describe('When rendered for predefined rules', () => {
@@ -754,8 +760,12 @@ describe('View branch rules', () => {
   });
 
   describe('Allow force push editing', () => {
-    it('renders force push section with the correct toggle label and description', () => {
+    it('renders force push section with the correct props', () => {
       expect(findAllowForcePushToggle().props('label')).toEqual('Allow force push');
+      expect(findAllowForcePushToggle().props('description')).toEqual(
+        'Allow all users with push access to %{linkStart}force push%{linkEnd}.',
+      );
+      expect(findAllowForcePushToggle().props('isProtectedByPolicy')).toEqual(false);
     });
 
     it('when a toggle is triggered, it goes into a loading state, then shows a toast message', async () => {

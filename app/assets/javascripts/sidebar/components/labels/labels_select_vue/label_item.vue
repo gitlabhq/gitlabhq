@@ -1,11 +1,12 @@
 <script>
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 // @deprecated This component should only be used when there is no GraphQL API.
 // In most cases you should use
 // `app/assets/javascripts/sidebar/components/labels/labels_select_widget/label_item.vue` instead.
-export default {
+export default normalizeRender({
   functional: true,
   props: {
     label: {
@@ -105,5 +106,5 @@ export default {
       [labelLink],
     );
   },
-};
+});
 </script>

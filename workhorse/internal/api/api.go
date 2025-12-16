@@ -144,17 +144,19 @@ type RemoteObject struct {
 
 // McpServerConfig holds configuration for MCP servers configured in GitLab Rails
 type McpServerConfig struct {
-	URL     string
-	Headers map[string]string
-	Tools   *[]string
+	URL              string
+	Headers          map[string]string
+	Tools            *[]string
+	PreApprovedTools *[]string
 }
 
 // DuoWorkflow holds configuration for the Duo Workflow service.
 type DuoWorkflow struct {
-	Headers    map[string]string
-	ServiceURI string
-	Secure     bool
-	McpServers map[string]McpServerConfig
+	Headers            map[string]string
+	ServiceURI         string
+	Secure             bool
+	McpServers         map[string]McpServerConfig
+	LockConcurrentFlow bool
 }
 
 // Response represents a structure containing various GitLab-related environment variables.
@@ -169,6 +171,9 @@ type Response struct {
 	// GL_REPOSITORY is an environment variable used by gitlab-shell hooks during
 	// 'git push' and 'git pull'
 	GL_REPOSITORY string // nolint:revive // used as env variable
+
+	// ID of the scoped user for composite identity
+	GlScopedUserID string
 
 	// Id of the pipeline build
 	GLBuildID string

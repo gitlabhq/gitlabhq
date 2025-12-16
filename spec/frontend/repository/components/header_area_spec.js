@@ -252,6 +252,18 @@ describe('HeaderArea', () => {
       createComponent({ props: { refSelectorValue: 'ends-with.json' } });
       expect(findRefSelector().exists()).toBe(true);
     });
+
+    it('has fluidWidth attribute enabled', () => {
+      expect(findRefSelector().attributes('fluid-width')).toBeDefined();
+    });
+
+    it('applies responsive max-width classes', () => {
+      const refSelector = findRefSelector();
+
+      expect(refSelector.classes()).toContain('gl-max-w-full');
+      expect(refSelector.classes()).toContain('@sm/panel:gl-max-w-4/10');
+      expect(refSelector.classes()).toContain('@md/panel:gl-max-w-xs');
+    });
   });
 
   it('renders Breadcrumbs component', () => {

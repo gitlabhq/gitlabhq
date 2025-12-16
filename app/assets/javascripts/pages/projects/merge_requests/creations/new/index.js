@@ -16,6 +16,7 @@ if (mrNewCompareNode) {
   const compareEl = document.querySelector('.js-merge-request-new-compare');
   const targetBranch = Vue.observable({ name: '' });
   const currentSourceBranch = JSON.parse(sourceCompareEl.dataset.currentBranch);
+  const sourceBranchErrorDescriptionId = sourceCompareEl.dataset.branchErrorDescriptionId || null;
   const sourceBranch = Vue.observable(currentSourceBranch);
 
   // eslint-disable-next-line no-new
@@ -33,6 +34,7 @@ if (mrNewCompareNode) {
         branch: {
           id: 'merge_request_source_branch',
           name: 'merge_request[source_branch]',
+          ariaDescribedby: sourceBranchErrorDescriptionId,
         },
       },
       i18n: {
@@ -70,6 +72,7 @@ if (mrNewCompareNode) {
   });
 
   const currentTargetBranch = JSON.parse(targetCompareEl.dataset.currentBranch);
+  const targetBranchErrorDescriptionId = targetCompareEl.dataset.branchErrorDescriptionId || null;
   // eslint-disable-next-line no-new
   new Vue({
     el: targetCompareEl,
@@ -86,6 +89,7 @@ if (mrNewCompareNode) {
         branch: {
           id: 'merge_request_target_branch',
           name: 'merge_request[target_branch]',
+          ariaDescribedby: targetBranchErrorDescriptionId,
         },
       },
       i18n: {

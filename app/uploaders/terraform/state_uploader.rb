@@ -11,11 +11,33 @@ module Terraform
     # Use Lockbox to encrypt/decrypt the stored file (registers CarrierWave callbacks)
     encrypt(key: :key)
 
+    alias_method :lockbox_encrypt, :encrypt
+
     # On Cloud Native GitLab, /srv/gitlab/public/uploads/tmp is a shared mount.
     # Use a subpath from that directory to ensure the gitlab-workhorse and webservice
     # containers can both access this directory.
     def self.workhorse_local_upload_path
       Rails.root.join('public/uploads/tmp/terraform_state').to_s
+    end
+
+    # Override Lockbox's encrypt to respect per-file encryption flag
+    def encrypt(file)
+      return unless model.encryption_enabled?
+
+      # Call lockbox's encrypt method to actually encrypt the file
+      lockbox_encrypt(file)
+    end
+
+    # Override Lockbox's read to respect per-file encryption flag
+    def read
+      stored_data = super # Call CarrierWave's read method
+      return unless stored_data
+
+      if model.is_encrypted?
+        lockbox_notify("decrypt_file") { lockbox.decrypt(stored_data) }
+      else
+        stored_data
+      end
     end
 
     def filename

@@ -149,6 +149,9 @@ module Gitlab
           object_type = resolve_param_type(param_options[:type])
           object_format = resolve_param_format(param_options[:type])
 
+          # Handle range values
+          return build_range_schema(object_type, param_options) if param_options[:values].is_a?(Range)
+
           # Handle enum/values
           return build_enum_schema(object_type, param_options) if param_options[:values]
 
@@ -168,6 +171,15 @@ module Gitlab
         def build_union_type_schema(param_options)
           types = param_options[:type][1..-2].split(", ")
           { oneOf: types.map { |type| { type: TypeResolver.resolve_type(type) } } }
+        end
+
+        def build_range_schema(object_type, param_options)
+          range = param_options[:values]
+          schema = { type: object_type }
+          schema[:minimum] = range.begin if range.begin
+          schema[:maximum] = range.end if range.end
+          schema[:description] = param_options[:desc] if param_options[:desc]
+          schema
         end
 
         def build_enum_schema(object_type, param_options)

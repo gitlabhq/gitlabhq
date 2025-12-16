@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::SidekiqMiddleware::PauseControl::Strategies::Deprecated, feature_category: :global_search do
   let(:strategy) { described_class.new }

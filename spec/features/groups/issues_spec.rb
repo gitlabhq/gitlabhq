@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe 'Group issues page', feature_category: :team_planning do
   include Features::SortingHelpers
   include FilteredSearchHelpers
-  include DragTo
 
   let(:group) { create(:group) }
   let(:project) { create(:project, :public, group: group) }
@@ -160,7 +159,12 @@ RSpec.describe 'Group issues page', feature_category: :team_planning do
 
       wait_for_requests
 
-      drag_to(selector: '.manual-ordering', from_index: 0, to_index: 2)
+      issue_els = all('.manual-ordering .issue')
+
+      from_item = issue_els.at(0)
+      to_item = issue_els.at(2)
+
+      from_item.drag_to(to_item)
 
       expect_issue_order
 
@@ -177,7 +181,11 @@ RSpec.describe 'Group issues page', feature_category: :team_planning do
 
       wait_for_requests
 
-      drag_to(selector: '.manual-ordering', from_index: 0, to_index: 2)
+      issue_els = all('.manual-ordering .issue')
+      from_item = issue_els.at(0)
+      to_item = issue_els.at(2)
+
+      from_item.drag_to(to_item)
 
       expect(page).to have_text 'An error occurred while reordering work items.'
     end

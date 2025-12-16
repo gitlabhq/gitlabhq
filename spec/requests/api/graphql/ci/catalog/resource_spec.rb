@@ -189,6 +189,110 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
     end
   end
 
+  describe 'querying component inputs with rules' do
+    let_it_be(:version) do
+      create(:release, :with_catalog_resource_version, project: project).catalog_resource_version
+    end
+
+    let_it_be(:inputs_with_rules) do
+      {
+        environment: {
+          type: 'string',
+          options: %w[dev staging prod],
+          default: 'dev'
+        },
+        instance_type: {
+          type: 'string',
+          rules: [
+            {
+              'if' => '$[[ inputs.environment ]] == "dev"',
+              'options' => %w[t3.micro t3.small],
+              'default' => 't3.micro'
+            },
+            {
+              'if' => '$[[ inputs.environment ]] == "prod"',
+              'options' => %w[m5.large m5.xlarge],
+              'default' => 'm5.large'
+            }
+          ]
+        }
+      }
+    end
+
+    let_it_be(:component_with_rules) do
+      create(:ci_catalog_resource_component, version: version, spec: { inputs: inputs_with_rules })
+    end
+
+    let(:query) do
+      <<~GQL
+        query {
+          ciCatalogResource(id: "#{resource.to_global_id}") {
+            versions {
+              nodes {
+                components {
+                  nodes {
+                    name
+                    inputs {
+                      name
+                      type
+                      default
+                      rules {
+                        if
+                        options
+                        default
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      GQL
+    end
+
+    context 'when the feature flag is enabled' do
+      before do
+        stub_feature_flags(ci_dynamic_pipeline_inputs: project)
+      end
+
+      it 'includes the rules field in the response' do
+        post_query
+
+        inputs = graphql_data_at(:ciCatalogResource, :versions, :nodes, 0, :components, :nodes, 0, :inputs)
+        instance_type_input = inputs.find { |i| i['name'] == 'instance_type' }
+
+        expect(instance_type_input['rules']).to contain_exactly(
+          a_hash_including(
+            'if' => '$[[ inputs.environment ]] == "dev"',
+            'options' => %w[t3.micro t3.small],
+            'default' => 't3.micro'
+          ),
+          a_hash_including(
+            'if' => '$[[ inputs.environment ]] == "prod"',
+            'options' => %w[m5.large m5.xlarge],
+            'default' => 'm5.large'
+          )
+        )
+      end
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_dynamic_pipeline_inputs: false)
+      end
+
+      it 'does not include the rules field in the response' do
+        post_query
+
+        inputs = graphql_data_at(:ciCatalogResource, :versions, :nodes, 0, :components, :nodes, 0, :inputs)
+        instance_type_input = inputs.find { |i| i['name'] == 'instance_type' }
+
+        expect(instance_type_input['rules']).to be_nil
+      end
+    end
+  end
+
   describe 'versions' do
     before_all do
       project.repository.create_branch('branch_v2', project.default_branch)

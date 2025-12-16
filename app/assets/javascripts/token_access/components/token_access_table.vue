@@ -28,9 +28,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  i18n: {
-    autopopulated: s__('CICD|Added from log.'),
-  },
   inject: ['fullPath'],
   props: {
     items: {
@@ -119,15 +116,6 @@ export default {
         <gl-link :href="item.webUrl" data-testid="token-access-name">
           {{ item.fullPath }}
         </gl-link>
-        <gl-icon
-          v-if="item.autopopulated"
-          v-gl-tooltip
-          :title="$options.i18n.autopopulated"
-          :aria-label="$options.i18n.autopopulated"
-          name="log"
-          class="gl-ml-3 gl-shrink-0"
-          data-testid="autopopulated-icon"
-        />
         <gl-badge v-if="isCurrentProject(item)" class="gl-ml-3">{{
           __('Current project')
         }}</gl-badge>

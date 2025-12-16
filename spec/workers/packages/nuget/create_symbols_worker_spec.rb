@@ -9,7 +9,7 @@ RSpec.describe Packages::Nuget::CreateSymbolsWorker, type: :worker, feature_cate
       create(
         :package_file,
         :snupkg,
-        package_id: package.id,
+        package: package,
         file_fixture: expand_fixture_path('packages/nuget/package_with_symbols.snupkg')
       )
     end
@@ -39,6 +39,18 @@ RSpec.describe Packages::Nuget::CreateSymbolsWorker, type: :worker, feature_cate
         )
 
         perform
+      end
+    end
+
+    context 'with the error when fetching a package file' do
+      let(:exception) { ActiveRecord::QueryCanceled.new('ERROR: canceling statement due to statement timeout') }
+
+      before do
+        allow(::Packages::PackageFile).to receive(:find_by_id).with(package_file.id).and_raise(exception)
+      end
+
+      it 'raises the error' do
+        expect { perform }.to raise_error(exception.class)
       end
     end
   end

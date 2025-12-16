@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :ci_pipeline_artifact, class: 'Ci::PipelineArtifact' do
     pipeline factory: :ci_pipeline
     project { pipeline.project }
+    partition_id { pipeline.partition_id }
     file_format { :raw }
     file_store { ObjectStorage::SUPPORTED_STORES.first }
     size { 1.megabyte }

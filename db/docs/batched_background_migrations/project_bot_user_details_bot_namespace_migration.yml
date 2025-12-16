@@ -1,8 +1,0 @@
----
-migration_job_name: ProjectBotUserDetailsBotNamespaceMigration
-description: Populates project bot user's bot namespace based on owning group or project
-feature_category: system_access
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171326
-milestone: '17.6'
-queued_migration_version: 20241031160728
-finalized_by: 20250121193138

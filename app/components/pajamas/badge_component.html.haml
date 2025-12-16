@@ -1,14 +1,14 @@
 - if link?
   %a{ href: @href, **html_options }><
     - if has_icon?
-      = sprite_icon(@icon, css_class: icon_classes)
-    - if text
+      = sprite_icon(@icon, css_class: icon_classes, aria_label: icon_aria_label)
+    - if text && !icon_only?
       %span.gl-badge-content<
         = text
 - else
   %span{ **html_options }><
     - if has_icon?
-      = sprite_icon(@icon, css_class: icon_classes)
-    - if text
+      = sprite_icon(@icon, css_class: icon_classes, aria_label: icon_aria_label)
+    - if text && !icon_only?
       %span.gl-badge-content<
         = text

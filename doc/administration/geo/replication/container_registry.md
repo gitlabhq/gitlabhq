@@ -12,11 +12,17 @@ title: Container registry for a secondary site
 
 {{< /details >}}
 
-You can set up a container registry on your **secondary** Geo site that mirrors the one on the **primary** Geo site. This container registry replication is used only for disaster recovery purposes.
+You can set up a container registry on your **secondary** Geo site that replicates container images from the one on the **primary** Geo site. This container image replication is used only for disaster recovery purposes.
 
 Do not push to the container registry on the **secondary** Geo site, because the data is not propagated to the **primary** site.
 
 We do not recommend pulling container registry data from the **secondary** site because it may be stale. The feature request [issue 365864](https://gitlab.com/gitlab-org/gitlab/-/issues/365864) would solve this problem. You are encouraged to upvote the issue to register your interest.
+
+{{< alert type="warning" >}}
+
+**Important:** The container registry metadata database is separate from container image replication. While container images replicate from primary to secondary sites, the metadata database does not. When using GitLab Geo with the container registry metadata database enabled, you must configure separate, external PostgreSQL instances for the container registry at each Geo site (both primary and secondary). The container registry metadata database cannot use the default GitLab-managed PostgreSQL database. Each site's metadata database operates independently without replication between them. For setup instructions, see [Using an external database](../../packages/container_registry_metadata_database.md#using-an-external-database).
+
+{{< /alert >}}
 
 ## Supported container registries
 
@@ -111,7 +117,7 @@ To be able to replicate new container images, the container registry must send n
 
    Replace `<example.com>` with the `external_url` defined in your primary site's `/etc/gitlab/gitlab.rb` file, and
    replace `<replace_with_a_secret_token>` with a case-sensitive alphanumeric string
-   that starts with a letter. You can generate one with `< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32 | sed "s/^[0-9]*//"; echo`
+   that starts with a letter. You can generate one with `/dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32 | sed "s/^[0-9]*//"; echo`
 
    {{< /alert >}}
 
@@ -179,7 +185,7 @@ For each application and Sidekiq node on the **secondary** site:
 
 To verify container registry replication is working, on the **secondary** site:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Geo** > **Nodes**.
    The initial replication, or "backfill", is probably still in progress.
 
@@ -237,7 +243,7 @@ To resolve this issue:
 
 To help with troubleshooting, you can manually trigger the container registry replication process:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
 1. In **Replication Details** for a **Secondary Site**, select **Container Repositories**.
 1. Select **Resync** for one row, or **Resync all**.

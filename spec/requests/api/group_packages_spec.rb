@@ -35,6 +35,18 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
 
           expect(json_response.map { |package| package['id'] }).to eq(packages.map(&:id))
         end
+
+        context 'when packages_projects_finder is disabled' do
+          before do
+            stub_feature_flags(packages_projects_finder: false)
+          end
+
+          it 'sorts by created_at asc' do
+            subject
+
+            expect(json_response.map { |package| package['id'] }).to eq(packages.map(&:id))
+          end
+        end
       end
 
       it_behaves_like 'package sorting', 'name' do

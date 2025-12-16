@@ -20,6 +20,16 @@ module Types
         field :error, GraphQL::Types::String,
           null: true,
           description: 'Error message if pipeline creation failed.'
+
+        field :pipeline, Types::Ci::PipelineType,
+          null: true,
+          description: 'Pipeline object created by the request.'
+
+        def pipeline
+          return unless object['pipeline_id']
+
+          ::Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Pipeline, object['pipeline_id']).find
+        end
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end

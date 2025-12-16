@@ -1,7 +1,6 @@
 ---
 table_name: p_knowledge_graph_enabled_namespaces
-classes:
-- Ai::KnowledgeGraph::EnabledNamespace
+classes: []
 feature_categories:
 - knowledge_graph
 description: Represents a namespace with enabled knowledge graph

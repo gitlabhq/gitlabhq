@@ -107,20 +107,20 @@ To configure the GitLab for Jira Cloud app:
 
 1. Navigate to the app using one of these methods:
 
-   **For instances with centralized app management:**
+   - For instances with centralized app management:
 
-   1. If you see "App management has moved to Administration", select **Take me there**. Otherwise follow the **For instances with legacy app management** instructions below.
-   1. In the **Installed apps** tab, locate **GitLab for Jira**. Depending on how you installed the app, the name of the app is:
-      - **GitLab for Jira (gitlab.com)** if you [installed the app from the Atlassian Marketplace](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
-      - **GitLab for Jira (`<gitlab.example.com>`)** if you [installed the app manually](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually).
-   1. Select the horizontal ellipsis ({{< icon name="ellipsis_h" >}}) and then select **Get started** to configure the integration.
+     1. If you see "App management has moved to Administration", select **Take me there**. Otherwise follow the **For instances with legacy app management** instructions below.
+     1. In the **Installed apps** tab, locate **GitLab for Jira**. Depending on how you installed the app, the name of the app is:
+        - **GitLab for Jira (gitlab.com)** if you [installed the app from the Atlassian Marketplace](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
+        - **GitLab for Jira (`<gitlab.example.com>`)** if you [installed the app manually](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually).
+     1. Select the horizontal ellipsis ({{< icon name="ellipsis_h" >}}) and then select **Get started** to configure the integration.
 
-   **For instances with legacy app management:**
+   - For instances with legacy app management:
 
-   1. Expand **GitLab for Jira**. Depending on how you installed the app, the name of the app is:
-      - **GitLab for Jira (gitlab.com)** if you [installed the app from the Atlassian Marketplace](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
-      - **GitLab for Jira (`<gitlab.example.com>`)** if you [installed the app manually](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually).
-   1. Select **Get started** to configure the integration.
+     1. Expand **GitLab for Jira**. Depending on how you installed the app, the name of the app is:
+        - **GitLab for Jira (gitlab.com)** if you [installed the app from the Atlassian Marketplace](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
+        - **GitLab for Jira (`<gitlab.example.com>`)** if you [installed the app manually](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually).
+     1. Select **Get started** to configure the integration.
 
 1. Optional. To link GitLab Self-Managed with Jira, select **Change GitLab version**.
    1. Select all checkboxes, then select **Next**.
@@ -189,7 +189,7 @@ In Jira Service Management:
 
 In GitLab:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Jira Cloud app**. If the integration is disabled, first [link a GitLab group](#configure-the-gitlab-for-jira-cloud-app)
    which enables the GitLab for Jira Cloud app integration for the group, its subgroups, and projects.
@@ -246,7 +246,7 @@ To enable deployment gating:
 
 - In GitLab:
 
-  1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+  1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
   1. Select **Settings** > **Integrations**.
   1. Select **GitLab for Jira Cloud app**.
   1. Under **Deployment gating**, select the **Enable deployment gating** checkbox.
@@ -264,7 +264,7 @@ To enable deployment gating:
 
 To add the service account to your protected environments in GitLab:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Protected environments** and select **Protect an environment**.
 1. From the **Select environment** dropdown list, select an environment to protect (for example, **staging**).

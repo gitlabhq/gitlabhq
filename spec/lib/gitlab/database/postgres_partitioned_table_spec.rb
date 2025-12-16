@@ -43,6 +43,22 @@ RSpec.describe Gitlab::Database::PostgresPartitionedTable, type: :model do
 
   it_behaves_like 'a postgres model'
 
+  describe '.by_name_in_current_schema' do
+    it 'returns the partitioned tables in the current schema by name' do
+      partitioned_tables = described_class.by_name_in_current_schema(name)
+
+      expect(partitioned_tables).to match_array([find(identifier)])
+    end
+
+    it 'does not return partitioned tables in a different schema' do
+      ActiveRecord::Base.connection.execute(<<~SQL)
+        ALTER TABLE #{identifier} SET SCHEMA gitlab_partitions_dynamic
+      SQL
+
+      expect(described_class.by_name_in_current_schema(name)).to be_empty
+    end
+  end
+
   describe '.find_by_name_in_current_schema' do
     it 'finds the partitioned tables in the current schema by name', :aggregate_failures do
       partitioned_table = described_class.find_by_name_in_current_schema(name)

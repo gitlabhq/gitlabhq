@@ -91,7 +91,7 @@ RSpec.describe Namespaces::ProjectNamespacePolicy, feature_category: :groups_and
     end
 
     context 'with support bot user' do
-      let(:current_user) { Users::Internal.support_bot }
+      let(:current_user) { create(:support_bot) }
 
       context 'with service desk disabled' do
         it { expect(described_class.new(current_user, namespace)).not_to be_allowed(:read_project, :read_namespace) }

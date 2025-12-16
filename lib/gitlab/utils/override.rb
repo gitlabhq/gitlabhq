@@ -159,7 +159,7 @@ module Gitlab
 
         # Hack to resolve https://gitlab.com/gitlab-org/gitlab/-/issues/23932
         is_not_concern_hack =
-          (mod.is_a?(Class) || !name&.end_with?('::ClassMethods'))
+          mod.is_a?(Class) || !name&.end_with?('::ClassMethods')
 
         if mod && is_not_concern_hack
           queue_verification(mod.singleton_class)

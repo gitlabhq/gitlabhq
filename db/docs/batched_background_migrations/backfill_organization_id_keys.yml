@@ -1,0 +1,10 @@
+---
+migration_job_name: BackfillOrganizationIdKeys
+description: |
+  Backfills organization_id to the keys table for SSH keys (from users) and
+  deploy keys (from projects). Orphaned deploy keys are assigned to the default organization.
+feature_category: system_access
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210115
+milestone: '18.7'
+queued_migration_version: 20251120120804
+finalized_by: # version of the migration that finalized this BBM

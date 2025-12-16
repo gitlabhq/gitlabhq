@@ -123,6 +123,7 @@ module Projects
 
       def remote_mirror
         @remote_mirror = project.remote_mirrors.first_or_initialize
+        @remote_mirrors = project.remote_mirrors.page(pagination_params[:page])
       end
 
       def deploy_token_params

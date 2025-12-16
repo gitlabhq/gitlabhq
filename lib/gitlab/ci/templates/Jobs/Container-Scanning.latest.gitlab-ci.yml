@@ -50,7 +50,7 @@ variables:
     reports:
       container_scanning: gl-container-scanning-report.json
       cyclonedx: "**/gl-sbom-*.cdx.json"
-    paths: [gl-container-scanning-report.json, gl-dependency-scanning-report.json, "**/gl-sbom-*.cdx.json"]
+    paths: [gl-container-scanning-report.json, "**/gl-sbom-*.cdx.json"]
   script:
     - gtcs scan
   rules:

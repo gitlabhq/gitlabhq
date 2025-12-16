@@ -294,6 +294,53 @@ describe('CRUD Component', () => {
     });
   });
 
+  describe('keepAliveCollapsedContent', () => {
+    it('removes content from DOM when collapsed and keepAliveCollapsedContent is false', async () => {
+      createComponent(
+        { isCollapsible: true, keepAliveCollapsedContent: false },
+        { default: '<p>Body slot</p>' },
+      );
+
+      await findCollapseToggle().vm.$emit('click');
+
+      expect(findBody().exists()).toBe(false);
+    });
+
+    it('keeps content in DOM when collapsed and keepAliveCollapsedContent is true', async () => {
+      createComponent(
+        { isCollapsible: true, keepAliveCollapsedContent: true },
+        { default: '<p>Body slot</p>' },
+      );
+
+      await findCollapseToggle().vm.$emit('click');
+
+      expect(findBody().exists()).toBe(true);
+      expect(findBody().isVisible()).toBe(false);
+    });
+
+    it('keeps content in DOM when initially collapsed with keepAliveCollapsedContent is true', () => {
+      createComponent(
+        { isCollapsible: true, collapsed: true, keepAliveCollapsedContent: true },
+        { default: '<p>Body slot</p>' },
+      );
+
+      expect(findBody().exists()).toBe(true);
+      expect(findBody().isVisible()).toBe(false);
+    });
+
+    it('shows content when expanded with keepAliveCollapsedContent is true', async () => {
+      createComponent(
+        { isCollapsible: true, collapsed: true, keepAliveCollapsedContent: true },
+        { default: '<p>Body slot</p>' },
+      );
+
+      await findCollapseToggle().vm.$emit('click');
+
+      expect(findBody().exists()).toBe(true);
+      expect(findBody().isVisible()).toBe(true);
+    });
+  });
+
   describe('default slot', () => {
     it('passes the showForm function to the default slot', () => {
       const defaultSlot = jest.fn();

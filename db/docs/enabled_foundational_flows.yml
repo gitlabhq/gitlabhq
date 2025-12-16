@@ -1,0 +1,13 @@
+---
+table_name: enabled_foundational_flows
+classes:
+  - Ai::Catalog::EnabledFoundationalFlow
+feature_categories:
+  - duo_agent_platform
+description: Stores which foundational AI flows (like Issue to MR and Fix Pipeline) are enabled for namespaces and projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214235
+milestone: '18.7'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+  project_id: projects

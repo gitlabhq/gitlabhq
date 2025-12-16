@@ -1,0 +1,6 @@
+---
+name: download_job_artifact
+description: Grants the ability to download job artifacts
+feature_category: job_artifacts
+boundaries:
+  - project

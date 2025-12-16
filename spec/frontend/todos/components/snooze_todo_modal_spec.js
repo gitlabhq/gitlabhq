@@ -72,10 +72,12 @@ describe('SnoozeTodoModal', () => {
     createComponent({ mountFn: mountExtended });
     await setTime('13:24');
     await setDate('2024-12-18');
+    await nextTick();
 
     expect(findDatetimeInPastError().exists()).toBe(false);
 
     await setTime('13:23');
+    await nextTick();
 
     expect(findDatetimeInPastError().exists()).toBe(true);
     expect(findDatetimeInPastError().text()).toBe(
@@ -92,6 +94,7 @@ describe('SnoozeTodoModal', () => {
       expect(wrapper.findByText('The time is required.').exists()).toBe(false);
 
       await setTime('');
+      await nextTick();
 
       expect(wrapper.findByText('The time is required.').exists()).toBe(true);
     });
@@ -107,10 +110,12 @@ describe('SnoozeTodoModal', () => {
     it('shows an error message if the selected datetime is in the past', async () => {
       await setTime('15:00');
       await setDate('2024-12-01');
+      await nextTick();
 
       expect(wrapper.findByText("Snooze date can't be in the past.").exists()).toBe(true);
 
       await setDate('2025-01-01');
+      await nextTick();
 
       expect(wrapper.findByText("Snooze date can't be in the past.").exists()).toBe(false);
     });

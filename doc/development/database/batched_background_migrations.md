@@ -49,6 +49,8 @@ Background migrations can help when:
 - If the batched background migration is part of an important upgrade, it must be announced
   in the release post. Discuss with your Project Manager if you're unsure if the migration falls
   into this category.
+- You must add [upgrade notes](../../update/versions/_index.md) for significant migrations
+  to help self-managed and Dedicated customers plan their upgrades, following the [guidelines](#writing-upgrade-notes-for-customers).
 - You should use the [generator](#generate-a-batched-background-migration) to create batched background migrations,
   so that required files are created by default.
 
@@ -603,6 +605,65 @@ module Gitlab
 end
 ```
 
+### Configure tables to check for vacuum
+
+By default, batched background migrations are paused when autovacuum is running on the table being iterated over (the table specified in `queue_batched_background_migration`). However, background migrations don't always write to the table they iterate on. In these cases, it doesn't make sense to pause the migration due to vacuum activity on the iteration table.
+
+Use the `tables_to_check_for_vacuum` class method to explicitly specify which tables should be checked for vacuum activity. When vacuum is detected on any of the specified tables, the migration is paused.
+
+#### When to use this feature
+
+Use `tables_to_check_for_vacuum` when:
+
+- Your migration iterates over one table but writes to different tables.
+- You want to avoid unnecessary pauses caused by vacuum on tables that aren't being modified.
+- You need to monitor vacuum activity on multiple specific tables.
+
+#### Example
+
+Consider a migration that iterates over `merge_request_diff_files` but writes to a partitioned table `merge_request_diff_files_99208b8fac`:
+
+```ruby
+module Gitlab
+  module BackgroundMigration
+    class BackfillMergeRequestFileDiffsPartitionedTable < BackfillPartitionedTable
+      operation_name :backfill
+      feature_category :source_code_management
+
+      cursor :merge_request_diff_id, :relative_order
+
+      # Specify the actual table being written to
+      tables_to_check_for_vacuum :merge_request_diff_files_99208b8fac
+
+      def perform
+        # Migration logic that writes to merge_request_diff_files_99208b8fac
+        # but iterates over merge_request_diff_files
+      end
+    end
+  end
+end
+```
+
+In this example:
+
+- The migration iterates over `merge_request_diff_files` (specified in `queue_batched_background_migration`).
+- The migration writes to `merge_request_diff_files_99208b8fac`.
+- By using `tables_to_check_for_vacuum :merge_request_diff_files_99208b8fac`, the migration is paused only when vacuum runs on the partitioned table, not on the iteration table.
+
+#### Specifying multiple tables
+
+You can specify multiple tables to monitor:
+
+```ruby
+tables_to_check_for_vacuum :table_one, :table_two, :table_three
+```
+
+The migration is paused if vacuum is running on any of the specified tables.
+
+#### Default behavior
+
+If `tables_to_check_for_vacuum` is not specified, the migration defaults to checking vacuum activity on the table being iterated over (the table specified in `queue_batched_background_migration`).
+
 ### Access data for multiple databases
 
 Background migration contrary to regular migrations does have access to multiple databases
@@ -919,6 +980,40 @@ class AddNotNullToRoutesNamespaceId < Gitlab::Database::Migration[2.1]
   end
 end
 ```
+
+## Writing upgrade notes for customers
+
+For significant batched background migrations, you must add upgrade notes to help
+self-managed and Dedicated customers plan their upgrades. These notes should be added
+to the relevant version's upgrade documentation (for example, [GitLab 18 changes](../../update/versions/gitlab_18_changes.md)).
+
+For an example of well-documented upgrade notes, see
+[MR 214376](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214376) which documents
+the CI builds metadata migration.
+
+### When to add upgrade notes
+
+Add upgrade notes when **any** of the following conditions apply to the migration:
+
+- The migration operates on large tables that could take significant time to complete.
+- The migration provides configuration options for customers to control the migration scope.
+- The migration has dependencies on other migrations or features.
+
+### What to include in upgrade notes
+
+Upgrade notes should include the following information to help customers understand
+and prepare for the migration:
+
+- Describe the purpose and benefits of the migration so customers understand its impact.
+- Describe what the migration does to customers' data and what table it iterates through.
+- Document the timeline and finalization.
+  Link to an issue when finalization is not yet known.
+  When known (even in a future date) update the existing upgrade note with the actual release containing the finalization.
+- Describe preparation steps before upgrading.
+  When applicable, recommend best practices and settings to have in place.
+- Provide tools to estimate migration duration (SQL queries or Rails console commands).
+- Document controls to reduce migration scope, when available.
+  Describe controls from the end-user perspective so they are clear on what data is impacted or not.
 
 ## Managing
 

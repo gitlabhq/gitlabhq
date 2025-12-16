@@ -23,6 +23,7 @@ import CiVerificationBadge from '../shared/ci_verification_badge.vue';
 import ProjectVisibilityIcon from '../shared/project_visibility_icon.vue';
 
 export default {
+  name: 'CiResourcesListItem',
   i18n: {
     components: s__('CiCatalog|Components:'),
     lastRelease: s__('CiCatalog|Released %{date}'),

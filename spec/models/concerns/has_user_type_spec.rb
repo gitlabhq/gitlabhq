@@ -13,7 +13,7 @@ RSpec.describe User, feature_category: :system_access do
   specify 'types consistency checks', :aggregate_failures do
     expect(described_class::USER_TYPES.keys)
       .to match_array(%w[human ghost alert_bot project_bot support_bot service_user security_bot
-        visual_review_bot migration_bot automation_bot security_policy_bot admin_bot
+        visual_review_bot automation_bot security_policy_bot admin_bot
         service_account placeholder duo_code_review_bot import_user])
     expect(described_class::USER_TYPES).to include(*described_class::BOT_USER_TYPES)
     expect(described_class::USER_TYPES).to include(*described_class::NON_INTERNAL_USER_TYPES)
@@ -72,6 +72,35 @@ RSpec.describe User, feature_category: :system_access do
     describe '.service_accounts' do
       it 'includes only service accounts' do
         expect(described_class.service_accounts).to match_array(service_account)
+      end
+    end
+
+    describe '.service_accounts_without_composite_identity' do
+      let_it_be(:sa_without_composite) do
+        create(:user, :service_account, composite_identity_enforced: false)
+      end
+
+      let_it_be(:sa_with_composite) do
+        create(:user, :service_account, composite_identity_enforced: true)
+      end
+
+      it 'includes service accounts with composite_identity_enforced false' do
+        result = described_class.service_accounts_without_composite_identity
+
+        expect(result).to include(sa_without_composite)
+      end
+
+      it 'excludes service accounts with composite_identity_enforced true' do
+        result = described_class.service_accounts_without_composite_identity
+
+        expect(result).not_to include(sa_with_composite)
+      end
+
+      it 'excludes non-service account users' do
+        result = described_class.service_accounts_without_composite_identity
+
+        expect(result).not_to include(human)
+        expect(result).not_to include(project_bot)
       end
     end
 

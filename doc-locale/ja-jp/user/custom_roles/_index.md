@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: カスタムロール
+description: 特定の組織のニーズを満たすように調整された権限を持つカスタムロールを作成します。
 ---
 
 {{< details >}}
@@ -14,20 +15,18 @@ title: カスタムロール
 
 {{< history >}}
 
-- カスタムロール機能は、GitLab 15.7で`customizable_roles`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256)されました。
-- GitLab 15.9で、[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810)になりました。
-- GitLab 15.10で、[機能フラグは削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114524)されました。
 - UIを使用してカスタムロールを作成および削除する機能は、GitLab 16.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/393235)されました。
 - UIを使用してカスタムロールを持つユーザーをグループに追加する、ユーザーのカスタムロールを変更する、グループメンバーからカスタムロールを削除する機能は、GitLab 16.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/393239)されました。
 - GitLab Self-Managedでインスタンス全体のカスタムロールを作成および削除する機能は、GitLab 16.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141562)されました。
-- カスタム管理者ロールは、GitLab 17.7で`custom_ability_read_admin_dashboard`[機能フラグ](../../administration/feature_flags/_index.md)とともに[実験的機能](../../policy/development_stages_support.md)として[導入](https://gitlab.com/groups/gitlab-org/-/epics/15854)されました。
+- カスタム管理者ロールは、GitLab 17.7で`custom_ability_read_admin_dashboard`[フラグ](../../administration/feature_flags/_index.md)とともに[実験的機能](../../policy/development_stages_support.md)として[導入](https://gitlab.com/groups/gitlab-org/-/epics/15854)されました。
 - UIを使用してカスタム管理者ロールを管理する機能は、GitLab 17.9で`custom_admin_roles`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181346)されました。デフォルトでは無効になっています。
+- カスタム管理者ロールは、GitLab 18.3で[一般提供](https://gitlab.com/groups/gitlab-org/-/epics/15957)されています。機能フラグ`custom_admin_roles`がデフォルトで有効になっています。
 
 {{< /history >}}
 
 カスタムロールを使用すると、組織に必要な特定の[カスタム権限](abilities.md)のみを持つロールを作成できます。各カスタムロールは、既存のデフォルトロールに基づいています。たとえば、ゲストロールに基づいてカスタムロールを作成し、プロジェクトリポジトリ内のコードを参照する権限を含めることもできます。
 
-カスタムロールには、次の2種類があります。
+カスタムロールには、次の2種類があります:
 
 - カスタムメンバーロール:
   - グループまたはプロジェクトのメンバーに割り当てることができます。
@@ -47,7 +46,7 @@ title: カスタムロール
 
 カスタム権限を使用すると、通常はメンテナーまたはオーナーロールに限定されているアクションを許可できます。たとえば、CI/CD変数を管理する権限を持つカスタムロールを使用すると、他のメンテナーまたはオーナーによって追加されたCI/CD変数の管理も可能になります。
 
-カスタムメンバーロールは、次のスコープ内のグループおよびプロジェクトで使用できます。
+カスタムメンバーロールは、次のスコープ内のグループおよびプロジェクトで使用できます:
 
 - GitLab.comでは、カスタムロールが作成されたトップレベルグループの配下。
 - GitLab Self-ManagedおよびGitLab Dedicatedでは、インスタンス全体。
@@ -60,10 +59,10 @@ title: カスタムロール
 
 カスタムメンバーロールを作成するには:
 
-1. 左側のサイドバーで、次を実行します。
-   - GitLab.comの場合は、**検索または移動先**を選択して、グループを見つけます。
-   - GitLab Self-ManagedおよびGitLab Dedicatedの場合は、下部にある**管理者**を選択します。
-1. **設定 > ロールと権限**を選択します。
+1. 左側のサイドバーで、次を実行します:
+   - GitLab.comの場合は、**検索または移動先**を選択して、グループを見つけます。[新しいナビゲーションをオン](../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+   - GitLab Self-ManagedおよびGitLab Dedicatedの場合は、下部にある**管理者**を選択します。[新しいナビゲーションをオン](../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅で自分のアバターを選択し、**管理者**を選択します。
+1. **設定** > **ロールと権限**を選択します。
 1. **新しいロール**を選択します。
 1. GitLab Self-ManagedおよびGitLab Dedicatedインスタンスのみ。**メンバーロール**を選択します。
 1. カスタムロールの名前と説明を入力します。
@@ -75,6 +74,12 @@ title: カスタムロール
 
 ## カスタム管理者ロールを作成する {#create-a-custom-admin-role}
 
+{{< details >}}
+
+- 提供形態: GitLab Self-Managed、GitLab Dedicated
+
+{{< /details >}}
+
 カスタム管理者ロールを作成するには、通常は管理者に限定されているアクションを許可する[権限](abilities.md)を追加します。各カスタム管理者ロールは、1つ以上の権限を持つことができます。
 
 前提要件:
@@ -84,8 +89,8 @@ title: カスタムロール
 
 カスタム管理者ロールを作成するには:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > ロールと権限**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅で自分のアバターを選択し、**管理者**を選択します。
+1. **設定** > **ロールと権限**を選択します。
 1. **新しいロール**を選択します。
 1. **管理者ロール**を選択します。
 1. カスタムロールの名前と説明を入力します。
@@ -111,10 +116,10 @@ title: カスタムロール
 
 カスタムロールを編集するには:
 
-1. 左側のサイドバーで、次を実行します。
-   - GitLab.comの場合は、**検索または移動先**を選択して、グループを見つけます。
-   - GitLab Self-ManagedおよびGitLab Dedicatedの場合は、下部にある**管理者**を選択します。
-1. **設定 > ロールと権限**を選択します。
+1. 左側のサイドバーで、次を実行します:
+   - GitLab.comの場合は、**検索または移動先**を選択して、グループを見つけます。[新しいナビゲーションをオン](../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+   - GitLab Self-ManagedおよびGitLab Dedicatedの場合は、下部にある**管理者**を選択します。[新しいナビゲーションをオン](../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅で自分のアバターを選択し、**管理者**を選択します。
+1. **設定** > **ロールと権限**を選択します。
 1. カスタムロールの横にある縦方向の省略記号（{{< icon name="ellipsis_v" >}}） > **ロールを編集**を選択します。
 1. ロールを変更します。
 1. **ロールを保存**を選択します。
@@ -134,10 +139,10 @@ APIを使用して、[カスタムメンバーロール](../../api/graphql/refer
 
 カスタムロールの詳細を表示するには:
 
-1. 左側のサイドバーで、次を実行します。
-   - GitLab.comの場合は、**検索または移動先**を選択して、グループを見つけます。
-   - GitLab Self-ManagedおよびGitLab Dedicatedの場合は、下部にある**管理者**を選択します。
-1. **設定 > ロールと権限**を選択します。
+1. 左側のサイドバーで、次を実行します:
+   - GitLab.comの場合は、**検索または移動先**を選択して、グループを見つけます。[新しいナビゲーションをオン](../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+   - GitLab Self-ManagedおよびGitLab Dedicatedの場合は、下部にある**管理者**を選択します。[新しいナビゲーションをオン](../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅で自分のアバターを選択し、**管理者**を選択します。
+1. **設定** > **ロールと権限**を選択します。
 1. カスタムロールの横にある縦方向の省略記号（{{< icon name="ellipsis_v" >}}） > **詳細を表示**を選択します。
 
 ## カスタムロールを削除する {#delete-a-custom-role}
@@ -151,10 +156,10 @@ APIを使用して、[カスタムメンバーロール](../../api/graphql/refer
 
 カスタムロールを削除するには:
 
-1. 左側のサイドバーで、次を実行します。
-   - GitLab.comの場合は、**検索または移動先**を選択して、グループを見つけます。
-   - GitLab Self-ManagedおよびGitLab Dedicatedの場合は、下部にある**管理者**を選択します。
-1. **設定 > ロールと権限**を選択します。
+1. 左側のサイドバーで、次を実行します:
+   - GitLab.comの場合は、**検索または移動先**を選択して、グループを見つけます。[新しいナビゲーションをオン](../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+   - GitLab Self-ManagedおよびGitLab Dedicatedの場合は、下部にある**管理者**を選択します。[新しいナビゲーションをオン](../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅で自分のアバターを選択し、**管理者**を選択します。
+1. **設定** > **ロールと権限**を選択します。
 1. カスタムロールの横にある縦方向の省略記号（{{< icon name="ellipsis_v" >}}） > **ロールを削除**を選択します。
 1. 確認ダイアログで、**ロールを削除**を選択します。
 
@@ -162,7 +167,7 @@ APIを使用して、[カスタムメンバーロール](../../api/graphql/refer
 
 ## カスタムメンバーロールを割り当てる {#assign-a-custom-member-role}
 
-グループおよびプロジェクトのメンバーのロールを割り当てたり、変更したりすることができます。この操作は、既存のユーザーに対して、またはユーザーを[グループ](../group/_index.md#add-users-to-a-group)、[プロジェクト](../project/members/_index.md#add-users-to-a-project)、または[インスタンス](../profile/account/create_accounts.md)に追加するときに行うことができます。
+グループおよびプロジェクトのメンバーのロールを割り当てたり、変更したりすることができます。この操作は、既存のユーザーに対して、またはユーザーを[グループ](../group/_index.md#add-users-to-a-group) 、[プロジェクト](../project/members/_index.md#add-users-to-a-project) 、または[インスタンス](../profile/account/create_accounts.md)に追加するときに行うことができます。
 
 前提要件:
 
@@ -171,8 +176,8 @@ APIを使用して、[カスタムメンバーロール](../../api/graphql/refer
 
 既存のユーザーにカスタムメンバーロールを割り当てるには:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、グループまたはプロジェクトを見つけます。
-1. **管理 > メンバー**を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、グループまたはプロジェクトを見つけます。[新しいナビゲーションをオン](../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+1. **管理** > **メンバー**を選択します。
 1. **ロール**列で、既存のメンバーのロールを選択します。**ロールの詳細**ドロワーが開きます。
 1. **ロール**ドロップダウンリストから、メンバーに割り当てるロールを選択します。
 1. **ロールを更新する**を選択して、ロールを割り当てます。
@@ -181,16 +186,22 @@ APIを使用して、[カスタムメンバーロール](../../api/graphql/refer
 
 ## カスタム管理者ロールを割り当てる {#assign-a-custom-admin-role}
 
+{{< details >}}
+
+- 提供形態: GitLab Self-Managed、GitLab Dedicated
+
+{{< /details >}}
+
 インスタンス内のユーザーに管理者ロールを割り当てたり、変更したりすることができます。この操作は、既存のユーザーに対して、またはユーザーを[インスタンス](../profile/account/create_accounts.md)に追加するときに行うことができます。
 
 前提要件:
 
-- GitLab Self-Managedインスタンスの管理者である必要があります。
+- GitLabインスタンスの管理者である必要があります。
 
 既存のユーザーにカスタム管理者ロールを割り当てるには:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **概要 > ユーザー**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅で自分のアバターを選択し、**管理者**を選択します。
+1. **概要** > **ユーザー**を選択します。
 1. 対象ユーザーの**編集**を選択します。
 1. **アクセス**セクションで、アクセスレベルを**標準**または**監査担当者**に設定します。
 1. **管理者エリア**ドロップダウンリストから、カスタム管理者ロールを選択します。
@@ -214,26 +225,26 @@ APIを使用して、[カスタムメンバーロール](../../api/graphql/refer
 
 [グループをグループに招待](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group)すると、グループ内のすべてのユーザーにカスタムロールを割り当てることができます。
 
-割り当てられたロールは、元のグループでのユーザーロールおよび権限と比較されます。通常、ユーザーには最小のアクセスレベルを持つロールが割り当てられます。ただし、ユーザーが元のグループでカスタムロールを持っている場合は、次のようになります。
+割り当てられたロールは、元のグループでのユーザーロールおよび権限と比較されます。通常、ユーザーには最小のアクセスレベルを持つロールが割り当てられます。ただし、ユーザーが元のグループでカスタムロールを持っている場合は、次のようになります:
 
 - 基本ロールのみがアクセスレベルの比較に使用されます。カスタム権限は比較されません。
 - 両方のカスタムロールが同じ基本ロールを持っている場合、ユーザーは元のグループのカスタムロールを保持します。
 
-次の表は、グループに招待されたユーザーが利用できる最大のロールの例を示しています。
+次の表は、グループに招待されたユーザーが利用できる最大のロールの例を示しています:
 
 | シナリオ                                                | ゲストロールを持つユーザー | ゲストロールを持つユーザー + `read_code` | ゲストロールを持つユーザー + `read_vulnerability` | デベロッパーロールを持つユーザー     | デベロッパーロールを持つユーザー + `admin_vulnerability` |
 | ------------------------------------------------------- | -------------------- | ---------------------------------- | ------------------------------------------- | ---------------------------- | ------------------------------------------------ |
-| **ゲストロールで招待**                             | ゲスト                | ゲスト                            | ゲスト                                     | ゲスト                        | ゲスト                                          |
-| **ゲストロール + `read_code`で招待**               | ゲスト                | ゲスト + `read_code`              | ゲスト + `read_vulnerability`              | ゲスト + `read_code`          | ゲスト + `read_code`                            |
-| **ゲストロール + `read_vulnerability`で招待**      | ゲスト                | ゲスト + `read_code`              | ゲスト + `read_vulnerability`              | ゲスト + `read_vulnerability` | ゲスト + `read_vulnerability`                   |
-| **デベロッパーロールで招待**                         | ゲスト                | ゲスト + `read_code`              | ゲスト + `read_vulnerability`              | デベロッパー                    | デベロッパー                                      |
-| **デベロッパーロール + `admin_vulnerability`で招待** | ゲスト                | ゲスト + `read_code`              | ゲスト + `read_vulnerability`              | デベロッパー                    | デベロッパー + `admin_vulnerability`              |
+| **Invited with Guest role**（ゲストロールで招待）                             | ゲスト                | ゲスト                            | ゲスト                                     | ゲスト                        | ゲスト                                          |
+| **Invited with Guest role + `read_code`**（ゲストロール + で招待）               | ゲスト                | ゲスト + `read_code`              | ゲスト + `read_vulnerability`              | ゲスト + `read_code`          | ゲスト + `read_code`                            |
+| **Invited with Guest role + `read_vulnerability`**（ゲストロール + で招待）      | ゲスト                | ゲスト + `read_code`              | ゲスト + `read_vulnerability`              | ゲスト + `read_vulnerability` | ゲスト + `read_vulnerability`                   |
+| **Invited with Developer role**（デベロッパーロールで招待）                         | ゲスト                | ゲスト + `read_code`              | ゲスト + `read_vulnerability`              | デベロッパー                    | デベロッパー                                      |
+| **Invited with Developer role + `admin_vulnerability`**（デベロッパーロール + で招待） | ゲスト                | ゲスト + `read_code`              | ゲスト + `read_vulnerability`              | デベロッパー                    | デベロッパー + `admin_vulnerability`              |
 
 グループを別のグループに招待する場合にのみ、カスタムロールを割り当てることができます。[イシュー468329](https://gitlab.com/gitlab-org/gitlab/-/issues/468329)では、グループをプロジェクトに招待するときにカスタムロールを割り当てることを提案しています。
 
 ## サポートされているオブジェクト {#supported-objects}
 
-以下に、各オブジェクトに対するカスタムロールと権限のサポート状況を示します。
+以下に、各オブジェクトに対するカスタムロールと権限のサポート状況を示します:
 
 | オブジェクト | バージョン       | イシュー |
 |--------|---------------|-------|
@@ -243,7 +254,7 @@ APIを使用して、[カスタムメンバーロール](../../api/graphql/refer
 
 ## ユーザーをカスタムロールに同期する {#sync-users-to-custom-roles}
 
-SAMLやLDAPなどのツールを使用してグループメンバーシップを管理する場合は、ユーザーをカスタムロールに自動的に同期できます。詳細については、以下を参照してください。
+SAMLやLDAPなどのツールを使用してグループメンバーシップを管理する場合は、ユーザーをカスタムロールに自動的に同期できます。詳細については、以下を参照してください:
 
 - [SAMLグループリンクを設定する](../group/saml_sso/group_sync.md#configure-saml-group-links)。
 - [LDAP経由でグループメンバーシップを管理する](../group/access_and_permissions.md#manage-group-memberships-with-ldap)。
@@ -270,9 +281,9 @@ LDAPおよびグループ同期の管理の詳細については、[LDAP同期](
 
 カスタム管理者ロールをLDAP CNとリンクするには:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > ロールと権限**を選択します。
-1. **LDAP同期**タブで、**LDAPサーバー**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅で自分のアバターを選択し、**管理者**を選択します。
+1. **設定** > **ロールと権限**を選択します。
+1. **LDAP同期**タブで、**LDAP Server**（LDAPサーバー）を選択します。
 1. **同期方法**フィールドで、`Group cn`を選択します。
 1. **グループcn**フィールドに、グループのCNの先頭何文字かを入力します。設定済みの`group_base`の範囲内で一致するCNが、ドロップダウンリストに表示されます。
 1. ドロップダウンリストからCNを選択します。
@@ -289,9 +300,9 @@ GitLabが、一致するLDAPユーザーへのロールのリンクを開始し�
 
 カスタム管理者ロールをLDAPフィルターとリンクするには:
 
-1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **設定 > ロールと権限**を選択します。
-1. **LDAP同期**タブで、**LDAPサーバー**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../interface_redesign.md#turn-new-navigation-on-or-off)にしている場合は、右上隅で自分のアバターを選択し、**管理者**を選択します。
+1. **設定** > **ロールと権限**を選択します。
+1. **LDAP同期**タブで、**LDAP Server**（LDAPサーバー）を選択します。
 1. **同期方法**フィールドで、`User filter`を選択します。
 1. **ユーザーフィルター**ボックスに、フィルターを入力します。詳細については、[LDAPユーザーフィルターを設定する](../../administration/auth/ldap/_index.md#set-up-ldap-user-filter)を参照してください。
 1. **カスタム管理者ロール**フィールドで、カスタム管理者ロールを選択します。
@@ -301,8 +312,8 @@ GitLabが、一致するLDAPユーザーへのロールのリンクを開始し�
 
 ## 新しい権限をコントリビュートする {#contribute-new-permissions}
 
-権限が存在しない場合、以下を実行できます。
+権限が存在しない場合、以下を実行できます:
 
 - 個々のカスタムロールと権限のリクエストについて、[イシュー391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760)で議論します。
-- [権限提案イシューテンプレート](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Permission%2520Proposal)を使用して、権限をリクエストするイシューを作成します。
+- [権限提案イシューテンプレート](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Permission%20Proposal)を使用して、権限をリクエストするイシューを作成します。
 - GitLabにコントリビュートして、権限を追加します。

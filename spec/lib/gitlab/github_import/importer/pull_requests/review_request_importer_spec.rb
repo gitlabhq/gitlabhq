@@ -13,7 +13,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImport
   end
 
   let_it_be(:reviewer) { create(:user, username: 'alice') }
-  let_it_be(:source_user) { generate_source_user(project, 1) }
+  let_it_be(:source_user) { generate_source_user(project, 1, placeholder_user: create(:user, :placeholder)) }
 
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
   let(:merge_request) { create(:merge_request) }
@@ -46,6 +46,8 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImport
   end
 
   it 'pushes placeholder references for unique merge request reviewers' do
+    allow(Import::DirectReassignService).to receive(:supported?).and_return(false)
+
     expect { 2.times { importer.execute } }.not_to raise_error
 
     # The existing placeholder will always have a lower id than the one created during import

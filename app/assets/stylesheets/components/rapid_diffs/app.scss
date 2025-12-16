@@ -34,12 +34,6 @@
   min-width: 0;
 }
 
-// override .code styles because we can't apply .code directly on the diff file code class
-// because diff files are unaware of the current user
-.rd-app-code-theme.code {
-  background: transparent !important;
-}
-
 .rd-app-diffs-list {
   --rd-diff-file-bottom-margin: #{$gl-padding};
   position: relative;

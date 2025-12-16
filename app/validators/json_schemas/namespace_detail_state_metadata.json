@@ -6,10 +6,22 @@
       "type": "date-time"
     },
     "last_changed_by_user_id": {
-      "type": "number"
+      "type": [
+        "number",
+        "null"
+      ]
     },
     "last_error": {
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "correlation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "additionalProperties": false

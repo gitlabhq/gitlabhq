@@ -63,7 +63,7 @@ Prerequisites:
 - In tasks, you must have at least the Planner role for the project.
 - In merge requests, you must have at least the Developer role for the project.
 
-To enter an estimate, use the `/estimate` [quick action](quick_actions.md), followed by the time.
+To enter an estimate, use the [`/estimate` quick action](quick_actions.md#estimate), followed by the time.
 
 For example, if you need to enter an estimate of 1 month, 2 weeks, 3 days, 4 hours, and 5 minutes,
 type `/estimate 1mo 2w 3d 4h 5m`.
@@ -80,7 +80,7 @@ Prerequisites:
 - In tasks, you must have at least the Planner role for the project.
 - In merge requests, you must have at least the Developer role for the project.
 
-To remove an estimate entirely, use the `/remove_estimate` [quick action](quick_actions.md).
+To remove an estimate entirely, use the [`/remove_estimate` quick action](quick_actions.md#remove_estimate).
 
 ## Time spent
 
@@ -121,7 +121,7 @@ The **Spent** total in the sidebar is updated and you can view all entries in a 
 
 #### Using a quick action
 
-To enter time spent, use the `/spend` [quick action](quick_actions.md), followed by the time.
+To enter time spent, use the [`/spend` quick action](quick_actions.md#spend), followed by the time.
 
 For example, if you need
 to log 1 month, 2 weeks, 3 days, 4 hours, and 5 minutes, type `/spend 1mo 2w 3d 4h 5m`.
@@ -149,15 +149,9 @@ If you type a future date, no time is logged.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16543) in GitLab 18.3 with a flag named `commit_time_tracking`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215244/) in GitLab 18.7. Feature flag `commit_time_tracking` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 You can record time spent on issues directly in commit messages. This approach is useful when you want to track time as you work, without updating the issue separately.
 
@@ -260,7 +254,7 @@ Prerequisites:
 
 - You must have at least the Planner role for the project.
 
-To delete all the time spent at once, use the `/remove_time_spent` [quick action](quick_actions.md).
+To delete all the time spent at once, use the [`/remove_time_spent` quick action](quick_actions.md#remove_time_spent).
 
 ## View an item's time tracking report
 
@@ -335,7 +329,7 @@ The following time units are available:
 On GitLab Self-Managed, you can limit the display of time units to hours.
 To do so:
 
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
 1. Select **Settings** > **Preferences**.
 1. Expand **Localization**.
 1. Under **Time tracking**, select the **Limit display of time tracking units to hours** checkbox.

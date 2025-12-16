@@ -4,7 +4,7 @@
   "type": "array",
   "items": {
     "type": "string",
-    "format": "known_permissions"
+    "format": "known_assignable_permissions"
   },
   "uniqueItems": true,
   "minItems": 1,

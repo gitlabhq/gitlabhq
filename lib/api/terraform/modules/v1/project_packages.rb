@@ -64,10 +64,10 @@ module API
 
           params do
             requires :id, types: [String, Integer], allow_blank: false, desc: 'The ID or full path of a project'
-            with(type: String, allow_blank: false, regexp: API::NO_SLASH_URL_PART_REGEX) do
-              requires :module_name, desc: 'Module name', documentation: { example: 'infra-registry' }
-              requires :module_system, desc: 'Module system', documentation: { example: 'aws' }
-            end
+            requires :module_name, type: String, allow_blank: false, regexp: API::NO_SLASH_URL_PART_REGEX,
+              desc: 'Module name', documentation: { example: 'infra-registry' }
+            requires :module_system, type: String, allow_blank: false, regexp: API::NO_SLASH_URL_PART_REGEX,
+              desc: 'Module system', documentation: { example: 'aws' }
           end
 
           resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do

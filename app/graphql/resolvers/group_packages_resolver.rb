@@ -24,7 +24,17 @@ module Resolvers
       params = filters.merge(GROUP_SORT_TO_PARAMS_MAP.fetch(sort))
       params[:preload_pipelines] = false
 
-      ::Packages::GroupPackagesFinder.new(current_user, object, params).execute
+      if Feature.enabled?(:packages_projects_finder, object)
+        ::Packages::PackagesFinder.new(projects, params).execute
+      else
+        ::Packages::GroupPackagesFinder.new(current_user, object, params).execute
+      end
+    end
+
+    private
+
+    def projects
+      ::Packages::ProjectsFinder.new(current_user: current_user, group: object).execute
     end
   end
 end

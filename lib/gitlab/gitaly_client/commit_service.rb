@@ -131,7 +131,7 @@ module Gitlab
             Gitlab::Git::Tree.new(
               id: gitaly_tree_entry.oid,
               type: gitaly_tree_entry.type.downcase,
-              mode: gitaly_tree_entry.mode.to_s(8),
+              mode: gitaly_tree_entry.mode.to_i.to_s(8),
               name: File.basename(gitaly_tree_entry.path),
               path: encode_binary(gitaly_tree_entry.path),
               flat_path: encode_binary(gitaly_tree_entry.flat_path),
@@ -263,8 +263,8 @@ module Gitlab
               status: path.status,
               path: EncodingHelper.encode!(path.path),
               old_path: EncodingHelper.encode!(path.old_path),
-              old_mode: path.old_mode.to_s(8),
-              new_mode: path.new_mode.to_s(8),
+              old_mode: path.old_mode.to_i.to_s(8),
+              new_mode: path.new_mode.to_i.to_s(8),
               old_blob_id: path.old_blob_id,
               new_blob_id: path.new_blob_id,
               commit_id: path.commit_id

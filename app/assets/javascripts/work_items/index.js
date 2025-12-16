@@ -26,49 +26,33 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
   addShortcutsExtension(ShortcutsNavigation);
 
   const {
-    canBulkUpdate,
     fullPath,
-    groupPath,
     groupId,
     issuesListPath,
     epicsListPath,
-    hasBlockedIssuesFeature,
-    hasGroupBulkEditFeature,
-    hasCustomFieldsFeature,
-    newTrialPath,
     defaultBranch,
     initialSort,
     isSignedIn,
     showNewWorkItem,
-    autocompleteAwardEmojisPath,
     duoRemoteFlowsAvailability,
     projectNamespaceFullPath,
     timeTrackingLimitToHours,
     workItemPlanningViewEnabled,
     canReadCrmOrganization,
     canReadCrmContact,
-    releasesPath,
-    projectImportJiraPath,
-    rssPath,
-    calendarPath,
     maxAttachmentSize,
-    canImportWorkItems,
     isGroupIssuesList,
-    canEdit,
-    exportCsvPath,
     isIssueRepositioningDisabled,
     hasProjects,
-    newIssuePath,
+    workItemsSavedViewsEnabled,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
   const router = createRouter({ fullPath, workspaceType, defaultBranch });
-  let listPath = issuesListPath;
 
-  const breadcrumbParams = { workItemType, isGroup };
+  const breadcrumbParams = { workItemType };
 
   if (workItemType === WORK_ITEM_TYPE_NAME_EPIC) {
-    listPath = epicsListPath;
     breadcrumbParams.listPath = epicsListPath;
   } else {
     breadcrumbParams.listPath = issuesListPath;
@@ -93,42 +77,26 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     router,
     apolloProvider,
     provide: {
-      canBulkUpdate: parseBoolean(canBulkUpdate),
       duoRemoteFlowsAvailability: parseBoolean(duoRemoteFlowsAvailability),
       fullPath,
       isGroup,
       isProject: !isGroup,
       isGroupIssuesList: parseBoolean(isGroupIssuesList),
-      hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
-      hasGroupBulkEditFeature: parseBoolean(hasGroupBulkEditFeature),
-      issuesListPath: listPath,
-      hasCustomFieldsFeature: parseBoolean(hasCustomFieldsFeature),
-      newTrialPath,
-      groupPath,
       groupId,
       initialSort,
       isSignedIn: parseBoolean(isSignedIn),
       workItemType,
       showNewWorkItem: parseBoolean(showNewWorkItem),
-      autocompleteAwardEmojisPath,
-      newIssuePath,
       projectNamespaceFullPath,
       timeTrackingLimitToHours: parseBoolean(timeTrackingLimitToHours),
       workItemPlanningViewEnabled: parseBoolean(workItemPlanningViewEnabled),
       canReadCrmOrganization: parseBoolean(canReadCrmOrganization),
       canReadCrmContact: parseBoolean(canReadCrmContact),
-      releasesPath,
-      projectImportJiraPath,
-      rssPath,
-      calendarPath,
       maxAttachmentSize,
-      canImportWorkItems: parseBoolean(canImportWorkItems),
-      showImportButton: parseBoolean(canImportWorkItems),
-      canEdit: parseBoolean(canEdit),
-      exportCsvPath,
       showNewIssueLink: parseBoolean(showNewWorkItem),
       isIssueRepositioningDisabled: parseBoolean(isIssueRepositioningDisabled),
       hasProjects: parseBoolean(hasProjects),
+      workItemsSavedViewsEnabled: parseBoolean(workItemsSavedViewsEnabled),
     },
     mounted() {
       performanceMarkAndMeasure({

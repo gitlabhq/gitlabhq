@@ -19,6 +19,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   WIKI_CONTENT_EDITOR_TRACKING_LABEL,
   WIKI_FORMAT_LABEL,
@@ -134,7 +135,7 @@ export default {
     WikiTemplate,
     DeleteWikiModal,
   },
-  mixins: [trackingMixin],
+  mixins: [trackingMixin, glFeatureFlagsMixin()],
   inject: [
     'isEditingPath',
     'formatOptions',
@@ -595,6 +596,7 @@ export default {
             :autocomplete-data-sources="autocompleteDataSources"
             :drawio-enabled="drawioEnabled"
             :disable-attachments="isTemplate"
+            :immersive="glFeatures.wikiImmersiveEditor"
             @contentEditor="notifyContentEditorActive"
             @markdownField="notifyContentEditorInactive"
             @keydown.ctrl.enter="submitFormWithShortcut"

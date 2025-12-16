@@ -48,7 +48,7 @@ use the pipeline editor validation tool. This tool simulates the creation of pip
 due to a Git push event, and can help troubleshoot logic issues, including incorrect
 `rules` and `needs` job dependencies:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline editor**.
 1. Select the **Validate** tab.
 1. Optional. Select a different branch to use for the simulated push event by using
@@ -187,7 +187,7 @@ a branch. The branch field defaults to your project's default branch.
 If you enter a new branch name, the **Start a new merge request with these changes**
 checkbox appears. Select it to start a new merge request after you commit the changes.
 
-![The commit form with a new branch](img/pipeline_editor_commit_v13_8.png)
+![The commit form, showing a commit message, branch, and merge request checkmark.](img/pipeline_editor_commit_v13_8.png)
 
 ## Editor accessibility options
 

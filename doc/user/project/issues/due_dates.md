@@ -48,7 +48,7 @@ Issue dates in the past are shown with a red icon ({{< icon name="calendar-overd
 
 To view and sort issues containing due dates in your project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**.
 1. To sort by due date, select the current sort method, then select **Due date**.
 1. Optional. To reverse the sort order, select **Sort direction** ({{< icon name="sort-lowest" >}}).
@@ -72,17 +72,17 @@ Prerequisites:
 
 To do this:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**, then select the title of your issue to view it.
 1. On the right sidebar, next to **Due date**, select **Edit** to display a calendar.
 1. Select your desired date, then select again, outside the calendar, to save your changes.
 
 ### With a quick action
 
-To set a due date from a [quick action](../quick_actions.md) in an issue's description or comment:
+To set a due date with quick actions in an issue's description or comment:
 
-- `/due <date>`: Set the due date. Examples of valid `<date>` include `in 2 days`, `this Friday`, and `December 31st`.
-- `/remove_due_date`: Remove an existing due date.
+- [`/due`](../quick_actions.md#due): Set the due date.
+- [`/remove_due_date`](../quick_actions.md#remove_due_date): Remove an existing due date.
 
 ## Export issue due dates to a calendar
 

@@ -1,25 +1,19 @@
 <script>
-import { GlAlert, GlButton, GlModal, GlIntersectionObserver } from '@gitlab/ui';
+import { GlAlert, GlButton, GlModal, GlIntersectionObserver, GlSkeletonLoader } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { __, sprintf } from '~/locale';
-import { sha256 } from '~/lib/utils/text_utility';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { renderMarkdown } from '~/notes/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { parse } from '../../core/parser';
-import { execute } from '../../core/executor';
-import { transform } from '../../core/transformer';
-import DataPresenter from '../presenters/data.vue';
 import { copyGLQLNodeAsGFM } from '../../utils/copy_as_gfm';
 import Counter from '../../utils/counter';
-import GlqlPagination from './pagination.vue';
+import GlqlResolver from './resolver.vue';
 import GlqlActions from './actions.vue';
 import GlqlFootnote from './footnote.vue';
 
 const MAX_GLQL_BLOCKS = 20;
-const DEFAULT_PAGE_SIZE = 20;
 
 export default {
   name: 'GlqlFacade',
@@ -28,11 +22,11 @@ export default {
     GlButton,
     GlModal,
     GlIntersectionObserver,
+    GlSkeletonLoader,
     CrudComponent,
-    GlqlPagination,
+    GlqlResolver,
     GlqlFootnote,
     GlqlActions,
-    DataPresenter,
   },
   directives: {
     SafeHtml,
@@ -60,7 +54,6 @@ export default {
         cancelAction: { text: __('Close') },
       },
 
-      loadOnClick: true,
       error: {
         variant: 'warning',
         title: null,
@@ -69,13 +62,12 @@ export default {
       },
 
       loading: false,
+      itemsCount: null,
+      retryCount: 0,
+      showResolver: false,
 
       query: undefined,
       config: undefined,
-      variables: undefined,
-      fields: undefined,
-      aggregate: undefined,
-      groupBy: undefined,
       data: undefined,
 
       preClasses: 'code highlight code-syntax-highlight-theme',
@@ -85,10 +77,15 @@ export default {
   },
   computed: {
     title() {
-      return (
-        this.config.title ||
-        (this.config.display === 'table' ? __('Embedded table view') : __('Embedded list view'))
-      );
+      if (this.config?.title) return this.config.title;
+      if (this.loading) return '';
+
+      return this.config?.display === 'table'
+        ? __('Embedded table view')
+        : __('Embedded list view');
+    },
+    description() {
+      return this.config?.description;
     },
     showEmptyState() {
       return this.data?.nodes?.length === 0;
@@ -103,18 +100,17 @@ export default {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       return `\`\`\`glql\n${this.queryYaml}\n\`\`\``;
     },
-    itemsCount() {
-      if (this.aggregate?.length && this.groupBy?.length) return null;
-      return this.data?.count;
+    loadOnClick() {
+      return this.glFeatures.glqlLoadOnClick;
+    },
+    showLoadBtn() {
+      return this.loadOnClick && !this.showResolver;
     },
   },
   watch: {
     config() {
       this.isCollapsed = this.config?.collapsed || false;
     },
-  },
-  async mounted() {
-    this.loadOnClick = this.glFeatures.glqlLoadOnClick;
   },
   methods: {
     viewSource({ title }) {
@@ -127,167 +123,79 @@ export default {
     },
 
     reload() {
-      this.reloadGlqlBlock();
+      this.data = undefined;
+      this.showResolver = true;
+      this.retryCount += 1;
+      this.error = {};
     },
 
     async copyAsGFM() {
-      await copyGLQLNodeAsGFM(this.$refs.presenter.$el);
+      await copyGLQLNodeAsGFM(this.$refs.resolver.$el);
     },
 
-    setVariable(key, value) {
-      if (this.variables[key]) {
-        this.variables[key].value = value;
-      }
-    },
-
-    async loadMore(count) {
-      try {
-        this.loading = count;
-
-        this.setVariable('after', this.data.pageInfo.endCursor);
-        this.setVariable('limit', DEFAULT_PAGE_SIZE);
-
-        const data = await transform(await execute(this.query, this.variables), this.config);
-        this.data = {
-          ...this.data,
-          pageInfo: data.pageInfo,
-          nodes: [...this.data.nodes, ...data.nodes],
-        };
-      } catch {
-        this.handleQueryError(__('Unable to load the next page.'));
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    async loadGlqlBlock() {
-      await this.parseQuery();
-      if (!this.hasError && (this.glFeatures.glqlLoadOnClick || this.checkGlqlBlocksCount())) {
-        await this.executeQuery();
-      }
-    },
-
-    reloadGlqlBlock() {
-      this.data = undefined;
-      this.dismissAlert();
-      return this.executeQuery();
-    },
-
-    async executeQuery() {
-      try {
-        if (this.hasError) return;
-
-        this.loading = true;
-        this.setVariable('limit', this.config.limit);
-        this.data = await transform(await execute(this.query, this.variables), this.config);
-
-        this.trackRender();
-      } catch (error) {
-        switch (error.networkError?.statusCode) {
-          case 503:
-            this.handleTimeoutError();
-            break;
-          case 403:
-            this.handleForbiddenError();
-            break;
-          default:
-            this.handleQueryError(error.message);
-        }
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    async parseQuery() {
-      try {
-        const { query, config, variables, fields, aggregate, groupBy } = await parse(
-          this.queryYaml,
-        );
-        this.query = query;
-        this.config = config;
-        this.variables = variables;
-        this.fields = fields;
-        this.aggregate = aggregate;
-        this.groupBy = groupBy;
-        this.loading = true;
-      } catch (error) {
-        this.handleQueryError(error.message);
-        this.loading = false;
-      }
+    onAppear() {
+      this.showResolver = this.showResolver || this.checkGlqlBlocksCount();
     },
 
     checkGlqlBlocksCount() {
+      // When forcing load on click, don't bother checking the number of GLQL blocks loaded.
+      if (this.loadOnClick) return false;
+
       try {
         this.$options.numGlqlBlocks.increment();
         return true;
       } catch (e) {
-        this.handleLimitError();
+        this.error = {
+          variant: 'warning',
+          title: sprintf(
+            __(
+              'Only %{n} embedded views can be automatically displayed on a page. Click the button below to manually display this view.',
+            ),
+            { n: MAX_GLQL_BLOCKS },
+          ),
+          action: __('Display view'),
+        };
         return false;
       }
     },
-
-    handleQueryError(message) {
-      this.error = { ...this.$options.i18n.glqlDisplayError, message };
-    },
-    handleLimitError() {
-      this.error = this.$options.i18n.glqlLimitError;
-    },
-    handleTimeoutError() {
-      this.error = this.$options.i18n.glqlTimeoutError;
-    },
-    handleForbiddenError() {
-      this.error = this.$options.i18n.glqlForbiddenError;
-    },
-    dismissAlert() {
-      this.error = { variant: 'warning' };
-    },
     renderMarkdown,
-    async trackRender() {
-      try {
-        this.trackEvent('render_glql_block', { label: await sha256(this.queryYaml) });
-      } catch (e) {
-        // ignore any tracking errors
+    onResolverChange({ loading, query, config, data, aggregate, groupBy, error }) {
+      this.loading = loading;
+      this.query = query;
+      this.config = config;
+      this.data = data;
+      this.itemsCount = aggregate?.length && groupBy?.length ? null : data?.count;
+
+      if (error) {
+        this.handleError(error);
       }
     },
-    onPresenterError(error) {
-      this.error = {
-        variant: 'warning',
-        title: error,
-        message: null,
-        action: null,
-      };
+    handleError(error) {
+      switch (error.networkError?.statusCode) {
+        case 503:
+          this.error = {
+            variant: 'warning',
+            title: __('Embedded view timed out. Add more filters to reduce the number of results.'),
+            action: __('Retry'),
+          };
+          break;
+        case 403:
+          this.error = {
+            variant: 'danger',
+            title: __('You do not have permission to view this embedded view.'),
+          };
+          break;
+        default:
+          this.error = {
+            variant: 'warning',
+            title: __('An error occurred when trying to display this embedded view:'),
+            message: error.message,
+          };
+      }
     },
   },
   safeHtmlConfig: { ALLOWED_TAGS: ['code'] },
   i18n: {
-    glqlDisplayError: {
-      variant: 'warning',
-      title: __('An error occurred when trying to display this embedded view:'),
-    },
-    glqlLimitError: {
-      variant: 'warning',
-      title: sprintf(
-        __(
-          'Only %{n} embedded views can be automatically displayed on a page. Click the button below to manually display this view.',
-        ),
-        { n: MAX_GLQL_BLOCKS },
-      ),
-      action: __('Display view'),
-    },
-    glqlTimeoutError: {
-      variant: 'warning',
-      title: sprintf(
-        __('Embedded view timed out. Add more filters to reduce the number of results.'),
-        {
-          n: MAX_GLQL_BLOCKS,
-        },
-      ),
-      action: __('Retry'),
-    },
-    glqlForbiddenError: {
-      variant: 'danger',
-      title: __('Embedded view timed out. Try again later.'),
-    },
     loadGlqlView: __('Load embedded view'),
   },
   numGlqlBlocks: new Counter(MAX_GLQL_BLOCKS),
@@ -299,9 +207,9 @@ export default {
       <gl-alert
         :variant="error.variant"
         class="!gl-my-3"
+        :dismissible="false"
         :primary-button-text="error.action"
-        @dismiss="dismissAlert"
-        @primaryAction="reloadGlqlBlock"
+        @primaryAction="reload"
       >
         {{ error.title }}
         <ul v-if="error.message" class="!gl-mb-0">
@@ -310,76 +218,64 @@ export default {
       </gl-alert>
     </template>
 
-    <div v-if="loadOnClick" class="markdown-code-block gl-relative">
+    <div v-if="hasError || showLoadBtn" class="markdown-code-block gl-relative">
       <pre :class="preClasses"><gl-button
+        v-if="showLoadBtn"
         class="gl-font-regular gl-absolute gl-z-1 gl-top-2/4 gl-left-2/4"
         style="transform: translate(-50%, -50%)"
         :aria-label="$options.i18n.loadGlqlView"
-        @click="loadOnClick = false"
-      >{{ $options.i18n.loadGlqlView }}</gl-button><code class="gl-opacity-2">{{ queryYaml }}</code></pre>
+        @click="showResolver = true"
+      >{{ $options.i18n.loadGlqlView }}</gl-button><code :class="{ 'gl-opacity-2': showLoadBtn }">{{ queryYaml }}</code></pre>
     </div>
-    <gl-intersection-observer v-else @appear.once="loadGlqlBlock">
-      <template v-if="query && !hasError">
-        <crud-component
-          :anchor-id="crudComponentId"
-          :title="title"
-          :description="config.description"
-          :count="itemsCount"
-          is-collapsible
-          :collapsed="isCollapsed"
-          :show-zero-count="!loading"
-          persist-collapsed-state
-          class="!gl-mt-5"
-          :body-class="{
-            '!gl-m-0 !gl-p-0': loading || (data && data.count),
-            '!gl-overflow-hidden': true,
-          }"
-          @collapsed="isCollapsed = true"
-          @expanded="isCollapsed = false"
-        >
-          <template #actions>
-            <glql-actions
-              :show-copy-contents="showCopyContentsAction"
-              :modal-title="title"
-              @viewSource="viewSource"
-              @copySource="copySource"
-              @copyAsGFM="copyAsGFM"
-              @reload="reload"
-            />
-          </template>
-
-          <!-- TODO: Replace with resolver.vue (https://gitlab.com/gitlab-org/gitlab/-/issues/577530) -->
-          <data-presenter
-            ref="presenter"
-            :data="data"
-            :fields="fields"
-            :aggregate="aggregate"
-            :group-by="groupBy"
-            :display-type="config.display"
-            :loading="loading"
-            @error="onPresenterError"
-          />
-          <div
-            v-if="data && data.count && data.nodes.length < data.count"
-            class="glql-load-more gl-border-t gl-border-section gl-p-3"
-          >
-            <glql-pagination
-              :count="data.nodes.length"
-              :total-count="data.count"
-              :loading="loading"
-              @loadMore="loadMore"
-            />
+    <gl-intersection-observer v-else @appear.once="onAppear">
+      <crud-component
+        :anchor-id="crudComponentId"
+        :title="title"
+        :description="description"
+        :count="itemsCount"
+        is-collapsible
+        :collapsed="isCollapsed"
+        keep-alive-collapsed-content
+        :show-zero-count="!loading"
+        persist-collapsed-state
+        class="!gl-mt-5"
+        :body-class="{
+          '!gl-m-0 !gl-p-0': loading || (data && data.count),
+          '!gl-overflow-hidden': true,
+        }"
+        @collapsed="isCollapsed = true"
+        @expanded="isCollapsed = false"
+      >
+        <template v-if="!title" #title>
+          <div data-testid="title-skeleton-loader">
+            <gl-skeleton-loader :lines="1" />
           </div>
+        </template>
 
-          <template v-if="showEmptyState" #empty>
-            {{ __('No data found for this query.') }}
-          </template>
-        </crud-component>
-        <glql-footnote v-if="!isCollapsed" />
-      </template>
-      <div v-else class="markdown-code-block gl-relative">
-        <pre :class="preClasses"><code>{{ queryYaml }}</code></pre>
-      </div>
+        <template #actions>
+          <glql-actions
+            :show-copy-contents="showCopyContentsAction"
+            :modal-title="title"
+            @viewSource="viewSource"
+            @copySource="copySource"
+            @copyAsGFM="copyAsGFM"
+            @reload="reload"
+          />
+        </template>
+
+        <glql-resolver
+          v-if="showResolver"
+          ref="resolver"
+          :key="retryCount"
+          :glql-query="queryYaml"
+          @change="onResolverChange"
+        />
+
+        <template v-if="showEmptyState" #empty>
+          {{ __('No data found for this query.') }}
+        </template>
+      </crud-component>
+      <glql-footnote v-if="!isCollapsed" />
     </gl-intersection-observer>
     <gl-modal
       v-model="queryModalSettings.show"

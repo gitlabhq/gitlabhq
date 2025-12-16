@@ -342,8 +342,8 @@ following tasks:
 - Replaces Tailwind media queries CSS utils with container queries utils.
 - Replaces Bootstrap responsive utils with their Tailwind container utils equivalents.
 - Replaces other legacy Bootstrap non-responsive utils with their Tailwind equivalents. This helps
-with another ongoing migration which we might as well tackle at the same time while we are changing
-many pages in the product.
+  with another ongoing migration which we might as well tackle at the same time while we are changing
+  many pages in the product.
 - Rewrites media queries in SCSS files to use container queries mixins instead.
 
 The script supports the following file types:
@@ -411,15 +411,16 @@ the following script in the browser's console to copy the list of files to the c
 ```
 
 {{< alert type="note" >}}
+
 Keep in mind that, while the script can help speed up migrations, it also cannot migrate
 everything for you. In particular, you should pay attention to the following:
 
-- If you are using UI elements from NPM dependencies, those would need to be migrated or overriden
-manually.
+- If you are using UI elements from NPM dependencies, those would need to be migrated or overidden manually.
 - The code you are migrating might contain some JavaScript that reacts to the window being
-resized. This kind of script would need to be migrated manually in a way that's "container-aware".
+  resized. This kind of script would need to be migrated manually in a way that's "container-aware".
 - If your SCSS implements media queries with custom breakpoints, the script might not be able to
-rewrite those, so you'd need to migrate them manually.
+  rewrite those, so you'd need to migrate them manually.
+
 {{< /alert >}}
 
 ## Naming

@@ -8,6 +8,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { sprintf, s__ } from '~/locale';
 
 export default {
+  name: 'StatusCell',
   iconSize: 12,
   i18n: {
     statusDescription: (id) => sprintf(s__('Jobs|Status for job %{id}'), { id }),

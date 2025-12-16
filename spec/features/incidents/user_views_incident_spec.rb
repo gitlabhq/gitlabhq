@@ -27,7 +27,7 @@ RSpec.describe "User views incident", feature_category: :incident_management do
     expect(page).to have_header_with_correct_id_and_link(1, 'Description header', 'description-header')
   end
 
-  it_behaves_like 'page meta description', ' Description header Lorem ipsum dolor sit amet'
+  it_behaves_like 'page meta description', 'Description header  Lorem ipsum dolor sit amet'
 
   describe 'user actions' do
     it 'shows the merge request and incident actions', :js, :aggregate_failures do

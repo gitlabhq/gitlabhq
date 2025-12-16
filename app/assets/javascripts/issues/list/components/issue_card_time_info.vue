@@ -82,7 +82,7 @@ export default {
 </script>
 
 <template>
-  <span class="gl-inline-flex gl-w-min gl-gap-3 gl-whitespace-nowrap">
+  <div class="gl-contents">
     <slot name="weight"></slot>
     <issuable-milestone
       v-if="milestone && !hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.MILESTONE)"
@@ -96,14 +96,18 @@ export default {
       v-if="datesText && !hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.DATES)"
       anchor-id="issuable-due-date"
       wrapper-component="button"
-      wrapper-component-class="issuable-due-date !gl-cursor-help gl-text-subtle gl-bg-transparent gl-border-0 gl-p-0 focus-visible:gl-focus-inset"
+      wrapper-component-class="issuable-due-date gl-text-subtle gl-bg-transparent gl-border-0 gl-p-0 focus-visible:gl-focus-inset"
       :title="datesText"
-      title-component-class="gl-mr-3"
       :tooltip-text="datesTooltipTitle"
       tooltip-placement="top"
     >
       <template #icon>
-        <gl-icon :variant="isOverdue ? 'danger' : 'current'" :name="dateIcon" :size="12" />
+        <gl-icon
+          :variant="isOverdue ? 'danger' : 'current'"
+          :name="dateIcon"
+          :size="12"
+          class="gl-shrink-0"
+        />
       </template>
     </work-item-attribute>
     <span v-else-if="detailLoading">
@@ -113,19 +117,16 @@ export default {
       v-if="timeEstimate"
       anchor-id="time-estimate"
       wrapper-component="button"
+      icon-name="timer"
+      icon-size="12"
       :title="timeEstimate"
-      title-component-class="gl-mr-3"
       wrapper-component-class="gl-text-subtle gl-bg-transparent gl-border-0 gl-p-0 focus-visible:gl-focus-inset"
       :tooltip-text="__('Estimate')"
       tooltip-placement="top"
-    >
-      <template #icon>
-        <gl-icon name="timer" :size="12" />
-      </template>
-    </work-item-attribute>
+    />
     <span v-else-if="detailLoading">
       <gl-skeleton-loader :width="25" :lines="1" equal-width-lines />
     </span>
     <slot></slot>
-  </span>
+  </div>
 </template>

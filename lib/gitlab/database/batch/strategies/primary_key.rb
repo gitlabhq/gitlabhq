@@ -57,8 +57,8 @@ module Gitlab
 
           def build_batch_bounds(batch, cursor_columns)
             [
-              batch.first.values_at(*cursor_columns),
-              batch.last.values_at(*cursor_columns)
+              batch.first.values_at(cursor_columns),
+              batch.last.values_at(cursor_columns)
             ]
           end
         end

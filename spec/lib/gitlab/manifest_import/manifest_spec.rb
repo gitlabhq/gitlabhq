@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::ManifestImport::Manifest do
   let(:file) { File.open(Rails.root.join('spec/fixtures/aosp_manifest.xml')) }

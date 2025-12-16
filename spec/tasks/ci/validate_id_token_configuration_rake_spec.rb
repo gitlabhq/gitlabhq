@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe 'ci:validate_id_token_configuration', feature_category: :secrets_management do
   let(:task_class) { Tasks::Ci::ValidateIdTokenConfigurationTask }

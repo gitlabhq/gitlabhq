@@ -12,7 +12,7 @@ title: Troubleshooting GitLab Pages administration
 
 {{< /details >}}
 
-This page contains a list of issues you might encounter when administering GitLab Pages.
+When administering GitLab Pages, you might encounter the following issues.
 
 ## How to see GitLab Pages logs
 
@@ -303,7 +303,7 @@ in all of your GitLab Pages instances.
 
 ## Intermittent 502 errors when using an AWS Network Load Balancer and GitLab Pages
 
-Connections will time out when using a Network Load Balancer with client IP preservation enabled and [the request is looped back to the source server](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html#loopback-timeout).
+Connections time out when using a Network Load Balancer with client IP preservation enabled and [the request is looped back to the source server](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html#loopback-timeout).
 This can happen to GitLab instances with multiple servers
 running both the core GitLab application and GitLab Pages. This can also happen when a single
 container is running both the core GitLab application and GitLab Pages.
@@ -326,8 +326,8 @@ Upgrading to an [officially supported operating system](../../install/package/_i
 
 This problem comes from the permissions of the GitLab Pages OAuth application. To fix it:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **Applications > GitLab Pages**.
+1. In the upper-right corner, select **Admin**.
+1. Select **Applications** > **GitLab Pages**.
 1. Edit the application.
 1. Under **Scopes**, ensure that the `api` scope is selected.
 1. Save your changes.
@@ -369,7 +369,7 @@ You may see this error if `pages_external_url` was updated at some point of time
 
 1. Check the [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application):
 
-   1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+   1. In the upper-right corner, select **Admin**.
    1. Select **Applications** and then **Add new application**.
    1. Ensure the **Callback URL/Redirect URI** is using the protocol (HTTP or HTTPS) that
       `pages_external_url` is configured to use.

@@ -229,6 +229,13 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
           # Exclude internal event tracking from the DB request count. The events are tracked independently of each
           # other and each make a query for the project's namespace. There's no way to avoid these requests for now.
           allow(Gitlab::InternalEvents).to receive(:track_event)
+          tracking_service_double = instance_double(
+            Gitlab::WorkItems::Instrumentation::TrackingService,
+            execute: true
+          )
+
+          allow(Gitlab::WorkItems::Instrumentation::TrackingService).to receive(:new).and_return(
+            tracking_service_double)
         end
 
         it 'makes the same number of DB requests for one design as for several' do
@@ -238,6 +245,48 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
           baseline = ActiveRecord::QueryRecorder.new { run_service(one) }
 
           expect { run_service(many) }.not_to exceed_query_limit(baseline)
+        end
+      end
+
+      context 'instrumentation tracking' do
+        let(:current_user) { user }
+
+        def execute_service
+          run_service
+        end
+
+        context 'when deleting a single design' do
+          before do
+            create_designs(2)
+          end
+
+          let!(:designs) { create_designs(1) }
+
+          it_behaves_like 'tracks work item event', :issue, :current_user,
+            Gitlab::WorkItems::Instrumentation::EventActions::DESIGN_DESTROY,
+            :execute_service
+        end
+
+        context 'when deleting multiple designs' do
+          before do
+            create_designs(1)
+          end
+
+          let!(:designs) { create_designs(2) }
+
+          it 'tracks event for each design deleted' do
+            tracking_service = instance_double(Gitlab::WorkItems::Instrumentation::TrackingService)
+
+            expect(Gitlab::WorkItems::Instrumentation::TrackingService).to receive(:new).twice.with(
+              work_item: issue,
+              current_user: user,
+              event: Gitlab::WorkItems::Instrumentation::EventActions::DESIGN_DESTROY
+            ).and_return(tracking_service)
+
+            expect(tracking_service).to receive(:execute).twice
+
+            execute_service
+          end
         end
       end
     end

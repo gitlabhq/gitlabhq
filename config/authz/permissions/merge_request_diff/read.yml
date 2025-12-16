@@ -1,0 +1,6 @@
+---
+name: read_merge_request_diff
+description: Grants the ability to read merge requests diffs and versions
+feature_category: code_review_workflow
+boundaries:
+  - project

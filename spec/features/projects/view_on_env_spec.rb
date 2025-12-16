@@ -51,6 +51,28 @@ RSpec.describe 'View on environment', :js, feature_category: :groups_and_project
       context 'with legacy diffs' do
         before do
           stub_feature_flags(rapid_diffs_on_compare_show: false)
+          sign_in(user)
+          visit page_path
+          wait_for_requests
+        end
+
+        where(:page_path) do
+          [
+            lazy { project_compare_path(project, from: 'master', to: branch_name) },
+            lazy { project_commit_path(project, sha) }
+          ]
+        end
+
+        with_them do
+          it 'has a "View on env" button' do
+            expect(page).to have_link('View on feature.review.example.com', href: 'http://feature.review.example.com/ruby/feature')
+          end
+        end
+      end
+
+      context 'with rapid diffs' do
+        before do
+          stub_feature_flags(rapid_diffs_on_compare_show: true)
         end
 
         context 'when visiting a comparison for the branch' do
@@ -62,22 +84,45 @@ RSpec.describe 'View on environment', :js, feature_category: :groups_and_project
             wait_for_requests
           end
 
-          it 'has a "View on env" button' do
-            expect(page).to have_link('View on feature.review.example.com', href: 'http://feature.review.example.com/ruby/feature')
+          it 'has a "View on env" button in the file header menu' do
+            diff_file = all_by_testid('rd-diff-file').find do |file|
+              file.has_text?(file_path)
+            end
+            diff_file.find('button:has([data-testid="ellipsis_v-icon"])').click
+
+            expect(page).to have_link(
+              'View on feature.review.example.com',
+              href: 'http://feature.review.example.com/ruby/feature'
+            )
           end
         end
 
-        context 'when visiting a comparison for the commit' do
+        context 'when visiting the commit' do
           before do
             sign_in(user)
 
-            visit project_compare_path(project, from: 'master', to: sha)
+            visit project_commit_path(project, sha, rapid_diffs: true)
 
             wait_for_requests
           end
 
-          it 'has a "View on env" button' do
-            expect(page).to have_link('View on feature.review.example.com', href: 'http://feature.review.example.com/ruby/feature')
+          it 'has a "View on env" button in the file header menu' do
+            first_file = find_by_testid('rd-diff-file')
+            first_file.find('button:has([data-testid="ellipsis_v-icon"])').click
+
+            expect(page).to have_link(
+              'View on feature.review.example.com',
+              href: 'http://feature.review.example.com/ruby/feature'
+            )
+          end
+
+          it 'opens the environment URL in a new tab' do
+            first_file = find_by_testid('rd-diff-file')
+            first_file.find('button:has([data-testid="ellipsis_v-icon"])').click
+
+            link = page.find_link('View on feature.review.example.com')
+            expect(link[:target]).to eq('_blank')
+            expect(link[:rel]).to include('noopener')
           end
         end
       end
@@ -108,20 +153,6 @@ RSpec.describe 'View on environment', :js, feature_category: :groups_and_project
 
         it 'has a "View on env" button' do
           click_button 'File actions'
-          expect(page).to have_link('View on feature.review.example.com', href: 'http://feature.review.example.com/ruby/feature')
-        end
-      end
-
-      context 'when visiting the commit' do
-        before do
-          sign_in(user)
-
-          visit project_commit_path(project, sha)
-
-          wait_for_requests
-        end
-
-        it 'has a "View on env" button' do
           expect(page).to have_link('View on feature.review.example.com', href: 'http://feature.review.example.com/ruby/feature')
         end
       end

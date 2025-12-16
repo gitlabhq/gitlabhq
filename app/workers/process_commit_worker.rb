@@ -54,9 +54,6 @@ class ProcessCommitWorker
 
     close_issues(project, user, commit, closed_issues) if closed_issues.any?
     commit.create_cross_references!(user, closed_issues)
-
-    return unless Feature.enabled?(:commit_time_tracking, project)
-
     track_time_from_commit_message(project, commit, user)
   end
 

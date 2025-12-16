@@ -59,7 +59,7 @@ module Integrations
       end
 
       def bulk_update_slack_integrations
-        slack_integration_batch = SlackIntegration.by_integration(batch_ids)
+        slack_integration_batch = SlackIntegration.by_integration(batch_ids).preloaded_integration
 
         return unless slack_integration_batch.present?
 
@@ -68,7 +68,7 @@ module Integrations
         )
 
         Integrations::SlackWorkspace::IntegrationApiScope.update_scopes(
-          slack_integration_batch.pluck_primary_key,
+          slack_integration_batch,
           integration.slack_integration.slack_api_scopes
         )
       end
@@ -84,7 +84,10 @@ module Integrations
         items_to_insert = integrations_missing_slack_integration.map do |integration_record|
           db_hash.merge(
             'integration_id' => integration_record.id,
-            'alias' => integration_record.parent.full_path
+            'alias' => integration_record.parent.full_path,
+            'organization_id' => integration_record.organization_id,
+            'group_id' => integration_record.group_id,
+            'project_id' => integration_record.project_id
           )
         end
 
@@ -97,10 +100,13 @@ module Integrations
         scopes = integration.slack_integration.slack_api_scopes
 
         items_to_insert = scopes.flat_map do |scope|
-          inserted_slack_ids.map do |record_id|
+          SlackIntegration.id_in(inserted_slack_ids).preloaded_integration.flat_map do |slack_integration|
             {
-              'slack_integration_id' => record_id,
-              'slack_api_scope_id' => scope.id
+              'slack_integration_id' => slack_integration.id,
+              'slack_api_scope_id' => scope.id,
+              'project_id' => slack_integration.integration.project_id,
+              'group_id' => slack_integration.integration.group_id,
+              'organization_id' => slack_integration.integration.organization_id
             }
           end
         end

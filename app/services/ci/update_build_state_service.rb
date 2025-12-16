@@ -10,21 +10,16 @@ module Ci
 
     ACCEPT_TIMEOUT = 5.minutes.freeze
 
-    attr_reader :build, :params, :metrics
+    attr_reader :build, :params, :metrics, :logger
 
-    def initialize(build, params, metrics = ::Gitlab::Ci::Trace::Metrics.new)
+    def initialize(build, params, metrics = ::Gitlab::Ci::Trace::Metrics.new, logger = Gitlab::AppLogger)
       @build = build
       @params = params
       @metrics = metrics
+      @logger = logger
     end
 
     def execute
-      # Handle two-phase commit workflow for jobs waiting for runner acknowledgment
-      if build.runner_ack_wait_status == :waiting
-        result = handle_runner_ack_workflow
-        return result unless result.nil? # Continue processing if nil returned
-      end
-
       unless accept_available?
         return update_build_state!
       end
@@ -115,37 +110,6 @@ module Ci
 
         Result.new(status: 200)
       else
-        Result.new(status: 400)
-      end
-    end
-
-    def handle_runner_ack_workflow
-      case build_state
-      when 'pending'
-        if build.runner_manager.present?
-          return Result.new(status: 409) # Conflict: Job is already assigned to a runner
-        end
-
-        # Keep-alive signal during runner preparation
-        # The runner is still preparing and confirming it can handle the job
-        build.heartbeat_runner_ack_wait(build.runner_manager_id_waiting_for_ack)
-
-        Result.new(status: 200)
-      when 'running'
-        # Runner is ready to start execution and has accepted the job - transition job to running state
-        runner_manager = ::Ci::RunnerManager.find_by_id(build.runner_manager_id_waiting_for_ack)
-
-        if runner_manager.nil?
-          return Result.new(status: 400) # Bad request: Job is not in pending state or not assigned to a runner
-        end
-
-        # Transition job to running state and assign the runner manager
-        build.run!
-        build.runner_manager = runner_manager
-
-        nil # Continue processing with update_build_state!
-      else
-        # Invalid state for two-phase commit workflow
         Result.new(status: 400)
       end
     end

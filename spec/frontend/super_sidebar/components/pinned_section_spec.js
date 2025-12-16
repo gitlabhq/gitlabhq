@@ -12,9 +12,6 @@ import {
 } from '~/super_sidebar/constants';
 import { setCookie } from '~/lib/utils/common_utils';
 
-import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-import { stubExperiments } from 'helpers/experimentation_helper';
-
 jest.mock('@floating-ui/dom');
 jest.mock('~/lib/utils/common_utils', () => ({
   getCookie: jest.requireActual('~/lib/utils/common_utils').getCookie,
@@ -137,44 +134,14 @@ describe('PinnedSection component', () => {
   });
 
   describe('click on a pinned nav item', () => {
-    let trackingSpy;
-    let pinnedItem;
-
     beforeEach(() => {
       createWrapper();
-      pinnedItem = wrapper.findComponent(NavItemLink);
-      trackingSpy = mockTracking(undefined, pinnedItem.element, jest.spyOn);
-    });
-
-    afterEach(() => {
-      unmockTracking();
     });
 
     it('stores pinned nav usage in sessionStorage', () => {
       expect(window.sessionStorage.getItem(PINNED_NAV_STORAGE_KEY)).toBe(null);
       wrapper.findComponent(NavItemLink).vm.$emit('nav-link-click');
       expect(window.sessionStorage.getItem(PINNED_NAV_STORAGE_KEY)).toBe('true');
-    });
-
-    it('does not track click if user is not in the experiment', () => {
-      stubExperiments({});
-
-      pinnedItem.vm.$emit('nav-link-click');
-      expect(trackingSpy).not.toHaveBeenCalled();
-    });
-
-    it.each(['candidate', 'control'])('tracks %s experiment click', (variant) => {
-      stubExperiments({ default_pinned_nav_items: variant });
-
-      pinnedItem.vm.$emit('nav-link-click');
-
-      expect(trackingSpy).toHaveBeenCalledWith(
-        undefined,
-        'click_pinned_menu_item',
-        expect.objectContaining({
-          label: pinnedItem.props('item').id,
-        }),
-      );
     });
   });
 });

@@ -30,7 +30,7 @@ export default {
       :title="$options.i18n.buttonLabel"
       :aria-label="$options.i18n.buttonLabel"
       class="new-issue-for-discussion discussion-create-issue-btn gl-w-full @sm/panel:gl-w-auto"
-      icon="issue-new"
+      icon="work-item-new"
     />
   </div>
 </template>

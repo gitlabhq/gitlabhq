@@ -10,7 +10,7 @@ module Gitlab
         class Interpolator
           attr_reader :config, :args, :yaml_context, :external_context, :errors
 
-          def initialize(config, args, yaml_context, external_context: nil)
+          def initialize(config, args, yaml_context, external_context)
             @config = config
             @args = args.nil? ? {} : args
             @yaml_context = yaml_context

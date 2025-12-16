@@ -1,0 +1,12 @@
+---
+table_name: user_saved_views
+classes:
+  - WorkItems::SavedViews::UserSavedView
+feature_categories:
+  - team_planning
+description: Join table linking users to saved views
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214737
+milestone: '18.7'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces

@@ -37,7 +37,7 @@ Prerequisites:
 
 To configure GitLab SCIM:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand the **SCIM Token** section and select **Generate a SCIM token**.
 1. For configuration of your identity provider, save the:
@@ -73,7 +73,7 @@ Prerequisites:
 To configure Okta for SCIM:
 
 1. Sign in to Okta.
-1. In the upper-right corner, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**. The button is not visible from the **Admin** area.
+1. In the upper-right corner, select **Admin**. The button is not visible from the **Admin** area.
 1. In the **Application** tab, select **Browse App Catalog**.
 1. Find and select the **GitLab** application.
 1. On the GitLab application overview page, select **Add Integration**.
@@ -286,18 +286,53 @@ Prerequisites:
 - [SAML group links](../../user/group/saml_sso/group_sync.md#configure-saml-group-links) must be configured first.
 - The SAML group names in your identity provider must match the SAML group names configured in GitLab.
 
+SCIM group synchronization works with SAML group links to manage group memberships. When your identity provider sends group membership changes through the SCIM API, GitLab updates user memberships in all GitLab groups that have SAML group links associated with that SCIM group.
+
+SCIM is a one-directional protocol: changes flow from your identity provider to GitLab. If you make changes to SAML group links in GitLab (such as adding or removing them), your identity provider has no way to detect these changes through SCIM.
+
+### Known limitation of new group links
+
+When your identity provider first provisions a SCIM group (through `POST /Groups`), GitLab associates the SCIM group ID with all existing SAML group links that have a matching group name.
+However, if you add new SAML group links with the same group name after the initial provisioning,
+the new group links are not automatically associated with the SCIM group ID.
+This means SCIM membership updates from your identity provider do not affect users in the newly added group links.
+
+Support for improvements is proposed in [issue 582729](https://gitlab.com/gitlab-org/gitlab/-/issues/582729).
+
+{{< alert type="note" >}}
+
+To ensure all group links are associated with the SCIM group from the start,
+you should configure all SAML group links before setting up SCIM group provisioning in your identity provider.
+
+{{< /alert >}}
+
+If you need to add group links after the initial provisioning, you can re-provision the SCIM group in your identity provider by deleting the SCIM group provisioning (not the IdP group itself), then recreating it.
+This action re-associates all current SAML group links with the SCIM group.
+For more information, refer to your identity provider's documentation for managing SCIM group provisioning.
+
+If you delete a SAML group link in GitLab, members of that group through that link remain in the group.
+However, SCIM no longer manages their membership in that group because the group link has been removed.
+If needed, you can manually [remove members from the group](../../user/group/_index.md#remove-a-member-from-the-group).
+
 ### Configure group synchronization in your identity provider
 
 For detailed instructions on configuring group synchronization in your identity provider, refer to the provider's documentation. Examples below:
 
 - [Okta Groups API](https://developer.okta.com/docs/reference/api/groups/)
 - [Microsoft Entra ID (Azure AD) SCIM Groups](https://learn.microsoft.com/en-us/entra/identity/app-provisioning/use-scim-to-provision-users-and-groups)
+      - By default, the `displayName` source attribute is used to find SAML group links with user-friendly names.
+      - However, if your SAML group links use an object ID for the name,
+      you must update the source attribute to `objectId`.
 
 {{< alert type="warning" >}}
 
 When multiple SAML group links map to the same GitLab group, users are assigned the highest role across all mapping group links. Users removed from an IdP group stay in a GitLab group if they belong to another SAML group linked to it.
 
 {{< /alert >}}
+
+The standard GitLab SCIM application in the Okta application catalog does not support group synchronization.
+Alternatively, you can create a custom SCIM integration for group synchronization with Okta.
+For more information, see [issue 582729](https://gitlab.com/gitlab-org/gitlab/-/issues/582729).
 
 ## Troubleshooting
 

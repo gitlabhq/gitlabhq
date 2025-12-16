@@ -164,7 +164,7 @@ export default {
     :target="target"
     boundary="viewport"
     :placement="placement"
-    :css-classes="['gl-min-w-34']"
+    :css-classes="['gl-min-w-max']"
     show
   >
     <div class="gl-flex gl-items-center gl-gap-2">
@@ -174,7 +174,10 @@ export default {
       <span class="gl-flex gl-text-subtle" data-testid="milestone-label">
         <gl-icon name="milestone" class="gl-mr-1" variant="subtle" /> {{ __('Milestone') }}
       </span>
-      <span v-if="showTimeframe" class="gl-text-subtle" data-testid="milestone-timeframe"
+      <span
+        v-if="showTimeframe"
+        class="gl-whitespace-nowrap gl-text-subtle"
+        data-testid="milestone-timeframe"
         >&middot; {{ milestoneTimeframe }}</span
       >
     </div>

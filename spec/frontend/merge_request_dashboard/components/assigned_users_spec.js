@@ -33,11 +33,38 @@ function createComponent({ users = createMockUsers(), type = 'ASSIGNEES' } = {})
 describe('Merge request dashboard assigned users component', () => {
   const findAllUsers = () => wrapper.findAllByTestId('assigned-user');
   const findReviewStateIcon = () => wrapper.findByTestId('review-state-icon');
+  const findShowAllUsersButton = () => wrapper.findByTestId('show-all-users');
 
   it('renders user avatars', () => {
     createComponent();
 
     expect(findAllUsers()).toHaveLength(2);
+  });
+
+  it('shows all users when at the limit', () => {
+    createComponent({
+      users: [
+        ...createMockUsers(),
+        ...createMockUsers().map((user) => ({ ...user, id: `gid://gitlab/user/${user.id + 2}` })),
+      ],
+    });
+
+    expect(findAllUsers()).toHaveLength(4);
+    expect(findShowAllUsersButton().exists()).toBe(false);
+  });
+
+  it('shows extra users in popover when over the limit', () => {
+    createComponent({
+      users: [
+        ...createMockUsers(),
+        ...createMockUsers().map((user) => ({ ...user, id: `gid://gitlab/user/${user.id + 2}` })),
+        ...createMockUsers().map((user) => ({ ...user, id: `gid://gitlab/user/${user.id + 4}` })),
+      ],
+    });
+
+    expect(findAllUsers()).toHaveLength(3);
+    expect(findShowAllUsersButton().exists()).toBe(true);
+    expect(findShowAllUsersButton().attributes('title')).toEqual('Show all assignees');
   });
 
   describe('as reviewer list', () => {

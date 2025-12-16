@@ -200,14 +200,16 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
           expect(options).to be_kind_of(Hash)
           expect(request.to_h).to eq(
             payload.merge({
-              allow_conflicts: false,
-              expected_old_oid: "",
               repository: repository.gitaly_repository.to_h,
               message: message.dup.force_encoding(Encoding::ASCII_8BIT),
               user: Gitlab::Git::User.from_gitlab(user).to_gitaly.to_h,
-              timestamp: { nanos: 0, seconds: Time.current.to_i }
+              timestamp: { seconds: Time.current.to_i }
             })
           )
+          expect(request.allow_conflicts).to be false
+          expect(request.expected_old_oid).to eq("")
+          expect(request.timestamp.nanos).to eq(0)
+          expect(request.sign).to be false
         end.and_return(response)
 
         client.user_merge_to_ref(user, **payload)
@@ -329,13 +331,15 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     let(:target_sha) { repository.commit(target_branch).sha }
     let(:source_sha) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
     let(:message) { 'Merge a branch' }
+    let(:sign) { false }
 
     subject do
       client.user_merge_branch(user,
         source_sha: source_sha,
         target_branch: target_branch,
         target_sha: target_sha,
-        message: message
+        message: message,
+        sign: sign
       ) {}
     end
 
@@ -859,7 +863,8 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         start_repository: repository.gitaly_repository,
         message: revert_message,
         expected_old_oid: nil,
-        timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i)
+        timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i),
+        sign: true
       )
     end
 
@@ -983,7 +988,8 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
           start_repository: repository.gitaly_repository,
           message: revert_message,
           expected_old_oid: target_sha,
-          timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i)
+          timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i),
+          sign: true
         )
       end
 
@@ -1155,14 +1161,15 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
             eq(
               payload.merge(
                 {
-                  expected_old_oid: "",
                   repository: repository.gitaly_repository.to_h,
                   user: Gitlab::Git::User.from_gitlab(user).to_gitaly.to_h,
-                  timestamp: { nanos: 0, seconds: Time.current.to_i }
+                  timestamp: { seconds: Time.current.to_i }
                 }
               )
             )
           )
+          expect(request.expected_old_oid).to eq("")
+          expect(request.timestamp.nanos).to eq(0)
         end.and_return(response)
 
         client.user_rebase_to_ref(user, **payload)
@@ -1187,7 +1194,8 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         end_sha: end_sha,
         author: gitaly_user,
         commit_message: commit_message,
-        timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i)
+        timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i),
+        sign: true
       )
     end
 
@@ -1195,7 +1203,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     let(:response) { Gitaly::UserSquashResponse.new(squash_sha: squash_sha) }
 
     subject do
-      client.user_squash(user, start_sha, end_sha, user, commit_message, time)
+      client.user_squash(user, start_sha: start_sha, end_sha: end_sha, author: user, message: commit_message, time: time)
     end
 
     it 'sends a user_squash message and returns the squash sha' do

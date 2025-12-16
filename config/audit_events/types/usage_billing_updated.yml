@@ -1,0 +1,10 @@
+---
+name: usage_billing_updated
+description: The namespace owner changes GitLab Credits dashboard settings
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/580868
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216009
+feature_category: consumables_cost_management
+milestone: '18.7'
+saved_to_database: true
+streamed: true
+scope: [Group]

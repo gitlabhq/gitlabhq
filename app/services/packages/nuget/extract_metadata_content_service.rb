@@ -51,9 +51,16 @@ module Packages
 
         doc.xpath(XPATH_DEPENDENCY_GROUPS).each do |group_node|
           target_framework = group_node.attr('targetFramework')
+          group_dependencies = group_node.xpath('xmlns:dependency')
 
-          group_node.xpath('xmlns:dependency').each do |node|
-            dependencies << extract_dependency(node).merge(target_framework: target_framework)
+          if group_dependencies.any?
+            group_dependencies.each do |node|
+              dependencies << extract_dependency(node).merge(target_framework: target_framework)
+            end
+          else
+            # Add an entry for target frameworks with no dependencies
+            name = "#{::Packages::Nuget::EMPTY_DEPENDENCY_PREFIX}-#{target_framework}"
+            dependencies << { name:, target_framework: }
           end
         end
 

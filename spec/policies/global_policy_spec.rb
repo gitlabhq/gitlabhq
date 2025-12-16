@@ -220,12 +220,6 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       it { is_expected.to be_allowed(:access_api) }
     end
 
-    context 'migration bot' do
-      let(:current_user) { migration_bot }
-
-      it { is_expected.to be_disallowed(:access_api) }
-    end
-
     context 'security bot' do
       let(:current_user) { security_bot }
 
@@ -365,12 +359,6 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       end
     end
 
-    context 'migration bot' do
-      let(:current_user) { migration_bot }
-
-      it { is_expected.to be_disallowed(:receive_notifications) }
-    end
-
     context 'user blocked pending approval' do
       before do
         current_user.block_pending_approval
@@ -455,12 +443,6 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       end
     end
 
-    context 'migration bot' do
-      let(:current_user) { migration_bot }
-
-      it { is_expected.to be_disallowed(:receive_confirmation_instructions) }
-    end
-
     context 'user blocked pending approval' do
       before do
         current_user.block_pending_approval
@@ -483,12 +465,6 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
 
     describe 'anonymous' do
       let(:current_user) { nil }
-
-      it { is_expected.to be_allowed(:access_git) }
-    end
-
-    context 'migration bot' do
-      let(:current_user) { migration_bot }
 
       it { is_expected.to be_allowed(:access_git) }
     end
@@ -641,12 +617,6 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       it { is_expected.to be_allowed(:use_slash_commands) }
     end
 
-    context 'migration bot' do
-      let(:current_user) { migration_bot }
-
-      it { is_expected.to be_disallowed(:use_slash_commands) }
-    end
-
     context 'user blocked pending approval' do
       before do
         current_user.block_pending_approval
@@ -692,7 +662,7 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
     context 'when ProjectStudio is available' do
       before do
         allow_next_instance_of(Users::ProjectStudio) do |instance|
-          allow(instance).to receive(:available?).and_return(true)
+          allow(instance).to receive(:enabled?).and_return(true)
         end
       end
 
@@ -702,7 +672,7 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
     context 'when ProjectStudio is not available' do
       before do
         allow_next_instance_of(Users::ProjectStudio) do |instance|
-          allow(instance).to receive(:available?).and_return(false)
+          allow(instance).to receive(:enabled?).and_return(false)
         end
       end
 
@@ -719,12 +689,6 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
 
     context 'service account' do
       let(:current_user) { service_account }
-
-      it { is_expected.to be_disallowed(:log_in) }
-    end
-
-    context 'migration bot' do
-      let(:current_user) { migration_bot }
 
       it { is_expected.to be_disallowed(:log_in) }
     end
@@ -759,12 +723,6 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
 
     context 'with project_bot' do
       let(:current_user) { project_bot }
-
-      it { is_expected.to be_disallowed(:create_instance_runners) }
-    end
-
-    context 'with migration_bot' do
-      let(:current_user) { migration_bot }
 
       it { is_expected.to be_disallowed(:create_instance_runners) }
     end

@@ -21,11 +21,8 @@ title: Terraform Module Registry
 
 With the Terraform Module Registry, you can:
 
-- Use GitLab projects as a
-private registry for Terraform modules.
-- Create and publish
-modules with GitLab CI/CD, which can then be consumed from other private
-projects.
+- Use GitLab projects as a private registry for Terraform modules.
+- Create and publish modules with GitLab CI/CD, which can then be consumed from other private projects.
 
 ## Authenticate to the Terraform Module Registry
 
@@ -207,6 +204,7 @@ For example, if:
 
 - The project is `gitlab.example.com/parent-group/subgroup/my-project`.
 - The Terraform module is `my-infra-package`.
+
 If duplicates are allowed, `my-infra-package` is a valid module.
 If duplicates are not allowed, the module name must be unique in all
 projects in all groups under `parent-group`.
@@ -214,7 +212,7 @@ projects in all groups under `parent-group`.
 When you name a module, keep these naming conventions in mind:
 
 - Your project and group names must not include a dot (`.`).
-For example, `source = "gitlab.example.com/my.group/project.name"` is invalid.
+  For example, `source = "gitlab.example.com/my.group/project.name"` is invalid.
 - Module versions should follow the [semantic versioning specification](https://semver.org/).
 
 ### Allow duplicate Terraform modules
@@ -230,7 +228,7 @@ By default, the Terraform Module Registry enforces uniqueness for module names i
 
 To allow publishing duplicate module names:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Packages and registries**.
 1. In the **Terraform module** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names of modules to allow.
@@ -266,7 +264,7 @@ For more information on module resolution, see [module resolution workflow](#mod
 
 To view Terraform modules in your project or group:
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Operate** > **Terraform modules**.
 
 You can search, sort, and filter modules on this page.

@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Install the GitLab agent server for Kubernetes (KAS)
 description: Manage the GitLab agent for Kubernetes.
@@ -288,7 +288,7 @@ that cannot establish a network connection to the GitLab instance, but can be co
 
 To enable receptive agents:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Agent for Kubernetes**.
 1. Turn on the **Enable receptive mode** toggle.
@@ -298,16 +298,9 @@ To enable receptive agents:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/642) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `kas_k8s_api_proxy_response_header_allowlist`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/642) in GitLab 18.7. Feature flag `kas_k8s_api_proxy_response_header_allowlist` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 The Kubernetes API proxy in KAS uses an allowlist for the response headers.
 Secure and well-known Kubernetes and HTTP headers are allowed by default.

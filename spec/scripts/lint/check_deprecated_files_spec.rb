@@ -17,6 +17,7 @@ RSpec.describe CheckDeprecatedFiles, feature_category: :tooling do
   subject(:execute) { described_class.new(deprecation_registry: registry).execute!(modified_files) }
 
   before do
+    stub_env('GITLAB_CI', nil)
     File.write(registry, registry_content)
   end
 
@@ -79,6 +80,22 @@ RSpec.describe CheckDeprecatedFiles, feature_category: :tooling do
         expect { execute }
           .to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
             .and output(exclude('app/assets/javascripts/admin/groups/index.js')).to_stdout
+      end
+
+      it 'shows local-specific bypass message' do
+        expect { execute }
+          .to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
+            .and output(include('LEFTHOOK_EXCLUDE=check-deprecated-files')).to_stdout
+      end
+
+      context 'when running in CI' do
+        it 'shows CI-specific bypass message with label' do
+          stub_env('GITLAB_CI', true)
+
+          expect { execute }
+            .to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
+              .and output(include('~"pipeline:skip-check-deprecated-files"')).to_stdout
+        end
       end
     end
   end

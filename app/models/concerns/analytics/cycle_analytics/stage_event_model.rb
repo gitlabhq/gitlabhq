@@ -158,7 +158,7 @@ module Analytics
         def insert_column_list
           [
             :stage_event_hash_id,
-            connection.quote_column_name(issuable_id_column),
+            adapter_class.quote_column_name(issuable_id_column),
             :group_id,
             :project_id,
             :milestone_id,

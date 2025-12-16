@@ -251,7 +251,7 @@ export default {
     </gl-collapsible-listbox>
     <p
       v-if="selectedProjectId"
-      class="gl-mt-2 gl-text-secondary"
+      class="gl-mt-2 gl-text-subtle"
       data-testid="selected-project-namespace"
     >
       {{ namespaceFullPathText }}

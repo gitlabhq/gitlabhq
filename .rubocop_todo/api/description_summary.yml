@@ -1,0 +1,4 @@
+---
+API/DescriptionSummary:
+  Exclude:
+    - 'lib/api/members.rb'

@@ -12,7 +12,6 @@ import {
 import UserMenuUpgradeSubscription from 'ee_component/super_sidebar/components/user_menu_upgrade_subscription.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import DapWelcomeModal from '~/dap_welcome_modal/dap_welcome_modal.vue';
 import { s__, __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import { SET_STATUS_MODAL_ID } from '~/set_status_modal/constants';
@@ -22,7 +21,6 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { logError } from '~/lib/logger';
 import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET } from '../constants';
 import UserMenuProfileItem from './user_menu_profile_item.vue';
-import UserMenuProjectStudioSection from './user_menu_project_studio_section.vue';
 import UserCounts from './user_counts.vue';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
@@ -54,9 +52,7 @@ export default {
     GlButton,
     UserCounts,
     UserMenuProfileItem,
-    UserMenuProjectStudioSection,
     UserMenuUpgradeSubscription,
-    DapWelcomeModal,
     SetStatusModal: () =>
       import(
         /* webpackChunkName: 'statusModalBundle' */ '~/set_status_modal/set_status_modal_wrapper.vue'
@@ -68,7 +64,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
-  inject: ['isImpersonating', 'projectStudioAvailable', 'projectStudioEnabled'],
+  inject: ['isImpersonating', 'projectStudioEnabled'],
   props: {
     data: {
       required: true,
@@ -78,7 +74,6 @@ export default {
   data() {
     return {
       setStatusModalReady: false,
-      showDapWelcomeModal: false,
       updatedAvatarUrl: null,
     };
   },
@@ -243,7 +238,6 @@ export default {
   },
   mounted() {
     document.addEventListener('userAvatar:update', this.updateAvatar);
-    this.showDapWelcomeModal = localStorage.getItem('showDapWelcomeModal') === 'true';
   },
   unmounted() {
     document.removeEventListener('userAvatar:update', this.updateAvatar);
@@ -258,9 +252,6 @@ export default {
     openStatusModal() {
       this.setStatusModalReady = true;
       this.$refs.userDropdown.close();
-    },
-    closeDapWelcomeModal() {
-      localStorage.setItem('showDapWelcomeModal', 'false');
     },
     initBuyCIMinsCallout() {
       const el = this.$refs?.buyPipelineMinutesNotificationCallout?.$el;
@@ -310,7 +301,7 @@ export default {
 <template>
   <div
     :class="{
-      'gl-flex gl-rounded-[1rem] gl-bg-neutral-800 dark:gl-bg-neutral-50': projectStudioEnabled,
+      'gl-flex gl-rounded-[1rem]': projectStudioEnabled,
     }"
   >
     <gl-button
@@ -320,7 +311,7 @@ export default {
       :title="$options.i18n.stopImpersonating"
       :aria-label="$options.i18n.stopImpersonating"
       icon="incognito"
-      class="-gl-mr-4 !gl-rounded-l-[1rem] !gl-rounded-r-none !gl-pl-3 !gl-pr-5 !gl-text-neutral-0 dark:!gl-text-neutral-800"
+      class="-gl-mr-7 !gl-rounded-full !gl-bg-neutral-800 !gl-pl-3 !gl-pr-8 !gl-text-neutral-0 dark:!gl-bg-alpha-light-24"
       category="tertiary"
       data-method="delete"
       data-testid="stop-impersonation-btn"
@@ -474,8 +465,6 @@ export default {
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
 
-      <user-menu-project-studio-section v-if="projectStudioAvailable" />
-
       <gl-disclosure-dropdown-group v-if="data.gitlab_com_but_not_canary" bordered>
         <gl-disclosure-dropdown-item :item="gitlabNextItem" data-testid="gitlab-next-item">
           <template #list-item>
@@ -504,6 +493,5 @@ export default {
       default-emoji="speech_balloon"
       v-bind="statusModalData"
     />
-    <dap-welcome-modal v-if="showDapWelcomeModal" @close="closeDapWelcomeModal" />
   </div>
 </template>

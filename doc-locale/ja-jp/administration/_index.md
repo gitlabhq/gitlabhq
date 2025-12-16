@@ -12,7 +12,6 @@ GitLab Self-Managedの管理方法について説明します。
 
 - [はじめに](get_started.md)
 - [すべての機能フラグ](feature_flags/list.md)
-- [認証と認可](auth/_index.md)
 - [GitLabを設定する](configure.md)
 - [管理者エリアの設定を更新する](settings/_index.md)
 - [GitLabをメンテナンスする](operations/_index.md)
@@ -20,7 +19,7 @@ GitLab Self-Managedの管理方法について説明します。
 - [GitLabのセキュリティ保護](../security/_index.md)
 - [ユーザーを管理する](administer_users.md)
 - [GitLab Dedicated](dedicated/_index.md)
-- [GitLab Runner](https://docs.gitlab.com/runner/)
+- [GitLab Runner（）](https://docs.gitlab.com/runner/ "パイプラインでCI/CDジョブを実行")
 
 {{< /cards >}}
 

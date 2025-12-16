@@ -1,0 +1,21 @@
+---
+description: Requests made on the Projects API with offset beyond the pagination limit
+internal_events: true
+status: active
+action: request_projects_api_high_offset
+identifiers:
+- user
+additional_properties:
+  label:
+    description: Page size
+  value:
+    description: Page number
+product_group: organizations
+product_categories:
+- groups_and_projects
+milestone: '18.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214020
+tiers:
+- free
+- premium
+- ultimate

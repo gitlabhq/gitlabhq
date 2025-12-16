@@ -67,6 +67,10 @@ RSpec.describe Pajamas::BadgeComponent, type: :component do
     describe "icon_only" do
       let(:options) { { icon: :tanuki, icon_only: true } }
 
+      it "does not show the text" do
+        expect(page).not_to have_text text
+      end
+
       it "adds the text as ARIA label" do
         expect(page).to have_css ".gl-badge[aria-label='#{text}'][role='img']"
       end

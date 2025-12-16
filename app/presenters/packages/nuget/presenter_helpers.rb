@@ -5,6 +5,7 @@ module Packages
     module PresenterHelpers
       include ::API::Helpers::RelatedResourcesHelpers
       include Packages::Nuget::VersionHelpers
+      include ::Gitlab::Utils::StrongMemoize
 
       PACKAGE_DEPENDENCY_GROUP = 'PackageDependencyGroup'
       PACKAGE_DEPENDENCY = 'PackageDependency'
@@ -26,20 +27,22 @@ module Packages
       end
 
       def archive_url_for(package)
-        package_filename = package.installable_nuget_package_files
-                                  .last
-                                  &.file_name
-        path = api_v4_projects_packages_nuget_download_package_name_package_version_package_filename_path(
-          {
-            id: package.project_id,
-            package_name: package.name,
-            package_version: package.version,
-            package_filename: package_filename
-          },
-          true
-        )
+        strong_memoize_with(:archive_url_for, package) do
+          package_filename = package.installable_nuget_package_files
+                                    .last
+                                    &.file_name
+          path = api_v4_projects_packages_nuget_download_package_name_package_version_package_filename_path(
+            {
+              id: package.project_id,
+              package_name: package.name,
+              package_version: package.version,
+              package_filename: package_filename
+            },
+            true
+          )
 
-        expose_url(path)
+          expose_url(path)
+        end
       end
 
       def catalog_entry_for(package)
@@ -78,15 +81,17 @@ module Packages
       def dependencies_for(nuget_id, dependency_links)
         return [] if dependency_links.empty?
 
-        dependency_links.map do |dependency_link|
+        dependency_links.filter_map do |dependency_link|
           dependency = dependency_link.dependency
+          next if dependency.name.start_with?(::Packages::Nuget::EMPTY_DEPENDENCY_PREFIX)
+
           {
             id: "#{nuget_id}/#{dependency.name.downcase}",
             type: PACKAGE_DEPENDENCY,
             name: dependency.name,
             range: dependency.version_pattern
           }
-        end
+        end.presence
       end
 
       def target_framework_nuget_id(base_nuget_id, target_framework)

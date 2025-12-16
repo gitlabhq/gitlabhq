@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.describe Gitlab::GrapeOpenapi::TagRegistry do
-  let(:tag) { Gitlab::GrapeOpenapi::Models::Tag.new('TestTag') }
+  let(:tag) { Gitlab::GrapeOpenapi::Models::Tag.new('audit_events') }
   let(:tag_registry) { described_class.new }
 
   describe '#register' do
     it 'adds a new tag to the registry' do
       expect { tag_registry.register(tag) }.to change { tag_registry.tags.size }.by(1)
-      expect(tag_registry.tags.first[:name]).to eq('TestTag')
+      expect(tag_registry.tags.first[:name]).to eq('Audit Events')
     end
 
     it 'does not add duplicate tags' do
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::GrapeOpenapi::TagRegistry do
     context 'when tags exist' do
       before do
         tag_registry.register(tag)
-        tag_registry.register(Gitlab::GrapeOpenapi::Models::Tag.new('AnotherTag'))
+        tag_registry.register(Gitlab::GrapeOpenapi::Models::Tag.new('another_tags'))
       end
 
       it 'returns a hash with all tags' do
@@ -31,10 +31,10 @@ RSpec.describe Gitlab::GrapeOpenapi::TagRegistry do
           .to eq(
             [
               {
-                description: "Operations concerning Testtag", name: "TestTag"
+                description: "Operations concerning Audit Events", name: "Audit Events"
               },
               {
-                description: "Operations concerning Anothertag", name: "AnotherTag"
+                description: "Operations concerning Another Tags", name: "Another Tags"
               }
             ]
           )

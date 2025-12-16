@@ -133,7 +133,7 @@ You should be able to see the method in the stack trace where this is originatin
 Apollo GraphQL queries may not be cached in several scenarios:
 
 1. Cache Misses or Partial Caches/Query Invalidation or Changes:
-If the query only returns partial data or there's a cache miss (when part of the requested data isn't in the cache), Apollo might not be able to cache the result effectively.
+   If the query only returns partial data or there's a cache miss (when part of the requested data isn't in the cache), Apollo might not be able to cache the result effectively.
 
 If data related to a query has been invalidated or updated, the cache might not have valid information. For example:
 

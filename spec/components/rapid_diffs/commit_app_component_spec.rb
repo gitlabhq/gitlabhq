@@ -8,7 +8,10 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
   let(:user_permissions) { { can_create_note: true } }
   let(:noteable_type) { 'Commit' }
   let(:preview_markdown_endpoint) { '/preview_markdown_endpoint' }
+  let(:register_path) { '/register_path' }
+  let(:sign_in_path) { '/sign_in_path' }
   let(:markdown_docs_path) { '/markdown_docs_path' }
+  let(:report_abuse_path) { '/report_abuse' }
 
   let(:presenter) do
     instance_double(
@@ -17,7 +20,11 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
       user_permissions: user_permissions,
       noteable_type: noteable_type,
       preview_markdown_endpoint: preview_markdown_endpoint,
-      markdown_docs_path: markdown_docs_path
+      register_path: register_path,
+      sign_in_path: sign_in_path,
+      report_abuse_path: report_abuse_path,
+      markdown_docs_path: markdown_docs_path,
+      environment: nil
     )
   end
 
@@ -37,6 +44,9 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
         user_permissions: user_permissions,
         noteable_type: noteable_type,
         preview_markdown_endpoint: preview_markdown_endpoint,
+        register_path: register_path,
+        sign_in_path: sign_in_path,
+        report_abuse_path: report_abuse_path,
         markdown_docs_path: markdown_docs_path
       },
       extra_prefetch_endpoints: [discussions_endpoint]
@@ -51,7 +61,7 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
     it "renders before_diffs_list slot with new discussion toggle" do
       render_component
 
-      expect(page).to have_selector('[data-new-discussion-toggle][hidden]', visible: :all)
+      expect(page).to have_selector('[data-new-discussion-toggle][data-click="newDiscussion"][hidden]', visible: :all)
     end
   end
 

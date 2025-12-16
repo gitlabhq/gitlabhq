@@ -69,7 +69,7 @@ Do not confuse **ability** or **able** with [permissions](#permissions) or [role
 Use:
 
 - You cannot change this setting.
-- To change this setting, you must have the Maintainer role.
+- To change this setting, you must have at least the Developer role.
 - Confirm you can sign in.
 - The external load balancer cannot connect.
 - Option to delete branches introduced in GitLab 17.1.
@@ -109,9 +109,9 @@ Capitalize these words when you refer to the UI. Otherwise use lowercase.
 
 When a specific access level is required, use one of these patterns:
 
-- You must have **at least** the Administrator access level.
-- You must have the Administrator access level **or higher**.
-- You must be an Administrator.
+- You must have **at least** the administrator access level.
+- You must have the administrator access level **or higher**.
+- You must be an administrator.
 
 When there is no specific access level, use **minimum** access level as a noun phrase. For example:
 
@@ -120,8 +120,8 @@ When there is no specific access level, use **minimum** access level as a noun p
 Use **higher** and **lower** to describe the hierarchy:
 
 - **Higher** access levels have more permissions.
-- Administrator is a **higher** access level than Regular.
-- Regular is a **lower** access level than Administrator.
+- Administrator is a **higher** access level than regular.
+- Regular is a **lower** access level than administrator.
 
 ## add
 
@@ -251,13 +251,15 @@ The user can stop a session.
 
 One or more AI agents can be part of a [**flow**](#flows), where they are orchestrated to work together on a problem.
 
+Different types of agents exist, including [foundational agents](#foundational-agent).
+
 ## AI Catalog
 
-Use title case for the **AI Catalog**. Do not use **catalog**.
+Use title case for **AI Catalog**. Do not use **AI catalog** (lowercase), and do not hyphenate.
 
-## AI gateway
+## AI Gateway
 
-Use lowercase for **AI gateway** and do not hyphenate.
+Use title case for **AI Gateway**. Do not use **AI gateway** (lowercase), and do not hyphenate.
 
 ## AI-powered, AI-native
 
@@ -536,7 +538,7 @@ When talking about GitLab features, use **CI/CD**. Do not use **CI** or **CD** a
 
 ## CI/CD
 
-**CI/CD** is always uppercase. You are not required spell it out on first use.
+**CI/CD** is always uppercase. You are not required to spell it out on first use.
 
 You can omit **CI/CD** when the context is clear, especially after the first use. For example:
 
@@ -938,6 +940,20 @@ For example:
 
 For API documentation and programmatic changes, use **[update](#update)**.
 
+## editor extensions
+
+Use lowercase **editor extensions** when referring to the broader category of extensions offered by
+GitLab. However, if the UI has different capitalization, make the documentation match the UI.
+
+Individual extensions have their own names. For example, GitLab for VS Code and
+[GitLab Duo Plugin for JetBrains IDEs](#gitlab-duo-plugin-for-jetbrains-ides).
+
+Use:
+
+- Configure GitLab editor extensions in your IDE.
+- Code Suggestions is available in the following editor extensions.
+- On the left sidebar, select **Settings** > **General**, and then expand **Editor Extensions**.
+
 ## e.g.
 
 Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/LatinTerms.yml))
@@ -1090,7 +1106,7 @@ Instead of:
 However, you can make an exception when you are writing a task and you want to refer to all
 of the fields at once. For example:
 
-1. In the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Complete the fields.
@@ -1114,7 +1130,9 @@ Filtering is different from [searching](#search).
 
 GitLab provides multiple **flows** that are run by [agents](#ai-agent).
 
-Use lowercase for **flow** on its own. Use title case for the flow name, for example, **Issue to Merge Request Flow**.
+Use lowercase for **flow** on its own.
+
+Use title case for the flow name, for example, **Convert to CI/CD Pipeline Flow**.
 
 Do not use **agent flow**.
 
@@ -1134,6 +1152,15 @@ The **upstream project** (also known as the **source project**) and the **fork**
 
 If the **fork relationship** is removed, the
 **fork** is **unlinked** from the **upstream project**.
+
+## foundational agent
+
+Foundational agents are a type of [agent](#ai-agent).
+
+Use lowercase for **foundational agents** in general.
+
+- In the documentation, use title case for the agent name, for example, **the Planner Agent**.
+- In the UI, use title case, but do not include the word **Agent**. For example, **Planner**.
 
 ## Free
 
@@ -1203,11 +1230,21 @@ feature.
 
 ## GitLab Dedicated
 
-Use **GitLab Dedicated** to refer to the product offering. It refers to a GitLab instance that's hosted and managed by GitLab for customers.
+Use **GitLab Dedicated** to refer to the product offering.
+It refers to a GitLab instance that's hosted and managed by GitLab for customers.
 
 GitLab Dedicated can be referred to as a single-tenant SaaS service.
 
 Do not use **Dedicated** by itself. Always use **GitLab Dedicated**.
+
+## GitLab Dedicated for Government
+
+Use **GitLab Dedicated for Government** to refer to the government-specific offering.
+It refers to a GitLab instance that's hosted and managed by GitLab for government agencies and organizations requiring FedRAMP compliance.
+
+GitLab Dedicated for Government is a single-tenant SaaS service, similar to GitLab Dedicated but optimized for government requirements.
+
+Do not use **Dedicated for Government** by itself. Always use **GitLab Dedicated for Government**.
 
 ## GitLab Duo
 
@@ -1268,7 +1305,7 @@ and should leave it off when you can.
 Use **GitLab Duo plugin for JetBrains IDEs** to refer to the extension. You can also use **Plugins for JetBrains IDEs**
 or **Plugins for JetBrains**.
 
-Do not use **GitLab plugin**. Ensure you include **Duo** in the name.
+Do not use **GitLab plugin**. Ensure you include **GitLab Duo** in the name.
 
 ## GitLab Duo Pro
 
@@ -1470,7 +1507,7 @@ Use **in** as a preposition when describing UI element locations. For example:
 
 - In the left sidebar, select **Settings** > **CI/CD**.
 - In the **Grant permission** dialog, select **Group**.
-- In the upper-right corner, select your avatar. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+- In the upper-right corner, select your avatar.
 
 Use **on** only for:
 
@@ -1732,7 +1769,7 @@ When writing about the Maintainer role:
   - Instead of: if you are a maintainer
 
 - When the Maintainer role is the minimum required role:
-  - Use: at least the Maintainer role
+  - Use: the Maintainer or Owner role
   - Instead of: the Maintainer role or higher
 
 Do not use bold.
@@ -1948,6 +1985,7 @@ The current product offerings are:
 - [GitLab.com](#gitlabcom)
 - [GitLab Self-Managed](#self-managed)
 - [GitLab Dedicated](#gitlab-dedicated)
+- [GitLab Dedicated for Government](#gitlab-dedicated-for-government)
 
 The [availability details](availability_details.md) reflect these offerings.
 
@@ -2451,9 +2489,7 @@ to the GitLab [reference architectures](../../../administration/reference_archit
 
 ## search
 
-When you search, you type a string in the search box in the left sidebar.
-If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off),
-this field is on the top bar.
+When you search, you type a string in the search box on the top bar.
 The search results are displayed on a search page.
 
 Searching is different from [filtering](#filter).
@@ -2896,7 +2932,7 @@ Use:
 
 - The GitLab virtual registry supports A, B, and C.
 - You can configure your applications to use one virtual registry instead
-of multiple upstream registries.
+  of multiple upstream registries.
 
 ## VS Code user interface
 

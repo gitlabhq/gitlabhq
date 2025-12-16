@@ -78,12 +78,15 @@ module QA
       end
 
       def invite_group(group, access_level = AccessLevel::GUEST)
-        Support::Retrier.retry_until do
+        # Ensure both project and group are properly loaded before sharing
+        reload! unless api_resource.present?
+        group.reload! unless group.api_resource.present?
+
+        Support::Retrier.retry_until(max_duration: 60, sleep_interval: 2) do
           QA::Runtime::Logger.info(%(Sharing #{self.class.name} with #{group.name}))
 
-          response = post Runtime::API::Request.new(api_client, api_share_path).url,
+          post Runtime::API::Request.new(api_client, api_share_path).url,
             { group_id: group.id, group_access: access_level }
-          response.code == QA::Support::API::HTTP_STATUS_CREATED
         end
       end
 
@@ -96,7 +99,12 @@ module QA
       end
 
       def api_share_path
-        "#{api_get_path}/share"
+        # For projects, the share endpoint requires numeric ID like other modification endpoints
+        if self.class.name.include?('Project')
+          "/projects/#{id}/share"
+        else
+          "#{api_get_path}/share"
+        end
       end
 
       class AccessLevel

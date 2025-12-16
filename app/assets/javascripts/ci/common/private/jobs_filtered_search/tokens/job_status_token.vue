@@ -3,6 +3,7 @@ import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlIcon } from '@gitl
 import { s__ } from '~/locale';
 
 export default {
+  name: 'JobStatusToken',
   components: {
     GlFilteredSearchToken,
     GlFilteredSearchSuggestion,

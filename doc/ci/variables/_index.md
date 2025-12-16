@@ -133,7 +133,7 @@ Prerequisites:
 
 To add or update variables in the project settings:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
@@ -168,7 +168,7 @@ Prerequisites:
 
 To add a group variable:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
@@ -184,7 +184,7 @@ To add a group variable:
      It is not possible to reference another variable if **Visibility** is set to **Masked** or **Masked and hidden**.
 
 The group variables that are available in a project are listed in the project's
-**Settings > CI/CD > Variables** section. Variables from subgroups are recursively inherited.
+**Settings** > **CI/CD** > **Variables** section. Variables from subgroups are recursively inherited.
 
 Alternatively, group variables can be added [by using the API](../../api/group_level_variables.md).
 
@@ -198,7 +198,7 @@ Alternatively, group variables can be added [by using the API](../../api/group_l
 
 To set a group CI/CD variable to only be available for certain environments:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. To the right of the variable, select **Edit** ({{< icon name="pencil" >}}).
@@ -228,7 +228,7 @@ Prerequisites:
 
 To add an instance variable:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
@@ -575,7 +575,7 @@ Prerequisites:
 
 To limit the use of pipeline variables to only the Maintainer role and higher:
 
-- Go to **Settings > CI/CD > Variables**.
+- Go to **Settings** > **CI/CD** > **Variables**.
 - Under **Minimum role to use pipeline variables**, select one of:
   - `no_one_allowed`: No pipelines can run with pipeline variables.
     Default for new projects in new namespaces on GitLab.com.
@@ -613,7 +613,7 @@ Prerequisites:
 
 To enable the pipeline variable restriction setting in projects in the group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. In the **Disable pipeline variables in projects that don't use them** section,

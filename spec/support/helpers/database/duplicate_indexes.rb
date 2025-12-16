@@ -50,9 +50,26 @@ module Database
       end
 
       @btree_indexes = @btree_indexes.map { |index| self.class.btree_index_struct(index) }
+                                     .sort_by { |index| index.name.end_with?('_pkey') ? 0 : 1 }
     end
 
+    # Primary key indexes require exact column match only as we can't drop primary key index.
+    # For non-primary key indexes, use prefix matching
     def matching_indexes_for(btree_index)
+      if btree_index.name.end_with?('_pkey')
+        duplicate_indexes_for(btree_index)
+      else
+        prefix_matching_indexes_for(btree_index)
+      end
+    end
+
+    def duplicate_indexes_for(btree_index)
+      btree_indexes.reject { |other_index| other_index == btree_index }.select do |other_index|
+        other_index.columns == btree_index.columns
+      end
+    end
+
+    def prefix_matching_indexes_for(btree_index)
       all_matching_indexes = []
 
       # When comparing btree_index with other_index. btree_index is the index that can have more columns
@@ -67,7 +84,7 @@ module Database
         # the btree_index columns, as UNIQUE indexes are still needed to enforce uniqueness
         # constraints on subset of the columns.
         matching_indexes = matching_indexes.reject do |other_index|
-          (other_index.unique && (other_index.columns.length < btree_index.columns.length))
+          other_index.unique && (other_index.columns.length < btree_index.columns.length)
         end
 
         all_matching_indexes += matching_indexes

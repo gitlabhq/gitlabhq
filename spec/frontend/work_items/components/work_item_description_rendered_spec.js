@@ -273,7 +273,6 @@ describe('WorkItemDescriptionRendered', () => {
         await nextTick();
 
         expect(findCreateWorkItemModal().props()).toEqual({
-          allowedWorkItemTypes: [],
           alwaysShowWorkItemTypeSelect: false,
           asDropdownItem: false,
           creationContext: CREATION_CONTEXT_DESCRIPTION_CHECKLIST,

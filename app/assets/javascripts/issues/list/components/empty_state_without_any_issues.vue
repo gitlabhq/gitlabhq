@@ -5,6 +5,7 @@ import { GlButton, GlEmptyState, GlLink } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { s__ } from '~/locale';
 import { hasNewIssueDropdown } from '../has_new_issue_dropdown_mixin';
 
 export default {
@@ -30,6 +31,8 @@ export default {
     'signInPath',
     'groupId',
     'isProject',
+    'workItemPlanningViewEnabled',
+    'hasEpicsFeature',
   ],
   props: {
     showNewIssueDropdown: {
@@ -45,7 +48,23 @@ export default {
   },
   computed: {
     showNewProjectButton() {
-      return this.canCreateProjects && !this.isProject && !this.hasProjects;
+      return (
+        this.canCreateProjects && !this.isProject && !this.hasProjects && !this.hasEpicsFeature
+      );
+    },
+    title() {
+      return this.workItemPlanningViewEnabled
+        ? s__('WorkItem|Track bugs, plan features, and organize your efforts with work items')
+        : s__('Issues|Track bugs, plan features, and organize your work with issues');
+    },
+    description() {
+      return this.workItemPlanningViewEnabled
+        ? s__(
+            'WorkItem|Use work items (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
+          )
+        : s__(
+            'Issues|Use issues (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
+          );
     },
   },
   jiraCloudAppLogo,
@@ -61,12 +80,8 @@ export default {
   >
     <div>
       <gl-empty-state
-        :title="s__('Issues|Track bugs, plan features, and organize your work with issues')"
-        :description="
-          s__(
-            'Issues|Use issues (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
-          )
-        "
+        :title="title"
+        :description="description"
         :svg-path="$options.emptyStateSvg"
         data-testid="issuable-empty-state"
       >

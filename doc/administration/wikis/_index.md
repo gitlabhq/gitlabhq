@@ -23,7 +23,7 @@ abuse of the feature. The default value is **5242880 Bytes** (5 MB).
 ### How does it work?
 
 The content size limit is applied when a wiki page is created or updated
-through the GitLab UI or API. Local changes pushed via Git are not validated.
+through the GitLab UI or API. Local changes pushed with Git are not validated.
 
 To break any existing wiki pages, the limit doesn't take effect until a wiki page
 is edited again and the content changes.

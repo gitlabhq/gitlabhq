@@ -33,14 +33,14 @@ Two types of metrics are collected:
 1. Transaction specific metrics.
 1. Sampled metrics.
 
-### Transaction Metrics
+## Transaction Metrics
 
 Transaction metrics are metrics that can be associated with a single
 transaction. This includes statistics such as the transaction duration, timings
 of any executed SQL queries, and time spent rendering HAML views. These metrics
 are collected for every Rack request and Sidekiq job processed.
 
-### Sampled Metrics
+## Sampled Metrics
 
 Sampled metrics are metrics that cannot be associated with a single transaction.
 Examples include garbage collection statistics and retained Ruby objects. These

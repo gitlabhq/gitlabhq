@@ -78,6 +78,9 @@ describe('WorkItemLinkChildContents', () => {
       stubs: {
         GlAvatarsInline,
       },
+      provide: {
+        fullPath: workItemFullPath,
+      },
     });
   };
 

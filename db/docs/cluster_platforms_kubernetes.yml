@@ -33,4 +33,5 @@ desired_sharding_key:
         table: clusters
         sharding_key: organization_id
         belongs_to: cluster
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/582113
 table_size: small

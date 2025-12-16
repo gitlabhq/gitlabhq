@@ -56,7 +56,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mt-3 gl-text-center gl-text-secondary">
+  <div class="gl-mt-3 gl-text-center gl-text-subtle">
     <gl-sprintf
       :message="
         __(

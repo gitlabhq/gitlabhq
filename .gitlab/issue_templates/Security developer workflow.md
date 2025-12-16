@@ -73,7 +73,7 @@ After your merge request has been approved according to our [approval guidelines
 
 | Description                         | Details    | Further details                                           |
 |-------------------------------------|------------|-----------------------------------------------------------|
-| Version affected                    | X.Y        |                                                           |
+| First Version affected              | X.Y        | This is used to tell customers the first version of the product that has this vulnerability through our CVEs |
 | Date introduced on .com             | YYYY-MM-DD | #TODO for Engineering - please follow the format          |
 | MR that introduced the bug          |            | #TODO for Engineering - Link to the MR that introduced the bug|
 | Date detected                       | YYYY-MM-DD | #TODO for AppSec - please follow the format               |

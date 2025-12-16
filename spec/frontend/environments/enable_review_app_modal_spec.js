@@ -3,7 +3,7 @@ import { GlModal } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import EnableReviewAppModal from '~/environments/components/enable_review_app_modal.vue';
 import { REVIEW_APP_MODAL_I18N as i18n } from '~/environments/constants';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 
 // hardcode uniqueId for determinism
 jest.mock('lodash/uniqueId', () => (x) => `${x}77`);
@@ -42,9 +42,7 @@ describe('Enable Review Apps Modal', () => {
     });
 
     it('renders the copyToClipboard button', () => {
-      expect(wrapper.findComponent(ModalCopyButton).props()).toMatchObject({
-        modalId: 'fake-id',
-        target: `#${EXPECTED_COPY_PRE_ID}`,
+      expect(wrapper.findComponent(SimpleCopyButton).props()).toMatchObject({
         title: i18n.copyToClipboardText,
       });
     });

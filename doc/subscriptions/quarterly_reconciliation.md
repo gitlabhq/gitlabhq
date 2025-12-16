@@ -20,8 +20,8 @@ GitLab reviews your seat usage and sends you an invoice for overages
 either quarterly (quarterly reconciliation process) or annually (annual true-up process).
 
 - **Quarterly reconciliation**: You are billed per quarter on a prorated basis for the remaining portion of the subscription term.
-You pay for the maximum number of seats you used during the quarter.
-You pay less annually, which can result in substantial savings.
+  You pay for the maximum number of seats you used during the quarter.
+  You pay less annually, which can result in substantial savings.
 - **Annual true-up**: You pay the full annual subscription fee for users added at any time during the year.
 
 Learn more about:
@@ -77,7 +77,7 @@ You are excluded from quarterly reconciliation if you:
 - Are a public sector customer.
 - Have an offline environment and used a license file to activate your subscription.
 - Are enrolled in a program that provides a Free tier such as the GitLab for Education,
-GitLab for Open Source Program, or GitLab for Startups.
+  GitLab for Open Source Program, or GitLab for Startups.
 
 If you are excluded from quarterly reconciliation and not on a Free tier, your true-ups are reconciled annually.
 Alternatively, you can reconcile any overages by [purchasing additional seats](manage_users_and_seats.md#buy-more-seats).

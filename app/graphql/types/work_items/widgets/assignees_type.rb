@@ -12,9 +12,13 @@ module Types
 
         implements ::Types::WorkItems::WidgetInterface
 
+        def self.authorization_scopes
+          super + [:ai_workflows]
+        end
+
         field :assignees, ::Types::UserType.connection_type,
           null: true,
-          method: :assignees_by_name_and_id,
+          method: :assignees_by_name_and_id, scopes: [:api, :read_api, :ai_workflows],
           description: 'Assignees of the work item.'
 
         field :allows_multiple_assignees, GraphQL::Types::Boolean,

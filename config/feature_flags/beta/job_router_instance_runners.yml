@@ -1,0 +1,10 @@
+---
+name: job_router_instance_runners
+description: Enable the Job Router for instance runners. A runner can be used as the actor. Use the job_router FF to enable for top-level groups.
+feature_issue_url: https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/771
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215742
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583577
+milestone: '18.7'
+group: group::runner core
+type: beta
+default_enabled: false

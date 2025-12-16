@@ -39,7 +39,7 @@ module API
             nil
           end
 
-          return render_structured_api_error!({ error: 'per_page does not have a valid value' }, 400) if per_page&.< 1
+          render_structured_api_error!({ error: 'per_page does not have a valid value' }, 400) if per_page&.< 1
         end
       end
     end

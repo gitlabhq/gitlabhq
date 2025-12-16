@@ -205,7 +205,7 @@ To set up GitLab and its components to accommodate up to 1000 RPS or 50,000 user
 1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
 1. [Configure PgBouncer](#configure-pgbouncer) for database connection pooling and management.
 1. [Configure Redis](#configure-redis), which stores session data, temporary
-cache information, and background job queues.
+   cache information, and background job queues.
 1. [Configure Gitaly Cluster (Praefect)](#configure-gitaly-cluster-praefect),
    provides access to the Git repositories.
 1. [Configure Sidekiq](#configure-sidekiq) for background job processing.

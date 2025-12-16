@@ -1,12 +1,17 @@
 /* eslint-disable import/no-default-export */
 import path from 'node:path';
 import { existsSync } from 'node:fs';
-import localRules from 'eslint-plugin-local-rules';
 import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
 // eslint-disable-next-line import/no-unresolved
 import graphqlPlugin from '@graphql-eslint/eslint-plugin';
 import * as todoLists from './.eslint_todo/index.mjs';
+import { eslintLocalRules } from './tooling/eslint-config/eslint-local-rules/index.mjs';
+
+let { REVEAL_ESLINT_TODO } = process.env;
+if (!REVEAL_ESLINT_TODO || REVEAL_ESLINT_TODO === 'false' || REVEAL_ESLINT_TODO === '0') {
+  REVEAL_ESLINT_TODO = false;
+}
 
 const { dirname } = import.meta;
 const compat = new FlatCompat({
@@ -99,6 +104,57 @@ const restrictedImportsPatterns = {
   },
 };
 
+const baseNoRestrictedSyntax = [
+  {
+    selector: "ImportSpecifier[imported.name='GlSkeletonLoading']",
+    message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.',
+  },
+  {
+    selector: "ImportSpecifier[imported.name='GlSafeHtmlDirective']",
+    message: 'Use directive at ~/vue_shared/directives/safe_html.js instead.',
+  },
+  {
+    selector: "ImportSpecifier[imported.name='GlBreakpointInstance']",
+    message:
+      'GlBreakpointInstance only checks viewport breakpoints. You may want the breakpoints of a panel. Use PanelBreakpointInstance at ~/panel_breakpoint_instance instead (or add eslint-ignore here).',
+  },
+  {
+    selector: 'Literal[value=/docs.gitlab.+\\u002Fee/]',
+    message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+  },
+  {
+    selector: 'TemplateElement[value.cooked=/docs.gitlab.+\\u002Fee/]',
+    message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+  },
+  {
+    selector: 'Literal[value=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
+    message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
+  },
+  {
+    selector: 'TemplateElement[value.cooked=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
+    message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
+  },
+  {
+    selector: 'Literal[value=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
+    message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
+  },
+  {
+    selector: 'TemplateElement[value.cooked=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
+    message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
+  },
+  {
+    selector:
+      'TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\\u002Fjh|\\u002Fee/]',
+    message:
+      '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+  },
+  {
+    selector: "MemberExpression[object.type='ThisExpression'][property.name=/(\\$delete|\\$set)/]",
+    message:
+      "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.",
+  },
+];
+
 export default [
   {
     ignores: [
@@ -134,7 +190,7 @@ export default [
     files: ['**/*.{js,vue}'],
 
     plugins: {
-      'local-rules': localRules,
+      'local-rules': eslintLocalRules,
     },
 
     languageOptions: {
@@ -284,60 +340,7 @@ export default [
         },
       ],
 
-      'no-restricted-syntax': [
-        'error',
-        {
-          selector: "ImportSpecifier[imported.name='GlSkeletonLoading']",
-          message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.',
-        },
-        {
-          selector: "ImportSpecifier[imported.name='GlSafeHtmlDirective']",
-          message: 'Use directive at ~/vue_shared/directives/safe_html.js instead.',
-        },
-        {
-          selector: "ImportSpecifier[imported.name='GlBreakpointInstance']",
-          message:
-            'GlBreakpointInstance only checks viewport breakpoints. You may want the breakpoints of a panel. Use PanelBreakpointInstance at ~/panel_breakpoint_instance instead (or add eslint-ignore here).',
-        },
-        {
-          selector: 'Literal[value=/docs.gitlab.+\\u002Fee/]',
-          message:
-            'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
-        },
-        {
-          selector: 'TemplateElement[value.cooked=/docs.gitlab.+\\u002Fee/]',
-          message:
-            'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
-        },
-        {
-          selector: 'Literal[value=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
-          message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
-        },
-        {
-          selector: 'TemplateElement[value.cooked=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
-          message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
-        },
-        {
-          selector: 'Literal[value=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
-          message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
-        },
-        {
-          selector: 'TemplateElement[value.cooked=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
-          message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
-        },
-        {
-          selector:
-            'TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\\u002Fjh|\\u002Fee/]',
-          message:
-            '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
-        },
-        {
-          selector:
-            "MemberExpression[object.type='ThisExpression'][property.name=/(\\$delete|\\$set)/]",
-          message:
-            "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.",
-        },
-      ],
+      'no-restricted-syntax': ['error', ...baseNoRestrictedSyntax],
 
       'no-restricted-properties': [
         'error',
@@ -408,6 +411,11 @@ export default [
                 'We do not allow usage of React in our codebase except for the graphql_explorer',
             },
             restrictedImportsPatterns.gitlabUiDist,
+            {
+              group: ['../../*'],
+              message:
+                'Avoid relative imports two or more levels up. Use absolute imports instead.',
+            },
           ],
         },
       ],
@@ -431,30 +439,62 @@ export default [
           },
         },
       ],
-
       'unicorn/no-array-callback-reference': 'off',
-
-      'vue/no-undef-components': [
-        'error',
-        {
-          ignorePatterns: ['^router-link$', '^router-view$', '^gl-emoji$', 'fe-island-duo-next'],
-        },
-      ],
-
       'local-rules/require-valid-help-page-path': 'error',
       'local-rules/vue-require-valid-help-page-link-component': 'error',
     },
   },
   {
-    files: ['**/*.vue'],
+    files: ['*.vue', '**/*.vue'],
     rules: {
+      'vue/require-name-property': 'error',
       'vue/no-unused-properties': [
         'error',
         {
-          groups: ['props', 'data', 'computed', 'methods'],
+          groups: ['props', 'data', 'computed', 'methods', 'setup'],
         },
       ],
-      'vue/require-name-property': 'error',
+      'vue/no-undef-components': [
+        'error',
+        {
+          ignorePatterns: [
+            '^router-link$',
+            '^router-view$',
+            '^gl-emoji$',
+            'fe-island-duo-next',
+            'fe-island-visual-ci-editor',
+          ],
+        },
+      ],
+
+      // Vue 3 events compatibility
+      'vue/v-on-event-hyphenation': 'error',
+      'vue/custom-event-name-casing': ['error', 'kebab-case'],
+      'vue/require-explicit-emits': 'error',
+
+      // Vue 3 deprecated features
+      'vue/no-deprecated-data-object-declaration': 'error',
+      'vue/no-deprecated-html-element-is': 'error',
+      'vue/no-deprecated-inline-template': 'error',
+      'vue/no-deprecated-props-default-this': 'error',
+      'vue/no-deprecated-router-link-tag-prop': 'error',
+      'vue/no-deprecated-slot-attribute': 'error',
+      'vue/no-deprecated-v-bind-sync': 'error',
+      'vue/no-deprecated-v-is': 'error',
+      'vue/no-deprecated-v-on-native-modifier': 'error',
+      'vue/no-deprecated-v-on-number-modifiers': 'error',
+      'vue/no-deprecated-vue-config-keycodes': 'error',
+
+      // Vue 3 components with render()
+      'no-restricted-syntax': [
+        'error',
+        ...baseNoRestrictedSyntax,
+        {
+          selector: 'ExportDefaultDeclaration > ObjectExpression > Property[key.name="render"]',
+          message:
+            'Renderless components must be wrapped in normalizeRender(...) to ensure Vue.js 3 compatibility, e.g. export default normalizeRender({ ... }).',
+        },
+      ],
     },
   },
   {
@@ -593,6 +633,7 @@ export default [
       '**/*.config.js',
       '**/*.config.*.js',
       '**/jest_resolver.js',
+      'tooling/eslint-config/**/*',
       'eslint.config.mjs',
     ],
 
@@ -799,5 +840,5 @@ export default [
     },
   },
   ...jhConfigs,
-  ...Object.values(todoLists),
+  ...Object.values(REVEAL_ESLINT_TODO ? {} : todoLists),
 ];

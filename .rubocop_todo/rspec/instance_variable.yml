@@ -43,7 +43,6 @@ RSpec/InstanceVariable:
     - 'spec/features/markdown/copy_as_gfm_spec.rb'
     - 'spec/features/markdown/gitlab_flavored_markdown_spec.rb'
     - 'spec/features/markdown/keyboard_shortcuts_spec.rb'
-    - 'spec/features/markdown/markdown_spec.rb'
     - 'spec/features/merge_request/batch_comments_spec.rb'
     - 'spec/features/merge_request/user_sees_pipelines_spec.rb'
     - 'spec/features/merge_requests/user_lists_merge_requests_spec.rb'

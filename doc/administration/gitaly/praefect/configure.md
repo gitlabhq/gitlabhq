@@ -787,9 +787,9 @@ Note the following:
   [Gitaly TLS enabled](../tls_support.md), you must set the `SSL_CERT_DIR` or `SSL_CERT_FILE`
   environment variable so that the Gitaly certificate is trusted. For example:
 
-   ```shell
-   SSL_CERT_DIR=/etc/gitlab/trusted-certs sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes
-   ```
+  ```shell
+  SSL_CERT_DIR=/etc/gitlab/trusted-certs sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes
+  ```
 
 - You can configure Praefect servers with both an unencrypted listening address
   `listen_addr` and an encrypted listening address `tls_listen_addr` at the same time.
@@ -1485,7 +1485,7 @@ Particular attention should be shown to:
 
 1. Check that the Praefect storage is configured to store new repositories:
 
-   1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+   1. In the upper-right corner, select **Admin**.
    1. On the left sidebar, select **Settings** > **Repository**.
    1. Expand the **Repository storage** section.
 

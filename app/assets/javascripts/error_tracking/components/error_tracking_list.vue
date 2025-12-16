@@ -14,7 +14,7 @@ import {
   GlDropdownDivider,
   GlSprintf,
   GlTooltipDirective,
-  GlPagination,
+  GlKeysetPagination,
 } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
@@ -24,7 +24,6 @@ import AccessorUtils from '~/lib/utils/accessor';
 import { __ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { scrollTo } from '~/lib/utils/scroll_utils';
 import {
   trackErrorListViewsOptions,
   trackErrorStatusUpdateOptions,
@@ -40,9 +39,6 @@ const isValidErrorId = (errorId) => {
 };
 export const tableDataClass = 'gl-flex @md/panel:gl-table-cell gl-items-center';
 export default {
-  FIRST_PAGE: 1,
-  PREV_PAGE: 1,
-  NEXT_PAGE: 2,
   i18n: I18N_ERROR_TRACKING_LIST,
   fields: [
     {
@@ -107,7 +103,7 @@ export default {
     GlForm,
     GlFormInput,
     GlSprintf,
-    GlPagination,
+    GlKeysetPagination,
     TimeAgo,
     ErrorTrackingActions,
     TimelineChart,
@@ -153,7 +149,6 @@ export default {
   data() {
     return {
       errorSearchQuery: '',
-      pageValue: this.$options.FIRST_PAGE,
       isAlertDismissed: false,
     };
   },
@@ -170,10 +165,10 @@ export default {
       return !isEmpty(this.pagination);
     },
     previousPage() {
-      return this.pagination.previous ? this.$options.PREV_PAGE : null;
+      return this.pagination.previous;
     },
     nextPage() {
-      return this.pagination.next ? this.$options.NEXT_PAGE : null;
+      return this.pagination.next;
     },
     errorTrackingHelpUrl() {
       return helpPagePath('operations/integrated_error_tracking');
@@ -229,10 +224,6 @@ export default {
     },
     goToPrevPage() {
       this.fetchPaginatedResults(this.pagination.previous.cursor);
-    },
-    goToPage(page) {
-      scrollTo({ top: 0, left: 0 }, this.$el);
-      return page === this.$options.PREV_PAGE ? this.goToPrevPage() : this.goToNextPage();
     },
     isCurrentSortField(field) {
       return field === this.sortField;
@@ -479,14 +470,13 @@ export default {
             </gl-link>
           </template>
         </gl-table>
-        <gl-pagination
+        <gl-keyset-pagination
           v-show="!loading"
           v-if="paginationRequired"
-          :prev-page="previousPage"
-          :next-page="nextPage"
-          :value="pageValue"
-          align="center"
-          @input="goToPage"
+          :has-next-page="!!nextPage"
+          :has-previous-page="!!previousPage"
+          @next="goToNextPage"
+          @prev="goToPrevPage"
         />
       </template>
     </div>

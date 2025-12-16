@@ -3,6 +3,7 @@ import { GlBreadcrumb } from '@gitlab/ui';
 import { CI_RESOURCES_PAGE_NAME, CI_RESOURCES_BREADCRUMB } from '../router/constants';
 
 export default {
+  name: 'CiCatalogBreadcrumb',
   components: {
     GlBreadcrumb,
   },

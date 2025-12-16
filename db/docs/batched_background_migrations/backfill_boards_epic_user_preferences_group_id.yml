@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillBoardsEpicUserPreferencesGroupId
-description: Backfills sharding key `boards_epic_user_preferences.group_id` from `epics`.
-feature_category: portfolio_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153684
-milestone: '17.1'
-queued_migration_version: 20240521094917
-finalized_by: '20241015232221'

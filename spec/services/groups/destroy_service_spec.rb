@@ -90,6 +90,15 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
             )
       end
     end
+
+    it 'schedules removal of any associated direct transfer export uploads', :sidekiq_inline do
+      allow(::Import::BulkImports::RemoveExportUploadsService).to receive(:new).and_call_original
+      expect_next_instance_of(::Import::BulkImports::RemoveExportUploadsService) do |service|
+        expect(service).to receive(:execute)
+      end
+
+      destroy_group(group, user, async)
+    end
   end
 
   shared_examples 'marks the group as delete' do |async|

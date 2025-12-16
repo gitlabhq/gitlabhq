@@ -70,3 +70,22 @@ export function toggleRememberMeQuery() {
     });
   });
 }
+
+/**
+ * Toggling the non-OAuthn `remember_me` checkbox toggles the value of the hidden `remember_me`
+ * input field.
+ */
+export function toggleRememberMePasskey() {
+  const checkbox = document.querySelector('.js-remember-me-passkey');
+  const hiddenField = document.getElementById('js-remember-me-passkey-hidden-field');
+
+  if (checkbox && hiddenField) {
+    checkbox.addEventListener('change', ({ currentTarget }) => {
+      if (currentTarget.checked) {
+        hiddenField.value = '1';
+      } else {
+        hiddenField.value = '0';
+      }
+    });
+  }
+}

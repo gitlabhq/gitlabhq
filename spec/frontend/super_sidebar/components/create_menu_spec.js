@@ -201,30 +201,6 @@ describe('CreateMenu component', () => {
         });
       });
 
-      describe('allowed work item types', () => {
-        it('returns empty array when group', async () => {
-          createWrapper({ provide: { isGroup: true } });
-
-          findCreateWorkItemModalTrigger().vm.$emit('action');
-          await nextTick();
-
-          expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([]);
-        });
-
-        it('returns Incident, Issue, and Task when project', async () => {
-          createWrapper({ provide: { isGroup: false, workItemPlanningViewEnabled: true } });
-
-          findCreateWorkItemModalTrigger().vm.$emit('action');
-          await nextTick();
-
-          expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([
-            'Incident',
-            'Issue',
-            'Task',
-          ]);
-        });
-      });
-
       describe('preselected work item type', () => {
         it.each`
           isGroup  | workItemPlanningViewEnabled | preselectedWorkItemType

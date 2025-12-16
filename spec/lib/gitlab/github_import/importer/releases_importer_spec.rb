@@ -65,6 +65,8 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
       end
 
       it 'pushes placeholder references' do
+        allow(Import::DirectReassignService).to receive(:supported?).and_return(false)
+
         importer.execute
 
         expect(cached_references).to contain_exactly(
@@ -104,6 +106,18 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
           importer.execute
 
           expect(Release.last.description).to eq("You can ask `@knejad` by emailing xyz@gitlab.com")
+        end
+      end
+
+      context 'when direct reassignment is supported' do
+        before do
+          allow(Import::DirectReassignService).to receive(:supported?).and_return(true)
+        end
+
+        it 'does not push any placeholder references' do
+          importer.execute
+
+          expect(cached_references).to be_empty
         end
       end
 

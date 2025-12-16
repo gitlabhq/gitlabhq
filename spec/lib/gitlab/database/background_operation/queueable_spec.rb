@@ -35,8 +35,23 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Queueable, feature_categor
           interval: described_class::DEFAULT_BATCH_VALUES[:interval].to_i,
           batch_class_name: described_class::DEFAULT_BATCH_VALUES[:batch_class_name],
           pause_ms: described_class::DEFAULT_BATCH_VALUES[:pause_ms],
-          status: 0
+          status: 0,
+          total_tuple_count: nil
         )
+      end
+
+      context 'with cardinality estimation' do
+        before do
+          pg_class_double = instance_double(Gitlab::Database::PgClass, cardinality_estimate: 1000)
+          allow(Gitlab::Database::PgClass).to receive(:for_table).with(table_name).and_return(pg_class_double)
+        end
+
+        it 'sets total_tuple_count' do
+          expect { enqueue_background_operation }.to change { worker_klass.count }.by(1)
+          record = worker_klass.unfinished_with_config(job_class_name, table_name, column_name, job_arguments).first
+
+          expect(record).to have_attributes(total_tuple_count: 1000)
+        end
       end
 
       context 'for background_worker_cell_local' do

@@ -101,6 +101,12 @@ RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :sy
       let(:request_ips) { (1..nb_ips).map { |i| "192.168.#{i}.2" } }
       let(:time_travel_step) { 1.minute + 10.seconds }
 
+      before do
+        allow_next_instance_of(Gitlab::ExclusiveLease) do |instance|
+          allow(instance).to receive(:try_obtain).and_return(true)
+        end
+      end
+
       it 'returns up to 5 most recent ones' do
         nb_ips.times do |i|
           travel_to (i * time_travel_step).from_now do

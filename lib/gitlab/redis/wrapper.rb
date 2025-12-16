@@ -55,7 +55,8 @@ module Gitlab
 
         def config_file_path(filename)
           path = File.join(rails_root, 'config', filename)
-          return path if File.file?(path)
+
+          path if File.file?(path)
         end
 
         # We need this local implementation of Rails.root because MailRoom

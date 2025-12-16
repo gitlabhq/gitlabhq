@@ -13,7 +13,6 @@ InternalAffairs/CopDescriptionWithExample:
     - 'rubocop/cop/database/disable_referential_integrity.rb'
     - 'rubocop/cop/database/establish_connection.rb'
     - 'rubocop/cop/default_scope.rb'
-    - 'rubocop/cop/destroy_all.rb'
     - 'rubocop/cop/experiments_test_coverage.rb'
     - 'rubocop/cop/feature_flag_usage.rb'
     - 'rubocop/cop/file_decompression.rb'

@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Installing the agent for Kubernetes
 ---
@@ -28,7 +28,7 @@ Before you can install the agent in your cluster, you need:
   - On GitLab.com, the agent server is available at `wss://kas.gitlab.com`.
   - On GitLab Self-Managed, a GitLab administrator must set up the [agent server](../../../../administration/clusters/kas.md).
     Then it is available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
-  - On GitLab Dedicated, the agent server is available at `wss://kas.<instance-domain>`, for example `wss://kas.example.gitlab-dedicated.com`. If you use a [custom hostname](../../../../administration/dedicated/configure_instance/network_security.md#bring-your-own-domain-byod) for your GitLab Dedicated instance, you can also choose a custom hostname for the KAS service.
+  - On GitLab Dedicated, the agent server is available at `wss://kas.<instance-domain>`, for example `wss://kas.example.gitlab-dedicated.com`. If you use a [custom domain](../../../../administration/dedicated/configure_instance/network_security.md#custom-domains) for your GitLab Dedicated instance, you can also use a custom domain for the KAS service.
 
 ## Bootstrap the agent with Flux support (recommended)
 
@@ -118,7 +118,7 @@ The agent can be registered without creating an agent configuration file.
 
 You must register an agent before you can install the agent in your cluster. To register an agent:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
    If you have an [agent configuration file](#create-an-agent-configuration-file),
    it must be in this project. Your cluster manifest files should also be in this project.
 1. Select **Operate** > **Kubernetes clusters**.

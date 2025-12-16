@@ -23,7 +23,9 @@ module ContainerRegistry
 
       validate :validate_access_levels
 
-      scope :mutable, -> { where.not(minimum_access_level_for_push: nil, minimum_access_level_for_delete: nil) }
+      scope :mutable, -> do
+        where.not(minimum_access_level_for_push: nil).where.not(minimum_access_level_for_delete: nil)
+      end
 
       scope :for_actions_and_access, ->(actions, access_level) do
         where(base_conditions_for_actions_and_access(actions, access_level).reduce(:or))
@@ -67,6 +69,10 @@ module ContainerRegistry
 
       def matches_tag_name?(name)
         ::Gitlab::UntrustedRegexp.new(tag_name_pattern).match?(name)
+      end
+
+      def type
+        'mutable'
       end
 
       def uniqueness_scope

@@ -21,6 +21,7 @@ export default {
       required: true,
     },
   },
+  emits: ['update-job'],
   computed: {
     formOptions() {
       return [

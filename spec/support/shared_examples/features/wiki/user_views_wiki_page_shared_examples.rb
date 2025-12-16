@@ -77,7 +77,7 @@ RSpec.shared_examples 'User views a wiki page' do
       fill_in('Content', with: 'Updated Wiki Content')
       click_on('Save changes')
 
-      expect(page).to have_content('Wiki page was successfully updated.')
+      expect(page).to have_content('Updated Wiki Content')
 
       more_actions_dropdown.click
       click_on('Page history')
@@ -259,7 +259,7 @@ RSpec.shared_examples 'User views a wiki page' do
     end
   end
 
-  context 'when a page has headings' do
+  context 'when a page has headings', :js do
     before do
       wiki_page.update(content: "# Heading 1\n\n## Heading 1.1\n\n### Heading 1.1.1\n\n# Heading 2") # rubocop:disable Rails/SaveBang -- not an ActiveRecord
     end

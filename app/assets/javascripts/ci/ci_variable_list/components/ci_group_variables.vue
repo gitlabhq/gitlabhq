@@ -11,6 +11,7 @@ import updateGroupVariable from '../graphql/mutations/group_update_variable.muta
 import CiVariableShared from './ci_variable_shared.vue';
 
 export default {
+  name: 'CiGroupVariables',
   components: {
     CiVariableShared,
   },

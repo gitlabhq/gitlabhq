@@ -199,7 +199,7 @@ Prerequisites:
   with the package registry.
 
 1. Create another package following the [Conan 2 package](../workflows/build_packages.md#conan-2)
-guide. In the root of your project, create a file called `conanfile.txt`.
+   guide. In the root of your project, create a file called `conanfile.txt`.
 
 1. Add the Conan recipe to the `[requires]` section of the file:
 

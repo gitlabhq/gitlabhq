@@ -516,6 +516,44 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
       end
     end
 
+    context 'when squash param is not provided' do
+      let(:opts) do
+        {
+          title: 'Test merge_request',
+          source_branch: 'feature',
+          target_branch: 'master'
+        }
+      end
+
+      before do
+        project.add_maintainer(user)
+      end
+
+      it 'defaults to true when project squash_option is default_on' do
+        project.project_setting.update!(squash_option: 'default_on')
+
+        merge_request = described_class.new(project: project, current_user: user, params: opts).execute
+
+        expect(merge_request.squash).to be true
+      end
+
+      it 'defaults to false when project squash_option is default_off' do
+        project.project_setting.update!(squash_option: 'default_off')
+
+        merge_request = described_class.new(project: project, current_user: user, params: opts).execute
+
+        expect(merge_request.squash).to be false
+      end
+
+      it 'respects explicit squash param over project default' do
+        project.project_setting.update!(squash_option: 'default_on')
+
+        merge_request = described_class.new(project: project, current_user: user, params: opts.merge(squash: false)).execute
+
+        expect(merge_request.squash).to be false
+      end
+    end
+
     shared_examples 'when source and target projects are different' do
       let(:target_project) { fork_project(project, nil, repository: true) }
 
@@ -571,6 +609,15 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
 
           expect { described_class.new(project: project, current_user: user, params: opts).execute }
             .to raise_error Gitlab::Access::AccessDeniedError
+        end
+
+        it 'uses target project squash setting for default', :sidekiq_inline do
+          project.project_setting.update!(squash_option: 'never')
+          target_project.project_setting.update!(squash_option: 'default_on')
+
+          merge_request = described_class.new(project: project, current_user: user, params: opts).execute
+
+          expect(merge_request.squash).to be true
         end
       end
     end

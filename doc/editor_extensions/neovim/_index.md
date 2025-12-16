@@ -14,7 +14,7 @@ To install and configure the extension, see [Install and set up](setup.md).
 ## Disable `gitlab.statusline`
 
 By default, this plugin enables `gitlab.statusline`, which uses the built-in `statusline`
-to show the status of the Code Suggestions integration. If you want to disable `gitlab.statusline`,
+to show the status of the GitLab Duo Code Suggestions integration. If you want to disable `gitlab.statusline`,
 add this to your configuration:
 
 ```lua

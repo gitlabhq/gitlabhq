@@ -19,6 +19,7 @@ import { DEFAULT_PAGE_SIZE, mergeRequestListTabs } from '~/vue_shared/issuable/l
 import {
   OPERATORS_IS,
   OPERATORS_IS_NOT,
+  OPERATORS_IS_NOT_OR,
   TOKEN_TITLE_APPROVED_BY,
   TOKEN_TYPE_APPROVED_BY,
   TOKEN_TITLE_APPROVER,
@@ -80,12 +81,12 @@ import {
   PARAM_SORT,
 } from '~/issues/list/constants';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
-import MergeRequestReviewers from '~/issuable/components/merge_request_reviewers.vue';
-import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
-import issuableEventHub from '~/issues/list/eventhub';
+import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
+import issuableEventHub from '~/merge_requests/list/eventhub';
 import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
 import { AutocompleteCache } from '../../utils/autocomplete_cache';
 import { i18n, BRANCH_LIST_REFRESH_INTERVAL } from '../constants';
+import MergeRequestReviewers from './merge_request_reviewers.vue';
 import MergeRequestStatistics from './merge_request_statistics.vue';
 import MergeRequestMoreActionsDropdown from './more_actions_dropdown.vue';
 import EmptyState from './empty_state.vue';
@@ -146,7 +147,6 @@ export default {
     canBulkUpdate: { default: false },
     environmentNamesPath: { default: '' },
     mergeTrainsPath: { default: undefined },
-    defaultBranch: { default: '' },
     getMergeRequestsQuery: { default: undefined },
     getMergeRequestsCountsQuery: { default: undefined },
     getMergeRequestsApprovalsQuery: { default: undefined },
@@ -303,6 +303,7 @@ export default {
         {
           type: TOKEN_TYPE_ASSIGNEE,
           title: TOKEN_TITLE_ASSIGNEE,
+          operators: OPERATORS_IS_NOT_OR,
           icon: 'user',
           token: UserToken,
           dataType: 'user',
@@ -310,8 +311,7 @@ export default {
           isProject: this.isProject,
           recentSuggestionsStorageKey: `${this.fullPath}-merge-requests-recent-tokens-assignee`,
           preloadedUsers,
-          multiSelect: false,
-          unique: true,
+          multiSelect: true,
         },
         {
           type: TOKEN_TYPE_REVIEWER,
@@ -512,6 +512,9 @@ export default {
         },
       ].filter(Boolean);
     },
+    showPageSizeSelector() {
+      return this.mergeRequests.length > 0;
+    },
     showPaginationControls() {
       return (
         this.mergeRequests.length > 0 &&
@@ -707,6 +710,13 @@ export default {
 
       this.$router.push({ query: this.urlParams });
     },
+    handlePageSizeChange(pageSize) {
+      this.pageSize = pageSize;
+      this.pageParams = getInitialPageParams(pageSize);
+      scrollUp();
+
+      this.$router.push({ query: this.urlParams });
+    },
     handlePreviousPage() {
       this.pageParams = {
         beforeCursor: this.pageInfo.startCursor,
@@ -780,7 +790,7 @@ export default {
     },
     async handleBulkUpdateClick() {
       if (!this.hasInitBulkEdit) {
-        const bulkUpdateSidebar = await import('~/issuable');
+        const bulkUpdateSidebar = await import('~/merge_requests/list');
         bulkUpdateSidebar.initBulkUpdateSidebar('issuable_');
 
         this.hasInitBulkEdit = true;
@@ -802,6 +812,9 @@ export default {
     },
     handleDismissAlert() {
       this.mergeRequestsError = null;
+    },
+    showTargetBranchRef(mergeRequest) {
+      return mergeRequest.targetBranch !== mergeRequest.project?.repository?.rootRef;
     },
   },
   STATUS_OPEN,
@@ -827,6 +840,7 @@ export default {
       :tab-counts="tabCounts"
       :issuables-loading="isLoading"
       :show-pagination-controls="showPaginationControls"
+      :show-page-size-selector="showPageSizeSelector"
       :default-page-size="pageSize"
       sync-filter-and-sort
       use-keyset-pagination
@@ -838,6 +852,7 @@ export default {
       always-allow-custom-empty-state
       @click-tab="handleClickTab"
       @next-page="handleNextPage"
+      @page-size-change="handlePageSizeChange"
       @previous-page="handlePreviousPage"
       @sort="handleSort"
       @filter="handleFilter"
@@ -906,7 +921,7 @@ export default {
 
       <template #target-branch="{ issuable = {} }">
         <span
-          v-if="defaultBranch && issuable.targetBranch !== defaultBranch"
+          v-if="showTargetBranchRef(issuable)"
           class="project-ref-path gl-inline-block gl-max-w-26 gl-truncate gl-align-bottom"
           data-testid="target-branch"
         >

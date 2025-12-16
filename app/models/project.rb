@@ -6,6 +6,7 @@ class Project < ApplicationRecord
   include Gitlab::ConfigHelper
   include Gitlab::VisibilityLevel
   include AccessRequestable
+  include Authz::HasRoles
   include Avatarable
   include CacheMarkdownField
   include Sortable
@@ -48,6 +49,11 @@ class Project < ApplicationRecord
   include SafelyChangeColumnDefault
   include Todoable
   include Namespaces::AdjournedDeletable
+  include Cells::Claimable
+
+  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::PROJECT_IDS
+
+  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::PROJECT, subject_key: :id
 
   columns_changing_default :organization_id
 
@@ -199,7 +205,7 @@ class Project < ApplicationRecord
   belongs_to :namespace
   # Sync deletion via DB Trigger to ensure we do not have
   # a project without a project_namespace (or vice-versa)
-  belongs_to :project_namespace, autosave: true, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project
+  belongs_to :project_namespace, autosave: true, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent -- needed to unclaim
   alias_method :parent, :namespace
   alias_attribute :parent_id, :namespace_id
 
@@ -538,8 +544,11 @@ class Project < ApplicationRecord
 
   with_options to: :project_namespace, allow_nil: true do
     delegate :deletion_schedule
-    delegate :archived_ancestor
+    delegate :allowed_work_item_types
+    delegate :allowed_work_item_type?
+    delegate :supports_work_items?
   end
+
   delegate :merge_requests_access_level, :forking_access_level, :issues_access_level, :wiki_access_level, :snippets_access_level, :builds_access_level, :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level, :operations_access_level, :security_and_compliance_access_level, :container_registry_access_level, :environments_access_level, :feature_flags_access_level, :monitor_access_level, :releases_access_level, :infrastructure_access_level, :model_experiments_access_level, :model_registry_access_level, to: :project_feature, allow_nil: true
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :jira_dvcs_server_last_sync_at, to: :feature_usage
@@ -826,14 +835,14 @@ class Project < ApplicationRecord
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
   scope :visible_to_user_and_access_level, ->(user, access_level) { where(id: user.authorized_projects.where('project_authorizations.access_level >= ?', access_level).select(:id).reorder(nil)) }
 
-  scope :archived, -> { where(archived: true) }
+  scope :archived, -> { self_or_ancestors_archived }
   scope :self_or_ancestors_archived, -> do
     left_joins(:group)
       .where(archived: true)
       .or(where(Group.self_or_ancestors_archived_setting_subquery.exists))
   end
 
-  scope :non_archived, -> { where(archived: false) }
+  scope :non_archived, -> { self_and_ancestors_non_archived }
   scope :self_and_ancestors_non_archived, -> do
     left_joins(:group)
       .where(archived: false)
@@ -942,10 +951,6 @@ class Project < ApplicationRecord
       .where(project_setting: { pages_unique_domain_enabled: false })
   end
 
-  scope :with_api_commit_entity_associations, -> {
-    preload(:project_feature, :route, namespace: [:route, :owner])
-  }
-
   scope :with_group_child_entity_associations, -> {
     with_route.preload(namespace: [:namespace_settings_with_ancestors_inherited_settings])
   }
@@ -1020,11 +1025,20 @@ class Project < ApplicationRecord
   mount_uploader :bfg_object_map, AttachmentUploader
 
   def self.with_api_entity_associations
-    preload(:project_feature, :route, :topics, :group, :timelogs, namespace: [:route, :owner])
+    with_fork_network_associations
+      .preload(:project_feature, :route, :topics, :group, :timelogs, namespace: [:route, :owner])
   end
 
   def self.with_web_entity_associations
     preload(:project_feature, :route, :creator, group: :parent, namespace: [:route, :owner, :namespace_settings, :namespace_settings_with_ancestors_inherited_settings])
+  end
+
+  def self.with_api_commit_entity_associations
+    preload(:ci_pipelines, :project_feature, :route, namespace: [:route, :owner])
+  end
+
+  def self.with_api_blob_entity_associations
+    preload(:project_feature, :route, namespace: [:route, :owner])
   end
 
   def self.with_slack_application_disabled
@@ -1296,7 +1310,7 @@ class Project < ApplicationRecord
       Project
         .where('NOT EXISTS (?)', integrations)
         .where(pending_delete: false)
-        .where(archived: false)
+        .non_archived
     end
 
     def project_features_defaults
@@ -1547,6 +1561,7 @@ class Project < ApplicationRecord
     @team ||= ProjectTeam.new(self)
   end
 
+  # @return [Repository]
   def repository
     @repository ||= Gitlab::GlRepository::PROJECT.repository_for(self)
   end
@@ -1634,6 +1649,10 @@ class Project < ApplicationRecord
 
   def latest_pipeline(ref = default_branch, sha = nil, source = nil)
     latest_pipelines(ref: ref, sha: sha, source: source).take
+  end
+
+  def latest_pipeline_for_ci_and_security_orchestration(ref = default_branch)
+    all_pipelines.ci_and_security_orchestration_sources.newest_first(ref: ref).take
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
@@ -2302,7 +2321,14 @@ class Project < ApplicationRecord
     false
   end
 
+  # When the project has an existing project_repository record, we want to update it.
+  # Otherwise, if a corresponding Git repository exists, we create a new record.
+  # This method might be called when a project_repository record already exists,
+  # during project transfer to another namespace, in Projects::TransferService
+  # or when repository storage is being updated in Projects::UpdateRepositoryStorageService
   def track_project_repository
+    return unless project_repository.presence || repository.raw_repository.exists?
+
     (project_repository || build_project_repository).tap do |proj_repo|
       attributes = { shard_name: repository_storage, disk_path: disk_path }
 
@@ -3527,6 +3553,12 @@ class Project < ApplicationRecord
     group&.allow_iframes_in_markdown_feature_flag_enabled? || Feature.enabled?(:allow_iframes_in_markdown, self, type: :wip)
   end
 
+  def work_items_saved_views_enabled?(user = nil)
+    return true if group&.work_items_saved_views_enabled?(user) || Feature.enabled?(:work_items_saved_views, type: :wip)
+
+    user.present? && Feature.enabled?(:work_items_saved_views_user, user)
+  end
+
   def work_items_consolidated_list_enabled?(user = nil)
     # work_item_planning_view is the feature flag used to determine whether the consolidated list is enabled or not
     # The global check is required for projects which do not have an associated group (i.e. from a user namespace)
@@ -3696,15 +3728,6 @@ class Project < ApplicationRecord
   # Ensures project has a pool repository without exposing private creation logic
   def ensure_pool_repository
     pool_repository || create_new_pool_repository
-  end
-
-  def assigning_role_too_high?(current_user, access_level)
-    return false unless access_level
-    return false if current_user.can_admin_all_resources?
-
-    max_access_level = max_member_access_for_user(current_user)
-
-    !Gitlab::Access.level_encompasses?(current_access_level: max_access_level, level_to_assign: access_level)
   end
 
   private

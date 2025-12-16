@@ -5,8 +5,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Pipeline secret detection
 ---
 
-<!-- markdownlint-disable MD025 -->
-
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
@@ -38,16 +36,16 @@ With GitLab Ultimate, pipeline secret detection results are also processed so yo
 
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/).
 
-| Capability                                                              | In Free & Premium                    | In Ultimate |
-|:------------------------------------------------------------------------|:-------------------------------------|:------------|
-| [Customize analyzer behavior](configure.md#customize-analyzer-behavior) | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| Download [output](#secret-detection-results)                            | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| See new findings in the merge request widget                            | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| View identified secrets in the pipelines' **Security** tab              | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Manage vulnerabilities](../../vulnerability_report/_index.md)          | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Access the security dashboard](../../security_dashboard/_index.md)     | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets) | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Enable security policies](../../policies/_index.md)                    | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| Capability                                                              | In Free & Premium | In Ultimate |
+|:------------------------------------------------------------------------|:------------------|:------------|
+| [Customize analyzer behavior](configure.md#customize-analyzer-behavior) | {{< yes >}}       | {{< yes >}} |
+| Download [output](#secret-detection-results)                            | {{< yes >}}       | {{< yes >}} |
+| See new findings in the merge request widget                            | {{< no >}}        | {{< yes >}} |
+| View identified secrets in the pipelines' **Security** tab              | {{< no >}}        | {{< yes >}} |
+| [Manage vulnerabilities](../../vulnerability_report/_index.md)          | {{< no >}}        | {{< yes >}} |
+| [Access the security dashboard](../../security_dashboard/_index.md)     | {{< no >}}        | {{< yes >}} |
+| [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets) | {{< no >}}        | {{< yes >}} |
+| [Enable security policies](../../policies/_index.md)                    | {{< no >}}        | {{< yes >}} |
 
 ## Getting started
 
@@ -76,7 +74,7 @@ After you enable pipeline secret detection, you can [customize the analyzer sett
 
 This method requires you to manually edit an existing `.gitlab-ci.yml` file.
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline editor**.
 1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file:
 
@@ -101,7 +99,7 @@ This method automatically prepares a merge request to add a `.gitlab-ci.yml` fil
 
 To enable pipeline secret detection:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. In the **Pipeline secret detection** row, select **Configure with a merge request**.
 1. Optional. Complete the fields.
@@ -172,7 +170,7 @@ by default the first scheduled scan is a historic scan.
 
 To run a historic scan:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. Add a CI/CD variable:
@@ -547,5 +545,3 @@ Added project directory to Git safe.directory configuration
 ```
 
 This indicates typical security configuration in containerized environments. No action is required.
-
-<!-- markdownlint-enable MD025 -->

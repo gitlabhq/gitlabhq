@@ -23,8 +23,6 @@ dast:
   stage: dast
   image:
     name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION$DAST_IMAGE_SUFFIX"
-  variables:
-    GIT_STRATEGY: none
   allow_failure: true
   script:
     - /analyze

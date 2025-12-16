@@ -10,74 +10,153 @@ description: Monitor credentials through a comprehensive access inventory.
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
-- Group access tokens [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102959) in GitLab 15.6.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/297441) on GitLab.com in GitLab 17.5.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/work_items/498333) group and project token support to GitLab.com in GitLab 17.7.
 
 {{< /history >}}
 
-{{< alert type="note" >}}
+Use the credentials inventory to monitor and control access to your organization.
 
-For GitLab.com, see [Credentials inventory for GitLab.com](../user/group/credentials_inventory.md).
+- On GitLab.com, the credentials inventory monitors enterprise users and service
+accounts in a top-level group.
+- On GitLab Self-Managed and GitLab Dedicated, the credentials inventory monitors
+all human users and service accounts across the entire instance.
 
-{{< /alert >}}
+Prerequisites:
 
-Use the credentials inventory to monitor and control access to your instance.
+- On GitLab.com, you must have the Owner role for a group.
+- On GitLab Self-Managed and GitLab Dedicated, you must be an administrator.
 
-As an administrator, you can:
+## View the credentials inventory
 
-- Revoke personal, project, or group access tokens.
-- Delete SSH keys.
-- Review credential details including:
-  - Ownership.
-  - Access scopes.
-  - Usage patterns.
-  - Expiration dates.
-  - Revocation dates.
+You can use the credentials inventory to view:
+
+- Personal access tokens.
+- Group access tokens.
+- Project access tokens.
+- SSH keys.
+- GPG keys (GitLab Self-Managed and GitLab Dedicated only).
+
+To view the credentials inventory:
+
+{{< tabs >}}
+
+{{< tab title="For an instance" >}}
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Credentials**.
+
+{{< /tab >}}
+
+{{< tab title="For a group" >}}
+
+1. On the top bar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Secure**.
+1. Select **Credentials**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+You can use the inventory to review credential details including:
+
+- Ownership.
+- Access scopes.
+- Usage patterns.
+- Expiration dates.
+- Revocation dates.
 
 ## Revoke personal access tokens
 
-To revoke a personal access token in your instance:
+To revoke a personal access token:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+{{< tabs >}}
+
+{{< tab title="For an instance" >}}
+
+1. In the upper-right corner, select **Admin**.
 1. Select **Credentials**.
 1. Next to the personal access token, select **Revoke**.
-   If the token was previously expired or revoked, you'll see the date this happened instead.
+   If the token was previously expired or revoked, the associated date is displayed.
 
 The access token is revoked and the user is notified by email.
 
+{{< /tab >}}
+
+{{< tab title="For a group" >}}
+
+1. On the top bar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Secure**.
+1. Select **Credentials**.
+1. Next to the personal access token, select **Revoke**.
+   If the token was previously expired or revoked, the associated date is displayed.
+
+The access token is revoked and the user is notified by email.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ## Revoke project or group access tokens
 
-To revoke a project access token in your instance:
+To revoke a project or group access token:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+{{< tabs >}}
+
+{{< tab title="For an instance" >}}
+
+1. In the upper-right corner, select **Admin**.
 1. Select **Credentials**.
 1. Select the **Project and group access tokens** tab.
 1. Next to the project access token, select **Revoke**.
 
-The access token is revoked and a background process begins to delete the associated project bot user.
+{{< /tab >}}
+
+{{< tab title="For a group" >}}
+
+1. On the top bar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Secure**.
+1. Select **Credentials**.
+1. Select the **Project and group access tokens** tab.
+1. Next to the project access token, select **Revoke**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Delete SSH keys
 
-To delete an SSH key in your instance:
+To delete an SSH key:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+{{< tabs >}}
+
+{{< tab title="For an instance" >}}
+
+1. In the upper-right corner, select **Admin**.
 1. Select **Credentials**.
 1. Select the **SSH Keys** tab.
 1. Next to the SSH key, select **Delete**.
 
 The SSH key is deleted and the user is notified.
 
-## View GPG keys
+{{< /tab >}}
 
-You can see details for each GPG key including the owner, ID, and [verification status](../user/project/repository/signed_commits/gpg.md).
+{{< tab title="For a group" >}}
 
-To view information about GPG keys in your instance:
-
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. On the top bar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Secure**.
 1. Select **Credentials**.
-1. Select the **GPG keys** tab.
+1. Select the **SSH Keys** tab.
+1. Next to the SSH key, select **Delete**.
+
+The SSH key is deleted and the user is notified.
+
+{{< /tab >}}
+
+{{< /tabs >}}

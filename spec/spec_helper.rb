@@ -230,7 +230,6 @@ RSpec.configure do |config|
 
   include StubCurrentOrganization
   include StubFeatureFlags
-  include StubProjectStudio
   include StubSnowplow
   include StubMember
   include VersionCheckHelpers
@@ -371,9 +370,6 @@ RSpec.configure do |config|
       # New personal homepage is still a WIP and not functional.
       stub_feature_flags(personal_homepage: false)
 
-      # New paneled view is still a WIP and not functional.
-      stub_feature_flags(paneled_view: false)
-
       # Handle dynamic partitions creation
       stub_feature_flags(disallow_database_ddl_feature_flags: false)
 
@@ -398,6 +394,11 @@ RSpec.configure do |config|
       # `work_item_planning_view` is rolled out. `work_item_planning_view` is disabled for specific specs, so stubbing
       # out `work_items_consolidated_list_user` is an easy work around.
       stub_feature_flags(work_items_consolidated_list_user: false)
+
+      # Short lived feature flag to enable user-based rollout to internal users before main feature flag
+      # `work_items_saved_views` is rolled out. `work_items_saved_views` is disabled for specific specs, so stubbing
+      # out `work_items_saved_views_user` is an easy work around.
+      stub_feature_flags(work_items_saved_views_user: false)
 
       stub_feature_flags(merge_widget_stop_polling: false)
 

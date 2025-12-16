@@ -6,8 +6,8 @@ module RapidDiffs
 
     presents ::Commit, as: :resource
 
-    def initialize(subject, diff_view, diff_options, request_params = nil, current_user = nil)
-      super(subject, diff_view, diff_options, request_params)
+    def initialize(subject, diff_view, diff_options, request_params = nil, current_user = nil, environment = nil)
+      super(subject, diff_view, diff_options, request_params, environment)
       @current_user = current_user
     end
 
@@ -53,6 +53,18 @@ module RapidDiffs
 
     def markdown_docs_path
       help_page_path('user/markdown.md')
+    end
+
+    def register_path
+      new_user_registration_path(redirect_to_referer: 'yes')
+    end
+
+    def sign_in_path
+      new_user_session_path(redirect_to_referer: 'yes')
+    end
+
+    def report_abuse_path
+      add_category_abuse_reports_path
     end
   end
 end

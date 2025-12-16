@@ -16,6 +16,8 @@ describe('EmptyStateWithoutAnyIssues component', () => {
     signInPath: 'sign/in/path',
     groupId: '',
     isProject: false,
+    workItemPlanningViewEnabled: false,
+    hasEpicsFeature: false,
   };
 
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -44,7 +46,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
 
   describe('when signed in', () => {
     describe('empty state', () => {
-      it('renders empty state', () => {
+      it('renders empty state with issues terminology', () => {
         mountComponent();
 
         expect(findGlEmptyState().props('title')).toBe(
@@ -52,6 +54,17 @@ describe('EmptyStateWithoutAnyIssues component', () => {
         );
         expect(findGlEmptyState().props('description')).toBe(
           'Use issues (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
+        );
+      });
+
+      it('renders empty state with work items terminology when workItemPlanningViewEnabled', () => {
+        mountComponent({ provide: { workItemPlanningViewEnabled: true } });
+
+        expect(findGlEmptyState().props('title')).toBe(
+          'Track bugs, plan features, and organize your efforts with work items',
+        );
+        expect(findGlEmptyState().props('description')).toBe(
+          'Use work items (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
         );
       });
 

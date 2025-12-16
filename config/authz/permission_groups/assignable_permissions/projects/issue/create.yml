@@ -1,0 +1,8 @@
+---
+name: create_issue
+description: Grants the ability to create issues
+feature_category: team_planning
+boundaries:
+  - project
+permissions:
+  - create_issue

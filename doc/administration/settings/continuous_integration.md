@@ -30,7 +30,7 @@ Customize CI/CD settings, including Auto DevOps, instance runners, and job artif
 
 To access these settings:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 
@@ -70,7 +70,7 @@ To add instance runner details:
 
 To view the rendered details:
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 
@@ -86,7 +86,7 @@ Prerequisites:
 
 To share a project runner with multiple projects:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. From the left sidebar, select **CI/CD** > **Runners**.
 1. Select the runner you want to edit.
 1. In the upper-right corner, select **Edit** ({{< icon name="pencil" >}}).
@@ -127,7 +127,7 @@ To change the maximum artifact size for an instance:
 
 To change the maximum artifact size for a group or project:
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Change the value of **Maximum artifacts size** (in MB).
@@ -292,7 +292,7 @@ The default value is `0`, which means there is no restriction.
 Set the maximum number of tag or branch pipelines that can be triggered by a single Git push.
 For more information about this limit, see [number of pipelines per Git push](../instance_limits.md#number-of-pipelines-per-git-push).
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. Change the value of **Pipeline limit per Git push**.
@@ -388,7 +388,7 @@ Configure NuGet package validation, Helm package limits, package file size limit
 
 To access these settings:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Package registry**.
 
@@ -446,17 +446,22 @@ Control whether package requests are forwarded to public registries when package
 
 By default, GitLab forwards package requests to their respective public registries:
 
-- Maven requests to [Maven Central](https://search.maven.org/)
-- npm requests to [npmjs.com](https://www.npmjs.com/)
-- PyPI requests to [pypi.org](https://pypi.org/)
+- Maven requests are forwarded to [Maven Central](https://search.maven.org/).
+- npm requests are forwarded to [npmjs.com](https://www.npmjs.com/).
+- PyPI requests are forwarded to [pypi.org](https://pypi.org/).
 
-To stop package forwarding:
+To turn off package forwarding:
 
-1. Clear any of these checkboxes:
-   - **Forward Maven package requests to the Maven registry if the packages are not found in the GitLab Package registry**
-   - **Forward npm package requests to the npm registry if the packages are not found in the GitLab package registry**
-   - **Forward PyPI package requests to the PyPI registry if the packages are not found in the GitLab package registry**
+1. In the upper-right corner, select **Admin**.
+1. Select **Overview** > **Groups**.
+1. On the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Package registry**.
+1. Clear either of the following checkboxes:
+   - **Forward npm package requests**
+   - **Forward PyPI package requests**
 1. Select **Save changes**.
+
+To turn off request forwarding for Maven packages, see [Maven packages in the package registry](../../user/packages/maven_repository/_index.md#request-forwarding-to-maven-central).
 
 ## Access runner settings
 
@@ -464,7 +469,7 @@ Configure runner version management and registration settings.
 
 To access these settings:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 
@@ -529,7 +534,7 @@ Prerequisites:
 
 To restrict runner registration for a specific group:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Overview** > **Groups** and find your group.
 1. Select **Edit**.
 1. Under **Runner Registration**, clear the **New group runners can be registered** checkbox.
@@ -541,7 +546,7 @@ Control how CI/CD job tokens can access your projects.
 
 To access these settings:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
 
@@ -569,7 +574,7 @@ Control how CI/CD job logs are stored and processed.
 
 To access these settings:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job logs**.
 
@@ -594,11 +599,61 @@ Prerequisites:
 
 To turn on incremental logging for all projects:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand the **Job logs** section.
 1. Under **Incremental logging configuration**, select the **Turn on incremental logging** checkbox.
 1. Select **Save changes**.
+
+## CI/CD Catalog settings
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/582044) in GitLab 17.8.
+
+{{< /history >}}
+
+Control which projects can publish components to the [CI/CD Catalog](../../ci/components/_index.md).
+
+To access these settings:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **CI/CD**.
+1. Expand **Catalog**.
+
+### Restrict CI/CD Catalog publishing
+
+By default, any project can publish components to the CI/CD Catalog.
+You can restrict publishing to specific projects by configuring an allowlist.
+
+When the allowlist is:
+
+- Empty (default): All projects can publish to the Catalog.
+- Populated with any number of projects: Only projects matching an entry in the allowlist can publish.
+
+You can define entries in the allowlist with:
+
+- Exact project paths, for example `my-group/my-project`.
+- Regular expressions: for example:
+  - `my-group/.*`: all projects in the group.
+  - `my-group/security-.*`: Projects starting with `security-`.
+
+To configure the CI/CD Catalog publishing allowlist:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings** > **CI/CD**.
+1. Expand **Catalog**.
+1. In the **CI/CD Catalog publishing allowlist** text area, enter one path pattern per line.
+1. Select **Save changes**.
+
+Projects not in the allowlist receive a `not authorized to publish` error when attempting to publish a component version.
 
 ## Required pipeline configuration (deprecated)
 

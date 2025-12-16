@@ -31,7 +31,7 @@ We aim to employ the Chat for all use cases and workflows that can benefit from 
 
 Chat aims to be context aware and ultimately have access to all the resources in GitLab that the user has access to. Initially, this context was limited to the content of individual issues and epics, as well as GitLab documentation. Since then additional contexts have been added, such as code selection and code files. Currently, work is underway contributing vulnerability context and pipeline job context, so that users can ask questions about these contexts.
 
-To scale the context awareness and hence to scale creation, ideation, and learning use cases across the entire DevSecOps domain, the Duo Chat team welcomes contributions to the Chat platform from other GitLab teams and the wider community. They are the experts for the use cases and workflows to accelerate.
+To scale the context awareness and hence to scale creation, ideation, and learning use cases across the entire DevSecOps domain, the GitLab Duo Chat team welcomes contributions to the Chat platform from other GitLab teams and the wider community. They are the experts for the use cases and workflows to accelerate.
 
 ### Which use cases are better implemented as stand-alone AI features?
 
@@ -54,7 +54,7 @@ That said, it does not mean that Chat can't write commit messages, nor that it w
 
 ## Set up GitLab Duo Chat
 
-To set up Duo Chat locally, go through the
+To set up GitLab Duo Chat locally, go through the
 [general setup instructions for AI features](_index.md).
 
 ## Working with GitLab Duo Chat
@@ -65,7 +65,7 @@ instructions sent to the LLM to perform certain tasks.
 The state of the prompts is the result of weeks of iteration. If you want to
 change any prompt in the current tool, you must put it behind a feature flag.
 
-If you have any new or updated prompts, ask members of [Duo Chat team](https://handbook.gitlab.com/handbook/engineering/development/data-science/ai-powered/duo-chat/)
+If you have any new or updated prompts, ask members of [GitLab Duo Chat team](https://handbook.gitlab.com/handbook/engineering/development/data-science/ai-powered/duo-chat/)
 to review, because they have significant experience with them.
 
 ### Troubleshooting
@@ -158,12 +158,12 @@ conversation in GitLab Duo Chat towards predefined areas of interest or concern.
 To add a new tool you need to add changes both to [AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)
 and Rails Monolith. The main chat prompt is stored and assembled on AI gateway. Rails side is responsible for assembling
 required parameters of the prompt and sending them to AI gateway. AI gateway is responsible for assembling Chat prompt and
-selecting Chat tools that are available for user based on their subscription and addon.
+selecting Chat tools that are available for user based on their subscription and add-on.
 
 When LLM selects the tool to use, this tool is executed on the Rails side. Tools use different endpoint to make
 a request to AI gateway. When you add a new tool, take into account that AI gateway works with different clients
 and GitLab applications that have different versions. That means that old versions of GitLab won't know about a new tool.
-If you want to add a new tool, contact the Duo Chat team. We're working on long-term solution for this [problem](https://gitlab.com/gitlab-org/gitlab/-/issues/466247).
+If you want to add a new tool, contact the GitLab Duo Chat team. We're working on long-term solution for this [problem](https://gitlab.com/gitlab-org/gitlab/-/issues/466247).
 
 #### Changes in AI gateway
 
@@ -186,7 +186,7 @@ If you want to add a new tool, contact the Duo Chat team. We're working on long-
    `epic_reader` as a template.
 
 1. Write a class for the tool that includes instructions for the large language model on how to use the tool
-to gather information - the main prompts that this tool is using.
+   to gather information - the main prompts that this tool is using.
 
 1. Implement code in the tool to parse the response from the large language model and return it to the [chat agent](https://gitlab.com/gitlab-org/gitlab/-/blob/e0220502f1b3459b5a571d510ce5d1826877c3ce/ee/lib/gitlab/llm/chain/agents/single_action_executor.rb).
 
@@ -208,13 +208,13 @@ There are available short [videos](https://www.youtube.com/playlist?list=PL05JrB
 
 ### Working with multi-thread conversation
 
-If you're building features that interact with Duo Chat conversations, you need to understand how threads work.
+If you're building features that interact with GitLab Duo Chat conversations, you need to understand how threads work.
 
-Duo Chat supports multiple conversations. Each conversation is represented by a thread, which contains multiple messages. The important attributes of a thread are:
+GitLab Duo Chat supports multiple conversations. Each conversation is represented by a thread, which contains multiple messages. The important attributes of a thread are:
 
 - `id`: The `id` is required when replying to a thread.
-- `conversation_type`: This allows for distinguishing between the different available Duo Chat conversation types. See the [thread conversation types list](../../api/graphql/reference/_index.md#aiconversationsthreadsconversationtype).
-  - If your feature needs its own conversation type, contact the Duo Chat team.
+- `conversation_type`: This allows for distinguishing between the different available GitLab Duo Chat conversation types. See the [thread conversation types list](../../api/graphql/reference/_index.md#aiconversationsthreadsconversationtype).
+  - If your feature needs its own conversation type, contact the GitLab Duo Chat team.
 
 If your feature requires calling GraphQL API directly, the following queries and mutations are available, for which you **must** specify the `conversation_type`.
 
@@ -224,11 +224,11 @@ If your feature requires calling GraphQL API directly, the following queries and
 
 All chat conversations have a retention period, controlled by the admin. The default retention period is 30 days after last reply.
 
-- [Configure Duo Chat Conversation Expiration](../../user/gitlab_duo_chat/_index.md#configure-chat-conversation-expiration)
+- [Configure GitLab Duo Chat Conversation Expiration](../../user/gitlab_duo_chat/_index.md#configure-chat-conversation-expiration)
 
 ### Developer Resources
 
-- [Example GraphQL Queries](#duo-chat-conversation-threads-graphql-queries) - See examples below in this document
+- [Example GraphQL Queries](#gitlab-duo-chat-conversation-threads-graphql-queries) - See examples below in this document
 
 ## Debugging
 
@@ -245,7 +245,7 @@ tail -f log/llm.log
 
 ### Debugging in production environment
 
-All information related to debugging and troubleshooting in production environment is collected in [the Duo Chat On-Call Runbook](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/duo-chat).
+All information related to debugging and troubleshooting in production environment is collected in [the GitLab Duo Chat On-Call Runbook](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/duo-chat).
 
 ## Tracing with LangSmith
 
@@ -274,7 +274,21 @@ It's not available in Production environment.
 1. Access [LangSmith](https://smith.langchain.com/) and create an account
    1. Optional. [Create an Access Request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/new?issuable_template=Individual_Bulk_Access_Request) to be added to the GitLab organization in LangSmith.
 1. Create [an API key](https://docs.smith.langchain.com/#create-an-api-key) (be careful where you create API key - they can be created in personal namespace or in GL namespace).
-1. Set the following environment variables in GDK. You can define it in `env.runit` or directly `export` in the terminal.
+1. Set the following environment variables in GDK.
+
+   You can [define it in `gdk.yml`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/configuration.md#environment-variables):
+
+   ```yaml
+   # on your gdk.yml
+   env:
+     LANGCHAIN_TRACING_V2: 'true'
+     LANGCHAIN_API_KEY: '<your-api-key>'
+     LANGCHAIN_PROJECT: '<your-project-name>'
+     LANGCHAIN_ENDPOINT: 'https://api.smith.langchain.com'
+     GITLAB_RAILS_RACK_TIMEOUT: '180' # Extending puma timeout for using LangSmith with CEF as the evaluation tool.
+   ```
+
+   Or directly `export` in the terminal:
 
    ```shell
    export LANGCHAIN_TRACING_V2=true
@@ -284,8 +298,8 @@ It's not available in Production environment.
    export GITLAB_RAILS_RACK_TIMEOUT=180 # Extending puma timeout for using LangSmith with CEF as the evaluation tool.
    ```
 
-   Project name is the existing project in LangSmith or new one. It's enough to put new name in the environment variable -
-   project will be created during request.
+   Project name is an existing project in LangSmith or a new one. It's enough to put a new name in the environment variable -
+   the project will be created during request.
 
 1. Restart GDK.
 1. Ask any question to Chat.
@@ -300,10 +314,10 @@ Follow [run evaluation on your merge request](https://gitlab.com/gitlab-org/mode
 
 ### Prevent regressions in your merge request
 
-When you make a change to Duo Chat or related components,
+When you make a change to GitLab Duo Chat or related components,
 you should run the [regression evaluator](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/eli5/duo_chat/regression_evaluator.md)
 to detect quality degradation and bugs in the merge request.
-It covers any Duo Chat execution patterns, including tool execution and slash commands.
+It covers any GitLab Duo Chat execution patterns, including tool execution and slash commands.
 
 To run the regression evaluator, [run evaluation on your merge request](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner#run-evaluation-on-your-merge-request) and click a play button for the regression evaluator.
 Later, you can [compare the evaluation result of the merge request against master](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner#compare-the-evaluation-result-of-your-merge-request-against-master).
@@ -339,11 +353,11 @@ For more information, see [the guideline of the regression evaluator](https://gi
 
 ## GitLab Duo Chat Self-managed End-to-End Tests
 
-In MRs, the end-to-end tests exercise the Duo Chat functionality of GitLab Self-Managed instances by using an instance of the GitLab Linux package
+In MRs, the end-to-end tests exercise the GitLab Duo Chat functionality of GitLab Self-Managed instances by using an instance of the GitLab Linux package
 integrated with the `latest` version of AI gateway. The instance of AI gateway is configured to return [mock responses](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#mocking-ai-model-responses).
 To view the results of these tests, open the `e2e:test-on-omnibus-ee` child pipeline and view the `ai-gateway` job.
 
-The `ai-gateway` job activates a cloud license and then assigns a Duo Pro seat to a test user, before the tests are run.
+The `ai-gateway` job activates a cloud license and then assigns a GitLab Duo Pro seat to a test user, before the tests are run.
 
 For more information, see [AiGateway Scenarios](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#aigateway-scenarios).
 
@@ -413,7 +427,7 @@ Examples of GraphQL Subscriptions in a Vue component:
 
 Keep in mind that the `clientSubscriptionId` must be unique for every request. Reusing a `clientSubscriptionId` will cause several unwanted side effects in the subscription responses.
 
-### Duo Chat GraphQL queries
+### GitLab Duo Chat GraphQL queries
 
 1. [Set up GitLab Duo Chat](#set-up-gitlab-duo-chat)
 1. Visit [GraphQL explorer](../../api/graphql/_index.md#interactive-graphql-explorer).
@@ -456,7 +470,7 @@ If you can't fetch the response, check `graphql_json.log`,
 `sidekiq_json.log`, `llm.log` or `modelgateway_debug.log` if it contains error
 information.
 
-### Duo Chat Conversation Threads GraphQL queries
+### GitLab Duo Chat Conversation Threads GraphQL queries
 
 #### Querying messages in a conversation thread
 
@@ -479,7 +493,7 @@ query {
 
 #### Starting a new conversation thread
 
-If you don't include a threadId in your aiAction mutation, a new thread will be created:
+If you don't include a `threadId` in your `aiAction` mutation, a new thread will be created:
 
 ```graphql
 mutation {
@@ -499,7 +513,7 @@ mutation {
 
 #### Creating a new message in an existing conversation thread
 
-To add a message to an existing thread, include the threadId in your aiAction mutation:
+To add a message to an existing thread, include the `threadId` in your `aiAction` mutation:
 
 ```graphql
 mutation {
@@ -531,28 +545,28 @@ and, as an Admin, easily create licensed groups for testing.
 
 ### Important Testing Considerations
 
-**Note**: A user who has a seat in multiple groups with different tiers of Duo add-on gets the highest tier experience across the entire instance.
+**Note**: A user who has a seat in multiple groups with different tiers of GitLab Duo add-on gets the highest tier experience across the entire instance.
 
-It's not possible to test feature separation between different Duo add-ons if your test account has a seat in a higher tier add-on.
+It's not possible to test feature separation between different GitLab Duo add-ons if your test account has a seat in a higher tier add-on.
 To properly test different tiers, create a separate test account for each tier you need to test.
 
 ### Staging testing groups
 
 To simplify testing on [staging](https://staging.gitlab.com), several pre-configured groups have been created with the appropriate licenses and add-ons:
 
-| Group | Duo Add-on | GitLab license |
+| Group | GitLab Duo Add-on | GitLab license |
 | --- | --- | --- |
 | [`duo_pro_gitlab_premium`](https://staging.gitlab.com/groups/duo_pro_gitlab_premium) | Pro | Premium |
 | [`duo_pro_gitlab_ultimate`](https://staging.gitlab.com/groups/duo_pro_gitlab_ultimate) | Pro | Ultimate |
 | [`duo_enterprise_gitlab_ultimate`](https://staging.gitlab.com/groups/duo_enterprise_gitlab_ultimate) | Enterprise | Ultimate |
 
 Ask in the `#g_duo_chat` channel on Slack to be added as an Owner to these groups.
-Once added as an Owner, you can add your secondary accounts to the group with a role Developer and assign them a seat in the Duo add-on.
-Then you can sign in as your Developer user and test access control to Duo Chat.
+Once added as an Owner, you can add your secondary accounts to the group with a role Developer and assign them a seat in the GitLab Duo add-on.
+Then you can sign in as your Developer user and test access control to GitLab Duo Chat.
 
 ### GitLab Duo Chat End-to-End Tests in live environments
 
-Duo Chat end-to-end tests run continuously against [Staging](https://staging.gitlab.com/users/sign_in) and [Production](https://gitlab.com/) GitLab environments.
+GitLab Duo Chat end-to-end tests run continuously against [Staging](https://staging.gitlab.com/users/sign_in) and [Production](https://gitlab.com/) GitLab environments.
 
 These tests run in scheduled pipelines and ensure the end-to-end user experiences are functioning correctly.
 Results can be viewed in the `#e2e-run-staging` and `#e2e-run-production` Slack channels. The pipelines can be found below, access can be requested in `#s_developer_experience`:
@@ -700,7 +714,7 @@ flow of how we construct a Chat prompt:
       ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L41)).
       1. `api.v1.prompts.invoke` gets the correct tool prompt from the tool prompt registry ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L49)).
       1. The prompt is called either as a [stream](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L86) or as a [non-streamed invocation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L96).
-      1. If the tool answer is not final, the response is added to agent_scratchpad and the loop in `Gitlab::Duo::Chat::ReactExecutor` starts again, adding the additional context to the request. It loops to up to 10 times until a final answer is reached. ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L44))
+      1. If the tool answer is not final, the response is added to `agent_scratchpad` and the loop in `Gitlab::Duo::Chat::ReactExecutor` starts again, adding the additional context to the request. It loops to up to 10 times until a final answer is reached. ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L44))
 
 ## Interpreting GitLab Duo Chat error codes
 

@@ -46,7 +46,7 @@ Purging files is a destructive operation. Before proceeding, ensure you have a b
 To purge files from a GitLab repository:
 
 1. [Export the project](../../user/project/settings/import_export.md#export-a-project-and-its-data) that contains
-a copy of your repository, and download it.
+   a copy of your repository, and download it.
 
    - For large projects, you can use the [Project relations export API](../../api/project_relations_export.md).
 

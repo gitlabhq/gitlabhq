@@ -24,10 +24,6 @@ class IssuablePolicy < BasePolicy
   desc "Issuable is hidden"
   condition(:hidden, scope: :subject) { @subject.hidden? }
 
-  rule { can?(:developer_access) }.policy do
-    enable :resolve_note
-  end
-
   rule { can?(:guest_access) & assignee_or_author & ~is_incident }.policy do
     enable :read_issue
     enable :update_issue
@@ -39,14 +35,9 @@ class IssuablePolicy < BasePolicy
     enable :reopen_merge_request
   end
 
-  rule { is_author }.policy do
-    enable :resolve_note
-  end
-
   rule { locked & ~is_project_member }.policy do
     prevent :create_note
     prevent :admin_note
-    prevent :resolve_note
     prevent :award_emoji
   end
 

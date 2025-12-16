@@ -56,3 +56,10 @@ merge request, commit, or other item that triggered the notification.
 
 For more information about the `Message-ID`, `In-Reply-To`, and `References` headers,
 see [RFC 5322](https://www.rfc-editor.org/rfc/rfc5322#section-3.6.4).
+
+## Retention policy for notifications
+
+Some incoming email features require GitLab to store metadata about sent email notifications.
+We retain these records for two years. If an email notification is older than two years,
+you cannot reply by email to that notification. This includes
+replying by email to issue and merge request threads.

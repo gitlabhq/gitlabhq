@@ -21,13 +21,6 @@ Prerequisites:
 
 - You must be an administrator.
 
-## Configure a URL endpoint for system hooks
-
-To configure a URL endpoint for system hooks:
-
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
-1. Select **System hooks** (`/admin/hooks`).
-
 ## List system hooks
 
 Get a list of all system hooks.

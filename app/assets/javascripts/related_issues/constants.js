@@ -88,9 +88,9 @@ export const addRelatedItemErrorMap = {
  * them inside i18n functions.
  */
 export const issuableIconMap = {
-  [TYPE_ISSUE]: 'issues',
-  [TYPE_INCIDENT]: 'issues',
-  [TYPE_EPIC]: 'epic',
+  [TYPE_ISSUE]: 'work-item-issue',
+  [TYPE_INCIDENT]: 'work-item-issue',
+  [TYPE_EPIC]: 'work-item-epic',
 };
 
 export const PathIdSeparator = {

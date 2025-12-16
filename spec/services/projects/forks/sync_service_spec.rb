@@ -22,6 +22,35 @@ RSpec.describe Projects::Forks::SyncService, feature_category: :source_code_mana
   end
 
   describe '#execute' do
+    context 'when project is not a fork' do
+      let(:project) { build(:project) }
+
+      it 'returns an error' do
+        result = service.execute
+
+        expect(result).to be_error
+        expect(result.message).to eq(described_class::PROJECT_NOT_A_FORK_ERROR)
+      end
+    end
+
+    context 'when source project for requested fork is missing' do
+      let_it_be_with_reload(:project) { create(:project) }
+
+      let!(:fork_network) { create(:fork_network) }
+      let!(:fork_network_member) { create(:fork_network_member, project: project, fork_network: fork_network) }
+
+      before do
+        fork_network.root_project.destroy!
+      end
+
+      it 'returns an error' do
+        result = service.execute
+
+        expect(result).to be_error
+        expect(result.message).to eq(described_class::SOURCE_PROJECT_MISSING_ERROR)
+      end
+    end
+
     context 'when fork is up-to-date with the upstream' do
       it 'does not perform merge' do
         expect_to_cancel_exclusive_lease
@@ -66,6 +95,18 @@ RSpec.describe Projects::Forks::SyncService, feature_category: :source_code_mana
           expect do
             expect(service.execute).to be_success
           end.to change { details.counts }.from({ ahead: 0, behind: 2 }).to({ ahead: 0, behind: 0 })
+        end
+      end
+
+      context 'when fork branch does not exist' do
+        it 'returns an error' do
+          service = described_class.new(project, user, 'does-not-exist')
+
+          expect_to_cancel_exclusive_lease
+
+          result = service.execute
+          expect(result).to be_error
+          expect(result.message).to eq(described_class::TARGET_BRANCH_MISSING_ERROR)
         end
       end
 

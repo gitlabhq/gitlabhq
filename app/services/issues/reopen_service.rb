@@ -31,6 +31,7 @@ module Issues
       Milestones::ClosedIssuesCountService.new(issue.milestone).delete_cache if issue.milestone
       track_incident_action(current_user, issue, :incident_reopened)
       GraphqlTriggers.work_item_updated(issue)
+      track_work_item_reopen(issue)
     end
 
     # overriden in EE
@@ -54,6 +55,14 @@ module Issues
 
     def create_timeline_event(issue)
       IncidentManagement::TimelineEvents::CreateService.reopen_incident(issue, current_user)
+    end
+
+    def track_work_item_reopen(work_item)
+      Gitlab::WorkItems::Instrumentation::TrackingService.new(
+        work_item: work_item,
+        current_user: current_user,
+        event: Gitlab::WorkItems::Instrumentation::EventActions::REOPEN
+      ).execute
     end
   end
 end

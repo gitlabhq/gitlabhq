@@ -2,12 +2,15 @@
 
 module RapidDiffs
   class BasePresenter < Gitlab::View::Presenter::Delegated
-    def initialize(subject, diff_view, diff_options, request_params = nil)
+    def initialize(subject, diff_view, diff_options, request_params = nil, environment = nil)
       super(subject)
       @diff_view = diff_view
       @diff_options = diff_options
       @request_params = request_params
+      @environment = environment
     end
+
+    attr_reader :environment
 
     def diffs_stream_url
       return reload_stream_url(diff_view: @diff_view) if offset == 0

@@ -4,6 +4,7 @@ query parentWorkItems(
   $groupPath: ID!
   $types: [IssueType!]
   $in: [IssuableSearchableField!]
+  $ids: [WorkItemID!]
   $includeAncestors: Boolean = false
   $includeDescendants: Boolean = false
   $isProject: Boolean!
@@ -26,7 +27,7 @@ query parentWorkItems(
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
     id
-    workItems(search: $search, types: $types, in: $in) {
+    workItems(search: $search, types: $types, in: $in, ids: $ids) {
       nodes {
         id
         iid

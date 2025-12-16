@@ -29,7 +29,7 @@ module Database
     end
 
     def migration_context
-      ::Gitlab.next_rails? ? connection.pool.migration_context : connection.migration_context
+      connection.pool.migration_context
     end
 
     def all_versions

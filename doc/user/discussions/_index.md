@@ -92,7 +92,7 @@ Notifications and mentions can be disabled in
 When you mention a group in a comment, every member of the group gets a to-do item
 added to their to-do list.
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. For merge requests, select **Code** > **Merge requests**, and find your merge request.
 1. For issues, select **Plan** > **Issues**, and find your issue.
 1. In a comment, type `@` followed by the user, group, or subgroup namespace.
@@ -112,7 +112,7 @@ When you add comments to a merge request diff, these comments persist, even when
 
 To add a commit diff comment:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests**, and find your merge request.
 1. Select the **Commits** tab, then select the commit message.
 1. Start a comment:
@@ -155,6 +155,11 @@ you can reply to comments by sending an email.
 
 You can use [Markdown](../markdown.md) and [quick actions](../project/quick_actions.md) in your email replies.
 
+### Comment reply expiration
+
+Email replies that create standard or threaded comments are subject to a two year
+[retention policy](../../administration/reply_by_email.md#retention-policy-for-notifications).
+
 ## Edit a comment
 
 You can edit your own comment at any time.
@@ -188,7 +193,7 @@ Prerequisites:
 
 To lock an issue or merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. For merge requests, select **Code** > **Merge requests**, and find your merge request.
 1. For issues, select **Plan** > **Issues**, and find your issue.
 1. In the upper-right corner, select **Merge request actions** or **Issue actions**
@@ -365,7 +370,7 @@ such as:
 - Move open threads to a new issue.
 - Prevent merging until all threads are resolved.
 
-## Summarize issue discussions with Duo Chat
+## Summarize issue discussions with GitLab Duo Chat
 
 {{< details >}}
 

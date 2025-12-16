@@ -99,7 +99,7 @@ module CachingArrayResolver
   private
 
   def primary_key
-    @primary_key ||= (model_class.primary_key || raise("No primary key for #{model_class}"))
+    @primary_key ||= model_class.primary_key || raise("No primary key for #{model_class}")
   end
 
   def batch

@@ -2,6 +2,8 @@ import {
   extractFilterQueryParameters,
   extractPaginationQueryParameters,
   filterBySearchTerm,
+  generateAnalyticsDashboardLink,
+  generateAnalyticsDashboardsIndexLink,
   generateMetricLink,
   generateValueStreamsDashboardLink,
   getDataZoomOption,
@@ -181,6 +183,75 @@ describe('getDataZoomOption', () => {
   });
 });
 
+describe('generateAnalyticsDashboardsIndexLink', () => {
+  it.each`
+    namespacePath                | isGroup  | result
+    ${'fake-group'}              | ${true}  | ${'/groups/fake-group/-/analytics/dashboards'}
+    ${'fake-group/fake-project'} | ${false} | ${'/fake-group/fake-project/-/analytics/dashboards'}
+  `(
+    'generates the dashboards index link when namespacePath=$namespacePath and isGroup=$isGroup',
+    ({ namespacePath, isGroup, result }) => {
+      expect(generateAnalyticsDashboardsIndexLink({ namespacePath, isGroup })).toBe(result);
+    },
+  );
+
+  describe('with a relative url root set', () => {
+    beforeEach(() => {
+      gon.relative_url_root = '/foobar';
+    });
+
+    afterEach(() => {
+      gon.relative_url_root = '';
+    });
+
+    it.each`
+      namespacePath                | isGroup  | result
+      ${'fake-group'}              | ${true}  | ${'/foobar/groups/fake-group/-/analytics/dashboards'}
+      ${'fake-group/fake-project'} | ${false} | ${'/foobar/fake-group/fake-project/-/analytics/dashboards'}
+    `('includes a relative path if one is set', ({ namespacePath, isGroup, result }) => {
+      expect(generateAnalyticsDashboardsIndexLink({ namespacePath, isGroup })).toBe(result);
+    });
+  });
+});
+
+describe('generateAnalyticsDashboardLink', () => {
+  it.each`
+    namespacePath                | isGroup  | dashboardSlug                | result
+    ${'fake-group'}              | ${true}  | ${'duo_and_sdlc_trends'}     | ${'/groups/fake-group/-/analytics/dashboards/duo_and_sdlc_trends'}
+    ${'fake-group/fake-project'} | ${false} | ${'value_streams_dashboard'} | ${'/fake-group/fake-project/-/analytics/dashboards/value_streams_dashboard'}
+  `(
+    'generates the dashboard link when namespacePath=$namespacePath, isGroup=$isGroup, and dashboardSlug=$dashboardSlug',
+    ({ namespacePath, isGroup, dashboardSlug, result }) => {
+      expect(generateAnalyticsDashboardLink({ namespacePath, isGroup, dashboardSlug })).toBe(
+        result,
+      );
+    },
+  );
+
+  describe('with a relative url root set', () => {
+    beforeEach(() => {
+      gon.relative_url_root = '/foobar';
+    });
+
+    afterEach(() => {
+      gon.relative_url_root = '';
+    });
+
+    it.each`
+      namespacePath                | isGroup  | dashboardSlug                | result
+      ${'fake-group'}              | ${true}  | ${'duo_and_sdlc_trends'}     | ${'/foobar/groups/fake-group/-/analytics/dashboards/duo_and_sdlc_trends'}
+      ${'fake-group/fake-project'} | ${false} | ${'value_streams_dashboard'} | ${'/foobar/fake-group/fake-project/-/analytics/dashboards/value_streams_dashboard'}
+    `(
+      'includes a relative path if one is set',
+      ({ namespacePath, isGroup, dashboardSlug, result }) => {
+        expect(generateAnalyticsDashboardLink({ namespacePath, isGroup, dashboardSlug })).toBe(
+          result,
+        );
+      },
+    );
+  });
+});
+
 describe('generateValueStreamsDashboardLink', () => {
   it.each`
     namespacePath                | isProjectNamespace | result
@@ -197,6 +268,10 @@ describe('generateValueStreamsDashboardLink', () => {
   describe('with a relative url root set', () => {
     beforeEach(() => {
       gon.relative_url_root = '/foobar';
+    });
+
+    afterEach(() => {
+      gon.relative_url_root = '';
     });
 
     it.each`

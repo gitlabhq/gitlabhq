@@ -194,6 +194,7 @@ module Gitlab
         command :submit_review do |state = "reviewed"|
           next if params[:review_id]
 
+          pending_comments_count = quick_action_target.draft_notes.authored_by(current_user).count
           result = DraftNotes::PublishService.new(quick_action_target, current_user).execute
 
           reviewer_state = state.strip.presence
@@ -203,6 +204,12 @@ module Gitlab
                                                else
                                                  [result[:message]]
                                                end
+
+          @additional_properties[:submit_review] = {
+            is_reviewer: quick_action_target.find_reviewer(current_user).present?.to_s,
+            pending_comments: pending_comments_count,
+            state: reviewer_state
+          }
 
           if reviewer_state === 'approve'
             approval_success = ::MergeRequests::ApprovalService
@@ -254,9 +261,11 @@ module Gitlab
           quick_action_target.persisted? && quick_action_target.eligible_for_approval_by?(current_user) && !quick_action_target.merged?
         end
         command :approve do
+          pending_comments_count = quick_action_target.draft_notes.authored_by(current_user).count
+
           @execution_message[:approve] = []
 
-          if quick_action_target.draft_notes.authored_by(current_user).any? && params[:review_id].blank?
+          if pending_comments_count > 0 && params[:review_id].blank?
             result = DraftNotes::PublishService.new(quick_action_target, current_user).execute
 
             @execution_message[:approve] = if result[:status] == :success
@@ -269,6 +278,11 @@ module Gitlab
           success = ::MergeRequests::ApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)
 
           next unless success
+
+          @additional_properties[:approve] = {
+            is_reviewer: quick_action_target.find_reviewer(current_user).present?.to_s,
+            pending_comments: pending_comments_count
+          }
 
           @execution_message[:approve] << _('Approved the current merge request.')
         end
@@ -287,6 +301,10 @@ module Gitlab
           success = ::MergeRequests::RemoveApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)
 
           next unless success
+
+          @additional_properties[:unapprove] = {
+            is_reviewer: quick_action_target.find_reviewer(current_user).present?.to_s
+          }
 
           @execution_message[:unapprove] = _('Unapproved the current merge request.')
         end
@@ -491,6 +509,18 @@ module Gitlab
 
           @execution_message[:ship] = _('Actions to ship this merge request have been scheduled.')
         end
+
+        desc { _('Run a pipeline') }
+        explanation { _('Run a new pipeline for this merge request') }
+        types MergeRequest
+        condition do
+          create_pipeline_service.allowed?(quick_action_target)
+        end
+        command :run_pipeline do
+          create_pipeline_service.execute_async(quick_action_target)
+
+          @execution_message[:run_pipeline] = _('New pipeline has been triggered and will appear shortly.')
+        end
       end
 
       def reviewer_users_sentence(users)
@@ -531,6 +561,13 @@ module Gitlab
 
       def merge_orchestration_service
         @merge_orchestration_service ||= ::MergeRequests::MergeOrchestrationService.new(project, current_user)
+      end
+
+      def create_pipeline_service
+        @create_pipeline_service ||= ::MergeRequests::CreatePipelineService.new(
+          project: quick_action_target.project,
+          current_user: current_user,
+          params: { allow_duplicate: true })
       end
 
       def preferred_auto_merge_strategy(merge_request)

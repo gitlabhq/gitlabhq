@@ -72,7 +72,7 @@ on the GitLab instance you import to.
 {{< /history >}}
 
 Before using [the old method of user contribution mapping](#old-method-of-user-contribution-mapping) for imports to GitLab Self-Managed and GitLab
-Dedicated, you must meet certain requirements. Imports to GitLab.com use an [improved method](_index.md#user-contribution-and-membership-mapping)
+Dedicated, you must meet certain requirements. Imports to GitLab.com use an [improved method](../../import/mapping.md)
 that doesn't require preparation.
 
 These requirements are:
@@ -106,6 +106,12 @@ GitHub Enterprise does not require a public email address, so you might have to 
   - Issues or merge request descriptions, GitLab doesn't create links for any references because their imported
     counterparts might not have been created on the destination yet.
 
+- When importing from GitHub accounts with SAML single sign-on (SSO) enabled, Markdown attachments might fail to import. This issue is caused by a GitHub
+  API limitation where assets cannot be downloaded using a personal access token when SSO is enforced. To workaround the issue, add the GitLab user performing
+  the import as an
+  [Outside Collaborator](https://docs.github.com/en/organizations/managing-user-access-to-your-organizations-repositories/managing-outside-collaborators/adding-outside-collaborators-to-repositories-in-your-organization)
+  to the GitHub repository. This permits access to private attachments during import.
+
 ## Import your GitHub repository into GitLab
 
 You can import your GitHub repository by either:
@@ -123,7 +129,7 @@ If you are importing to GitLab.com or to a GitLab Self-Managed that has GitHub O
 This method has an advantage over using a [personal access token (PAT)](#use-a-github-personal-access-token)
 because the backend exchanges the access token with the appropriate permissions.
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project** and then **GitHub**.
 1. Select **Authorize with GitHub**.
 1. Proceed to [selecting which repositories to import](#select-which-repositories-to-import).
@@ -141,7 +147,7 @@ To import your GitHub repository using a GitHub personal access token:
    1. Select the `repo` scope.
    1. Optional. To [import collaborators](#select-additional-items-to-import), or if your project has [Git LFS files](../../../topics/git/lfs/_index.md), select the `read:org` scope.
    1. Select **Generate token**.
-1. On the GitLab left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project** and then **GitHub**.
 1. Select **Authorize with GitHub**.
 1. In the **Personal access token** field, paste the GitHub personal access token.
@@ -272,12 +278,12 @@ These backticks prevent linking to an incorrect user with the same username on t
 
 {{< history >}}
 
-- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [**user contribution and membership mapping**](_index.md#user-contribution-and-membership-mapping) in GitLab 17.8.
+- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [**user contribution and membership mapping**](../../import/mapping.md) in GitLab 17.8.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
 
 {{< /history >}}
 
-The GitHub importer uses an [improved method](_index.md#user-contribution-and-membership-mapping)
+The GitHub importer uses an [improved method](../../import/mapping.md)
 of mapping user contributions for GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 
 ### Old method of user contribution mapping
@@ -285,7 +291,7 @@ of mapping user contributions for GitLab.com, GitLab Self-Managed, and GitLab De
 You can use the old user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances.
 To use this method, `github_user_mapping` must be disabled.
 For imports to GitLab.com, you must
-use the [improved method](_index.md#user-contribution-and-membership-mapping) instead.
+use the [improved method](../../import/mapping.md) instead.
 
 Using the old method, when [user accounts are provisioned correctly](#accounts-for-user-contribution-mapping), users are mapped during the import.
 
@@ -557,3 +563,10 @@ LoadModule ssl_module lib/httpd/modules/mod_ssl.so
   Header edit* Link "https://GITHUB_ENTERPRISE_HOSTNAME" "https://PROXY_HOSTNAME"
 </VirtualHost>
 ```
+
+## Related topics
+
+- [Import and export settings](../../../administration/settings/import_and_export_settings.md).
+- [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
+- [Running multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md).
+- [Processing specific job classes](../../../administration/sidekiq/processing_specific_job_classes.md).

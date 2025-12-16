@@ -43,17 +43,16 @@ RSpec.describe Gitlab::GrapeOpenapi do
   end
 
   describe '.generate' do
-    let(:api_classes) { [] }
     let(:options) { {} }
     let(:generator) { instance_double(Gitlab::GrapeOpenapi::Generator) }
 
     it 'delegates to Generator' do
       expect(Gitlab::GrapeOpenapi::Generator).to receive(:new)
-        .with(api_classes, options)
+        .with(options)
         .and_return(generator)
       expect(generator).to receive(:generate).and_return('{}')
 
-      described_class.generate(api_classes, options)
+      described_class.generate(options)
     end
   end
 

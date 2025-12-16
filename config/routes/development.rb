@@ -11,9 +11,10 @@ if Rails.env.development?
   get '/rails/info/routes'     => 'rails/info#routes'
   get '/rails/info'            => 'rails/info#index'
 
-  mount LetterOpenerWeb::Engine, at: '/rails/letter_opener'
-
-  mount Lookbook::Engine, at: '/rails/lookbook' unless @organization_scoped_routes
+  unless @organization_scoped_routes
+    mount LetterOpenerWeb::Engine, at: '/rails/letter_opener'
+    mount Lookbook::Engine, at: '/rails/lookbook'
+  end
 
   mount Toogle::Engine, at: '/rails/features'
 end

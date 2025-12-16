@@ -288,6 +288,8 @@ export default {
           :show-labels="showLabels"
           :work-item-full-path="workItemFullPath"
           :contextual-view-enabled="contextualViewEnabled"
+          @mouseover="$emit('mouseover')"
+          @mouseout="$emit('mouseout')"
           @click="$emit('toggleDrawer', $event)"
           @removeChild="$emit('removeChild', childItem)"
         />

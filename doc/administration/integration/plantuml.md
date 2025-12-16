@@ -461,7 +461,7 @@ This configuration prevents potentially malicious diagram code from executing in
 After configuring your local PlantUML server, you're ready to enable the PlantUML integration:
 
 1. Sign in to GitLab as an [Administrator](../../user/permissions.md) user.
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. On the left sidebar, go to **Settings** > **General** and expand the **PlantUML** section.
 1. Select the **Enable PlantUML** checkbox.
 1. Set the PlantUML instance as `https://gitlab.example.com/-/plantuml/`,
@@ -501,7 +501,7 @@ Rendered diagrams are cached. To see the updates, try these steps:
 
 - If the diagram is in a Markdown file, make a small change to the Markdown file, and commit it. This triggers a re-render.
 - [Invalidate the Markdown cache](../invalidate_markdown_cache.md#invalidate-the-cache) to force any cached Markdown
-in the database or Redis to be cleared.
+  in the database or Redis to be cleared.
 
 If you're still not seeing the updated URL, check the following:
 

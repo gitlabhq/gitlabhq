@@ -29,7 +29,7 @@ module Issues
     def update_target
       target.update!(
         service_desk_reply_to: email,
-        author: Users::Internal.support_bot,
+        author: support_bot,
         confidential: target_confidentiality
       )
 
@@ -49,7 +49,7 @@ module Issues
 
       ::Notes::CreateService.new(
         project,
-        Users::Internal.support_bot,
+        support_bot,
         noteable: target,
         note: format(message, email: email, original_author: original_author.to_reference),
         internal: true
@@ -75,6 +75,10 @@ module Issues
 
     def error(message)
       ServiceResponse.error(message: message)
+    end
+
+    def support_bot
+      @support_bot ||= Users::Internal.for_organization(project.organization_id).support_bot
     end
 
     def error_service_desk_disabled

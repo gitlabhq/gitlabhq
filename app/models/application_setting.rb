@@ -71,6 +71,9 @@ class ApplicationSetting < ApplicationRecord
       },
       excalidraw: {
         label: 'Excalidraw'
+      },
+      mermaid: {
+        label: 'Mermaid'
       }
     }
   end
@@ -88,6 +91,7 @@ class ApplicationSetting < ApplicationRecord
   serialize :disabled_oauth_sign_in_sources, type: Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :domain_allowlist, type: Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :domain_denylist, type: Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :iframe_rendering_allowlist, type: Array # rubocop:disable Cop/ActiveRecordSerialize
 
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/300916
   serialize :asset_proxy_allowlist, type: Array # rubocop:disable Cop/ActiveRecordSerialize
@@ -521,12 +525,17 @@ class ApplicationSetting < ApplicationRecord
     pass: :external_auth_client_key_pass,
     if: ->(setting) { setting.external_auth_client_cert.present? }
 
-  jsonb_accessor :ci_cd_settings,
-    pipeline_variables_default_allowed: [:boolean, { default: true }],
-    ci_job_live_trace_enabled: [:boolean, { default: false }],
-    ci_partitions_size_limit: [::Gitlab::Database::Type::JsonbInteger.new, { default: 100.gigabytes }],
-    ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],
-    git_push_pipeline_limit: [:integer, { default: 4 }]
+  def self.ci_cd_settings_definition
+    {
+      pipeline_variables_default_allowed: [:boolean, { default: true }],
+      ci_job_live_trace_enabled: [:boolean, { default: false }],
+      ci_partitions_size_limit: [::Gitlab::Database::Type::JsonbInteger.new, { default: 100.gigabytes }],
+      ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],
+      git_push_pipeline_limit: [:integer, { default: 4 }]
+    }
+  end
+
+  jsonb_accessor :ci_cd_settings, ci_cd_settings_definition
 
   chronic_duration_attr :ci_delete_pipelines_in_seconds_limit_human_readable, :ci_delete_pipelines_in_seconds_limit
 
@@ -705,7 +714,8 @@ class ApplicationSetting < ApplicationRecord
   validates :resource_usage_limits, json_schema: { filename: 'resource_usage_limits' }
 
   jsonb_accessor :resource_access_tokens_settings,
-    inactive_resource_access_tokens_delete_after_days: [:integer, { default: 30 }]
+    inactive_resource_access_tokens_delete_after_days: [:integer, { default: 30 }],
+    authn_data_retention_cleanup_enabled: [:boolean, { default: false }]
 
   validates :resource_access_tokens_settings, json_schema: { filename: 'resource_access_tokens_settings' }
 
@@ -764,7 +774,16 @@ class ApplicationSetting < ApplicationRecord
   validates :search, json_schema: { filename: 'application_setting_search' }
   validates :default_search_scope,
     inclusion: {
-      in: Gitlab::Search::AbuseDetection::ALLOWED_SCOPES + [SEARCH_SCOPE_SYSTEM_DEFAULT],
+      in: -> {
+        scopes =
+          if Feature.enabled?(:search_scope_registry, :instance)
+            ::Search::Scopes.all_scope_names
+          else
+            ::Gitlab::Search::AbuseDetection::LEGACY_ALLOWED_SCOPES
+          end
+
+        scopes + [SEARCH_SCOPE_SYSTEM_DEFAULT]
+      },
       message: 'invalid scope selected'
     },
     allow_blank: true
@@ -937,6 +956,11 @@ class ApplicationSetting < ApplicationRecord
 
   validates :database_reindexing, json_schema: { filename: "application_setting_database_reindexing" }
 
+  jsonb_accessor :database_settings,
+    background_operations_max_jobs: [:integer, { default: 10 }]
+
+  validates :database_settings, json_schema: { filename: "application_setting_database_settings" }
+
   attr_encrypted :external_auth_client_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :external_auth_client_key_pass, encryption_options_base_32_aes_256_gcm
   attr_encrypted :lets_encrypt_private_key, encryption_options_base_32_aes_256_gcm
@@ -1030,6 +1054,21 @@ class ApplicationSetting < ApplicationRecord
   validates :math_rendering_limits_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
+  validates :iframe_rendering_enabled,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
+  validates_each :iframe_rendering_allowlist, on: :update do |record, attr, value|
+    # Leading "http://" or "https://" and trailing "/" are removed in
+    # ApplicationSettingImplementation#coerce_iframe_rendering_allowlist.
+    # Normalising the values in here is crucial, since we rely on it to
+    # correctly (securely) check iframe src attributes and construct our frame-src CSP.
+    value.each do |entry|
+      unless %r{\A[a-zA-Z0-9.-]+(?::\d+)?\z}.match?(entry)
+        record.errors.add(attr, format(_("'%{entry}' is not a valid domain name"), entry:))
+      end
+    end
+  end
+
   validates :require_admin_two_factor_authentication,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
@@ -1063,6 +1102,7 @@ class ApplicationSetting < ApplicationRecord
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
   before_validation :normalize_default_branch_name
+  before_validation :coerce_iframe_rendering_allowlist, if: :iframe_rendering_allowlist_changed?
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
@@ -1191,7 +1231,7 @@ class ApplicationSetting < ApplicationRecord
       group_archive_unarchive_api_limit: [:integer, { default: 60 }],
       project_invited_groups_api_limit: [:integer, { default: 60 }],
       projects_api_limit: [:integer, { default: 2000 }],
-      project_members_api_limit: [:integer, { default: 60 }],
+      project_members_api_limit: [:integer, { default: 200 }],
       runner_jobs_request_api_limit: [:integer, { default: 2000 }],
       runner_jobs_patch_trace_api_limit: [:integer, { default: 200 }],
       runner_jobs_endpoints_api_limit: [:integer, { default: 200 }],
@@ -1233,6 +1273,8 @@ class ApplicationSetting < ApplicationRecord
       return kroki_formats_excalidraw
     when 'bpmn'
       return kroki_formats_bpmn
+    when 'mermaid'
+      return kroki_formats_mermaid
     end
 
     return kroki_formats_blockdiag if ::Gitlab::Kroki::BLOCKDIAG_FORMATS.include?(diagram_type)
@@ -1272,7 +1314,11 @@ class ApplicationSetting < ApplicationRecord
   end
 
   def custom_default_search_scope_set?
-    ::Gitlab::Search::AbuseDetection::ALLOWED_SCOPES.include?(default_search_scope)
+    if Feature.enabled?(:search_scope_registry, :instance)
+      ::Search::Scopes.all_scope_names.include?(default_search_scope)
+    else
+      ::Gitlab::Search::AbuseDetection::LEGACY_ALLOWED_SCOPES.include?(default_search_scope)
+    end
   end
 
   private

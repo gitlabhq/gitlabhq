@@ -271,7 +271,7 @@ RSpec.describe RuboCop::Cop::BackgroundMigration::DictionaryFile, feature_catego
             it 'throws offense on missing finalized_by' do
               expect_offense(<<~RUBY)
                 class FinalizeMyMigration < Gitlab::Database::Migration[2.1]
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing `finalized_by` attribute in dictionary for migration using `ensure_batched_background_migration_is_finished`. Please add the finalized_by attribute with the migration version.
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing `finalized_by` attribute in dictionary for migration using `ensure_batched_background_migration_is_finished`. Please add the finalized_by attribute with the migration version or no-op the migration.
                   MIGRATION = 'MyMigration'
 
                   def up
@@ -300,6 +300,20 @@ RSpec.describe RuboCop::Cop::BackgroundMigration::DictionaryFile, feature_catego
                       column_name: :id,
                       job_arguments: []
                     )
+                  end
+                end
+              RUBY
+            end
+          end
+
+          context 'when the migration is no-op' do
+            it 'does not throw offense' do
+              expect_no_offenses(<<~RUBY)
+                class FinalizeMyMigration < Gitlab::Database::Migration[2.1]
+                  MIGRATION = 'MyMigration'
+
+                  def up
+                    # no-op
                   end
                 end
               RUBY

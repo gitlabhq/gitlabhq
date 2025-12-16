@@ -213,6 +213,12 @@ RSpec.describe '1_settings', feature_category: :settings do
         authn_data_retention_oauth_access_grant_archive_worker
         authn_data_retention_oauth_access_token_archive_worker
         authorized_project_update_periodic_recalculate_worker
+        background_operations_worker_main_database
+        background_operations_worker_ci_database
+        background_operations_worker_sec_database
+        background_operations_worker_cell_local_main_database
+        background_operations_worker_cell_local_ci_database
+        background_operations_worker_cell_local_sec_database
         batched_background_migrations_worker
         batched_background_migration_worker_ci_database
         batched_background_migration_worker_sec_database
@@ -241,6 +247,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         deactivate_expired_deployments_cron_worker
         delete_expired_trigger_token_worker
         deploy_tokens_expiring_worker
+        drop_timed_out_worker
         environments_auto_delete_cron_worker
         environments_auto_stop_cron_worker
         expire_build_artifacts_worker
@@ -258,6 +265,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         loose_foreign_keys_ci_pipelines_builds_cleanup_worker
         loose_foreign_keys_cleanup_worker
         loose_foreign_keys_merge_request_diff_commit_cleanup_worker
+        lost_transaction_recovery_worker
         manage_evidence_worker
         member_invitation_reminder_emails_worker
         members_expiring_worker

@@ -2,6 +2,7 @@
 import { GlKeysetPagination } from '@gitlab/ui';
 
 export default {
+  name: 'RunnerPagination',
   components: {
     GlKeysetPagination,
   },
@@ -38,5 +39,11 @@ export default {
 </script>
 
 <template>
-  <gl-keyset-pagination v-if="isShown" v-bind="paginationProps" @prev="prevPage" @next="nextPage" />
+  <gl-keyset-pagination
+    v-if="isShown"
+    class="gl-text-center"
+    v-bind="paginationProps"
+    @prev="prevPage"
+    @next="nextPage"
+  />
 </template>

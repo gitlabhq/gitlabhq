@@ -15,6 +15,8 @@ import {
   ACTION_EDIT,
   ACTION_RESTORE,
   ACTION_UNARCHIVE,
+  ACTION_REQUEST_ACCESS,
+  ACTION_WITHDRAW_ACCESS_REQUEST,
 } from '~/vue_shared/components/list_actions/constants';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
 import { InternalEvents } from '~/tracking';
@@ -52,7 +54,7 @@ export default {
   },
   computed: {
     actions() {
-      return {
+      const baseActions = {
         [ACTION_COPY_ID]: {
           text: sprintf(s__('Projects|Copy project ID: %{id}'), { id: this.project.id }),
           action: this.onCopyId,
@@ -94,6 +96,36 @@ export default {
           action: this.onActionDelete,
         },
       };
+
+      if (this.project.requestAccessPath) {
+        baseActions[ACTION_REQUEST_ACCESS] = {
+          href: this.project.requestAccessPath,
+          extraAttrs: {
+            'data-method': 'post',
+            'data-testid': 'request-access-link',
+            rel: 'nofollow',
+          },
+        };
+      }
+
+      if (this.project.withdrawAccessRequestPath) {
+        baseActions[ACTION_WITHDRAW_ACCESS_REQUEST] = {
+          href: this.project.withdrawAccessRequestPath,
+          extraAttrs: {
+            'data-method': 'delete',
+            'data-testid': 'withdraw-access-link',
+            'data-confirm': sprintf(
+              s__(
+                'Projects|Are you sure you want to withdraw your access request for the %{nameWithNamespace} project?',
+              ),
+              { nameWithNamespace: this.project.nameWithNamespace },
+            ),
+            rel: 'nofollow',
+          },
+        };
+      }
+
+      return baseActions;
     },
     hasActionDelete() {
       return (

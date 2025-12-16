@@ -9,6 +9,7 @@ import { clickCopyToClipboardButton } from '~/behaviors/copy_to_clipboard';
 import { keysFor, MR_COPY_SOURCE_BRANCH_NAME } from '~/behaviors/shortcuts/keybindings';
 
 export default {
+  name: 'StagesDropdown',
   components: {
     ClipboardButton,
     GlDisclosureDropdown,

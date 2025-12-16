@@ -616,6 +616,113 @@ The following subsections describe how to determine whether work is needed, and 
 
 For comparison with your own features, see [Supported Geo data types](../administration/geo/replication/datatypes.md). It has a detailed, up-to-date list of the types of data that Geo replicates and verifies.
 
+### Geo replication and GitLab data stores
+
+#### Replicated data
+
+This example diagram illustrates GitLab data that is replicated. GitLab environments have many possible configurations. This diagram is not intended to be fully comprehensive.
+
+```mermaid
+---
+config:
+  layout: elk
+---
+graph TB
+  Users((Users))
+
+  subgraph GitLab Primary Site
+    Gitaly("Gitaly<br>• Git repositories")
+    GitLabApp("GitLab Application")
+    PostgreSQL("PostgreSQL<br>• Group metadata<br>• Project metadata<br>• OpenBao data")
+    PostgreSQL2("PostgreSQL<br>• Manifests<br>• Tags<br>• Repositories")
+    Registry("Registry<br>(GitLab Application does not control its datastores)")
+    Filesystem("Filesystem<br>• LFS objects<br>• Job artifacts<br>• Attachments<br>• MR diffs")
+    ObjectStorage("Object Storage<br>• LFS objects<br>• Job artifacts<br>• Attachments<br>• MR diffs")
+    ObjectStorage2("Object Storage<br>• Container image layers<br>• Manifests if legacy registry<br>• Tags if legacy registry")
+
+    GitLabApp <--> Gitaly
+    GitLabApp --> PostgreSQL
+    GitLabApp <--> Registry
+    GitLabApp --> ObjectStorage
+    GitLabApp --> Filesystem
+
+    Registry --> PostgreSQL2
+    Registry --> ObjectStorage2
+  end
+
+  subgraph GitLab Secondary Site
+    2Gitaly(Gitaly<br>• Git repositories)
+    2GitLabApp("GitLab Application")
+    2PostgreSQL("PostgreSQL<br>(read-only replica)<br>• Group metadata<br>• Project metadata<br>• OpenBao data")
+    2PostgreSQL2("PostgreSQL<br>• Manifests<br>• Tags<br>• Repositories")
+    2TrackingDB("Geo Tracking DB<br>(PostgreSQL)<br>• Replication state<br>• Verification state<br>• Registry tables")
+    2Registry(Registry)
+    2Filesystem("Filesystem<br>• LFS objects<br>• Job artifacts<br>• Attachments<br>• MR diffs")
+    2ObjectStorage("Object Storage<br>• LFS objects<br>• Job artifacts<br>• Attachments<br>• MR diffs")
+    2ObjectStorage2("Object Storage<br>• Container image layers<br>• Manifests if legacy registry<br>• Tags if legacy registry")
+
+    2GitLabApp <--> 2Gitaly
+    2GitLabApp --> 2PostgreSQL
+    2GitLabApp --> 2TrackingDB
+    2GitLabApp <--> 2Registry
+    2GitLabApp --> 2ObjectStorage
+    2GitLabApp --> 2Filesystem
+
+    2Registry --> 2PostgreSQL2
+    2Registry --> 2ObjectStorage2
+  end
+
+  Users --> 2GitLabApp
+  Users --> GitLabApp
+  Users --> Registry
+
+  2GitLabApp -.-> |Download files<br>• Managed by Geo SSF<br>• LFS objects<br>• Job artifacts<br>• Attachments<br>• MR diffs| GitLabApp
+  2GitLabApp -.-> |Pull registry tags<br>• Managed by Geo SSF| Registry
+  PostgreSQL -.-> |Streaming replication<br>• Configured by sysadmin| 2PostgreSQL
+  2Gitaly -.-> |Git fetch<br>• Managed by Geo SSF| GitLabApp
+```
+
+#### Not-replicated data
+
+This example diagram illustrates GitLab data that is **not replicated**. GitLab environments have many possible configurations. This diagram is not intended to be fully comprehensive.
+
+```mermaid
+graph TB
+  Users((Users))
+
+  subgraph GitLab Secondary Site
+    2GitLabApp("GitLab Application")
+    2Redis("Redis<br>• CI job trace chunks<br>• User sessions<br>• Background job queues<br>• Temporary caches")
+    2Elasticsearch("Elasticsearch")
+    2Clickhouse("Clickhouse")
+    2Prometheus("Prometheus<br>• Application metrics")
+
+    2GitLabApp --> 2Redis
+    2GitLabApp --> 2Elasticsearch
+    2GitLabApp --> 2Clickhouse
+    2GitLabApp --> 2Prometheus
+  end
+
+  subgraph GitLab Primary Site
+    GitLabApp("GitLab Application")
+    Redis("Redis<br>• CI job trace chunks<br>• User sessions<br>• Background job queues<br>• Temporary caches")
+    Elasticsearch("Elasticsearch")
+    Clickhouse("Clickhouse")
+    IAMService("IAM services<br>• LDAP<br>• SAML")
+    Prometheus("Prometheus<br>• Application metrics")
+
+    GitLabApp --> Redis
+    GitLabApp --> Elasticsearch
+    GitLabApp --> Clickhouse
+    GitLabApp --> IAMService
+    GitLabApp --> Prometheus
+  end
+
+  Users --> 2GitLabApp
+  Users --> GitLabApp
+  Users --> IAMService
+```
+
 ### Git repositories
 
 If you add a feature that is backed by Git repositories, then you must add Geo support. See [the repository replicator strategy of the Geo self-service framework](geo/framework.md#repository-replicator-strategy).

@@ -4,7 +4,8 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 
 import { TEST_HOST } from 'helpers/test_constants';
 import { stubComponent } from 'helpers/stub_component';
-
+import waitForPromises from 'helpers/wait_for_promises';
+import * as urlUtils from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PromoteLabelModal from '~/labels/components/promote_label_modal.vue';
@@ -39,9 +40,7 @@ describe('Promote label modal', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    axiosMock.reset();
-  });
+  const findModal = () => wrapper.findComponent(GlModal);
 
   describe('Modal title and description', () => {
     it('contains the proper description', () => {
@@ -64,18 +63,30 @@ describe('Promote label modal', () => {
       jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
     });
 
+    it('calls promote api with right params', async () => {
+      const getParameterByNameSpy = jest.spyOn(urlUtils, 'getParameterByName').mockReturnValue('2');
+
+      findModal().vm.$emit('primary');
+      await waitForPromises();
+      const request = axiosMock.history.post.find((req) => req.url === labelMockData.url);
+
+      expect(request).toBeDefined();
+      expect(getParameterByNameSpy).toHaveBeenCalledWith('page');
+      expect(JSON.parse(request.data)).toEqual({ params: { format: 'json' }, page: '2' });
+    });
+
     it('redirects when a label is promoted', async () => {
       const responseURL = `${TEST_HOST}/dummy/endpoint`;
       axiosMock.onPost(labelMockData.url).reply(HTTP_STATUS_OK, { url: responseURL });
 
-      wrapper.findComponent(GlModal).vm.$emit('primary');
+      findModal().vm.$emit('primary');
 
       expect(eventHub.$emit).toHaveBeenCalledWith(
         'promoteLabelModal.requestStarted',
         labelMockData.url,
       );
 
-      await axios.waitForAll();
+      await waitForPromises();
 
       expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', {
         labelUrl: labelMockData.url,
@@ -90,9 +101,9 @@ describe('Promote label modal', () => {
         .onPost(labelMockData.url)
         .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, { error: dummyError });
 
-      wrapper.findComponent(GlModal).vm.$emit('primary');
+      findModal().vm.$emit('primary');
 
-      await axios.waitForAll();
+      await waitForPromises();
 
       expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', {
         labelUrl: labelMockData.url,

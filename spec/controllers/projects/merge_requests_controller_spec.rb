@@ -869,7 +869,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         }, format: :json
       end
 
-      context 'with "enabled" builds on a public project' do
+      context 'with CI/CD enabled for a public project' do
         let_it_be(:project) { create(:project, :repository, :public) }
 
         context 'for a project owner' do

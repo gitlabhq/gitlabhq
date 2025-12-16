@@ -54,6 +54,52 @@ RSpec.describe Import::DirectReassignService, feature_category: :importers do
     end
   end
 
+  describe '.supported?' do
+    let(:model_class) { Issue }
+    let(:attribute) { 'author_id' }
+    let(:source_user) { import_source_user }
+
+    subject { described_class.supported?(model_class, attribute, source_user) }
+
+    context 'when placeholder user is a import user type' do
+      let(:source_user) { import_user_source_user }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when placeholder user is a placeholder user type' do
+      let(:source_user) { import_source_user }
+
+      context 'when attribute is in the model list' do
+        it { is_expected.to be true }
+      end
+
+      context 'when attribute is not in the model list' do
+        let(:attribute) { 'resolved_by_id' }
+
+        it { is_expected.to be false }
+      end
+
+      context 'with attribute as a symbol' do
+        let(:attribute) { :author_id }
+
+        it { is_expected.to be true }
+      end
+
+      context 'when model class is not in the model list' do
+        let(:model_class) { DesignManagement::Design }
+
+        it { is_expected.to be false }
+      end
+
+      context 'when model class descends from another class and attribute is on the list' do
+        let(:model_class) { DiffNote }
+
+        it { is_expected.to be true }
+      end
+    end
+  end
+
   describe '#execute' do
     let_it_be_with_reload(:other_source_user) do
       create(:import_source_user, :with_reassigned_by_user, :reassignment_in_progress)
@@ -114,26 +160,6 @@ RSpec.describe Import::DirectReassignService, feature_category: :importers do
 
     subject(:direct_reassign) do
       described_class.new(import_source_user, reassignment_throttling: reassignment_throttling, sleep_time: 0)
-    end
-
-    context 'when user_mapping_direct_reassignment feature is disabled' do
-      before do
-        stub_feature_flags(user_mapping_direct_reassignment: false)
-      end
-
-      it 'returns early without processing' do
-        expect(direct_reassign).not_to receive(:direct_reassign_model_user_references)
-
-        direct_reassign.execute
-      end
-    end
-
-    context 'when user_mapping_direct_reassignment feature is enabled' do
-      it 'reassigns references' do
-        expect(direct_reassign).to receive(:direct_reassign_model_user_references).at_least(:once)
-
-        direct_reassign.execute
-      end
     end
 
     it 'updates records ownership' do

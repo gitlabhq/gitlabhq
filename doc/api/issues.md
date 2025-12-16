@@ -24,11 +24,7 @@ Use this API to manage [issues](../user/project/issues/_index.md). You can:
 If a user is not a member of a private project, a `GET`
 request on that project results in a `404` status code.
 
-## Issues pagination
-
-By default, `GET` requests return 20 results at a time because the API results
-are paginated.
-Read more on [pagination](rest/_index.md#pagination).
+Responses in this API are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
 {{< alert type="note" >}}
 
@@ -2108,8 +2104,7 @@ The `assignee` column is deprecated. We now show it as a single-sized array `ass
 
 {{< /details >}}
 
-Promotes an issue to an epic by adding a comment with the `/promote`
-[quick action](../user/project/quick_actions.md).
+Promotes an issue to an epic by adding a comment with the [`/promote_to` quick action](../user/project/quick_actions.md#promote_to).
 
 For more information about promoting issues to epics, see
 [Promote an issue to an epic](../user/project/issues/managing_issues.md#promote-an-issue-to-an-epic).

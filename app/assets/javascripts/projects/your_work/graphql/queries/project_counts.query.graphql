@@ -9,7 +9,7 @@ query getProjectCounts(
 ) {
   currentUser {
     id
-    contributed: contributedProjects @skip(if: $skipContributed) {
+    contributed: contributedProjects(active: true) @skip(if: $skipContributed) {
       count
     }
     starred: starredProjects(active: true) @skip(if: $skipStarred) {

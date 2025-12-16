@@ -10,7 +10,7 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
     end
   end
 
-  let_it_be(:organization1) { create(:organization) }
+  let_it_be(:organization1) { create(:common_organization) }
   let_it_be(:owner_project) { create(:project, organization: organization1) }
   let_it_be(:project2) { create(:project, organization: organization1) }
 
@@ -124,8 +124,9 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
     end
 
     context 'with maintainer user' do
-      let(:user) { create(:user) }
       let(:projects_with_maintainer_access) { original_projects + new_projects }
+      let(:organizations) { projects_with_maintainer_access.map(&:organization).uniq }
+      let(:user) { create(:user, organizations: organizations) }
 
       it_behaves_like 'with successful requests'
       it_behaves_like 'with failing destroy calls'
@@ -212,8 +213,9 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
     end
 
     context 'with admin user', :enable_admin_mode do
-      let(:user) { create(:user, :admin) }
       let(:projects_with_maintainer_access) { original_projects + new_projects }
+      let(:organizations) { projects_with_maintainer_access.map(&:organization).uniq }
+      let(:user) { create(:user, :admin, organizations: organizations) }
 
       it_behaves_like 'with successful requests'
       it_behaves_like 'with failing destroy calls'

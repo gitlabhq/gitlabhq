@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'addressable/uri'
+
 module ActiveContext
   module Databases
     module Concerns
@@ -14,10 +16,10 @@ module ActiveContext
 
         def initialize(connection, options:)
           @connection = connection
-          @options = options
-          @prefix = options[:prefix] || DEFAULT_PREFIX
-          @client = client_klass.new(options)
-          @indexer = indexer_klass.new(options, client)
+          @options = options.symbolize_keys
+          @prefix = @options[:prefix] || DEFAULT_PREFIX
+          @client = client_klass.new(@options)
+          @indexer = indexer_klass.new(@options, client)
           @executor = executor_klass.new(self)
         end
 
@@ -43,6 +45,18 @@ module ActiveContext
 
         def separator
           DEFAULT_SEPARATOR
+        end
+
+        def indexer_connection_options
+          raise NotImplementedError
+        end
+
+        private
+
+        def normalize_urls(urls)
+          Array(urls).map do |url|
+            url.is_a?(Hash) ? Addressable::URI.new(url.symbolize_keys).normalize.to_s : url
+          end
         end
       end
     end

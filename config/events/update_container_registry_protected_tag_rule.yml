@@ -1,0 +1,21 @@
+---
+description: Protected container tag rule (mutable) was updated
+internal_events: true
+action: update_container_registry_protected_tag_rule
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  rule_type:
+    description: Type of rule (mutable or immutable)
+product_group: container_registry
+product_categories:
+  - container_registry
+milestone: '18.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213723
+tiers:
+  - free
+  - premium
+  - ultimate
+

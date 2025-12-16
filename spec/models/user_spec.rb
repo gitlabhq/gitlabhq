@@ -49,6 +49,12 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
   it_behaves_like 'having unique enum values'
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::USER,
+    subject_key: :id,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_USERS,
+    claiming_attributes: [:id, :username]
+
   describe 'modules' do
     subject { described_class }
 
@@ -64,6 +70,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { expect(described_class::COUNT_CACHE_VALIDITY_PERIOD).to be_a(Integer) }
     it { expect(described_class::MAX_USERNAME_LENGTH).to be_a(Integer) }
     it { expect(described_class::MIN_USERNAME_LENGTH).to be_a(Integer) }
+    it { expect(described_class::MAX_NAME_LENGTH).to eq(127) }
   end
 
   describe 'delegations' do
@@ -160,6 +167,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to delegate_method(:merge_request_dashboard_show_drafts=).to(:user_preference).with_arguments(:args) }
 
     it { is_expected.to delegate_method(:new_ui_enabled).to(:user_preference) }
+    it { is_expected.to delegate_method(:new_ui_enabled=).to(:user_preference).with_arguments(:args) }
 
     it { is_expected.to delegate_method(:text_editor).to(:user_preference) }
     it { is_expected.to delegate_method(:text_editor=).to(:user_preference).with_arguments(:args) }
@@ -286,6 +294,9 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to have_many(:early_access_program_tracking_events).class_name('EarlyAccessProgram::TrackingEvent') }
     it { is_expected.to have_many(:protected_tag_create_access_levels).class_name('ProtectedTag::CreateAccessLevel').dependent(:delete_all) }
     it { is_expected.to have_many(:lfs_file_locks).dependent(:delete_all) }
+    it { is_expected.to have_many(:ml_candidates).class_name('Ml::Candidate').with_foreign_key(:user_id).inverse_of(:user).dependent(:nullify) }
+    it { is_expected.to have_many(:ml_experiments).class_name('Ml::Experiment').with_foreign_key(:user_id).inverse_of(:user).dependent(:nullify) }
+    it { is_expected.to have_many(:ml_models).class_name('Ml::Model').with_foreign_key(:user_id).inverse_of(:user).dependent(:nullify) }
 
     describe '#triggers' do
       let_it_be_with_refind(:user) { create(:user) }
@@ -777,6 +788,183 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
           expect(user).not_to be_valid
           expect(user.errors.full_messages).to contain_exactly('Username has already been taken')
+        end
+      end
+
+      describe 'username reserved AI prefix validation' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:username, :valid, :error_message) do
+          'duo-test'      | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'dUo-Agent'     | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'DUO-Test'      | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'duo_test'      | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'ai-assistant'  | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'Ai-Bot'        | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'aI-Helper'     | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'ai_helper'     | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'duotest'       | true  | nil
+          'aiassistant'   | true  | nil
+          'duo'           | true  | nil
+          'ai'            | true  | nil
+          'myduo-test'    | true  | nil
+          'myai-bot'      | true  | nil
+          'testduo'       | true  | nil
+          'validuser'     | true  | nil
+          'test-user'     | true  | nil
+        end
+
+        with_them do
+          context 'when creating a new user' do
+            let(:user) { build(:user, username: username) }
+
+            it 'validates correctly' do
+              expect(user.valid?).to eq(valid)
+
+              if valid
+                expect(user.errors[:username]).to be_empty
+              else
+                expect(user.errors.full_messages).to contain_exactly(error_message)
+              end
+            end
+          end
+
+          context 'when creating a project bot (user-created)' do
+            let(:project_bot) { build(:user, username: username, user_type: :project_bot) }
+
+            it 'blocks reserved prefixes for user-created bots' do
+              expect(project_bot.valid?).to eq(valid)
+
+              if valid
+                expect(project_bot.errors[:username]).to be_empty
+              else
+                expect(project_bot.errors.full_messages).to contain_exactly(error_message)
+              end
+            end
+          end
+
+          context 'when creating an internal user' do
+            let(:internal_user) { build(:user, username: username, user_type: :alert_bot) }
+
+            it 'allows reserved prefixes for internal GitLab users' do
+              expect(internal_user).to be_valid
+              expect(internal_user.errors[:username]).to be_empty
+            end
+          end
+        end
+      end
+
+      describe 'username reserved AI prefix validation on rename' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:new_username, :valid, :error_message) do
+          'duo-newname'   | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'ai-newname'    | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'DUO-NewName'   | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'Ai-NewName'    | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'duo_newname'   | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'ai_newname'    | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+          'duonewname'    | true  | nil
+          'ainewname'     | true  | nil
+          'validnewname'  | true  | nil
+          'new-username'  | true  | nil
+        end
+
+        with_them do
+          context 'when renaming a regular user' do
+            let(:user) { create(:user, username: 'validuser') }
+
+            it 'validates correctly when renaming' do
+              user.username = new_username
+
+              expect(user.valid?).to eq(valid)
+
+              if valid
+                expect(user.errors[:username]).to be_empty
+              else
+                expect(user.errors.full_messages).to contain_exactly(error_message)
+              end
+            end
+          end
+
+          context 'when renaming a project bot (user-created)' do
+            let(:project_bot) { create(:user, username: 'validuser', user_type: :project_bot) }
+
+            it 'blocks reserved prefixes for user-created bots' do
+              project_bot.username = new_username
+
+              expect(project_bot.valid?).to eq(valid)
+
+              if valid
+                expect(project_bot.errors[:username]).to be_empty
+              else
+                expect(project_bot.errors.full_messages).to contain_exactly(error_message)
+              end
+            end
+          end
+
+          context 'when renaming an internal user (GitLab-created)' do
+            let(:internal_user) { create(:user, username: 'validuser', user_type: :alert_bot) }
+
+            it 'allows reserved prefixes for internal GitLab users' do
+              internal_user.username = new_username
+
+              expect(internal_user).to be_valid
+              expect(internal_user.errors[:username]).to be_empty
+            end
+          end
+        end
+      end
+
+      describe 'grandfathered users with reserved AI prefix' do
+        using RSpec::Parameterized::TableSyntax
+
+        let(:user) { create(:user, username: 'testuser') }
+
+        before do
+          user.update_column(:username, 'duo-existing')
+        end
+
+        where(:attribute, :value, :valid) do
+          :email | 'newemail@example.com' | true
+          :name  | 'New Name'             | true
+          :bio   | 'New bio'              | true
+        end
+
+        with_them do
+          it 'allows updating other attributes without changing username' do
+            user.send(:"#{attribute}=", value)
+
+            expect(user).to be_valid
+            expect { user.save! }.not_to raise_error
+            expect(user.reload.username).to eq('duo-existing')
+          end
+        end
+
+        context 'when changing username' do
+          where(:new_username, :valid, :error_message) do
+            'ai-changed'      | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+            'duo-different'   | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+            'ai_changed'      | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+            'duo_different'   | false | "Username starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."
+            'validnewname'    | true  | nil
+            'duonewname'      | true  | nil
+          end
+
+          with_them do
+            it 'validates correctly when changing username' do
+              user.username = new_username
+
+              expect(user.valid?).to eq(valid)
+
+              if valid
+                expect(user.errors[:username]).to be_empty
+                expect { user.save! }.not_to raise_error
+              else
+                expect(user.errors.full_messages).to contain_exactly(error_message)
+              end
+            end
+          end
         end
       end
 
@@ -2043,6 +2231,24 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       it 'returns empty relation when no match found' do
         expect(described_class.with_feed_token('nonexistent')).to be_empty
       end
+    end
+
+    describe '.member_of_organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:user) { create(:user, organization: other_organization) }
+
+      it 'includes the user' do
+        expect(described_class.member_of_organization(other_organization)).to contain_exactly(user)
+      end
+    end
+  end
+
+  describe '.member_of_organization?' do
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:user) { create(:user, organization: other_organization) }
+
+    it 'includes the user' do
+      expect(user.member_of_organization?(other_organization)).to eq(true)
     end
   end
 
@@ -5027,99 +5233,52 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
-  describe '#full_website_url' do
+  describe '#full_website_url and #short_website_url' do
     let_it_be_with_reload(:user) { create(:user) }
 
-    it 'begins with http if website url omits it' do
-      user.website_url = 'test.com'
-
-      expect(user.full_website_url).to eq 'http://test.com'
+    subject do
+      user.assign_attributes(website_url: website_url)
+      user
     end
 
-    it 'begins with http if website url begins with http' do
-      user.website_url = 'http://test.com'
-
-      expect(user.full_website_url).to eq 'http://test.com'
+    where(:website_url, :full_website_url, :short_website_url) do
+      'test.com'             | 'http://test.com'      | 'test.com'
+      'http://test.com'      | 'http://test.com'      | 'test.com'
+      'https://test.com'     | 'https://test.com'     | 'test.com'
+      'http://www.test.com'  | 'http://www.test.com'  | 'www.test.com'
+      'https://www.test.com' | 'https://www.test.com' | 'www.test.com'
+      ''                     | 'http://'              | ''
     end
 
-    it 'begins with https if website url begins with https' do
-      user.website_url = 'https://test.com'
-
-      expect(user.full_website_url).to eq 'https://test.com'
-    end
-  end
-
-  describe '#short_website_url' do
-    let_it_be_with_reload(:user) { create(:user) }
-
-    it 'does not begin with http if website url omits it' do
-      user.website_url = 'test.com'
-
-      expect(user.short_website_url).to eq 'test.com'
-    end
-
-    it 'does not begin with http if website url begins with http' do
-      user.website_url = 'http://test.com'
-
-      expect(user.short_website_url).to eq 'test.com'
-    end
-
-    it 'does not begin with https if website url begins with https' do
-      user.website_url = 'https://test.com'
-
-      expect(user.short_website_url).to eq 'test.com'
+    with_them do
+      it do
+        expect(subject).to have_attributes(
+          website_url: website_url,
+          full_website_url: full_website_url,
+          short_website_url: short_website_url
+        )
+      end
     end
   end
 
   describe '#sanitize_attrs' do
-    let(:user) { build(:user, name: 'test & user', linkedin: 'test&user') }
-
-    it 'does not encode HTML entities in the name attribute' do
-      expect { user.sanitize_attrs }.not_to change { user.name }
-    end
-
     context 'for name attribute' do
-      subject { user.name }
+      subject { build(:user, name: input).tap(&:validate) }
 
-      before do
-        user.name = input_name
-        user.sanitize_attrs
+      where(:input, :expected) do
+        '<a href="//example.com">Test<a>'               | '-Test-'
+        'a<a class="js-evil" href=/api/v4'              | 'a-a class="js-evil" href=/api/v4'
+        'alice some> tag'                               | 'alice some- tag'
+        '</link>alice'                                  | '-alice'
+        '<script>alert("Test")</script>'                | '-alert("Test")-'
+        'User"><iframe src=javascript:alert()><iframe>' | 'User"---'
+
+        # Does not encode HTML entities
+        'test & user'                                   | 'test & user'
       end
 
-      context 'from html tags' do
-        let(:input_name) { '<a href="//example.com">Test<a>' }
-
-        it { is_expected.to eq('-Test-') }
-      end
-
-      context 'from unclosed html tags' do
-        let(:input_name) { 'a<a class="js-evil" href=/api/v4' }
-
-        it { is_expected.to eq('a-a class="js-evil" href=/api/v4') }
-      end
-
-      context 'from closing html brackets' do
-        let(:input_name) { 'alice some> tag' }
-
-        it { is_expected.to eq('alice some- tag') }
-      end
-
-      context 'from self-closing tags' do
-        let(:input_name) { '</link>alice' }
-
-        it { is_expected.to eq('-alice') }
-      end
-
-      context 'from js scripts' do
-        let(:input_name) { '<script>alert("Test")</script>' }
-
-        it { is_expected.to eq('-alert("Test")-') }
-      end
-
-      context 'from iframe scripts' do
-        let(:input_name) { 'User"><iframe src=javascript:alert()><iframe>' }
-
-        it { is_expected.to eq('User"---') }
+      with_them do
+        it { is_expected.to have_attributes(name: expected) }
       end
     end
   end
@@ -5343,24 +5502,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         expect(subject.notification_email).to be_nil
         expect(subject.notification_email_or_default).to eq(email)
       end
-    end
-  end
-
-  describe '.find_by_private_commit_email' do
-    context 'with email' do
-      let_it_be(:user) { create(:user) }
-
-      it 'returns user through private commit email' do
-        expect(described_class.find_by_private_commit_email(user.private_commit_email)).to eq(user)
-      end
-
-      it 'returns nil when email other than private_commit_email is used' do
-        expect(described_class.find_by_private_commit_email(user.email)).to be_nil
-      end
-    end
-
-    it 'returns nil when email is nil' do
-      expect(described_class.find_by_private_commit_email(nil)).to be_nil
     end
   end
 
@@ -9753,26 +9894,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
-  describe '#can_leave_project?' do
-    let_it_be(:user) { create :user, :with_namespace }
-    let_it_be(:user_namespace_project) { create(:project, namespace: user.namespace) }
-    let_it_be(:user_member_project) { create(:project, :in_group, developers: [user]) }
-
-    subject(:can_leave_project) { user.can_leave_project?(project) }
-
-    context "when the project is in the user's namespace" do
-      let(:project) { user_namespace_project }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when the user is a member of the project' do
-      let(:project) { user_member_project }
-
-      it { is_expected.to be_truthy }
-    end
-  end
-
   context 'normalized email reuse check' do
     let(:error_message) { 'Email is not allowed. Please enter a different email address and try again.' }
     let(:new_user) { build(:user, email: tumbled_email) }
@@ -9942,7 +10063,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     subject(:uploads_sharding_key) { user.uploads_sharding_key }
 
-    it { is_expected.to eq({}) }
+    it { is_expected.to eq({ organization_id: user.organization_id }) }
   end
 
   describe 'support pin methods', :freeze_time do

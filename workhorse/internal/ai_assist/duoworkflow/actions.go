@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"net"
 	"net/http"
 	"net/url"
@@ -22,29 +21,40 @@ const ActionResponseBodyLimit = MaxMessageSize - 4096
 
 type runHTTPActionHandler struct {
 	rails       *api.API
+	backend     http.Handler
 	token       string
 	originalReq *http.Request
 	action      *pb.Action
 }
 
-func (a *runHTTPActionHandler) createErrorResponse(err error, statusCode ...int32) *pb.ClientEvent {
-	httpResponse := &pb.HttpResponse{
-		Error: err.Error(),
+type nullResponseWriter struct {
+	header http.Header
+	status int
+	body   bytes.Buffer
+}
+
+func (w *nullResponseWriter) Write(p []byte) (int, error) {
+	available := ActionResponseBodyLimit - w.body.Len()
+	if available <= 0 {
+		return 0, nil
 	}
 
-	if len(statusCode) > 0 {
-		httpResponse.StatusCode = statusCode[0]
+	if len(p) > available {
+		// Write only what fits within the limit
+		n, _ := w.body.Write(p[:available])
+		return n, nil
 	}
 
-	return &pb.ClientEvent{
-		Response: &pb.ClientEvent_ActionResponse{
-			ActionResponse: &pb.ActionResponse{
-				RequestID: a.action.RequestID,
-				ResponseType: &pb.ActionResponse_HttpResponse{
-					HttpResponse: httpResponse,
-				},
-			},
-		},
+	return w.body.Write(p)
+}
+
+func (w *nullResponseWriter) Header() http.Header {
+	return w.header
+}
+
+func (w *nullResponseWriter) WriteHeader(status int) {
+	if w.status == 0 {
+		w.status = status
 	}
 }
 
@@ -81,16 +91,8 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, er
 		req.Header.Set("X-Forwarded-For", header)
 	}
 
-	response, err := a.rails.Client.Do(req)
-	if err != nil {
-		return a.createErrorResponse(err), nil
-	}
-	defer func() { _ = response.Body.Close() }()
-
-	body, err := io.ReadAll(io.LimitReader(response.Body, ActionResponseBodyLimit))
-	if err != nil {
-		return a.createErrorResponse(err, int32(response.StatusCode)), nil
-	}
+	nrw := &nullResponseWriter{header: make(http.Header)}
+	a.backend.ServeHTTP(nrw, req)
 
 	clientEvent := &pb.ClientEvent{
 		Response: &pb.ClientEvent_ActionResponse{
@@ -98,8 +100,8 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, er
 				RequestID: a.action.RequestID,
 				ResponseType: &pb.ActionResponse_HttpResponse{
 					HttpResponse: &pb.HttpResponse{
-						Body:       string(body),
-						StatusCode: int32(response.StatusCode),
+						Body:       nrw.body.String(),
+						StatusCode: int32(nrw.status),
 					},
 				},
 			},

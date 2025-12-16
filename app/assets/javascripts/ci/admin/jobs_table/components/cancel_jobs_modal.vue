@@ -12,6 +12,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'CancelJobsModal',
   components: {
     GlModal,
   },

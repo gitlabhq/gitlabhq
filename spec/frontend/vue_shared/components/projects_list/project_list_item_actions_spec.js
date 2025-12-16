@@ -20,6 +20,8 @@ import {
   ACTION_DELETE,
   ACTION_ARCHIVE,
   ACTION_UNARCHIVE,
+  ACTION_REQUEST_ACCESS,
+  ACTION_WITHDRAW_ACCESS_REQUEST,
 } from '~/vue_shared/components/list_actions/constants';
 import { createAlert } from '~/alert';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
@@ -86,12 +88,10 @@ describe('ProjectListItemActions', () => {
     await nextTick();
   };
 
-  beforeEach(() => {
-    createComponent();
-  });
-
   describe('template', () => {
     it('displays actions dropdown', () => {
+      createComponent();
+
       expect(findListActions().props()).toMatchObject({
         actions: {
           [ACTION_COPY_ID]: {
@@ -164,6 +164,7 @@ describe('ProjectListItemActions', () => {
     const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
     it('should call trackEvent method', async () => {
+      createComponent();
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
       await fireAction(ACTION_ARCHIVE);
@@ -181,6 +182,7 @@ describe('ProjectListItemActions', () => {
 
     describe('when API call is successful', () => {
       it('calls archiveProject, properly sets loading state, and emits refetch event', async () => {
+        createComponent();
         archiveProject.mockResolvedValueOnce();
 
         await fireAction(ACTION_ARCHIVE);
@@ -204,6 +206,7 @@ describe('ProjectListItemActions', () => {
       const error = new Error();
 
       it('calls archiveProject, properly sets loading state, and shows error alert', async () => {
+        createComponent();
         archiveProject.mockRejectedValue(error);
 
         await fireAction(ACTION_ARCHIVE);
@@ -232,6 +235,7 @@ describe('ProjectListItemActions', () => {
     const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
     it('should call trackEvent method', async () => {
+      createComponent();
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
       await fireAction(ACTION_UNARCHIVE);
@@ -249,6 +253,7 @@ describe('ProjectListItemActions', () => {
 
     describe('when API call is successful', () => {
       it('calls unarchiveProject, properly sets loading state, and emits refetch event', async () => {
+        createComponent();
         unarchiveProject.mockResolvedValueOnce();
 
         await fireAction(ACTION_UNARCHIVE);
@@ -272,6 +277,7 @@ describe('ProjectListItemActions', () => {
       const error = new Error();
 
       it('calls unarchiveProject, properly sets loading state, and shows error alert', async () => {
+        createComponent();
         unarchiveProject.mockRejectedValue(error);
 
         await fireAction(ACTION_UNARCHIVE);
@@ -300,6 +306,7 @@ describe('ProjectListItemActions', () => {
   describe('when restore action is fired', () => {
     describe('when API call is successful', () => {
       it('calls restoreProject, properly sets loading state, and emits refetch event', async () => {
+        createComponent();
         restoreProject.mockResolvedValueOnce();
 
         await fireAction(ACTION_RESTORE);
@@ -323,6 +330,7 @@ describe('ProjectListItemActions', () => {
       const error = new Error();
 
       it('calls restoreProject, properly sets loading state, and shows error alert', async () => {
+        createComponent();
         restoreProject.mockRejectedValue(error);
 
         await fireAction(ACTION_RESTORE);
@@ -349,6 +357,7 @@ describe('ProjectListItemActions', () => {
 
   describe('when delete action is fired', () => {
     beforeEach(async () => {
+      createComponent();
       await fireAction(ACTION_DELETE);
     });
 
@@ -370,6 +379,7 @@ describe('ProjectListItemActions', () => {
     describe('when deletion is confirmed', () => {
       describe('when API call is successful', () => {
         it('calls deleteProject, properly sets loading state, and emits refetch event', async () => {
+          createComponent();
           deleteProject.mockResolvedValueOnce();
 
           await deleteModalFirePrimaryEvent();
@@ -390,6 +400,7 @@ describe('ProjectListItemActions', () => {
         const error = new Error();
 
         it('calls deleteProject, properly sets loading state, and shows error alert', async () => {
+          createComponent();
           deleteProject.mockRejectedValue(error);
           await deleteModalFirePrimaryEvent();
 
@@ -410,6 +421,61 @@ describe('ProjectListItemActions', () => {
           });
           expect(renderDeleteSuccessToast).not.toHaveBeenCalled();
         });
+      });
+    });
+  });
+
+  describe('when project does not have requestAccessPath', () => {
+    it('does not display Request access action', () => {
+      createComponent();
+
+      expect(findListActions().props('actions')[ACTION_REQUEST_ACCESS]).toBeUndefined();
+    });
+  });
+
+  describe('when project has requestAccessPath', () => {
+    it('displays Request access action', () => {
+      const requestAccessPath = '/request_access';
+
+      createComponent({
+        props: { project: { ...projectWithActions, requestAccessPath } },
+      });
+
+      expect(findListActions().props('actions')[ACTION_REQUEST_ACCESS]).toEqual({
+        href: requestAccessPath,
+        extraAttrs: {
+          'data-method': 'post',
+          'data-testid': 'request-access-link',
+          rel: 'nofollow',
+        },
+      });
+    });
+  });
+
+  describe('when project does not have withdrawAccessRequestPath', () => {
+    it('does not display Withdraw access request action', () => {
+      createComponent();
+
+      expect(findListActions().props('actions')[ACTION_WITHDRAW_ACCESS_REQUEST]).toBeUndefined();
+    });
+  });
+
+  describe('when project has withdrawAccessRequestPath', () => {
+    it('displays Withdraw access request action', () => {
+      const withdrawAccessRequestPath = '/withdraw_access_request';
+
+      createComponent({
+        props: { project: { ...projectWithActions, withdrawAccessRequestPath } },
+      });
+
+      expect(findListActions().props('actions')[ACTION_WITHDRAW_ACCESS_REQUEST]).toEqual({
+        href: withdrawAccessRequestPath,
+        extraAttrs: {
+          'data-method': 'delete',
+          'data-testid': 'withdraw-access-link',
+          'data-confirm': `Are you sure you want to withdraw your access request for the ${projectWithActions.nameWithNamespace} project?`,
+          rel: 'nofollow',
+        },
       });
     });
   });

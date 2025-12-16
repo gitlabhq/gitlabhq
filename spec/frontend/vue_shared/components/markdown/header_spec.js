@@ -31,7 +31,7 @@ describe('Markdown field header component', () => {
         previewMarkdown: false,
         ...props,
       },
-      stubs: { GlToggle },
+      stubs: { GlToggle, GlButton },
       provide: {
         glFeatures: {
           findAndReplace: true,
@@ -365,12 +365,16 @@ describe('Markdown field header component', () => {
       return root;
     };
 
-    const findFindInput = () => wrapper.findByTestId('find-btn');
+    const findFindInput = () => wrapper.findByTestId('find-input');
+    const findReplaceInput = () => wrapper.findByTestId('replace-input');
+    const findReplaceButton = () => wrapper.findByRole('button', { name: 'Replace' });
     const findCloneDiv = () => formWrapper.findByTestId('find-and-replace-clone');
     const findFindAndReplaceBar = () => wrapper.findByTestId('find-and-replace');
+    const findAndReplaceMatchCount = () => wrapper.findByTestId('find-and-replace-matches').text();
     const findNextButton = () => wrapper.findByTestId('find-next');
     const findPrevButton = () => wrapper.findByTestId('find-prev');
     const findCloseButton = () => wrapper.findByTestId('find-and-replace-close');
+    const findTextarea = () => document.querySelector('textarea');
 
     const showFindAndReplace = async () => {
       $(document).triggerHandler('markdown-editor:find-and-replace:show', [$('form')]);
@@ -468,13 +472,16 @@ describe('Markdown field header component', () => {
       await findFindInput().vm.$emit('keyup', { target: { value: 'my-text' } });
       await nextTick();
 
-      expect(findFindAndReplaceBar().text()).toBe('No records');
+      expect(findAndReplaceMatchCount()).toBe('No records');
 
       // Text that matches
-      await findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
+      findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
       await nextTick();
 
-      expect(findFindAndReplaceBar().text()).toBe('1 of 2');
+      // The second one is required for VUE_VERSION=3
+      await nextTick();
+
+      expect(findAndReplaceMatchCount()).toBe('1 of 2');
     });
 
     it('highlights first item when there is a match', async () => {
@@ -488,6 +495,8 @@ describe('Markdown field header component', () => {
     });
 
     it('allows navigating between matches through next and prev buttons', async () => {
+      findTextarea().value = 'lorem ipsum LOREM sit lorem';
+
       await showFindAndReplace();
 
       // Text that matches
@@ -527,15 +536,15 @@ describe('Markdown field header component', () => {
       expect(Array.from(matches[1].classList)).toEqual(['js-highlight']);
     });
 
-    it('is case insensitive', async () => {
+    it('is case sensitive', async () => {
       await showFindAndReplace();
 
       // Text that matches
-      await findFindInput().vm.$emit('keyup', { target: { value: 'LoReM' } });
+      findFindInput().vm.$emit('keyup', { target: { value: 'LoReM' } });
       await nextTick();
 
       const matches = findCloneDiv().element.querySelectorAll('.js-highlight');
-      expect(matches).toHaveLength(2);
+      expect(matches).toHaveLength(0);
     });
 
     it('should have a close button', async () => {
@@ -544,6 +553,31 @@ describe('Markdown field header component', () => {
       findCloseButton().vm.$emit('click', true);
       await nextTick();
       expect(findFindInput().exists()).toBe(false);
+    });
+
+    it('replaces the currently highlighted match when replace button is clicked', async () => {
+      // This doesn't exist in the jest environment so mock it
+      document.execCommand = jest.fn();
+
+      await showFindAndReplace();
+
+      findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
+
+      // We need this one as well as keyup won't set the value
+      findFindInput().vm.$emit('input', 'lorem');
+      await nextTick();
+
+      findReplaceInput().vm.$emit('input', 'LOREM');
+      await nextTick();
+
+      findReplaceButton().trigger('click');
+      await nextTick();
+
+      // The second one is required for VUE_VERSION=3
+      await nextTick();
+
+      expect(findTextarea().value).toBe('LOREM ipsum dolor sit amet lorem <img src="prompt">');
+      expect(findAndReplaceMatchCount()).toBe('1 of 1');
     });
   });
 });

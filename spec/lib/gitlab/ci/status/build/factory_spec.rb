@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Build::Factory do
-  let(:user) { create(:user) }
+RSpec.describe Gitlab::Ci::Status::Build::Factory, feature_category: :continuous_integration do
+  let_it_be(:user, freeze: true) { create(:user) }
+
   let(:project) { build.project }
   let(:status) { factory.fabricate! }
   let(:factory) { described_class.new(build, user) }

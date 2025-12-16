@@ -108,6 +108,8 @@ $monokai-gh: #75715e;
 
   --code-background: #{$monokai-bg};
   --code-empty-background: #{color.adjust($monokai-bg, $lightness: -1.5%)};
+  --code-border-color: #{$gl-color-neutral-700};
+  --code-changed-border-color: #{rgba(255,255,255,0.1)};
 
   --code-line-number-background-color: #{$monokai-bg};
   --code-line-number-color: #{$monokai-line-num-color};

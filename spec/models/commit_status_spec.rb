@@ -964,7 +964,6 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
         :api_failure | true
         :stuck_or_timeout_failure | true
         :runner_system_failure | true
-        :runner_provisioning_timeout | true
       end
 
       with_them do

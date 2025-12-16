@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillAuditEventsStreamingHeadersGroupId
-description: Backfills sharding key `audit_events_streaming_headers.group_id` from
-  `audit_events_external_audit_event_destinations`.
-feature_category: audit_events
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152963
-milestone: '17.1'
-queued_migration_version: 20240514142206
-finalized_by: '20241006231940'

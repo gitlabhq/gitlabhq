@@ -91,7 +91,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
       visit_pipeline
 
       within_testid 'pipeline-header' do
-        expect(page).to have_content("For #{pipeline.ref}")
+        expect(page).to have_content("In #{pipeline.ref}")
         expect(page).to have_content("#{pipeline.statuses.count} jobs")
         expect(page).to have_link(pipeline.ref,
           href: project_commits_path(pipeline.project, pipeline.ref))

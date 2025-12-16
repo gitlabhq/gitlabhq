@@ -108,13 +108,13 @@ subgroups or projects.
 When the method is called on:
 
 - A project, in addition to any webhooks configured of that type for that project executing,
-webhooks of that type configured for the project's group and ancestor groups will
-[also execute](https://gitlab.com/gitlab-org/gitlab/-/blob/db5b8e427a4a5b704e707f400817781b90738e7b/ee/app/models/ee/project.rb#L846).
-Any configured instance (system) webhooks for that type
-[also execute](https://gitlab.com/gitlab-org/gitlab/-/blob/95be4945b1fcfe247599d94a60cc6a4a657a3ecf/app/models/project.rb#L1974).
+  webhooks of that type configured for the project's group and ancestor groups will
+  [also execute](https://gitlab.com/gitlab-org/gitlab/-/blob/db5b8e427a4a5b704e707f400817781b90738e7b/ee/app/models/ee/project.rb#L846).
+  Any configured instance (system) webhooks for that type
+  [also execute](https://gitlab.com/gitlab-org/gitlab/-/blob/95be4945b1fcfe247599d94a60cc6a4a657a3ecf/app/models/project.rb#L1974).
 - A group, in addition to any webhooks configured of that type for that group executing, webhooks configured for the
-group's ancestor groups will
-[also execute](https://gitlab.com/gitlab-org/gitlab/-/blob/6d915390b0b9e1842d7ceba97af2db1ac7f76f65/ee/app/models/ee/group.rb#L826-829).
+  group's ancestor groups will
+  [also execute](https://gitlab.com/gitlab-org/gitlab/-/blob/6d915390b0b9e1842d7ceba97af2db1ac7f76f65/ee/app/models/ee/group.rb#L826-829).
 
 Building a payload can be expensive because it generally requires that we load more records from the database,
 so check `#has_active_hooks?` on the project before triggering the webhook

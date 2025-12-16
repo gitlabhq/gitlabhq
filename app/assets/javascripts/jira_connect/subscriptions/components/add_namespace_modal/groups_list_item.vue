@@ -3,6 +3,7 @@
 import { mapActions } from 'vuex';
 import { GlButton } from '@gitlab/ui';
 import GroupItemName from '../group_item_name.vue';
+// eslint-disable-next-line no-restricted-imports
 import { I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE } from '../../constants';
 
 export default {

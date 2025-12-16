@@ -1,11 +1,12 @@
 <script>
-import { GlTooltip, GlIcon, GlLink } from '@gitlab/ui';
+import { GlTooltip, GlIcon, GlLink, GlTruncate } from '@gitlab/ui';
 
 export default {
   components: {
     GlTooltip,
     GlIcon,
     GlLink,
+    GlTruncate,
   },
   props: {
     anchorId: {
@@ -43,6 +44,11 @@ export default {
       required: false,
       default: '',
     },
+    iconSize: {
+      type: Number,
+      required: false,
+      default: 16,
+    },
     tooltipText: {
       type: String,
       required: false,
@@ -69,6 +75,14 @@ export default {
       default: undefined,
     },
   },
+  computed: {
+    tooltipTarget() {
+      return () => {
+        const ref = this.$refs.wrapperRef;
+        return ref?.$el || ref;
+      };
+    },
+  },
   methods: {
     handleClick(event) {
       this.$emit('click', event);
@@ -81,35 +95,40 @@ export default {
 </script>
 
 <template>
-  <component :is="isLink ? 'gl-link' : 'span'" :href="href" @click="handleClick">
-    <!-- wrapper  -->
-    <component
-      :is="wrapperComponent"
-      ref="wrapperRef"
-      :class="wrapperComponentClass"
-      :href="!isLink ? href : null"
-      :data-testid="anchorId"
-      :aria-label="ariaLabel"
-    >
-      <!-- icon  -->
-      <slot name="icon">
-        <gl-icon
-          v-if="iconName"
-          variant="subtle"
-          :class="iconClass"
-          :name="iconName"
-          :data-testid="`${anchorId}-icon`"
-        />
-      </slot>
-      <!-- title  -->
-      <slot name="title">
-        <span v-if="title" :class="titleComponentClass" :data-testid="`${anchorId}-title`">
-          {{ title }}
-        </span>
-      </slot>
-    </component>
+  <!-- wrapper  -->
+  <component
+    :is="isLink && href ? 'gl-link' : wrapperComponent"
+    ref="wrapperRef"
+    class="gl-flex gl-items-center gl-gap-2"
+    :class="wrapperComponentClass"
+    :href="isLink ? href : null"
+    :data-testid="anchorId"
+    :aria-label="ariaLabel"
+    @click="handleClick"
+  >
+    <!-- icon  -->
+    <slot name="icon">
+      <gl-icon
+        v-if="iconName"
+        variant="subtle"
+        :class="['gl-shrink-0', iconClass]"
+        :name="iconName"
+        :size="iconSize"
+        :data-testid="`${anchorId}-icon`"
+      />
+    </slot>
+    <!-- title  -->
+    <slot name="title">
+      <gl-truncate
+        v-if="title"
+        :class="titleComponentClass"
+        class="gl-min-w-0"
+        :data-testid="`${anchorId}-title`"
+        :text="title"
+      />
+    </slot>
     <!-- tooltip  -->
-    <gl-tooltip :target="() => $refs.wrapperRef" :placement="tooltipPlacement">
+    <gl-tooltip :target="tooltipTarget" :placement="tooltipPlacement">
       <slot name="tooltip-text">
         <template v-if="tooltipText">
           {{ tooltipText }}

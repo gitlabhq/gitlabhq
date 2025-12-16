@@ -2478,9 +2478,11 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
           source_sha: source_sha,
           target_branch: target_branch,
           target_sha: target_sha,
-          message: 'Test merge') do |commit_id|
-            merge_commit_id = commit_id
-          end
+          message: 'Test merge',
+          sign: false
+        ) do |commit_id|
+          merge_commit_id = commit_id
+        end
 
       expect(result.newrev).to eq(merge_commit_id)
       expect(result.repo_created).to be(false)
@@ -2494,7 +2496,9 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
           source_sha: source_sha,
           target_branch: target_branch,
           target_sha: target_sha,
-          message: 'Test merge') do |_commit_id|
+          message: 'Test merge',
+          sign: false
+        ) do |_commit_id|
           # This ref update should make the merge fail
           repository.write_ref(Gitlab::Git::BRANCH_REF_PREFIX + target_branch, concurrent_update_id)
         end
@@ -3432,6 +3436,36 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
           expect(known_exception).not_to be_nil
         end
       end
+    end
+  end
+
+  describe '#squash' do
+    subject(:squash) do
+      mutable_repository.squash(
+        user,
+        **kwargs
+      )
+    end
+
+    let(:kwargs) do
+      {
+        start_sha: sample_commit.id,
+        end_sha: another_sample_commit.id,
+        author: user,
+        message: 'squashed message',
+        sign: true
+      }
+    end
+
+    it 'delegates to OperationService' do
+      expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |instance|
+        expect(instance).to receive(:user_squash).with(
+          user,
+          **kwargs
+        )
+      end
+
+      squash
     end
   end
 end

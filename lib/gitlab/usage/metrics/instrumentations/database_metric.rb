@@ -35,9 +35,11 @@ module Gitlab
             end
 
             def relation(relation_proc = nil, &block)
-              return unless relation_proc || block
+              metric_relation = relation_proc || block
 
-              @metric_relation = (relation_proc || block)
+              return unless metric_relation
+
+              @metric_relation = metric_relation
             end
 
             def metric_options(&block)

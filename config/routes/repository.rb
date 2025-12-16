@@ -122,6 +122,7 @@ resources :commit, only: [:show], constraints: { id: Gitlab::Git::Commit::SHA_PA
     get :diffs_stats
     get :diff_file
     get :discussions
+    post :discussions, to: 'commit#create_discussions'
   end
 end
 

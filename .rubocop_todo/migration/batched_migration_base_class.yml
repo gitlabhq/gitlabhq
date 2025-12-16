@@ -7,7 +7,6 @@ Migration/BatchedMigrationBaseClass:
     - 'lib/gitlab/background_migration/backfill_note_discussion_id.rb'
     - 'lib/gitlab/background_migration/backfill_project_repositories.rb'
     - 'lib/gitlab/background_migration/backfill_project_settings.rb'
-    - 'lib/gitlab/background_migration/backfill_snippet_repositories.rb'
     - 'lib/gitlab/background_migration/create_security_setting.rb'
     - 'lib/gitlab/background_migration/fix_projects_without_project_feature.rb'
     - 'lib/gitlab/background_migration/fix_projects_without_prometheus_service.rb'

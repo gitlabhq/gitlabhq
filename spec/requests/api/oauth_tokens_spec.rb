@@ -8,7 +8,9 @@ RSpec.describe 'OAuth tokens', feature_category: :system_access do
   let_it_be(:organization) { create(:organization) }
 
   before do
-    stub_current_organization(organization)
+    allow_next_instance_of(Gitlab::Current::Organization) do |instance|
+      allow(instance).to receive(:organization).and_return(organization)
+    end
   end
 
   context 'Resource Owner Password Credentials' do

@@ -21,7 +21,7 @@ Use a CI/CD job token to authenticate with certain GitLab features from running 
 The token receives the same access level as the user that triggered the pipeline,
 but has [access to fewer resources](#job-token-access) than a personal access token. A user can cause a job to run
 with an action like pushing a commit, triggering a manual job, or being the owner of a scheduled pipeline.
-This user must have a [role that has the required privileges](../../user/permissions.md#cicd)
+This user must have a [role that has the required privileges](../../user/permissions.md#project-cicd)
 to access the resources.
 
 You can use a job token to authenticate with GitLab to access another group or project's resources (the target project).
@@ -131,138 +131,13 @@ Prerequisites:
 
 To add a group or project to the allowlist:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
 1. Select **Add group or project**.
 1. Input the path to the group or project to add to the allowlist, and select **Add**.
 
 You can also add a group or project to the allowlist [with the API](../../api/graphql/reference/_index.md#mutationcijobtokenscopeaddgrouporproject).
-
-### Auto-populate a project's allowlist
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/478540) in GitLab 17.10.
-
-{{< /history >}}
-
-You can populate a project's allowlist using the data from the [job token authentication log](#job-token-authentication-log)
-with the UI or a Rake task.
-
-In either case, GitLab uses the authentication log to determine which projects or groups to add to the allowlist
-and adds those entries for you.
-
-This process creates at most 200 entries in the project's allowlist. If more than 200 entries exist in the authentication log,
-it [compacts the allowlist](#allowlist-compaction) to stay under the 200 entry limit.
-
-#### With the UI
-
-{{< history >}}
-
-- Introduced in [GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/498125).
-
-{{< /history >}}
-
-To auto-populate the allowlist through the UI:
-
-1. On the left sidebar, select **Search or go** to and find your project.
-1. Select **Settings** > **CI/CD**.
-1. Expand **Job token permissions**.
-1. Select **Add** and choose **All projects in authentication log** from the dropdown list.
-1. A dialog asks you to confirm the action, select **Add entries**.
-
-After the process completes, the allowlist contains the entries from the authentication log.
-If not already set, the **Authorized groups and projects** is set to **Only this project and any groups and projects in the allowlist**.
-
-#### With a Rake task
-
-GitLab administrators with [rails console access](../../administration/operations/rails_console.md)
-can run a Rake task to auto-populate the allowlist for all or a subset of projects on an instance.
-This task also sets the **Authorized groups and projects** setting to **Only this project and any groups and projects in the allowlist**.
-
-The `ci:job_tokens:allowlist:autopopulate_and_enforce` Rake task has the following configuration options:
-
-- `PREVIEW`: Do a dry run and output the steps that would have been taken, but do not change any data.
-- `ONLY_PROJECT_IDS`: Do the migration for only the supplied project IDs (maximum of 1000 IDs).
-- `EXCLUDE_PROJECT_IDS`: Do the migration for all projects on the instance, except
-  for the supplied project IDs (maximum of 1000 IDs).
-
-`ONLY_PROJECT_IDS` and `EXCLUDE_PROJECT_IDS` cannot be used at the same time.
-
-For example:
-
-- `ci:job_tokens:allowlist:autopopulate_and_enforce PREVIEW=true`
-- `ci:job_tokens:allowlist:autopopulate_and_enforce PREVIEW=true ONLY_PROJECT_IDS=2,3`
-- `ci:job_tokens:allowlist:autopopulate_and_enforce PREVIEW=true EXCLUDE_PROJECT_IDS=2,3`
-- `ci:job_tokens:allowlist:autopopulate_and_enforce`
-- `ci:job_tokens:allowlist:autopopulate_and_enforce ONLY_PROJECT_IDS=2,3`
-- `ci:job_tokens:allowlist:autopopulate_and_enforce EXCLUDE_PROJECT_IDS=2,3`
-
-To run the Rake task for:
-
-{{< tabs >}}
-
-{{< tab title="Linux package (Omnibus)" >}}
-
-```shell
-sudo gitlab-rake ci:job_tokens:allowlist:autopopulate_and_enforce
-```
-
-{{< /tab >}}
-
-{{< tab title="Self-compiled (source)" >}}
-
-```shell
-sudo -u git -H bundle exec rake ci:job_tokens:allowlist:autopopulate_and_enforce
-```
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
-#### Allowlist compaction
-
-The allowlist compaction algorithm:
-
-1. Scans the authorization log to identify the nearest common groups for projects.
-1. Consolidates multiple project-level entries into single group-level entries.
-1. Updates the allowlist with these consolidated entries.
-
-For example, with an allowlist similar to:
-
-```plaintext
-group1/group2/group3/project1
-group1/group2/group3/project2
-group1/group2/group4/project3
-group1/group2/group4/project4
-group1/group5/group6/project5
-```
-
-The compaction algorithm:
-
-1. Compacts the list to:
-
-   ```plaintext
-   group1/group2/group3
-   group1/group2/group4
-   group1/group5/group6
-   ```
-
-1. If the allowlist is over the 200 entry limit, the algorithm compacts again:
-
-   ```plaintext
-   group1/group2
-   group1/group5
-   ```
-
-1. If the allowlist is still over the 200 entry limit, the algorithm continues:
-
-   ```plaintext
-   group1
-   ```
-
-This process is performed until the number of allowlist entries is 200 or fewer.
 
 ### Limit job token scope for public or internal projects
 
@@ -290,7 +165,7 @@ Prerequisites:
 
 To set a feature to be only visible to project members:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Set the visibility to **Only project members** for the features you want to restrict access to.
@@ -335,7 +210,7 @@ Prerequisites:
 
 To disable the job token allowlist:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
 1. Under **Authorized groups and projects**, select **All groups and projects**.
@@ -364,10 +239,10 @@ pipelines can push to the project. Job tokens from other
 [projects or groups in the allowlist](#add-a-group-or-project-to-the-job-token-allowlist) cannot
 push to your project.
 
-When you use a job token to push to the project, no CI pipelines are triggered. The job token has
-the same access permissions as the user who started the job.
+When you use a job token to push to the project, no CI/CD pipelines are triggered.
+The job token has the same access permissions as the user who started the job.
 
-If you use the tool semantic-release, with **Allow Git push requests to the repository** setting enabled, the tool gives precedence to CI_JOB_TOKEN embedded over a GitLab personal access token, if one is configured. There is an [open issue](https://github.com/semantic-release/gitlab/issues/891) that tracks resolution for this edge case.
+If you use the `semantic-release` tool, [this setting might prevent pipeline creation](#the-semantic-release-tool-and-job-tokens).
 
 {{< alert type="warning" >}}
 
@@ -383,7 +258,7 @@ Prerequisites:
 
 To grant permission to job tokens generated in your project to push to the project's repository:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
 1. In the **Permissions** section, select **Allow Git push requests to the repository**.
@@ -394,9 +269,8 @@ the [projects API](../../api/projects.md#edit-a-project).
 ## Fine-grained permissions for job tokens
 
 You can use fine-grained permissions to explicitly allow access to a limited set of REST API endpoints.
-For more information, see [fine-grained permissions for CI/CD job tokens](fine_grained_permissions.md).
 
-Feedback is welcome on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575).
+For more information, see [fine-grained permissions for CI/CD job tokens](fine_grained_permissions.md).
 
 ## Git repository cloning
 
@@ -443,7 +317,7 @@ You cannot use job tokens to authenticate GraphQL requests.
 You can track which other projects use a CI/CD job token to authenticate with your project
 in an authentication log. To check the log:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**. The **Authentication log** section displays the
    list of other projects that accessed your project by authenticating with a job token.
@@ -466,7 +340,7 @@ Beginning in GitLab 19.0, CI/CD job tokens use the JWT standard by default. Proj
 
 To use the legacy format for your CI/CD tokens:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Turn off **Enable JWT format for CI/CD job tokens**.
@@ -521,6 +395,16 @@ While troubleshooting CI/CD job token authentication issues, be aware that:
   - To remove project access.
 - The CI job token becomes invalid if the job is no longer running, has been erased,
   or if the project is in the process of being deleted.
+
+### The `semantic-release` tool and job tokens
+
+There is a known issue if you use the `semantic-release` tool with the [**Allow Git push requests to the repository** setting](#allow-git-push-requests-to-your-project-repository).
+When enabled:
+
+- The tool authenticates with the job token, even if the tool is configured to use a personal access token.
+- The job token does not trigger new pipelines, so release pipelines might not run.
+
+For more information, see the [issue 891](https://github.com/semantic-release/gitlab/issues/891).
 
 ### JWT format job token errors
 

@@ -58,6 +58,28 @@ You can troubleshoot this by trying the following:
 - Verify the version of OpenSSH is 8.2 or greater by
   running `ssh -V`.
 
+## Error: `Permission denied (publickey)`
+
+The `Permission denied (publickey)` error usually indicates one or more of the following issues:
+
+- Public key not added: Verify the public key was
+  [added to your GitLab account](ssh.md#add-an-ssh-key-to-your-gitlab-account).
+  This issue is common for new users or new machines.
+- Key type not supported: The key type is [unsupported](ssh.md#supported-ssh-key-types) or
+  includes headers that GitLab doesn't recognize.
+- Wrong private key being used: If you have
+  [multiple local SSH keys](ssh.md#see-if-you-have-an-existing-ssh-key-pair), verify the
+  correct key is being used. SSH defaults to `~/.ssh/id_rsa` or `id_ed25519`. You might need
+  to [define which key to use](ssh.md#configure-ssh-to-point-to-a-different-directory).
+- Private key not accessible:
+  [Verify](ssh.md#see-if-you-have-an-existing-ssh-key-pair) the private key is accessible on
+  your local device.
+- Local permissions incorrect:
+  [Verify the permissions for your keys](ssh.md#verify-gitlab-ssh-ownership-and-permissions).
+  The private key should use `600`, and the `.ssh` directory should use `700`.
+- SSH key not loaded in `ssh-agent`: Verify the key is available to your local SSH client.
+  This issue is common after a reboot or in new terminal sessions.
+
 ## Error: `SSH host keys are not available on this system.`
 
 If GitLab does not have access to the host SSH keys, when you visit `gitlab.example/help/instance_configuration`, you see the following error message under the **SSH host key fingerprints** header instead of the instance SSH fingerprint:

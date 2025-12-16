@@ -40,4 +40,4 @@ For Auto DevOps, the following features are not supported yet:
 - [License approval policies](../../user/compliance/license_approval_policies.md)
 - Auto Browser Performance Testing
 - Auto Build
-- [Operational Container Scanning](../../user/clusters/agent/vulnerabilities.md) (Note: [Container scanning](../../user/application_security/container_scanning/_index.md) in a pipeline is supported)
+- [Operational container scanning](../../user/clusters/agent/vulnerabilities.md) (Note: [Container scanning](../../user/application_security/container_scanning/_index.md) in a pipeline is supported)

@@ -4,6 +4,19 @@ import VueRouter from 'vue-router';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { defaultClient } from '~/graphql_shared/issuable_client';
 import MergeRequestsListApp from './components/merge_requests_list_app.vue';
+import issuableBulkUpdateActions from './issuable_bulk_update_actions';
+import IssuableBulkUpdateSidebar from './issuable_bulk_update_sidebar';
+
+export function initBulkUpdateSidebar(prefixId) {
+  const el = document.querySelector('.issues-bulk-update');
+
+  if (!el) {
+    return;
+  }
+
+  issuableBulkUpdateActions.init({ prefixId });
+  new IssuableBulkUpdateSidebar(); // eslint-disable-line no-new
+}
 
 export async function mountMergeRequestListsApp({
   getMergeRequestsQuery,
@@ -41,7 +54,6 @@ export async function mountMergeRequestListsApp({
     canBulkUpdate,
     environmentNamesPath,
     mergeTrainsPath,
-    defaultBranch,
     initialEmail,
     emailsHelpPagePath,
     quickActionsHelpPath,
@@ -81,7 +93,6 @@ export async function mountMergeRequestListsApp({
       canBulkUpdate: parseBoolean(canBulkUpdate),
       environmentNamesPath,
       mergeTrainsPath,
-      defaultBranch,
       initialEmail,
       emailsHelpPagePath,
       quickActionsHelpPath,

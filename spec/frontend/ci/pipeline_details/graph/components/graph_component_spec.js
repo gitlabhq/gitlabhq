@@ -247,4 +247,86 @@ describe('graph component', () => {
       expect(findJobItem().props('cssClassJobName')).toEqual(expect.arrayContaining(jobClasses));
     });
   });
+
+  describe('sticky scrollbar', () => {
+    const findStickyScrollbar = () => wrapper.findByTestId('sticky-scrollbar');
+    const findStickyScrollbarInner = () => wrapper.findByTestId('sticky-scrollbar-inner');
+    const findMainPipelineContainer = () => wrapper.findByTestId('pipeline-container');
+
+    const mockContainerDimensions = ({ contentWidth, containerWidth }) => {
+      const mainContainer = findMainPipelineContainer().element;
+
+      jest.spyOn(mainContainer, 'scrollWidth', 'get').mockReturnValue(contentWidth);
+      jest.spyOn(mainContainer, 'clientWidth', 'get').mockReturnValue(containerWidth);
+    };
+
+    describe('when it is not a linked pipeline', () => {
+      describe('with horizontal overflow', () => {
+        beforeEach(() => {
+          createComponent({
+            mountFn: mountExtended,
+            props: { isLinkedPipeline: false },
+          });
+
+          mockContainerDimensions({ contentWidth: 1000, containerWidth: 400 });
+        });
+
+        it('renders the sticky scrollbar', () => {
+          expect(findStickyScrollbar().exists()).toBe(true);
+          const stickyScrollbarInner = findStickyScrollbarInner();
+          expect(stickyScrollbarInner.attributes('style')).toContain('1000px');
+        });
+
+        it('syncs scroll position from main container to sticky scrollbar', async () => {
+          const mainContainer = findMainPipelineContainer();
+          const stickyScrollbar = findStickyScrollbar();
+
+          mainContainer.element.scrollLeft = 100;
+          mainContainer.trigger('scroll');
+          await nextTick();
+
+          expect(stickyScrollbar.element.scrollLeft).toBe(100);
+        });
+
+        it('syncs scroll position from sticky scrollbar to main container', async () => {
+          const mainContainer = findMainPipelineContainer();
+          const stickyScrollbar = findStickyScrollbar();
+
+          stickyScrollbar.element.scrollLeft = 150;
+          stickyScrollbar.trigger('scroll');
+          await nextTick();
+
+          expect(mainContainer.element.scrollLeft).toBe(150);
+        });
+      });
+
+      describe('without horizontal overflow', () => {
+        beforeEach(() => {
+          createComponent({
+            mountFn: mountExtended,
+            props: { isLinkedPipeline: false },
+          });
+
+          mockContainerDimensions({ contentWidth: 800, containerWidth: 1000 });
+        });
+
+        it('does not render the sticky scrollbar', () => {
+          expect(findStickyScrollbar().exists()).toBe(false);
+        });
+      });
+    });
+
+    describe('when it is a linked pipeline', () => {
+      beforeEach(() => {
+        createComponent({
+          mountFn: mountExtended,
+          props: { isLinkedPipeline: true },
+        });
+      });
+
+      it('does not render the sticky scrollbar', () => {
+        expect(findStickyScrollbar().exists()).toBe(false);
+      });
+    });
+  });
 });

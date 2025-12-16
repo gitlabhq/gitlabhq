@@ -19,6 +19,12 @@ import '~/sourcegraph/load';
 import DiffStats from '~/diffs/components/diff_stats.vue';
 import { initReportAbuse } from '~/projects/report_abuse';
 import * as popovers from '~/popovers';
+import { performanceMarkAndMeasure } from '~/performance/utils';
+import {
+  COMMIT_DIFFS_MARK_START_LOADING,
+  COMMIT_DIFFS_MARK_DIFF_FILES_SHOWN,
+  COMMIT_DIFFS_MEASURE_LIST_LOADED,
+} from '~/performance/constants';
 
 popovers.initPopovers();
 initDiffStatsDropdown();
@@ -62,6 +68,8 @@ const filesContainer = $('.js-diffs-batch');
 if (filesContainer.length) {
   const batchPath = filesContainer.data('diffFilesPath');
 
+  window.performance.mark(COMMIT_DIFFS_MARK_START_LOADING);
+
   axios
     .get(batchPath)
     .then(({ data }) => {
@@ -71,6 +79,18 @@ if (filesContainer.length) {
       new Diff();
       loadDiffStats();
       initReportAbuse();
+
+      // Mark when all diffs are loaded and create measure
+      performanceMarkAndMeasure({
+        mark: COMMIT_DIFFS_MARK_DIFF_FILES_SHOWN,
+        measures: [
+          {
+            name: COMMIT_DIFFS_MEASURE_LIST_LOADED,
+            start: COMMIT_DIFFS_MARK_START_LOADING,
+            end: COMMIT_DIFFS_MARK_DIFF_FILES_SHOWN,
+          },
+        ],
+      });
     })
     .catch(() => {
       createAlert({ message: __('An error occurred while retrieving diff files') });

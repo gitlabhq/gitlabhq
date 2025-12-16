@@ -72,11 +72,13 @@ module Ci
       track_if: -> { !importing? },
       ensure_if: -> { !importing? },
       init: ->(pipeline, scope) do
-        if pipeline
-          pipeline.project&.all_pipelines&.maximum(:iid) || pipeline.project&.all_pipelines&.count
-        elsif scope
-          ::Ci::Pipeline.where(**scope).maximum(:iid)
-        end
+        scope = { project: pipeline.project } if pipeline && !scope
+        next unless scope
+
+        max_from_pipeline_iids = ::Ci::PipelineIid.where(**scope).maximum(:iid)
+        max_from_pipelines = ::Ci::Pipeline.where(**scope).maximum(:iid)
+
+        [max_from_pipeline_iids, max_from_pipelines].compact.max || ::Ci::Pipeline.where(**scope).count
       end
 
     has_many :stages, ->(pipeline) { in_partition(pipeline).order(position: :asc) },
@@ -129,6 +131,8 @@ module Ci
     has_many :failed_builds, ->(pipeline) { in_partition(pipeline).latest.failed }, foreign_key: :commit_id, class_name: 'Ci::Build',
       inverse_of: :pipeline
     has_many :limited_failed_builds, ->(pipeline) { in_partition(pipeline).latest.failed.limit(COUNT_FAILED_JOBS_LIMIT) }, foreign_key: :commit_id, class_name: 'Ci::Build',
+      inverse_of: :pipeline
+    has_many :limited_failed_jobs, ->(pipeline) { in_partition(pipeline).latest.failed.limit(COUNT_FAILED_JOBS_LIMIT) }, foreign_key: :commit_id, class_name: 'CommitStatus',
       inverse_of: :pipeline
     has_many :retryable_builds, ->(pipeline) { in_partition(pipeline).latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
     has_many :cancelable_statuses, ->(pipeline) { in_partition(pipeline).cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus',
@@ -395,6 +399,15 @@ module Ci
         end
       end
 
+      after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
+        pipeline.run_after_commit do
+          # If this pipeline is not configured to export to observability, skip the export
+          next unless ::Observability::GroupO11ySetting.observability_setting_for(pipeline.project).present?
+
+          Ci::Observability::ExportWorker.perform_async(pipeline.id)
+        end
+      end
+
       # This needs to be kept in sync with `Ci::PipelineRef#should_delete?`
       after_transition any => ::Ci::Pipeline.stopped_statuses do |pipeline|
         pipeline.run_after_commit do
@@ -484,6 +497,7 @@ module Ci
     end
     scope :for_status, ->(status) { where(status: status) }
     scope :created_after, ->(time) { where(arel_table[:created_at].gt(time)) }
+    scope :created_on_or_after, ->(time) { where(arel_table[:created_at].gteq(time)) }
     scope :created_before, ->(time) { where(arel_table[:created_at].lt(time)) }
     scope :created_before_id, ->(id) { where(arel_table[:id].lt(id)) }
     scope :before_pipeline, ->(pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
@@ -519,6 +533,7 @@ module Ci
 
     scope :order_id_asc, -> { order(id: :asc) }
     scope :order_id_desc, -> { order(id: :desc) }
+    scope :order_created_at_asc_id_asc, -> { order(created_at: :asc, id: :asc) }
 
     scope :not_archived, -> do
       archive_cutoff = Gitlab::CurrentSettings.archive_builds_older_than
@@ -596,10 +611,20 @@ module Ci
     end
 
     def self.jobs_count_in_alive_pipelines
+      in_partition(current_partition_value)
+        .created_after(24.hours.ago)
+        .alive
+        .joins(:statuses)
+        .count
+    end
+
+    # Remove when `ci_refactor_jobs_count_in_alive_pipelines` is removed.
+    def self.legacy_jobs_count_in_alive_pipelines
       created_after(24.hours.ago).alive.joins(:statuses).count
     end
 
-    def self.builds_count_in_alive_pipelines
+    # Remove when `ci_refactor_jobs_count_in_alive_pipelines` is removed.
+    def self.legacy_builds_count_in_alive_pipelines
       created_after(24.hours.ago).alive.joins(:builds).count
     end
 
@@ -734,7 +759,11 @@ module Ci
     end
 
     def triggered_pipelines_with_preloads
-      triggered_pipelines.preload(:source_job)
+      triggered_pipelines.preload(
+        :source_job,
+        :retryable_builds,
+        project: [:route, { namespace: :route }]
+      )
     end
 
     def valid_commit_sha
@@ -1435,6 +1464,10 @@ module Ci
       merge_request_id.present? && merge_request.present?
     end
 
+    def workload?
+      ::Ci::Workloads::Workload.workload_ref?(ref)
+    end
+
     def merge_request_from_forked_project?
       merge_request? && merge_request.for_fork?
     end
@@ -1534,6 +1567,8 @@ module Ci
         Gitlab::Git::BRANCH_REF_PREFIX + source_ref.to_s
       elsif tag?
         Gitlab::Git::TAG_REF_PREFIX + source_ref.to_s
+      elsif workload?
+        ref
       end
     end
 

@@ -1,0 +1,18 @@
+---
+description: Container repository protection rule was deleted
+internal_events: true
+action: delete_container_repository_protection_rule
+identifiers:
+  - project
+  - namespace
+  - user
+product_group: container_registry
+product_categories:
+  - container_registry
+milestone: '18.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213721
+tiers:
+  - free
+  - premium
+  - ultimate
+

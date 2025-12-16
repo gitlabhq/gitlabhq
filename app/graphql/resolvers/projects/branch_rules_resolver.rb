@@ -11,10 +11,15 @@ module Resolvers
       alias_method :project, :object
 
       def resolve_with_lookahead(**args)
-        [*custom_branch_rules(args), *branch_rules]
+        externally_paginated_array(branch_rules_page(args))
       end
 
       private
+
+      def externally_paginated_array(page)
+        has_next_page = page.has_next_page
+        Gitlab::Graphql::ExternallyPaginatedArray.new(nil, page.end_cursor, *page.rules, has_next_page:)
+      end
 
       # BranchRules for 'All branches' i.e. no associated ProtectedBranch
       def custom_branch_rules(args)
@@ -26,10 +31,15 @@ module Resolvers
       end
       strong_memoize_attr :all_branches_rule
 
-      def branch_rules
-        protected_branches.map do |protected_branch|
-          ::Projects::BranchRule.new(project, protected_branch)
-        end
+      def branch_rules_page(args)
+        # limit to the first 100 branch rules to match existing behaviour until frontend implements pagination.
+        limit = args[:first] || 100
+
+        ::Projects::BranchRulesFinder.new(
+          project,
+          custom_rules: custom_branch_rules(args),
+          protected_branches: protected_branches
+        ).execute(cursor: args[:after], limit: limit)
       end
 
       def protected_branches

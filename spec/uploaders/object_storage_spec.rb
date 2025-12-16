@@ -21,7 +21,7 @@ end
 # TODO: Update feature_category once object storage group ownership has been determined.
 RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category: :shared do
   let(:uploader_class) { Implementation }
-  let(:object) { build_stubbed(:user) }
+  let(:object) { create(:user) }
   let(:file_column) { :file }
   let(:uploader) { uploader_class.new(object, file_column) }
 

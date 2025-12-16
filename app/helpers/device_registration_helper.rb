@@ -5,6 +5,7 @@ module DeviceRegistrationHelper
     {
       initial_error: webauthn_error && webauthn_error[:message],
       target_path: target_path,
+      two_factor_auth_path: profile_two_factor_auth_path,
       password_required: current_password_required.to_s
     }
   end

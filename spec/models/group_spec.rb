@@ -1692,50 +1692,46 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
-    describe '.active' do
-      let_it_be(:active_group) { create(:group) }
-      let_it_be(:archived_group) { create(:group, :archived) }
-      let_it_be(:marked_for_deletion_group) { create(:group_with_deletion_schedule) }
-
-      subject { described_class.active }
-
-      it { is_expected.to include(active_group) }
-      it { is_expected.not_to include(marked_for_deletion_group) }
-      it { is_expected.not_to include(archived_group) }
-    end
-
-    describe '.self_and_ancestors_active' do
+    shared_examples 'ancestor aware active scope' do
       let_it_be(:active_group) { create(:group) }
       let_it_be(:inactive_group) { create(:group, :archived) }
       let_it_be(:inactive_subgroup) { create(:group, parent: inactive_group) }
-
-      subject { described_class.self_and_ancestors_active }
 
       it { is_expected.to include(active_group) }
       it { is_expected.not_to include(inactive_group, inactive_subgroup) }
     end
 
-    describe '.inactive' do
-      let_it_be(:active_group) { create(:group) }
-      let_it_be(:archived_group) { create(:group, :archived) }
-      let_it_be(:marked_for_deletion_group) { create(:group_with_deletion_schedule) }
+    describe '.active' do
+      subject { described_class.active }
 
-      subject { described_class.inactive }
-
-      it { is_expected.to include(archived_group) }
-      it { is_expected.to include(marked_for_deletion_group) }
-      it { is_expected.not_to include(active_group) }
+      it_behaves_like 'ancestor aware active scope'
     end
 
-    describe '.self_or_ancestors_inactive' do
+    describe '.self_and_ancestors_active' do
+      subject { described_class.self_and_ancestors_active }
+
+      it_behaves_like 'ancestor aware active scope'
+    end
+
+    shared_examples 'ancestor aware inactive scope' do
       let_it_be(:active_group) { create(:group) }
       let_it_be(:inactive_group) { create(:group, :archived) }
       let_it_be(:inactive_subgroup) { create(:group, parent: inactive_group) }
 
-      subject { described_class.self_or_ancestors_inactive }
-
       it { is_expected.to include(inactive_group, inactive_subgroup) }
       it { is_expected.not_to include(active_group) }
+    end
+
+    describe '.inactive' do
+      subject { described_class.inactive }
+
+      it_behaves_like 'ancestor aware inactive scope'
+    end
+
+    describe '.self_or_ancestors_inactive' do
+      subject { described_class.self_or_ancestors_inactive }
+
+      it_behaves_like 'ancestor aware inactive scope'
     end
 
     describe '.with_integrations' do
@@ -1846,7 +1842,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     let(:user) { create(:user) }
 
     before do
-      allow(Notify).to receive(:member_access_granted_email).and_call_original
+      allow(Members::AccessGrantedMailer).to receive_message_chain(:with, :email, :deliver_later)
     end
 
     it 'adds the user' do
@@ -1860,11 +1856,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     it 'notifies the user of membership' do
-      member = group.add_member(user, GroupMember::MAINTAINER)
+      expect(Members::AccessGrantedMailer).to receive_message_chain(:with, :email, :deliver_later)
 
-      expect(Notify)
-        .to have_received(:member_access_granted_email)
-        .with(member.real_source_type, member.id)
+      group.add_member(user, GroupMember::MAINTAINER)
     end
 
     context 'when importing' do
@@ -1875,19 +1869,15 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
 
       it 'does not notify the user of membership' do
-        member = group.add_member(user, GroupMember::MAINTAINER)
+        expect(Members::AccessGrantedMailer).not_to receive(:with)
 
-        expect(Notify)
-          .not_to have_received(:member_access_granted_email)
-          .with(member.real_source_type, member.id)
+        group.add_member(user, GroupMember::MAINTAINER)
       end
 
       it 'notifies the user when invited by a user regardless of importing status' do
-        member = group.add_member(user, GroupMember::MAINTAINER, current_user: owner)
+        expect(Members::AccessGrantedMailer).to receive_message_chain(:with, :email, :deliver_later)
 
-        expect(Notify)
-          .to have_received(:member_access_granted_email)
-          .with(member.real_source_type, member.id)
+        group.add_member(user, GroupMember::MAINTAINER, current_user: owner)
       end
     end
   end
@@ -2302,51 +2292,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#assigning_role_too_high?' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:group) { create(:group) }
-    let_it_be(:member, reload: true) { create(:group_member, :reporter, group: group, user: user) }
-
-    subject(:assigning_role_too_high) { group.assigning_role_too_high?(user, access_level) }
-
-    context 'when the access_level is nil' do
-      let(:access_level) { nil }
-
-      it 'returns false' do
-        expect(assigning_role_too_high).to be_falsey
-      end
-    end
-
-    context 'when the role being assigned is lower then the role of currect user' do
-      let(:access_level) { Gitlab::Access::GUEST }
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'when the role being assigned is equal to the role of currect user' do
-      let(:access_level) { Gitlab::Access::REPORTER }
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'when the role being assigned is higher than the role of currect user' do
-      let(:access_level) { Gitlab::Access::MAINTAINER }
-
-      it 'returns true' do
-        expect(assigning_role_too_high).to be_truthy
-      end
-
-      context 'when the current user is admin', :enable_admin_mode do
-        before do
-          user.update!(admin: true)
-        end
-
-        it 'returns false' do
-          expect(assigning_role_too_high).to be_falsey
-        end
-      end
-    end
-  end
+  it_behaves_like 'a resource that has roles', :group
 
   def setup_group_members(group)
     members = {
@@ -4341,6 +4287,52 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#work_items_saved_views_enabled?' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when work_items_saved_views is enabled for the group' do
+      before do
+        stub_feature_flags(work_items_saved_views: group)
+      end
+
+      it 'returns true regardless of user' do
+        expect(group.work_items_saved_views_enabled?).to eq(true)
+        expect(group.work_items_saved_views_enabled?(user)).to eq(true)
+      end
+    end
+
+    context 'when work_items_saved_views is disabled for the group' do
+      before do
+        stub_feature_flags(work_items_saved_views: false)
+      end
+
+      context 'when work_items_saved_views_user is enabled for the user' do
+        before do
+          stub_feature_flags(work_items_saved_views_user: user)
+        end
+
+        it 'returns true when user is provided' do
+          expect(group.work_items_saved_views_enabled?(user)).to eq(true)
+        end
+
+        it 'returns false when no user is provided' do
+          expect(group.work_items_saved_views_enabled?).to eq(false)
+        end
+      end
+
+      context 'when work_items_saved_views_user feature flag is disabled' do
+        before do
+          stub_feature_flags(work_items_saved_views_user: false)
+        end
+
+        it 'returns false' do
+          expect(group.work_items_saved_views_enabled?(user)).to eq(false)
+          expect(group.work_items_saved_views_enabled?).to eq(false)
+        end
+      end
+    end
+  end
+
   describe '#has_active_hooks?' do
     let(:group) { build(:group) }
 
@@ -4627,6 +4619,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let_it_be(:group_with_inactive_ancestor) { create(:group, parent: inactive_group) }
 
       specify { expect(group_with_inactive_ancestor.active?).to be(false) }
+    end
+  end
+
+  describe '#roles_user_can_assign' do
+    it_behaves_like 'roles_user_can_assign' do
+      let(:resource) { group }
+      let(:membership) { create(:group_member, user: user, group: resource) }
     end
   end
 end

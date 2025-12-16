@@ -11,6 +11,7 @@ RSpec.describe 'root/index.html.haml', feature_category: :onboarding do
       review_requested_path: mock_review_requested_path,
       assigned_to_you_path: mock_assigned_to_you_path
     }
+    allow(view).to receive_messages(user_groups_requiring_reauth: [])
     render
   end
 

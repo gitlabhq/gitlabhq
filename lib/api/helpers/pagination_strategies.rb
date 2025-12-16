@@ -4,8 +4,8 @@ module API
   module Helpers
     module PaginationStrategies
       # paginator_params are only currently supported with offset pagination
-      def paginate_with_strategies(relation, request_scope = nil, paginator_params: {})
-        paginator = paginator(relation, request_scope)
+      def paginate_with_strategies(relation, request_scope = nil, paginator_params: {}, use_cursor: true)
+        paginator = paginator(relation, request_scope, use_cursor)
 
         result = if block_given?
                    yield(paginator.paginate(relation, **paginator_params))
@@ -18,16 +18,16 @@ module API
         end
       end
 
-      def paginator(relation, request_scope = nil)
-        return keyset_paginator(relation) if keyset_pagination_enabled?
+      def paginator(relation, request_scope = nil, use_cursor = true)
+        return keyset_paginator(relation, use_cursor) if keyset_pagination_enabled?
 
         offset_paginator(relation, request_scope)
       end
 
       private
 
-      def keyset_paginator(relation)
-        if cursor_based_keyset_pagination_supported?(relation)
+      def keyset_paginator(relation, use_cursor)
+        if cursor_based_keyset_pagination_supported?(relation) && use_cursor
           request_context_class = Gitlab::Pagination::Keyset::CursorBasedRequestContext
           paginator_class = Gitlab::Pagination::Keyset::CursorPager
           availability_checker = Gitlab::Pagination::CursorBasedKeyset

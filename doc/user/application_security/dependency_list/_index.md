@@ -67,7 +67,7 @@ For more information, see the history.
 
 To view the dependencies of a project or all projects in a group:
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Secure** > **Dependency list**.
 1. Optional. If there are transitive dependencies, you can also view all of the dependency paths:
    - For a project, in the **Location** column, select **View dependency paths**.
@@ -116,7 +116,7 @@ To filter by component version, you must filter by exactly one component first.
 
 To filter the dependency list:
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Secure** > **Dependency list**.
 1. Select the filter bar.
 1. Select a filter, then from the dropdown list select one or more criteria.
@@ -196,7 +196,7 @@ You can export the dependency list in:
 
 To export the dependency list:
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Secure** > **Dependency list**.
 1. Select **Export** and then select the file format.
 
@@ -218,7 +218,7 @@ Check the license specified for the dependency upstream:
 - For C/C++ packages, check [Conancenter](https://conan.io/center).
 - For npm packages, check [npmjs.com](https://www.npmjs.com/).
 - For Python packages, check [PyPI](https://pypi.org/).
-- For NuGet packages, check [Nuget](https://www.nuget.org/packages).
+- For NuGet packages, check [NuGet](https://www.nuget.org/packages).
 - For Go packages, check [pkg.go.dev](https://pkg.go.dev/).
 
 If the license appears as `unknown` upstream, it is expected that GitLab will show the **License** for that dependency to be `unknown` as well.

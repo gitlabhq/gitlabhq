@@ -76,7 +76,8 @@ RSpec.shared_context '{Issues|WorkItems}Finder#execute context' do |factory|
   let!(:label_link2) { create(:label_link, label: label2, target: item3) }
   let(:search_user) { user }
   let(:params) { {} }
-  let(:items) { described_class.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
+  let(:finder) { described_class.new(search_user, params.reverse_merge(scope: scope, state: 'opened')) }
+  let(:items) { finder.execute }
 
   before_all do
     project1.add_maintainer(user)

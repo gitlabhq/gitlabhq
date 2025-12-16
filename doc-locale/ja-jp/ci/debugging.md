@@ -15,12 +15,12 @@ description: 設定の検証、警告、エラー、トラブルシューティ�
 
 GitLabには、CI/CD設定のデバッグを容易にするためのツールがいくつか用意されています。
 
-パイプラインの問題を解決できない場合は、以下からヘルプを得られます。
+パイプラインの問題を解決できない場合は、以下からヘルプを得られます:
 
 - [GitLabコミュニティフォーラム](https://forum.gitlab.com/)
 - GitLab[サポート](https://about.gitlab.com/support/)
 
-特定のCI/CD機能で問題が発生している場合は、その機能に関するトラブルシューティングのセクションを参照してください。
+特定のCI/CD機能で問題が発生している場合は、その機能に関するトラブルシューティングのセクションを参照してください:
 
 - [キャッシュ](caching/_index.md#troubleshooting)
 - [CI/CDジョブトークン](jobs/ci_job_token.md#troubleshooting)
@@ -32,7 +32,7 @@ GitLabには、CI/CD設定のデバッグを容易にするためのツールが
 - [IDトークン](secrets/id_token_authentication.md#troubleshooting)
 - [ジョブ](jobs/job_troubleshooting.md)
 - [ジョブアーティファクト](jobs/job_artifacts_troubleshooting.md)
-- [マージリクエストパイプライン](pipelines/mr_pipeline_troubleshooting.md)、[マージ結果パイプライン](pipelines/merged_results_pipelines.md#troubleshooting)、および[マージトレイン](pipelines/merge_trains.md#troubleshooting)
+- [マージリクエストパイプライン](pipelines/mr_pipeline_troubleshooting.md)、[マージ結果パイプライン](pipelines/merged_results_pipelines.md#troubleshooting) 、および[マージトレイン](pipelines/merge_trains.md#troubleshooting)
 - [パイプラインエディタ](pipeline_editor/_index.md#troubleshooting)
 - [変数](variables/variables_troubleshooting.md)
 - [YAMLの`includes`キーワード](yaml/includes.md#troubleshooting)
@@ -46,7 +46,7 @@ GitLabには、CI/CD設定のデバッグを容易にするためのツールが
 
 #### `.gitlab-ci.yml`をパイプラインエディタで編集 {#edit-gitlab-ciyml-with-the-pipeline-editor}
 
-[パイプラインエディタ](pipeline_editor/_index.md)は、（シングルファイルエディタやWeb IDEではなく）推奨される編集エクスペリエンスです。これには以下が含まれます。
+[パイプラインエディタ](pipeline_editor/_index.md)は、（シングルファイルエディタやWeb IDEではなく）推奨される編集エクスペリエンスです。これには以下が含まれます:
 
 - 受け入れられたキーワードのみを使用するためのコード補完の提案。
 - 自動構文ハイライトと検証。
@@ -56,7 +56,7 @@ GitLabには、CI/CD設定のデバッグを容易にするためのツールが
 
 パイプライン設定をローカルで編集する場合は、エディタでGitLab CI/CDスキーマを使用して構文の基本的な問題を検証できます。[SchemaStoreをサポートするエディタ](https://www.schemastore.org/)では、デフォルトでGitLab CI/CDスキーマが使用されます。
 
-スキーマに直接リンクする必要がある場合は、次のURLを使用します。
+スキーマに直接リンクする必要がある場合は、次のURLを使用します:
 
 ```plaintext
 https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/editor/schema/ci.json
@@ -72,7 +72,7 @@ CI/CDスキーマでカバーされるカスタムタグの完全なリストを
 
 ### パイプライン名を使用する {#use-pipeline-names}
 
-[`workflow:name`](yaml/_index.md#workflowname)を使用してすべてのパイプラインタイプに名前を付けると、パイプラインリストでパイプラインを簡単に識別できます。次に例を示します。
+[`workflow:name`](yaml/_index.md#workflowname)を使用してすべてのパイプラインタイプに名前を付けると、パイプラインリストでパイプラインを簡単に識別できます。次に例を示します:
 
 ```yaml
 variables:
@@ -108,7 +108,7 @@ CI/CDのトラブルシューティングの重要な部分は、どの変数が
 
 #### 変数を使用してCLIコマンドにフラグを追加する {#use-variables-to-add-flags-to-cli-commands}
 
-標準のパイプライン実行では使用されないが、オンデマンドでデバッグに使用できるCI/CD変数を定義できます。次の例のように変数を追加すると、[パイプライン](pipelines/_index.md#run-a-pipeline-manually)または[個々のジョブ](jobs/job_control.md#run-a-manual-job)の手動実行中に変数を追加して、コマンドの動作を変更できます。次に例を示します。
+標準のパイプライン実行では使用されないが、オンデマンドでデバッグに使用できるCI/CD変数を定義できます。次の例のように変数を追加すると、[パイプライン](pipelines/_index.md#run-a-pipeline-manually)または[個々のジョブ](jobs/job_control.md#run-a-manual-job)の手動実行中に変数を追加して、コマンドの動作を変更できます。次に例を示します:
 
 ```yaml
 my-flaky-job:
@@ -126,7 +126,7 @@ my-flaky-job:
 
 #### 依存関係のバージョンを検証する {#verify-dependency-versions}
 
-ジョブで正しいバージョンの依存関係が使用されていることを検証するには、メインスクリプトコマンドを実行する前に依存関係を出力します。次に例を示します。
+ジョブで正しいバージョンの依存関係が使用されていることを検証するには、メインスクリプトコマンドを実行する前に依存関係を出力します。次に例を示します:
 
 ```yaml
 job:
@@ -139,7 +139,7 @@ job:
 
 #### バージョンを固定する {#pin-versions}
 
-依存関係やイメージの最新バージョンを常に使用したいと思うかもしれませんが、アップデートには予期しない破壊的な変更が含まれる可能性があります。予期しない変更を避けるために、主要な依存関係とイメージを固定することを検討してください。次に例を示します。
+依存関係やイメージの最新バージョンを常に使用したいと思うかもしれませんが、アップデートには予期しない破壊的な変更が含まれる可能性があります。予期しない変更を避けるために、主要な依存関係とイメージを固定することを検討してください。次に例を示します:
 
 ```yaml
 variables:
@@ -173,7 +173,7 @@ job1:
 
 #### 出力とレポートをアーティファクトとして保存する {#save-output-and-reports-as-artifacts}
 
-一部のツールは、ジョブの実行中にのみ必要となるファイルを生成しますが、これらのファイルの内容をデバッグに使用できる場合があります。[`artifacts`](yaml/_index.md#artifacts)を使って後で分析するために、それらのファイルを保存することができます。
+一部のツールは、ジョブの実行中にのみ必要となるファイルを生成しますが、これらのファイルの内容をデバッグに使用できる場合があります。[`artifacts`](yaml/_index.md#artifacts)を使って後で分析するために、それらのファイルを保存することができます:
 
 ```yaml
 job1:
@@ -184,7 +184,7 @@ job1:
       - my-output.json
 ```
 
-[`artifacts:reports`](yaml/artifacts_reports.md)で設定されたレポートは、デフォルトではダウンロードできませんが、デバッグに役立つ情報を含んでいる可能性もあります。これらのレポートを検査可能にするには、同じ手法を使用します。
+[`artifacts:reports`](yaml/artifacts_reports.md)で設定されたレポートは、デフォルトではダウンロードできませんが、デバッグに役立つ情報を含んでいる可能性もあります。これらのレポートを検査可能にするには、同じ手法を使用します:
 
 ```yaml
 job1:
@@ -267,7 +267,7 @@ GitLab Duo ChatのGitLab Duo根本原因分析を使用すれば、[失敗した
 
 ## パイプラインの警告 {#pipeline-warnings}
 
-パイプライン設定の警告は、以下を行った場合に表示されます。
+パイプライン設定の警告は、以下を行った場合に表示されます:
 
 - [CI Lintツールで設定を検証する](yaml/lint.md)。
 - [パイプラインを手動で実行する](pipelines/_index.md#run-a-pipeline-manually)。
@@ -288,7 +288,7 @@ GitLab Duo ChatのGitLab Duo根本原因分析を使用すれば、[失敗した
 
 ### `Checking ability to merge automatically`メッセージ {#checking-ability-to-merge-automatically-message}
 
-マージリクエストが`Checking ability to merge automatically`メッセージで停止し、メッセージが数分後に消えない場合は、次の回避策のいずれかを試すことができます。
+マージリクエストが`Checking ability to merge automatically`メッセージで停止し、メッセージが数分後に消えない場合は、次の回避策のいずれかを試すことができます:
 
 - マージリクエストページを更新します。
 - マージリクエストを閉じて再度開きます。
@@ -299,7 +299,7 @@ GitLab Duo ChatのGitLab Duo根本原因分析を使用すれば、[失敗した
 
 ### `Checking pipeline status`メッセージ {#checking-pipeline-status-message}
 
-マージリクエストが、最新のコミットに関連付けられたパイプラインをまだ持っていない場合、このメッセージは回転状態アイコン（{{< icon name="spinner" >}}）とともに表示されます。これには次の原因が考えられます。
+マージリクエストが、最新のコミットに関連付けられたパイプラインをまだ持っていない場合、このメッセージは回転状態アイコン（{{< icon name="spinner" >}}）とともに表示されます。これには次の原因が考えられます:
 
 - GitLabがまだパイプラインの作成を完了していない。
 - 外部CIサービスが使用されていて、GitLabはそのサービスからの返信をまだ受け取っていない。
@@ -314,21 +314,21 @@ GitLab Duo ChatのGitLab Duo根本原因分析を使用すれば、[失敗した
 
 ### `Project <group/project> not found or access denied`メッセージ {#project-groupproject-not-found-or-access-denied-message}
 
-このメッセージは、[`include`](yaml/_index.md#include)で設定が追加されており、次のいずれかの条件に当てはまる場合に表示されます。
+このメッセージは、[`include`](yaml/_index.md#include)で設定が追加されており、次のいずれかの条件に当てはまる場合に表示されます:
 
 - 設定が、見つからないプロジェクトを参照している。
 - パイプラインを実行しているユーザーが、含まれているプロジェクトにアクセスできない。
 
-これを解決するには、以下を確認してください。
+これを解決するには、以下を確認してください:
 
-- プロジェクトのパスが`my-group/my-project`形式であり、リポジトリにフォルダが含まれていない。
+- プロジェクトのパスが`my-group/my-project`形式であり、リポジトリにフォルダーが含まれていない。
 - パイプラインを実行しているユーザーが、含まれているファイルを含む[プロジェクトのメンバー](../user/project/members/_index.md#add-users-to-a-project)である。ユーザーは、同じプロジェクトでCI/CDジョブを実行するための[権限](../user/permissions.md#cicd)も必要です。
 
 ### `The parsed YAML is too big`メッセージ {#the-parsed-yaml-is-too-big-message}
 
 このメッセージは、YAML設定が大きすぎるか、ネストが深すぎる場合に表示されます。多数のインクルードを含むYAMLファイル、および全体で数千行のYAMLファイルは、このメモリ制限に達する可能性が高くなります。たとえば、200 KBのYAMLファイルは、デフォルトのメモリ制限に達する可能性があります。
 
-設定サイズを縮小するには、次の操作を実行します。
+設定サイズを縮小するには、次の操作を実行します:
 
 - パイプラインエディタの[完全な設定](pipeline_editor/_index.md#view-full-configuration)タブで、展開されたCI/CD設定の長さを確認します。削除または簡略化できる重複した設定を探します。
 - 長い、または繰り返される`script`セクションを、プロジェクトのスタンドアロンスクリプトに移動します。
@@ -346,7 +346,7 @@ GitLab Self-Managedでは、[サイズ制限を増やす](../administration/inst
 
 {{< history >}}
 
-- GitLab 16.3で、**CI_JOB_TOKENでこのプロジェクトへのアクセスを許可する**設定の[名称が、**このプロジェクトへのアクセスを制限**に変更](https://gitlab.com/gitlab-org/gitlab/-/issues/411406)されました。
+- GitLab 16.3で、**Allow access to this project with a CI_JOB_TOKEN**（CI_JOB_TOKENでこのプロジェクトへのアクセスを許可する）設定の[名称が、**Limit access to this project**（このプロジェクトへのアクセスを制限）に変更](https://gitlab.com/gitlab-org/gitlab/-/issues/411406)されました。
 
 {{< /history >}}
 
@@ -356,7 +356,7 @@ Runnerは、別のプロジェクトのコンテナレジストリから[`image`
 
 ジョブトークンの設定で、別のプロジェクトのコンテナレジストリへのアクセスが拒否されている場合、Runnerはエラーメッセージを返します。
 
-次に例を示します。
+次に例を示します:
 
 - ```plaintext
   WARNING: Failed to pull image with policy "always": Error response from daemon: pull access denied for registry.example.com/path/to/project, repository does not exist or may require 'docker login': denied: requested access to the resource is denied
@@ -366,9 +366,9 @@ Runnerは、別のプロジェクトのコンテナレジストリから[`image`
   WARNING: Failed to pull image with policy "": image pull failed: rpc error: code = Unknown desc = failed to pull and unpack image "registry.example.com/path/to/project/image:v1.2.3": failed to resolve reference "registry.example.com/path/to/project/image:v1.2.3": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
   ```
 
-これらのエラーは、次の両方が当てはまる場合に発生する可能性があります。
+これらのエラーは、次の両方が当てはまる場合に発生する可能性があります:
 
-- イメージをホスティングしているプライベートプロジェクトで、[**このプロジェクトへのアクセスを制限**](jobs/ci_job_token.md#limit-job-token-scope-for-public-or-internal-projects)オプションが有効になっている。
+- イメージをホスティングしているプライベートプロジェクトで、[**Limit access to this project**（このプロジェクトへのアクセスを制限）](jobs/ci_job_token.md#limit-job-token-scope-for-public-or-internal-projects)オプションが有効になっている。
 - イメージのフェッチを試みるジョブが、プライベートプロジェクトの許可リストにリストされていないプロジェクトで実行されている。
 
 この問題を解決するには、コンテナレジストリからイメージをフェッチするCI/CDジョブを持つプロジェクトを、ターゲットプロジェクトの[ジョブトークン許可リスト](jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)に追加します。
@@ -389,7 +389,7 @@ CI/CDジョブで断続的な`Failed to pull image`エラーが発生するこ�
 
 ### パイプライン実行時の`Something went wrong on our end`メッセージまたは`500`エラー {#something-went-wrong-on-our-end-message-or-500-error-when-running-a-pipeline}
 
-次のパイプラインエラーが発生する可能性があります。
+次のパイプラインエラーが発生する可能性があります:
 
 - マージリクエストをプッシュまたは作成すると、`Something went wrong on our end`メッセージが表示される。
 - APIを使用してパイプラインをトリガーすると、`500`エラーが発生する。
@@ -400,7 +400,7 @@ CI/CDジョブで断続的な`Failed to pull image`エラーが発生するこ�
 
 ### `config should be an array of hashes`エラーメッセージ {#config-should-be-an-array-of-hashes-error-message}
 
-[`parallel:matrix`キーワード](yaml/_index.md#parallelmatrix)で[`!reference`タグ](yaml/yaml_optimization.md#reference-tags)を使用すると、次のようなエラーが表示される場合があります。
+[`parallel:matrix`キーワード](yaml/_index.md#parallelmatrix)で[`!reference`タグ](yaml/yaml_optimization.md#reference-tags)を使用すると、次のようなエラーが表示される場合があります:
 
 ```plaintext
 This GitLab CI configuration is invalid: jobs:my_job_name:parallel:matrix config should be an array of hashes.

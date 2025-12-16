@@ -55,7 +55,7 @@ module Gitlab
 
           def global_context
             Gitlab::Ci::Build::Context::Global.new(
-              @pipeline, yaml_variables: @command.yaml_processor_result.root_variables)
+              @pipeline, yaml_variables: @command.yaml_processor_result.root_variables, logger: logger)
           end
 
           def has_workflow_rules?

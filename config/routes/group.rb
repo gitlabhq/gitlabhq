@@ -38,6 +38,13 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
   ) do
     get :work_items, to: 'work_items#rss', constraints: ->(req) { req.format == :atom }
     get :work_items, to: 'work_items#calendar', constraints: ->(req) { req.format == :ics }
+
+    resources :saved_views, only: [], path: 'work_items/saved_views' do
+      member do
+        get :subscribe
+      end
+    end
+
     namespace :settings do
       resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
         put :reset_registration_token

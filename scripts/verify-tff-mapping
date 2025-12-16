@@ -10,9 +10,12 @@ require 'test_file_finder'
 # To minimize the chance of this test failing due to unrelated changes,
 # the test files are chosen to be critical files that are unlikely to be deleted in a typical merge request
 
-specs_for_cells_claims_models = %w[
-  spec/cells/claims/organizations/organization_spec.rb
-].freeze
+root_path = "#{__dir__}/../"
+
+specs_for_cells_claims_models =
+  Dir["#{root_path}spec/cells/claims/**/*_spec.rb"].map do |path|
+    path.delete_prefix(root_path)
+  end.freeze
 
 specs_for_all_models = %w[
   spec/models/every_model_spec.rb
@@ -788,7 +791,7 @@ tests = [
       spec/lib/gitlab/database/dictionary_spec.rb
       ee/spec/lib/gitlab/database/inclusion_of_tables_with_gitlab_sec_schema_spec.rb
       spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb
-      spec/lib/gitlab/database/sharding_key_spec.rb
+      spec/lib/gitlab/organizations/sharding_key_spec.rb
     ]
   },
   {

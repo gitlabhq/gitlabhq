@@ -40,11 +40,13 @@ type mcpManager interface {
 	HasTool(string) bool
 	CallTool(context.Context, *pb.Action) (*pb.ClientEvent, error)
 	Tools() []*pb.McpTool
+	PreApprovedTools() []string
 	Close() error
 }
 
 type manager struct {
 	tools              []*pb.McpTool
+	preApprovedTools   []string
 	toolSessionsByName map[string]*toolSession
 	serverSessions     []*serverSession
 }
@@ -180,6 +182,11 @@ func (m *manager) buildTools(ctx context.Context) error {
 			configuredTools = *s.cfg.Tools
 		}
 
+		var preApprovedTools []string
+		if s.cfg.PreApprovedTools != nil {
+			preApprovedTools = *s.cfg.PreApprovedTools
+		}
+
 		for _, tool := range toolsResult.Tools {
 			schemaBytes, err := json.Marshal(tool.InputSchema)
 			if err != nil {
@@ -201,6 +208,10 @@ func (m *manager) buildTools(ctx context.Context) error {
 				m.toolSessionsByName[prefixedName] = &toolSession{
 					originalName: tool.Name,
 					session:      s.session,
+				}
+
+				if slices.Contains(preApprovedTools, tool.Name) {
+					m.preApprovedTools = append(m.preApprovedTools, prefixedName)
 				}
 			}
 		}
@@ -224,6 +235,14 @@ func (m *manager) Tools() []*pb.McpTool {
 	}
 
 	return m.tools
+}
+
+func (m *manager) PreApprovedTools() []string {
+	if m == nil {
+		return nil
+	}
+
+	return m.preApprovedTools
 }
 
 func (m *manager) CallTool(ctx context.Context, action *pb.Action) (*pb.ClientEvent, error) {

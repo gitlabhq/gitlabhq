@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
     end
 
     context 'when resource can be paginated' do
-      before do
+      before_all do
         create_list(:project, 3)
       end
 
@@ -147,6 +147,18 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
 
             it 'returns appropriate amount of resources' do
               expect(subject.paginate(resource).count).to eq 1
+            end
+          end
+
+          context 'when page and per_page params have an invalid type' do
+            [[1], nil, 'wrong', {}, 1.5].each do |wrong_value|
+              context "when value is #{wrong_value.inspect}" do
+                let(:query) { base_query.merge(page: wrong_value, per_page: wrong_value) }
+
+                it 'returns appropriate amount of resources based on resource per(N)' do
+                  expect(subject.paginate(resource).count).to eq 1
+                end
+              end
             end
           end
 
@@ -313,6 +325,22 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
           expect(paginated_relation.order_values).to be_present
           expect(paginated_relation.order_values.first).to be_descending
           expect(paginated_relation.order_values.first.expr.name).to eq 'created_at'
+        end
+      end
+
+      context 'when page param does not match current_page' do
+        let(:query) { base_query.merge(page: 2, per_page: 1) }
+
+        it 're-paginates the resources' do
+          already_paginated = resource.page(1).per(1)
+
+          expect(already_paginated.current_page).to eq 1
+          expect(already_paginated.limit_value).to eq 1
+
+          result = subject.paginate(already_paginated)
+
+          expect(result.current_page).to eq 2
+          expect(result.limit_value).to eq 1
         end
       end
     end

@@ -780,7 +780,7 @@ This log is located:
 - In the `/home/git/gitlab/log/importer.log` file on self-compiled installations.
 - On the Sidekiq pods under the `subcomponent="importer"` key on Helm chart installations.
 
-This file logs the progress of [project imports and migrations](../../user/project/import/_index.md).
+This file logs the progress of [project imports and migrations](../../user/import/_index.md).
 
 ## `exporter.log`
 

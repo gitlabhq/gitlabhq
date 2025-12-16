@@ -15,7 +15,7 @@ export default {
     ),
   },
   addJobsToPipelinesLink: helpPagePath('/ci/pipelines/merge_request_pipelines.html', {
-    anchor: 'add-jobs-to-merge-request-pipelines',
+    anchor: 'configure-merge-request-pipelines',
   }),
   components: {
     GlSprintf,

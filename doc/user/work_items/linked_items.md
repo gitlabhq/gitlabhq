@@ -148,7 +148,7 @@ To remove a linked item:
 
 The bi-directional relationship is removed from both items.
 
-Alternatively, you can remove a linked item using the `/unlink` [quick action](../project/quick_actions.md).
+Alternatively, you can remove a linked item using the [`/unlink` quick action](../project/quick_actions.md#unlink).
 
 ## Related topics
 

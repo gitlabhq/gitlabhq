@@ -18,6 +18,7 @@ import {
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_UNAUTHORIZED,
 } from '~/lib/utils/http_status';
+import { DEFAULT_MANUAL_ACTIONS_LIMIT } from '~/ci/constants';
 import { generateMRPipelinesResponse } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -74,6 +75,7 @@ const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) =>
     apolloProvider: apolloMock,
     provide: {
       ...defaultProvide,
+      manualActionsLimit: DEFAULT_MANUAL_ACTIONS_LIMIT,
     },
     propsData: {
       ...defaultProps,
@@ -196,7 +198,7 @@ describe('PipelinesTableWrapper component', () => {
           '/help/ci/pipelines/merge_request_pipelines.md#prerequisites',
         );
         expect(findUserPermissionsDocsLink().attributes('href')).toBe(
-          '/help/user/permissions.md#cicd',
+          '/help/user/permissions.md#project-cicd',
         );
 
         expect(findEmptyState().text()).toContain('To run a merge request pipeline');

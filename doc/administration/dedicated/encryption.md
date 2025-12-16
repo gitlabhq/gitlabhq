@@ -44,10 +44,8 @@ AWS KMS key, creating a secure envelope around your data.
 
 Your AWS KMS encryption key can come from one of the following sources:
 
-- [AWS-managed keys](#aws-managed-keys) (default): GitLab and AWS handle all aspects of key generation and
-management.
-- [Bring your own key (BYOK)](#bring-your-own-key-byok): You provide and control your own AWS KMS
-keys.
+- [AWS-managed keys](#aws-managed-keys) (default): GitLab and AWS handle all aspects of key generation and management.
+- [Bring your own key (BYOK)](#bring-your-own-key-byok): You provide and control your own AWS KMS keys.
 
 All key generation takes place in AWS KMS using dedicated hardware, ensuring high security
 standards for encryption across all storage services.
@@ -130,10 +128,9 @@ To create AWS KMS keys for BYOK:
 1. Enter your values for key alias, description, and tags.
 1. Select key administrators.
 1. Optional. Allow or prevent key administrators from deleting the key.
-1. On the **Define key usage permissions** page, under **Other AWS accounts**, add the GitLab AWS
-account.
+1. On the **Define key usage permissions** page, under **Other AWS accounts**, add the GitLab AWS account.
 1. Review the KMS key policy. It should look similar to the example below, populated with your
-account IDs and usernames.
+   account IDs and usernames.
 
 ```json
 {
@@ -243,7 +240,7 @@ To enable BYOK:
 1. Collect the ARNs for all keys you created, including any replica keys in their respective regions.
 1. Before your GitLab Dedicated tenant is provisioned, ensure these ARNs have been entered into in Switchboard during [onboarding](create_instance/_index.md).
 1. Make sure the AWS KMS keys are replicated to your desired primary, secondary, and backup regions
-specified in Switchboard during [onboarding](create_instance/_index.md).
+   specified in Switchboard during [onboarding](create_instance/_index.md).
 
 ## Encrypted data in transit
 

@@ -26,7 +26,7 @@ FactoryBot.define do
     trait :non_default do
       default { false }
       sequence(:id, 100) { |n| n }
-      icon_name { 'issue-type-non-default' }
+      icon_name { 'work-item-non-default' }
       sequence(:name) { |n| "Work item type #{n}" }
     end
 

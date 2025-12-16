@@ -14,7 +14,7 @@ title: Migrating to dependency scanning using SBOM
 
 {{< history >}}
 
-- The legacy [dependency scanning feature based on the Gemnasium analyzer](_index.md) was [deprecated](../../../update/deprecations.md#dependency-scanning-upgrades-to-the-gitlab-sbom-vulnerability-scanner) in GitLab 17.9 and planned for removal in 19.0.
+- The dependency scanning feature based on the Gemnasium analyzer is deprecated in GitLab 17.9 and is proposed for removal in GitLab 20.0. However, the removal timeline is not finalized, and you can continue using Gemnasium as needed.
 
 {{< /history >}}
 
@@ -67,21 +67,21 @@ not limited to, the following:
 
 ### A new approach to security scanning
 
-When using the legacy dependency scanning feature, all scanning work happens within your CI/CD pipeline. When running a scan, the Gemnasium analyzer handles two critical tasks simultaneously: it identifies your project's dependencies and immediately performs a security analysis of those dependencies using a local copy of the GitLab Advisory Database and its specific security scanning engine. Then, it outputs results into various reports (CycloneDX SBOM and dependency scanning security report).
+When using the legacy dependency scanning feature, all scanning work happens in your CI/CD pipeline. When running a scan, the Gemnasium analyzer handles two critical tasks simultaneously: it identifies your project's dependencies and immediately performs a security analysis of those dependencies using a local copy of the GitLab advisory database and its specific security scanning engine. Then, it outputs results into various reports (CycloneDX SBOM and dependency scanning security report).
 
-On the other hand, the dependency scanning using SBOM feature relies on a decomposed dependency analysis approach that separates dependency detection from other analyses, like static reachability or vulnerability scanning. While these tasks are still executed within the same CI job, they function as decoupled, reusable components. For instance, the vulnerability scanning analysis reuses the unified engine, the GitLab SBOM Vulnerability Scanner, that also supports GitLab Continuous Vulnerability Scanning features. This also opens up opportunity for future integration points, enabling more flexible vulnerability scanning workflows.
+On the other hand, the dependency scanning using SBOM feature relies on a decomposed dependency analysis approach that separates dependency detection from other analyses, like static reachability or vulnerability scanning. While these tasks are still executed in the same CI/CD job, they function as decoupled, reusable components. For instance, the vulnerability scanning analysis reuses the unified engine, the GitLab SBOM vulnerability scanner, that also supports GitLab continuous vulnerability scanning features. This also opens up opportunity for future integration points, enabling more flexible vulnerability scanning workflows.
 
 Read more about how dependency scanning using SBOM [scans an application](dependency_scanning_sbom/_index.md#how-it-scans-an-application).
 
 ### CI/CD configuration
 
-To prevent disruption to your CI/CD pipelines, the new approach will not be applied to the stable dependency scanning CI/CD template (`Dependency-Scanning.gitlab-ci.yml`) and as of GitLab 18.5, you must use the `v2` template (`Dependency-Scanning.v2.gitlab-ci.yml`) to enable it.
+To prevent disruption to your CI/CD pipelines, the new approach does not apply to the stable dependency scanning CI/CD template (`Dependency-Scanning.gitlab-ci.yml`) and as of GitLab 18.5, you must use the `v2` template (`Dependency-Scanning.v2.gitlab-ci.yml`) to enable it.
 Other migration paths might be considered as the feature gains maturity.
 
 If you're using [Scan Execution Policies](../policies/scan_execution_policies.md), these changes apply in the same way because they build upon the CI/CD templates.
 
 If you're using the [main dependency scanning CI/CD component](https://gitlab.com/components/dependency-scanning/-/tree/main/templates/main) you won't see any changes as it already employs the new analyzer.
-However, if you're using the specialized components for Android, Rust, Swift, or Cocoapods, you'll need to migrate to the main component that now covers all supported languages and package managers.
+However, if you're using the specialized components for Android, Rust, Swift, or CocoaPods, you'll need to migrate to the main component that now covers all supported languages and package managers.
 
 ### Build support for Java and Python
 
@@ -136,10 +136,10 @@ To migrate to the dependency scanning using SBOM method, perform the following s
    - **Recommended**: Use the `v2` dependency scanning CI/CD template `Dependency-Scanning.v2.gitlab-ci.yml` to run the new dependency scanning analyzer:
      1. Ensure your `.gitlab-ci.yml` CI/CD configuration includes the `v2` dependency scanning CI/CD template.
      1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
-   - Use the [Scan Execution Policies](dependency_scanning_sbom/_index.md#scan-execution-policies) to run the new dependency scanning analyzer:
+   - Use a [scan execution policy](dependency_scanning_sbom/_index.md#enforce-scanning-on-multiple-projects) to run the new dependency scanning analyzer:
      1. Edit the configured scan execution policy for dependency scanning and ensure it uses the `v2` template.
      1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
-   - Use the [Pipeline Execution Policies](dependency_scanning_sbom/_index.md#pipeline-execution-policies) to run the new dependency scanning analyzer:
+   - Use a [pipeline execution policy](dependency_scanning_sbom/_index.md#enforce-scanning-on-multiple-projects) to run the new dependency scanning analyzer:
      1. Edit the configured pipeline execution policy and ensure it uses the `v2` template.
      1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
    - Use the [dependency scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) to run the new dependency scanning analyzer:
@@ -184,7 +184,7 @@ There are no additional steps needed to migrate a Bundler project to use the dep
 
 ### CocoaPods
 
-**Previous behavior**: dependency scanning based on the Gemnasium analyzer does not support CocoaPods projects when using the CI/CD templates or the Scan Execution Policies. Support for CocoaPods is only available on the experimental Cocoapods CI/CD component.
+**Previous behavior**: dependency scanning based on the Gemnasium analyzer does not support CocoaPods projects when using the CI/CD templates or the Scan Execution Policies. Support for CocoaPods is only available on the experimental CocoaPods CI/CD component.
 
 **New behavior**: The new dependency scanning analyzer extracts the project dependencies by parsing the `Podfile.lock` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
 
@@ -511,11 +511,10 @@ There are no additional steps to migrate a Yarn project to use the dependency sc
 ## Changes to CI/CD variables
 
 Most of the existing CI/CD variables are no longer relevant with the new dependency scanning analyzer so their values will be ignored.
-Unless these are also used to configure other security analyzers (for example: `ADDITIONAL_CA_CERT_BUNDLE`), you should remove them from your CI/CD configuration.
+Unless these are also used to configure other security analyzers you should remove them from your CI/CD configuration.
 
 Remove the following CI/CD variables from your CI/CD configuration:
 
-- `ADDITIONAL_CA_CERT_BUNDLE`
 - `DS_GRADLE_RESOLUTION_POLICY`
 - `DS_IMAGE_SUFFIX`
 - `DS_JAVA_VERSION`

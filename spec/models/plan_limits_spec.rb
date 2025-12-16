@@ -279,7 +279,7 @@ RSpec.describe PlanLimits do
     end
 
     let(:columns_with_nil) do
-      %w[repository_size]
+      %w[repository_size plan_name_uid]
     end
 
     let(:datetime_columns) do

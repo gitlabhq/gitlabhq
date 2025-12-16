@@ -7,8 +7,8 @@ module Gitlab
         class Global < Base
           include Gitlab::Utils::StrongMemoize
 
-          def initialize(pipeline, yaml_variables:)
-            super(pipeline)
+          def initialize(pipeline, yaml_variables:, logger:)
+            super(pipeline, logger: logger)
 
             @yaml_variables = yaml_variables.to_a
           end

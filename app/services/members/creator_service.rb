@@ -199,6 +199,8 @@ module Members
 
       return add_authorization_error if role_too_high?
 
+      return add_not_valid_org_error unless same_org?
+
       commit_changes
     end
 
@@ -274,16 +276,28 @@ module Members
 
     def add_commit_error
       msg = if new_record?
-              _('not authorized to create member')
+              s_('InviteUserToOrganization|not authorized to create member')
             else
-              _('not authorized to update member')
+              s_('InviteUserToOrganization|not authorized to update member')
             end
 
       member.errors.add(:base, :unauthorized, message: msg)
     end
 
     def add_authorization_error
-      msg = _("the member access level can't be higher than the current user's one")
+      msg = s_("InviteUserToOrganization|the member access level can't be higher than the current user's one")
+
+      member.errors.add(:base, msg)
+    end
+
+    def same_org?
+      return true unless member.user
+
+      member.user.member_of_organization?(source.organization_id)
+    end
+
+    def add_not_valid_org_error
+      msg = s_('InviteUserToOrganization|already belongs to another organization')
 
       member.errors.add(:base, msg)
     end

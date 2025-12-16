@@ -2,6 +2,7 @@
 import LinkCell from '~/ci/runner/components/cells/link_cell.vue';
 
 export default {
+  name: 'ProjectCell',
   components: {
     LinkCell,
   },

@@ -51,22 +51,20 @@ To use a feature with MCP:
 1. Turn on MCP for your group.
 1. Configure the MCP servers you want the feature to connect to.
 
-For a click-through demo, see [Duo Agent Platform - MCP integration](https://gitlab.navattic.com/mcp).
+For a click-through demo, see [GitLab Duo Agent Platform - MCP integration](https://gitlab.navattic.com/mcp).
 <!-- Demo published on 2025-08-05 -->
 
 ## Prerequisites
 
-Before using a GitLab Duo feature with MCP, you must:
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
 
-- Meet [the prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
+For Visual Studio Code (VS Code) or VSCodium:
 
-In addition, for VS Code:
-
-- Install [VSCodium](https://vscodium.com/) or [Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
-- Set up the GitLab Workflow extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow)
+- Install [VS Code](https://code.visualstudio.com/download) or [VSCodium](https://vscodium.com/).
+- Install and set up the GitLab Workflow extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow)
   or the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
-  - MCP support requires version 6.28.2 and later.
-  - Workspace and user configuration features require version 6.35.6 and later.
+  - For MCP support, install version 6.28.2 and later.
+  - For workspace and user configuration, install version 6.35.6 and later.
 
 For JetBrains IDEs:
 
@@ -77,7 +75,7 @@ For JetBrains IDEs:
 
 To turn MCP on or off for your group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Model Context Protocol**, select or clear the
@@ -132,7 +130,7 @@ For JetBrains IDEs, or to manually create the file in VS Code, use this location
 
 ### Configuration format
 
-Both configuration files use the same JSON format:
+Both configuration files use the same JSON format, with the details in the `mcpServers` key:
 
 ```json
 {
@@ -158,6 +156,13 @@ Both configuration files use the same JSON format:
   }
 }
 ```
+
+{{< alert type="note" >}}
+
+For other MCP clients, the Atlassian documentation uses `mcp.servers` in the sample configuration file.
+For GitLab, use `mcpServers` instead.
+
+{{< /alert >}}
 
 ### Configure tool approval
 
@@ -284,6 +289,56 @@ For more information about available tools, see the
 }
 ```
 
+## View the status of MCP servers
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/work_items/2155) in the GitLab Workflow extension for VS Code 6.55.0.
+
+{{< /history >}}
+
+Prerequisites:
+
+- Have the GitLab Workflow extension for VS Code 6.55.0 or later installed.
+- Have at least one MCP server configured in your user or workspace configuration.
+
+To view the status of your configured MCP servers:
+
+1. In VS Code or VSCodium, open the Command Palette:
+   - On macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - On Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. Type `GitLab: Show MCP Dashboard` and press <kbd>Enter</kbd>.
+
+The MCP dashboard opens in a new editor tab.
+Use the dashboard to:
+
+- Verify that your MCP servers are properly configured and running.
+- Identify connection issues before you use GitLab Duo features.
+- View which tools are available from each server.
+- Troubleshoot server configuration problems.
+
+### Open MCP configuration files
+
+To open your MCP configuration files:
+
+1. In VS Code or VSCodium, open the Command Palette:
+   - On macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - On Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. Open the configuration files:
+   - For user configuration, type `GitLab MCP: Open User Settings (JSON)` and press <kbd>Enter</kbd>.
+   - For workspace configuration, type `GitLab MCP: Open Workspace Settings (JSON)` and press <kbd>Enter</kbd>.
+
+## Re-authenticate with MCP servers
+
+After you update authentication details in an MCP configuration file, you must re-authenticate
+with the related MCP server.
+
+To trigger re-authentication:
+
+- Ask GitLab Duo a question that requires data from that MCP server
+  (for example, `What are the issues in my Jira project?` for Atlassian).
+  The authentication flow starts automatically.
+
 ## Use GitLab Duo features with MCP
 
 {{< history >}}
@@ -326,6 +381,15 @@ you must review that tool unless you've approved it for the entire session:
 - [Demo - Agentic Chat MCP Tool Call Approval](https://www.youtube.com/watch?v=_cHoTmG8Yj8)
 
 ## Troubleshooting
+
+### Delete the MCP authentication cache
+
+GitLab caches MCP authentication locally under `~/.mcp-auth/`.
+To prevent false positives while troubleshooting, delete the cache directory:
+
+```shell
+rm -rf ~/.mcp-auth/
+```
 
 ### `Error starting server filesystem: Error: spawn ... ENOENT`
 

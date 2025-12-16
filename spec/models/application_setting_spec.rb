@@ -37,9 +37,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         default_search_scope: described_class::SEARCH_SCOPE_SYSTEM_DEFAULT,
         asset_proxy_enabled: false,
         asciidoc_max_includes: 32,
+        authn_data_retention_cleanup_enabled: false,
         authorized_keys_enabled: true,
         autocomplete_users_limit: 300,
         autocomplete_users_unauthenticated_limit: 100,
+        background_operations_max_jobs: 10,
         bulk_import_concurrent_pipeline_batch_limit: 25,
         bulk_import_enabled: false,
         bulk_import_max_download_file_size: 5120,
@@ -158,7 +160,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         invisible_captcha_enabled: false,
         issues_create_limit: 300,
         jira_connect_public_key_storage_enabled: false,
-        kroki_formats: { 'blockdiag' => false, 'bpmn' => false, 'excalidraw' => false },
+        kroki_formats: { 'blockdiag' => false, 'bpmn' => false, 'excalidraw' => false, 'mermaid' => false },
         local_markdown_version: 0,
         lock_maven_package_requests_forwarding: false,
         lock_npm_package_requests_forwarding: false,
@@ -200,7 +202,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         personal_access_token_prefix: 'glpat-',
         plantuml_enabled: false,
         project_api_limit: 400,
-        project_members_api_limit: 60,
+        project_members_api_limit: 200,
         project_download_export_limit: 1,
         project_export_enabled: true,
         project_export_limit: 6,
@@ -811,6 +813,28 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         expect(setting).not_to be_valid
         expect(setting.errors[:default_search_scope]).to be_present
         expect(setting.errors[:default_search_scope].first).to include('invalid scope selected')
+      end
+
+      context 'when search_scope_registry feature flag is disabled' do
+        before do
+          stub_feature_flags(search_scope_registry: false)
+        end
+
+        it 'allows legacy scopes' do
+          %w[blobs code commits epics issues merge_requests milestones notes projects snippet_titles
+            users wiki_blobs].each do |scope|
+            setting.default_search_scope = scope
+
+            expect(setting).to be_valid, "expected #{scope} to be valid with feature flag disabled"
+          end
+        end
+
+        it 'rejects invalid scopes' do
+          setting.default_search_scope = 'invalid_scope'
+
+          expect(setting).not_to be_valid
+          expect(setting.errors[:default_search_scope]).to be_present
+        end
       end
     end
 
@@ -1913,6 +1937,26 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           { inactive_resource_access_tokens_delete_after_days: Gitlab::Database::MAX_INT_VALUE + 1 }
         ).for(:resource_access_tokens_settings)
       end
+
+      it 'allows authn_data_retention_cleanup_enabled with true' do
+        is_expected.to allow_value({ authn_data_retention_cleanup_enabled: true })
+          .for(:resource_access_tokens_settings)
+      end
+
+      it 'allows authn_data_retention_cleanup_enabled with false' do
+        is_expected.to allow_value({ authn_data_retention_cleanup_enabled: false })
+          .for(:resource_access_tokens_settings)
+      end
+
+      it 'does not allow authn_data_retention_cleanup_enabled with string' do
+        is_expected.not_to allow_value({ authn_data_retention_cleanup_enabled: "true" })
+          .for(:resource_access_tokens_settings)
+      end
+
+      it 'does not allow authn_data_retention_cleanup_enabled with integer' do
+        is_expected.not_to allow_value({ authn_data_retention_cleanup_enabled: 1 })
+          .for(:resource_access_tokens_settings)
+      end
     end
 
     describe 'for allow_immediate_namespaces_deletion' do
@@ -2365,6 +2409,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it 'returns false when the diagram type is optional and not enabled' do
       expect(setting.kroki_format_supported?('bpmn')).to be(false)
+      expect(setting.kroki_format_supported?('mermaid')).to be(false)
     end
 
     it 'returns true when the diagram type is enabled by default' do
@@ -2380,10 +2425,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
   describe 'kroki_formats' do
     it 'returns the value for kroki_formats' do
-      setting.kroki_formats = { blockdiag: true, bpmn: false, excalidraw: true }
+      setting.kroki_formats = { blockdiag: true, bpmn: false, excalidraw: true, mermaid: true }
       expect(setting.kroki_formats_blockdiag).to be(true)
       expect(setting.kroki_formats_bpmn).to be(false)
       expect(setting.kroki_formats_excalidraw).to be(true)
+      expect(setting.kroki_formats_mermaid).to be(true)
     end
   end
 
@@ -2704,6 +2750,27 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.ci_delete_pipelines_in_seconds_limit_human_readable_long).to eq('1 year') }
   end
 
+  describe '#database_settings' do
+    let(:valid_settings) do
+      {
+        background_operations_max_jobs: 10
+      }
+    end
+
+    # valid json
+    it { is_expected.to allow_value({}).for(:database_settings) }
+    it { is_expected.to allow_value(valid_settings).for(:database_settings) }
+
+    # invalid json
+    it { is_expected.not_to allow_value({ background_operations_max_jobs: 0 }).for(:database_settings) }
+    it { is_expected.not_to allow_value({ background_operations_max_jobs: -1 }).for(:database_settings) }
+    it { is_expected.not_to allow_value({ invalid_key: 10 }).for(:database_settings) }
+
+    it 'sets the correct default value' do
+      expect(setting.background_operations_max_jobs).to eq(10)
+    end
+  end
+
   describe '#custom_default_search_scope_set?' do
     context 'when it is set to empty string' do
       it 'returns false' do
@@ -2726,6 +2793,36 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         setting.update!(default_search_scope: 'users')
 
         expect(setting.custom_default_search_scope_set?).to be(true)
+      end
+    end
+
+    context 'when search_scope_registry feature flag is disabled' do
+      before do
+        stub_feature_flags(search_scope_registry: false)
+      end
+
+      it 'returns false for empty string' do
+        setting.update!(default_search_scope: '')
+
+        expect(setting.custom_default_search_scope_set?).to be(false)
+      end
+
+      it 'returns false for system default' do
+        setting.update!(default_search_scope: described_class::SEARCH_SCOPE_SYSTEM_DEFAULT)
+
+        expect(setting.custom_default_search_scope_set?).to be(false)
+      end
+
+      it 'returns true for valid legacy scope' do
+        setting.update!(default_search_scope: 'users')
+
+        expect(setting.custom_default_search_scope_set?).to be(true)
+      end
+
+      it 'returns false for invalid scope' do
+        setting.default_search_scope = 'invalid_scope'
+
+        expect(setting.custom_default_search_scope_set?).to be(false)
       end
     end
   end

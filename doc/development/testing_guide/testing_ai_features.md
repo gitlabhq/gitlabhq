@@ -46,8 +46,7 @@ Use [end-to-end tests](end_to_end/_index.md) sparingly to verify AI features wor
 ### E2E test examples
 
 - GitLab: [`specs/features/ee/browser_ui/3_create/web_ide/code_suggestions_in_web_ide_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/57d17110ef8f137ec8c1507e8d1a60ec194d6876/qa/qa/specs/features/ee/browser_ui/3_create/web_ide/code_suggestions_in_web_ide_spec.rb)
-- JetBrains:
-[`test/kotlin/com/gitlab/plugin/e2eTest/tests/CodeSuggestionTest.kt`](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/blob/72bf52a7a652794546e7def85ea30a6fdd40a6f9/src/test/kotlin/com/gitlab/plugin/e2eTest/tests/CodeSuggestionTest.kt)
+- JetBrains: [`test/kotlin/com/gitlab/plugin/e2eTest/tests/CodeSuggestionTest.kt`](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/blob/72bf52a7a652794546e7def85ea30a6fdd40a6f9/src/test/kotlin/com/gitlab/plugin/e2eTest/tests/CodeSuggestionTest.kt)
 
 ### Live environment testing
 

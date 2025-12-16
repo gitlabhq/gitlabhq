@@ -6,7 +6,6 @@ require 'gitlab/utils/all'
 
 require_relative '../lib/gitlab_edition'
 require_relative '../config/initializers/0_inject_enterprise_edition_module'
-require_relative '../spec/support/helpers/test_metrics_helper'
 
 require_relative '../config/bundler_setup'
 Bundler.require(:default)

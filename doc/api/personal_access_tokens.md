@@ -321,7 +321,7 @@ Supported attributes:
 
 | Attribute           | Type     | Required | Description                                                              |
 |---------------------|----------|----------|--------------------------------------------------------------------------|
-| `min_access_level`  | integer  | No       | Limit by current user minimal [role (`access_level`)](group_members.md#roles). |
+| `min_access_level`  | integer  | No       | Limit to groups and projects where the token has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `page`              | integer  | No       | Page to retrieve. Defaults to `1`.                                       |
 | `per_page`          | integer  | No       | Number of records to return per page. Defaults to `20`.                  |
 

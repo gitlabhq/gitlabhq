@@ -30,7 +30,8 @@ RSpec.describe 'Project settings > repositories > Branch names', :js, feature_ca
       visit project_settings_repository_path(project)
     end
 
-    it 'shows the Branch names settings' do
+    it 'shows the Branch names settings',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/8424' do
       expect(page).to have_content('Branch name template')
 
       value = "feature-%{id}"

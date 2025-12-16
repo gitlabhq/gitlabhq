@@ -7,7 +7,7 @@ module Glql
     # Overrides GraphqlController#execute to add rate limiting for GLQL queries.
     # Uses the shared QueryService for consistent behavior with API::Glql.
     def execute
-      query_service = ::Integrations::Glql::QueryService.new(
+      query_service = ::Analytics::Glql::QueryService.new(
         current_user: current_user,
         original_query: permitted_params[:query].to_s,
         request: request,
@@ -22,7 +22,7 @@ module Glql
 
       # Handle rate limiting
       if result[:rate_limited]
-        raise ::Integrations::Glql::QueryService::GlqlQueryLockedError,
+        raise ::Analytics::Glql::QueryService::GlqlQueryLockedError,
           result[:errors].first[:message]
       end
 
@@ -42,7 +42,7 @@ module Glql
       render json: response_data
     end
 
-    rescue_from ::Integrations::Glql::QueryService::GlqlQueryLockedError do |exception|
+    rescue_from ::Analytics::Glql::QueryService::GlqlQueryLockedError do |exception|
       log_exception(exception)
 
       render_error(exception.message, status: :forbidden)

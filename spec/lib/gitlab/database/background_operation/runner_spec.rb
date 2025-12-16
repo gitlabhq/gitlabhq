@@ -80,6 +80,7 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
 
           it 'puts operation on hold on stop signal' do
             expect(executor).to receive(:perform)
+            expect(worker).to receive(:execute!)
             expect(health_status).to receive(:evaluate).and_return([stop_signal])
 
             expect { runner.run_operation_job(worker) }.to change { worker.on_hold? }.from(false).to(true)
@@ -87,6 +88,7 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
 
           it 'optimizes operation on normal signal' do
             expect(executor).to receive(:perform)
+            expect(worker).to receive(:execute!)
             expect(health_status).to receive(:evaluate).and_return([normal_signal])
             expect(worker).to receive(:optimize!)
 
@@ -95,6 +97,7 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
 
           it 'optimizes operation on no signal' do
             expect(executor).to receive(:perform)
+            expect(worker).to receive(:execute!)
             expect(health_status).to receive(:evaluate).and_return([not_available_signal])
             expect(worker).to receive(:optimize!)
 
@@ -103,6 +106,7 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
 
           it 'optimizes operation on unknown signal' do
             expect(executor).to receive(:perform)
+            expect(worker).to receive(:execute!)
             expect(health_status).to receive(:evaluate).and_return([unknown_signal])
             expect(worker).to receive(:optimize!)
 
@@ -120,6 +124,7 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
           worker.update!(min_cursor: [0], max_cursor: [event2.id], batch_size: 5, sub_batch_size: 5)
 
           expect(executor).to receive(:perform)
+          expect(worker).to receive(:execute!)
 
           expect { runner.run_operation_job(worker) }.to change { operation_jobs.count }.by(1)
 
@@ -144,6 +149,7 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
       it 'changes the status to failure' do
         expect(worker).to receive(:should_stop?).and_return(true)
         expect(executor).to receive(:perform).and_return(job)
+        expect(worker).to receive(:execute!)
 
         expect { runner.run_operation_job(worker) }.to change { worker.status_name }.from(:active).to(:failed)
       end

@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe QuickActions::InterpretService, feature_category: :text_editors do
   include AfterNextHelpers
 
-  let_it_be(:support_bot) { Users::Internal.support_bot }
   let_it_be(:group) { create(:group) }
   let_it_be(:public_project) { create(:project, :public, group: group) }
   let_it_be(:repository_project) { create(:project, :repository) }
@@ -17,6 +16,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
   let_it_be(:inprogress) { create(:label, project: project, title: 'In Progress') }
   let_it_be(:helmchart) { create(:label, project: project, title: 'Helm Chart Registry') }
   let_it_be(:bug) { create(:label, project: project, title: 'Bug') }
+
+  let_it_be(:support_bot) { create(:support_bot) }
 
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
   let(:commit) { create(:commit, project: project) }
@@ -33,8 +34,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     )
     project.add_developer(current_user)
   end
-
-  before_all { Users::Internal.support_bot_id }
 
   describe '#execute' do
     let_it_be(:work_item) { create(:work_item, :task, project: project) }
@@ -2585,15 +2584,15 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
       expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
         .to receive(:track_unique_action)
-        .with('shrug', args: 'test', user: developer, project: project)
+        .with('shrug', args: 'test', user: developer, project: project, additional_properties: nil)
 
       expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
         .to receive(:track_unique_action)
-        .with('assign', args: 'me', user: developer, project: project)
+        .with('assign', args: 'me', user: developer, project: project, additional_properties: nil)
 
       expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
         .to receive(:track_unique_action)
-        .with('milestone', args: '%4', user: developer, project: project)
+        .with('milestone', args: '%4', user: developer, project: project, additional_properties: nil)
 
       service.execute(content, issue)
     end
@@ -2691,6 +2690,23 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         end
 
         context 'with review state parameter' do
+          it 'sends additional properties to internal tracking' do
+            merge_request.reviewers << developer
+
+            create(:draft_note, merge_request: merge_request, author: developer)
+
+            expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
+              .to receive(:track_unique_action)
+              .with(
+                'submit_review',
+                args: 'requested_changes',
+                user: developer,
+                project: project,
+                additional_properties: { is_reviewer: 'true', pending_comments: 1, state: 'requested_changes' })
+
+            service.execute('/submit_review requested_changes', merge_request)
+          end
+
           it 'calls MergeRequests::UpdateReviewerStateService service' do
             expect_next_instance_of(
               MergeRequests::UpdateReviewerStateService, project: merge_request.project, current_user: current_user
@@ -3102,12 +3118,12 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           expect(message).to eq(s_('ServiceDesk|Converted issue to Service Desk ticket.'))
           expect(item).to have_attributes(
             confidential: expected_confidentiality,
-            author_id: Users::Internal.support_bot_id,
+            author_id: support_bot.id,
             service_desk_reply_to: 'user@example.com'
           )
 
           reopen_note = item.notes.last
-          expect(reopen_note.author).to eq(Users::Internal.support_bot)
+          expect(reopen_note.author).to eq(support_bot)
           expect(reopen_note).to be_confidential
         end
       end
@@ -3306,6 +3322,23 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           expect(message).to eq("Approved the current merge request.")
         end
 
+        it 'sends additional properties to internal tracking' do
+          merge_request.reviewers << developer
+
+          create(:draft_note, merge_request: merge_request, author: developer)
+
+          expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
+            .to receive(:track_unique_action)
+            .with(
+              'approve',
+              args: nil,
+              user: developer,
+              project: project,
+              additional_properties: { is_reviewer: 'true', pending_comments: 1 })
+
+          service.execute(content, merge_request)
+        end
+
         context 'when the draft note has /approve quick action' do
           it 'submits the users current review' do
             draft_note = create(:draft_note, merge_request: merge_request, author: developer, note: 'Test\n/approve')
@@ -3360,6 +3393,21 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         service.execute(content, merge_request)
 
         expect(merge_request.approved_by_users).to be_empty
+      end
+
+      it 'sends additional properties to internal tracking' do
+        merge_request.reviewers << developer
+
+        expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
+          .to receive(:track_unique_action)
+          .with(
+            'unapprove',
+            args: nil,
+            user: developer,
+            project: project,
+            additional_properties: { is_reviewer: 'true' })
+
+        service.execute(content, merge_request)
       end
 
       it 'calls MergeRequests::UpdateReviewerStateService' do
@@ -3442,6 +3490,91 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           expect(result).to eq(
             ['', {}, 'Actions to ship this merge request have been scheduled.', ['ship']]
           )
+        end
+      end
+    end
+
+    describe 'run_pipeline command' do
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
+      let(:content) { '/run_pipeline' }
+      let(:create_pipeline_service) do
+        instance_double(
+          ::MergeRequests::CreatePipelineService,
+          allowed?: service_allowed,
+          execute_async: service_result
+        )
+      end
+
+      before do
+        allow(::MergeRequests::CreatePipelineService)
+          .to receive(:new)
+          .with(
+            project: merge_request.project,
+            current_user: current_user,
+            params: { allow_duplicate: true }
+          )
+          .and_return(create_pipeline_service)
+      end
+
+      context 'when user is allowed to create pipeline' do
+        let(:service_allowed) { true }
+        let(:service_result) { { status: :success } }
+
+        it 'executes the pipeline creation asynchronously' do
+          expect(create_pipeline_service).to receive(:execute_async).with(merge_request)
+
+          _, _, message = service.execute(content, merge_request)
+
+          expect(message).to eq(_('New pipeline has been triggered and will appear shortly.'))
+        end
+
+        it 'tracks the quick action usage' do
+          expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
+            .to receive(:track_unique_action)
+            .with('run_pipeline', args: nil, user: current_user, project: project, additional_properties: nil)
+
+          service.execute(content, merge_request)
+        end
+      end
+
+      context 'when user is not allowed to create pipeline' do
+        let(:service_allowed) { false }
+        let(:service_result) { nil }
+
+        it 'does not execute the pipeline creation' do
+          expect(create_pipeline_service).not_to receive(:execute_async)
+
+          _, _, message = service.execute(content, merge_request)
+
+          expect(message).to eq('Could not apply run_pipeline command.')
+        end
+      end
+
+      context 'when target is an issue' do
+        let(:service_allowed) { false }
+        let(:service_result) { nil }
+
+        it 'does not execute the command' do
+          expect(create_pipeline_service).not_to receive(:execute_async)
+
+          _, _, message = service.execute(content, issue)
+
+          expect(message).to eq('Could not apply run_pipeline command.')
+        end
+      end
+
+      context 'when merge request is not persisted' do
+        let(:merge_request) { build(:merge_request, source_project: project) }
+        let(:service_allowed) { false }
+        let(:service_result) { nil }
+
+        it 'does not execute the command' do
+          expect(create_pipeline_service).not_to receive(:execute_async)
+
+          _, _, message = service.execute(content, merge_request)
+
+          expect(message).to eq('Could not apply run_pipeline command.')
         end
       end
     end

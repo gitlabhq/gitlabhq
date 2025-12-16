@@ -34,6 +34,7 @@ export default {
 <template>
   <tabs-with-list
     :tabs="$options.ADMIN_GROUPS_TABS"
+    filtered-search-testid="admin-groups-filtered-search-and-sort"
     :filtered-search-term-key="$options.FILTERED_SEARCH_TERM_KEY"
     :filtered-search-namespace="$options.FILTERED_SEARCH_NAMESPACE"
     :filtered-search-recent-searches-storage-key="$options.RECENT_SEARCHES_STORAGE_KEY_GROUPS"

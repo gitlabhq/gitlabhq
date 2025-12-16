@@ -14,6 +14,7 @@ module Gitlab
     GUEST          = 10
     PLANNER        = 15
     REPORTER       = 20
+    SECURITY_MANAGER = 25
     DEVELOPER      = 30
     MAINTAINER     = 40
     OWNER          = 50
@@ -43,7 +44,7 @@ module Gitlab
       def level_encompasses?(current_access_level:, level_to_assign:)
         # Roles that don't follow the inherited hierarchy can only be assigned by owners
         # or by users with the same role
-        non_hierarchy_roles = [PLANNER]
+        non_hierarchy_roles = [PLANNER, SECURITY_MANAGER]
 
         return current_access_level.in?([OWNER, level_to_assign]) if non_hierarchy_roles.include?(level_to_assign)
 
@@ -59,9 +60,10 @@ module Gitlab
           "Guest" => GUEST,
           "Planner" => PLANNER,
           "Reporter" => REPORTER,
+          **(Gitlab::Security::SecurityManagerConfig.enabled? ? { "Security Manager" => SECURITY_MANAGER } : {}),
           "Developer" => DEVELOPER,
           "Maintainer" => MAINTAINER
-        }
+        }.compact
       end
 
       def options_with_owner
@@ -82,20 +84,15 @@ module Gitlab
           GUEST => s_('MemberRole|The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders.'),
           PLANNER => s_('The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code.'),
           REPORTER => s_('MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code.'),
+          **(Gitlab::Security::SecurityManagerConfig.enabled? ? { SECURITY_MANAGER => s_('MemberRole|The Security Manager role provides comprehensive visibility and management over security aspects of the group or project.') } : {}),
           DEVELOPER => s_('MemberRole|The Developer role gives users access to contribute code while restricting sensitive administrative actions.'),
           MAINTAINER => s_('MemberRole|The Maintainer role is primarily used for managing code reviews, approvals, and administrative settings for projects. This role can also manage project memberships.'),
           OWNER => s_('MemberRole|The Owner role is typically assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners.')
-        }
+        }.compact
       end
 
       def sym_options
-        {
-          guest: GUEST,
-          planner: PLANNER,
-          reporter: REPORTER,
-          developer: DEVELOPER,
-          maintainer: MAINTAINER
-        }
+        options.transform_keys { |key| key.downcase.tr(' ', '_').to_sym }
       end
 
       def sym_options_with_owner

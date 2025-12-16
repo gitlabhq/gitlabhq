@@ -12,7 +12,7 @@ import {
   GlAlert,
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 
 export default {
   components: {
@@ -20,7 +20,7 @@ export default {
     GlFormInput,
     GlFormInputGroup,
     GlModal,
-    ModalCopyButton,
+    SimpleCopyButton,
     GlIcon,
     GlLoadingIcon,
     GlSprintf,
@@ -172,11 +172,7 @@ export default {
     <gl-form-group :label="$options.translations.apiUrlLabelText" label-for="api-url">
       <gl-form-input-group id="api-url" :value="unleashApiUrl" readonly type="text" name="api-url">
         <template #append>
-          <modal-copy-button
-            :text="unleashApiUrl"
-            :title="$options.translations.apiUrlCopyText"
-            :modal-id="modalId"
-          />
+          <simple-copy-button :text="unleashApiUrl" :title="$options.translations.apiUrlCopyText" />
         </template>
       </gl-form-input-group>
     </gl-form-group>
@@ -197,10 +193,9 @@ export default {
         />
 
         <template #append>
-          <modal-copy-button
+          <simple-copy-button
             :text="instanceId"
             :title="$options.translations.instanceIdCopyText"
-            :modal-id="modalId"
             :disabled="isRotating"
           />
         </template>

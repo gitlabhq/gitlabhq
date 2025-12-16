@@ -75,8 +75,8 @@ You can also configure specific aspects of your pipelines through the GitLab UI:
 - [Custom CI/CD variables](../variables/_index.md#for-a-project).
 
 If you use VS Code to edit your GitLab CI/CD configuration, the [GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/_index.md)
-helps you [validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)
-and [view your pipeline status](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#information-about-your-branch-pipelines-mr-closing-issue).
+helps you [validate your configuration](../../editor_extensions/visual_studio_code/cicd.md#test-gitlab-cicd-configuration)
+and [view your pipeline status](../../editor_extensions/visual_studio_code/cicd.md#view-pipeline-information).
 
 ### Run a pipeline manually
 
@@ -95,7 +95,7 @@ operation of the pipeline.
 
 To execute a pipeline manually:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
@@ -140,7 +140,7 @@ When you turn on this setting, users with the Developer role can view variable v
 
 To view manual pipeline variables:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Select **Display pipeline variables**.
 1. Go to **Build** > **Pipelines** and select a pipeline that was run manually.
@@ -286,10 +286,19 @@ capitalization, to your commit message.
 Alternatively, with Git 2.10 or later, use the `ci.skip` [Git push option](../../topics/git/commit.md#push-options-for-gitlab-cicd).
 The `ci.skip` push option does not skip merge request pipelines.
 
+When you skip a pipeline:
+
+- An empty pipeline, with no jobs or stages, is still created in GitLab.
+  The pipeline appears in the UI and can be returned in API responses.
+- The pipeline status is **Skipped** in the UI, and `skipped` in the API.
+
 {{< alert type="note" >}}
 
-Pipeline execution policies can restrict or disable the `[skip ci]` directive.
-For more information, see [`skip_ci` type](../../user/application_security/policies/pipeline_execution_policies.md#skip_ci-type).
+Pipeline execution policies and scan execution policies can restrict or disable the `[skip ci]` directive.
+For more information, see:
+
+- The [`skip_ci` type](../../user/application_security/policies/pipeline_execution_policies.md#skip_ci-type) in pipeline execution policies.
+- The [`skip_ci` type](../../user/application_security/policies/scan_execution_policies.md#skip_ci-type) in scan execution policies.
 
 {{< /alert >}}
 
@@ -297,7 +306,7 @@ For more information, see [`skip_ci` type](../../user/application_security/polic
 
 Users with the Owner role for a project can delete a pipeline:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select either the pipeline ID (for example `#123456789`) or the pipeline status icon
    (for example **Passed**) of the pipeline to delete.
@@ -368,7 +377,7 @@ Prerequisites:
 
 To trigger the pipeline when the upstream project is rebuilt:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Pipeline subscriptions**.
 1. Select **Add project**.
@@ -431,7 +440,7 @@ running time is:
 
 To view all the pipelines that ran for your project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 
 You can filter the **Pipelines** page by:

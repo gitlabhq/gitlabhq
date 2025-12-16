@@ -7,7 +7,6 @@ import ContentTransition from '~/invite_members/components/content_transition.vu
 import { initialSelectedRole, roleDropdownItems } from 'ee_else_ce/members/utils';
 import RoleSelector from '~/members/components/role_selector.vue';
 import {
-  ACCESS_LEVEL,
   ACCESS_EXPIRE_DATE,
   READ_MORE_TEXT,
   READ_MORE_ACCESS_EXPIRATION_TEXT,
@@ -139,6 +138,10 @@ export default {
       required: false,
       default: () => ({}),
     },
+    roleSelectLabel: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     // Be sure to check out reset!
@@ -249,7 +252,6 @@ export default {
   },
   HEADER_CLOSE_LABEL,
   ACCESS_EXPIRE_DATE,
-  ACCESS_LEVEL,
   READ_MORE_TEXT,
   READ_MORE_ACCESS_EXPIRATION_TEXT,
   INVITE_BUTTON_TEXT,
@@ -307,7 +309,7 @@ export default {
 
         <slot name="after-members-input"></slot>
 
-        <gl-form-group :label="$options.ACCESS_LEVEL" :label-for="dropdownId">
+        <gl-form-group :label="roleSelectLabel" :label-for="dropdownId">
           <template #description>
             <gl-sprintf :message="$options.READ_MORE_TEXT">
               <template #link="{ content }">

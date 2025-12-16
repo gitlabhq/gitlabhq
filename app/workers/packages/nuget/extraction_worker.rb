@@ -23,6 +23,8 @@ module Packages
 
         ::Packages::Nuget::ProcessPackageFileService.new(package_file, user_or_deploy_token).execute
       rescue StandardError => exception
+        raise exception unless package_file
+
         process_package_file_error(
           package_file: package_file,
           exception: exception

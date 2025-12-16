@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class UserAgentDetailService
-  def initialize(spammable:, perform_spam_check:)
+  def initialize(spammable:, perform_spam_check:, current_user:)
     @spammable = spammable
     @perform_spam_check = perform_spam_check
+    @current_user = current_user
   end
 
   def create
@@ -13,10 +14,14 @@ class UserAgentDetailService
       return ServiceResponse.success(message: message)
     end
 
-    spammable.create_user_agent_detail(user_agent: spam_params.user_agent, ip_address: spam_params.ip_address)
+    spammable.create_user_agent_detail(
+      ip_address: spam_params.ip_address,
+      organization: ::Gitlab::Current::Organization.new(user: current_user).organization,
+      user_agent: spam_params.user_agent
+    )
   end
 
   private
 
-  attr_reader :spammable, :perform_spam_check
+  attr_reader :spammable, :perform_spam_check, :current_user
 end

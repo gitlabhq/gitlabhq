@@ -96,11 +96,6 @@ Rails.application.configure do
     config.file_watcher = ActiveSupport::EventedFileUpdateChecker
   end
 
-  # BetterErrors live shell (REPL) on every stack frame
-  BetterErrors::Middleware.allow_ip!("127.0.0.1/0")
-  # Disable REPL due to security concerns.
-  BetterErrors.binding_of_caller_available = false
-
   # Reassign some performance related settings when we profile the app
   if Gitlab::Utils.to_boolean(ENV['RAILS_PROFILE'].to_s)
     warn "Hot-reloading is disabled as you are running with RAILS_PROFILE enabled"
@@ -110,8 +105,6 @@ Rails.application.configure do
     config.active_record.verbose_query_logs = false
     config.action_view.cache_template_loading = true
     config.action_view.annotate_rendered_view_with_filenames = false
-
-    config.middleware.delete BetterErrors::Middleware
   end
 
   config.middleware.insert_before(

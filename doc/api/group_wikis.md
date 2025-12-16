@@ -15,6 +15,8 @@ title: Group wikis API
 Use this API to manage [group wikis](../user/project/wiki/group.md).
 An API for [project wikis](wikis.md) is also available.
 
+Comments on a wiki page are called `notes`. To interact with them, use the [notes API](notes.md#group-wikis).
+
 ## List wiki pages
 
 List all wiki pages for a given group.
@@ -226,7 +228,3 @@ Example response:
   }
 }
 ```
-
-## Comments on wiki pages
-
-Wiki comments are called `notes`. You can interact with them using the [Notes API](notes.md#group-wikis).

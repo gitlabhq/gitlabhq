@@ -118,7 +118,11 @@ class IssuableBaseService < ::BaseContainerService
       params[id_key] = params[id_key].first(1)
     end
 
-    assignee_ids = User.id_in(params[id_key]).select { |assignee| user_can_read?(issuable, assignee) }.map(&:id)
+    assignee_ids = User.id_in(params[id_key]).select do |assignee|
+      link_composite_identity(assignee) if assignee.composite_identity_enforced? && assignee.service_account?
+
+      user_can_read?(issuable, assignee)
+    end.map(&:id)
 
     if params[id_key].map(&:to_s) == [IssuableFinder::Params::NONE]
       params[id_key] = []
@@ -133,6 +137,10 @@ class IssuableBaseService < ::BaseContainerService
     ability_name = :"read_#{issuable.to_ability_name}"
 
     can?(user, ability_name, issuable.resource_parent)
+  end
+
+  def link_composite_identity(user)
+    ::Gitlab::Auth::Identity.link_from_scoped_user(user, current_user)
   end
 
   def filter_severity(issuable)
@@ -207,7 +215,7 @@ class IssuableBaseService < ::BaseContainerService
     handle_quick_actions(issuable)
     filter_params(issuable)
 
-    params.delete(:state_event)
+    immediately_close = params.delete(:state_event) == 'close'
 
     if issuable.respond_to?(:assignee_ids)
       params[:assignee_ids] = process_assignee_ids(params, extra_assignee_ids: issuable.assignee_ids.to_a)
@@ -240,6 +248,8 @@ class IssuableBaseService < ::BaseContainerService
       invalidate_cache_counts(issuable, users: issuable.assignees) unless issuable.allows_reviewers?
 
       issuable.invalidate_project_counter_caches
+
+      change_state(issuable, 'close') if immediately_close
     end
 
     issuable
@@ -458,7 +468,7 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def change_additional_attributes(issuable)
-    change_state(issuable)
+    change_state(issuable, params.delete(:state_event))
     change_subscription(issuable)
     change_todo(issuable)
     toggle_award(issuable)
@@ -467,8 +477,8 @@ class IssuableBaseService < ::BaseContainerService
     assign_requested_crm_contacts(issuable)
   end
 
-  def change_state(issuable)
-    case params.delete(:state_event)
+  def change_state(issuable, state_event)
+    case state_event
     when 'reopen'
       service_class = reopen_service
     when 'close'

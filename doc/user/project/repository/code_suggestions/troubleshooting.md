@@ -49,18 +49,17 @@ for the different IDEs:
 
 ## Code Suggestions returns a 401 error
 
-Code Suggestions [depends on a license token](../../../gitlab_duo/_index.md) that
-[synchronizes your subscription](../../../../administration/license.md) with GitLab.
+Code Suggestions depends on a license token
+that [synchronizes your subscription](../../../../administration/license.md) with GitLab.
 
-If the token expires, GitLab Duo Code Suggestions returns the following error
-with status `401` when the token has expired:
+When the token expires, Code Suggestions returns the following error with status `401`:
 
 ```plaintext
 Token validation failed in Language Server:
 (Failed to check token: Error: Fetching Information about personal access token
 ```
 
-If GitLab has access to the [cloud server](../../../gitlab_duo/_index.md), try
+If GitLab has access to the cloud server, try
 [manually synchronizing your license](../../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data).
 
 ## Authentication troubleshooting
@@ -90,7 +89,7 @@ If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab 
 
 #### View Code Suggestions logs
 
-If Code Suggestions are enabled for the IDE, but suggestions are still not displayed:
+If Code Suggestions is enabled for the IDE, but suggestions are still not displayed:
 
 1. In your IDE, in the GitLab Workflow **Extension Settings**, enable **GitLab: Debug**.
    - For Web IDE, you must have the [marketplace extensions](../../web_ide/_index.md#manage-extensions) enabled.
@@ -129,7 +128,7 @@ as taking longer to resolve. To disable streaming:
 
 {{< /history >}}
 
-To reduce latency, the Workflow extension tries to send suggestion completion requests directly to GitLab Cloud Connector,
+To reduce latency, the GitLab Workflow extension tries to send suggestion completion requests directly to GitLab Cloud Connector,
 bypassing the GitLab instance. This network connection does not use the proxy and certificate settings of the VS Code extension.
 
 If your GitLab instance doesn't support direct connections, or your network prevents the extension from connecting to

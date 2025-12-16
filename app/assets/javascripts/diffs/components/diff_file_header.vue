@@ -212,12 +212,10 @@ export default {
       };
     },
     editInSingleFileEditorDropdownItem() {
-      const href =
-        this.canCurrentUserFork && this.diffFile.can_modify_blob && this.diffFile.edit_path;
       return {
         text: __('Edit in single-file editor'),
         action: this.showForkMessage,
-        href,
+        href: this.diffFile.can_modify_blob ? this.diffFile.edit_path : undefined,
         extraAttrs: {
           class: 'js-edit-blob',
         },
@@ -247,9 +245,6 @@ export default {
       return {
         text: __('Hide comments on this file'),
         action: () => this.toggleFileDiscussionWrappers(this.diffFile),
-        extraAttrs: {
-          'data-testid': 'toggle-comments-button',
-        },
       };
     },
 
@@ -477,7 +472,7 @@ export default {
           <gl-disclosure-dropdown-item ref="viewButton" :item="viewFileDropdownItem" />
           <template v-if="showEditButton">
             <gl-disclosure-dropdown-item
-              v-if="diffFile.edit_path"
+              v-if="diffFile.edit_path && (diffFile.can_modify_blob || canCurrentUserFork)"
               ref="editButton"
               :item="editInSingleFileEditorDropdownItem"
             />

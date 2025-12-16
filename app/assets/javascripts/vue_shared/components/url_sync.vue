@@ -1,6 +1,7 @@
 <script>
 import { historyPushState, historyReplaceState } from '~/lib/utils/common_utils';
 import { mergeUrlParams, setUrlParams } from '~/lib/utils/url_utility';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 export const HISTORY_PUSH_UPDATE_METHOD = 'push';
 export const HISTORY_REPLACE_UPDATE_METHOD = 'replace';
@@ -13,7 +14,7 @@ export const URL_MERGE_PARAMS_STRATEGY = 'merge';
  * by using updateQuery method in the scoped slot.
  * note: do not use both prop and updateQuery method.
  */
-export default {
+export default normalizeRender({
   props: {
     query: {
       type: Object,
@@ -76,5 +77,5 @@ export default {
   render() {
     return this.$scopedSlots.default?.({ updateQuery: this.updateQuery });
   },
-};
+});
 </script>

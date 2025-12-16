@@ -281,7 +281,7 @@ module QA
       end
 
       def default_credentials
-        [default_user.username, default_user.password]
+        [default_user.username, default_user.git_repo_credential]
       end
 
       def read_netrc_content

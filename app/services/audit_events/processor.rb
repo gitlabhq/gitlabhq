@@ -39,7 +39,8 @@ module AuditEvents
       if ::Gitlab::Audit::FeatureFlags.stream_from_new_tables?(entity)
         create_scoped_audit_event(model_class, parsed_json)
       else
-        filtered_json = parsed_json.except(:group_id, :project_id, :user_id)
+        # event_name only exists on scoped audit event tables, not on the base audit_events table
+        filtered_json = parsed_json.except(:group_id, :project_id, :user_id, :event_name)
         ::AuditEvent.new(filtered_json)
       end
     rescue JSON::ParserError, ActiveRecord::RecordNotFound => e

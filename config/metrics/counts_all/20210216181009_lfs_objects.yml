@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.lfs_objects
 description: Count of lfs objects
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: all

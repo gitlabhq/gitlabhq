@@ -1177,6 +1177,7 @@ excluded_attributes:
 methods:
   project:
     - :allow_merge_on_skipped_pipeline
+    - :default_branch
     - :squash_option
     - :merge_commit_template
     - :squash_commit_template
@@ -1336,6 +1337,7 @@ ee:
     project:
       - :requirements_enabled
       - :requirements_access_level
+      - :enabled_foundational_flows
     resource_iteration_events:
       - :user_id
       - :action

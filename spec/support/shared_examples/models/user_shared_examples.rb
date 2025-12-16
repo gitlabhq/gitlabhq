@@ -105,9 +105,7 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
 
   let(:tables_with_known_missing_associations) do
     %w[
-      abuse_report_notes
       abuse_report_uploads
-      abuse_trust_scores
       achievement_uploads
       ai_vectorizable_file_uploads
       alert_management_alert_metric_image_uploads
@@ -123,8 +121,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       deploy_tokens
       design_management_action_uploads
       import_export_upload_uploads
-      ml_experiments
-      merge_requests_compliance_violations
       merge_requests_merge_data
       namespace_uploads
       organization_detail_uploads
@@ -146,11 +142,8 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       catalog_resource_versions
       cluster_agent_tokens
       cluster_agent_url_configurations
-      design_management_versions
       incident_management_timeline_events
       merge_trains
-      ml_candidates
-      ml_models
       resource_iteration_events
       resource_link_events
       resource_milestone_events

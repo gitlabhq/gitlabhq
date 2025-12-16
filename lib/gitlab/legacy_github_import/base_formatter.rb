@@ -48,6 +48,9 @@ module Gitlab
         return if user_id.nil? || source_user.nil?
         return if source_user.accepted_status? && user_id == source_user.reassign_to_user_id
 
+        # Do not create a reference for reference-free reassignment
+        return if ::Import::DirectReassignService.supported?(record.class, user_reference_column, source_user)
+
         ::Import::PlaceholderReferences::PushService.from_record(
           import_source: imported_from,
           import_uid: project.import_state.id,

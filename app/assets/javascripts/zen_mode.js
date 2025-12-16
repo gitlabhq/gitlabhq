@@ -68,6 +68,7 @@ export default class ZenMode {
   }
 
   enter(backdrop) {
+    document.body.classList.add('zen-mode-fullscreen');
     Mousetrap.pause();
     this.active_backdrop = $(backdrop);
     this.active_backdrop.addClass('fullscreen');
@@ -79,6 +80,7 @@ export default class ZenMode {
   }
 
   exit() {
+    document.body.classList.remove('zen-mode-fullscreen');
     if (this.active_textarea) {
       Mousetrap.unpause();
       this.active_textarea.closest('.zen-backdrop').removeClass('fullscreen');

@@ -46,6 +46,10 @@ module QA
         @password ||= "Pa$$w0rd"
       end
 
+      def git_repo_credential
+        current_personal_access_token || password
+      end
+
       def name
         @name ||= api_resource&.dig(:name) || "QA User #{unique_id}"
       end

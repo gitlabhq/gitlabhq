@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { watch } from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
 import { useMainContainer } from '~/pinia/global_stores/main_container';
@@ -8,6 +9,8 @@ export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
   state: () => ({
     fileTreeBrowserIsExpanded: false,
     fileTreeBrowserIsPeekOn: false,
+    wasVisibleBeforeCompact: false,
+    shouldRestoreFocusToToggle: false,
   }),
   getters: {
     fileTreeBrowserIsVisible: (state) =>
@@ -46,17 +49,48 @@ export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
       }
     },
     handleFileTreeBrowserToggleClick() {
+      // Mark that focus should be restored after toggle
+      this.shouldRestoreFocusToToggle = true;
+
       if (useMainContainer().isIntermediate) {
         this.toggleFileTreeBrowserIsPeek();
       } else {
         this.toggleFileTreeBrowserIsExpanded();
       }
     },
+    clearRestoreFocusFlag() {
+      this.shouldRestoreFocusToToggle = false;
+    },
     initializeFileTreeBrowser() {
       // Only load expanded state on wide screens
       if (useMainContainer().isWide) {
         this.loadFileTreeBrowserExpandedFromLocalStorage();
       }
+      this.setupMainContainerWatcher();
+    },
+    setupMainContainerWatcher() {
+      const mainContainer = useMainContainer();
+
+      watch(
+        () => ({
+          isCompact: mainContainer.isCompact,
+          isIntermediate: mainContainer.isIntermediate,
+        }),
+        ({ isCompact, isIntermediate }, oldValue) => {
+          if (!oldValue) return;
+
+          const isVisible = this.fileTreeBrowserIsExpanded || this.fileTreeBrowserIsPeekOn;
+
+          if (isCompact) {
+            if (isVisible) this.wasVisibleBeforeCompact = true;
+            this.resetFileTreeBrowserAllStates();
+          } else if (isVisible || this.wasVisibleBeforeCompact) {
+            this.fileTreeBrowserIsPeekOn = isIntermediate;
+            this.fileTreeBrowserIsExpanded = !isIntermediate;
+            this.wasVisibleBeforeCompact = false;
+          }
+        },
+      );
     },
   },
 });

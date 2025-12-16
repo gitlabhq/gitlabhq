@@ -365,6 +365,7 @@ ci_pipelines: &pipeline_definition
 - pending_builds
 - failed_builds
 - limited_failed_builds
+- limited_failed_jobs
 - retryable_builds
 - cancelable_statuses
 - manual_actions
@@ -523,7 +524,7 @@ builds:
 - job_annotations
 - job_artifacts_annotations
 - project_mirror
-- build_source
+- job_source
 bridges:
 - user
 - pipeline
@@ -543,6 +544,7 @@ bridges:
 - trigger
 - downstream_pipeline
 - upstream_pipeline
+- job_source
 generic_commit_statuses:
 - user
 - pipeline
@@ -985,6 +987,10 @@ project:
 - security_attributes
 - project_to_security_attributes
 - policy_dismissals
+- security_scan_profiles
+- security_scan_profiles_projects
+- enabled_foundational_flows
+- enabled_foundational_flow_records
 award_emoji:
 - awardable
 - user
@@ -1311,6 +1317,8 @@ vulnerability_finding:
   - cve_enrichments
   - triggered_workflows
   - flip_guard
+  - detection_transitions
+  - project_tracked_context
 scanner:
   - findings
   - security_findings
@@ -1326,4 +1334,4 @@ vulnerability_read:
   - vulnerability
   - scanner
   - vulnerability_occurrence
-
+  - tracked_context

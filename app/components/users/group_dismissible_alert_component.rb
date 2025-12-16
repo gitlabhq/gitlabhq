@@ -1,41 +1,16 @@
 # frozen_string_literal: true
 
 module Users
-  class GroupDismissibleAlertComponent < BaseDismissibleAlertComponent
-    include Wrappable
-    extend ::Gitlab::Utils::Override
+  class GroupDismissibleAlertComponent < Pajamas::AlertComponent
+    include GroupDismissible
 
-    private
+    def initialize(args = {})
+      @dismiss_options = args.delete(:dismiss_options)
+      @wrapper_options = args.delete(:wrapper_options)
 
-    override :dismiss_endpoint
-    def dismiss_endpoint
-      ::Gitlab::Routing.url_helpers.group_callouts_path
-    end
+      verify_callout_setup!
 
-    override :verify_callout_setup!
-    def verify_callout_setup!
-      super
-
-      verify_field_presence!(:group)
-    end
-
-    override :user_dismissed_alert?
-    def user_dismissed_alert?
-      user.dismissed_callout_for_group?(
-        feature_name: dismiss_options[:feature_id],
-        group: dismiss_options[:group],
-        ignore_dismissal_earlier_than: dismiss_options[:ignore_dismissal_earlier_than]
-      )
-    end
-
-    override :build_data_attributes
-    def build_data_attributes
-      super.merge(group_id: dismiss_options[:group].id)
-    end
-
-    override :callout_class
-    def callout_class
-      Users::GroupCallout
+      super(**args.merge(dismissible: true, alert_options: build_html_options(args[:alert_options])))
     end
   end
 end

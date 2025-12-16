@@ -56,7 +56,7 @@ Alternatively, learn where to install custom certificates by using
 
 The external authorization service can be enabled by an administrator:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **External authorization**.
 1. Complete the fields.
@@ -80,7 +80,7 @@ Prerequisites:
 
 To allow authorization with deploy tokens and keys:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **External authorization**, and:
    - Leave the service URL field empty.
@@ -139,7 +139,7 @@ not respond" is displayed.
 ## Classification labels
 
 You can use your own classification label in the project's
-**Settings > General > General project settings** page in the "Classification
+**Settings** > **General** > **General project settings** page in the "Classification
 label" box. When no classification label is specified on a project, the default
 label defined in the [global settings](#configuration) is used.
 

@@ -1,8 +1,0 @@
----
-migration_job_name: ResyncHasVulnerabilities
-description: Fixes incorrect project_settings.has_vulnerabilities values
-feature_category: vulnerability_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171029
-milestone: '17.6'
-queued_migration_version: 20241029170331
-finalized_by: '20250113204448'

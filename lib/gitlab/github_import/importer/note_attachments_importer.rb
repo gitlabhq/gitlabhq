@@ -46,12 +46,7 @@ module Gitlab
             # Store the error to re-raise after updating the note
             rate_limit_error ||= e
             # Continue with the current text without replacing this attachment
-
-            # Store the error to re-raise after updating the note
-            rate_limit_error ||= e
-            # Continue with the current text without replacing this attachment
             text
-
           rescue Gitlab::GithubImport::AttachmentsDownloader::NotRetriableError => e # Rescue 4XX errors
             download_errors << e
 

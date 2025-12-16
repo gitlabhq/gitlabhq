@@ -807,7 +807,7 @@ and the pipeline is for either:
 **Related topics**:
 
 - [Common `if` clauses for `workflow:rules`](workflow.md#common-if-clauses-for-workflowrules).
-- [Use `rules` to run merge request pipelines](../pipelines/merge_request_pipelines.md#add-jobs-to-merge-request-pipelines).
+- [Use `rules` to run merge request pipelines](../pipelines/merge_request_pipelines.md#configure-merge-request-pipelines).
 
 ---
 
@@ -1039,8 +1039,8 @@ spec:
       default: 'test-user'
     flags:
       default: ''
-title: The pipeline configuration would follow...
 ---
+# The pipeline configuration would follow...
 ```
 
 In this example:
@@ -1083,8 +1083,8 @@ spec:
   inputs:
     flags:
       description: 'Sample description of the `flags` input details.'
-title: The pipeline configuration would follow...
 ---
+# The pipeline configuration would follow...
 ```
 
 ---
@@ -1103,7 +1103,7 @@ The limit is 50 options per input.
 **Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
-**Supported values**: An array of input options.
+**Supported values**: An array of input options. Only string and number [`type`](#specinputstype) inputs can be used with options.
 
 **Example of `spec:inputs:options`**:
 
@@ -1115,8 +1115,8 @@ spec:
         - development
         - staging
         - production
-title: The pipeline configuration would follow...
 ---
+# The pipeline configuration would follow...
 ```
 
 In this example:
@@ -1155,8 +1155,8 @@ spec:
   inputs:
     version:
       regex: ^v\d\.\d+(\.\d+)?$
-title: The pipeline configuration would follow...
 ---
+# The pipeline configuration would follow...
 ```
 
 In this example, inputs of `v1.0` or `v1.2.3` match the regular expression and pass validation.
@@ -1172,6 +1172,68 @@ An input of `v1.A.B` does not match the regular expression and fails validation.
 - Validation of the input against the regular expression happens before variable expansion.
   If the input text includes a variable name, the raw value of the input (the variable name)
   is validated, not the variable value.
+
+---
+
+##### `spec:inputs:rules`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/582671) in GitLab 18.7 with a flag named `ci_dynamic_pipeline_inputs`. Enabled by default.
+
+{{< /history >}}
+
+Use `spec:inputs:rules` to define conditional `options` and `default` values for an input
+based on the values of other inputs.
+
+**Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
+in a header section.
+
+**Supported values**: An array of rule objects. Each rule can have:
+
+- `if`: A conditional expression to check input values, using [`$[[ inputs.input-id ]]` syntax](../inputs/_index.md#define-input-parameters-with-specinputs).
+- `options`: An array of allowed values for the input.
+- `default`: The default value for the input when this rule matches.
+
+**Example of `spec:inputs:rules`**:
+
+```yaml
+spec:
+  inputs:
+    environment:
+      options: ['development', 'production']
+      default: 'development'
+
+    instance_type:
+      description: 'VM instance size'
+      rules:
+        - if: $[[ inputs.environment ]] == 'development'
+          options: ['small', 'medium']
+          default: 'small'
+        - if: $[[ inputs.environment ]] == 'production'
+          options: ['large', 'xlarge']
+          default: 'large'
+---
+
+deploy:
+  script: echo "Deploying $[[ inputs.instance_type ]] instance"
+```
+
+In this example, when `environment` is `development`, users can only select `small` or
+`medium` instances. When `environment` is `production`, only `large` or `xlarge` instances
+are available.
+
+**Additional details**:
+
+- Rules are evaluated in order. The first rule with a matching `if` condition is used.
+- A rule without an `if` condition acts as a fallback when no other rules match.
+- Fallback rules must define `options` with at least one value.
+- All rules with `options` must also define a `default` value that exists in the `options` list.
+- You cannot use both `rules` and top-level `options` or `default` for the same input.
+
+**Related topics**:
+
+- [Define conditional input options with `spec:inputs:rules`](../inputs/_index.md#define-conditional-input-options-with-specinputsrules).
 
 ---
 
@@ -1204,13 +1266,13 @@ spec:
       type: boolean
     array_input:
       type: array
-title: The pipeline configuration would follow...
 ---
+# The pipeline configuration would follow...
 ```
 
 ---
 
-##### `spec:include`
+#### `spec:include`
 
 {{< history >}}
 
@@ -1275,11 +1337,12 @@ deploy:
 
 ---
 
-##### `spec:component`
+#### `spec:component`
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438275) in GitLab 18.6 as a [beta](../../policy/development_stages_support.md#beta) [with a flag](../../administration/feature_flags/_index.md) named `ci_component_context_interpolation`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/571986) in GitLab 18.7. Feature flag `ci_component_context_interpolation` removed.
 
 {{< /history >}}
 
@@ -2115,8 +2178,7 @@ rspec:
 
 **Related topics**:
 
-- See the [common `cache` use cases](../caching/_index.md#common-use-cases-for-caches) for more
-  `cache:paths` examples.
+- See the [CI/CD caching examples](../caching/examples.md) for more `cache:paths` examples.
 
 ---
 
@@ -2169,8 +2231,7 @@ cache-job:
 - You can specify a [fallback cache key](../caching/_index.md#use-a-fallback-cache-key)
   to use if the specified `cache:key` is not found.
 - You can [use multiple cache keys](../caching/_index.md#use-multiple-caches) in a single job.
-- See the [common `cache` use cases](../caching/_index.md#common-use-cases-for-caches) for more
-  `cache:key` examples.
+- See the [CI/CD caching examples](../caching/examples.md) for more `cache:key` examples.
 
 ---
 
@@ -2470,7 +2531,7 @@ faster-test-job:
 
 **Related topics**:
 
-- You can [use a variable to control a job's cache policy](../caching/_index.md#use-a-variable-to-control-a-jobs-cache-policy).
+- You can [use a variable to control a job's cache policy](../caching/examples.md#use-a-variable-to-control-a-jobs-cache-policy).
 
 ---
 
@@ -2911,12 +2972,11 @@ deploy:
 
 This configuration:
 
-- Sets up the `deploy` job to deploy to the `production`
-environment
-- Associates the [agent](../../user/clusters/agent/_index.md) named `agent-name` with the environment
+- Sets up the `deploy` job to deploy to the `production` environment.
+- Associates the [agent](../../user/clusters/agent/_index.md) named `agent-name` with the environment.
 - Configures the [dashboard for Kubernetes](../environments/kubernetes_dashboard.md) for an environment with
-the namespace `my-namespace` and the `flux_resource_path` set to
-`helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource`.
+  the namespace `my-namespace` and the `flux_resource_path` set to
+  `helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource`.
 
 **Additional details**:
 
@@ -4379,8 +4439,8 @@ This example creates 5 jobs that run in parallel, named `test 1/5` to `test 5/5`
 - A pipeline with jobs that use `parallel` might:
   - Create more jobs running in parallel than available runners. Excess jobs are queued
     and marked `pending` while waiting for an available runner.
-  - Create too many jobs, and the pipeline fails with a `job_activity_limit_exceeded` error.
-    The maximum number of jobs that can exist in active pipelines is [limited at the instance-level](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines).
+  - Fail with a `job_activity_limit_exceeded` error if creating the pipeline would cause
+    the total number of jobs across all active pipelines to [exceed the instance limit](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines).
 
 **Related topics**:
 
@@ -4445,6 +4505,7 @@ for `PROVIDER` and `STACK`:
   the jobs from each other, but [large values can cause names to exceed limits](https://gitlab.com/gitlab-org/gitlab/-/issues/362262):
   - [Job names](../jobs/_index.md#job-names) must be 255 characters or fewer.
   - When using [`needs`](#needs), job names must be 128 characters or fewer.
+- You cannot use the matrix values as variables for [`rules:if`](#rulesif).
 - You cannot create multiple matrix configurations with the same values but different names.
   Job names are generated from the matrix values, not the names, so matrix entries
   with identical values generate identical job names that overwrite each other.
@@ -5011,7 +5072,7 @@ job:
 
 - [Common `if` expressions for `rules`](../jobs/job_rules.md#common-if-clauses-with-predefined-variables).
 - [Avoid duplicate pipelines](../jobs/job_rules.md#avoid-duplicate-pipelines).
-- [Use `rules` to run merge request pipelines](../pipelines/merge_request_pipelines.md#add-jobs-to-merge-request-pipelines).
+- [Use `rules` to run merge request pipelines](../pipelines/merge_request_pipelines.md#configure-merge-request-pipelines).
 
 ---
 
@@ -6372,7 +6433,7 @@ trigger-multi-project-pipeline:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519963) in GitLab 17.11.
 
-{{</history >}}
+{{< /history >}}
 
 Use `trigger:inputs` to set the [inputs](../inputs/_index.md) for a multi-project pipeline
 when the downstream pipeline configuration uses [`spec:inputs`](#specinputs).
@@ -6444,7 +6505,7 @@ Use:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519963) in GitLab 17.11.
 
-{{</history >}}
+{{< /history >}}
 
 Use `trigger:include:inputs` to set the [inputs](../inputs/_index.md) for a child pipeline
 when the downstream pipeline configuration uses [`spec:inputs`](#specinputs).

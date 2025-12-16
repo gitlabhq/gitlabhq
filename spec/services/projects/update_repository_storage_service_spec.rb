@@ -411,7 +411,6 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
         expect(result).to be_success
         expect(project).not_to be_repository_read_only
         expect(project.repository_storage).to eq(storage_destination)
-        expect(project.project_repository.shard_name).to eq(storage_destination)
       end
     end
 

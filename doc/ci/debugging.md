@@ -379,7 +379,7 @@ message that does not disappear after a few minutes, you can try one of these wo
 
 - Refresh the merge request page.
 - Close & Re-open the merge request.
-- Rebase the merge request with the `/rebase` [quick action](../user/project/quick_actions.md).
+- Rebase the merge request with the [`/rebase` quick action](../user/project/quick_actions.md#rebase).
 - If you have already confirmed the merge request is ready to be merged, you can merge
   it with the `/merge` quick action.
 
@@ -416,7 +416,7 @@ To resolve this, check that:
 - The path of the project is in the format `my-group/my-project` and does not include
   any folders in the repository.
 - The user running the pipeline is a [member of the projects](../user/project/members/_index.md#add-users-to-a-project)
-  that contain the included files. Users must also have the [permission](../user/permissions.md#cicd)
+  that contain the included files. Users must also have the [permission](../user/permissions.md#project-cicd)
   to run CI/CD jobs in the same projects.
 
 ### `The parsed YAML is too big` message

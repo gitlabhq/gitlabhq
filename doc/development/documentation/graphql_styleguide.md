@@ -2,7 +2,7 @@
 stage: Developer Experience
 group: API
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
-description: Writing styles, markup, formatting, and other standards for GraphQL API's GitLab Documentation.
+description: Writing styles, markup, formatting, and other standards for GraphQL API documentation on GitLab.
 title: Creating a GraphQL example page
 ---
 

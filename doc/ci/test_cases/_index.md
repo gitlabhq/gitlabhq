@@ -45,7 +45,7 @@ Prerequisites:
 
 To create a test case in a GitLab project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
 1. Select **Build** > **Test cases**.
 1. Select **New test case**. You are taken to the new test case form. Here you can enter
    the new case's title, [description](../../user/markdown.md), attach a file, and assign [labels](../../user/project/labels.md).
@@ -64,7 +64,7 @@ Prerequisites:
 
 To view a test case:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
 1. Select **Build** > **Test cases**.
 1. Select the title of the test case you want to view. You are taken to the test case page.
 
@@ -89,7 +89,7 @@ Prerequisites:
 To edit a test case:
 
 1. [View a test case](#view-a-test-case).
-1. Select **Edit title and description** ({{< icon name="pencil" >}}).
+1. In the upper-right corner, select **Edit**.
 1. Edit the test case's title or description.
 1. Select **Save changes**.
 
@@ -113,7 +113,7 @@ To make a test case confidential:
 - When you [create a test case](#create-a-test-case): under **Confidentiality**, select the **This test case is confidential** checkbox.
 - When you [edit a test case](#edit-a-test-case): on the right sidebar, next to **Confidentiality**, select **Edit**, then select **Turn on**.
 
-You can also use the `/confidential` [quick action](../../user/project/quick_actions.md) when both creating a new test case
+You can also use the [`/confidential` quick action](../../user/project/quick_actions.md#confidential) when both creating a new test case
 or editing an existing one.
 
 ## Archive a test case
@@ -134,7 +134,7 @@ To archive a test case, on the test case's page, select **Archive test case**.
 
 To view archived test cases:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
 1. Select **Build** > **Test cases**.
 1. Select **Archived**.
 

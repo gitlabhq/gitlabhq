@@ -117,6 +117,8 @@ Disadvantages:
    ALTER DATABASE gitlabhq_production REFRESH COLLATION VERSION;
    ```
 
+   System databases like `template1` or `postgres` can also have collation problems when PostgreSQL starts. Check the hints in error messages and refresh the collations in those databases too.
+
 1. In all nodes, start GitLab.
 
 Advantages:

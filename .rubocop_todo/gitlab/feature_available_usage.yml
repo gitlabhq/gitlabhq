@@ -81,7 +81,6 @@ Gitlab/FeatureAvailableUsage:
     - 'ee/app/services/security/store_scans_service.rb'
     - 'ee/app/workers/analytics/code_review_metrics_worker.rb'
     - 'ee/app/workers/group_saml_group_sync_worker.rb'
-    - 'ee/lib/ee/api/entities/approval_state.rb'
     - 'ee/lib/ee/api/entities/board.rb'
     - 'ee/lib/ee/api/entities/project.rb'
     - 'ee/lib/ee/api/helpers.rb'

@@ -89,9 +89,7 @@ exports[`ZoektBlobResults when component loads normally renders component proper
     labelpage="Go to page %{page}"
     labelprevpage="Go to previous page"
     limits="[object Object]"
-    nexttext="Next"
     perpage="20"
-    prevtext="Previous"
     totalitems="3"
     value="1"
   />

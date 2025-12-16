@@ -115,7 +115,7 @@ RSpec.describe 'Environments Folder page', :js, feature_category: :environment_m
         pagination = find('.gl-pagination')
         pagination.scroll_to(:bottom)
         within(pagination) do
-          click_link 'Next'
+          find_by_testid('gl-pagination-next').click
         end
 
         wait_for_requests

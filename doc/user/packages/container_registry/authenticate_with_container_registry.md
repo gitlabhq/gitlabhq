@@ -38,8 +38,14 @@ that token works even though Admin Mode is enabled. For more information, see
 
 ## Authenticate with username and password
 
-You can authenticate with the container registry using
-your GitLab username and password:
+{{< alert type="note" >}}
+
+If you have enabled [two-factor authentication (2FA)](../../profile/account/two_factor_authentication.md)
+(including email OTP) on your account, you must [authenticate with a token](#authenticate-with-a-token).
+
+{{< /alert >}}
+
+To authenticate with your username and password, run the `docker login` command:
 
 ```shell
 docker login registry.example.com -u <username> -p <password>
@@ -50,11 +56,6 @@ For security reasons, it's recommended to use the `--password-stdin` flag instea
 ```shell
 echo "<password>" | docker login registry.example.com -u <username> --password-stdin
 ```
-
-{{< alert type="warning" >}}
-Username and password authentication is not available if you have two-factor authentication (2FA) enabled.
-In this case, you must use a token-based authentication method.
-{{< /alert >}}
 
 ## Authenticate with a token
 

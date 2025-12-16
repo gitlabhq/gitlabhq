@@ -10,6 +10,10 @@ module Gitlab
           new(connection: connection).finalize(job_class_name, table_name, column_name, job_arguments)
         end
 
+        def self.execute_migration(migration, connection:, force: false)
+          new(connection: connection).execute_migration(migration, force: force)
+        end
+
         def initialize(connection:, migration_wrapper: BatchedMigrationWrapper.new(connection: connection))
           @connection = connection
           @migration_wrapper = migration_wrapper
@@ -25,11 +29,11 @@ module Gitlab
         # configuration. For more details, see the BatchedMigrationWrapper class.
         #
         # Note that this method is primarily intended to called by a scheduled worker.
-        def run_migration_job(active_migration)
+        def run_migration_job(active_migration, force: false)
           if next_batched_job = find_or_create_next_batched_job(active_migration)
             migration_wrapper.perform(next_batched_job)
 
-            adjust_migration(active_migration)
+            adjust_migration(active_migration) unless force
 
             active_migration.failure! if next_batched_job.failed? && active_migration.should_stop?
           else
@@ -72,17 +76,23 @@ module Gitlab
           elsif migration.finished?
             Gitlab::AppLogger.warn "Batched background migration for the given configuration is already finished: #{configuration}"
           else
-            migration.reset_attempts_of_blocked_jobs!
-
-            migration.finalize!
-            migration.batched_jobs.with_status(:pending).each { |job| migration_wrapper.perform(job) }
-
-            run_migration_while(migration, :finalizing)
+            execute_migration(migration)
 
             error_message = "Batched migration #{migration.job_class_name} could not be completed and a manual action is required."\
                             "Check the admin panel at (`/admin/background_migrations`) for more details."
 
             raise FailedToFinalize, error_message unless migration.finished?
+          end
+        end
+
+        def execute_migration(migration, force: false)
+          migration.tap do |m|
+            m.reset_attempts_of_blocked_jobs!
+
+            m.finalize!
+            m.batched_jobs.with_status(:pending).each { |job| migration_wrapper.perform(job) }
+
+            run_migration_while(m, :finalizing, force: force)
           end
         end
 
@@ -141,9 +151,9 @@ module Gitlab
           end
         end
 
-        def run_migration_while(migration, status)
+        def run_migration_while(migration, status, force: false)
           while migration.status_name == status
-            run_migration_job(migration)
+            run_migration_job(migration, force: force)
             migration.reload_last_job
           end
         end

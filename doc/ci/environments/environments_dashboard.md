@@ -1,7 +1,8 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Monitor environments across multiple projects, including latest commits, pipeline status, and deployment times.
 title: Environments Dashboard
 ---
 
@@ -23,7 +24,7 @@ see which pipelines are green and which are red allowing you to
 diagnose if there is a block at a particular point, or if there's
 a more systemic problem you need to investigate.
 
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to**.
 1. Select **Your work**.
 1. Select **Environments**.
 

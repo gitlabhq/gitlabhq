@@ -37,8 +37,9 @@ module Gitlab
       def sec_fetch_invalid?(request)
         fetch_mode = request.headers["Sec-Fetch-Mode"]
 
-        return if fetch_mode.blank?
-        return true if INVALID_FETCH_MODES.include?(fetch_mode)
+        return false if fetch_mode.blank?
+
+        INVALID_FETCH_MODES.include?(fetch_mode)
       end
 
       def parse_request_accepts(request)

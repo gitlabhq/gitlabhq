@@ -43,14 +43,14 @@ RSpec.describe Resolvers::ProjectJobsResolver, feature_category: :continuous_int
       end
 
       context 'when filtering by source' do
-        let_it_be(:successful_build_source) { create(:ci_build_source, build: successful_build, source: 'scan_execution_policy') }
-        let_it_be(:pending_build_source) { create(:ci_build_source, build: pending_build, source: 'scan_execution_policy') }
+        let_it_be(:successful_build_source) { create(:ci_build_source, job: successful_build, source: 'scan_execution_policy') }
+        let_it_be(:pending_build_source) { create(:ci_build_source, job: pending_build, source: 'scan_execution_policy') }
         let(:args) { { sources: %w[scan_execution_policy] } }
 
         it { is_expected.to contain_exactly(successful_build, pending_build) }
 
         context 'with multiple sources' do
-          let_it_be(:failed_build_source) { create(:ci_build_source, build: failed_build, source: 'trigger') }
+          let_it_be(:failed_build_source) { create(:ci_build_source, job: failed_build, source: 'trigger') }
           let(:args) { { sources: %w[scan_execution_policy trigger] } }
 
           it { is_expected.to contain_exactly(successful_build, pending_build, failed_build) }

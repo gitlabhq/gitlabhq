@@ -72,9 +72,8 @@ For example, if the unique ID is `f85695`, the last example is
 
 {{< alert type="warning" >}}
 
-There are some known [limitations](introduction.md#subdomains-of-subdomains)
-regarding namespaces served under the general domain name and HTTPS.
-Make sure to read that section.
+For limitations regarding namespaces served under the general domain name and HTTPS,
+see [Subdomains of subdomains](introduction.md#subdomains-of-subdomains).
 
 {{< /alert >}}
 

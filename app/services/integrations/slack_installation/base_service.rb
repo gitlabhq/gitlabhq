@@ -125,11 +125,13 @@ module Integrations
           'updated_at'
         )
 
-        SlackIntegration.by_team(installation.team_id).id_not_in(installation.id).each_batch do |batch|
-          batch_ids = batch.pluck_primary_key
+        SlackIntegration.by_team(installation.team_id)
+                        .id_not_in(installation.id)
+                        .preloaded_integration
+                        .each_batch do |batch|
           batch.update_all(updatable_attributes)
 
-          Integrations::SlackWorkspace::IntegrationApiScope.update_scopes(batch_ids, installation.slack_api_scopes)
+          Integrations::SlackWorkspace::IntegrationApiScope.update_scopes(batch, installation.slack_api_scopes)
         end
       end
     end

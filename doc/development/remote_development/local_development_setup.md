@@ -382,14 +382,14 @@ To enable AI features in workspaces:
 1. Follow the instructions in [Set up GitLab Team Member License for GDK](../ai_features/ai_development_license.md#set-up-gitlab-team-member-license-for-gdk).
 
    This page also lists other set up AI features options for local development. To provision a
-   GitLab Self-Managed Ultimate Subscription with Duo Pro add-on license yourself, follow the cloud license
+   GitLab Self-Managed Ultimate Subscription with GitLab Duo Pro add-on license yourself, follow the cloud license
    with CustomersDot approach.
 
 1. Configure your instance to use the staging AI gateway (`https://cloud.staging.gitlab.com/ai`).
 
-For workspaces, you must enable Duo Chat features. They are only available with a Duo Enterprise
+For workspaces, you must enable GitLab Duo Chat features. They are only available with a GitLab Duo Enterprise
 license. You cannot provision this license for yourself through the staging Customers Portal.
-To upgrade your subscription from Duo Pro to Duo Enterprise, submit your request in the
+To upgrade your subscription from GitLab Duo Pro to GitLab Duo Enterprise, submit your request in the
 `#g_provision` Slack channel.
 
 If configured correctly, in the **Admin** > **GitLab Duo Pro** settings, the message,
@@ -397,7 +397,7 @@ If configured correctly, in the **Admin** > **GitLab Duo Pro** settings, the mes
 
 {{< alert type="note" >}}
 
-While using Duo Chat, if you see the `Error code: A9999` response, clear and reset the chat until it succeeds.
+While using GitLab Duo Chat, if you see the `Error code: A9999` response, clear and reset the chat until it succeeds.
 It is a common error response from the GitLab Duo API when using the staging gateway.
 
 {{< /alert >}}

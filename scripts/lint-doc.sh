@@ -7,7 +7,7 @@ INFO_COLOR_SET="\e[1;32m"
 COLOR_RESET="\e[0m"
 
 # Directories for projects that are included on the GitLab Docs website in addition to the 'gitlab' project
-EXTERNAL_DOCS_PROJECTS="omnibus charts runner operator"
+EXTERNAL_DOCS_PROJECTS="omnibus charts runner operator cli"
 
 cd "$(dirname "$0")/.." || exit 1
 printf "${INFO_COLOR_SET}INFO${COLOR_RESET} Linting '$(pwd)' as $(whoami)...\n"
@@ -132,7 +132,7 @@ function run_locally_or_in_container() {
   local cmd=$1
   local args=$2
   local files=$3
-  local registry_url="registry.gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/lint-markdown:alpine-3.21-vale-3.11.2-markdownlint2-0.17.2-lychee-0.18.1"
+  local registry_url="registry.gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/lint-markdown:alpine-3.22-vale-3.13.0-markdownlint2-0.19.0-lychee-0.21.0"
 
   if hash "${cmd}" 2>/dev/null; then
     printf "${INFO_COLOR_SET}INFO${COLOR_RESET} Found locally installed ${cmd}! Running...\n"

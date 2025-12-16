@@ -233,15 +233,15 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
         end
 
         context 'and it is not fresh enough' do
-          let(:latest_mr_pipeline_created_at) { "2024-05-29T01:30:00 UTC" }
+          let(:latest_mr_pipeline_created_at) { "2024-05-28T17:30:00 UTC" }
 
           it 'returns a failed PreMergeChecksStatus' do
             expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
             expect(instance.execute).not_to be_success
             expect(instance.execute.message)
               .to include(
-                "Expected latest pipeline (#{latest_mr_pipeline_web_url}) to be created within the last 8 hours " \
-                  "(it was created 8.5 hours ago)!"
+                "Expected latest pipeline (#{latest_mr_pipeline_web_url}) to be created within the last 16 hours " \
+                  "(it was created 16.5 hours ago)!"
               )
           end
         end
@@ -268,6 +268,17 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
                 "Expected latest pipeline (#{latest_mr_pipeline_web_url}) not to be a predictive pipeline!"
               )
               expect(instance.execute.message).to include("Pipeline name was \"#{latest_mr_pipeline_name}\".")
+            end
+          end
+
+          context 'when it is a spec-only predictive pipeline' do
+            let(:latest_mr_pipeline_name) do
+              "Ruby 3.3.10 MR [tier:3, types:code,rspec-predictive, opts:as-if-foss-run-once,mr-approved,spec-only]"
+            end
+
+            it 'returns a successful PreMergeChecksStatus' do
+              expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+              expect(instance.execute).to be_success
             end
           end
         end

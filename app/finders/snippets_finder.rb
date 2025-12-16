@@ -224,7 +224,7 @@ class SnippetsFinder < UnionFinder
   def by_organization(snippets)
     return snippets unless should_apply_organization_filter?
 
-    snippets.for_user_organization(organization_id)
+    snippets.in_organization(organization_id)
   end
 
   def should_apply_organization_filter?

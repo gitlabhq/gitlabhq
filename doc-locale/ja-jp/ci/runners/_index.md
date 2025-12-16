@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Runner
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Runner
 description: 設定とジョブの実行。
@@ -10,7 +10,7 @@ Runnerは、パイプライン内でGitLab CI/CDジョブを実行するため�
 
 ## Runnerの実行フロー {#runner-execution-flow}
 
-Runnerの基本的なワークフローを以下に示します。
+Runnerの基本的なワークフローを以下に示します:
 
 1. Runnerは、まずGitLabに[登録](https://docs.gitlab.com/runner/register/)する必要があります。これにより、RunnerとGitLab間の永続的な接続が確立されます。
 1. パイプラインがトリガーされると、GitLabは登録済みのRunnerに対してジョブを利用可能にします。
@@ -21,7 +21,7 @@ Runnerの基本的なワークフローを以下に示します。
 
 ## Runnerのジョブスケジューリングと実行 {#runner-job-scheduling-and-execution}
 
-CI/CDジョブを実行する必要がある場合、GitLabは`.gitlab-ci.yml`ファイルで定義されたタスクに基づいてジョブを作成します。ジョブはキューに配置されます。GitLabは、次の条件に一致する利用可能なRunnerを確認します。
+CI/CDジョブを実行する必要がある場合、GitLabは`.gitlab-ci.yml`ファイルで定義されたタスクに基づいてジョブを作成します。ジョブはキューに配置されます。GitLabは、次の条件に一致する利用可能なRunnerを確認します:
 
 - Runnerタグ
 - Runnerタイプ（共有またはグループなど）
@@ -32,7 +32,7 @@ CI/CDジョブを実行する必要がある場合、GitLabは`.gitlab-ci.yml`�
 
 ## Runnerのカテゴリ {#runner-categories}
 
-CI/CDジョブを実行するRunnerを決定する際には、以下から選択できます。
+CI/CDジョブを実行するRunnerを決定する際には、以下から選択できます:
 
 - GitLab.comまたはGitLab Dedicatedユーザー向けの[GitLabでホストされるRunner](hosted_runners/_index.md)。
 - すべてのGitLabインストール向けの[Self-Managed Runner](https://docs.gitlab.com/runner/)。
@@ -56,7 +56,7 @@ GitLabでホストされるRunnerの特長:
 - Linux、Windows、macOSのオプションを含む。
 - 需要に応じて自動的にスケールする。
 
-GitLabでホストされるRunnerを選択するのは、以下の場合です。
+GitLabでホストされるRunnerを選択するのは、以下の場合です:
 
 - メンテナンス不要のCI/CDが必要な場合。
 - インフラストラクチャの管理なしで迅速にセットアップする必要がある場合。
@@ -81,7 +81,7 @@ Self-Managed Runnerの特長:
 - さまざまなexecutor（Shell、Docker、Kubernetesなど）をサポートする。
 - 共有することも、特定のプロジェクトやグループ専用にもできる。
 
-Self-Managed Runnerを選択するのは、以下の場合です。
+Self-Managed Runnerを選択するのは、以下の場合です:
 
 - カスタム設定が必要な場合。
 - プライベートネットワークでジョブを実行する場合。

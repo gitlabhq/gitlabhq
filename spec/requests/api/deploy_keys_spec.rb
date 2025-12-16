@@ -36,6 +36,12 @@ RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures,
         get api(path, personal_access_token: pat), params: params
       end
 
+      before do
+        allow_next_instance_of(Gitlab::ExclusiveLease) do |instance|
+          allow(instance).to receive(:try_obtain).and_return(true)
+        end
+      end
+
       it 'returns all deploy keys' do
         make_api_request
 

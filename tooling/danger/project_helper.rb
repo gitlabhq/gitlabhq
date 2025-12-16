@@ -9,6 +9,7 @@ module Tooling
         master_pipeline_status
         roulette
         sidekiq_queues
+        spec_only
         specialization_labels
         specs
         stable_branch_patch

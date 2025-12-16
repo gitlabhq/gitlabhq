@@ -10,10 +10,13 @@
     = gitlab_ui_form_for [@project, @hook], as: :hook, url: project_hook_path(@project, @hook), html: { class: 'js-webhook-form' } do |f|
       = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
 
-      .settings-sticky-footer
-        = f.submit _('Save changes'), pajamas_button: true, class: 'gl-mr-2'
-        = render 'shared/web_hooks/test_button', hook: @hook
-        = link_button_to _('Delete'), project_hook_path(@project, @hook), method: :delete, class: 'gl-float-right', aria: { label: s_('Webhooks|Delete webhook') }, data: { confirm: s_('Webhooks|Are you sure you want to delete this project hook?'), confirm_btn_variant: 'danger' }, variant: :danger
+      .settings-sticky-footer.gl-flex.gl-justify-between
+        .gl-flex.gl-gap-4
+          = f.submit _('Save changes'), pajamas_button: true
+          = render 'shared/web_hooks/test_button', hook: @hook
+        .gl-flex.gl-gap-4
+          = link_button_to _('Delete'), project_hook_path(@project, @hook), method: :delete, aria: { label: s_('Webhooks|Delete webhook') }, data: { confirm: s_('Webhooks|Are you sure you want to delete this project hook?'), confirm_btn_variant: 'danger' }, variant: :danger
+          = link_button_to _('Close'), project_hooks_path(@project)
 
     %hr
 

@@ -51,7 +51,8 @@ RSpec.describe 'User interacts with awards', :js, feature_category: :team_planni
       expect(page).not_to have_button '😀'
     end
 
-    it 'shows the list of award emoji categories' do
+    it 'shows the list of award emoji categories',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5953' do
       click_button 'Add reaction'
       fill_in('Search for an emoji', with: 'hand')
 
@@ -162,7 +163,7 @@ RSpec.describe 'User interacts with awards', :js, feature_category: :team_planni
     describe 'visiting an issue with a legacy award emoji that is not valid anymore' do
       before do
         # The `heart_tip` emoji is not valid anymore so we need to skip validation
-        issue.award_emoji.build(user: user, name: 'heart_tip').save!(validate: false)
+        issue.award_emoji.build(user: user, name: 'heart_tip', namespace_id: issue.namespace_id).save!(validate: false)
         visit project_issue_path(project, issue)
       end
 

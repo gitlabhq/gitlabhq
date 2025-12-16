@@ -14,6 +14,8 @@ RSpec.describe ActiveContext::BulkProcessQueue do
     allow(ActiveContext::Redis).to receive(:with_redis).and_yield(redis)
     allow(ActiveContext::BulkProcessor).to receive(:new).and_return(bulk_processor)
     allow(ActiveContext::Config).to receive(:logger).and_return(logger)
+    allow(ActiveContext::RetryQueue).to receive(:push)
+    allow(ActiveContext::DeadQueue).to receive(:push)
     allow(bulk_processor).to receive(:process)
     allow(bulk_processor).to receive(:flush).and_return([])
   end
@@ -58,15 +60,30 @@ RSpec.describe ActiveContext::BulkProcessQueue do
         allow(bulk_processor).to receive(:flush).and_return(failures)
       end
 
-      it 're-enqueues failures' do
+      it 'adds failures to the retry queue' do
         combined_failures = ['preprocess_failed_ref'] + failures
-        expect(ActiveContext).to receive(:track!).with(combined_failures, queue: queue)
+        expect(ActiveContext).to receive(:track!).with(combined_failures, queue: ActiveContext::RetryQueue)
 
         bulk_process_queue.process(redis)
       end
 
       it 'returns the correct count of processed specs and failures' do
         expect(bulk_process_queue.process(redis)).to eq([2, 2])
+      end
+
+      context 'when the queue is RetryQueue' do
+        let(:queue) { ActiveContext::RetryQueue }
+
+        it 'adds failures to the dead queue' do
+          combined_failures = ['preprocess_failed_ref'] + failures
+          expect(ActiveContext).to receive(:track!).with(combined_failures, queue: ActiveContext::DeadQueue)
+
+          bulk_process_queue.process(redis)
+        end
+
+        it 'returns the correct count of processed specs and failures' do
+          expect(bulk_process_queue.process(redis)).to eq([2, 2])
+        end
       end
     end
 

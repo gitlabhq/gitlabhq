@@ -38,17 +38,11 @@ module Gitlab
             type: 'sast_iac'
           },
           dast: {
-            badge: {
-              text: _('Available on demand'),
-              tooltip_text: _(
-                'On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects'),
-              variant: 'neutral'
-            },
             secondary: {
               type: 'dast_profiles',
               name: _('DAST profiles'),
               description: s_('SecurityConfiguration|Manage profiles for use by DAST scans.'),
-              configuration_text: s_('SecurityConfiguration|Manage profiles')
+              configuration_text: s_('SecurityConfiguration|Manage DAST profiles')
             },
             name: _('Dynamic Application Security Testing (DAST)'),
             short_name: s_('ciReport|DAST'),

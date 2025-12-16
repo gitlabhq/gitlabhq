@@ -40,7 +40,7 @@ You can import your Git repository by:
 
 ## Import a project by using the UI
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project**.
 1. Select **Repository by URL**.
 1. Enter a **Git repository URL**.
@@ -92,3 +92,10 @@ curl --location "https://gitlab.example.com/api/v4/projects/" \
 ```
 
 Some providers do not allow a password and instead require an access token.
+
+## Related topics
+
+- [Import and export settings](../../../administration/settings/import_and_export_settings.md).
+- [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
+- [Running multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md).
+- [Processing specific job classes](../../../administration/sidekiq/processing_specific_job_classes.md).

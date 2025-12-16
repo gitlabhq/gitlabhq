@@ -10,21 +10,52 @@ RSpec.describe "GraphQL Pipeline details", '(JavaScript fixtures)', type: :reque
   let_it_be(:namespace) { create(:namespace, name: 'frontend-fixtures') }
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:admin) { project.first_owner }
-  let_it_be(:commit) { create(:commit, project: project) }
-  let_it_be(:pipeline) do
-    create(:ci_pipeline, project: project, sha: commit.id, ref: 'master', user: admin, status: :success)
+
+  let(:config) do
+    <<~YAML
+      stages:
+        - build
+        - test
+        - deploy
+
+      build_1:
+        stage: build
+        script: echo "build 1"
+
+      build_2:
+        stage: build
+        script: echo "build 2"
+
+      test_1:
+        stage: test
+        script: echo "test 1"
+        needs: [build_1]
+
+      test_2:
+        stage: test
+        script: echo "test 2"
+        needs: [build_2]
+
+      test_3:
+        stage: test
+        script: echo "test 3"
+
+      deploy:
+        stage: deploy
+        script: echo "deploy"
+        needs: [test_1]
+
+      bridge_job:
+        stage: deploy
+        trigger:
+          project: frontend-fixtures/triggered-project
+    YAML
   end
 
-  let_it_be(:build_success) do
-    create(:ci_build, :dependent, name: 'build_my_app', pipeline: pipeline, stage: 'build', status: :success)
+  let(:pipeline) do
+    stub_ci_pipeline_yaml_file(config)
+    Ci::CreatePipelineService.new(project, admin, ref: 'master').execute(:push).payload
   end
-
-  let_it_be(:build_test) { create(:ci_build, :dependent, name: 'test_my_app', pipeline: pipeline, stage: 'test') }
-  let_it_be(:build_deploy_failed) do
-    create(:ci_build, :dependent, name: 'deploy_my_app', status: :failed, pipeline: pipeline, stage: 'deploy')
-  end
-
-  let_it_be(:bridge) { create(:ci_bridge, pipeline: pipeline) }
 
   let(:pipeline_details_query_path) { 'app/graphql/queries/pipelines/get_pipeline_details.query.graphql' }
 

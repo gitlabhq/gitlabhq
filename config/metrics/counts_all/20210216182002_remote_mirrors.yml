@@ -3,6 +3,8 @@ data_category: operational
 key_path: counts.remote_mirrors
 description: Count of total remote mirrors. Includes both push and pull mirrors
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: all

@@ -1,0 +1,19 @@
+---
+key_path: counts.active_users_with_passkeys
+description: Total count of active users with passkeys
+product_group: authentication
+value_type: number
+status: active
+milestone: "18.7"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214117/
+time_frame:
+- 28d
+- all
+data_source: database
+data_category: optional
+instrumentation_class: CountActiveUserWithPasskeysMetric
+performance_indicator_type: []
+tiers:
+- free
+- premium
+- ultimate

@@ -67,14 +67,6 @@ module MergeRequests
       todo_service.update_merge_request(merge_request, current_user)
     end
 
-    def reopen_service
-      MergeRequests::ReopenService
-    end
-
-    def close_service
-      MergeRequests::CloseService
-    end
-
     def after_update(merge_request, old_associations)
       super
 
@@ -104,7 +96,7 @@ module MergeRequests
     end
 
     override :change_state
-    def change_state(merge_request)
+    def change_state(merge_request, state_event)
       return unless super
 
       @trigger_work_item_updated = true
@@ -369,6 +361,8 @@ module MergeRequests
 
       merge_request.project.team.max_member_access_for_user_ids(user_ids)
       User.id_in(user_ids).map do |user|
+        link_composite_identity(user) if user.composite_identity_enforced? && user.service_account?
+
         if user.can?(:read_merge_request, merge_request)
           user.id
         else
@@ -379,6 +373,10 @@ module MergeRequests
           nil
         end
       end.compact
+    end
+
+    def link_composite_identity(user)
+      ::Gitlab::Auth::Identity.link_from_scoped_user(user, current_user)
     end
 
     def resolve_todos_for(merge_request)

@@ -1,9 +1,0 @@
----
-name: commit_time_tracking
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/16543
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188621
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553942
-milestone: '18.3'
-group: group::project management
-type: gitlab_com_derisk
-default_enabled: false

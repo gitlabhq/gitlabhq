@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
+  sequence(:ci_partition_id, 100)
+
   factory :ci_partition, class: 'Ci::Partition' do
-    sequence(:id, 100)
+    id { generate(:ci_partition_id) }
     status { 0 }
 
     trait :ready do

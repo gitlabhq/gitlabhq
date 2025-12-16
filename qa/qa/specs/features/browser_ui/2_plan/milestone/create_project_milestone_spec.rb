@@ -6,7 +6,7 @@ module QA
     type: :flaky
   } do
     describe 'Project milestone' do
-      include Support::Dates
+      include QA::Support::Dates
 
       let(:title) { 'Project milestone' }
       let(:description) { 'This issue tests out project milestones.' }

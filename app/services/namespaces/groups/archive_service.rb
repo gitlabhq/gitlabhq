@@ -28,7 +28,7 @@ module Namespaces
 
         return AlreadyArchivedError if group.archived
         return AncestorAlreadyArchivedError if group.ancestors_archived?
-        return ArchivingFailedError unless group.archive
+        return ArchivingFailedError unless group.namespace_settings.update(archived: true)
 
         after_archive
         ServiceResponse.success

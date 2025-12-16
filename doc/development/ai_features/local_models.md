@@ -10,9 +10,9 @@ There are several ways to serve large language models (LLMs) for local or self-d
 [MistralAI](https://docs.mistral.ai/deployment/self-deployment/overview/) recommends two different serving frameworks for their models:
 
 - [vLLM](https://docs.vllm.ai/en/latest/): A Python-only serving framework which deploys an API matching OpenAI's spec. vLLM provides a paged attention kernel to improve serving throughput.
-- Nvidia's [TensorRT-LLM](https://github.com/NVIDIA/TensorRT-LLM) served with Nvidia's Triton Inference Server: TensorRT-LLM provides a DSL to build fast inference engines with dedicated kernels for large language models. Triton Inference Server allows efficient serving of these inference engines.
+- NVIDIA's [TensorRT-LLM](https://github.com/NVIDIA/TensorRT-LLM) served with NVIDIA's Triton Inference Server: TensorRT-LLM provides a DSL to build fast inference engines with dedicated kernels for large language models. Triton Inference Server allows efficient serving of these inference engines.
 
-These solutions require access to an Nvidia GPU as they rely on the [CUDA](https://developer.nvidia.com/cuda-gpus) graphics API for computation. However, [Ollama](https://ollama.com/download) offers a low configuration cross-platform solution to do it. This is the solution we are going to explore.
+These solutions require access to an NVIDIA GPU as they rely on the [CUDA](https://developer.nvidia.com/cuda-gpus) graphics API for computation. However, [Ollama](https://ollama.com/download) offers a low configuration cross-platform solution to do it. This is the solution we are going to explore.
 
 ## Ollama
 

@@ -708,15 +708,7 @@ fix security issues before hackers can exploit them.
 
 You can configure GitLab to reject commits based on GitGuardian policies.
 
-### Known issues
-
-- Pushes can be delayed or can time out. With the GitGuardian integration, pushes are sent to a third-party, and GitLab has no control over the connection with GitGuardian or the GitGuardian process.
-- Due to a [GitGuardian API limitation](https://api.gitguardian.com/docs#operation/multiple_scan), the integration ignores files over the size of 1 MB. They are not scanned.
-- If a pushed file has a name over 256 characters long the push won't go through.
-  For more information, see [GitGuardian API documentation](https://api.gitguardian.com/docs#operation/multiple_scan) .
-
-Troubleshooting steps on [the integration page](../user/project/integrations/git_guardian.md#troubleshooting)
-show how to mitigate some of these problems.
+For known issues and troubleshooting steps, see [GitGuardian troubleshooting](../user/project/integrations/git_guardian.md#troubleshooting).
 
 ### Set up GitGuardian
 

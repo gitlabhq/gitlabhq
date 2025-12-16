@@ -66,7 +66,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-border gl-mb-5 gl-border-default gl-p-5">
+  <div class="gl-border gl-border-default gl-p-5">
     <h3 class="gl-heading-4">{{ s__('Pipeline|Duration') }}</h3>
     <gl-loading-icon v-if="loading" size="xl" class="gl-mb-5" />
     <gl-line-chart

@@ -2,8 +2,10 @@
 stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Design management
+title: Design management (deprecated)
 ---
+
+<!--- start_remove The following content will be removed on remove_date: '2027-05-15' -->
 
 {{< details >}}
 
@@ -11,6 +13,19 @@ title: Design management
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
+
+{{< alert type="warning" >}}
+
+This feature was [deprecated](../../../update/deprecations.md#design-management-deprecated) in GitLab 18.6
+and is planned for removal in 19.0.
+This change is a breaking change.
+In GitLab 19.0 and later, users are no longer able to upload new designs.
+Existing designs remain available in read-only mode until GitLab 20.0, giving users time to save their designs as needed.
+GitLab is exploring alternatives that better integrate with the tools designers already use.
+
+{{< /alert >}}
+
+<!--- end_remove -->
 
 With Design Management you can upload design assets (including wireframes and mockups)
 to GitLab issues and keep them stored in a single place. Product designers, product managers, and
@@ -110,7 +125,7 @@ To move around the image while zoomed in, drag the image.
 
 {{< history >}}
 
-- Ability to edit the description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1.
+- Edit descriptions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1.
 - Minimum role to add a design to an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147053) from Developer to Reporter in GitLab 16.11.
 - Minimum role to add a design to an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
@@ -261,7 +276,6 @@ so that everyone involved can participate in the discussion.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385100) in GitLab 15.9.
 - Minimum role to delete comment from a design [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}

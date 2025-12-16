@@ -26,7 +26,7 @@ RSpec.shared_examples 'close quick action' do |issuable_type|
       issuable = project.public_send(issuable_type.to_s.pluralize).first
 
       expect(issuable.description).to eq 'bug description'
-      expect(issuable).to be_opened
+      expect(issuable).to be_closed
       expect(page).to have_content 'bug 345'
       expect(page).to have_content 'bug description'
     end

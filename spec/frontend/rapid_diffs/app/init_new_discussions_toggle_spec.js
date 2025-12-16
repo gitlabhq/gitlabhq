@@ -18,10 +18,21 @@ describe('initNewDiscussionToggle', () => {
           <table>
             <tbody>
               <tr data-hunk-lines>
+                <td data-position="old"></td>
                 <td data-position="new">
                   <a href="/" data-line-number="5"></a>
                 </td>
                 <td>Diff</td>
+              </tr>
+              <tr data-hunk-lines data-expanded>
+                <td data-position="old" data-change="meta"></td>
+                <td data-position="new" data-change="meta"></td>
+                <td data-change="meta">Expanded line</td>
+              </tr>
+              <tr data-hunk-lines>
+                <td data-position="old" data-change="meta"></td>
+                <td data-position="new" data-change="meta"></td>
+                <td data-change="meta"> No newline at end of file</td>
               </tr>
             </tbody>
           </table>
@@ -40,12 +51,24 @@ describe('initNewDiscussionToggle', () => {
         <button data-new-discussion-toggle hidden></button>
         <div data-diffs-list>
           <table>
-            <tbody data-hunk-lines>
-              <tr>
+            <tbody>
+              <tr data-hunk-lines>
                 <td data-position="old">${lineNumberHtml('old')}</td>
                 <td data-position="old">Diff</td>
                 <td data-position="new">${lineNumberHtml('new')}</td>
                 <td data-position="new">Diff</td>
+              </tr>
+              <tr data-hunk-lines data-expanded>
+                <td data-position="old" data-change="meta"></td>
+                <td data-change="meta">Expanded left</td>
+                <td data-position="new" data-change="meta"></td>
+                <td data-change="meta">Expanded right</td>
+              </tr>
+              <tr data-hunk-lines>
+                <td data-position="old" data-change="meta"></td>
+                <td data-change="meta"> No newline at end of file</td>
+                <td data-position="new" data-change="meta"></td>
+                <td data-change="meta"> No newline at end of file</td>
               </tr>
             </tbody>
           </table>
@@ -105,17 +128,18 @@ describe('initNewDiscussionToggle', () => {
     });
 
     it('restores toggle on focused cell after mouseout', () => {
-      const cell = appElement.querySelector('[data-position]');
-      const lineNumber = cell.querySelector('[data-line-number]');
+      const oldCell = appElement.querySelector('[data-position="old"]');
+      const newCell = appElement.querySelector('[data-position="new"]');
+      const lineNumber = newCell.querySelector('[data-line-number]');
 
       lineNumber.dispatchEvent(new FocusEvent('focusin', { bubbles: true, target: lineNumber }));
       expect(toggle.hidden).toBe(false);
 
-      cell.dispatchEvent(new MouseEvent('mouseout', { bubbles: true }));
+      newCell.dispatchEvent(new MouseEvent('mouseout', { bubbles: true }));
       jest.runAllTimers();
 
       expect(toggle.hidden).toBe(false);
-      expect(toggle.parentElement).toBe(cell);
+      expect(toggle.parentElement).toBe(oldCell);
     });
 
     it('hides toggle after mouseout when focus moves to toggle itself', () => {
@@ -130,6 +154,32 @@ describe('initNewDiscussionToggle', () => {
       jest.runAllTimers();
 
       expect(toggle.hidden).toBe(true);
+    });
+
+    it('does not show toggle on meta change rows', () => {
+      const metaRow = appElement.querySelector('tr:nth-child(3)');
+      const metaCell = metaRow.querySelector('[data-change="meta"]');
+
+      metaCell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(metaCell);
+
+      metaCell.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(metaCell);
+    });
+
+    it('does not show toggle on expanded lines', () => {
+      const expandedRow = appElement.querySelector('tr:nth-child(2)');
+      const cell = expandedRow.querySelector('[data-change]');
+
+      cell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(cell);
+
+      cell.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(cell);
     });
   });
 
@@ -237,6 +287,56 @@ describe('initNewDiscussionToggle', () => {
       jest.runAllTimers();
 
       expect(toggle.hidden).toBe(true);
+    });
+
+    it('does not show toggle on meta change rows', () => {
+      createParallelDiff();
+      initNewDiscussionToggle(appElement);
+
+      const metaRow = appElement.querySelector('tr:nth-child(3)');
+      const metaOldCell = metaRow.querySelector('[data-position="old"][data-change="meta"]');
+      const metaNewCell = metaRow.querySelector('[data-position="new"][data-change="meta"]');
+
+      metaOldCell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(metaOldCell);
+
+      metaOldCell.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(metaOldCell);
+
+      metaNewCell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(metaNewCell);
+
+      metaNewCell.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(metaNewCell);
+    });
+
+    it('does not show toggle on expanded rows', () => {
+      createParallelDiff();
+      initNewDiscussionToggle(appElement);
+
+      const expandedRow = appElement.querySelector('tr:nth-child(2)');
+      const oldCell = expandedRow.querySelector('[data-position="old"][data-change="meta"]');
+      const newCell = expandedRow.querySelector('[data-position="new"][data-change="meta"]');
+
+      oldCell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(oldCell);
+
+      oldCell.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(oldCell);
+
+      newCell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(newCell);
+
+      newCell.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(newCell);
     });
   });
 

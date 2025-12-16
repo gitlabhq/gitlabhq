@@ -108,7 +108,7 @@ module Gitlab
             def check_source(source, filename)
               full_path = File.join(source, filename)
 
-              return full_path if paths.include?(full_path)
+              full_path if paths.include?(full_path)
             end
           end
         end

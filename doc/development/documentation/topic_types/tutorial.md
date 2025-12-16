@@ -82,6 +82,37 @@ To do step 2:
 An example of a tutorial that follows this format is
 [Tutorial: Make your first Git commit](../../../tutorials/make_first_git_commit/_index.md).
 
+### Tutorial format with guides
+
+For tutorials with complex steps, you can use the [guide](../styleguide/_index.md#guide) shortcode
+to create a stylized ordered list of steps in each section. For example:
+
+```markdown
+## Do the first task
+
+Briefly explain what we're going to do in this task.
+
+{{</* guide */>}}
+
+1. Do the first thing. Keep this sentence short and always use a period.
+
+   This is how you do the first thing. Provide navigation steps,
+   additional details, example code, and screenshots here.
+
+1. Do the second thing.
+
+   This is how you do the second thing.
+
+1. Do the third thing.
+
+   This is how you do the third thing.
+
+{{</* /guide */>}}
+```
+
+An example of a tutorial that follows this format is
+[Tutorial: Update Git commit messages](../../../tutorials/update_commit_messages/_index.md).
+
 ## Tutorial page title
 
 Start the page title with `Tutorial:` followed by an active verb, like `Tutorial: Create a website`.

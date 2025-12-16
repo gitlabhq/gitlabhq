@@ -14,7 +14,7 @@ class Timelog < ApplicationRecord
 
   validates :time_spent, :user, :namespace, presence: true
   validates :summary, length: { maximum: 255 }
-  validate :issuable_id_is_present
+  validates_with ExactlyOnePresentValidator, fields: [:issue, :merge_request]
   validate :check_total_time_spent_is_within_range, on: :create, unless: :importing?, if: :time_spent
 
   belongs_to :issue, touch: true
@@ -73,14 +73,6 @@ class Timelog < ApplicationRecord
 
     errors.add(:base, _("Total time spent cannot be negative.")) if total_time_spent < 0
     errors.add(:base, _("Total time spent cannot exceed a year.")) if total_time_spent > MAX_TOTAL_TIME_SPENT
-  end
-
-  def issuable_id_is_present
-    if issue_id && merge_request_id
-      errors.add(:base, _('Only Issue ID or merge request ID is required'))
-    elsif issuable.nil?
-      errors.add(:base, _('Issue or merge request ID is required'))
-    end
   end
 
   def set_project

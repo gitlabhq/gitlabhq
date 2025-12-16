@@ -1,9 +1,9 @@
 <% audit_event_types_by_feature_category = Gitlab::Audit::Type::Definition.definitions.map(&:last).group_by(&:feature_category) %>
 <% def boolean_to_docs(boolean) %>
 <%   if boolean %>
-<%     "{{< icon name=\"check-circle\" >}} Yes" %>
+<%     "{{< yes >}}" %>
 <%   else %>
-<%     "{{< icon name=\"dotted-circle\" >}} No" %>
+<%     "{{< no >}}" %>
 <%   end %>
 <% end %>
 <% def humanize(feature_category) %>

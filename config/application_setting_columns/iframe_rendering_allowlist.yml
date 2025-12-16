@@ -1,0 +1,13 @@
+---
+api_type: array of strings
+attr: iframe_rendering_allowlist
+clusterwide: true
+column: iframe_rendering_allowlist
+db_type: text
+default:
+description: List of allowed iframe `src` host[:port] entries used for Content Security
+  Policy and sanitization.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

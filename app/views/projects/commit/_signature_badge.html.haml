@@ -31,5 +31,4 @@
     %span.gl-font-monospace= signature.gpg_key_primary_keyid
 
     = link_to(_('Learn about signing commits'), help_page_path('user/project/repository/signed_commits/_index.md'), class: 'gl-link gl-block gl-mt-3')
-
-= gl_badge_tag(label, { variant: variant, icon: icon, href: '#' }, { class: 'signature-badge gl-inline-flex gl-ml-4 gl-align-middle', role: 'button', tabindex: 0, data: { toggle: 'popover', html: 'true', triggers: 'click blur', placement: 'bottom', title: title, content: content} })
+= gl_badge_tag(label, { variant: variant, icon: icon, href: '#' }, { class: 'signature-badge gl-inline-flex gl-align-middle', role: 'button', tabindex: 0, data: { toggle: 'popover', html: 'true', triggers: 'click blur', placement: 'bottom', title: title, content: content} })

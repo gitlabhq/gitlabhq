@@ -66,9 +66,8 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
     end
 
     context 'when archiving succeeds' do
-      it 'calls archive on the group' do
-        expect(group).to receive(:archive).and_return(true)
-        service_response
+      it 'updates the namespace_settings archived attribute' do
+        expect { service_response }.to change { group.namespace_settings.reload.archived }.from(false).to(true)
       end
 
       it 'returns a success response with the group' do
@@ -116,7 +115,7 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
 
     context 'when archiving fails' do
       before do
-        allow(group).to receive(:archive).and_return(false)
+        allow(group.namespace_settings).to receive(:update).and_return(false)
       end
 
       it 'returns an error response with the appropriate message' do

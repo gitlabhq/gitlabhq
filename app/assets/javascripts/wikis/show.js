@@ -9,7 +9,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import SidebarResizer from './components/sidebar_resizer.vue';
 import Wikis from './wikis';
 import WikiContentApp from './app.vue';
-import WikiSidebarEntries from './components/wiki_sidebar_entries.vue';
+import WikiSidebar from './components/wiki_sidebar.vue';
 import initCache from './wiki_notes/graphql/cache_init';
 import resolvers from './wiki_notes/graphql/resolvers';
 import typeDefs from './wiki_notes/graphql/typedefs.graphql';
@@ -34,6 +34,7 @@ const mountWikiApp = () => {
     pageHeading,
     contentApi,
     showEditButton,
+    canCreateNewPage,
     showRestoreVersionButton,
     pageInfo,
     isPageTemplate,
@@ -92,6 +93,7 @@ const mountWikiApp = () => {
       isEditingPath: false,
       pageHeading,
       contentApi,
+      canCreateNewPage: parseBoolean(canCreateNewPage),
       showEditButton: parseBoolean(showEditButton),
       showRestoreVersionButton: parseBoolean(showRestoreVersionButton),
       pageInfo: pageInfoData,
@@ -136,11 +138,20 @@ const mountWikiApp = () => {
   });
 };
 
-export const mountWikiSidebarEntries = () => {
-  const el = document.querySelector('#js-wiki-sidebar-entries');
+export const mountWikiSidebar = () => {
+  const el = document.querySelector('#js-wiki-sidebar');
   if (!el) return false;
 
-  const { hasCustomSidebar, canCreate, viewAllPagesPath, editing } = el.dataset;
+  const {
+    hasCustomSidebar,
+    canCreate,
+    viewAllPagesPath,
+    editing,
+    customSidebarContent,
+    hasWikiPages,
+    editSidebarUrl,
+    isEditingSidebar,
+  } = el.dataset;
 
   return new Vue({
     el,
@@ -150,9 +161,13 @@ export const mountWikiSidebarEntries = () => {
       sidebarPagesApi: gl.GfmAutoComplete.dataSources.wikis,
       viewAllPagesPath,
       editing,
+      customSidebarContent,
+      hasWikiPages: parseBoolean(hasWikiPages),
+      editSidebarUrl,
+      isEditingSidebar: parseBoolean(isEditingSidebar),
     },
     render(createElement) {
-      return createElement(WikiSidebarEntries);
+      return createElement(WikiSidebar);
     },
   });
 };

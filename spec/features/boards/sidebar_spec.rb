@@ -20,11 +20,10 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio
 
   context 'when project studio is enabled' do
     before do
-      enable_project_studio!(user)
+      skip 'Test not applicable in classic UI' unless Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
       sign_in(user)
 
       visit project_board_path(project, board)
-      dismiss_welcome_banner_if_present(page)
       click_button 'Collapse sidebar' # otherwise panel opens as drawer and intercepts clicks
 
       wait_for_requests
@@ -38,7 +37,6 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio
       sign_in(user)
 
       visit project_board_path(project, board)
-      dismiss_welcome_banner_if_present(page)
 
       wait_for_requests
     end

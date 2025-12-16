@@ -34,6 +34,13 @@ The extension matches your Git repository remote URL with the GitLab instance UR
 for your token. If you have multiple accounts or projects, you can choose the one you want to use.
 For more details, see [Switch GitLab accounts in VS Code](_index.md#switch-gitlab-accounts-in-vs-code).
 
+{{< alert type="note" >}}
+
+If your GitLab instance or network uses a custom SSL setup,
+you can configure the extension to support self-signed certificates. For more information, see [using the extension with self-signed certificates](ssl.md).
+
+{{< /alert >}}
+
 ### Connect to your repository
 
 To connect to your GitLab repository from VS Code:
@@ -69,7 +76,7 @@ The extension shows information in the VS Code status bar if both:
 To configure settings, go to **Settings** > **Extensions** > **GitLab Workflow**.
 Settings can be configured at the user or workspace level.
 
-By default, Code Suggestions and GitLab Duo Chat are enabled, so if you have
+By default, GitLab Duo Code Suggestions and GitLab Duo Chat are enabled, so if you have
 the GitLab Duo add-on and a seat assigned, you should have access.
 
 ### Authentication
@@ -80,7 +87,7 @@ Authenticate using a personal access token or logging in through an OAuth applic
 
 If you are on GitLab Self-Managed or GitLab Dedicated, create a personal access token.
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Personal access tokens**.
 1. Select **Add new token**.
@@ -138,3 +145,10 @@ To install a pre-release build:
 1. Under **Extensions** > **GitLab Workflow**, select **Switch to Pre-release Version**.
 1. Select **Restart Extensions**.
    1. Alternatively **Reload Window** to refresh any outdated webviews after updating.
+
+### Turn off GitLab Duo Chat
+
+To turn off GitLab Duo Chat in VS Code:
+
+1. Go to **Settings** > **Extensions** > **GitLab Workflow**.
+1. Clear the **Enable GitLab Duo Chat assistant** checkbox.

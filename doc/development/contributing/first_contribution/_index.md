@@ -16,7 +16,7 @@ You can follow this tutorial to familiarize yourself with the contribution proce
 
 1. If you don't already have a GitLab account [create a new one](https://gitlab.com/users/sign_up).
    Confirm you can successfully [sign in](https://gitlab.com/users/sign_in).
-1. [Request access to the community forks](https://gitlab.com/groups/gitlab-community/community-members/-/group_members/request_access),
+1. [Request access to the community forks](https://contributors.gitlab.com/start),
    a set of forks mirrored from GitLab repositories in order to improve the contributor experience.
    - When you request access to the community forks you will receive an onboarding issue in the
 [community onboarding project](https://gitlab.com/gitlab-community/community-members/onboarding/-/issues).

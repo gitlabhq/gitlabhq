@@ -192,7 +192,7 @@ export const BOOTSTRAP_MIGRATIONS = {
   // shadow: null, // Disabled as this produces too many false positives
   'sr-only': 'gl-sr-only',
   'sticky-top': null,
-  'text-body': '!gl-text-primary',
+  'text-body': null,
   'text-capitalize': '!gl-capitalize',
   'text-center': '!gl-text-center',
   'text-dark': null,

@@ -10,6 +10,7 @@ module Gitlab
       :allow_cross_foreign_keys,
       :file_path,
       :require_sharding_key,
+      :disallow_sequences,
       :sharding_root_tables,
       keyword_init: true
     ) do

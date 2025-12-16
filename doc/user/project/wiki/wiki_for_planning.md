@@ -47,10 +47,10 @@ Create links between wiki documentation and your planning items to build a conne
 Epics often need detailed specifications that are too long for an epic description.
 Keep the full documentation in a wiki:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Wiki**.
 1. Create a wiki page with your detailed requirements (for example, with slug `product-requirements`).
-1. On the left sidebar, select **Search or go to** and find your project's group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project's group.
 1. Select **Plan** > **Epics** and find your epic.
 1. In the epic description, link to the wiki page:
 
@@ -151,7 +151,6 @@ Transform your wiki pages into live dashboards using [GitLab Query Language](../
 Embedded views automatically update when data changes, providing real-time visibility into your planning data
 without leaving the wiki.
 
-<!-- Other types: flag, warning, disclaimer -->
 {{< alert type="note" >}}
 
 Embedded views have performance considerations. Large queries may time out or be rate-limited.
@@ -272,9 +271,9 @@ Create a connected documentation flow throughout your sprint:
 
 #### During sprint
 
-- Daily standups: Create daily wiki pages with links to blocked issues
-- Technical decisions: Document design decisions with links to implementation issues
-- Impediments: Track blockers in wiki with issue references
+- Daily stand-ups: Create daily wiki pages with links to blocked issues.
+- Technical decisions: Document design decisions with links to implementation issues.
+- Impediments: Track blockers in wiki with issue references.
 
 #### Post-sprint
 

@@ -53,8 +53,8 @@ func infoRefsReader(stream infoRefsClient) io.Reader {
 }
 
 // ReceivePack performs a receive pack operation with Git configuration options.
-func (client *SmartHTTPClient) ReceivePack(ctx context.Context, repo *gitalypb.Repository, glID string, glUsername string, glRepository string, gitConfigOptions []string, glBuildID string, clientRequest io.Reader, clientResponse io.Writer, gitProtocol string) error {
-	clientContextMetadata, err := json.Marshal(map[string]string{"glBuildId": glBuildID})
+func (client *SmartHTTPClient) ReceivePack(ctx context.Context, repo *gitalypb.Repository, glID string, glUsername string, glRepository string, gitConfigOptions []string, glScopedUserID string, glBuildID string, clientRequest io.Reader, clientResponse io.Writer, gitProtocol string) error {
+	clientContextMetadata, err := json.Marshal(map[string]string{"glBuildId": glBuildID, "scoped-user-id": glScopedUserID})
 	if err != nil {
 		return err
 	}

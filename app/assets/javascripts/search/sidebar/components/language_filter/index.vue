@@ -3,7 +3,9 @@ import { GlButton, GlAlert } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { s__, sprintf } from '~/locale';
+// eslint-disable-next-line no-restricted-imports
 import { convertFiltersData } from '../../utils';
+// eslint-disable-next-line no-restricted-imports
 import {
   LANGUAGE_DEFAULT_ITEM_LENGTH,
   LANGUAGE_MAX_ITEM_LENGTH,

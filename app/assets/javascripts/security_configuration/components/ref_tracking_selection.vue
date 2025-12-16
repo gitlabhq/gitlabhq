@@ -183,6 +183,8 @@ export default {
           },
           this.searchAbortController.signal,
         );
+
+        this.isSearching = false;
       } catch (error) {
         const requestCancelled = axios.isCancel(error);
 
@@ -190,10 +192,11 @@ export default {
           this.errorMessage = s__(
             'SecurityTrackedRefs|Could not search refs. Please try again later.',
           );
+
+          this.isSearching = false;
         }
       } finally {
         this.searchAbortController = null;
-        this.isSearching = false;
       }
     },
     isRefSelected(ref) {
@@ -212,6 +215,9 @@ export default {
       } else {
         this.selectedRefs.push(ref);
       }
+    },
+    handlePrimary() {
+      this.$emit('select', this.selectedRefs);
     },
     handleHidden() {
       this.$emit('cancel');
@@ -233,6 +239,7 @@ export default {
     modal-class="gl-pt-12 gl-px-2 sm:gl-pt-20 sm:gl-px-4 [&_.modal-dialog]:!gl-items-start"
     size="lg"
     :centered="false"
+    @primary="handlePrimary"
     @hidden="handleHidden"
   >
     <gl-search-box-by-type

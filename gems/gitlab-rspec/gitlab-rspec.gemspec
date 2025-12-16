@@ -20,6 +20,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "activerecord", ">= 6.1", "< 8"
   spec.add_runtime_dependency "activesupport", ">= 6.1", "< 8"
+  spec.add_runtime_dependency "gitlab_quality-test_tooling", ">= 3.1", "< 4"
   spec.add_runtime_dependency "rspec", "~> 3.0"
 
   spec.add_development_dependency "factory_bot_rails", "~> 6.2.0"

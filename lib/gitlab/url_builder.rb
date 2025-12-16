@@ -91,7 +91,13 @@ module Gitlab
       def compare_url(compare, **options)
         return '' unless compare.project
 
-        instance.project_compare_url(compare.project, **options.merge(compare.to_param))
+        compare_params = compare.to_param
+
+        if compare_params[:straight] == true
+          instance.project_compare_with_two_dots_url(compare.project, **options.merge(compare_params))
+        else
+          instance.project_compare_url(compare.project, **options.merge(compare_params))
+        end
       end
 
       def note_url(note, **options)
@@ -110,10 +116,6 @@ module Gitlab
         elsif note.for_wiki_page?
           instance.project_wiki_page_url(note.noteable, anchor: dom_id(note), **options)
         end
-      end
-
-      def abuse_report_note_url(note, **options)
-        instance.admin_abuse_report_url(note.abuse_report, anchor: dom_id(note), **options)
       end
 
       def snippet_url(snippet, **options)

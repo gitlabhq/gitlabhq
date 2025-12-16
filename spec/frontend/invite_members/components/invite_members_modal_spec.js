@@ -14,6 +14,7 @@ import UserLimitNotification from '~/invite_members/components/user_limit_notifi
 import {
   MEMBERS_MODAL_CELEBRATE_INTRO,
   MEMBERS_MODAL_CELEBRATE_TITLE,
+  MEMBERS_MODAL_ROLE_SELECT_LABEL,
   MEMBERS_PLACEHOLDER,
   MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT,
   EXPANDED_ERRORS,
@@ -182,6 +183,12 @@ describe('InviteMembersModal', () => {
       expect(findBase().props('accessLevels')).toMatchObject({
         validRoles: propsData.accessLevels,
       });
+    });
+
+    it('sets the group role select label', () => {
+      createInviteMembersToProjectWrapper();
+
+      expect(findBase().props('roleSelectLabel')).toBe(MEMBERS_MODAL_ROLE_SELECT_LABEL);
     });
 
     describe('when inviting users to a project', () => {
@@ -373,7 +380,7 @@ describe('InviteMembersModal', () => {
         createInviteMembersToGroupWrapper();
       });
 
-      it('displays an error', async () => {
+      it('displays error for empty invite submission and then clears when resolved', async () => {
         clickInviteButton();
 
         await waitForPromises();
@@ -385,6 +392,53 @@ describe('InviteMembersModal', () => {
         await triggerMembersTokenSelect([user1]);
 
         expect(membersFormGroupInvalidFeedback()).toBe('');
+      });
+    });
+
+    describe('when user types text but has not selected anyone yet', () => {
+      beforeEach(() => {
+        createInviteMembersToGroupWrapper();
+      });
+
+      it('shows error message when clicking submit with untyped text', async () => {
+        findMembersSelect().vm.$emit('tokenization-state-change', true);
+        await nextTick();
+
+        clickInviteButton();
+        await waitForPromises();
+
+        expect(findEmptyInvitesAlert().exists()).toBe(true);
+        expect(membersFormGroupInvalidFeedback()).toBe(MEMBERS_PLACEHOLDER);
+        expect(findMembersSelect().props('exceptionState')).toBe(false);
+
+        findMembersSelect().vm.$emit('tokenization-state-change', false);
+        await triggerMembersTokenSelect([user1]);
+
+        expect(membersFormGroupInvalidFeedback()).toBe('');
+      });
+
+      it('shows error when user selects a member then types another without selecting', async () => {
+        await triggerMembersTokenSelect([user1]);
+        expect(membersFormGroupInvalidFeedback()).toBe('');
+
+        findMembersSelect().vm.$emit('tokenization-state-change', true);
+        await nextTick();
+
+        clickInviteButton();
+        await waitForPromises();
+
+        expect(findEmptyInvitesAlert().exists()).toBe(true);
+        expect(membersFormGroupInvalidFeedback()).toBe(MEMBERS_PLACEHOLDER);
+        expect(findMembersSelect().props('exceptionState')).toBe(false);
+
+        findMembersSelect().vm.$emit('tokenization-state-change', false);
+        await nextTick();
+
+        await triggerMembersTokenSelect([user1, user2]);
+        await nextTick();
+
+        expect(membersFormGroupInvalidFeedback()).toBe('');
+        expect(findEmptyInvitesAlert().exists()).toBe(false);
       });
     });
 

@@ -96,6 +96,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_JOB_TOKEN`                                  | Job-only     | A token to authenticate with [certain API endpoints](../jobs/ci_job_token.md). The token is valid as long as the job is running. |
 | `CI_JOB_URL`                                    | Job-only     | The job details URL. |
 | `CI_JOB_STARTED_AT`                             | Job-only     | The date and time when a job started, in [ISO 8601](https://www.rfc-editor.org/rfc/rfc3339#appendix-A) format. For example, `2022-01-31T16:47:55Z`. [UTC by default](../../administration/timezone.md). |
+| `CI_JOB_STARTED_AT_SLUG`                        | Job-only     | `CI_JOB_STARTED_AT` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Suitable for use in Docker image tags and other identifiers. Introduced in GitLab 18.7. |
 | `CI_KUBERNETES_ACTIVE`                          | Pre-pipeline | Only available if the pipeline has a Kubernetes cluster available for deployments. `true` when available. |
 | `CI_NODE_INDEX`                                 | Pipeline     | The index of the job in the job set. Only available if the job uses [`parallel`](../yaml/_index.md#parallel). |
 | `CI_NODE_TOTAL`                                 | Pipeline     | The total number of instances of this job running in parallel. Set to `1` if the job does not use [`parallel`](../yaml/_index.md#parallel). |

@@ -1,8 +1,0 @@
----
-migration_job_name: MakeSecurityPolicyBotsPrivate
-description: Updates private_profile to true for all security policy bot users.
-feature_category: security_policy_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161151
-milestone: '17.3'
-queued_migration_version: 20240729124632
-finalized_by: '20250302231828'

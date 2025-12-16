@@ -31,8 +31,8 @@ This extension provides several sets of commands that you can trigger in the
 - `GitLab: Copy Link to Active File on GitLab`
 - `GitLab: Create New Issue on Current Project`
 - `GitLab: Create New Merge Request on Current Project`: Open the merge request page to create a merge request.
-- [`GitLab: Open Active File on GitLab`](_index.md#open-current-file-in-gitlab-ui) -
-  View active file on GitLab with highlighting active line number and selected text block.
+- [`GitLab: Open Active File on GitLab`](_index.md#open-current-file-in-gitlab-ui): View active file
+  on GitLab with highlighting active line number and selected text block.
 - `GitLab: Open Merge Request for Current Branch`
 - [`GitLab: Search Project Issues (Supports Filters)`](_index.md#search-issues-and-merge-requests).
 - [`GitLab: Search Project Merge Requests (Supports Filters)`](_index.md#search-issues-and-merge-requests).
@@ -95,8 +95,8 @@ If you use self-signed certificates to connect to your GitLab instance, read the
 | `gitlab.debug` | false | When `true`, enables debug mode. Debug mode improves error stack traces because the extension uses source maps to understand minified code. Debug mode also shows debug log messages in the [extension logs](troubleshooting.md#view-log-files). |
 | `gitlab.duo.enabledWithoutGitlabProject` | true | When `true`, keeps GitLab Duo features enabled if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. When `false`, disables all GitLab Duo features if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. See [`duoFeaturesEnabledForProject` setting](#duofeaturesenabledforproject). |
 | `gitlab.duoAgentPlatform.defaultNamespace` | Not applicable | The default group or namespace path for GitLab Duo Agent Platform when the extension can't get GitLab project details. |
-| `gitlab.duoCodeSuggestions.additionalLanguages` | Not applicable | (Experimental.) To expand the list of [officially supported languages](../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages-by-ide) for Code Suggestions, provide an array of the [language identifiers](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers). Code suggestions quality for the added languages might not be optimal. |
-| `gitlab.duoCodeSuggestions.enabled` | true | When `true`, enables AI-assisted code suggestions. |
+| `gitlab.duoCodeSuggestions.additionalLanguages` | Not applicable | (Experimental.) To expand the list of [officially supported languages](../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages-by-ide) for GitLab Duo Code Suggestions, provide an array of the [language identifiers](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers). Code Suggestions quality for the added languages might not be optimal. |
+| `gitlab.duoCodeSuggestions.enabled` | true | When `true`, enables Code Suggestions for AI-assisted suggestions. |
 | `gitlab.duoCodeSuggestions.enabledSupportedLanguages` | Not applicable | The [supported languages](../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages-by-ide) for which to enable Code Suggestions. By default, all supported languages are enabled. |
 | `gitlab.duoCodeSuggestions.openTabsContext` | true | When `true`, enables sending of context across open tabs to improve Code Suggestions. |
 | `gitlab.keybindingHints.enabled` | true | Enables keybinding hints for GitLab Duo. |

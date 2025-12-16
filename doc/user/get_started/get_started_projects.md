@@ -84,7 +84,7 @@ To make projects easier to find:
 
 - Create a consistent and recognizable naming scheme for your projects with reserved project and group names.
 - Add badges to your project's `README` file. Badges can display important information,
-like build status, project health, test coverage, or version number.
+  like build status, project health, test coverage, or version number.
 - Assign project topics. Topics are labels that help you organize and find projects.
 
 For more information, see:
@@ -127,6 +127,6 @@ so its members have access or ownership.
 
 For more information, see:
 
-- [Migrate projects by using file exports](../project/import/_index.md)
+- [Import and migrate to GitLab](../import/_index.md)
 - [Project aliases](../project/working_with_projects.md#project-aliases)
 - [Transfer a project to another namespace](../project/working_with_projects.md#transfer-a-project)

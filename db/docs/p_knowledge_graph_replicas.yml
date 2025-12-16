@@ -1,7 +1,6 @@
 ---
 table_name: p_knowledge_graph_replicas
-classes:
-- Ai::KnowledgeGraph::Replica
+classes: []
 feature_categories:
 - knowledge_graph
 description: Represents a replica of a namespace on a Zoekt node

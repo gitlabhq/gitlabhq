@@ -6,6 +6,7 @@ import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
  * Renders Stuck Runners block for job's view.
  */
 export default {
+  name: 'StuckBlock',
   components: {
     GlAlert,
     GlBadge,

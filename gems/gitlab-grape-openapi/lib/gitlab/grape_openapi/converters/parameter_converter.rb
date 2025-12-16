@@ -30,6 +30,7 @@ module Gitlab
           object_format = resolve_object_format
 
           return build_union_schema(object_type) if options[:type]&.start_with?('[')
+          return build_range_schema(object_type) if options[:values].is_a?(Range)
           return build_enum_schema(object_type) if options[:values]
           return build_array_schema if array_type?(object_type)
 
@@ -51,6 +52,16 @@ module Gitlab
         def build_union_schema(object_type)
           types = object_type[1..-2].split(", ")
           { oneOf: types.map { |type| { type: TypeResolver.resolve_type(type) } } }
+        end
+
+        def build_range_schema(object_type)
+          range = options[:values]
+          schema = { type: object_type }
+
+          schema[:minimum] = range.begin if range.begin
+          schema[:maximum] = range.end if range.end
+
+          schema
         end
 
         def build_enum_schema(object_type)

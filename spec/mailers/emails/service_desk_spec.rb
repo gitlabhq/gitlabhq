@@ -51,8 +51,8 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
         # Sets issue email participant in sent notification
         expect(
-          PartitionedSentNotification.where(noteable: issue).first.issue_email_participant)
-        .to eq(issue_email_participant)
+          SentNotification.where(noteable: issue).first.issue_email_participant
+        ).to eq(issue_email_participant)
       end
     end
 
@@ -140,7 +140,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
 
     context 'with an issue id, issue path and unsubscribe url placeholders' do
-      let(:expected_unsubscribe_url) { unsubscribe_sent_notification_url(PartitionedSentNotification.last) }
+      let(:expected_unsubscribe_url) { unsubscribe_sent_notification_url(SentNotification.last) }
       let(:template_content) do
         'thank you, **your new issue:** %{ISSUE_ID}, path: %{ISSUE_PATH}' \
           '[Unsubscribe](%{UNSUBSCRIBE_URL})'
@@ -279,17 +279,12 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     it 'uses SMTP delivery method and custom email settings' do
       expect_service_desk_custom_email_delivery_options(service_desk_setting)
 
-      # Don't use ActionMailer::Base.smtp_settings, because it only contains explicitly set values.
-      merged_default_settings = Mail::SMTP.new({}).settings
-      # When forcibly used the configuration has a higher timeout. Ensure it's the default!
-      expect(subject.delivery_method.settings[:read_timeout]).to eq(merged_default_settings[:read_timeout])
-
       expect(Gitlab::AppLogger).to have_received(:info).with({ category: 'custom_email' })
     end
 
     it 'generates Reply-To address from custom email' do
       reply_address = subject.reply_to.first
-      notification = PartitionedSentNotification.last
+      notification = SentNotification.last
       expected_reply_address = service_desk_setting.custom_email.sub('@', "+#{notification.partitioned_reply_key}@")
 
       expect(reply_address).to eq(expected_reply_address)
@@ -343,7 +338,11 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     context 'with template' do
       context 'with all-user reference in a an external author comment' do
-        let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "Hey @all, just a ping", author: Users::Internal.support_bot) }
+        let_it_be(:support_bot) { create(:user, :support_bot, organization: project.organization) }
+        let_it_be(:note) do
+          create(:note_on_issue, noteable: issue, project: project, note: "Hey @all, just a ping", author: support_bot)
+        end
+
         let(:expected_template_html) { 'Hey @all, just a ping' }
 
         let(:template_content) { 'some text %{ NOTE_TEXT  }' }
@@ -544,12 +543,14 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     it_behaves_like 'a custom email verification process email'
 
     it 'uses service bot name and custom email as sender' do
-      expect_sender(Users::Internal.support_bot, sender_email: service_desk_setting.custom_email)
+      expect_sender(
+        create(:support_bot),
+        sender_email: service_desk_setting.custom_email
+      )
     end
 
     it 'forcibly uses SMTP delivery method and has correct settings' do
       expect_service_desk_custom_email_delivery_options(service_desk_setting)
-      expect(mail.delivery_method.settings[:read_timeout]).to eq(described_class::VERIFICATION_EMAIL_TIMEOUT)
 
       # defaults are unchanged after email overrode settings
       expect(Mail::SMTP.new({}).settings).to include(expected_delivery_method_defaults)

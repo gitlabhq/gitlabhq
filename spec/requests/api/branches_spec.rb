@@ -966,6 +966,19 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['message']).to eq(error_message)
     end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'returns the repository branches successfully' do
+        post api(route, oauth_access_token: oauth_token), params: { branch: 'feature1', ref: branch_sha }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('public_api/v4/branch')
+        expect(json_response['name']).to eq('feature1')
+        expect(json_response['commit']['id']).to eq(branch_sha)
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/repository/branches/:branch' do

@@ -14,16 +14,17 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
     allow(analyzer).to receive(:suppressed?).and_return(false)
     allow(analyzer).to receive(:begin!)
     allow(analyzer).to receive(:end!)
+    allow(analyzer).to receive(:skip_cached?, &:cached?)
     allow(disabled_analyzer).to receive(:enabled?).and_return(false)
   end
 
   context 'the hook is enabled by default in specs' do
     before do
       allow(described_class.instance).to receive(:all_analyzers).and_return([analyzer, disabled_analyzer])
+      allow(analyzer).to receive(:enabled?).and_return(true)
     end
 
     it 'does process queries and gets normalized SQL' do
-      expect(analyzer).to receive(:enabled?).and_return(true)
       expect(analyzer).to receive(:analyze) do |parsed|
         expect(parsed.sql).to include("SELECT $1 FROM projects")
         expect(parsed.raw).to include("SELECT 1 FROM projects")
@@ -36,13 +37,52 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
     end
 
     it 'does prevent recursive execution' do
-      expect(analyzer).to receive(:enabled?).and_return(true)
       expect(analyzer).to receive(:analyze) do
         Project.connection.execute("SELECT 1 FROM projects")
       end
 
       described_class.instance.within do
         Project.connection.execute("SELECT 1 FROM projects")
+      end
+    end
+
+    it 'skips cached queries' do
+      select_projects = 0
+
+      ActiveRecord::Base.cache do
+        expect(analyzer).to receive(:analyze).at_least(:once) do |parsed|
+          select_projects += 1 if parsed.raw.include?('SELECT 1 FROM "projects"')
+        end
+
+        described_class.instance.within do
+          Project.select(1).first
+          Project.select(1).first
+        end
+      end
+
+      expect(select_projects).to eq(1)
+    end
+
+    context 'when cached queries not skipped' do
+      before do
+        allow(analyzer).to receive(:skip_cached?).and_return(false)
+      end
+
+      it 'does not skip cached queries' do
+        select_projects = 0
+
+        ActiveRecord::Base.cache do
+          expect(analyzer).to receive(:analyze).at_least(:once) do |parsed|
+            select_projects += 1 if parsed.raw.include?('SELECT 1 FROM "projects"')
+          end
+
+          described_class.instance.within do
+            Project.select(1).first
+            Project.select(1).first
+          end
+        end
+
+        expect(select_projects).to eq(2)
       end
     end
   end
@@ -228,7 +268,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
     def process_sql(sql, event_name = 'load')
       described_class.instance.within do
         ApplicationRecord.load_balancer.read_write do |connection|
-          described_class.instance.send(:process_sql, sql, connection, event_name)
+          described_class.instance.send(:process_sql, sql, connection, event_name, false)
         end
       end
     end
@@ -238,7 +278,8 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
     let(:raw) { 'SELECT 1 FROM projects' }
     let(:connection) { double(:connection) }
     let(:event_name) { 'Project Load' }
-    let(:parsed) { described_class.new(raw, connection, event_name) }
+    let(:cached) { false }
+    let(:parsed) { described_class.new(raw, connection, event_name, cached) }
 
     it 'does not parse query twice' do
       expect(PgQuery).to receive(:parse).once.and_call_original

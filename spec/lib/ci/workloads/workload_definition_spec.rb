@@ -70,6 +70,16 @@ RSpec.describe Ci::Workloads::WorkloadDefinition, feature_category: :continuous_
       expect(definition.to_job_hash).not_to have_key(:cache)
     end
 
+    it 'allows setting tags' do
+      definition.tags = %w[special-runner-1 special-runner-2]
+      expect(definition.to_job_hash[:tags]).to eq(%w[special-runner-1 special-runner-2])
+    end
+
+    it 'does not include tags when tags is nil' do
+      definition.tags = nil
+      expect(definition.to_job_hash).not_to have_key(:tags)
+    end
+
     it 'raises ArgumentError if image is not present' do
       definition.image = ''
       expect { definition.to_job_hash }.to raise_error(ArgumentError)

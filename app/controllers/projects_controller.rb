@@ -54,12 +54,14 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
-    push_frontend_feature_flag(:repository_file_tree_browser, @project)
+    push_frontend_feature_flag(:repository_file_tree_browser, current_user)
 
     if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
       push_licensed_feature(:security_orchestration_policies)
     end
   end
+
+  before_action :push_work_item_planning_view_feature_flag, only: [:edit]
 
   layout :determine_layout
 
@@ -658,6 +660,10 @@ class ProjectsController < Projects::ApplicationController
   def enforce_step_up_auth_for_namespace_on_create
     namespace_id = params.dig(:project, :namespace_id)
     enforce_step_up_auth_for_namespace_id(namespace_id)
+  end
+
+  def push_work_item_planning_view_feature_flag
+    push_force_frontend_feature_flag(:work_item_planning_view, !!@project.work_items_consolidated_list_enabled?(current_user))
   end
 end
 

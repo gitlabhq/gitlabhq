@@ -95,7 +95,7 @@ export default {
           </gl-button>
           <div class="gl-my-6 gl-flex gl-items-center gl-gap-4">
             <div class="gl-border-t gl-w-full"></div>
-            <div class="gl-text-primary">{{ __('or') }}</div>
+            <div class="gl-text-default">{{ __('or') }}</div>
             <div class="gl-border-t gl-w-full"></div>
           </div>
         </template>

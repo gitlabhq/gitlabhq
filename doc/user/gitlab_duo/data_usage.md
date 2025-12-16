@@ -8,7 +8,11 @@ title: GitLab Duo data usage
 
 GitLab Duo uses generative AI to help increase your velocity and make you more productive. Each AI-native feature operates independently and is not required for other features to function.
 
-GitLab uses the right large language models (LLMs) for specific tasks. These LLMs are [Anthropic Claude](https://www.anthropic.com/product), [Fireworks AI-hosted Codestral](https://mistral.ai/news/codestral-2501), and [Google Vertex AI Models](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/overview#genai-models).
+GitLab uses the right large language models (LLMs) for specific tasks.
+These LLMs are [Anthropic Claude](https://claude.com/product/overview),
+[Fireworks AI-hosted Codestral](https://mistral.ai/news/codestral),
+[Google Vertex AI models](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/overview),
+and [OpenAI models](https://platform.openai.com/docs/models).
 
 ## Progressive enhancement
 
@@ -24,15 +28,38 @@ GitLab Duo AI-native features are powered by a generative AI model. The processi
 
 ## Data retention
 
-The below reflects the current retention periods of GitLab AI model [Sub-Processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors):
+The below reflects the current retention periods of GitLab AI model
+[Sub-Processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors):
 
-Excluding [Fireworks AI prompt caching](../project/repository/code_suggestions/_index.md#prompt-caching), GitLab has arranged zero-day data retention with Anthropic, Fireworks AI, and Google for GitLab Duo requests. Anthropic, Fireworks AI (when prompt caching is disabled), and Google discard model input and output data immediately after the output is provided; input and output data is not stored for abuse monitoring. Model input and output is never used to train models.
+For GitLab Duo requests, GitLab has a zero-day data retention policy
+with Anthropic, Fireworks AI, AWS, and Google.
 
-All of these AI providers are under data protection agreements with GitLab that prohibit the use of Customer Content for their own purposes, except to perform their independent legal obligations.
+These vendors discard model input and output data immediately after the output is
+provided and do not store input and output data for abuse monitoring. The exception
+to this is when Fireworks AI, Anthropic, and VertexAI prompt caching is enabled for
+Code Suggestions and GitLab Duo Chat (Agentic).
 
-GitLab Duo Chat and GitLab Duo Agent Platform retain chat history and workflow history, respectively, to help you return quickly to previously discussed topics. You can delete chats in the GitLab Duo Chat interface. GitLab does not otherwise retain input and output data unless customers provide consent through a GitLab [Support Ticket](https://about.gitlab.com/support/portal/). Learn more about [AI feature logging](../../administration/logs/_index.md).
+For more information on how to turn off prompt caching, see
+[prompt caching](../project/repository/code_suggestions/_index.md#prompt-caching).
 
-Fireworks AI prompt caching is enabled by default to improve Code Suggestions latency. For more information and how to opt out of prompt caching, see the [Code Suggestions prompt caching documentation](../project/repository/code_suggestions/_index.md#prompt-caching).
+{{< alert type="note" >}}
+
+For OpenAI models, you cannot turn off prompt caching. Ensure that you use a model that is suitable for your data retention requirements.
+
+{{< /alert >}}
+
+All GitLab AI model Sub-Processors are restricted from using model input and
+output to train models and are under data protection agreements with GitLab that
+prohibit the use of Customer Content for their own purposes, except to perform
+their independent legal obligations.
+
+GitLab Duo Chat and GitLab Duo Agent Platform retain chat history and workflow
+history, respectively, to help you return quickly to previously discussed topics and for anti-abuse purposes.
+You can delete chats in the GitLab Duo Chat interface. GitLab does not otherwise
+retain input and output data unless customers provide consent through a GitLab
+[support ticket](https://about.gitlab.com/support/portal/).
+
+For more information, see [AI feature logging](../../administration/logs/_index.md).
 
 ## Training data
 

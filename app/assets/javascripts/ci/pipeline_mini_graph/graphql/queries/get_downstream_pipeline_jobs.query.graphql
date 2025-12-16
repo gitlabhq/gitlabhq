@@ -1,9 +1,9 @@
-query getDownstreamPipelineJobs($fullPath: ID!, $iid: ID!) {
+query getDownstreamPipelineJobs($fullPath: ID!, $iid: ID!, $retried: Boolean) {
   project(fullPath: $fullPath) {
     id
     pipeline(iid: $iid) {
       id
-      jobs {
+      jobs(retried: $retried) {
         nodes {
           id
           detailedStatus {

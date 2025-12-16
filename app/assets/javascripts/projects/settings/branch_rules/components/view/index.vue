@@ -1,7 +1,15 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
-import { GlSprintf, GlLink, GlLoadingIcon, GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
+import {
+  GlSprintf,
+  GlLink,
+  GlLoadingIcon,
+  GlButton,
+  GlModal,
+  GlModalDirective,
+  GlPopover,
+} from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { sprintf, n__, s__ } from '~/locale';
 import {
@@ -30,9 +38,13 @@ import {
   UNPROTECTED_BRANCH,
   CHANGED_REQUIRE_CODEOWNER_APPROVAL,
 } from 'ee_else_ce/projects/settings/branch_rules/tracking/constants';
+// eslint-disable-next-line no-restricted-imports
 import deleteBranchRuleMutation from '../../mutations/branch_rule_delete.mutation.graphql';
+// eslint-disable-next-line no-restricted-imports
 import editSquashOptionMutation from '../../mutations/edit_squash_option.mutation.graphql';
+// eslint-disable-next-line no-restricted-imports
 import deleteSquashOptionMutation from '../../mutations/delete_squash_option.mutation.graphql';
+// eslint-disable-next-line no-restricted-imports
 import BranchRuleModal from '../../../components/branch_rule_modal.vue';
 import Protection from './protection.vue';
 import AccessLevelsDrawer from './access_levels_drawer.vue';
@@ -71,6 +83,7 @@ export default {
     GlLoadingIcon,
     GlModal,
     GlButton,
+    GlPopover,
     BranchRuleModal,
     AccessLevelsDrawer,
     SquashSettingsDrawer,
@@ -172,9 +185,11 @@ export default {
     };
   },
   computed: {
+    allowForcePush() {
+      return this.branchProtection?.allowForcePush;
+    },
     forcePushAttributes() {
-      const { allowForcePush } = this.branchProtection || {};
-      const title = allowForcePush
+      const title = this.allowForcePush
         ? this.$options.i18n.allowForcePushTitle
         : this.$options.i18n.doesNotAllowForcePushTitle;
 
@@ -210,6 +225,14 @@ export default {
       const { mergeAccessLevels } = this.branchProtection || {};
       return this.getAccessLevels(mergeAccessLevels);
     },
+    // needed to override EE component
+    modificationBlockedByPolicy() {
+      return false;
+    },
+    // needed to override EE component
+    protectedFromPushBySecurityPolicy() {
+      return false;
+    },
     pushAccessLevels() {
       const { pushAccessLevels } = this.branchProtection || {};
       return this.getAccessLevels(pushAccessLevels);
@@ -238,6 +261,9 @@ export default {
     },
     isAllProtectedBranchesRule() {
       return this.branch === this.$options.i18n.allProtectedBranches;
+    },
+    isDeleteButtonDisabled() {
+      return this.$apollo.loading || this.modificationBlockedByPolicy;
     },
     isPredefinedRule() {
       return this.isAllBranchesRule || this.isAllProtectedBranchesRule;
@@ -441,7 +467,7 @@ export default {
               id: this.branchRule.id,
               name,
               branchProtection: {
-                allowForcePush: this.branchProtection.allowForcePush,
+                allowForcePush: this.allowForcePush,
                 codeOwnerApprovalRequired: this.branchProtection.codeOwnerApprovalRequired,
                 pushAccessLevels: this.getAccessLevelInputFromEdges(
                   this.branchProtection.pushAccessLevels.edges,
@@ -489,6 +515,7 @@ export default {
         });
     },
   },
+  deleteButtonId: 'delete-button',
 };
 </script>
 
@@ -496,15 +523,30 @@ export default {
   <div>
     <page-heading :heading="$options.i18n.pageTitle">
       <template #actions>
-        <gl-button
-          v-if="showDeleteRuleBtn"
-          v-gl-modal="$options.deleteModalId"
-          data-testid="delete-rule-button"
-          category="secondary"
-          variant="danger"
-          :disabled="$apollo.loading"
-          >{{ $options.i18n.deleteRule }}
-        </gl-button>
+        <span :id="$options.deleteButtonId">
+          <gl-button
+            v-if="showDeleteRuleBtn"
+            v-gl-modal="$options.deleteModalId"
+            data-testid="delete-rule-button"
+            category="secondary"
+            variant="danger"
+            :disabled="isDeleteButtonDisabled"
+            >{{ $options.i18n.deleteRule }}
+          </gl-button>
+        </span>
+        <!-- EE only-->
+        <gl-popover v-if="modificationBlockedByPolicy" :target="$options.deleteButtonId">
+          <gl-sprintf :message="$options.i18n.disabledDeleteTooltip">
+            <template #securityPoliciesPath="{ content }">
+              <gl-link :href="securityPoliciesPath">{{ content }}</gl-link>
+            </template>
+            <template #link="{ content }">
+              <gl-link :href="$options.policiesDocumentationLink" target="_blank">{{
+                content
+              }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </gl-popover>
       </template>
     </page-heading>
 
@@ -585,6 +627,7 @@ export default {
           :count="pushAccessLevels.total"
           :header-link-title="$options.i18n.manageProtectionsLinkTitle"
           :header-link-href="protectedBranchesPath"
+          :is-protected-by-policy="protectedFromPushBySecurityPolicy"
           :roles="pushAccessLevels.roles"
           :users="pushAccessLevels.users"
           :groups="pushAccessLevels.groups"
@@ -603,7 +646,8 @@ export default {
           class="gl-mt-6"
           data-testid="force-push-content"
           data-test-id-prefix="force-push"
-          :is-protected="branchProtection.allowForcePush"
+          :is-protected="allowForcePush"
+          :is-protected-by-policy="protectedFromPushBySecurityPolicy"
           :label="$options.i18n.allowForcePushLabel"
           :icon-title="forcePushAttributes.title"
           :description="forcePushAttributes.description"

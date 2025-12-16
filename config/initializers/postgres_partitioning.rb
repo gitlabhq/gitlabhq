@@ -42,7 +42,7 @@ Gitlab::Application.config.to_prepare do
       CommitStatus,
       Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
       LooseForeignKeys::DeletedRecord,
-      PartitionedSentNotification,
+      SentNotification,
       ProjectDailyStatistic,
       Users::GroupVisit,
       Users::ProjectVisit,
@@ -67,6 +67,7 @@ Gitlab::Application.config.to_prepare do
         Search::Zoekt::Task,
         Ai::EventsCount,
         Ai::UsageEvent,
+        Geo::PipelineArtifactState,
         Vulnerabilities::Archive,
         Vulnerabilities::ArchivedRecord,
         Vulnerabilities::ArchiveExport,
@@ -87,9 +88,6 @@ Gitlab::Application.config.to_prepare do
         Vulnerabilities::Backups::VulnerabilityUserMention,
         Ai::ActiveContext::Code::EnabledNamespace,
         Ai::ActiveContext::Code::Repository,
-        Ai::KnowledgeGraph::EnabledNamespace,
-        Ai::KnowledgeGraph::Replica,
-        Ai::KnowledgeGraph::Task,
         Ai::DuoWorkflows::Checkpoint
       ])
   else
@@ -131,11 +129,6 @@ Gitlab::Application.config.to_prepare do
         limit_connection_names: %i[main],
         table_name: 'merge_request_diff_files_99208b8fac',
         partitioned_column: :merge_request_diff_id, strategy: :int_range, partition_size: 200_000_000
-      },
-      {
-        limit_connection_names: %i[main],
-        table_name: 'project_daily_statistics_b8088ecbd2',
-        partitioned_column: :date, strategy: :monthly
       }
     ]
   )

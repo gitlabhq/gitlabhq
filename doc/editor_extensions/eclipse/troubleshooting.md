@@ -114,8 +114,8 @@ setting only if you are absolutely certain the proxy causes the problem.
 
 Prerequisites:
 
-- You have verified the certificate chain is valid, using your system browser,
-  or you have confirmed with your machine's administrator that this error is safe to ignore.
+- You verified the certificate chain in your system browser or your machine's administrator
+  confirmed that this error is safe to ignore.
 
 To do this:
 

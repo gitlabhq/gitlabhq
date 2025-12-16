@@ -93,6 +93,12 @@ export const getQueryResponse = {
               completedCount: 0,
               count: 1,
             },
+            project: {
+              id: 'gid://gitlab/Project/1',
+              repository: {
+                rootRef: 'main',
+              },
+            },
           },
         ],
       },

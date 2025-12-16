@@ -59,7 +59,7 @@ the documentation helps others efficiently accomplish tasks and solve problems.
 
 ## Writing for localization
 
-The GitLab documentation is not localized, but we follow guidelines that help us write for a global audience.
+We follow guidelines that help us write for a global audience.
 
 [The GitLab voice](#the-gitlab-voice) dictates that we write clearly and directly with translation in mind.
 Our style guide, [word list](word_list.md), and [Vale rules](../testing/_index.md) ensure consistency in the documentation.
@@ -189,6 +189,18 @@ GitLab documentation uses the following shortcodes:
 - [Maintained versions](#maintained-versions)
 - [Collapsible panels](#collapsible-panels)
 - [Guide](#guide)
+- [Feature tables](#feature-tables)
+  - Yes
+  - No
+
+If a page has shortcodes and HTML tags on adjacent lines, there must be a newline between them.
+For example, in the [deprecations page](../../../update/deprecations.md):
+
+```markdown
+</div>
+
+{{</* alert type="note" */>}}
+```
 
 ## Language
 
@@ -776,11 +788,11 @@ To create a guide, follow this example:
 ```markdown
 {{</* guide */>}}
 
-1. Guide item with text
+1. Guide item with text.
 
    An item with text only.
 
-1. Guide item with alert
+1. Guide item with alert.
 
    This is an item with an alert.
 
@@ -797,11 +809,11 @@ This code renders on the GitLab documentation site as:
 
 {{< guide >}}
 
-1. Guide item with text
+1. Guide item with text.
 
    An item with text only.
 
-1. Guide item with alert
+1. Guide item with alert.
 
    An item with an alert.
 
@@ -861,6 +873,55 @@ To make tables easier to maintain:
   - Put spaces between the `|` characters and cell contents.
     For example `| Cell 1 | Cell 2 |`, not `|Cell1|Cell2|`.
 
+### Options for large tables
+
+You can use [Hugo class attributes](https://gohugo.io/content-management/markdown-attributes/) to make a table condensed or expandable.
+To use a Hugo attribute with a table, you must [disable Markdown rules](../testing/markdownlint.md#disable-markdownlint-tests) `055` and `056`.
+To avoid introducing linting errors in a table, test the table locally with all rules enabled.
+
+Hugo class attributes only render on the GitLab documentation site (`https://docs.gitlab.com`).
+
+#### Condensed tables
+
+A condensed table is scrollable vertically and horizontally, as necessary, and has a restricted height.
+By default, wide tables that do not fit on the page are condensed. Long tables are not condensed. You can optionally add
+the `condensed` class attribute to reduce the space the table takes up on a page.
+
+```markdown
+| Parameter | Default      | Requirements |
+|-----------|--------------|--------------|
+| `param1`  | `true`       | A and B.     |
+| `param2`  | `gitlab.com` | None         |
+{.condensed}
+```
+
+or
+
+```markdown
+| Parameter | Default      | Requirements |
+|-----------|--------------|--------------|
+| `param1`  | `true`       | A and B.     |
+| `param2`  | `gitlab.com` | None         |
+{class="condensed"}
+```
+
+#### Expandable tables
+
+Expandable tables have an **Expand table** button that, when selected, opens the table in a dialog.
+To create an expandable table, use the `expandable` class attribute.
+
+To make a table both condensed and expandable, use both attributes. For example:
+
+```markdown
+{.condensed .expandable}
+```
+
+Or:
+
+```markdown
+{class="condensed expandable"}
+```
+
 ### Editor extensions for table formatting
 
 To ensure consistent table formatting across all Markdown files, consider formatting your tables
@@ -906,17 +967,17 @@ Use sentence case for table headers. For example, `Keyword value` or `Project na
 
 ### Feature tables
 
-When creating tables of lists of features (such the features
-available to each role on the [Permissions](../../../user/permissions.md#project-members-permissions)
-page), use these phrases:
+When creating tables of lists of features (such as the features
+available to each role on the [Permissions](../../../user/permissions.md#project-permissions)
+page), use these shortcodes:
 
-| Option | Markdown                                          | Displayed result |
-|--------|---------------------------------------------------|------------------|
-| No     | `{{</* icon name="dash-circle" */>}} No`          | {{< icon name="dash-circle" >}} No |
-| Yes    | `{{</* icon name="check-circle-filled" */>}} Yes` | {{< icon name="check-circle-filled" >}} Yes |
+| Option | Markdown          | Renders     | Notes |
+|--------|-------------------|-------------|-------|
+| No     | `{{</* no */>}}`  | {{< no >}}  | Renders a hidden `span` for screen readers: `<span class="gl-sr-only">no</span>` |
+| Yes    | `{{</* yes */>}}` | {{< yes >}} | Renders a visible checkmark icon and a hidden `span` for screen readers: `<span class="gl-sr-only">yes</span>` |
 
-Do not use these SVG icons in API documentation.
-Instead, follow the [API topic template](../restful_api_styleguide.md#api-topic-template).
+Do not use these shortcodes in API documentation or inline text. For API documentation, follow
+the [API topic template](../restful_api_styleguide.md#api-topic-template).
 
 ### Footnotes
 
@@ -1200,36 +1261,28 @@ When documenting how to navigate the GitLab UI:
   - Do: To view the changes, in the merge request, select the link.
   - Do not: Select the link in the merge request to view the changes.
 
-### Names for menus
-
-Use these terms when referring to the main GitLab user interface
-elements:
-
-- **Left sidebar**: This is the navigation sidebar on the left of the user
-  interface.
-  - Do not use the phrase `context switcher` or `switch contexts`. Instead, try to direct the user to the exact location with a set of repeatable steps.
-  - Do not use the phrase `the **Explore** menu` or `the **Your work** sidebar`. Instead, use `the left sidebar`.
-- **Right sidebar**: This is the navigation sidebar on the right of the user
-  interface, specific to the open issue, merge request, or epic.
-
 ### Names for UI elements
-
-All UI elements [should be **bold**](#bold). The `>` in the navigation path should not be bold.
-
-Guidance for individual UI elements is in [the word list](word_list.md).
 
 In the [redesigned](../../../user/interface_redesign.md) GitLab UI, use the following names:
 
 ![Wireframe of a typical GitLab application page composition.](img/layout_external_names_v18_6.svg)
 
 1. **Top bar**
-1. **Left sidebar**
-1. **... panel** based on the primary context. For example, if the context is a merge request, refer to it as the **merge request panel**.
-1. **Details panel** supports the primary context
+1. **Left sidebar**: The navigation sidebar on the left of the user interface.
+   - Do not use the phrase `the **Explore** menu` or `the **Your work** sidebar`. Instead, use `the left sidebar`.
+1. **... panel**: Based on the primary context. For example, if the context is a merge request, refer to it as the **merge request panel**.
+1. **Details panel**: Supports the primary context. Specific to the selected issue or epic.
 1. **GitLab Duo panel**
 1. **GitLab Duo sidebar**
 
+The **right sidebar** is the navigation sidebar on the right of the user interface,
+specific to an open issue, merge request, or epic.
+
 With the exception of **GitLab Duo**, use lowercase for all above terms.
+
+All UI elements [should be **bold**](#bold). The `>` in the navigation path should not be bold.
+
+Additional guidance for individual UI elements is in [the word list](word_list.md).
 
 ### How to write navigation task steps
 
@@ -1240,7 +1293,7 @@ use these steps instead.
 To open project settings:
 
 ```markdown
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -1248,7 +1301,7 @@ To open project settings:
 To open group settings:
 
 ```markdown
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -1256,7 +1309,7 @@ To open group settings:
 To open settings for a top-level group:
 
 ```markdown
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
@@ -1265,7 +1318,7 @@ To open settings for a top-level group:
 To open either project or group settings:
 
 ```markdown
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -1273,19 +1326,19 @@ To open either project or group settings:
 To create a project:
 
 ```markdown
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 ```
 
 To create a group:
 
 ```markdown
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 ```
 
 To open the **Admin** area:
 
 ```markdown
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 ```
 
@@ -1294,14 +1347,14 @@ You do not have to repeat `On the left sidebar` in your second step.
 To open the **Your work** menu item:
 
 ```markdown
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to**.
 1. Select **Your work**.
 ```
 
 To select your avatar:
 
 ```markdown
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 ```
 
 To save the selection in some dropdown lists:
@@ -1316,14 +1369,14 @@ To save the selection in some dropdown lists:
 To view all your projects:
 
 ```markdown
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to**.
 1. Select **View all my projects**.
 ```
 
 To view all your groups:
 
 ```markdown
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to**.
 1. Select **View all my groups**.
 ```
 
@@ -1363,7 +1416,7 @@ Use the phrase **Complete the fields**.
 
 For example:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Complete the fields.
@@ -1551,6 +1604,17 @@ To convert image files to PNG format:
 If the original was a JPEG file, the converted PNG file might appear larger
 because PNG uses lossless compression while JPEG uses lossy compression.
 
+##### Deleting images
+
+Do not delete image files when you remove references to them from English documentation.
+Localized documentation (for example, Japanese pages) uses the same image files as the English docs.
+Even if an image is no longer referenced in English docs, it might still be in use by translated pages.
+
+The docs site build process checks image paths. If you delete an image that's still in use,
+the `hugo_build` job in your merge request pipeline will fail.
+
+The images not used anywhere are cleaned up as part of the [monthly maintenance](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
+
 #### Animated images
 
 Avoid animated images (such as animated GIFs). They can be distracting
@@ -1681,22 +1745,27 @@ stored in the SVG file, so it can be edited. Draw.io is also integrated with the
 | **VS Code integration (with extensions)** | {{< icon name="check-circle-filled" >}} Yes (Preview and local editing) | {{< icon name="check-circle-filled" >}} Yes (Preview and local editing) |
 | **Generated dynamically**                 | {{< icon name="check-circle-filled" >}} Yes                             | {{< icon name="dash-circle" >}} No |
 
-#### Guidelines
+#### Diagram guidelines
 
 To create accessible and maintainable diagrams, follow these guidelines:
 
 - Keep diagrams simple and focused. Include only essential elements and information.
-- Use different but consistent visual cues (such as shape, color, and font) to distinguish between categories:
+- Use only shapes to distinguish between elements. Do not use color to differentiate elements, as
+  diagrams must be compatible with both light and dark modes.
 
+  Recommended shapes are:
   - Rectangles for processes or steps.
   - Diamonds for decision points.
   - Solid lines for direct relationships between elements.
   - Dotted lines for indirect relationship between elements.
   - Arrows for flow or direction in a process.
-  - GitLab Sans font.
 
+- Shapes that represent the same element should have the same shape and size.
 - Add clear labels and brief descriptions to diagram elements.
+- For elements that have text, ensure adequate white space exists between the text and the
+  shape's outline. If required, increase the size of the shape and **all** similar shapes in the diagram.
 - Include a title and brief description for the diagram.
+- Use GitLab Sans font for text, or Google Inter font as a fallback option.
 - For complex processes, consider creating multiple simple diagrams instead of one large diagram.
 - Validate diagrams work well when viewed on different devices and screen sizes.
 - Do not include links. Links embedded in diagrams with [`click` actions](https://mermaid.js.org/syntax/classDiagram.html#interaction) are not testable with our link checking tools.
@@ -1714,7 +1783,7 @@ To create a diagram for GitLab documentation with Mermaid:
 1. Copy the content of the **Code** pane and paste it in the Markdown file, wrapped in a `mermaid` code block. For more
    details, see [GitLab Flavored Markdown for Mermaid](../../../user/markdown.md#mermaid).
 1. To add GitLab font styling to your diagram, between the Mermaid code block declaration
-and the type of diagram, add the following line:
+   and the type of diagram, add the following line:
 
    ```plaintext
    %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -1750,12 +1819,32 @@ VS Code [Draw.io Integration](https://marketplace.visualstudio.com/items?itemNam
 extension to create the diagram. Each tool provides the same diagram editing experience, but the web
 application provides editable example diagrams.
 
+Diagrams created by using Draw.io must comply with the general
+[diagram guidelines](#diagram-guidelines) and the Draw.io-specific guidelines.
+
+##### Draw.io guidelines
+
+When you create a diagram in Draw.io, it should be visually consistent with a diagram you would
+create with Mermaid. The following rules are an addition to the general
+[diagram guidelines](#diagram-guidelines).
+
+Fonts:
+
+- Use the Inter font for all text. This font is not included in the default fonts.
+  To add Inter font as a custom font:
+  1. From the font dropdown list, select **Custom**.
+  1. Select **Google fonts** and in the **Font name** text box, enter `Inter`.
+
+Shapes:
+
+- For elements, use the rectangle shape.
+- For flowcharts, use shapes from the **Flowchart** shape collection.
+
 ##### Use the web application
 
 To create a diagram by using the Draw.io web application:
 
 1. In the [Draw.io](https://draw.io) web application, create the diagram.
-   Follow the [style guidelines](#style-guidelines).
 1. Save the diagram:
    1. In the Draw.io web application, select **File** > **Export as** > **SVG**.
    1. Select the **Include a copy of my diagram: All pages** checkbox, then select **Export**. Use
@@ -1770,38 +1859,11 @@ To create a diagram by using the Draw.io Integration extension for VS Code:
 1. In the directory that will contain the diagram, create an empty file with the suffix
    `drawio.svg`.
 1. Open the file in VS Code then create the diagram.
-   Follow the [style guidelines](#style-guidelines).
 1. Save the file.
 
    The diagram's definition is stored in Draw.io-compatible format in the SVG file.
 1. [Add the SVG to the docs as an image](#add-the-image-link-to-content).
    These SVGs use the same Markdown as other non-SVG images.
-
-##### Style guidelines
-
-When you create a diagram in Draw.io, it should be visually consistent with a diagram you would create with Mermaid.
-The following rules are an addition to the general [style guidelines](#guidelines).
-
-Fonts:
-
-- Use the Inter font for all text. This font is not included in the default fonts.
-  To add Inter font as a custom font:
-  1. From the font dropdown list, select **Custom**.
-  1. Select **Google fonts** and in the **Font name** text box, enter `Inter`.
-
-Shapes:
-
-- For elements, use the rectangle shape.
-- For flowcharts, use shapes from the **Flowchart** shape collection.
-- Shapes that represent the same element should have the same shape and size.
-- For elements that have text, ensure adequate white space exists between the text and the
-  shape's outline. If required, increase the size of the shape and **all** similar shapes in the diagram.
-
-Colors:
-
-- Use colors in the [GitLab Design System color range](https://design.gitlab.com/brand-design/color/) only.
-- For all elements, shapes, arrows, and text, follow the
-  [Pajamas guidelines for illustration](https://design.gitlab.com/product-foundations/illustration/).
 
 ## Emoji
 
@@ -1935,20 +1997,14 @@ For a click-through demo, see [Demo Title](https://link-to-demo).
 
 Use alert boxes to call attention to information. Use them sparingly, and never have an alert box immediately follow another alert box.
 
-Alert boxes are generated by using a Hugo shortcode:
+Alert boxes are generated by using [Markdown alerts](../../../user/markdown.md#alerts):
 
 ```plaintext
-{{</* alert type="note" */>}}
-
-This is something to note.
-
-{{</* /alert */>}}
+> [!note]
+> The text inside the alert box goes here.
 ```
 
-The valid alert types are `flag`, `note`, `warning`, and `disclaimer`.
-
-Alert boxes render only on the GitLab documentation site (<https://docs.gitlab.com>).
-In the GitLab product help, alert boxes appear as plain text.
+The valid alert types are `flag`, `note`, `warning`, and `disclaimer`. The alert type is case-insensitive.
 
 ### Flag
 
@@ -1967,42 +2023,30 @@ Instead of adding a note:
 
 If you must use a note, use this format:
 
-```markdown
-{{</* alert type="note" */>}}
-
-This is something to note.
-
-{{</* /alert */>}}
+```plaintext
+> [!note]
+> This is something to note.
 ```
 
 It renders on the GitLab documentation site as:
 
-{{< alert type="note" >}}
-
-This is something to note.
-
-{{< /alert >}}
+> [!note]
+> This is something to note.
 
 ### Warning
 
 Use a warning to indicate deprecated features, or to provide a warning about
 procedures that have the potential for data loss.
 
-```markdown
-{{</* alert type="warning" */>}}
-
-This is something to be warned about.
-
-{{</* /alert */>}}
+```plaintext
+> [!warning]
+> This is something to be warned about.
 ```
 
 It renders on the GitLab documentation site as:
 
-{{< alert type="warning" >}}
-
-This is something to be warned about.
-
-{{< /alert >}}
+> [!warning]
+> This is something to be warned about.
 
 ### Disclaimer
 
@@ -2014,12 +2058,12 @@ any other text.
 Add a disclaimer like this:
 
 ```plaintext
-{{</* alert type="disclaimer" /*/>}}
+> [!disclaimer]
 ```
 
-It renders on the GitLab documentation site as:
+It renders on the GitLab documentation site with the disclaimer text:
 
-{{< alert type="disclaimer" />}}
+> [!disclaimer]
 
 If all of the content on the page is not available, use the disclaimer about forward-looking statements once at the top of the page.
 

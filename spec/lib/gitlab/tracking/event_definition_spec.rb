@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_ping do
   let(:attributes) do

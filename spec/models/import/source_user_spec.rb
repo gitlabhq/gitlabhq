@@ -360,6 +360,49 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     end
   end
 
+  describe '.find_by_namespace_and_token' do
+    let_it_be(:namespace_1) { create(:namespace) }
+    let_it_be(:namespace_2) { create(:namespace) }
+    let_it_be(:source_user_1) { create(:import_source_user, :awaiting_approval, namespace: namespace_1) }
+    let_it_be(:source_user_2) { create(:import_source_user, :awaiting_approval, namespace: namespace_2) }
+
+    it 'returns the source_user that matches the namespace_id and reassignment_token' do
+      result = described_class.find_by_namespace_and_token(
+        namespace_id: namespace_1.id,
+        reassignment_token: source_user_1.reassignment_token
+      )
+
+      expect(result).to eq(source_user_1)
+    end
+
+    it 'returns nil when namespace_id does not match' do
+      result = described_class.find_by_namespace_and_token(
+        namespace_id: namespace_2.id,
+        reassignment_token: source_user_1.reassignment_token
+      )
+
+      expect(result).to be_nil
+    end
+
+    it 'returns nil when reassignment_token does not match' do
+      result = described_class.find_by_namespace_and_token(
+        namespace_id: namespace_1.id,
+        reassignment_token: 'invalid_token'
+      )
+
+      expect(result).to be_nil
+    end
+
+    it 'returns nil when both parameters are nil' do
+      result = described_class.find_by_namespace_and_token(
+        namespace_id: nil,
+        reassignment_token: nil
+      )
+
+      expect(result).to be_nil
+    end
+  end
+
   describe '.search' do
     let!(:source_user) do
       create(:import_source_user, source_name: 'Source Name', source_username: 'Username')

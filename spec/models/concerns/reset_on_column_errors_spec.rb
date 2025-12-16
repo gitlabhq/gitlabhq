@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResetOnColumnErrors, :delete, feature_category: :shared, query_analyzers: false do
+RSpec.describe ResetOnColumnErrors, :delete, feature_category: :database, query_analyzers: false do
   let(:test_reviewer_model) do
     Class.new(ApplicationRecord) do
       self.table_name = '_test_reviewers_table'

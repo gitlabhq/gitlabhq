@@ -30,22 +30,6 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       )
     end
 
-    context 'when subject_key is not provided' do
-      let(:subject_key) { nil }
-
-      it 'uses default subject_key' do
-        expect(test_klass.cells_claims_subject_key).to eq(:organization_id)
-      end
-    end
-
-    context 'when custom subject_key is provided' do
-      let(:subject_key) { :custom_id }
-
-      it 'allows custom subject_key' do
-        expect(test_klass.cells_claims_subject_key).to eq(:custom_id)
-      end
-    end
-
     it 'derives source_type from table_name when not provided' do
       expect(test_klass.cells_claims_source_type).to eq(
         Gitlab::Cells::TopologyService::Claims::V1::Source::Type::RAILS_TABLE_ORGANIZATIONS
@@ -64,7 +48,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
     describe '#cells_claims_save_changes' do
       context 'when transaction record exists' do
-        context 'when creating a new record' do
+        shared_examples 'creating a new record' do
           it 'creates claims for all configured attributes' do
             instance = test_klass.new
             instance.path = 'newpath'
@@ -80,6 +64,14 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
             instance.save!
           end
+        end
+
+        it_behaves_like 'creating a new record'
+
+        context 'when subject_key is set with a Proc' do
+          let(:subject_key) { -> { path.size } }
+
+          it_behaves_like 'creating a new record'
         end
 
         context 'when updating an existing record' do
@@ -158,6 +150,36 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
         source: { type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
                   rails_primary_key_id: instance.id }
       })
+    end
+  end
+
+  describe '#cells_claims_subject_key' do
+    subject(:cells_claims_subject_key) { instance.send(:cells_claims_subject_key) }
+
+    context 'when subject_key is a Symbol' do
+      let(:subject_key) { :id }
+
+      it 'returns the attribute value' do
+        expect(cells_claims_subject_key).to eq(instance.id)
+      end
+    end
+
+    context 'when subject_key is a Proc' do
+      let(:subject_key) { -> { id * 2 } }
+
+      it 'executes the proc and returns the result' do
+        expect(cells_claims_subject_key).to eq(instance.id * 2)
+      end
+    end
+
+    context 'when subject_key is neither Symbol nor Proc' do
+      let(:subject_key) { 'invalid' }
+
+      it 'raises ArgumentError' do
+        expect { cells_claims_subject_key }.to raise_error(
+          ArgumentError, /subject_key must be a Symbol or a Proc, but got: String/
+        )
+      end
     end
   end
 end

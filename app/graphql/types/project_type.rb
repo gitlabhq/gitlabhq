@@ -136,6 +136,16 @@ module Types
       null: false,
       description: 'Path for editing project.'
 
+    field :admin_edit_path, GraphQL::Types::String,
+      null: true,
+      description: 'Admin path for editing project. Only available to admins.',
+      authorize: :admin_all_resources
+
+    field :admin_show_path, GraphQL::Types::String,
+      null: true,
+      description: 'Admin path of the project. Only available to admins.',
+      authorize: :admin_all_resources
+
     field :forks_count, GraphQL::Types::Int,
       null: false,
       calls_gitaly: true, # 4 times
@@ -777,7 +787,9 @@ module Types
     field :branch_rules, Types::Projects::BranchRuleType.connection_type,
       null: true,
       description: "Branch rules configured for the project.",
-      resolver: Resolvers::Projects::BranchRulesResolver
+      resolver: Resolvers::Projects::BranchRulesResolver,
+      connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension,
+      max_page_size: 100
 
     field :languages, [Types::Projects::RepositoryLanguageType],
       null: true,
@@ -1035,7 +1047,19 @@ module Types
 
       raise Gitlab::Graphql::Errors::ArgumentError, response.message if response.error?
 
-      response.payload[:inputs].all_inputs
+      response.payload[:inputs].all_inputs.map do |input|
+        {
+          name: input.name,
+          type: input.type,
+          default: input.default,
+          description: input.description,
+          regex: input.regex,
+          required?: input.required?,
+          options: input.options,
+          rules: input.rules,
+          project: object # TODO: Remove when ci_dynamic_pipeline_inputs flag is removed
+        }
+      end
     end
 
     def ci_config_variables(ref:, fail_on_cache_miss: false)
@@ -1141,6 +1165,18 @@ module Types
 
     def edit_path
       ::Gitlab::Routing.url_helpers.edit_project_path(project)
+    end
+
+    def admin_show_path
+      ::Gitlab::Routing.url_helpers.admin_namespace_project_path(
+        { id: project.to_param, namespace_id: project.namespace.to_param }
+      )
+    end
+
+    def admin_edit_path
+      ::Gitlab::Routing.url_helpers.edit_admin_namespace_project_path(
+        { id: project.to_param, namespace_id: project.namespace.to_param }
+      )
     end
 
     def grafana_integration

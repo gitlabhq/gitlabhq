@@ -84,10 +84,10 @@ title: Test Setup For Amazon Q with GitLab
 
 ## 5. Configure AWS
 
-- Follow the [instructions](https://handbook.gitlab.com/handbook/company/infrastructure-standards/realms/sandbox/#individual-aws-account-or-gcp-project) to create an AWS account
-- Follow the [instructions](https://handbook.gitlab.com/handbook/company/infrastructure-standards/realms/sandbox/#accessing-your-aws-account) to access the account
-- Follow the [instructions](../../user/duo_amazon_q/setup.md#set-up-gitlab-duo-with-amazon-q) to set up GitLab Duo with Amazon Q
-- There is a [Free tier](https://aws.amazon.com/q/developer/pricing/) available on Amazon Q Developer, so no additional Amazon license is required if an `Ultimate` EE license with the `GitLab Duo with Amazon Q` addon is activated
+- Follow the [instructions](https://handbook.gitlab.com/handbook/company/infrastructure-standards/realms/sandbox/#individual-aws-account-or-gcp-project) to create an AWS account.
+- Follow the [instructions](https://handbook.gitlab.com/handbook/company/infrastructure-standards/realms/sandbox/#accessing-your-aws-account) to access the account.
+- Follow the [instructions](../../user/duo_amazon_q/setup.md#set-up-gitlab-duo-with-amazon-q) to set up GitLab Duo with Amazon Q.
+- There is a [Free tier](https://aws.amazon.com/q/developer/pricing/) available on Amazon Q Developer, so no additional Amazon license is required if an `Ultimate` EE license with the `GitLab Duo with Amazon Q` add-on is activated.
 
 ## 6. Test
 

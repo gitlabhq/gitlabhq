@@ -41,6 +41,7 @@ domains:
       - devops_reports
       - dora_metrics
       - product_analytics
+      - custom_dashboards_foundation
 
   AntiAbuse:
     description:

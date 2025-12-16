@@ -1,5 +1,7 @@
 <script>
-export default {};
+export default {
+  name: 'CiCatalogHome',
+};
 </script>
 <template>
   <div>

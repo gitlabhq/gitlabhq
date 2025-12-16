@@ -24,10 +24,7 @@ export default {
 </script>
 
 <template>
-  <li
-    class="timeline-entry note note-wrapper discussion-filter-note js-discussion-filter-note"
-    data-testid="discussion-filter-container"
-  >
+  <li class="timeline-entry note note-wrapper discussion-filter-note js-discussion-filter-note">
     <div
       class="gl-float-left -gl-mt-1 gl-ml-2 gl-flex gl-h-6 gl-w-6 gl-items-center gl-justify-center gl-rounded-full gl-bg-strong gl-text-subtle"
     >

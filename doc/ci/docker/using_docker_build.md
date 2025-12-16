@@ -586,9 +586,9 @@ the implications of this method are:
   work as expected. Volume mounting is done in the context of the host
   machine, not the build container. For example:
 
-   ```shell
-   docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests
-   ```
+  ```shell
+  docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests
+  ```
 
 You do not need to include the `docker:24.0.5-dind` service, like you do when
 you use the Docker-in-Docker executor:

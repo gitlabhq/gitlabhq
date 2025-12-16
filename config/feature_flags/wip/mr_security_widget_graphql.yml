@@ -1,0 +1,10 @@
+---
+name: mr_security_widget_graphql
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/574432
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211509
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/574440
+milestone: '18.6'
+group: group::security insights
+type: wip
+default_enabled: false

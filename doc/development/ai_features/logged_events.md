@@ -529,7 +529,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Rails: no
   - Sidekiq: yes
 
-### No access to Duo Chat
+### No access to GitLab Duo Chat
 
   - Description: No access to duo chat
   - Class: `Gitlab::Llm::Utils::Authorizer`
@@ -687,7 +687,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Rails: no
   - Sidekiq: yes
 
-### Received error from Duo Chat Agent
+### Received error from GitLab Duo Chat Agent
 
   - Description: Error returned when streaming
   - Class: `Gitlab::Duo::Chat::StepExecutor`
@@ -700,7 +700,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Rails: no
   - Sidekiq: yes
 
-### Failed to parse a chunk from Duo Chat Agent
+### Failed to parse a chunk from GitLab Duo Chat Agent
 
   - Description: failed to parse a chunk
   - Class: `Gitlab::Duo::Chat::AgentEventParser`

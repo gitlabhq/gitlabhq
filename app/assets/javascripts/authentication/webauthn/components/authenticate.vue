@@ -62,7 +62,9 @@ export default {
   },
   computed: {
     showFooter() {
-      return this.errorMessage && Boolean(this.sendEmailOtpPath) && !this.showEmailVerification;
+      return (
+        Boolean(this.errorMessage) && Boolean(this.sendEmailOtpPath) && !this.showEmailVerification
+      );
     },
   },
   mounted() {

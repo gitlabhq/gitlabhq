@@ -1,0 +1,10 @@
+
+---
+name: no_duo_classic_for_duo_core_users
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/581229
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214718
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/582675
+milestone: "18.7"
+group: group::duo chat
+type: beta
+default_enabled: false

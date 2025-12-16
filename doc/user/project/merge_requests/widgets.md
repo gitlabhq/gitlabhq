@@ -46,7 +46,7 @@ for environments. If it's the first deployment of the branch, the link
 returns a `404` error until done. During the deployment, GitLab disables the
 stop button. If the pipeline fails to deploy, GitLab hides the deployment information.
 
-![Merge request pipeline](img/post_merge_pipeline_v16_0.png)
+![Merge request widgets showing the post-merge pipeline status](img/post_merge_pipeline_v16_0.png)
 
 For more information, [read about pipelines](../../../ci/pipelines/_index.md).
 

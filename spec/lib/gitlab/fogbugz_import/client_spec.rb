@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::FogbugzImport::Client, feature_category: :importers do
   let(:client) { described_class.new(uri: '', token: '') }

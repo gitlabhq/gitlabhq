@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillErrorTrackingErrorEventsProjectId
-description: Backfills sharding key `error_tracking_error_events.project_id` from
-  `error_tracking_errors`.
-feature_category: error_tracking
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161341
-milestone: '17.3'
-queued_migration_version: 20240731160144
-finalized_by: '20250225231521'

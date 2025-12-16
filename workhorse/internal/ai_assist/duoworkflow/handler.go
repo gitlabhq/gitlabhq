@@ -2,10 +2,13 @@ package duoworkflow
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"sync"
 	"time"
+
+	redis "github.com/redis/go-redis/v9"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
@@ -20,6 +23,8 @@ import (
 // properly terminated during server shutdown.
 type Handler struct {
 	rails    *api.API
+	rdb      *redis.Client
+	backend  http.Handler
 	upgrader websocket.Upgrader
 	runners  sync.Map // map[*runner]bool
 }
@@ -27,9 +32,11 @@ type Handler struct {
 // NewHandler creates a new Handler for managing Duo Workflow WebSocket connections.
 // The handler maintains a registry of active runners to support graceful shutdown
 // of WebSocket connections during server termination.
-func NewHandler(rails *api.API) *Handler {
+func NewHandler(rails *api.API, rdb *redis.Client, backend http.Handler) *Handler {
 	return &Handler{
 		rails:    rails,
+		backend:  backend,
+		rdb:      rdb,
 		upgrader: websocket.Upgrader{},
 	}
 }
@@ -60,7 +67,7 @@ func (h *Handler) Build() http.Handler {
 			return
 		}
 
-		runner, err := newRunner(conn, h.rails, r, a.DuoWorkflow)
+		runner, err := newRunner(conn, h.rails, h.backend, r, a.DuoWorkflow, h.rdb)
 		if err != nil {
 			fail.Request(w, r, fmt.Errorf("failed to initialize agent platform client: %v", err))
 			if closeErr := conn.Close(); closeErr != nil {
@@ -79,6 +86,26 @@ func (h *Handler) Build() http.Handler {
 			log.WithRequest(r).WithError(err).WithFields(log.Fields{
 				"duration_ms": time.Since(start).Milliseconds(),
 			}).Error()
+
+			if errors.Is(err, errFailedToAcquireLockError) {
+				// We provide the client with specific error details
+				// for this case so it can tell the user about the
+				// conflicting flow
+				message := websocket.FormatCloseMessage(websocket.CloseTryAgainLater, "Failed to acquire lock on workflow")
+				err = conn.WriteMessage(websocket.CloseMessage, message)
+				if err != nil {
+					log.WithRequest(r).WithError(err).Error()
+				}
+			}
+			if errors.Is(err, errUsageQuotaExceededError) {
+				// We close the connection with the specific error
+				// so client can process and inform user about the lack of credits
+				message := websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "Insufficient credits: quota exceeded")
+				err = conn.WriteMessage(websocket.CloseMessage, message)
+				if err != nil {
+					log.WithRequest(r).WithError(err).Error()
+				}
+			}
 		}
 	}, "")
 }

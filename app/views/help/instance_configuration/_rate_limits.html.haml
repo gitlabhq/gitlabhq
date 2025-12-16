@@ -2,6 +2,7 @@
 - content_for :table_content do
   - if rate_limits
     %li= link_to _('Rate Limits'), '#rate-limits'
+    %li= link_to _('Users API rate limits'), '#users-api-rate-limits'
 
 - content_for :settings_content do
   - if rate_limits
@@ -35,4 +36,24 @@
           = render 'help/instance_configuration/rate_limit_row', title: _('Group import requests'), rate_limit: rate_limits[:group_import]
           = render 'help/instance_configuration/rate_limit_row', title: _('Raw blob requests'), rate_limit: rate_limits[:raw_blob]
           = render 'help/instance_configuration/rate_limit_row', title: _('Pipeline creation requests per project, commit, and user'), rate_limit: rate_limits[:pipeline_creation]
+
+    %h2#users-api-rate-limits= _('Users API rate limits')
+    %p
+      = _('Rate limits for specific Users API endpoints.')
+      = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_users_api.md'), target: '_blank', rel: 'noopener noreferrer'
+    .table-responsive
+      %table
+        %thead
+          %tr
+            %th= _('Rate limit')
+            %th= _('Requests per period')
+            %th= _('Period in seconds')
+        %tbody
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:id/followers', rate_limit: rate_limits[:users_api_followers]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:id/following', rate_limit: rate_limits[:users_api_following]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:id/status', rate_limit: rate_limits[:users_api_status]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:id/keys', rate_limit: rate_limits[:users_api_ssh_keys]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:id/keys/:key_id', rate_limit: rate_limits[:users_api_ssh_key]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:id/gpg_keys', rate_limit: rate_limits[:users_api_gpg_keys]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:id/gpg_keys/:key_id', rate_limit: rate_limits[:users_api_gpg_key]
     %br

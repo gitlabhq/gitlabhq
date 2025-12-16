@@ -58,7 +58,7 @@ RSpec.describe 'Explore Snippets', feature_category: :source_code_management do
     end
   end
 
-  context 'when user is not authenticated' do
+  context 'when user is not authenticated', :with_current_organization do
     before do
       visit explore_snippets_path
     end

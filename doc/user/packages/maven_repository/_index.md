@@ -928,7 +928,7 @@ To prevent users from publishing duplicate Maven packages, you can use the [Grap
 
 In the UI:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Packages and registries**.
 1. In the **Maven** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
@@ -1278,7 +1278,7 @@ For example, "1.0.0", "1.0-SNAPSHOT", and "1.0.0-alpha" are valid, but "1..0" or
 The `403 Forbidden` error with the message `Authorization failed` usually indicates either an authentication or permissions issue. Check that:
 
 - You're using the correct token type (personal access token, deploy token, or CI/CD job token). For more information, see [Authenticate to the package registry](#authenticate-to-the-package-registry).
-- The token has the necessary permissions. Only users with at least the Developer role can publish packages. For more information, see [GitLab permissions](../../permissions.md#packages-and-registry).
+- The token has the necessary permissions. Only users with at least the Developer role can publish packages. For more information, see [GitLab permissions](../../permissions.md#project-packages-and-registries).
 - The package you're publishing is not protected by push protection rules. For more information about package protection rules, see [how to protect a package](../package_registry/package_protection_rules.md#protect-a-package).
 
 ### `Artifact already exists` errors when publishing

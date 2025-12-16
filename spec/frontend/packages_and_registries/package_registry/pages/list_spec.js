@@ -433,6 +433,20 @@ describe('PackagesListApp', () => {
       expect(Sentry.captureException).not.toHaveBeenCalled();
     });
 
+    describe('when packagesResource query fails', () => {
+      beforeEach(() => {
+        resolver = jest.fn().mockRejectedValue(new Error('error'));
+        mountComponent({
+          resolver,
+        });
+        return waitForFirstRequest();
+      });
+
+      it('captures error in Sentry', () => {
+        expect(Sentry.captureException).toHaveBeenCalled();
+      });
+    });
+
     it('list component has group settings prop set', () => {
       expect(findListComponent().props()).toMatchObject({
         groupSettings: expect.objectContaining({

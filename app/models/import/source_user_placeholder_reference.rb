@@ -15,7 +15,7 @@ module Import
     validates :composite_key,
       json_schema: { filename: 'import_source_user_placeholder_reference_composite_key' },
       allow_nil: true
-    validate :validate_numeric_or_composite_key_present
+    validates_with ExactlyOnePresentValidator, fields: [:numeric_key, :composite_key]
     validate :validate_model_is_not_member
 
     attribute :composite_key, ::Gitlab::Database::Type::IndifferentJsonb.new
@@ -141,12 +141,6 @@ module Import
     end
 
     private
-
-    def validate_numeric_or_composite_key_present
-      return if numeric_key.present? ^ composite_key.present?
-
-      errors.add(:base, :blank, message: 'one of numeric_key or composite_key must be present')
-    end
 
     # Membership data is handled in `Import::Placeholders::Membership` records instead.
     # Use `Import::PlaceholderMemberships::CreateService` to save the membership data.

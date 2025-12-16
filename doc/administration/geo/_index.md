@@ -205,6 +205,7 @@ The following are required to run Geo:
 - Git-lfs 2.4.2 or later on the user side when using LFS
 - All sites must run the exact same GitLab version. The [major, minor, and patch versions](../../policy/maintenance.md#versioning) must all match.
 - All sites must define the same [repository storages](../repository_storage_paths.md).
+- When using the container registry with Geo, you must configure separate, external PostgreSQL instances for the container registry metadata database at each site. See [Container registry for a secondary site](replication/container_registry.md) for details.
 
 Additionally, check the GitLab [minimum requirements](../../install/requirements.md),
 and use the latest version of GitLab for a better experience.
@@ -257,7 +258,7 @@ public URL of the primary site is used.
 
 To update the internal URL of the primary Geo site:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Select **Edit** on the primary site.
 1. Change the **Internal URL**, then select **Save changes**.

@@ -15,8 +15,6 @@ module Capybara
         yield if block
 
         wait_for_requests
-
-        dismiss_welcome_banner_if_present(self) if respond_to?(:dismiss_welcome_banner_if_present)
       end
     end
 

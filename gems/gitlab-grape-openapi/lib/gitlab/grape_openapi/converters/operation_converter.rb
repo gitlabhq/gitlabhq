@@ -27,6 +27,7 @@ module Gitlab
             operation.summary = extract_description
             operation.description = extract_detail
             operation.tags = extract_tags
+            operation.deprecated = extract_deprecated
             operation.parameters = extract_parameters
             operation.responses = ResponseConverter.new(@route, @schema_registry).convert
             operation.request_body = extract_request_body || {}
@@ -88,7 +89,13 @@ module Gitlab
         end
 
         def extract_tags
-          @route.settings.dig(:description, :tags)
+          Array(@route.settings.dig(:description, :tags)).map do |tag|
+            Gitlab::GrapeOpenapi::Models::Tag.normalize_tag_name(tag)
+          end
+        end
+
+        def extract_deprecated
+          !!options.dig(:settings, :description, :deprecated)
         end
 
         def path_segments

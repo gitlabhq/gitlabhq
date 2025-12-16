@@ -5,8 +5,12 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Build::Context::Global, feature_category: :pipeline_composition do
   let(:pipeline)       { create(:ci_pipeline) }
   let(:yaml_variables) { {} }
+  let(:logger) { instance_double(Gitlab::Ci::Pipeline::Logger) }
 
-  let(:context) { described_class.new(pipeline, yaml_variables: yaml_variables) }
+  let(:context) do
+    allow(logger).to receive(:instrument).and_yield
+    described_class.new(pipeline, yaml_variables: yaml_variables, logger: logger)
+  end
 
   shared_examples 'variables collection' do
     it { is_expected.to include('CI_COMMIT_REF_NAME' => 'master') }

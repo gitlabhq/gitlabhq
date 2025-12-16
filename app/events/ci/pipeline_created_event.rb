@@ -5,7 +5,7 @@ module Ci
     def schema
       {
         'type' => 'object',
-        'required' => ['pipeline_id'],
+        'required' => %w[pipeline_id partition_id],
         'properties' => {
           'pipeline_id' => { 'type' => 'integer' },
           'partition_id' => { 'type' => 'integer' }

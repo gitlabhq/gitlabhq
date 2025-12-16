@@ -15,21 +15,21 @@ Keeping up with the latest version of Vue ensures that the GitLab frontend lever
 
 **Current Status**
 
-- **As of December 2023**: GitLab is currently using Vue 2.x.
-- **Progress**: (Brief description of progress)
+- **As of November 2025**: The GitLab Monolith is using Vue 2.x with [frontend islands](https://gitlab.com/gitlab-org/gitlab/-/issues/577797) that use Vue 3.x
+- **Progress**: [See Epic](https://gitlab.com/groups/gitlab-org/-/epics/6252)
 
 **Responsible Team**
 
-- **Working Group**: [Vue.js 3 Migration Working Group](https://handbook.gitlab.com/handbook/company/working-groups/vuejs-3-migration/)
-- **Facilitator**: Sam Beckham, Engineering Manager, Manage:Foundations
+- **Working Group**: [Vue.js 3 Migration Working Group](https://handbook.gitlab.com/handbook/company/working-groups/vuejs-3-migration/) (disbanded)
+- **Slack Channel**: [#vue3_migration](https://gitlab.enterprise.slack.com/archives/C02719N90MP)
 
 **Milestones and Timelines**
 
-- (Key milestones, expected completions)
+See the [Epic](https://gitlab.com/groups/gitlab-org/-/epics/6252) for up to date timelines.
 
 **Challenges and Dependencies**
 
-- (Any major challenges)
+- Getting time for dedicated engineers to work on the migration effort
 
 **Success Metrics**
 

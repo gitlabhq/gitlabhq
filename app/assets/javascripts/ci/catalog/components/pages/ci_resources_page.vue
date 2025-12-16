@@ -17,6 +17,7 @@ import getCatalogResourcesCount from '../../graphql/queries/get_ci_catalog_resou
 import { DEFAULT_SORT_VALUE, SCOPE } from '../../constants';
 
 export default {
+  name: 'CiResourcesPage',
   i18n: {
     fetchError: s__('CiCatalog|There was an error fetching CI/CD Catalog projects.'),
     countFetchError: s__('CiCatalog|There was an error fetching the CI/CD Catalog project count.'),

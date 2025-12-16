@@ -51,25 +51,37 @@ To use this flow, you must:
 - Have an existing failed pipeline.
 - Have at least the Developer role in the project.
 - Meet [the other prerequisites](../../../duo_agent_platform/_index.md#prerequisites).
+- [Ensure the GitLab Duo service account can create commits and branches](../../troubleshooting.md#session-is-stuck-in-created-state).
 
-## Use the flow
+## Fix the pipeline in a merge request
 
-To fix your CI/CD pipeline:
+To fix the CI/CD pipeline in a merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests** and open your merge request.
-1. Select the **Pipelines** tab.
-1. In the rightmost column, for the failed pipeline you want to fix, select **Fix pipeline with Duo** ({{< icon name="tanuki-ai" >}}).
+1. To fix the pipeline, you can either:
+   - Select the **Overview** tab and under the failing pipeline, select **Fix pipeline with Duo**.
+   - Select the **Pipelines** tab and in the rightmost column, select **Fix pipeline with Duo** ({{< icon name="tanuki-ai" >}}).
+
 1. To monitor progress, select **Automate** > **Sessions**.
 
-   After the session is complete, go back to your merge request.
-1. Review the merge request and make changes as needed before merging.
+When the session is complete, a comment shows a link to a merge request that contains the fix,
+or a comment describes possible next steps.
+
+## Fix other CI/CD pipelines
+
+To fix a CI/CD pipeline that is not associated with a merge request:
+
+1. Select **Build** > **Pipelines**.
+1. Select your failing pipeline.
+1. In the upper-right corner, select **Fix pipeline with Duo**.
+1. To monitor progress, select **Automate** > **Sessions**.
 
 ## What the flow analyzes
 
 The Fix CI/CD Pipeline Flow examines:
 
-- **Pipeline logs**: Error messages, failed job outputs, and exit codes.
-- **Merge request changes**: Changes that could have caused the failure.
-- **The current repository contents**: For identifying syntax, linting, or import errors.
-- **Script errors**: Command failures, missing executables, or permission issues.
+- Pipeline logs: Error messages, failed job outputs, and exit codes.
+- Merge request changes: Changes that could have caused the failure.
+- The current repository contents: For identifying syntax, linting, or import errors.
+- Script errors: Command failures, missing executables, or permission issues.

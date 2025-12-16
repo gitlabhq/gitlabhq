@@ -58,6 +58,7 @@ class UsersFinder
     users = by_member_source_ids(users)
     users = by_public_email(users)
     users = by_user_types(users)
+    users = by_organization(users)
 
     order(users)
   end
@@ -216,6 +217,12 @@ class UsersFinder
     return users if params[:user_types].nil?
 
     users.with_user_types(params[:user_types])
+  end
+
+  def by_organization(users)
+    return users unless params[:organization_id].present?
+
+    users.member_of_organization(params[:organization_id])
   end
 
   def order(users)

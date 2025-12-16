@@ -88,11 +88,11 @@ RSpec.shared_examples 'work items comments' do |type|
   end
 
   it 'successfully posts comments using shortcut only once' do
-    expected_matches = find('ul.main-notes-list').all('li').size + 1
+    expected_matches = find('ul.main-notes-list').all('li.note').size + 1
     set_comment
     send_keys([modifier_key, :enter], [modifier_key, :enter], [modifier_key, :enter])
 
-    expect(find('ul.main-notes-list')).to have_selector('li', count: expected_matches)
+    expect(find('ul.main-notes-list')).to have_selector('li.note', count: expected_matches)
   end
 
   context 'when using quick actions' do
@@ -1146,7 +1146,9 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
       expect(page).to have_css('.tree-item:nth-child(2) .item-title', text: 'Child 2')
       expect(page).to have_css('.tree-item:nth-child(3) .item-title', text: 'Child 1')
 
-      drag_to(selector: '.sortable-container', from_index: 0, to_index: 2)
+      item = find('.tree-item:nth-child(1)')
+
+      item.drag_to(find('.tree-item:nth-child(3)'))
 
       expect(page).to have_css('.tree-item:nth-child(1) .item-title', text: 'Child 2')
       expect(page).to have_css('.tree-item:nth-child(2) .item-title', text: 'Child 1')
@@ -1167,7 +1169,7 @@ RSpec.shared_examples 'work items linked items' do |is_group = false|
     # Ensure support bot user is created so creation doesn't count towards query limit
     # and we don't try to obtain an exclusive lease within a transaction.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    Users::Internal.support_bot_id
+    create(:support_bot)
   end
 
   it 'are not displayed when issue does not have work item links', :aggregate_failures do

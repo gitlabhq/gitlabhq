@@ -5,22 +5,22 @@ require 'spec_helper'
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisHLLMetric, :clean_gitlab_redis_shared_state,
   feature_category: :service_ping do
   before do
-    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:i_quickactions_approve, values: 1, time: 1.week.ago)
-    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:i_quickactions_approve, values: 1, time: 2.weeks.ago)
-    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:i_quickactions_approve, values: 2, time: 2.weeks.ago)
-    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:i_quickactions_approve, values: 2, time: 2.months.ago)
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:i_quickactions_award, values: 1, time: 1.week.ago)
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:i_quickactions_award, values: 1, time: 2.weeks.ago)
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:i_quickactions_award, values: 2, time: 2.weeks.ago)
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:i_quickactions_award, values: 2, time: 2.months.ago)
   end
 
   context 'for 28d' do
     let(:expected_value) { 2 }
 
-    it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', options: { events: ['i_quickactions_approve'] } }
+    it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', options: { events: ['i_quickactions_award'] } }
   end
 
   context 'for 7d' do
     let(:expected_value) { 1 }
 
-    it_behaves_like 'a correct instrumented metric value', { time_frame: '7d', options: { events: ['i_quickactions_approve'] } }
+    it_behaves_like 'a correct instrumented metric value', { time_frame: '7d', options: { events: ['i_quickactions_award'] } }
   end
 
   it 'raise exception if events options is not present' do
@@ -58,7 +58,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisHLLMetric, :clean_
     end
 
     context "with options attributes also defined" do
-      it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', options: { events: ['i_quickactions_approve'] }, events: [name: 'g_project_management_issue_iteration_changed', unique: 'user.id'] }
+      it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', options: { events: ['i_quickactions_award'] }, events: [name: 'g_project_management_issue_iteration_changed', unique: 'user.id'] }
     end
 
     context 'with property_name excluding ".id"' do
@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisHLLMetric, :clean_
   end
 
   describe 'children classes' do
-    let(:options) { { events: ['i_quickactions_approve'] } }
+    let(:options) { { events: ['i_quickactions_award'] } }
 
     context 'availability not defined' do
       subject { Class.new(described_class).new(time_frame: nil, options: options) }

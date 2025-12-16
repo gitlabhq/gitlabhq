@@ -9,9 +9,7 @@ module API
       urgency :low
 
       before do
-        project = find_project!(params[:id])
-
-        not_found! unless Feature.enabled?(:slsa_provenance_statement, project)
+        not_found! unless Feature.enabled?(:slsa_provenance_statement, user_project)
         authorize_read_attestations!
       end
 
@@ -20,26 +18,44 @@ module API
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Fetch the list of all attestations for a specific project and artifact hash' do
-          detail 'This feature was introduced in GitLab 18.5' # TODO: update when FF is removed
+          detail 'This feature was introduced in GitLab 18.7' # TODO: update when FF is removed
+          success ::API::Entities::SupplyChain::Attestation
           failure [
-            { code: 401, message: 'Unauthorized' },
-            { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Artifact not found' }
+            { code: 404, message: 'Artifact SHA-256 not found' }
           ]
+          tags ['attestations']
         end
         params do
           requires :subject_digest, type: String,
             desc: 'The SHA-256 hash of the artifact'
         end
-        get ':id/attestations/:subject_digest',
-          urgency: :low, format: false, requirements: { subject_digest: /[A-Fa-f0-9]{64}/ } do
-            subject_digest = params[:subject_digest]
-            project = find_project!(params[:id])
+        get ':id/attestations/:subject_digest', urgency: :low, format: false,
+          requirements: { subject_digest: /[A-Fa-f0-9]{64}/ } do
+          subject_digest = params[:subject_digest]
+          attestations = ::SupplyChain::Attestation.for_project(user_project.id).with_digest(subject_digest)
 
-            attestations = ::SupplyChain::Attestation.for_project(project.id).with_digest(subject_digest)
+          present paginate(attestations), with: ::API::Entities::SupplyChain::Attestation
+        end
 
-            present paginate(attestations), with: ::API::Entities::SupplyChain::Attestation
-          end
+        desc 'Fetch a specific bundle by iid' do
+          success code: 200
+          failure [
+            { code: 404, message: 'Artifact SHA-256 not found' }
+          ]
+          detail 'This feature was introduced in GitLab 18.7' # TODO: update when FF is removed
+          tags ['attestations']
+        end
+        params do
+          requires :attestation_iid, types: [String, Integer], desc: 'The iid of the attestation'
+        end
+        get ':id/attestations/:attestation_iid/download', urgency: :low, format: false do
+          attestation = ::SupplyChain::Attestation.for_project(user_project.id).with_iid(params[:attestation_iid]).sole
+
+          content_type 'text/json'
+          env['api.format'] = :txt
+
+          present attestation.file.read
+        end
       end
     end
   end

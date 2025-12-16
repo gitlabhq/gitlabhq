@@ -38,7 +38,7 @@ To review a merge request:
 
 ## Go to the merge request
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Either:
    - Press <kbd>Shift</kbd>+<kbd>r</kbd> to go to your **Review requests** page.
    - On the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}) > **Review requests**.
@@ -372,7 +372,7 @@ your review. It's time to think broadly, one last time.
    **Add summary** ({{< icon name="tanuki-ai">}}) to create a summary for you. Include any
    quick actions you want performed.
 
-You can also use the `/submit_review` [quick action](../../user/project/quick_actions.md) in the text of a non-review comment.
+You can also use the [`/submit_review` quick action](../../user/project/quick_actions.md#submit_review) in the text of a non-review comment.
 
 If you [approve a merge request](../../user/project/merge_requests/approvals/_index.md#approve-a-merge-request)
 and are shown in the reviewer list, a green check mark {{< icon name="check-circle-filled" >}}

@@ -262,7 +262,7 @@ which ideally should not have Redis or Sentinels in the same machine:
    ```yaml
    # resque.yaml
    production:
-     url: redis://:redi-password-goes-here@gitlab-redis/
+     url: redis://:redis-password-goes-here@gitlab-redis/
      sentinels:
        -
          host: 10.0.0.1

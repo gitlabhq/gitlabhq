@@ -49,7 +49,6 @@ describe('MergeRequest', () => {
     });
 
     it('ensure that task with only spaces does not get checked incorrectly', async () => {
-      // fixed in 'deckar01-task_list', '2.2.1' gem
       jest.spyOn($, 'ajax').mockImplementation();
       const changeEvent = document.createEvent('HTMLEvents');
       changeEvent.initEvent('change', true, true);

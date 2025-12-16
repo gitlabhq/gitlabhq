@@ -829,5 +829,104 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
         end
       end
     end
+
+    context 'when creating a note on a work item' do
+      let_it_be(:work_item) { create(:work_item, project: project) }
+
+      let(:opts) do
+        {
+          note: 'Comment on work item',
+          noteable: work_item
+        }
+      end
+
+      subject(:execute_service) { described_class.new(project, user, opts).execute }
+
+      context 'when note is created successfully' do
+        it_behaves_like 'tracks work item event', :work_item, :user, Gitlab::WorkItems::Instrumentation::EventActions::NOTE_CREATE, :execute_service
+      end
+
+      context 'when note creation fails' do
+        let(:opts) do
+          {
+            note: '',
+            noteable: work_item
+          }
+        end
+
+        it_behaves_like 'does not track work item event', :execute_service
+      end
+
+      context 'when only_commands is true (quick actions only)' do
+        let(:opts) do
+          {
+            note: '/ready',
+            noteable: work_item
+          }
+        end
+
+        before do
+          work_item.update!(state: 'opened')
+        end
+
+        it_behaves_like 'does not track work item event', :execute_service
+      end
+    end
+
+    context 'when creating a note on a design version' do
+      let_it_be(:work_item) { create(:work_item, project: project) }
+      let_it_be(:design) { create(:design, issue: work_item) }
+
+      let(:opts) do
+        {
+          note: 'Comment on design',
+          noteable: design
+        }
+      end
+
+      subject(:execute_service) { described_class.new(project, user, opts).execute }
+
+      it_behaves_like 'tracks work item event', :work_item, :user, Gitlab::WorkItems::Instrumentation::EventActions::DESIGN_NOTE_CREATE, :execute_service
+    end
+
+    context 'when creating a note on a merge request (non-work item)' do
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
+      let(:opts) do
+        {
+          note: 'Comment on merge request',
+          noteable: merge_request
+        }
+      end
+
+      def execute_service
+        described_class.new(project, user, opts).execute
+      end
+
+      it_behaves_like 'does not track work item event', :execute_service
+    end
+
+    context 'when track_note_creation receives an unexpected event' do
+      let_it_be(:work_item) { create(:work_item, project: project) }
+
+      let(:opts) do
+        {
+          note: 'Comment on work item',
+          noteable: work_item
+        }
+      end
+
+      it 'does not create tracking service for unexpected events' do
+        service = described_class.new(project, user, opts)
+
+        expect(::Gitlab::WorkItems::Instrumentation::TrackingService).not_to receive(:new)
+
+        allow(service).to receive(:track_event) do |note|
+          service.send(:track_note_creation, note.noteable, :invalid_event_type)
+        end
+
+        service.execute
+      end
+    end
   end
 end

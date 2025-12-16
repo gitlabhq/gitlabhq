@@ -1,0 +1,10 @@
+---
+name: duo_code_review_dap_internal_users
+description: Enable Duo Code Review on Duo Agent Platform for internal GitLab team members with Duo Enterprise.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/579921
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213115
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581189
+milestone: '18.7'
+group: group::code creation
+type: ops
+default_enabled: false

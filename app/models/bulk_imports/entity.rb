@@ -47,7 +47,8 @@ class BulkImports::Entity < ApplicationRecord
   validates :destination_namespace, exclusion: [nil], if: :group
   validates :destination_namespace, presence: true, if: :project?
 
-  validate :validate_only_one_sharding_key_present
+  validates_with ExactlyOnePresentValidator, fields: [:group, :project, :organization],
+    message: ->(_fields) { s_('BulkImport|Import failed. The bulk import entity must belong to only one organization, group, or project.') }
   validate :validate_parent_is_a_group, if: :parent
   validate :validate_imported_entity_type
   validate :validate_destination_namespace_ascendency, if: :group_entity?
@@ -238,12 +239,6 @@ class BulkImports::Entity < ApplicationRecord
   end
 
   private
-
-  def validate_only_one_sharding_key_present
-    return if [group, project, organization].compact.one?
-
-    errors.add(:base, s_("BulkImport|Import failed. The bulk import entity must belong to only one organization, group, or project."))
-  end
 
   def validate_parent_is_a_group
     errors.add(:parent, s_('BulkImport|must be a group.')) unless parent.group_entity?

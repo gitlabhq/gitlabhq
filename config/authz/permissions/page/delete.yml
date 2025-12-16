@@ -1,0 +1,6 @@
+---
+name: delete_page
+description: Grants the ability to delete pages
+feature_category: pages
+boundaries:
+  - project

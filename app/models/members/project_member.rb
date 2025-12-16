@@ -43,10 +43,7 @@ class ProjectMember < Member
     def permissible_access_level_roles(current_user, project)
       return {} if current_user.nil?
 
-      max_access_level = project.max_member_access_for_user(current_user)
-      return {} unless max_access_level.present?
-
-      Authz::Role.roles_user_can_assign(max_access_level)
+      project.roles_user_can_assign(current_user)
     end
 
     def access_level_roles

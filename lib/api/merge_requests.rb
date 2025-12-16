@@ -189,6 +189,7 @@ module API
       desc 'List merge requests' do
         detail 'Get all merge requests the authenticated user has access to. By default it returns only merge requests created by the current user. To get all merge requests, use parameter `scope=all`.'
         success Entities::MergeRequestBasic
+        is_array true
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 422, message: 'Unprocessable entity' }
@@ -215,6 +216,7 @@ module API
       desc 'List group merge requests' do
         detail 'Get all merge requests for this group and its subgroups.'
         success Entities::MergeRequestBasic
+        is_array true
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' },
@@ -293,6 +295,7 @@ module API
       desc 'List project merge requests' do
         detail 'Get all merge requests for this project.'
         success Entities::MergeRequestBasic
+        is_array true
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' },
@@ -586,6 +589,7 @@ module API
       params do
         use :with_unidiff
       end
+      route_setting :authorization, permissions: :read_merge_request_diff, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/changes', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
@@ -612,10 +616,17 @@ module API
         use :with_unidiff
       end
       route_setting :mcp, tool_name: :get_merge_request_diffs, params: [:id, :merge_request_iid, :per_page, :page]
+      route_setting :authorization, permissions: :read_merge_request_diff, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/diffs', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present paginate(merge_request.merge_request_diff.paginated_diffs(params[:page], params[:per_page]), skip_pagination_check: true).diffs, with: Entities::Diff, enable_unidiff: declared_params[:unidiff]
+        diffs = paginate(
+          merge_request.merge_request_diff.paginated_diffs(params[:page], params[:per_page]),
+          skip_pagination_check: true
+        ).diffs
+        filtered_diffs = filter_diffs_for_mcp(diffs, user_project)
+
+        present filtered_diffs, with: Entities::Diff, enable_unidiff: declared_params[:unidiff]
       end
 
       desc 'Get the merge request raw diffs' do
@@ -626,6 +637,7 @@ module API
         ]
         tags %w[merge_requests]
       end
+      route_setting :authorization, permissions: :read_merge_request_diff, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/raw_diffs', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
@@ -646,6 +658,7 @@ module API
         requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request.'
       end
       route_setting :mcp, tool_name: :get_merge_request_pipelines, params: [:id, :merge_request_iid, :per_page, :page]
+      route_setting :authorization, permissions: :read_merge_request_pipeline, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/pipelines', urgency: :low, feature_category: :pipeline_composition do
         pipelines = merge_request_pipelines_with_access
         present paginate(pipelines), with: Entities::Ci::PipelineBasic
@@ -665,6 +678,7 @@ module API
         optional :async, type: Boolean, default: false,
           desc: 'Indicates if the merge request pipeline creation should be performed asynchronously. If set to `true`, the pipeline will be created outside of the API request and the endpoint will return an empty response with a `202` status code. When the response is `202`, the creation can still fail outside of this request.'
       end
+      route_setting :authorization, permissions: :create_merge_request_pipeline, boundary_type: :project
       post ':id/merge_requests/:merge_request_iid/pipelines', urgency: :low, feature_category: :pipeline_composition do
         pipeline = nil
         merge_request = find_merge_request_with_access(params[:merge_request_iid])

@@ -24,7 +24,7 @@ RSpec.describe 'Change type action', :js, feature_category: :portfolio_managemen
         visit project_work_item_path(project, issue.iid)
       end
 
-      it_behaves_like 'work items change type', 'Task', '[data-testid="issue-type-task-icon"]'
+      it_behaves_like 'work items change type', 'Task', '[data-testid="work-item-task-icon"]'
 
       context 'when issue has a child' do
         it 'does not allow changing the type' do
@@ -52,7 +52,7 @@ RSpec.describe 'Change type action', :js, feature_category: :portfolio_managemen
         visit project_work_item_path(project, task.iid)
       end
 
-      it_behaves_like 'work items change type', 'Issue', '[data-testid="issue-type-issue-icon"]'
+      it_behaves_like 'work items change type', 'Issue', '[data-testid="work-item-issue-icon"]'
 
       context 'when task has a parent' do
         it 'does not allow changing the type' do

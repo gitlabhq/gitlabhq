@@ -103,6 +103,16 @@ RSpec.describe Projects::Forks::Details, feature_category: :source_code_manageme
       end
     end
 
+    context 'when project is not a fork' do
+      let(:project) { build(:project) }
+
+      it 'returns nils as counts' do
+        counts = described_class.new(project, fork_branch).counts
+
+        expect(counts).to eq({ ahead: nil, behind: nil })
+      end
+    end
+
     context 'when specified branch does not exist' do
       it 'returns nils as counts' do
         counts = described_class.new(fork_repo.project, 'non-existent-branch').counts

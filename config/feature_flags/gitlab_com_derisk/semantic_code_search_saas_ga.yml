@@ -1,0 +1,10 @@
+---
+name: semantic_code_search_saas_ga
+description: Feature Flag for rolling out Semantic Code Search to GA
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/582909
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215170
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/582911
+milestone: '18.7'
+group: group::code creation
+type: gitlab_com_derisk
+default_enabled: false

@@ -12,4 +12,12 @@
         .form-group
           - global_search_settings_checkboxes(f).each do |checkbox|
             = checkbox
+        .form-group
+          = f.label :default_search_scope, _('Default search scope'), class: 'label-bold'
+          = f.select :default_search_scope,
+            options_for_select(default_search_scope_options_for_select, @application_setting.default_search_scope),
+            {},
+            class: 'form-control'
+          %span.form-text.text-muted
+            = _('Select a default search scope. For the system default, a scope is selected automatically based on context and availability.')
       = f.submit _('Save changes'), pajamas_button: true

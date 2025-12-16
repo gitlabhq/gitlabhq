@@ -104,6 +104,64 @@ RSpec.shared_examples 'enforces step-up authentication' do
       expect(response).not_to redirect_to(new_group_step_up_auth_path(group))
     end
   end
+
+  context 'when parent group has step-up auth enabled' do
+    let_it_be_with_reload(:parent_group) { create(:group) }
+
+    before do
+      # Configure parent group to require step-up auth
+      parent_group.namespace_settings.update!(step_up_auth_required_oauth_provider: oidc_provider_name)
+
+      # Assign the parent to the existing group
+      group.update!(parent: parent_group)
+      group.namespace_settings.update!(step_up_auth_required_oauth_provider: nil)
+    end
+
+    context 'when step-up auth has not been completed' do
+      it 'redirects to step-up auth page with flash notice' do
+        subject
+
+        expect(response).to redirect_to(new_group_step_up_auth_path(group))
+        expect(response).to have_gitlab_http_status(:found)
+        expect(flash[:notice]).to include('Step-up authentication required')
+      end
+    end
+
+    context 'when step-up auth session is failed' do
+      let(:session_data) { session_step_up_failed }
+
+      it 'redirects to step-up auth page for the child group' do
+        subject
+
+        expect(response).to redirect_to(new_group_step_up_auth_path(group))
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+
+    context 'when step-up auth session is succeeded' do
+      let(:session_data) { session_step_up_succeeded }
+
+      it 'allows access when parent requirement is satisfied' do
+        subject
+
+        expect(response).to have_gitlab_http_status(expected_success_status)
+        expect(response).not_to redirect_to(new_group_step_up_auth_path(group))
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(omniauth_step_up_auth_for_namespace: false)
+      end
+
+      it 'allows access without step-up auth even with parent requirement' do
+        subject
+
+        expect(response).to have_gitlab_http_status(expected_success_status)
+        expect(response).not_to redirect_to(new_group_step_up_auth_path(group))
+      end
+    end
+  end
 end
 
 RSpec.shared_examples 'enforces step-up authentication (request spec)' do

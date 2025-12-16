@@ -89,7 +89,7 @@ Follow these steps to provide the Bearer token with `APISEC_OVERRIDES_ENV`:
    ```
 
 1. To validate that authentication is working, run API security testing and review the job logs
-   and the test API's application logs.
+   and the test APIs application logs.
 
 #### Token generated at test runtime
 
@@ -126,7 +126,7 @@ variables:
 ```
 
 To validate that authentication is working, run API security testing and review the job logs and
-the test API's application logs.
+the test APIs application logs.
 
 #### Token has short expiration
 
@@ -169,7 +169,7 @@ variables:
   APISEC_OVERRIDES_INTERVAL: 300
 ```
 
-To validate that authentication is working, run API security testing and review the job logs and the test API's application logs. See the [overrides section](#overrides) for more information about override commands.
+To validate that authentication is working, run API security testing and review the job logs and the test APIs application logs. See the [overrides section](#overrides) for more information about override commands.
 
 ## Overrides
 

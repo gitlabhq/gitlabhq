@@ -59,19 +59,19 @@ RSpec.describe Ci::DeleteObjectsService, :aggregate_failures, feature_category: 
         expect(not_ready.reload.present?).to be_truthy
       end
 
-      it 'limits the number of records removed' do
-        stub_const("#{described_class}::BATCH_SIZE", 1)
+      context 'with custom batch size' do
+        let(:service) { described_class.new(batch_size: 1) }
 
-        expect { execute }.to change { Ci::DeletedObject.count }.by(-1)
-      end
+        it 'limits the number of records removed' do
+          expect { execute }.to change { Ci::DeletedObject.count }.by(-1)
+        end
 
-      it 'removes records in order' do
-        stub_const("#{described_class}::BATCH_SIZE", 1)
+        it 'removes records in order' do
+          execute
 
-        execute
-
-        expect { past_ready.reload }.to raise_error(ActiveRecord::RecordNotFound)
-        expect(ready.reload.present?).to be_truthy
+          expect { past_ready.reload }.to raise_error(ActiveRecord::RecordNotFound)
+          expect(ready.reload.present?).to be_truthy
+        end
       end
 
       it 'updates pick_up_at timestamp' do

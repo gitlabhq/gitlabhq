@@ -91,6 +91,34 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
       it 'returns versions for each catalog resource ordered by semantic version' do
         is_expected.to match_array([v3_0_0, v2_0_0, v1_1_3, v1_1_0])
       end
+
+      it 'preloads components to avoid N+1 queries' do
+        # Create components for versions
+        create(:ci_catalog_resource_component, version: v1_1_3, catalog_resource: resource,
+          project: project)
+        create(:ci_catalog_resource_component, version: v2_0_0, catalog_resource: resource,
+          project: project)
+        create(:ci_catalog_resource_component, version: v3_0_0, catalog_resource: resource2,
+          project: project2)
+
+        control_components = []
+        control = ActiveRecord::QueryRecorder.new do
+          described_class.versions_for_catalog_resources([resource]).each do |version|
+            control_components << version.components.to_a
+          end
+        end
+
+        new_components = []
+        expect do
+          described_class.versions_for_catalog_resources([resource, resource2]).each do |version|
+            new_components << version.components.to_a
+          end
+        end.not_to exceed_query_limit(control)
+
+        expect(control_components.flatten).to all(be_a(Ci::Catalog::Resources::Component))
+        expect(new_components.flatten).to all(be_a(Ci::Catalog::Resources::Component))
+        expect(new_components.flatten.size).to eq(3) # All 3 components loaded
+      end
     end
   end
 

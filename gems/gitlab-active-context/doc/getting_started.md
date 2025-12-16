@@ -44,6 +44,8 @@ ActiveContext.configure do |config|
 end
 ```
 
+See [Registering a queue](usage.md#registering-a-queue) for details on how to add new queue classes.
+
 ## Create a connection
 
 Create a `Ai::ActiveContext::Connection` record in the database with the following fields:

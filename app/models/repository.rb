@@ -14,6 +14,7 @@ class Repository
   REF_ENVIRONMENTS = 'environments'
   REF_PIPELINES = 'pipelines'
   REF_TMP = 'tmp'
+  REF_WORKLOADS = 'workloads'
 
   ARCHIVE_CACHE_TIME = 60 # Cache archives referred to by a (mutable) ref for 1 minute
   ARCHIVE_CACHE_TIME_IMMUTABLE = 3600 # Cache archives referred to by an immutable reference for 1 hour
@@ -970,7 +971,8 @@ class Repository
         source_sha: source_sha,
         target_branch: target_branch,
         message: message,
-        target_sha: target_sha
+        target_sha: target_sha,
+        sign: sign_commits?
       ) do |commit_id|
         yield commit_id if block_given?
       end
@@ -979,6 +981,17 @@ class Repository
 
   def delete_refs(...)
     raw.delete_refs(...)
+  end
+
+  def merge_to_ref(user, source_sha:, branch:, target_ref:, message:, first_parent_ref:, expected_old_oid: '')
+    raw.merge_to_ref(user,
+      source_sha: source_sha,
+      branch: branch,
+      target_ref: target_ref,
+      message: message,
+      first_parent_ref: first_parent_ref,
+      expected_old_oid: expected_old_oid,
+      sign: sign_commits?)
   end
 
   def ff_merge(user, source, target_branch, target_sha: nil, merge_request: nil)
@@ -1011,7 +1024,8 @@ class Repository
         start_branch_name: start_branch_name,
         start_repository: start_project.repository.raw_repository,
         dry_run: dry_run,
-        target_sha: target_sha
+        target_sha: target_sha,
+        sign: sign_commits?
       )
     end
   end
@@ -1034,7 +1048,8 @@ class Repository
         author_name: author_name,
         author_email: author_email,
         dry_run: dry_run,
-        target_sha: target_sha
+        target_sha: target_sha,
+        sign: sign_commits?
       )
     end
   end
@@ -1218,7 +1233,8 @@ class Repository
       start_sha: merge_request.diff_start_sha,
       end_sha: merge_request.diff_head_sha,
       author: merge_request.author,
-      message: message
+      message: message,
+      sign: sign_commits?
     )
   end
 
@@ -1476,7 +1492,7 @@ class Repository
   end
 
   def sign_commits?
-    true
+    ::Repositories::WebBasedCommitSigningSetting.new(self).sign_commits?
   end
 end
 

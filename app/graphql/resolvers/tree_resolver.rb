@@ -26,7 +26,7 @@ module Resolvers
     def resolve(**args)
       return unless repository.exists?
 
-      ref = (args[:ref].presence || :head)
+      ref = args[:ref].presence || :head
 
       repository.tree(ref, args[:path], recursive: args[:recursive], ref_type: args[:ref_type])
     end

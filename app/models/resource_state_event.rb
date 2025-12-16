@@ -9,7 +9,7 @@ class ResourceStateEvent < ResourceEvent
   belongs_to :source_merge_request, class_name: 'MergeRequest', foreign_key: :source_merge_request_id
   belongs_to :namespace
 
-  validate :exactly_one_issuable, unless: :importing?
+  validates_with ExactlyOnePresentValidator, fields: :issuable_id_attrs, unless: :importing?
   validates :namespace, presence: true
 
   # state is used for issue and merge request states.

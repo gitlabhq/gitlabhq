@@ -33,7 +33,7 @@
 .fe-islands-parallel:
   parallel:
     matrix:
-      - FE_APP_DIR: ["duo_next"]
+      - FE_APP_DIR: ["duo_next", "visual_ci_editor"]
 
 compile-production-assets:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}-node-${NODE_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}-docker-${DOCKER_VERSION}
@@ -106,11 +106,15 @@ build-vite-prod:
     - source scripts/utils.sh
     - yarn_install_script
     - yarn vite-prod
-  allow_failure: true
   artifacts:
     expire_in: 1d
     paths:
       - public/assets/vite/
+
+build-vite-prod-vue3:
+  extends:
+    - build-vite-prod
+    - .vue3
 
 compile-fe-islands:
   extends:
@@ -369,29 +373,6 @@ jest-with-fixtures:
 
 jest vue3:
   extends:
-    - jest
-    - .frontend:rules:jest-vue3-nightly
-    - .vue3
-  needs:
-    - !reference [.with-jest-build-cache-vue3-ensure-compilable-sfcs-needs, needs]
-  script:
-    - scripts/frontend/jest_ci.js --vue3 --include-vue3-quarantined
-
-jest-with-fixtures vue3:
-  extends:
-    - jest-with-fixtures
-    - .frontend:rules:jest-vue3-nightly
-    - .vue3
-  needs:
-    - !reference ["jest vue3", needs]
-    # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
-    - !reference [.repo-from-artifacts, needs]
-    - !reference [.with-fixtures-needs, needs]
-  script:
-    - scripts/frontend/jest_ci.js --vue3 --fixtures --include-vue3-quarantined
-
-jest vue3 mr:
-  extends:
     - .frontend-test-base
     - .frontend:rules:jest
     - .vue3
@@ -406,14 +387,14 @@ jest vue3 mr:
     paths:
       - junit_jest.xml
       - jest-reports/
-  parallel: 6
+  parallel: !reference [jest, parallel]
   script:
     - scripts/frontend/jest_ci.js --vue3
   allow_failure: false
 
-jest-with-fixtures vue3 mr:
+jest-with-fixtures vue3:
   extends:
-    - jest vue3 mr
+    - jest vue3
     - .repo-from-artifacts
   needs:
     - !reference [.with-jest-build-cache-vue3-ensure-compilable-sfcs-needs, needs]
@@ -427,7 +408,7 @@ jest-with-fixtures vue3 mr:
     paths:
       - junit_jest.xml
       - jest-reports/
-  parallel: 1
+  parallel: !reference [jest-with-fixtures, parallel]
   script:
     - scripts/frontend/jest_ci.js --vue3 --fixtures
 
@@ -461,44 +442,46 @@ jest-with-fixtures predictive:
 
 jest vue3 predictive:
   extends:
-    - jest vue3 mr
+    - jest vue3
     - .frontend:rules:jest:predictive
   needs:
-    - !reference [jest vue3 mr, needs]
+    - !reference [jest vue3, needs]
     - "detect-tests"
   script:
     - |
       if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
         scripts/frontend/jest_ci.js --vue3 --predictive
       fi
+  parallel: !reference [jest predictive, parallel]
 
 jest-with-fixtures vue3 predictive:
   extends:
-    - jest-with-fixtures vue3 mr
+    - jest-with-fixtures vue3
     - .frontend:rules:jest:predictive
   needs:
-    - !reference [jest-with-fixtures vue3 mr, needs]
+    - !reference [jest-with-fixtures vue3, needs]
     - "detect-tests"
   script:
     - |
       if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
         scripts/frontend/jest_ci.js --vue3 --predictive --fixtures;
       fi
+  parallel: !reference [jest-with-fixtures predictive, parallel]
   allow_failure: false
 
 jest vue3 check quarantined predictive:
   extends:
-    - jest vue3 mr
+    - jest vue3
     - .frontend:rules:jest:predictive
   needs:
-    - !reference [jest vue3 mr, needs]
+    - !reference [jest vue3, needs]
     - "detect-tests"
   script:
     - |
       if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
         ./scripts/frontend/check_jest_vue3_quarantine.js
       fi
-  parallel: 4
+  parallel: 1
   artifacts:
     name: quarantined_tests_output
     expire_in: 31d
@@ -518,7 +501,7 @@ jest vue3 check quarantined:
   extends:
     - jest vue3 check quarantined predictive
     - .frontend:rules:jest-vue3-check-quarantined
-  parallel: 4
+  parallel: 1
   script:
     - |
       if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
@@ -588,12 +571,12 @@ jest-snapshot-vue3:
       - jest-snapshot-test-match.json
       - jest-snapshot-test-report.json
 
-jest-linters:
+test-linters:
   extends:
     - .frontend-test-base
-    - .frontend:rules:jest-linters
+    - .frontend:rules:test-linters
   script:
-    - yarn jest:eslint --ci
+    - yarn vitest:eslint
 
 coverage-frontend:
   extends:
@@ -625,6 +608,7 @@ coverage-frontend:
     paths:
       - coverage-frontend/
       - jest-reports/
+      - jest-test-mapping/
     reports:
       coverage_report:
         coverage_format: cobertura
@@ -712,7 +696,6 @@ bundle-size-review:
     - .default-retry
     - .default-before_script
     - .assets-compile-cache-pull
-    - .repo-from-artifacts
     - .frontend:rules:bundle-size-review
   stage: test-frontend
   needs:

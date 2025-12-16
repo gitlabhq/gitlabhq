@@ -66,16 +66,22 @@ describe('JobActionButton', () => {
   };
 
   describe('when mounted', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
     it('renders the action icon', () => {
+      createComponent();
+
       expect(findActionIcon().exists()).toBe(true);
     });
 
     it('renders the tooltip', () => {
+      createComponent();
+
       expect(findActionButton().exists()).toBe(true);
+    });
+
+    it('renders the action button as disabled if disabled provided in pros', () => {
+      createComponent({ props: { disabled: true } });
+
+      expect(findActionButton().props('disabled')).toBe(true);
     });
 
     describe('job action button', () => {
@@ -136,6 +142,8 @@ describe('JobActionButton', () => {
     });
 
     it('passes correct props', () => {
+      createComponent();
+
       expect(findActionButton().props()).toMatchObject({
         block: false,
         buttonTextClasses: '',

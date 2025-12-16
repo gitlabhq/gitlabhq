@@ -21,6 +21,7 @@ import ProjectVisibilityIcon from '../shared/project_visibility_icon.vue';
 import CiResourceHeaderSkeletonLoader from './ci_resource_header_skeleton_loader.vue';
 
 export default {
+  name: 'CiResourceHeader',
   i18n: {
     moreActionsLabel: __('More actions'),
     reportAbuse: __('Report abuse'),

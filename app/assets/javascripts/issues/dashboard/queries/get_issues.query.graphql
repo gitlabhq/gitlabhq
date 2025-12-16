@@ -1,5 +1,5 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "~/issues/list/queries/issue.fragment.graphql"
+#import "~/issues/dashboard/queries/issue.fragment.graphql"
 
 query getDashboardIssues(
   $hideUsers: Boolean = false

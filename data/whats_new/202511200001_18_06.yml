@@ -1,0 +1,45 @@
+- name: "The new GitLab interface: Designed for productivity"  # Match the release post entry
+  description: |  # Do not modify this line, instead modify the lines below.
+      Introducing a smarter, more intuitive GitLab UI that puts developer productivity first.
+
+      The new side-by-side design uses contextual panels to keep you in your workflow, reducing unnecessary clicks and helping teams work faster. Customize your workspace, maximize screen real estate, and enjoy a cleaner, more dynamic experience that adapts to your workflow.
+
+      GitLab is committed to continuous improvement, so please share your thoughts in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/577554) and help shape the future of GitLab.
+  stage: plan  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  available_in: [Free, Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/interface_redesign/  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/18_6/new-panel-ui.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2025-11-20  # YYYY-MM-DD
+  release: 18.6  # XX.Y
+
+- name: "Exact code search in limited availability"  # Match the release post entry
+  description: |  # Do not modify this line, instead modify the lines below.
+      With this release, exact code search is now in limited availability. You can use exact match and regular expression modes to search for code across an entire instance, in a group, or in a project. Exact code search is built on top of the open-source search engine Zoekt.
+
+      For GitLab.com, exact code search is enabled by default. For GitLab Self-Managed, an administrator must [install Zoekt](https://docs.gitlab.com/integration/zoekt/#install-zoekt) and [enable exact code search](https://docs.gitlab.com/integration/zoekt/#enable-exact-code-search).
+
+      This feature is in active development. We welcome your feedback in [issue 420920](https://gitlab.com/gitlab-org/gitlab/-/issues/420920)!
+  stage: ai-powered  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  available_in: [Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/search/exact_code_search/  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/18_6/exact_code_search.jpg  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2025-11-20  # YYYY-MM-DD
+  release: 18.6  # XX.Y
+
+- name: "CI/CD Components can reference their own metadata" # Match the release post entry
+  description: |  # Do not modify this line, instead modify the lines below.
+      Previously, CI/CD components couldn't reference their own metadata, such as version numbers or commit SHAs, within their configuration. This lack of information could cause you to use configuration with hardcoded values or complex workarounds. Writing configuration this way can lead to version mismatches when components build resources such as Docker images, because there's no way to automatically tag those resources with the component's compatible version.
+
+      In this release, we've introduced the ability to access component context with the `spec:component` keyword. You can now build and publish versioned resources like Docker images when you release a component version, ensuring everything is in sync, eliminating manual version management, and preventing version mismatches.
+  stage: verify  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  available_in: [Free, Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ci/yaml/expressions/#component-context  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/18_6/context.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2025-11-20  # YYYY-MM-DD
+  release: 18.6  # XX.Y

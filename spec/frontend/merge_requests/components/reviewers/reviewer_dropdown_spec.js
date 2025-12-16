@@ -9,7 +9,7 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import ReviewerDropdown from '~/merge_requests/components/reviewers/reviewer_dropdown.vue';
 import userPermissionsQuery from '~/merge_requests/components/reviewers/queries/user_permissions.query.graphql';
-import userAutocompleteWithMRPermissionsQuery from '~/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
+import userAutocompleteWithMRPermissionsQuery from 'ee_else_ce/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
 import setReviewersMutation from '~/merge_requests/components/reviewers/queries/set_reviewers.mutation.graphql';
 
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
@@ -30,6 +30,7 @@ const createMockUser = ({ id = 1, name = 'Administrator', username = 'root' } = 
   status: null,
   mergeRequestInteraction: {
     canMerge: true,
+    applicableApprovalRules: [],
   },
   username,
   name,
@@ -164,7 +165,7 @@ describe('Reviewer dropdown component', () => {
                   secondaryText: '@bob',
                   text: 'Nonadmin',
                   value: 'bob',
-                  mergeRequestInteraction: { canMerge: true },
+                  mergeRequestInteraction: expect.objectContaining({ canMerge: true }),
                 }),
               ]),
             }),
@@ -193,13 +194,13 @@ describe('Reviewer dropdown component', () => {
                   secondaryText: '@root',
                   text: 'Administrator',
                   value: 'root',
-                  mergeRequestInteraction: { canMerge: true },
+                  mergeRequestInteraction: expect.objectContaining({ canMerge: true }),
                 }),
                 expect.objectContaining({
                   secondaryText: '@bob',
                   text: 'Nonadmin',
                   value: 'bob',
-                  mergeRequestInteraction: { canMerge: true },
+                  mergeRequestInteraction: expect.objectContaining({ canMerge: true }),
                 }),
               ]),
             }),
@@ -471,7 +472,7 @@ describe('Reviewer dropdown component', () => {
       });
 
       describe('simple sidebar usage (without using the reviewers panel)', () => {
-        it('sends the "simple sidebar" tracking event', async () => {
+        it('sends the "simple sidebar" tracking event when reviewers are added', async () => {
           createComponent(true, {
             users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
             usage: 'simple',
@@ -490,6 +491,124 @@ describe('Reviewer dropdown component', () => {
             undefined,
           );
         });
+
+        it('does not send the "simple sidebar" tracking event when reviewers are removed', async () => {
+          createComponent(true, {
+            users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+            selectedReviewers: [createMockUser()],
+            usage: 'simple',
+          });
+
+          await waitForPromises();
+
+          findDropdown().vm.$emit('select', []);
+          findDropdown().vm.$emit('hidden');
+
+          await waitForPromises();
+
+          expect(trackEventSpy).not.toHaveBeenCalledWith(
+            'user_requests_review_from_mr_simple_sidebar',
+            {},
+            undefined,
+          );
+        });
+
+        it('tracks reviewer removal', async () => {
+          createComponent(true, {
+            users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+            selectedReviewers: [
+              createMockUser(),
+              createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+            ],
+            usage: 'simple',
+          });
+
+          await waitForPromises();
+
+          findDropdown().vm.$emit('select', ['root']);
+          findDropdown().vm.$emit('hidden');
+
+          await waitForPromises();
+
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'reviewer_removed_from_mr',
+            {
+              via: 'ui_simple',
+            },
+            undefined,
+          );
+        });
+      });
+
+      it('tracks reviewer removal events', async () => {
+        createComponent(true, {
+          users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+          selectedReviewers: [
+            createMockUser(),
+            createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+          ],
+        });
+
+        await waitForPromises();
+
+        findDropdown().vm.$emit('select', ['root']);
+        findDropdown().vm.$emit('hidden');
+
+        await waitForPromises();
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'reviewer_removed_from_mr',
+          {
+            via: 'ui_complex',
+          },
+          undefined,
+        );
+      });
+
+      it('tracks multiple reviewer removals', async () => {
+        createComponent(true, {
+          users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+          selectedReviewers: [
+            createMockUser(),
+            createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+          ],
+        });
+
+        await waitForPromises();
+
+        findDropdown().vm.$emit('select', []);
+        findDropdown().vm.$emit('hidden');
+
+        await waitForPromises();
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(2);
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'reviewer_removed_from_mr',
+          {
+            via: 'ui_complex',
+          },
+          undefined,
+        );
+      });
+
+      it('does not track removal events when no reviewers are removed', async () => {
+        createComponent(true, {
+          users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+          selectedReviewers: [createMockUser()],
+        });
+
+        await waitForPromises();
+
+        findDropdown().vm.$emit('select', ['root']);
+        findDropdown().vm.$emit('hidden');
+
+        await waitForPromises();
+
+        expect(trackEventSpy).not.toHaveBeenCalledWith(
+          'reviewer_removed_from_mr',
+          expect.anything(),
+          undefined,
+        );
       });
 
       describe('"suggested" historical position', () => {
@@ -648,7 +767,7 @@ describe('Reviewer dropdown component', () => {
                 secondaryText: '@root',
                 text: 'Administrator',
                 value: 'root',
-                mergeRequestInteraction: { canMerge: true },
+                mergeRequestInteraction: expect.objectContaining({ canMerge: true }),
               }),
             ]),
           }),

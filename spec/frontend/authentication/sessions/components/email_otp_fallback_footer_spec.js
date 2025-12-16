@@ -1,5 +1,7 @@
+import MockAdapter from 'axios-mock-adapter';
 import { GlLink, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import EmailOtpFallbackFooter from '~/sessions/new/components/email_otp_fallback_footer.vue';
@@ -25,12 +27,11 @@ describe('EmailOtpFallbackFooter', () => {
   };
 
   beforeEach(() => {
-    // Set up DOM element for 2FA form
-    document.body.innerHTML = '<div class="js-2fa-form"></div>';
+    setHTMLFixture('<div class="js-2fa-form"></div>');
   });
 
   afterEach(() => {
-    document.body.innerHTML = '';
+    resetHTMLFixture();
   });
 
   const findRecoveryCodeLink = () => wrapper.findComponent(GlLink);
@@ -72,11 +73,15 @@ describe('EmailOtpFallbackFooter', () => {
   });
 
   describe('loading state', () => {
+    let axiosMock;
+
     beforeEach(() => {
+      axiosMock = new MockAdapter(axios);
       createComponent();
-      axios.post = jest.fn().mockImplementation(
-        () => new Promise(() => {}), // Never resolves, keeps loading
-      );
+    });
+
+    afterEach(() => {
+      axiosMock.restore();
     });
 
     it('sets button to loading state while request is in progress', async () => {

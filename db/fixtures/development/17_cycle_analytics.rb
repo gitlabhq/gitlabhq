@@ -247,10 +247,13 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
   end
 
   def create_new_vsm_project
+    organization = admin.organization
+
     namespace = FactoryBot.create(
       :group,
       name: "Value Stream Management Group #{suffix}",
-      path: "vsmg-#{suffix}"
+      path: "vsmg-#{suffix}",
+      organization: organization
     )
 
     project = FactoryBot.create(
@@ -259,7 +262,8 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
       name: "Value Stream Management Project #{suffix}",
       path: "vsmp-#{suffix}",
       creator: admin,
-      namespace: namespace
+      namespace: namespace,
+      organization: organization
     )
     project.create_repository
     project

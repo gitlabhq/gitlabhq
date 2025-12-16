@@ -1,15 +1,15 @@
 ---
 stage: AI-powered
-group: Duo Agent Platform
+group: Agent Foundations
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: GitLab Duo Agent Platform
 ---
 
-This guide explains how to work with the Duo Agent Platform.
+This guide explains how to work with the GitLab Duo Agent Platform.
 
 ## Overview
 
-The Duo Agent Platform is a Single Page Application (SPA) built with Vue.js that provides a unified interface for AI-powered automation features. The platform uses a scoped routing system that allows multiple navigation items to coexist under the `/automate` path.
+The GitLab Duo Agent Platform is a Single Page Application (SPA) built with Vue.js that provides a unified interface for AI-powered automation features. The platform uses a scoped routing system that allows multiple navigation items to coexist under the `/automate` path.
 
 The platform is architected with a flexible namespace system that allows the same frontend infrastructure to be reused across different contexts (projects, groups, etc.) while providing context-specific functionality through a component mapping system.
 
@@ -58,7 +58,7 @@ graph TD
 
 ## Adding a New Navigation Item
 
-The Duo Agent Platform uses a router-driven navigation system where the Vue Router configuration directly drives the breadcrumb navigation. The key insight is that **the router structure in `ee/app/assets/javascripts/ai/duo_agents_platform/router/index.js` determines both the URL structure and the breadcrumb hierarchy**.
+The GitLab Duo Agent Platform uses a router-driven navigation system where the Vue Router configuration directly drives the breadcrumb navigation. The key insight is that **the router structure in `ee/app/assets/javascripts/ai/duo_agents_platform/router/index.js` determines both the URL structure and the breadcrumb hierarchy**.
 
 ### How Router-Driven Navigation Works
 

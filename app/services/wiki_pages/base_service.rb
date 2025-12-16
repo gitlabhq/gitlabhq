@@ -9,12 +9,14 @@ module WikiPages
   class BaseService < ::BaseContainerService
     private
 
+    include Gitlab::InternalEventsTracking
+
     def execute_hooks(page)
       page_data = payload(page)
       container.execute_hooks(page_data, :wiki_page_hooks)
       container.execute_integrations(page_data, :wiki_page_hooks)
       increment_usage(page)
-      create_wiki_event(page)
+      track_wiki_event(page)
     end
 
     # Passed to web-hooks, and send to external consumers.
@@ -57,12 +59,18 @@ module WikiPages
       )
     end
 
-    def create_wiki_event(page)
-      response = WikiPages::EventCreateService
-        .new(current_user)
-        .execute(slug_for_page(page), page, event_action, fingerprint(page))
+    def track_wiki_event(page)
+      return unless current_user
 
-      log_error(response.message) if response.error?
+      fingerprint = fingerprint(page)
+      wiki_page_meta = page.find_or_create_meta
+      track_internal_event('performed_wiki_action',
+        project: wiki_page_meta.project,
+        user: current_user,
+        label: event_action.to_s,
+        meta: wiki_page_meta,
+        fingerprint: fingerprint
+      )
     end
 
     def slug_for_page(page)

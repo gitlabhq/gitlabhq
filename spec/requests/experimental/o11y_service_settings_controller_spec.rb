@@ -159,6 +159,98 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
             end
           end
         end
+
+        context 'with per_page parameter' do
+          before do
+            15.times do
+              group = create(:group)
+              create(:observability_group_o11y_setting, group: group)
+            end
+          end
+
+          subject(:make_request) do
+            get experimental_o11y_service_settings_path, params: params
+          end
+
+          context 'when per_page is valid' do
+            let(:params) { { per_page: 10 } }
+
+            it 'limits results to per_page' do
+              make_request
+
+              aggregate_failures do
+                expect(assigns(:o11y_service_settings).count).to eq(10)
+                expect(response).to have_gitlab_http_status(:success)
+                expect(response).to render_template(:index)
+              end
+            end
+          end
+
+          context 'when per_page is not provided' do
+            let(:params) { {} }
+
+            it 'uses default per_page' do
+              make_request
+
+              aggregate_failures do
+                expect(assigns(:o11y_service_settings).count).to eq(expected_default_page_size)
+                expect(response).to have_gitlab_http_status(:success)
+                expect(response).to render_template(:index)
+              end
+            end
+          end
+
+          context 'when per_page exceeds the maximum' do
+            let(:params) { { per_page: 150 } }
+
+            it 'caps results at MAX_PER_PAGE' do
+              make_request
+
+              aggregate_failures do
+                expect(assigns(:o11y_service_settings).count).to eq(expected_capped_page_size)
+                expect(response).to have_gitlab_http_status(:success)
+                expect(response).to render_template(:index)
+              end
+            end
+          end
+
+          ['invalid', 0, -5].each do |invalid_value|
+            context "when per_page is #{invalid_value}" do
+              let(:params) { { per_page: invalid_value } }
+
+              it 'falls back to default per_page' do
+                make_request
+
+                aggregate_failures do
+                  expect(assigns(:o11y_service_settings).count).to eq(expected_default_page_size)
+                  expect(response).to have_gitlab_http_status(:success)
+                  expect(response).to render_template(:index)
+                end
+              end
+            end
+          end
+
+          context 'with combined pagination and per_page' do
+            before do
+              35.times do
+                group = create(:group)
+                create(:observability_group_o11y_setting, group: group)
+              end
+            end
+
+            it 'handles page and per_page parameters together' do
+              [
+                { page: 1, per_page: 10 },
+                { page: 2, per_page: 10 },
+                { page: 5, per_page: 10 }
+              ].each do |p|
+                get experimental_o11y_service_settings_path, params: p
+                expected = expected_page_count(page: p[:page], per_page: p[:per_page])
+                expect(assigns(:o11y_service_settings).count).to eq(expected)
+              end
+            end
+          end
+        end
       end
     end
   end
@@ -563,5 +655,22 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
     allow_next_instance_of(Observability::GroupO11ySetting) do |instance|
       allow(instance).to receive(:save).and_return(result)
     end
+  end
+
+  def expected_default_page_size
+    [Observability::GroupO11ySetting.count, Kaminari.config.default_per_page].min
+  end
+
+  def expected_capped_page_size
+    [
+      Observability::GroupO11ySetting.count,
+      Experimental::O11yServiceSettingsController::MAX_PER_PAGE
+    ].min
+  end
+
+  def expected_page_count(page:, per_page:)
+    total = Observability::GroupO11ySetting.count
+    remaining = [total - ((page - 1) * per_page), 0].max
+    [remaining, per_page].min
   end
 end

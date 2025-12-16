@@ -5,12 +5,12 @@ module Gitlab
     class Organization
       attr_reader :params, :user, :headers
 
-      HTTP_HEADER = 'X-GitLab-Organization-ID'
+      HTTP_HEADER = "X-GitLab-Organization-ID"
 
-      def initialize(params: {}, headers: nil, user: nil)
+      def initialize(params: {}, user: nil, rack_env: nil)
         @params = params
         @user = user
-        @headers = headers
+        @headers = rack_env ? Rack::Proxy.extract_http_request_headers(rack_env) : nil
       end
 
       def organization
@@ -24,9 +24,10 @@ module Gitlab
       end
 
       def from_headers
-        return unless headers.respond_to?(:[])
+        return if headers.nil?
 
         header_organization_id = headers[HTTP_HEADER]
+
         return unless header_organization_id.to_i > 0
 
         ::Organizations::Organization.find_by_id(header_organization_id)

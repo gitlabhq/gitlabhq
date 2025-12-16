@@ -7,7 +7,9 @@ RSpec.describe Members::Enumerable, feature_category: :groups_and_projects do
 
   before_all do
     ActiveRecord::Schema.define do
-      create_table :_test_member_sources, force: true
+      create_table :_test_member_sources, force: true do |t|
+        t.integer :state, limit: 2
+      end
     end
   end
 

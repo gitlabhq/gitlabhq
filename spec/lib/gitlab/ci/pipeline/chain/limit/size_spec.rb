@@ -27,13 +27,20 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::Size, feature_category: :pi
     end
 
     context 'when saving incomplete pipelines' do
+      let(:pipeline_seed_double) { instance_double(::Gitlab::Ci::Pipeline::Seed::Pipeline, size: 2) }
+
       let(:command) do
         instance_double(::Gitlab::Ci::Pipeline::Chain::Command,
           project: project,
           current_user: user,
           save_incompleted: true,
-          pipeline_seed: instance_double(::Gitlab::Ci::Pipeline::Seed::Pipeline, size: 2))
+          pipeline_seed: pipeline_seed_double,
+          current_pipeline_size: pipeline_seed_double.size,
+          ci_refactor_jobs_count_in_alive_pipelines_enabled?: ci_refactor_jobs_count_in_alive_pipelines_enabled
+        )
       end
+
+      let(:ci_refactor_jobs_count_in_alive_pipelines_enabled) { true }
 
       it 'drops the pipeline' do
         perform_step
@@ -72,7 +79,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::Size, feature_category: :pi
         expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
           instance_of(Gitlab::Ci::Limit::LimitExceededError),
           {
-            jobs_count: pipeline.statuses.count,
+            jobs_count: 2,
             project_id: project.id, plan: namespace.actual_plan_name,
             project_full_path: project.full_path, pipeline_source: pipeline.source
           }
@@ -80,16 +87,31 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::Size, feature_category: :pi
 
         perform_step
       end
+
+      context 'when the FF ci_refactor_jobs_count_in_alive_pipelines is disabled' do
+        let(:ci_refactor_jobs_count_in_alive_pipelines_enabled) { false }
+
+        it 'drops the pipeline' do
+          perform_step
+
+          expect(pipeline.reload).to be_failed
+        end
+      end
     end
 
     context 'when not saving incomplete pipelines' do
+      let(:pipeline_seed_double) { instance_double(::Gitlab::Ci::Pipeline::Seed::Pipeline, size: 2) }
+
       let(:command) do
         instance_double(::Gitlab::Ci::Pipeline::Chain::Command,
           project: project,
           current_user: user,
           save_incompleted: false,
-          pipeline_seed: instance_double(::Gitlab::Ci::Pipeline::Seed::Pipeline, size: 2),
-          increment_pipeline_failure_reason_counter: true)
+          pipeline_seed: pipeline_seed_double,
+          increment_pipeline_failure_reason_counter: true,
+          current_pipeline_size: pipeline_seed_double.size,
+          ci_refactor_jobs_count_in_alive_pipelines_enabled?: true
+        )
       end
 
       it 'fails but does not persist the pipeline' do
@@ -144,18 +166,23 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::Size, feature_category: :pi
     end
 
     context 'when global pipeline size limit is exceeded' do
+      let(:pipeline_seed_double) { instance_double(::Gitlab::Ci::Pipeline::Seed::Pipeline, size: 2001) }
+
       let(:command) do
         instance_double(::Gitlab::Ci::Pipeline::Chain::Command,
           project: project,
           current_user: user,
-          pipeline_seed: instance_double(::Gitlab::Ci::Pipeline::Seed::Pipeline, size: 2001))
+          pipeline_seed: pipeline_seed_double,
+          current_pipeline_size: pipeline_seed_double.size,
+          ci_refactor_jobs_count_in_alive_pipelines_enabled?: true
+        )
       end
 
       it 'logs the pipeline' do
         expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
           instance_of(Gitlab::Ci::Limit::LimitExceededError),
           {
-            jobs_count: pipeline.statuses.count,
+            jobs_count: 2001,
             project_id: project.id, plan: namespace.actual_plan_name,
             project_full_path: project.full_path, pipeline_source: pipeline.source
           }

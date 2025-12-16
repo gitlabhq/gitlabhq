@@ -47,21 +47,21 @@ The following user information is shared with clients:
 
 | Claim                | Type      | Description | Included in ID Token | Included in `userinfo` endpoint |
 |:---------------------|:----------|:------------|:---------------------|:------------------------------|
-| `sub`                | `string`  | The ID of the user | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| `auth_time`          | `integer` | The timestamp for the user's last authentication | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
-| `name`               | `string`  | The user's full name | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| `nickname`           | `string`  | The user's GitLab username | {{< icon name="check-circle" >}} Yes| {{< icon name="check-circle" >}} Yes |
-| `preferred_username` | `string`  | The user's GitLab username | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| `email`              | `string`  | The user's primary email address | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| `email_verified`     | `boolean` | Whether the user's email address is verified | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| `website`            | `string`  | URL for the user's website | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| `profile`            | `string`  | URL for the user's GitLab profile | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes|
-| `picture`            | `string`  | URL for the user's GitLab avatar | {{< icon name="check-circle" >}} Yes| {{< icon name="check-circle" >}} Yes |
-| `groups`             | `array`   | Paths for the groups the user is a member of, either directly or through an ancestor group. | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| `groups_direct`      | `array`   | Paths for the groups the user is a direct member of. | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
-| `https://gitlab.org/claims/groups/owner`      | `array`   | Names of the groups the user is a direct member of with the Owner role | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| `https://gitlab.org/claims/groups/maintainer` | `array`   | Names of the groups the user is a direct member of with the Maintainer role | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| `https://gitlab.org/claims/groups/developer`  | `array`   | Names of the groups the user is a direct member of with the Developer role | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| `sub`                | `string`  | The ID of the user | {{< yes >}} | {{< yes >}} |
+| `auth_time`          | `integer` | The timestamp for the user's last authentication | {{< yes >}} | {{< no >}} |
+| `name`               | `string`  | The user's full name | {{< yes >}} | {{< yes >}} |
+| `nickname`           | `string`  | The user's GitLab username | {{< yes >}}| {{< yes >}} |
+| `preferred_username` | `string`  | The user's GitLab username | {{< yes >}} | {{< yes >}} |
+| `email`              | `string`  | The user's primary email address | {{< yes >}} | {{< yes >}} |
+| `email_verified`     | `boolean` | Whether the user's email address is verified | {{< yes >}} | {{< yes >}} |
+| `website`            | `string`  | URL for the user's website | {{< yes >}} | {{< yes >}} |
+| `profile`            | `string`  | URL for the user's GitLab profile | {{< yes >}} | {{< yes >}}|
+| `picture`            | `string`  | URL for the user's GitLab avatar | {{< yes >}}| {{< yes >}} |
+| `groups`             | `array`   | Paths for the groups the user is a member of, either directly or through an ancestor group. | {{< no >}} | {{< yes >}} |
+| `groups_direct`      | `array`   | Paths for the groups the user is a direct member of. | {{< yes >}} | {{< no >}} |
+| `https://gitlab.org/claims/groups/owner`      | `array`   | Names of the groups the user is a direct member of with the Owner role | {{< no >}} | {{< yes >}} |
+| `https://gitlab.org/claims/groups/maintainer` | `array`   | Names of the groups the user is a direct member of with the Maintainer role | {{< no >}} | {{< yes >}} |
+| `https://gitlab.org/claims/groups/developer`  | `array`   | Names of the groups the user is a direct member of with the Developer role | {{< no >}} | {{< yes >}} |
 
 The claims `email` and `email_verified` are included only if the application has access to the
 `email` scope and the user's public email address. All other claims are available from the

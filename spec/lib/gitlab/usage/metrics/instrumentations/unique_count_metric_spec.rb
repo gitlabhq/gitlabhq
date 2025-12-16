@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::UniqueCountMetric, :clean_gitlab_redis_shared_state,
   feature_category: :product_analytics do

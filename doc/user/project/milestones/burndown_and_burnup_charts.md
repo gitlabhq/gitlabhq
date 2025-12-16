@@ -19,7 +19,7 @@ Burnup charts show the total number of issues against completed issues.
 
 ![Burndown and burnup chart, showing milestone progress with burndown chart displaying remaining issues over time and burnup chart showing total versus completed issues.](img/burndown_and_burnup_charts_v15_3.png)
 
-### Similarities and differences
+## Similarities and differences
 
 Burndown and burnup charts share some general features.
 Both burndown and burnup charts:
@@ -36,13 +36,13 @@ Differences between burndown and burnup charts are:
 - Burndown charts measure "total issues minus closed issues" for each day while burnup charts measure
   the total issues (open and closed) separately from the issues resolved for each day.
 
-### Switch between number of issues and issue weight
+## Switch between number of issues and issue weight
 
 To switch between the two settings, select either **Issues** or **Issue weight** above the charts.
 
 When sorting by weight, make sure all your issues have a weight assigned, because issues with no weight are not represented in the remaining weight totals.
 
-### When to use burndown and burnup charts
+## When to use burndown and burnup charts
 
 Burndown and burnup charts provide valuable insights when tracking milestone progress.
 Their use depends on [how you structure your milestones](_index.md) in your workflow.
@@ -76,13 +76,13 @@ For an overview, check the video demonstration on [Mapping work versus time with
 
 To view a project's burndown chart:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Milestones**.
 1. Select a milestone from the list.
 
 To view a group's burndown chart:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Milestones**.
 1. Select a milestone from the list.
 
@@ -134,13 +134,13 @@ Burnup charts show the assigned and completed work for a milestone.
 
 To view a project's burnup chart:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Milestones**.
 1. Select a milestone from the list.
 
 To view a group's burnup chart:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Milestones**.
 1. Select a milestone from the list.
 

@@ -27,7 +27,17 @@ module Gitlab
       HISTORY_PATTERN = %r{\{\{<\s*history\s*>\}\}(.*?)\{\{<\s*/history\s*>\}\}}m
       MAINTAINED_VERSIONS_PATTERN = %r{\{\{<\s*maintained-versions\s*/?\s*>\}\}}
       COLLAPSIBLE_PATTERN = %r{\{\{<\s*collapsible\s+title="([^"]+)"\s*>\}\}(.*?)\{\{<\s*/collapsible\s*>\}\}}m
-
+      YES_NO_PATTERN = /\{\{<\s*(yes|no)\s*>\}\}/
+      # Patterns for Hugo attributes
+      MARKDOWN_ATTRIBUTE_PATTERN = %r{
+        \{
+          (?:
+            \.[\w-]+(?:\s+\.[\w-]+)*
+            |
+            class=["'][\w-]+(?:\s+[\w-]+)*["']
+          )
+        \}
+      }x
       # Markdown heading constants
       HEADING_PATTERN = /^(\#{1,6})\s+[^\n]+$/m
       MAX_HEADING_LEVEL = 6 # Represents an h6
@@ -51,7 +61,9 @@ module Gitlab
         handle_tab_shortcodes(processed_content)
         handle_maintained_versions_shortcodes(processed_content)
         handle_collapsible_shortcodes(processed_content)
+        handle_yes_no_shortcodes(processed_content)
         remove_generic_shortcodes(processed_content)
+        remove_markdown_attributes(processed_content)
         clean_up_blank_lines(processed_content)
 
         # Restore code blocks
@@ -149,6 +161,13 @@ module Gitlab
         content
       end
 
+      def handle_yes_no_shortcodes(content)
+        content.gsub!(YES_NO_PATTERN) do
+          ::Regexp.last_match(1)
+        end
+        content
+      end
+
       # Determines the appropriate heading level for a new section,
       # based on preceding Markdown content.
       # Returns a value between 2-6, representing h2-h6 in Markdown.
@@ -168,6 +187,11 @@ module Gitlab
         content.gsub!(PAIRED_SHORTCODE_PATTERN, '\1')
         # Remove inline shortcodes entirely
         content.gsub!(INLINE_SHORTCODE_PATTERN, '')
+        content
+      end
+
+      def remove_markdown_attributes(content)
+        content.gsub!(MARKDOWN_ATTRIBUTE_PATTERN, '')
         content
       end
 

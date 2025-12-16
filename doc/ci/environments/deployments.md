@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Deployments
 description: Deployments, rollbacks, safety, and approvals.
@@ -133,7 +133,7 @@ If there is a problem with a deployment, you can retry it or roll it back.
 
 To retry or roll back a deployment:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Environments**.
 1. Select the environment.
 1. To the right of the deployment name:

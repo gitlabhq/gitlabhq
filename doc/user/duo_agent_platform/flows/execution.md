@@ -17,16 +17,17 @@ Flows use agents to execute tasks.
 - Flows executed in an IDE run locally.
 
 You can configure the environment where flows use CI/CD to execute.
-
-{{< alert type="note" >}}
-
-You cannot use predefined CI/CD variables when executing jobs with CI/CD.
-
-{{< /alert >}}
+You can also [use your own runners](#configure-runners).
 
 ## Configure CI/CD execution
 
 You can customize how flows are executed in CI/CD by creating an agent configuration file in your project.
+
+{{< alert type="note" >}}
+
+You cannot use predefined CI/CD variables in this scenario.
+
+{{< /alert >}}
 
 ### Create the configuration file
 
@@ -66,9 +67,7 @@ image: node:20-alpine
 If you use a custom Docker image, ensure that the following commands are available for the agent to function correctly:
 
 - `git`
-- `wget`
-- `tar`
-- `chmod`
+- `npm`
 
 Most base images include these commands by default. However, minimal images (like `alpine` variants)
 might require you to install them explicitly. If needed, you can install missing commands in the
@@ -81,7 +80,7 @@ For example, if you use an Alpine-based image:
 ```yaml
 image: python:3.11-alpine
 setup_script:
-  - apk add --no-cache git wget tar bash
+  - apk add --update git nodejs npm
 ```
 
 ### Configure setup scripts
@@ -201,3 +200,32 @@ This configuration:
 - Installs build tools and Python dependencies before running the flow.
 - Caches pip and virtual environment directories.
 - Creates a new cache when `requirements.txt` or `Pipfile.lock` changes, with a prefix of `python-deps`.
+
+## Configure runners
+
+Flows that use CI/CD are executed on runners. These runners must:
+
+- Use an [executor](https://docs.gitlab.com/runner/executors/) that supports Docker images.
+  For example, `docker`, `docker-autoscaler`, `kubernetes`, or others.
+  The `shell` executor is not supported.
+- Have the `gitlab--duo` tag, so the runner knows to pick up the correct jobs.
+- Be instance runners or assigned to the top-level group. Flows cannot use runners configured for a subgroup or project. On GitLab Self-Managed this restriction can be disabled by disabling the `duo_runner_restrictions` feature flag.
+
+In addition, runners on GitLab Self-Managed:
+
+- Must allow network traffic to the GitLab Duo Workflow Service configured for the GitLab instance.
+  If you aren't using custom models, this traffic goes to `duo-workflow-svc.runway.gitlab.net`, port `443`.
+- Must be able to download the default image from `registry.gitlab.com`
+  or be able to access [the Docker image you specified](#change-the-default-docker-image).
+- Might have to be [privileged](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers),
+  depending on what the flow does. For example, a flow that builds Docker images
+  needs a privileged runner.
+
+On GitLab.com, flows can use:
+
+- [Hosted runners](../../../ci/runners/hosted_runners/_index.md), which GitLab provides.
+
+Flows executed on runners can be secured with runtime sandboxing offering network and filesystem isolation. In order to benefit from sandboxing it is required to:
+
+1. Enable  [privileged](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers) mode by setting `privileged = true` in your [runner config](https://docs.gitlab.com/runner/configuration/advanced-configuration/)
+1. Use Duo Agent Platform default base [image](#change-the-default-docker-image)

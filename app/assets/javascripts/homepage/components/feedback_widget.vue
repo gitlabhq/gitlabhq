@@ -28,7 +28,7 @@ export default {
       {{ s__('HomePageFeedbackWidget|Share your feedback') }}
     </h2>
 
-    <p class="gl-mb-4 gl-text-secondary">
+    <p class="gl-mb-4 gl-text-subtle">
       {{
         s__(
           'HomePageFeedbackWidget|Help us improve the new homepage by sharing your thoughts and suggestions.',

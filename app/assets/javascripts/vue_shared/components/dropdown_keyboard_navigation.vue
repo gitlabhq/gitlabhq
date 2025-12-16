@@ -1,7 +1,8 @@
 <script>
 import { UP_KEY_CODE, DOWN_KEY_CODE, TAB_KEY_CODE } from '~/lib/utils/keycodes';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
-export default {
+export default normalizeRender({
   model: {
     prop: 'index',
     event: 'change',
@@ -102,5 +103,5 @@ export default {
   render() {
     return this.$scopedSlots.default?.();
   },
-};
+});
 </script>

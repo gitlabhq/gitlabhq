@@ -49,7 +49,7 @@ A project contains the issues that will be used to track ideas.
 
 To create a blank project:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. Enter the project details.
    - For **Project name**, enter `Idea management tutorial`.
@@ -111,7 +111,7 @@ However, they aren't mutually exclusive.
 
 To create each label:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter the name of the label. Start with `status::in review`.
@@ -133,7 +133,7 @@ You'll use it to quickly create issues and add labels to them by dragging cards 
 
 To set up your issue board:
 
-1. On the left sidebar, select **Search or go to** and find your **Idea management tutorial** project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your **Idea management tutorial** project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issue boards**.
 1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
 1. Select **Create new board**.

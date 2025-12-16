@@ -13,7 +13,7 @@ title: GitLab Pages SSL/TLS certificates
 {{< /details >}}
 
 Every GitLab Pages project on GitLab.com is available under
-HTTPS for the default Pages domain (`*.gitlab.io`). Once you set
+HTTPS for the default Pages domain (`*.gitlab.io`). After you set
 up your Pages project with your custom (sub)domain, if you want
 it secured by HTTPS, you must issue a certificate for that
 (sub)domain and install it on your project.
@@ -72,13 +72,11 @@ GitLab Pages accepts certificates provided in the [PEM](https://knowledge.digice
 [self-signed certificates](https://en.wikipedia.org/wiki/Self-signed_certificate). [Self-signed certificates are typically not used](https://www.mcafee.com/blogs/other-blogs/mcafee-labs/self-signed-certificates-secure-so-why-ban/)
 for public websites for security reasons and to ensure that browsers trust your site's certificate.
 
-There are various kinds of certificates, each one
-with a certain security level. A static personal website doesn't
+Different certificates have different security levels. A static personal website doesn't
 require the same security level as an online banking web app,
 for instance.
 
-There are some certificate authorities that
-offer free certificates, aiming to make the internet more secure
+Some certificate authorities offer free certificates, aiming to make the internet more secure
 to everyone. The most popular is [Let's Encrypt](https://letsencrypt.org/),
 which issues certificates trusted by most of browsers, it's open
 source, and free to use. See [GitLab Pages integration with Let's Encrypt](lets_encrypt_integration.md) to enable HTTPS on your custom domain.

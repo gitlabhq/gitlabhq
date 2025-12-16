@@ -99,7 +99,7 @@ Follow these steps to provide the bearer token with `FUZZAPI_OVERRIDES_ENV`:
    ```
 
 1. To validate that authentication is working, run an API fuzzing test and review the fuzzing logs
-   and the test API's application logs. See the [overrides section](#overrides) for more information about override commands.
+   and the test APIs application logs. See the [overrides section](#overrides) for more information about override commands.
 
 #### Token generated at test runtime
 
@@ -137,7 +137,7 @@ variables:
 ```
 
 To validate that authentication is working, run an API fuzzing test and review the fuzzing logs and
-the test API's application logs.
+the test APIs application logs.
 
 #### Token has short expiration
 
@@ -181,7 +181,7 @@ variables:
 ```
 
 To validate that authentication is working, run an API fuzzing test and review the fuzzing logs and
-the test API's application logs.
+the test APIs application logs.
 
 ## API fuzzing profiles
 

@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Plan', :db_migrate, feature_category: :team_planning do
     describe 'Group milestone' do
-      include Support::Dates
+      include QA::Support::Dates
 
       let(:title) { 'Group milestone' }
       let(:description) { 'This milestone tests out group milestones.' }

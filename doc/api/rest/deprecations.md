@@ -154,3 +154,18 @@ In GitLab 17.7, the [`restrict_user_defined_variables` parameter in Projects API
 is deprecated in favour of using only `ci_pipeline_variables_minimum_override_role`.
 
 To match the same behavior of `restrict_user_defined_variables: false` set `ci_pipeline_variables_minimum_override_role` as `developer`.
+
+## `namespace` parameter in project import API endpoints
+
+Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/511053).
+
+In GitLab 18.7, the `namespace` parameter in the [project import and export API](../project_import_export.md) is deprecated
+in favor of the `namespace_id` and `namespace_path` parameters. The `namespace` parameter accepted both an ID or path,
+which caused ambiguity when namespace paths contained only digits.
+
+Instead, you should use:
+
+- `namespace_id` when specifying a namespace by its numeric ID.
+- `namespace_path` when specifying a namespace by its path.
+
+The `namespace` parameter will be removed in v5 of the GitLab REST API.

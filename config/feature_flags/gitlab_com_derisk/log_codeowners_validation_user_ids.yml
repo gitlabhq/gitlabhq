@@ -1,0 +1,10 @@
+---
+name: log_codeowners_validation_user_ids
+description: Log user ID counts during CODEOWNERS group validation for monitoring and performance analysis
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/549621
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210810
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/580286
+milestone: '18.7'
+type: gitlab_com_derisk
+group: group::source code
+default_enabled: false

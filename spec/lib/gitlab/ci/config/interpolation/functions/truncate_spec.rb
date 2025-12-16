@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Interpolation::Functions::Truncate, feature_category: :pipeline_composition do
   it 'matches exactly the truncate function with 2 numeric arguments' do

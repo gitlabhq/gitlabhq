@@ -239,7 +239,7 @@ requirements.
    {{< alert type="note" >}}
 
    There isn't a way to know anything about our customers' data on their
-   [GitLab Self-Managed instances](../../subscriptions/self_managed/_index.md), so keep
+   [GitLab Self-Managed instances](../../subscriptions/manage_subscription.md), so keep
    that in mind for any data implications with your merge request.
 
    1. Consider self-managed functionality and upgrade paths. The change should consider both:

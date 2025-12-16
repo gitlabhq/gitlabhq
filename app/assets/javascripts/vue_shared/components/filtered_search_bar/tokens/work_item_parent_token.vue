@@ -2,7 +2,9 @@
 import { GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
+
 import {
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
@@ -60,6 +62,8 @@ export default {
   methods: {
     async fetchWorkItemsBySearchTerm(search = '') {
       this.loading = true;
+      const isSearchedById = /^\d+$/.test(search);
+      const refinedSearchText = isSearchedById ? '' : search;
 
       try {
         // The logic to fetch the Parent seems to be different than other pages
@@ -70,12 +74,13 @@ export default {
           variables: {
             fullPath: this.config.fullPath,
             groupPath: this.groupPath,
-            search,
-            in: search ? 'TITLE' : undefined,
+            search: refinedSearchText,
+            in: refinedSearchText ? 'TITLE' : undefined,
             includeDescendants: !this.config.isProject,
             includeAncestors: true,
             types: this.supportedTypes,
             isProject: this.config.isProject,
+            ids: isSearchedById ? [convertToGraphQLId(TYPENAME_WORK_ITEM, search)] : undefined,
           },
         });
 

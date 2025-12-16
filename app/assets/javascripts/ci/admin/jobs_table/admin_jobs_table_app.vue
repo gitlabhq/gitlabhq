@@ -28,6 +28,7 @@ import GetAllJobsCount from './graphql/queries/get_all_jobs_count.query.graphql'
 import getCancelableJobs from './graphql/queries/get_cancelable_jobs_count.query.graphql';
 
 export default {
+  name: 'AdminJobsTableApp',
   i18n: {
     jobsCountErrorMsg: JOBS_COUNT_ERROR_MESSAGE,
     jobsFetchErrorMsg: JOBS_FETCH_ERROR_MSG,

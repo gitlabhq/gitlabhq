@@ -83,9 +83,9 @@ module Ci
           links: all_related_merge_request_links.join(', ')
         }).html_safe
       elsif pipeline.ref && pipeline.ref_exists?
-        safe_format(_("For %{link_to_pipeline_ref}"), link_to_pipeline_ref: link_to_pipeline_ref)
+        safe_format(s_("Pipeline|In %{pipeline_ref}"), pipeline_ref: link_to_pipeline_ref)
       elsif pipeline.ref
-        safe_format(_("For %{ref}"), ref: plain_ref_name)
+        safe_format(s_("Pipeline|In %{pipeline_ref}"), pipeline_ref: plain_ref_name)
       end
     end
 

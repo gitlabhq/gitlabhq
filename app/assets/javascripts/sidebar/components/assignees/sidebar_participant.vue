@@ -34,12 +34,16 @@ export default {
     isBusy() {
       return this.user?.status?.availability === AVAILABILITY_STATUS.BUSY;
     },
+    isAgent() {
+      return this.user?.compositeIdentityEnforced;
+    },
     hasCannotMergeIcon() {
       return this.issuableType === TYPE_MERGE_REQUEST && !this.user.canMerge;
     },
   },
   i18n: {
     busy: __('Busy'),
+    agent: __('Agent'),
   },
 };
 </script>
@@ -61,9 +65,14 @@ export default {
         :class="{ '!gl-left-6': selected }"
         :size="12"
       />
-      <gl-badge v-if="isBusy" variant="warning" class="gl-ml-2">
+    </template>
+    <div class="gl-mt-2 gl-gap-1">
+      <gl-badge v-if="isBusy" variant="warning" data-testid="busy-badge">
         {{ $options.i18n.busy }}
       </gl-badge>
-    </template>
+      <gl-badge v-if="isAgent" variant="neutral" data-testid="agent-badge">
+        {{ $options.i18n.agent }}
+      </gl-badge>
+    </div>
   </gl-avatar-labeled>
 </template>

@@ -12,7 +12,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemByEmail from '~/work_items/components/work_item_by_email.vue';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import namespaceRegenerateNewWorkItemEmailAddressMutation from '~/work_items/graphql/namespace_regenerate_new_work_item_email_address.mutation.graphql';
 
 Vue.use(VueApollo);
@@ -42,7 +42,7 @@ describe('WorkItemByEmail', () => {
           GlSprintf,
           GlFormInputGroup,
           GlButton,
-          ModalCopyButton,
+          SimpleCopyButton,
           GlDisclosureDropdownItem,
         },
         directives: {

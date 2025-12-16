@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Metadata API
 ---
@@ -24,6 +24,7 @@ Retrieve metadata information for this GitLab instance.
 
 ```plaintext
 GET /metadata
+GET /version
 ```
 
 Response body attributes:
@@ -45,6 +46,12 @@ Example request:
 curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/metadata"
+```
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/version"
 ```
 
 Example response:

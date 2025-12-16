@@ -10,4 +10,5 @@ introduced_by_url:
 milestone: '17.11'
 table_size: small
 gitlab_schema: gitlab_main_user
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398199
+sharding_key:
+  uploaded_by_user_id: users

@@ -117,7 +117,7 @@ describe('WorkItemRelationshipList', () => {
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Incident',
-            iconName: 'issue-type-incident',
+            iconName: 'work-item-incident',
             __typename: 'WorkItemType',
           },
         },

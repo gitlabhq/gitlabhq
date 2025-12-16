@@ -57,7 +57,6 @@ class CustomEnvironment extends TestEnvironment {
         /^\[Vue warn\]: \(deprecation INSTANCE_LISTENERS\)/,
         /^\[Vue warn\]: \(deprecation INSTANCE_SCOPED_SLOTS\)/,
         /^\[Vue warn\]: \(deprecation INSTANCE_ATTRS_CLASS_STYLE\)/,
-        /^\[Vue warn\]: \(deprecation OPTIONS_DATA_FN\)/,
         /^\[Vue warn\]: \(deprecation OPTIONS_DATA_MERGE\)/,
         /^\[Vue warn\]: \(deprecation OPTIONS_BEFORE_DESTROY\)/,
         /^\[Vue warn\]: \(deprecation OPTIONS_DESTROYED\)/,

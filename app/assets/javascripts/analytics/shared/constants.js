@@ -201,6 +201,10 @@ export const AI_METRICS = {
   DUO_USAGE_RATE: 'duo_usage_rate',
   DUO_RCA_USAGE_RATE: 'duo_rca_usage_rate',
   DUO_USED_COUNT: 'duo_used_count',
+  DUO_REVIEW_REQUESTS_COUNT: 'duo_review_requests_count',
+  DUO_REVIEW_COMMENT_COUNT: 'duo_review_comment_count',
+  DUO_AGENT_PLATFORM_FLOWS: 'duo_agent_platform_flows',
+  DUO_AGENT_PLATFORM_CHATS: 'duo_agent_platform_chats',
 };
 
 export const VALUE_STREAM_METRIC_DISPLAY_UNITS = {
@@ -220,8 +224,8 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     description: s__(
       'ValueStreamAnalytics|Average number of deployments to production per day. This metric measures how often value is delivered to end users.',
     ),
-    groupLink: '-/analytics/ci_cd?tab=deployment-frequency',
-    projectLink: '-/pipelines/charts?chart=deployment-frequency',
+    groupLink: '-/analytics/dashboards/dora_metrics',
+    projectLink: '-/analytics/dashboards/dora_metrics',
     docsLink: helpPagePath('user/analytics/dora_metrics', { anchor: 'deployment-frequency' }),
   },
   [DORA_METRICS.LEAD_TIME_FOR_CHANGES]: {
@@ -230,8 +234,8 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     description: s__(
       'ValueStreamAnalytics|The time to successfully deliver a commit into production. This metric reflects the efficiency of CI/CD pipelines.',
     ),
-    groupLink: '-/analytics/ci_cd?tab=lead-time',
-    projectLink: '-/pipelines/charts?chart=lead-time',
+    groupLink: '-/analytics/dashboards/dora_metrics',
+    projectLink: '-/analytics/dashboards/dora_metrics',
     docsLink: helpPagePath('user/analytics/dora_metrics', { anchor: 'lead-time-for-changes' }),
   },
   [DORA_METRICS.TIME_TO_RESTORE_SERVICE]: {
@@ -240,8 +244,8 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     description: s__(
       'ValueStreamAnalytics|The time it takes an organization to recover from a failure in production.',
     ),
-    groupLink: '-/analytics/ci_cd?tab=time-to-restore-service',
-    projectLink: '-/pipelines/charts?chart=time-to-restore-service',
+    groupLink: '-/analytics/dashboards/dora_metrics',
+    projectLink: '-/analytics/dashboards/dora_metrics',
     docsLink: helpPagePath('user/analytics/dora_metrics', { anchor: 'time-to-restore-service' }),
   },
   [DORA_METRICS.CHANGE_FAILURE_RATE]: {
@@ -249,8 +253,8 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     description: s__(
       'ValueStreamAnalytics|Percentage of deployments that cause an incident in production.',
     ),
-    groupLink: '-/analytics/ci_cd?tab=change-failure-rate',
-    projectLink: '-/pipelines/charts?chart=change-failure-rate',
+    groupLink: '-/analytics/dashboards/dora_metrics',
+    projectLink: '-/analytics/dashboards/dora_metrics',
     docsLink: helpPagePath('user/analytics/dora_metrics', { anchor: 'change-failure-rate' }),
     unit: UNITS.PERCENT,
   },
@@ -416,6 +420,34 @@ export const VALUE_STREAM_METRIC_METADATA = {
     projectLink: '',
     docsLink: helpPagePath('user/gitlab_duo/feature_summary'),
   },
+  [AI_METRICS.DUO_REVIEW_REQUESTS_COUNT]: {
+    description: s__('AiImpactAnalytics|Number of Duo Code Review requests.'),
+    groupLink: '',
+    projectLink: '',
+    docsLink: helpPagePath('user/gitlab_duo/feature_summary'),
+  },
+  [AI_METRICS.DUO_REVIEW_COMMENT_COUNT]: {
+    description: s__('AiImpactAnalytics|Number of Duo Code Review comments.'),
+    groupLink: '',
+    projectLink: '',
+    docsLink: helpPagePath('user/gitlab_duo/feature_summary'),
+  },
+  [AI_METRICS.DUO_AGENT_PLATFORM_CHATS]: {
+    description: s__(
+      'AiImpactAnalytics|Number of chat sessions initiated through GitLab Duo Agent Platform.',
+    ),
+    groupLink: '',
+    projectLink: '',
+    docsLink: helpPagePath('user/gitlab_duo/feature_summary'),
+  },
+  [AI_METRICS.DUO_AGENT_PLATFORM_FLOWS]: {
+    description: s__(
+      'AiImpactAnalytics|Number of agent flows (excluding chats) executed through GitLab Duo Agent Platform.',
+    ),
+    groupLink: '',
+    projectLink: '',
+    docsLink: helpPagePath('user/gitlab_duo/feature_summary'),
+  },
   ...PIPELINE_ANALYTICS_METRIC_METADATA,
 };
 
@@ -445,7 +477,7 @@ export const USAGE_OVERVIEW_METADATA = {
     options: { title: __('Users'), titleIcon: 'user' },
   },
   [USAGE_OVERVIEW_IDENTIFIER_ISSUES]: {
-    options: { title: __('Issues'), titleIcon: 'issue-type-issue' },
+    options: { title: __('Issues'), titleIcon: 'work-item-issue' },
   },
   [USAGE_OVERVIEW_IDENTIFIER_MERGE_REQUESTS]: {
     options: { title: __('Merge requests'), titleIcon: 'merge-request' },

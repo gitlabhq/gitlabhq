@@ -54,12 +54,14 @@ module Feature
 
       def project_actor(container)
         return actor_wrapper(::Project, container.id) if container.is_a?(::Project)
-        return actor_wrapper(::Project, container.project.id) if container.is_a?(DesignManagement::Repository)
+
+        actor_wrapper(::Project, container.project.id) if container.is_a?(DesignManagement::Repository)
       end
 
       def group_actor(container)
         return actor_wrapper(::Group, container.namespace_id) if container.is_a?(::Project)
-        return actor_wrapper(::Group, container.project.namespace_id) if container.is_a?(DesignManagement::Repository)
+
+        actor_wrapper(::Group, container.project.namespace_id) if container.is_a?(DesignManagement::Repository)
       end
 
       private

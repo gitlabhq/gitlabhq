@@ -375,6 +375,27 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
+
+      context 'when inviting users from other organizations' do
+        let_it_be(:other_organization) { create(:organization) }
+        let_it_be(:other_user) { create(:user, organization: other_organization) }
+
+        it 'shows error for email' do
+          post invitations_url(source, maintainer),
+            params: { email: other_user.email, access_level: Member::GUEST }
+
+          expect(json_response['status']).to eq 'error'
+          expect(json_response['message'][other_user.email]).to eq('already belongs to another organization')
+        end
+
+        it 'shows error for user_id' do
+          post invitations_url(source, maintainer),
+            params: { user_id: other_user.id, access_level: Member::GUEST }
+
+          expect(json_response['status']).to eq 'error'
+          expect(json_response['message'][other_user.username]).to eq('already belongs to another organization')
+        end
+      end
     end
   end
 
@@ -436,7 +457,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
       emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com,' \
         'EMAIL8@EXamPle.com'
 
-      unresolved_n_plus_ones = 84 # currently there are 10 queries added per email, checking if we should dispatch AuthorizationsAddedEvent makes 1 query per event (3 events dispatched)
+      unresolved_n_plus_ones = 86 # currently there are 10 queries added per email, checking if we should dispatch AuthorizationsAddedEvent makes 1 query per event (3 events dispatched)
 
       expect do
         post invitations_url(project, maintainer), params: { email: emails, access_level: Member::DEVELOPER }

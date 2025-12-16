@@ -51,6 +51,7 @@ export default {
       default: false,
     },
   },
+  emits: ['submit', 'resetContent', 'scrolled-to-commit-form'],
   data() {
     return {
       message: this.defaultMessage,

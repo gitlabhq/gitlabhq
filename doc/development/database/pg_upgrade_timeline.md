@@ -102,6 +102,7 @@ Upgrade [GitLab.com](https://gitlab.com) environments.
 
 Team Tasks:
 
+1. Configure the [Database upgrade DDL lock](database_upgrade_ddl_lock.md) to prevent DDL operations from conflicting with the upgrade process;
 1. Upgrade two STG databases and two PRD databases, typically CI + SEC or Registry. The specific databases may vary year to year;
 1. Upgrade the remaining two STG databases and two PRD databases. The specific databases may vary from year to year;
 1. Communicate to cross-functional teams that GitLab has successfully transitioned to a new PostgreSQL version;

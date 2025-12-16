@@ -1,63 +1,57 @@
 import Vue, { nextTick } from 'vue';
-import { createWrapper } from '@vue/test-utils';
-import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { shallowMount } from '@vue/test-utils';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
-import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
+import { createConfirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import ConfirmModal from '~/lib/utils/confirm_via_gl_modal/confirm_modal.vue';
 
-const originalMount = Vue.prototype.$mount;
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
+const isVue3 = Vue.version.startsWith('3');
+
 describe('confirmAction', () => {
-  let modalWrapper;
+  let wrapper;
   let confirActionPromise;
   let modal;
 
-  const findConfirmModal = () => modalWrapper.findComponent(ConfirmModal);
+  const confirmAction = createConfirmAction({
+    mountFn: (Component) => {
+      wrapper = shallowMount(Component);
+
+      return wrapper;
+    },
+    destroyFn: (instance) => {
+      instance.destroy();
+    },
+  });
+
+  const findConfirmModal = () => wrapper.findComponent(ConfirmModal);
+  const getConfirmModalProps = () => {
+    if (isVue3) {
+      // It's not clear why Wrapper#props() isn't working for ConfirmModal
+      // under VTU@2. We need to inspect its $attrs instead.
+      return modal.vm.$attrs;
+    }
+
+    return modal.props();
+  };
+
   const renderRootComponent = async (message, opts) => {
     confirActionPromise = confirmAction(message, opts);
-    // We have to wait for two ticks here.
-    // The first one is to wait for rendering of the root component
-    // The second one to wait for rendering of the dynamically
-    // loaded confirm-modal component
-    await nextTick();
+    // Wait for dynamic import in implementation to resolve.
+    await import('~/lib/utils/confirm_via_gl_modal/confirm_modal.vue');
+    // Wait for root component to render.
     await nextTick();
     modal = findConfirmModal();
   };
-  const mockMount = (vm, el) => {
-    originalMount.call(vm, el);
-    modalWrapper = createWrapper(vm);
-    return vm;
-  };
 
-  beforeEach(() => {
-    setHTMLFixture('<div id="component"></div>');
-    const el = document.getElementById('component');
-    // We mock the implementation only once to make sure that we mock
-    // it only for the root component in confirm_action.
-    // Mounting other components (like confirm-modal) should not be affected with
-    // this mock
-    jest.spyOn(Vue.prototype, '$mount').mockImplementationOnce(function mock() {
-      return mockMount(this, el);
-    });
-  });
-
-  afterEach(() => {
-    resetHTMLFixture();
-    Vue.prototype.$mount.mockRestore();
-    modalWrapper?.destroy();
-    modal?.destroy();
-    modal = null;
-  });
-
-  it('creats a ConfirmModal with message as slot', async () => {
+  it('creates a ConfirmModal with message as slot', async () => {
     const message = 'Bonjour le monde!';
     await renderRootComponent(message);
 
-    expect(modal.vm.$slots.default[0].text).toBe(message);
+    expect(modal.text()).toContain(message);
   });
 
-  it('creats a ConfirmModal with props', async () => {
+  it('creates a ConfirmModal with props', async () => {
     const options = {
       primaryBtnText: 'primaryBtnText',
       primaryBtnVariant: 'info',
@@ -71,7 +65,7 @@ describe('confirmAction', () => {
       size: 'md',
     };
     await renderRootComponent('', options);
-    expect(modal.props()).toEqual(
+    expect(getConfirmModalProps()).toEqual(
       expect.objectContaining({
         primaryText: options.primaryBtnText,
         primaryVariant: options.primaryBtnVariant,
@@ -82,7 +76,7 @@ describe('confirmAction', () => {
         modalHtmlMessage: options.modalHtmlMessage,
         title: options.title,
         hideCancel: options.hideCancel,
-        size: 'md',
+        size: options.size,
       }),
     );
   });
@@ -110,7 +104,7 @@ describe('confirmAction', () => {
       label: 'repository_settings',
     };
     await renderRootComponent('', { trackingEvent });
-    const { trackEventSpy } = bindInternalEventDocument(modalWrapper.element);
+    const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
     modal.vm.$emit('confirmed');
 

@@ -2,12 +2,13 @@ import initVueAlerts from '~/vue_alerts';
 import NoEmojiValidator from '~/emoji/no_emoji_validator';
 import { initLanguageSwitcher } from '~/language_switcher';
 import LengthValidator from '~/validators/length_validator';
-import mountEmailVerificationApplication from '~/sessions/new';
+import { initEmailVerification, initTwoFactorEmailOTP } from '~/sessions/new';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import {
   appendUrlFragment,
   appendRedirectQuery,
   toggleRememberMeQuery,
+  toggleRememberMePasskey,
 } from './preserve_url_fragment';
 import UsernameValidator from './username_validator';
 
@@ -18,7 +19,9 @@ new NoEmojiValidator(); // eslint-disable-line no-new
 appendUrlFragment();
 appendRedirectQuery();
 toggleRememberMeQuery();
+toggleRememberMePasskey();
 initVueAlerts();
 initLanguageSwitcher();
-mountEmailVerificationApplication();
+initEmailVerification();
+initTwoFactorEmailOTP();
 renderGFM(document.getElementById('js-custom-sign-in-description'));

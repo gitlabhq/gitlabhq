@@ -239,12 +239,6 @@ module GitalySetup
   end
 
   def setup_gitaly
-    unless ENV['CI']
-      # In CI Gitaly is built in the setup-test-env job and saved in the
-      # artifacts. So when tests are started, there's no need to build Gitaly.
-      build_gitaly
-    end
-
     gitaly_logging_level = ENV['GITALY_TESTING_LOG_LEVEL'] || 'warn'
 
     [

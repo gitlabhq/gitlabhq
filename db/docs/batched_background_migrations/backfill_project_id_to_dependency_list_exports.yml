@@ -1,9 +1,0 @@
----
-migration_job_name: BackfillProjectIdToDependencyListExports
-description: Backfill `pipeline.project_id` to `dependency_list_export.project_id`
-feature_category: dependency_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164399
-milestone: '17.4'
-queued_migration_version: 20240829182925
-finalize_after: '2024-09-19'
-finalized_by: 20241106181154

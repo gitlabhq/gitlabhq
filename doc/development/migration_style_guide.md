@@ -1064,7 +1064,9 @@ Table **has foreign keys**:
 - Remove the application code related to the table, such as models,
   controllers, and services.
 - In a post-deployment migration, remove the foreign keys using the
-  `with_lock_retries` helper method. In another subsequent post-deployment
+  `with_lock_retries` helper method. If you are removing multiple foreign
+  keys, you must drop each key in a separate migration to avoid lock contention.
+- In another subsequent post-deployment
   migration, use `drop_table`.
 
 This can all be in a single migration if you're sure the code is not used.

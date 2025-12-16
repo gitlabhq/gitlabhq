@@ -46,6 +46,13 @@ RSpec.shared_examples 'resolvable discussions API' do |parent_type, noteable_typ
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
+    it "returns a 404 error if discussion is missing" do
+      put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
+              "discussions/#{non_existing_record_id}", user), params: { resolved: true }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
     context 'when user does not have access to read the discussion' do
       before do
         parent.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)

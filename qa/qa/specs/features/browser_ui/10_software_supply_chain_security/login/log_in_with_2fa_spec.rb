@@ -42,11 +42,7 @@ module QA
 
       it(
         'allows enforcing 2FA via UI and logging in with 2FA',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931',
-        quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/567702',
-          type: :bug
-        }
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931'
       ) do
         enforce_two_factor_authentication_on_group(group)
 
@@ -101,7 +97,7 @@ module QA
 
             two_fa_auth.click_copy_and_proceed
 
-            expect(two_fa_auth).to have_text('You have set up 2FA for your account!')
+            expect(two_fa_auth).to have_text('2FA setup complete!')
 
             otp
           end

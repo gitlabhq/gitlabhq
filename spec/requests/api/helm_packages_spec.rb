@@ -116,6 +116,12 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
         end
       end
 
+      context 'for head request' do
+        it 'does not update last_downloaded_at' do
+          expect { head api(url) }.not_to change { metadata_cache.reload.last_downloaded_at }
+        end
+      end
+
       context 'when file is stored in object storage' do
         let(:channel) { 'test' }
         let(:metadata_cache) { create(:helm_metadata_cache, :object_storage, project: project, channel: channel) }

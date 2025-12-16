@@ -30,9 +30,7 @@ module Observability
         group_id: group.id,
         email: user.email,
         password: SecureRandom.hex(16),
-        encryption_key: SecureRandom.hex(32),
-        user_name: user.name,
-        group_path: group.full_path
+        encryption_key: SecureRandom.hex(32)
       }
     end
 

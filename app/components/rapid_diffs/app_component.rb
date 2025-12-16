@@ -8,7 +8,7 @@ module RapidDiffs
     attr_reader :presenter
 
     delegate :diffs_stream_url, :reload_stream_url, :diffs_stats_endpoint, :diff_files_endpoint, :diff_file_endpoint,
-      :should_sort_metadata_files?, :diffs_slice, :lazy?, to: :presenter
+      :should_sort_metadata_files?, :diffs_slice, :lazy?, :environment, to: :presenter
 
     delegate :diff_view, :current_user, to: :helpers
 

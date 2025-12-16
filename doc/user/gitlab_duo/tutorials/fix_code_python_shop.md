@@ -62,37 +62,16 @@ Depending on your subscription add-on, you can use Chat in the GitLab UI, the We
 
 #### Use Chat in the GitLab UI
 
-Instructions are provided for the new navigation and classic navigation.
-Select the tab for your navigation type, or [learn how to switch](../../interface_redesign.md#turn-new-navigation-on-or-off).
-
-{{< tabs >}}
-
-{{< tab title="New navigation" >}}
-
 1. On the top bar, select **Search or go to** and find your project.
-1. On the GitLab Duo sidebar, select either **Current GitLab Duo Chat** ({{< icon name="comment" >}}) or **New GitLab Duo Chat** ({{< icon name="plus" >}}).
+1. On the GitLab Duo sidebar, select either **New GitLab Duo Chat** ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
    A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
 1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
    It might take a few seconds for the interactive AI chat to produce an answer.
 
-{{< /tab >}}
-
-{{< tab title="Classic navigation" >}}
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
-   A drawer opens on the right side of your screen.
-1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
-   It might take a few seconds for the interactive AI chat to produce an answer.
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
 #### Use Chat in the Web IDE
 
 1. Open the Web IDE:
-   1. In the GitLab UI, on the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+   1. In the GitLab UI, on the top bar, select **Search or go to** and find your project.
    1. Select a file. Then in the upper right, select **Edit** > **Open in Web IDE**.
 1. Open Chat by using one of these methods:
    - On the left sidebar, select **GitLab Duo Chat**.
@@ -117,7 +96,7 @@ How you use Chat in your IDE differs depending on which IDE you use.
 1. In the chat pane, in the upper-right corner, select **Show Status** to show information
    in the Command Palette.
 
-You can also interact with Duo Chat while you're working with a subset of code.
+You can also interact with GitLab Duo Chat while you're working with a subset of code.
 
 1. In VS Code, open a file. The file does not need to be a file in a Git repository.
 1. In the file, select some code.
@@ -656,7 +635,7 @@ code you end up with after following the tutorial.
 
 {{< tabs >}}
 
-{{< tab title=".gitignore" >}}
+{{< tab title="`.gitignore`" >}}
 
 This file shows standard Python project exclusions:
 
@@ -710,8 +689,8 @@ wheels/
 
 {{< /tab >}}
 
-{{< tab title="README.md" >}}
-<!-- markdownlint-disable MD029 -->
+{{< tab title="`README.md`" >}}
+
 A comprehensive `README` file with setup and usage instructions.
 
 ````markdown
@@ -784,10 +763,10 @@ Run tests with `pytest`:
 python -m pytest
 ```
 ````
-<!-- markdownlint-enable MD029 -->
+
 {{< /tab >}}
 
-{{< tab title="requirements.txt" >}}
+{{< tab title="`requirements.txt`" >}}
 
 Lists all required Python packages with versions.
 
@@ -804,7 +783,7 @@ requests==2.28.2
 
 {{< /tab >}}
 
-{{< tab title="setup.py" >}}
+{{< tab title="`setup.py`" >}}
 
 Project configuration for packaging.
 
@@ -846,7 +825,7 @@ setup(
 
 {{< /tab >}}
 
-{{< tab title=".env" >}}
+{{< tab title="`.env`" >}}
 
 Contains environment variables for the application.
 
@@ -869,7 +848,7 @@ MAX_QUANTITY=1000
 
 {{< /tab >}}
 
-{{< tab title="app/models/article.py" >}}
+{{< tab title="`app/models/article.py`" >}}
 
 Article class with full validation.
 
@@ -996,7 +975,7 @@ class Article:
 
 {{< /tab >}}
 
-{{< tab title="app/routes/shop.py" >}}
+{{< tab title="`app/routes/shop.py`" >}}
 
 Complete API endpoints with error handling.
 
@@ -1124,7 +1103,7 @@ def delete_book(book_id):
 
 {{< /tab >}}
 
-{{< tab title="app/database.py" >}}
+{{< tab title="`app/database.py`" >}}
 
 Database operations with connection management.
 
@@ -1333,9 +1312,9 @@ def delete_article(article_id):
 ```
 
 {{< /tab >}}
-<!-- markdownlint-disable -->
-{{< tab title="app/__init__.py" >}}
-<!-- markdownlint-enable -->
+
+{{< tab title="`app/__init__.py`" >}}
+
 Flask application factory.
 
 ```python
@@ -1420,7 +1399,7 @@ identify any issues that need to be fixed.
 
 <!-- markdownlint-disable -->
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For more information, see [Using Duo /fix](https://youtu.be/agTqx__j6Ko?si=vpLfVvmFVcBivB1g).
+For more information, see [Using GitLab Duo /fix](https://youtu.be/agTqx__j6Ko?si=vpLfVvmFVcBivB1g).
 <!-- Video published on 2025-02-13 -->
 
 ## Related topics

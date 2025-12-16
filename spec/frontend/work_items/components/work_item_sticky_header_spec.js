@@ -12,6 +12,7 @@ import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TodosToggle from '~/work_items/components/shared/todos_toggle.vue';
 import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
 import WorkItemNotificationsWidget from '~/work_items/components/work_item_notifications_widget.vue';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 
 describe('WorkItemStickyHeader', () => {
   let wrapper;
@@ -45,6 +46,7 @@ describe('WorkItemStickyHeader', () => {
           duplicatedToWorkItemUrl,
           promotedToEpicUrl,
           workItemType,
+          state: workItemState,
         }).data.workItem,
         isStickyHeaderShowing,
         updateInProgress: false,
@@ -75,6 +77,7 @@ describe('WorkItemStickyHeader', () => {
   const findEditButton = () => wrapper.findByTestId('work-item-edit-button-sticky');
   const findWorkItemTitle = () => wrapper.findComponent(GlLink);
   const findWorkItemNotificationsWidget = () => wrapper.findComponent(WorkItemNotificationsWidget);
+  const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
   const triggerPageScroll = () => findIntersectionObserver().vm.$emit('disappear');
 
   it('has the sticky header when the page is scrolled', async () => {
@@ -108,11 +111,6 @@ describe('WorkItemStickyHeader', () => {
   it('has title with the link to the top', () => {
     createComponent();
     expect(findWorkItemTitle().attributes('href')).toBe('#top');
-  });
-
-  it('renders the state badge', () => {
-    createComponent();
-    expect(findWorkItemStateBadge().exists()).toBe(true);
   });
 
   describe('positioning classes', () => {
@@ -165,8 +163,20 @@ describe('WorkItemStickyHeader', () => {
     );
   });
 
-  describe('WorkItemStateBadge props', () => {
-    it('passes URL props correctly when they exist', async () => {
+  describe('WorkItemStateBadge', () => {
+    it('renders when work item is closed', () => {
+      createComponent({ workItemState: STATE_CLOSED });
+
+      expect(findWorkItemStateBadge().exists()).toBe(true);
+    });
+
+    it('does not render when work item is open', () => {
+      createComponent({ workItemState: STATE_OPEN });
+
+      expect(findWorkItemStateBadge().exists()).toBe(false);
+    });
+
+    it('passes URL props correctly when they exist and work item is closed', async () => {
       // We'll never populate all of these attributes because
       // a work item can only have one closed reason.
       // For simplicity we're passing all of them to easily assert
@@ -175,6 +185,7 @@ describe('WorkItemStickyHeader', () => {
         movedToWorkItemUrl: 'http://example.com/moved',
         duplicatedToWorkItemUrl: 'http://example.com/duplicated',
         promotedToEpicUrl: 'http://example.com/epic',
+        workItemState: STATE_CLOSED,
       };
 
       await createComponent(workItemAttributes);
@@ -232,6 +243,20 @@ describe('WorkItemStickyHeader', () => {
     });
   });
 
+  describe('work item type icon', () => {
+    it('renders the work item type icon', () => {
+      createComponent({ workItemType: taskType });
+
+      expect(findWorkItemTypeIcon().exists()).toBe(true);
+    });
+
+    it('passes correct work item type to the icon component', () => {
+      createComponent({ workItemType: issueType });
+
+      expect(findWorkItemTypeIcon().props('workItemType')).toBe('Issue');
+    });
+  });
+
   describe('confidential badge', () => {
     describe('when not confidential', () => {
       beforeEach(() => {
@@ -279,11 +304,11 @@ describe('WorkItemStickyHeader', () => {
   describe('archived and status badge', () => {
     describe.each`
       archived | workItemState   | archivedBadgeExists | stateBadgeExists | description
-      ${false} | ${undefined}    | ${false}            | ${true}          | ${'when not archived'}
+      ${false} | ${undefined}    | ${false}            | ${false}         | ${'when not archived'}
       ${true}  | ${undefined}    | ${true}             | ${false}         | ${'when archived'}
       ${true}  | ${STATE_OPEN}   | ${true}             | ${false}         | ${'when archived and work item is open'}
       ${true}  | ${STATE_CLOSED} | ${true}             | ${false}         | ${'when archived and work item is closed'}
-      ${false} | ${STATE_OPEN}   | ${false}            | ${true}          | ${'when not archived and work item is open'}
+      ${false} | ${STATE_OPEN}   | ${false}            | ${false}         | ${'when not archived and work item is open'}
       ${false} | ${STATE_CLOSED} | ${false}            | ${true}          | ${'when not archived and work item is closed'}
     `('$description', ({ archived, workItemState, archivedBadgeExists, stateBadgeExists }) => {
       beforeEach(() => {

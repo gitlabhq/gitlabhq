@@ -6,6 +6,7 @@ import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
 import { BRIDGE_KIND } from '../constants';
 
 export default {
+  name: 'JobsTableTabs',
   components: {
     GlBadge,
     GlTab,

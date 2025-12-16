@@ -35,6 +35,14 @@ jest.mock('~/rapid_diffs/app/discussions/diff_discussions.vue', () => {
   };
 });
 
+jest.mock('~/rapid_diffs/app/discussions/new_line_discussion_form.vue', () => {
+  return {
+    render(h) {
+      return h('div', { attrs: { 'data-new-discussion-form': true } });
+    },
+  };
+});
+
 describe('discussions adapters', () => {
   const oldPath = 'old';
   const newPath = 'new';
@@ -42,12 +50,18 @@ describe('discussions adapters', () => {
   const endpoints = {
     previewMarkdown: 'previewMarkdownEndpoint',
     markdownDocs: 'markdownDocsEndpoint',
+    register: 'registerPath',
+    signIn: 'signInPath',
+    reportAbuse: 'reportAbusePath',
   };
   const appData = {
     userPermissions,
     previewMarkdownEndpoint: 'previewMarkdownEndpoint',
     markdownDocsEndpoint: 'markdownDocsEndpoint',
+    registerPath: 'registerPath',
+    signInPath: 'signInPath',
     noteableType: 'Commit',
+    reportAbusePath: 'reportAbusePath',
   };
 
   const getDiffFile = () => document.querySelector('diff-file');
@@ -75,16 +89,19 @@ describe('discussions adapters', () => {
             <table>
               <thead><tr><td></td><td></td></tr></thead>
               <tbody>
-                <tr>
+                <tr data-hunk-lines>
                   <td data-position="old"><a data-line-number="1"></a></td>
                   <td></td>
                 </tr>
-                <tr>
+                <tr data-hunk-lines>
                   <td data-position="new"><a data-line-number="1"></a></td>
                   <td></td>
                 </tr>
-                <tr>
-                  <td data-position="old"><a data-line-number="2"></a></td>
+                <tr data-hunk-lines>
+                  <td data-position="old">
+                    <button data-click="newDiscussion"></button>
+                    <a data-line-number="2"></a>
+                  </td>
                   <td></td>
                 </tr>
               </tbody>
@@ -140,6 +157,20 @@ describe('discussions adapters', () => {
       ).toStrictEqual('Commit');
     });
 
+    it('does not render hidden discussions', async () => {
+      const discussionId = 'hidden-discussion';
+      useDiffDiscussions().discussions = [
+        {
+          id: discussionId,
+          diff_discussion: true,
+          position: { old_path: oldPath, new_path: newPath, old_line: 1, new_line: null },
+          hidden: true,
+        },
+      ];
+      await nextTick();
+      expect(getDiffFile().querySelector('[data-discussion-id]')).toBeNull();
+    });
+
     it('does not render discussions for different paths', async () => {
       useDiffDiscussions().discussions = [
         {
@@ -172,6 +203,18 @@ describe('discussions adapters', () => {
       expect(discussionRows).toHaveLength(1);
       expect(discussionRows[0].querySelectorAll('td')).toHaveLength(1);
     });
+
+    it('creates new discussion form on click', async () => {
+      let event;
+      const button = getDiffFile().querySelector('[data-click="newDiscussion"]');
+      button.addEventListener('click', (e) => {
+        event = e;
+      });
+      button.click();
+      getDiffFile().onClick(event);
+      await nextTick();
+      expect(document.querySelector('[data-new-discussion-form]')).not.toBeNull();
+    });
   });
 
   describe('parallelDiscussionsAdapter', () => {
@@ -183,16 +226,25 @@ describe('discussions adapters', () => {
             <table>
               <thead><tr><td></td><td></td></tr></thead>
               <tbody>
-                <tr>
+                <tr data-hunk-lines>
                   <td data-position="old"><a data-line-number="1"></a></td>
                   <td></td>
                   <td data-position="new"><a data-line-number="1"></a></td>
                   <td></td>
                 </tr>
-                <tr>
+                <tr data-hunk-lines>
                   <td data-position="old"><a data-line-number="2"></a></td>
                   <td></td>
                   <td data-position="new"><a data-line-number="2"></a></td>
+                  <td></td>
+                </tr>
+                <tr data-hunk-lines>
+                  <td data-position="old"><a data-line-number="2"></a></td>
+                  <td></td>
+                  <td data-position="new">
+                    <button data-click="newDiscussion"></button>
+                    <a data-line-number="2"></a>
+                  </td>
                   <td></td>
                 </tr>
               </tbody>
@@ -295,6 +347,20 @@ describe('discussions adapters', () => {
       );
     });
 
+    it('does not render hidden discussions', async () => {
+      const discussionId = 'hidden-discussion';
+      useDiffDiscussions().discussions = [
+        {
+          id: discussionId,
+          diff_discussion: true,
+          position: { old_path: oldPath, new_path: newPath, old_line: 1, new_line: null },
+          hidden: true,
+        },
+      ];
+      await nextTick();
+      expect(getDiffFile().querySelector('[data-discussion-id]')).toBeNull();
+    });
+
     it('does not render discussions for different paths', async () => {
       useDiffDiscussions().discussions = [
         {
@@ -326,6 +392,18 @@ describe('discussions adapters', () => {
       const discussionRows = getDiscussionRows();
       expect(discussionRows).toHaveLength(1);
       expect(discussionRows[0].querySelectorAll('td')).toHaveLength(2);
+    });
+
+    it('creates new discussion form on click', async () => {
+      let event;
+      const button = getDiffFile().querySelector('[data-click="newDiscussion"]');
+      button.addEventListener('click', (e) => {
+        event = e;
+      });
+      button.click();
+      getDiffFile().onClick(event);
+      await nextTick();
+      expect(document.querySelector('[data-new-discussion-form]')).not.toBeNull();
     });
   });
 });

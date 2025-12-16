@@ -105,9 +105,7 @@ module Gitlab
       end
 
       def strip_front_matter_block
-        Gitlab::FrontMatter::PATTERN_UNTRUSTED_REGEX.replace_gsub(wiki_content) do
-          ''
-        end
+        Gitlab::FrontMatter::PATTERN_UNTRUSTED_REGEX.replace(wiki_content, '')
       end
     end
   end

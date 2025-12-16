@@ -17,6 +17,7 @@ class NamespaceSetting < ApplicationRecord
   ignore_column :third_party_ai_features_enabled, remove_with: '16.11', remove_after: '2024-04-18'
   ignore_column :code_suggestions, remove_with: '17.8', remove_after: '2024-05-16'
   ignore_column :job_token_policies_enabled, remove_with: '18.5', remove_after: '2025-09-13'
+  ignore_column :duo_agent_platform_request_count, remove_with: '18.9', remove_after: '2026-01-16'
 
   cascading_attr :math_rendering_limits_enabled, :resource_access_token_notify_inherited, :web_based_commit_signing_enabled
 
@@ -64,7 +65,6 @@ class NamespaceSetting < ApplicationRecord
       .enabled_providers(scope: Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_NAMESPACE)
       .map(&:to_s)
   } }, allow_nil: true
-  validates :duo_agent_platform_request_count, numericality: { greater_than_or_equal_to: 0 }
 
   validate :validate_step_up_auth_inheritance, if: :will_save_change_to_step_up_auth_required_oauth_provider?
 

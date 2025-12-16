@@ -48,6 +48,12 @@ export default {
       required: false,
       default: false,
     },
+    // Should be set to true if parent handles focus management (ARIA treeview pattern)
+    rovingTabindex: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     isTree() {
@@ -83,6 +89,9 @@ export default {
         : __('Expand %{name} directory');
       return sprintf(action, { name: this.file.name });
     },
+    buttonTabindex() {
+      return this.rovingTabindex ? -1 : 0;
+    },
   },
   watch: {
     'file.active': function fileActiveWatch(active) {
@@ -113,7 +122,11 @@ export default {
         this.toggleTreeOpen(this.file.path);
       }
 
-      if (this.$router && !this.hasUrlAtCurrentRoute()) this.$router.push(this.fileRouterUrl);
+      if (this.file.submodule) this.$emit('clickSubmodule', this.file.webUrl);
+
+      if (this.$router && !this.hasUrlAtCurrentRoute() && !this.file.submodule) {
+        this.$router.push(this.fileRouterUrl);
+      }
 
       if (this.isBlob) this.$emit('clickFile', this.file);
     },
@@ -157,6 +170,7 @@ export default {
     :loading="file.loading"
     class="!gl-border-none !gl-pl-6"
     button-text-classes="gl-text-blue-700"
+    :tabindex="buttonTabindex"
     @click="$emit('showMore', $event)"
   >
     {{ __('Show more') }}
@@ -171,6 +185,7 @@ export default {
       data-testid="tree-toggle-button"
       class="file-row-indentation gl-z-3 gl-mr-1 gl-shrink-0"
       :aria-label="chevronAriaLabel"
+      :tabindex="buttonTabindex"
       @click="onChevronClick"
     />
 
@@ -183,6 +198,7 @@ export default {
       data-testid="file-row"
       :aria-expanded="file.type === 'tree' ? file.opened.toString() : undefined"
       :aria-label="file.name"
+      :tabindex="buttonTabindex"
       @click="clickFile"
     >
       <span

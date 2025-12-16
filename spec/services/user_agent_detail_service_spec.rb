@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe UserAgentDetailService, feature_category: :instance_resiliency do
   describe '#create', :request_store do
     let_it_be(:spammable) { create(:issue) }
+    let_it_be(:current_user) { create(:user) }
 
     using RSpec::Parameterized::TableSyntax
 
@@ -19,6 +20,14 @@ RSpec.describe UserAgentDetailService, feature_category: :instance_resiliency do
     end
 
     with_them do
+      subject(:service) do
+        described_class.new(
+          spammable: spammable,
+          perform_spam_check: perform_spam_check,
+          current_user: current_user
+        )
+      end
+
       let(:spam_params) do
         instance_double('Spam::SpamParams', user_agent: user_agent, ip_address: ip_address) if spam_params_present
       end
@@ -27,14 +36,10 @@ RSpec.describe UserAgentDetailService, feature_category: :instance_resiliency do
         allow(Gitlab::RequestContext.instance).to receive(:spam_params).and_return(spam_params)
       end
 
-      subject { described_class.new(spammable: spammable, perform_spam_check: perform_spam_check).create } # rubocop:disable Rails/SaveBang
-
-      it 'creates a user agent detail when expected' do
-        if creates_user_agent_detail
-          expect { subject }.to change { UserAgentDetail.count }.by(1)
-        else
-          expect(subject).to be_a ServiceResponse
-        end
+      if params[:creates_user_agent_detail]
+        it { expect { expect(service.create).to be_a(UserAgentDetail) }.to change { UserAgentDetail.count }.by(1) }
+      else
+        it { expect(service.create).to be_a ServiceResponse }
       end
     end
   end

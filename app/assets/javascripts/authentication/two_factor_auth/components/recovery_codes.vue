@@ -41,7 +41,7 @@ export default {
       type: Array,
       required: true,
     },
-    profileAccountPath: {
+    redirectPath: {
       type: String,
       required: true,
     },
@@ -155,7 +155,7 @@ export default {
       </div>
       <div class="gl-p-2">
         <gl-button
-          :href="profileAccountPath"
+          :href="redirectPath"
           :disabled="proceedButtonDisabled"
           :title="$options.i18n.proceedButton"
           variant="confirm"

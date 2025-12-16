@@ -14,37 +14,65 @@ title: Sessions
 
 {{< /details >}}
 
-Sessions show the status of the agents and flows you've run in GitLab.
+Sessions show the status and execution data for the agents and flows you've run.
 
-## Which actions create sessions
+Sessions are created by GitLab Duo Chat (Agentic) and foundational flows in the IDE or UI. Examples include:
 
-In the Agent Platform, sessions are created when you:
+- Flows that are executed on a runner, like the [Fix your CI/CD Pipeline Flow](../flows/fix_pipeline.md).
+  These sessions are visible in the UI under **Automate** > **Sessions**.
+- Flows that run in the IDE, like the [Software development Flow](../flows/software_development.md).
+  These sessions are visible in the IDE, on the **Flows** tab, under **Sessions**.
+- Sessions created by GitLab Duo Chat. These sessions are visible on the right sidebar
+  by selecting **GitLab Duo Chat history**.
+- Flows that are invoked by triggers. These sessions are visible in the UI under **Automate** > **Sessions**.
 
-- Run an agent or flow in the GitLab UI. This includes:
-  - Flows like the [Fix your CI/CD Pipeline Flow](../flows/convert_to_gitlab_ci.md).
-  - Any flow invoked with a trigger.
+GitLab Duo Chat (Classic) does not create sessions, because it's not agentic.
 
-Sessions are not created when:
-
-- You use Agentic Duo Chat in VS Code or the GitLab UI.
-- You invoke a custom flow from the GitLab Duo Chat UI.
-
-## View the sessions for your project
+## View sessions for your project
 
 Prerequisites:
 
 - You must have the Developer, Maintainer, or Owner role for the project.
 
-To view the sessions for your project:
+To view sessions for your project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Sessions**.
 1. Select any session to view more details.
 
 ## View sessions you've triggered
 
-To view a list of sessions you've triggered:
+To view sessions you've triggered:
 
 1. On the right sidebar, select **GitLab Duo sessions**.
 1. Select any session to view more details.
 1. Optional. Filter the details to show all logs or a concise subset only.
+
+## GitLab Duo Chat (Agentic) sessions
+
+Because chats are interactive, they require a clearer separation in the UI.
+You can think of the Chat history as a filtered view of sessions that exists
+exclusively for Chats.
+
+## Cancel a running session
+
+You can cancel a session that is running or waiting for input. To cancel a session:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Automate** > **Sessions**.
+1. On the **Details** tab, scroll to the bottom.
+1. Select **Cancel session**.
+1. In the confirmation dialog, select **Cancel session** to confirm.
+
+After cancellation:
+
+- The session status changes to **Stopped**.
+- The session cannot be resumed or restarted.
+
+## Session retention
+
+Sessions are automatically deleted 30 days after the last activity.
+The retention period resets each time you interact with the session.
+For example, if you interact with a session every 20 days, it will never be automatically deleted.
+
+In the IDE, you can also manually delete sessions before the 30-day retention period expires.

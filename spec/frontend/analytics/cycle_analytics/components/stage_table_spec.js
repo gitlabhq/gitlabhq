@@ -261,17 +261,32 @@ describe('StageTable', () => {
       expect(findPagination().exists()).toBe(true);
     });
 
-    it('clicking prev or next will emit an event', async () => {
+    it('clicking next will emit an event', async () => {
       expect(wrapper.emitted('handleUpdatePagination')).toBeUndefined();
 
-      findPagination().vm.$emit('input', 2);
+      findPagination().vm.$emit('next');
       await nextTick();
 
-      expect(wrapper.emitted('handleUpdatePagination')[0]).toEqual([{ page: 2 }]);
+      expect(wrapper.emitted('handleUpdatePagination')[0]).toEqual([
+        { page: 2, sort: undefined, direction: undefined },
+      ]);
     });
 
-    it('clicking prev or next will send tracking information', () => {
-      findPagination().vm.$emit('input', 2);
+    it('clicking prev will emit an event', async () => {
+      wrapper = createComponent({ pagination: { page: 2, hasNextPage: true } });
+
+      expect(wrapper.emitted('handleUpdatePagination')).toBeUndefined();
+
+      findPagination().vm.$emit('prev');
+      await nextTick();
+
+      expect(wrapper.emitted('handleUpdatePagination')[0]).toEqual([
+        { page: 1, sort: undefined, direction: undefined },
+      ]);
+    });
+
+    it('clicking next will send tracking information', () => {
+      findPagination().vm.$emit('next');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_button', { label: 'pagination' });
     });

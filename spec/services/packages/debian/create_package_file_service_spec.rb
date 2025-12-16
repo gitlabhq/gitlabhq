@@ -35,17 +35,20 @@ RSpec.describe Packages::Debian::CreatePackageFileService, feature_category: :pa
           expect(::Packages::Debian::ProcessPackageFileWorker).not_to receive(:perform_async)
         end
 
-        expect(package_file).to be_valid
-        expect(package_file.file.read).to start_with('!<arch>')
-        expect(package_file.size).to eq(1124)
-        expect(package_file.file_name).to eq(file_name)
-        expect(package_file.file_sha1).to eq('54321')
-        expect(package_file.file_sha256).to eq('543212345')
-        expect(package_file.file_md5).to eq('12345')
-        expect(package_file.debian_file_metadatum).to be_valid
-        expect(package_file.debian_file_metadatum.file_type).to eq('unknown')
-        expect(package_file.debian_file_metadatum.architecture).to be_nil
-        expect(package_file.debian_file_metadatum.fields).to be_nil
+        is_expected.to be_valid.and have_attributes(
+          file: satisfy { |f| f.read.starts_with?('!<arch>') },
+          size: 1124,
+          file_name: file_name,
+          file_sha1: '54321',
+          file_sha256: '543212345',
+          file_md5: '12345',
+          project_id: package.project_id,
+          debian_file_metadatum: be_valid.and(have_attributes(
+            file_type: 'unknown',
+            architecture: nil,
+            fields: nil
+          ))
+        )
       end
     end
 
@@ -54,17 +57,20 @@ RSpec.describe Packages::Debian::CreatePackageFileService, feature_category: :pa
         expect(::Packages::Debian::ProcessPackageFileWorker)
         .to receive(:perform_async).with(an_instance_of(Integer), nil, nil)
 
-        expect(package_file).to be_valid
-        expect(package_file.file.read).to start_with('Format: 1.8')
-        expect(package_file.size).to eq(2422)
-        expect(package_file.file_name).to eq(file_name)
-        expect(package_file.file_sha1).to eq('54321')
-        expect(package_file.file_sha256).to eq('543212345')
-        expect(package_file.file_md5).to eq('12345')
-        expect(package_file.debian_file_metadatum).to be_valid
-        expect(package_file.debian_file_metadatum.file_type).to eq('unknown')
-        expect(package_file.debian_file_metadatum.architecture).to be_nil
-        expect(package_file.debian_file_metadatum.fields).to be_nil
+        is_expected.to be_valid.and have_attributes(
+          file: satisfy { |f| f.read.starts_with?('Format: 1.8') },
+          size: 2422,
+          file_name: file_name,
+          file_sha1: '54321',
+          file_sha256: '543212345',
+          file_md5: '12345',
+          project_id: package.project_id,
+          debian_file_metadatum: be_valid.and(have_attributes(
+            file_type: 'unknown',
+            architecture: nil,
+            fields: nil
+          ))
+        )
       end
     end
 

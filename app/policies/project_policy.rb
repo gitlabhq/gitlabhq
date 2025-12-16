@@ -396,7 +396,6 @@ class ProjectPolicy < BasePolicy
     enable :read_snippet
     enable :read_project_member
     enable :read_note
-    enable :create_project
     enable :create_issue
     enable :create_note
     enable :upload_file
@@ -406,6 +405,7 @@ class ProjectPolicy < BasePolicy
     enable :read_analytics
     enable :read_insights
     enable :read_upload
+    enable :export_work_items
   end
 
   rule { internal_pages & ~anonymous & ~external_user }.policy do
@@ -437,7 +437,12 @@ class ProjectPolicy < BasePolicy
     enable :admin_wiki
     enable :read_internal_note
     enable :read_merge_request
-    enable :export_work_items
+    enable :read_code
+    enable :download_code
+  end
+
+  rule { private_project & planner }.policy do
+    prevent :create_merge_request_in
   end
 
   rule { can?(:reporter_access) & can?(:create_issue) }.enable :create_incident
@@ -496,7 +501,6 @@ class ProjectPolicy < BasePolicy
     enable :read_external_emails
     enable :read_internal_note
     enable :read_grafana
-    enable :export_work_items
     enable :create_design
     enable :update_design
     enable :move_design
@@ -1237,6 +1241,10 @@ class ProjectPolicy < BasePolicy
   rule { can?(:read_project) }.policy do
     enable :read_incident_management_timeline_event_tag
     enable :read_project_metadata
+  end
+
+  rule { can?(:read_project) & ~anonymous }.policy do
+    enable :create_saved_view
   end
 
   rule { public_project & model_registry_enabled }.policy do

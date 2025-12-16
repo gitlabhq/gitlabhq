@@ -128,6 +128,13 @@ module Import
         )
       end
 
+      def find_by_namespace_and_token(namespace_id:, reassignment_token:)
+        find_by(
+          namespace_id: namespace_id,
+          reassignment_token: reassignment_token
+        )
+      end
+
       def search(query)
         return none unless query.is_a?(String)
 

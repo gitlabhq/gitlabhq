@@ -1,3 +1,6 @@
+- allow_mfa_for_subgroups_docs_url = link_to('', help_page_path('security/two_factor_authentication.md', anchor: '2fa-in-subgroups'), target: '_blank', rel: 'noopener noreferrer')
+- allow_mfa_for_subgroups_docs_note = safe_format(_("Turning this setting off disables all subgroup 2FA settings. This is a destructive change and cannot be reversed. Read %{link_start}more%{link_end}."), tag_pair(allow_mfa_for_subgroups_docs_url, :link_start, :link_end))
+
 - return unless group.parent_allows_two_factor_authentication?
 - docs_link_url = help_page_path('security/two_factor_authentication.md', anchor: 'enforce-2fa-for-all-users-in-a-group')
 - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: docs_link_url }
@@ -17,5 +20,6 @@
 - unless group.has_parent?
   .form-group
     = f.gitlab_ui_checkbox_component :allow_mfa_for_subgroups,
-        _('Subgroups can set up their own two-factor authentication rules'),
-        checkbox_options: { checked: group.namespace_settings&.allow_mfa_for_subgroups }
+        _('Allow more restrictive 2FA enforcement for subgroups'),
+        checkbox_options: { checked: group.namespace_settings&.allow_mfa_for_subgroups },
+        help_text: allow_mfa_for_subgroups_docs_note

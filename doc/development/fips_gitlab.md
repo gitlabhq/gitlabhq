@@ -16,7 +16,7 @@ A module is validated after it completes testing by a NIST-certified laboratory 
 [Cryptographic Module Validation Program](https://csrc.nist.gov/projects/cryptographic-module-validation-program). A cryptographic module must be compiled,
 installed, and configured according to its CMVP security policy.
 
-## Why should you care?
+## Regulatory requirements
 
 GitLab is committed to releasing software for our customers who are required to comply with FIPS 140-2 and 140-3.
 
@@ -86,7 +86,7 @@ module selection per CSP10 is as follows:
    - Module not in FIPS validation process; validated algorithm.
    - Algorithm is approved and tested but not yet validated, and the module is not in FIPS validation process.
 
-### How is this audited?
+### Validation workflow
 
 Third party assessment organizations (3PAOs) validate the use of a FIPS-validated CM by:
 
@@ -117,7 +117,7 @@ listed here that also do not work properly in FIPS mode:
 - [Static application security testing (SAST)](../user/application_security/sast/_index.md)
   supports a reduced set of [analyzers](../user/application_security/sast/_index.md#fips-enabled-images)
   when operating in FIPS-compliant mode.
-- [Operational Container Scanning](../user/clusters/agent/vulnerabilities.md).
+- [Operational container scanning](../user/clusters/agent/vulnerabilities.md).
 - GitLab and FIPS do not support [DSA certificate files](../security/ssh_keys_restrictions.md#default-settings).
   If you encounter DSA certificate errors in logs, configure the [`sshHostKeys.types`](https://docs.gitlab.com/charts/charts/gitlab/webservice/#installation-command-line-options) setting to exclude DSA:
 

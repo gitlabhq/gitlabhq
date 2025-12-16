@@ -44,11 +44,11 @@ RSpec.describe 'Project Issues RSS', :js, feature_category: :team_planning do
   end
 
   describe 'feeds' do
-    it_behaves_like 'updates atom feed link', :project do
+    it_behaves_like 'updates atom feed link', :project, 'assignee_username' do
       let(:path) { project_issues_path(project, assignee_id: user.id) }
     end
 
-    it_behaves_like 'updates atom feed link', :group do
+    it_behaves_like 'updates atom feed link', :group, 'assignee_username' do
       let(:path) { issues_group_path(group, assignee_id: user.id) }
     end
   end

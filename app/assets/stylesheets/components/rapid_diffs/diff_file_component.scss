@@ -46,6 +46,11 @@
   contain-intrinsic-size:
     auto 0 auto
     calc(var(--rd-diff-file-header-height) + #{constants.$diff-file-border-width * 3} + var(--rd-body-intrinsic-height));
+
+  @media (max-resolution: 1x) {
+    // prevent pixel shifts on non-retina displays when hovering a line
+    will-change: transform;
+  }
 }
 
 .rd-diff-file[data-collapsed] {
@@ -202,7 +207,8 @@
 
 .rd-diff-file-body {
   --rd-content-border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
-  border: constants.$diff-file-border-width solid var(--gl-border-color-default);
+  --rd-content-border-color: var(--gl-border-color-default);
+  border: constants.$diff-file-border-width solid var(--rd-content-border-color);
   border-top: 0;
   border-radius: var(--rd-content-border-radius);
 }

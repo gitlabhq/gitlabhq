@@ -1,0 +1,8 @@
+---
+name: create_pipeline_schedule
+description: Grants the ability to create pipeline schedules
+feature_category: continuous_integration
+permissions:
+  - create_pipeline_schedule
+boundaries:
+  - project

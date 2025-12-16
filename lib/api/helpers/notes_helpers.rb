@@ -179,6 +179,7 @@ module API
       def resolve_discussion(noteable, discussion_id, resolved)
         discussion = noteable.find_discussion(discussion_id)
 
+        not_found!('Discussion') unless discussion
         forbidden! unless discussion.can_resolve?(current_user)
 
         if resolved

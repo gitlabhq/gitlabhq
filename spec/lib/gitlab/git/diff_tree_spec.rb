@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Git::DiffTree, feature_category: :source_code_management do
   subject(:diff_tree) { described_class.new(left_tree_id, right_tree_id) }

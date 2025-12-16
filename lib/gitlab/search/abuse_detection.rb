@@ -10,7 +10,9 @@ module Gitlab
       ABUSIVE_TERM_SIZE = 100
       ALLOWED_CHARS_REGEX = %r{\A[[:alnum:]_\-\+\/\.!]+\z}
 
-      ALLOWED_SCOPES = %w[
+      # Legacy list of allowed scopes for validation
+      # This is used as fallback when search_scope_registry feature flag is disabled
+      LEGACY_ALLOWED_SCOPES = %w[
         blobs
         code
         commits
@@ -42,7 +44,13 @@ module Gitlab
       validates :project_id, :group_id,
         numericality: { only_integer: true, message: "abusive ID detected" }, allow_blank: true
 
-      validates :scope, inclusion: { in: ALLOWED_SCOPES, message: 'abusive scope detected' }, allow_blank: true
+      validates :scope, inclusion: { in: ->(_) {
+        if Feature.enabled?(:search_scope_registry, :instance)
+          ::Search::Scopes.all_scope_names
+        else
+          LEGACY_ALLOWED_SCOPES
+        end
+      }, message: 'abusive scope detected' }, allow_blank: true
 
       validates :repository_ref, :project_ref,
         format: { with: ALLOWED_CHARS_REGEX, message: "abusive characters detected" }, allow_blank: true

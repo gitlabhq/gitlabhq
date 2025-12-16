@@ -2,3 +2,5 @@
 name: update_pipeline_schedule
 description: Grants the ability to update pipeline schedules
 feature_category: continuous_integration
+boundaries:
+  - project

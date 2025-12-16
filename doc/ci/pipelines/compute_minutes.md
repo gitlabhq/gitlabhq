@@ -34,7 +34,7 @@ On GitLab.com, the quota is enabled by default to limit usage on Free namespaces
 
 GitLab-hosted instance runners on GitLab Dedicated cannot have the instance runner compute quota applied.
 
-### Instance runners
+## Instance runners
 
 For instance runners on GitLab.com, GitLab Self-Managed, and self-hosted instance runners on GitLab Dedicated:
 

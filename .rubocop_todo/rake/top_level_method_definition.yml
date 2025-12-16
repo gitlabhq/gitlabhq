@@ -34,7 +34,6 @@ Rake/TopLevelMethodDefinition:
     - 'lib/tasks/gitlab/setup.rake'
     - 'lib/tasks/gitlab/shell.rake'
     - 'lib/tasks/gitlab/sidekiq.rake'
-    - 'lib/tasks/gitlab/snippets.rake'
     - 'lib/tasks/gitlab/tw/codeowners.rake'
     - 'lib/tasks/gitlab/two_factor.rake'
     - 'lib/tasks/gitlab/update_templates.rake'

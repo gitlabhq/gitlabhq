@@ -109,11 +109,7 @@ ERROR
   end
 
   def migrations_paths
-    if ::Gitlab.next_rails?
-      active_record_base.connection_pool.migrations_paths
-    else
-      active_record_base.connection.migrations_paths
-    end
+    active_record_base.connection_pool.migrations_paths
   end
 
   def migration_context

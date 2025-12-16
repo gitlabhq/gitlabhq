@@ -2,6 +2,7 @@
 import { GlBadge } from '@gitlab/ui';
 
 export default {
+  name: 'DurationBadge',
   components: {
     GlBadge,
   },

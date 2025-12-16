@@ -48,11 +48,7 @@ module UnnestedInFilters
       end
 
       def use_unnested_filters!
-        if Gitlab.next_rails?
-          assert_modifiable!
-        else
-          assert_mutability!
-        end
+        assert_modifiable!
 
         @values[:unnested_filters] = true
 

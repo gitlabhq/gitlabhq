@@ -2,9 +2,12 @@ import { __, s__ } from '~/locale';
 
 export const CANCEL_REQUEST = 'CANCEL_REQUEST';
 export const SUPPORTED_FILTER_PARAMETERS = ['username', 'ref', 'status', 'source'];
+
+// The `needs` field of a job, should match the GraphQL field. This is needed to build the dependency arrows in the pipeline graph.
 export const NEEDS_PROPERTY = 'needs';
-export const PREVIOUS_STAGE_JOBS_PROPERTY = 'previousStageJobs';
-export const PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY = 'previousStageJobsUnionNeeds';
+
+// Frontend-only property that stores all the jobs from the previous stages. This is needed to build the layer view in the pipeline graph.
+export const ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY = 'previousStageJobsUnionNeeds';
 
 export const testStatus = {
   FAILED: 'failed',

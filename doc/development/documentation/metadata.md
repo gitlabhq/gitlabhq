@@ -151,10 +151,10 @@ availability_details: no
 
 The following metadata is optional and is not actively maintained.
 
-- `feedback`: Set to `false` to not include the "Help & Feedback" footer.
+- `feedback`: Set to `false` to exclude the **Was this page helpful?** feedback widget.
 - `noindex`: Set to `true` to prevent the page from being indexed by search engines.
 - `redirect_to`: Used to control redirects. For more information, see [Redirects in GitLab documentation](redirects.md).
-- `toc`: Set to `false` to not include the "On this page" navigation.
+- `toc`: Set to `false` to exclude the right navigation.
 
 ## Batch updates for TW metadata
 

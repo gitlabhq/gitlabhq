@@ -1,5 +1,7 @@
 <script>
-export default {
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+
+export default normalizeRender({
   props: {
     hasUnsavedChanges: {
       type: Boolean,
@@ -22,5 +24,5 @@ export default {
     },
   },
   render: () => null,
-};
+});
 </script>

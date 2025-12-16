@@ -7,10 +7,9 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
-import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
-import NoteSignedOutWidget from '~/notes/components/note_signed_out_widget.vue';
+import NoteSignedOutWidget from '~/rapid_diffs/app/discussions/note_signed_out_widget.vue';
 import NoteableDiscussion from '~/rapid_diffs/app/discussions/noteable_discussion.vue';
 import DiscussionNotes from '~/rapid_diffs/app/discussions/discussion_notes.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -27,11 +26,12 @@ describe('NoteableDiscussion', () => {
   let axiosMock;
   let defaultProps;
 
-  const createDiscussion = () => ({
+  const createDiscussion = (discussionProps, noteProps) => ({
     id: 'discussion-1',
     reply_id: 'reply-1',
     internal: false,
-    notes: [{ id: 'note-1', internal: false }],
+    notes: [{ id: 'note-1', internal: false, ...noteProps }],
+    ...discussionProps,
   });
 
   const defaultProvide = {
@@ -66,11 +66,6 @@ describe('NoteableDiscussion', () => {
     };
   });
 
-  it('renders timeline entry item', () => {
-    createComponent();
-    expect(wrapper.findComponent(TimelineEntryItem).exists()).toBe(true);
-  });
-
   it('renders discussion notes', () => {
     createComponent();
     expect(wrapper.findComponent(DiscussionNotes).props('notes')).toStrictEqual(
@@ -94,53 +89,41 @@ describe('NoteableDiscussion', () => {
     createComponent();
     await wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
     await nextTick();
-    expect(wrapper.findComponent(NoteForm).exists()).toBe(true);
-    expect(wrapper.findComponent(DiscussionReplyPlaceholder).exists()).toBe(false);
-    expect(wrapper.emitted('showReplyForm')).toStrictEqual([[]]);
+    expect(wrapper.emitted('startReplying')).toStrictEqual([[]]);
   });
 
-  it('shows note form when startReplying is emitted', async () => {
-    createComponent();
-    await wrapper.findComponent(DiscussionNotes).vm.$emit('startReplying');
-    await nextTick();
+  it('shows note form when reply mode is on', () => {
+    createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
     expect(wrapper.findComponent(NoteForm).exists()).toBe(true);
     expect(wrapper.findComponent(DiscussionReplyPlaceholder).exists()).toBe(false);
-    expect(wrapper.emitted('showReplyForm')).toStrictEqual([[]]);
   });
 
-  it('hides note form when cancelled without confirmation', async () => {
-    createComponent();
-    await wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
-    await nextTick();
+  it('stops replying', async () => {
+    createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
     await wrapper.findComponent(NoteForm).vm.$emit('cancel', false, false);
     await nextTick();
     expect(confirmAction).not.toHaveBeenCalled();
-    expect(wrapper.findComponent(NoteForm).exists()).toBe(false);
-    expect(wrapper.findComponent(DiscussionReplyPlaceholder).exists()).toBe(true);
+    expect(wrapper.emitted('stopReplying')).toStrictEqual([[]]);
   });
 
   it('shows confirmation when form is dirty', async () => {
     confirmAction.mockResolvedValue(true);
-    createComponent();
-    await wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
-    await nextTick();
+    createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
     await wrapper.findComponent(NoteForm).vm.$emit('cancel', true, true);
     expect(confirmAction).toHaveBeenCalled();
     await waitForPromises();
     await nextTick();
-    expect(wrapper.findComponent(NoteForm).exists()).toBe(false);
-    expect(wrapper.findComponent(DiscussionReplyPlaceholder).exists()).toBe(true);
+    expect(wrapper.emitted('stopReplying')).toStrictEqual([[]]);
   });
 
   it('does not hide form when confirmation is declined', async () => {
     confirmAction.mockResolvedValue(false);
-    createComponent();
-    await wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
-    await nextTick();
+    createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
     await wrapper.findComponent(NoteForm).vm.$emit('cancel', true, true);
     await nextTick();
     expect(wrapper.findComponent(NoteForm).exists()).toBe(true);
     expect(wrapper.findComponent(DiscussionReplyPlaceholder).exists()).toBe(false);
+    expect(wrapper.emitted('stopReplying')).toBe(undefined);
   });
 
   it('propagates noteUpdated event', () => {
@@ -157,6 +140,36 @@ describe('NoteableDiscussion', () => {
     expect(wrapper.emitted('noteDeleted')).toStrictEqual([[note]]);
   });
 
+  it('propagates startEditing event', () => {
+    const note = {};
+    createComponent();
+    wrapper.findComponent(DiscussionNotes).vm.$emit('startEditing', note);
+    expect(wrapper.emitted('startEditing')).toStrictEqual([[note]]);
+  });
+
+  it('propagates cancelEditing event', () => {
+    const note = {};
+    createComponent();
+    wrapper.findComponent(DiscussionNotes).vm.$emit('cancelEditing', note);
+    expect(wrapper.emitted('cancelEditing')).toStrictEqual([[note]]);
+  });
+
+  it('propagates toggleAward event', () => {
+    const note = {};
+    const award = 'smile';
+    createComponent();
+    wrapper.findComponent(DiscussionNotes).vm.$emit('toggleAward', { note, award });
+    expect(wrapper.emitted('toggleAward')).toStrictEqual([[{ note, award }]]);
+  });
+
+  it('propagates noteEdited event', () => {
+    const note = {};
+    const value = 'edit';
+    createComponent();
+    wrapper.findComponent(DiscussionNotes).vm.$emit('noteEdited', { note, value });
+    expect(wrapper.emitted('noteEdited')).toStrictEqual([[{ note, value }]]);
+  });
+
   describe('when saving reply', () => {
     beforeEach(() => {
       detectAndConfirmSensitiveTokens.mockResolvedValue(true);
@@ -165,9 +178,7 @@ describe('NoteableDiscussion', () => {
     it('adds reply', async () => {
       const note = {};
       axiosMock.onPost(defaultProvide.endpoints.createNote).reply(HTTP_STATUS_OK, { note });
-      createComponent();
-      await wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
-      await nextTick();
+      createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
       await wrapper.findComponent(NoteForm).props('saveNote')('test note');
       expect(wrapper.emitted('replyAdded')).toStrictEqual([[note]]);
     });
@@ -175,19 +186,15 @@ describe('NoteableDiscussion', () => {
     it('hides note form after successful save', async () => {
       const note = {};
       axiosMock.onPost(defaultProvide.endpoints.createNote).reply(HTTP_STATUS_OK, { note });
-      createComponent();
-      await wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
-      await nextTick();
+      createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
       await wrapper.findComponent(NoteForm).props('saveNote')('test note');
       await nextTick();
-      expect(wrapper.findComponent(NoteForm).exists()).toBe(false);
+      expect(wrapper.emitted('stopReplying')).toStrictEqual([[]]);
     });
 
     it('does not save when sensitive token detection is declined', async () => {
       detectAndConfirmSensitiveTokens.mockResolvedValue(false);
-      createComponent();
-      await wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
-      await nextTick();
+      createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
       await wrapper.findComponent(NoteForm).props('saveNote')('test note');
       expect(wrapper.emitted('replyAdded')).toBe(undefined);
     });
@@ -196,8 +203,7 @@ describe('NoteableDiscussion', () => {
       axiosMock
         .onPost(defaultProvide.endpoints.createNote)
         .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-      createComponent();
-      await wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
+      createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
       try {
         await wrapper.findComponent(NoteForm).props('saveNote')('test note');
       } catch (error) {
@@ -208,12 +214,10 @@ describe('NoteableDiscussion', () => {
     });
   });
 
-  it('passes data to form', async () => {
+  it('passes data to form', () => {
     const requestLastNoteEditing = jest.fn();
-    const discussion = createDiscussion();
+    const discussion = createDiscussion({ isReplying: true });
     createComponent({ props: { discussion, requestLastNoteEditing } });
-    await wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
-    await nextTick();
     const props = wrapper.findComponent(NoteForm).props();
     props.requestLastNoteEditing();
     expect(props.saveButtonTitle).toBe('Reply');
@@ -222,10 +226,10 @@ describe('NoteableDiscussion', () => {
     expect(requestLastNoteEditing).toHaveBeenCalledWith(discussion);
   });
 
-  it('passes correct saveButtonTitle for internal discussion', async () => {
-    createComponent({ props: { discussion: { ...createDiscussion(), internal: true } } });
-    await wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
-    await nextTick();
+  it('passes correct saveButtonTitle for internal discussion', () => {
+    createComponent({
+      props: { discussion: { ...createDiscussion({ isReplying: true }), internal: true } },
+    });
     const props = wrapper.findComponent(NoteForm).props();
     expect(props.saveButtonTitle).toBe('Reply internally');
     expect(props.internal).toBe(true);

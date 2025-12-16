@@ -69,7 +69,7 @@ The ability to create personal access tokens without an expiry date was [depreca
 
 You can create as many personal access tokens as you like.
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Personal access tokens**.
 1. Select **Add new token**.
@@ -117,7 +117,7 @@ immediately, and both versions remain in the system for audit purposes.
 
 To rotate a personal access token:
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Personal access tokens**.
 1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
@@ -138,7 +138,7 @@ You cannot permanently delete tokens, but you can filter token lists to show onl
 
 To revoke a personal access token:
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Personal access tokens**.
 1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
@@ -193,7 +193,7 @@ After you have used the API to disable personal access tokens, those tokens cann
 
 In GitLab 17.3 and later, you can use the Admin UI to disable personal access tokens:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Select the **Disable personal access tokens** checkbox.
@@ -227,7 +227,7 @@ Disabling personal access tokens for enterprise users does not disable personal 
 
 To disable the enterprise users' personal access tokens:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Personal access tokens**, select **Disable personal access tokens**.
@@ -253,7 +253,7 @@ Token usage information updates periodically. The time the token was last used u
 
 To view the last time a token was used, and the IP addresses from where the token was used:
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Personal access tokens**.
 1. In the **Active personal access tokens** area, view the **Last Used** date and **Last Used IPs** for
@@ -289,7 +289,7 @@ A personal access token can perform actions based on the assigned scopes.
 | `admin_mode`       | Grants permission to perform API actions when [Admin Mode](../../administration/settings/sign_in_restrictions.md#admin-mode) is enabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8. Available only to administrators on GitLab Self-Managed instances. |
 | `create_runner`    | Grants permission to create runners.                                                                                                                                                                                                                                                                               |
 | `manage_runner`    | Grants permission to manage runners.                                                                    |
-| `ai_features`      | This scope:<br>- Grants permission to perform API actions for features like GitLab Duo, Code Suggestions API and Duo Chat API.<br>- Does not work for GitLab Self-Managed versions 16.5, 16.6, and 16.7.<br>For GitLab Duo plugin for JetBrains, this scope:<br>- Supports users with AI features enabled in the GitLab Duo plugin for JetBrains.<br>- Addresses a security vulnerability in JetBrains IDE plugins that could expose personal access tokens.<br>- Is designed to minimize potential risks for GitLab Duo plugin users by limiting the impact of compromised tokens.<br>For all other extensions, see the individual scope requirements in their documentation.                                                                                                                                |
+| `ai_features`      | This scope:<br>- Grants permission to perform API actions for features like GitLab Duo, Code Suggestions API and GitLab Duo Chat API.<br>- Does not work for GitLab Self-Managed versions 16.5, 16.6, and 16.7.<br>For GitLab Duo plugin for JetBrains, this scope:<br>- Supports users with AI features enabled in the GitLab Duo plugin for JetBrains.<br>- Addresses a security vulnerability in JetBrains IDE plugins that could expose personal access tokens.<br>- Is designed to minimize potential risks for GitLab Duo plugin users by limiting the impact of compromised tokens.<br>For all other extensions, see the individual scope requirements in their documentation.                                                                                                                                |
 | `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes.                                                                                                                                                                                                                                  |
 | `self_rotate`      | Grants permission to rotate this token using the [personal access token API](../../api/personal_access_tokens.md#rotate-a-personal-access-token). Does not allow rotation of other tokens. |
 | `read_service_ping`| Grant access to download Service Ping payload through the API when authenticated as an admin use. |
@@ -392,7 +392,7 @@ Prerequisites:
 
 - You must have the Owner role for the top-level group.
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General** > **Permissions and group features**.
 1. Clear the **Service account token expiration** checkbox.
 
@@ -404,7 +404,7 @@ Prerequisites:
 
 - You must be an administrator for your GitLab Self-Managed instance.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Account and limit**.
 1. Clear the **Service account token expiration** checkbox.
@@ -457,7 +457,7 @@ Prerequisites:
 
 To require DPoP on all calls to the REST and GraphQL APIs:
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Personal access tokens**.
 1. Go to the **Use Demonstrating Proof of Possession (DPoP)** section, and select **Enable DPoP**.
@@ -649,6 +649,11 @@ Running the following commands changes data directly. This could be damaging if 
 ## Alternatives to personal access tokens
 
 For Git over HTTPS, an alternative to personal access tokens is to use an OAuth credential helper.
+
+For authentication in CI/CD jobs, consider:
+
+- [CI/CD job tokens](../../ci/jobs/ci_job_token.md) with [fine-grained permissions](../../ci/jobs/fine_grained_permissions.md) for pipeline authentication
+- [Project access tokens](../../user/project/settings/project_access_tokens.md) with minimal required permissions for project-specific automation
 
 ## Related topics
 

@@ -17,7 +17,7 @@ RSpec.describe 'groups/settings/_archive.html.haml', feature_category: :groups_a
 
     context 'when group is archived' do
       before do
-        group.archive
+        group.namespace_settings.update!(archived: true)
 
         render 'groups/settings/archive', group: group
       end
@@ -37,7 +37,7 @@ RSpec.describe 'groups/settings/_archive.html.haml', feature_category: :groups_a
 
     context 'when ancestor is archived' do
       before do
-        ancestor.archive
+        ancestor.namespace_settings.update!(archived: true)
 
         render 'groups/settings/archive', group: group
       end

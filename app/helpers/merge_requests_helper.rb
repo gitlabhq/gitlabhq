@@ -275,7 +275,6 @@ module MergeRequestsHelper
       releases_endpoint: project_releases_path(project, format: :json),
       can_bulk_update: can?(current_user, :admin_merge_request, project).to_s,
       environment_names_path: unfoldered_environment_names_project_path(project, :json),
-      default_branch: project.default_branch,
       initial_email: can?(current_user, :create_merge_request_in, project) &&
         project.new_issuable_address(current_user, 'merge_request')
     })
@@ -301,7 +300,7 @@ module MergeRequestsHelper
   def sticky_header_data(project, merge_request)
     data = {
       iid: merge_request.iid,
-      canResolveDiscussion: merge_request.resolvable_discussions.first&.can_resolve_discussion?(current_user).to_s,
+      canResolveDiscussion: merge_request.resolvable_discussions.first&.can_resolve?(current_user).to_s,
       defaultBranchName: project.default_branch,
       projectPath: project.full_path,
       sourceProjectPath: merge_request.source_project_path,
@@ -464,7 +463,10 @@ module MergeRequestsHelper
   end
 
   def review_bar_data(_merge_request, _user)
-    { new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json }
+    {
+      diffs_path: diffs_project_merge_request_url(@project, @merge_request),
+      new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json
+    }
   end
 
   def merge_request_dashboard_role_based_data

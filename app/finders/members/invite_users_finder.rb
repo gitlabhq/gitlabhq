@@ -10,10 +10,10 @@ module Members
   class InviteUsersFinder < UsersFinder
     attr_reader :resource
 
-    def initialize(current_user, resource, search: nil)
+    def initialize(current_user, resource, organization_id:, search: nil)
       @current_user = current_user
       @resource = resource
-      @params = { search: search }
+      @params = { search: search, organization_id: organization_id }
     end
 
     def base_scope

@@ -19,16 +19,11 @@ title: Zoekt
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) in GitLab 16.6.
 - Global code search [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147077) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `zoekt_cross_namespace_search`. Disabled by default.
 - Feature flags `index_code_with_zoekt` and `search_code_with_zoekt` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148378) in GitLab 17.1.
+- Feature flag `zoekt_rollout_worker` [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175666) in GitLab 17.9. Disabled by default.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/17918) from beta to limited availability in GitLab 18.6.
+- Feature flags [`zoekt_cross_namespace_search`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213413) and [`zoekt_rollout_worker`](https://gitlab.com/gitlab-org/gitlab/-/issues/519660) removed in GitLab 18.7.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 {{< alert type="warning" >}}
 
@@ -48,7 +43,7 @@ You can use exact match and regular expression modes to search for code in a gro
 
 Prerequisites:
 
-- You must have administrator access to the instance.
+- Be an administrator of the instance.
 
 To [enable exact code search](#enable-exact-code-search) in GitLab,
 you must have at least one Zoekt node connected to the instance.
@@ -67,14 +62,14 @@ The following installation methods are available for testing, not for production
 
 Prerequisites:
 
-- You must have administrator access to the instance.
-- You must [install Zoekt](#install-zoekt).
+- Be an administrator of the instance.
+- Zoekt is [installed](#install-zoekt).
 
 To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
-1. Expand **Exact code search configuration**.
+1. Expand **Exact code search**.
 1. Select the **Enable indexing** and **Enable searching** checkboxes.
 1. Select **Save changes**.
 
@@ -133,74 +128,71 @@ The `gitlab:zoekt:info` Rake task returns an output similar to the following:
 
 ```console
 Exact Code Search
-GitLab version:                           18.4.0
-Enable indexing:                          yes
-Enable searching:                         yes
-Pause indexing:                           no
-Index root namespaces automatically:      yes
-Cache search results for five minutes:    yes
-Indexing CPU to tasks multiplier:         1.0
-Number of parallel processes per indexing task: 1
-Number of namespaces per indexing rollout: 32
-Offline nodes automatically deleted after: 20m
-Indexing timeout per project:             30m
+GitLab version:                                    18.7.0
+Enable indexing:                                   yes
+Enable searching:                                  yes
+Pause indexing:                                    no
+Index root namespaces automatically:               yes
+Cache search results for five minutes:             yes
+Indexing CPU to tasks multiplier:                  1.0
+Number of parallel processes per indexing task:    1
+Number of namespaces per indexing rollout:         32
+Offline nodes automatically deleted after:         20m
+Indexing timeout per project:                      30m
 Maximum number of files per project to be indexed: 500000
-Retry interval for failed namespaces:    1d
+Maximum file size for indexing:                    1MB
+Retry interval for failed namespaces:              1d
+Number of replicas per namespace:                  1
 
 Nodes
 # Number of Zoekt nodes and their status
-Node count:                               2 (online: 2, offline: 0)
-Last seen at:                             2025-09-15 22:58:09 UTC (less than a minute ago)
-Max schema_version:                       2531
-Storage reserved / usable:                71.1 MiB / 124 GiB (0.06%)
-Storage indexed / reserved:               42.7 MiB / 71.1 MiB (60.0%)
-Storage used / total:                     797 GiB / 921 GiB (86.54%)
-Online node watermark levels:            2
+Node count:                   2 (online: 2, offline: 0)
+Last seen at:                 2025-11-21 22:58:09 UTC (less than a minute ago)
+Max schema_version:           2531
+Storage reserved / usable:    71.1 MiB / 124 GiB (0.06%)
+Storage indexed / reserved:   42.7 MiB / 71.1 MiB (60.0%)
+Storage used / total:         797 GiB / 921 GiB (86.54%)
+Online node watermark levels: 2
   - low: 2
 
 Indexing status
-Group count:                              8
+Group count:                      8
 # Number of enabled namespaces and their status
-EnabledNamespace count:                   8 (without indices: 0, rollout blocked: 0, with search disabled: 0)
-Replicas count:                           8
+EnabledNamespace count:           8 (without indices: 0, rollout blocked: 0, with search disabled: 0)
+Replicas count:                   8
   - ready: 8
-Indices count:                            8
+Indices count:                    8
   - ready: 8
-Indices watermark levels:                 8
+Indices watermark levels:         8
   - healthy: 8
-Repositories count:                       10
+Repositories count:               10
   - ready: 10
-Tasks count:                              10
+Tasks count:                      10
   - done: 10
-Tasks pending/processing by type:         (none)
+Tasks pending/processing by type: (none)
 
 Feature Flags (Non-Default Values)
-Feature flags:                            none
+- zoekt_search_meta_project_ids:   disabled
 
 Feature Flags (Default Values)
-- zoekt_cross_namespace_search:           disabled
-- zoekt_debug_delete_repo_logging:        disabled
-- zoekt_load_balancer:                    disabled
-- zoekt_rollout_worker:                   enabled
-- zoekt_search_meta_project_ids:          disabled
-- zoekt_traversal_id_queries:             enabled
+- zoekt_too_many_replicas_event: disabled
 
 Node Details
 Node 1 - test-zoekt-hostname-1:
-  Status:                                 Online
-  Last seen at:                           2025-09-15 22:58:09 UTC (less than a minute ago)
-  Disk utilization:                       86.54%
-  Unclaimed storage:                      62 GiB
+  Status:                       Online
+  Last seen at:                 2025-11-21 22:58:09 UTC (less than a minute ago)
+  Disk utilization:             86.54%
+  Unclaimed storage:            62 GiB
   # Zoekt build version on the node. Must match GitLab version.
-  Zoekt version:                          2025.09.14-v1.4.4-30-g0e7414a
-  Schema version:                         2531
+  Zoekt version:                2025.11.20-v1.7.6-28-gb9a0fd8
+  Schema version:               2531
 Node 2 - test-zoekt-hostname-2:
-  Status:                                 Online
-  Last seen at:                           2025-09-15 22:58:09 UTC (less than a minute ago)
-  Disk utilization:                       86.54%
-  Unclaimed storage:                      62 GiB
-  Zoekt version:                          2025.09.14-v1.4.4-30-g0e7414a
-  Schema version:                         2531
+  Status:                       Online
+  Last seen at:                 2025-11-21 22:58:09 UTC (less than a minute ago)
+  Disk utilization:             86.54%
+  Unclaimed storage:            62 GiB
+  Zoekt version:                2025.11.20-v1.7.6-28-gb9a0fd8
+  Schema version:               2531
 ```
 
 ## Run a health check
@@ -257,9 +249,9 @@ Prerequisites:
 
 To pause indexing for [exact code search](../../user/search/exact_code_search.md):
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
-1. Expand **Exact code search configuration**.
+1. Expand **Exact code search**.
 1. Select the **Pause indexing** checkbox.
 1. Select **Save changes**.
 
@@ -281,9 +273,9 @@ Prerequisites:
 You can index both existing and new root namespaces automatically.
 To index all root namespaces automatically:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
-1. Expand **Exact code search configuration**.
+1. Expand **Exact code search**.
 1. Select the **Index root namespaces automatically** checkbox.
 1. Select **Save changes**.
 
@@ -316,9 +308,9 @@ This feature is enabled by default and caches results for five minutes.
 
 To cache search results:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
-1. Expand **Exact code search configuration**.
+1. Expand **Exact code search**.
 1. Select the **Cache search results for five minutes** checkbox.
 1. Select **Save changes**.
 
@@ -343,9 +335,9 @@ The default value is `1.0` (one task per CPU core).
 You can adjust this value based on the node's performance and workload.
 To set the number of concurrent indexing tasks:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
-1. Expand **Exact code search configuration**.
+1. Expand **Exact code search**.
 1. In the **Indexing CPU to tasks multiplier** text box, enter a value.
 
    For example, if a Zoekt node has `4` CPU cores and the multiplier is `1.5`,
@@ -373,9 +365,9 @@ The default value is `1` (one process per indexing task).
 You can adjust this value based on the node's performance and workload.
 To set the number of parallel processes per indexing task:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
-1. Expand **Exact code search configuration**.
+1. Expand **Exact code search**.
 1. In the **Number of parallel processes per indexing task** text box, enter a value.
 1. Select **Save changes**.
 
@@ -397,9 +389,9 @@ You can adjust this value based on the node's performance and workload.
 
 To set the number of namespaces per indexing rollout:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
-1. Expand **Exact code search configuration**.
+1. Expand **Exact code search**.
 1. In the **Number of namespaces per indexing rollout** text box,
    enter a number greater than zero.
 1. Select **Save changes**.
@@ -424,9 +416,9 @@ The default value is `12h` (12 hours).
 Use this setting to manage your Zoekt infrastructure and prevent orphaned resources.
 To define when offline nodes are automatically deleted:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
-1. Expand **Exact code search configuration**.
+1. Expand **Exact code search**.
 1. In the **Offline nodes automatically deleted after** text box, enter a value
    (for example, `30m` (30 minutes), `2h` (two hours), or `1d` (one day)).
    To disable automatic deletion, set to `0`.
@@ -449,9 +441,9 @@ The default value is `30m` (30 minutes).
 
 To define the indexing timeout for a project:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
-1. Expand **Exact code search configuration**.
+1. Expand **Exact code search**.
 1. In the **Indexing timeout per project** text box, enter a value
    (for example, `30m` (30 minutes), `2h` (two hours), or `1d` (one day)).
 1. Select **Save changes**.
@@ -476,10 +468,37 @@ The default value is `500,000`.
 You can adjust this value based on the node's performance and workload.
 To set the maximum number of files in a project to be indexed:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
-1. Expand **Exact code search configuration**.
+1. Expand **Exact code search**.
 1. In the **Maximum number of files per project to be indexed** text box, enter a number greater than zero.
+1. Select **Save changes**.
+
+## Set maximum file size for indexing
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/581176) in GitLab 18.7.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can set the maximum size for a file to be indexed.
+The default value is `1MB`.
+
+Only filenames are indexed for files that exceed the specified size.
+You can search these files only by filename.
+To set maximum file size for indexing:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Search**.
+1. Expand **Exact code search**.
+1. In the **Maximum file size for indexing** text box, enter a value
+   (for example, `512B`, `50KB`, `2MB`, or `1GB`).
+   The value can also be in lowercase.
 1. Select **Save changes**.
 
 ## Define the retry interval for failed namespaces
@@ -500,11 +519,39 @@ A value of `0` means failed namespaces never retry.
 
 To define the retry interval for failed namespaces:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
-1. Expand **Exact code search configuration**.
+1. Expand **Exact code search**.
 1. In the **Retry interval for failed namespaces** text box, enter a value
    (for example, `30m` (30 minutes), `2h` (two hours), or `1d` (one day)).
+1. Select **Save changes**.
+
+## Set the number of replicas per namespace
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214067) in GitLab 18.7.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can set the number of replicas per namespace.
+The default value is `1` (one replica per namespace).
+
+Increasing the number of replicas per namespace improves search availability
+by distributing the load across multiple Zoekt nodes.
+More replicas increase storage requirements.
+
+To set the number of replicas per namespace:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Search**.
+1. Expand **Exact code search**.
+1. In the **Number of replicas per namespace** text box,
+   enter a number greater than zero.
 1. Select **Save changes**.
 
 ## Run Zoekt on a separate server
@@ -517,7 +564,7 @@ To define the retry interval for failed namespaces:
 
 Prerequisites:
 
-- You must have administrator access to the instance.
+- Be an administrator of the instance.
 
 To run Zoekt on a different server than GitLab:
 

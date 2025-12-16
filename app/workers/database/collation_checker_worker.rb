@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Database # rubocop:disable Gitlab/BoundedContexts -- Database Framework
+module Database # rubocop:disable Gitlab/BoundedContexts -- This is the best place for this module
   class CollationCheckerWorker
     include ApplicationWorker
 

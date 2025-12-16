@@ -2,7 +2,7 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Troubleshoot the GitLab MCP server.
+description: Troubleshoot common issues with the GitLab MCP server.
 title: Troubleshooting the GitLab MCP server
 ---
 
@@ -15,27 +15,22 @@ title: Troubleshooting the GitLab MCP server
 
 {{< /details >}}
 
-{{< history >}}
+When working with GitLab MCP server, you might encounter the following issues.
 
-- Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.3 [with flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_registration`. Disabled by default.
-- Changed from experiment to [beta](../../../policy/development_stages_support.md#beta) in GitLab 18.6. Feature flags [`mcp_server`](https://gitlab.com/gitlab-org/gitlab/-/issues/556448) and [`oauth_dynamic_client_registration`](https://gitlab.com/gitlab-org/gitlab/-/issues/555942) removed.
+## Error: `Server's protocol version is not supported: 2025-06-18`
 
-{{< /history >}}
+In GitLab 18.6 and earlier, you might get this error when the MCP client library
+does not support the GitLab MCP server protocol specification.
 
-{{< alert type="warning" >}}
-
-To provide feedback on this feature, leave a comment on [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).
-
-{{< /alert >}}
-
-When working with GitLab MCP server, you might encounter issues.
+To resolve this issue, ask the AI tool provider
+to update their client implementation.
 
 ## Troubleshoot the GitLab MCP Server in Cursor
 
 1. In Cursor, to open the Output view, do one of the following:
    - Go to **View** > **Output**.
-   - In macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd><kbd>U</kbd>.
-   - In Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd><kbd>U</kbd>.
+   - In macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>U</kbd>.
+   - In Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>U</kbd>.
 1. In the Output view, select **MCP:SERVERNAME**. The name depends on the MCP configuration value. The example with `GitLab` results in `MCP: user-GitLab`.
 1. When reporting bugs, copy the output into the issue template logs section.
 

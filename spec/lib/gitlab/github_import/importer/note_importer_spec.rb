@@ -87,6 +87,20 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
           importer.execute
         end
 
+        context 'when direct reassignment is supported' do
+          let(:cached_references) { placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id) }
+
+          before do
+            allow(Import::DirectReassignService).to receive(:supported?).and_return(true)
+          end
+
+          it 'does not push any placeholder references' do
+            importer.execute
+
+            expect(cached_references).to be_empty
+          end
+        end
+
         context 'when importing into a personal namespace' do
           let_it_be(:user_namespace) { create(:namespace) }
           let(:cached_references) { placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id) }

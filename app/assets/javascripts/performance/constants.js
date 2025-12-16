@@ -57,6 +57,17 @@ export const MR_DIFFS_MEASURE_FILE_TREE_DONE = 'mr-diffs-measure-file-tree-done'
 export const MR_DIFFS_MEASURE_DIFF_FILES_DONE = 'mr-diffs-measure-diff-files-done';
 
 //
+// Commit Diffs namespace
+//
+
+// Marks
+export const COMMIT_DIFFS_MARK_START_LOADING = 'commit-diffs-start-loading';
+export const COMMIT_DIFFS_MARK_DIFF_FILES_SHOWN = 'commit-diffs-diff-files-shown';
+
+// Measures
+export const COMMIT_DIFFS_MEASURE_LIST_LOADED = 'commit-diffs-list-loaded';
+
+//
 // Pipelines Detail namespace
 //
 

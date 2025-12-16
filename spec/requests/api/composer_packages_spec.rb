@@ -739,6 +739,18 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
 
           it_behaves_like 'returning response status', :success
         end
+
+        context 'for head request' do
+          subject { head api(url), headers:, params: }
+
+          before_all do
+            project.add_developer(user)
+          end
+
+          it 'does not bump last downloaded at field' do
+            expect { subject }.not_to change { package.reload.last_downloaded_at }
+          end
+        end
       end
 
       it_behaves_like 'updating personal access token last used' do

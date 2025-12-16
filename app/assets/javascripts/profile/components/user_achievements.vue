@@ -5,7 +5,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { joinPaths, stripRelativeUrlRootFromPath } from '~/lib/utils/url_utility';
 import getUserAchievements from './graphql/get_user_achievements.query.graphql';
 
 export default {
@@ -51,7 +51,10 @@ export default {
           description,
           namespace: namespace && {
             fullPath: namespace.fullPath,
-            webUrl: joinPaths(this.rootUrl, namespace.achievementsPath),
+            webUrl: joinPaths(
+              this.rootUrl,
+              stripRelativeUrlRootFromPath(namespace.achievementsPath),
+            ),
           },
           count,
         };

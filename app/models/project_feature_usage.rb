@@ -20,12 +20,6 @@ class ProjectFeatureUsage < ApplicationRecord
       cloud ? JIRA_DVCS_CLOUD_FIELD : JIRA_DVCS_SERVER_FIELD
     end
   end
-
-  private
-
-  def updated_today?(integration_field)
-    self[integration_field].present? && self[integration_field].today?
-  end
 end
 
 ProjectFeatureUsage.prepend_mod_with('ProjectFeatureUsage')

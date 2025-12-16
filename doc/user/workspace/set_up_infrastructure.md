@@ -57,7 +57,7 @@ Next, set up the necessary permissions in AWS so the infrastructure can be prope
 To set up AWS credentials:
 
 1. Create an [IAM User](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html) or
-[IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html).
+   [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html).
 1. Assign the following permissions:
 
    ```json
@@ -112,7 +112,7 @@ To set up AWS credentials:
    ```
 
 1. [Create an access key](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html)
-for the user or role.
+   for the user or role.
 1. Save your access key ID and secret access key. You'll need them when configuring CI/CD variables later.
 
 ## Prepare domain and certificates
@@ -136,7 +136,7 @@ Now you need to create security keys for authentication and SSH connections.
 To create the required keys:
 
 1. Generate a signing key consisting of random letters, numbers, and special characters.
-For example, run:
+   For example, run:
 
    ```shell
    openssl rand -base64 32
@@ -155,7 +155,7 @@ The GitLab agent for Kubernetes connects your AWS Kubernetes cluster to GitLab.
 To create a token for the agent:
 
 1. Go to your group.
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Kubernetes clusters**.
 1. Select **Connect a cluster**.
 1. Enter a name for your agent and save for later use. For example, `gitlab-workspaces-agentk-eks`.
@@ -193,7 +193,7 @@ pipeline can run.
 
 To configure CI/CD variables:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. In the **Project variables** section, add the following required variables:
@@ -308,7 +308,7 @@ Next, you'll authorize the GitLab agent for Kubernetes to connect to your GitLab
 
 To authorize the agent:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Workspaces**.
 1. In the **Group agents** section, select the **All agents** tab.
 1. From the list of available agents, find the agent with status **Blocked**, and select **Allow**.

@@ -40,7 +40,7 @@ Service accounts:
 - Do not receive notification emails without [adding a custom email address](../../api/service_accounts.md#create-an-instance-service-account).
 - Are not [billable users](../../subscriptions/manage_users_and_seats.md#billable-users) or [internal users](../../administration/internal_users.md).
 - Are available for [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&glm_content=free-user-limit-faq/ee/user/free_user_limit.html)
-of GitLab.com after the Owner of the top-level group verifies their identity.
+  of GitLab.com after the Owner of the top-level group verifies their identity. Trial versions are limited to a maximum of 100 service accounts.
 - Can be used with trial versions of GitLab Self-Managed and GitLab Dedicated.
 
 You can also manage service accounts through the [service accounts API](../../api/service_accounts.md).
@@ -73,7 +73,7 @@ The service accounts page displays information about service accounts in your to
 
 To view service accounts for the entire instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Service accounts**.
 
 {{< /tab >}}
@@ -82,7 +82,7 @@ To view service accounts for the entire instance:
 
 To view service accounts for a top-level group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Service accounts**.
 
 {{< /tab >}}
@@ -162,8 +162,8 @@ a target group namespace.
 
 Prerequisites:
 
-- The service account must be added as a member to the target group with at least the Developer role.
-- The service account must have the `api` scope enabled on its personal access token.
+- The service account has the Developer role and is a member of the target group.
+- The `api` scope is turned on for the service account's personal access token.
 
 To fork a project using a service account:
 

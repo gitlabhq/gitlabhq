@@ -47,10 +47,6 @@ RSpec.describe 'layouts/application' do
     end
 
     context 'when user has `project studio` feature enabled' do
-      before do
-        allow(view).to receive(:project_studio_enabled?).and_return(true)
-      end
-
       it 'renders the new global topbar' do
         render
         expect(rendered).to include('super-topbar')
@@ -60,6 +56,7 @@ RSpec.describe 'layouts/application' do
 
   context 'when user is not signed in' do
     before do
+      allow(view).to receive(:project_studio_enabled?).and_return(false)
       allow(view).to receive(:current_user).and_return(nil)
       allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(nil))
     end

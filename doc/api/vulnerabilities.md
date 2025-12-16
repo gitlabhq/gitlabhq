@@ -44,7 +44,7 @@ across GitLab releases. Use the
 Every API call to vulnerabilities must be [authenticated](rest/authentication.md).
 
 If an authenticated user does not have permission to
-[view vulnerability report](../user/permissions.md#application-security),
+[view vulnerability report](../user/permissions.md#project-application-security),
 this request returns a `403 Forbidden` status code.
 
 ## Single vulnerability
@@ -95,7 +95,7 @@ Example response:
 Confirms a given vulnerability. Returns status code `304` if the vulnerability is already confirmed.
 
 If an authenticated user does not have permission to
-[change vulnerability status](../user/permissions.md#application-security),
+[change vulnerability status](../user/permissions.md#project-application-security),
 this request results in a `403` status code.
 
 ```plaintext
@@ -142,7 +142,7 @@ Example response:
 Resolves a given vulnerability. Returns status code `304` if the vulnerability is already resolved.
 
 If an authenticated user does not have permission to
-[change vulnerability status](../user/permissions.md#application-security),
+[change vulnerability status](../user/permissions.md#project-application-security),
 this request results in a `403` status code.
 
 ```plaintext
@@ -189,7 +189,7 @@ Example response:
 Dismisses a given vulnerability. Returns status code `304` if the vulnerability is already dismissed.
 
 If an authenticated user does not have permission to
-[change vulnerability status](../user/permissions.md#application-security),
+[change vulnerability status](../user/permissions.md#project-application-security),
 this request results in a `403` status code.
 
 ```plaintext
@@ -236,7 +236,7 @@ Example response:
 Reverts a given vulnerability to detected state. Returns status code `304` if the vulnerability is already in detected state.
 
 If an authenticated user does not have permission to
-[change vulnerability status](../user/permissions.md#application-security),
+[change vulnerability status](../user/permissions.md#project-application-security),
 this request results in a `403` status code.
 
 ```plaintext

@@ -20,20 +20,20 @@ title: Foundational flows
 
 {{< /collapsible >}}
 
-Foundational flows are built and maintained by GitLab.
+Foundational flows are built and maintained by GitLab and display a GitLab-maintained badge ({{< icon name="tanuki-verified" >}}).
 
 Each flow is designed to solve a specific problem or help you with a development task.
 
 The following foundational flows are available:
 
-- [Fix your CI/CD pipeline](fix_pipeline.md).
-- [Convert a Jenkinsfile to `.gitlab-ci.yml` file](convert_to_gitlab_ci.md).
-- [Convert an issue to a merge request](issue_to_mr.md).
-- Work with any aspect of [software development](software_development.md). In this flow,
-  you describe your needs and GitLab Duo understands your repository, the codebase,
-  and its structure.
+- [Software Development](software_development.md): Create AI-generated solutions for work across the software development lifecycle.
+- [Developer](developer.md): Create actionable merge requests from issues.
+- [Fix CI/CD Pipeline](fix_pipeline.md): Diagnose and repair failed jobs.
+- [Convert to GitLab CI/CD](convert_to_gitlab_ci.md): Migrate Jenkins pipelines to CI/CD.
+- [Code Review](code_review.md): Automate code review with AI-native analysis and feedback.
+- [SAST False Positive Detection](sast_false_positive_detection.md): Automatically identify and filter false positives in SAST findings.
 
-## Supported APIs and permissions
+## Security for foundational flows
 
 In the GitLab UI, foundational flows have access to the following GitLab APIs:
 
@@ -49,4 +49,5 @@ In the GitLab UI, foundational flows have access to the following GitLab APIs:
 - [Notes API](../../../../api/notes.md)
 - [Search API](../../../../api/search.md)
 
-Foundational flows use each user's permissions and respect all project access controls and security policies.
+In addition, foundational flows use a service account to complete tasks.
+For more information, see [the composite identity workflow](../../security.md#composite-identity-workflow).

@@ -23,6 +23,8 @@ For advanced cache key strategies, you can use:
 - [`cache:key:files`](../yaml/_index.md#cachekeyfiles): Generate keys linked to the content of specific files.
 - [`cache:key:files_commits`](../yaml/_index.md#cachekeyfiles_commits): Generate keys linked to the latest commit of specific files.
 
+For more use cases and examples, see [CI/CD caching examples](examples.md).
+
 ## How cache is different from artifacts
 
 Use cache for dependencies, like packages you download from the internet.
@@ -221,329 +223,77 @@ job:
 
 For more information, see [`cache: policy`](../yaml/_index.md#cachepolicy).
 
-## Common use cases for caches
-
-Usually you use caches to avoid downloading content, like dependencies
-or libraries, each time you run a job. Node.js packages,
-PHP packages, Ruby gems, Python libraries, and others can be cached.
-
-For examples, see the [GitLab CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
-
-### Share caches between jobs in the same branch
-
-To have jobs in each branch use the same cache, define a cache with the `key: $CI_COMMIT_REF_SLUG`:
-
-```yaml
-cache:
-  key: $CI_COMMIT_REF_SLUG
-```
-
-This configuration prevents you from accidentally overwriting the cache. However, the
-first pipeline for a merge request is slow. The next time a commit is pushed to the branch, the
-cache is re-used and jobs run faster.
-
-To enable per-job and per-branch caching:
-
-```yaml
-cache:
-  key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
-```
-
-To enable per-stage and per-branch caching:
-
-```yaml
-cache:
-  key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
-```
-
-### Share caches across jobs in different branches
-
-To share a cache across all branches and all jobs, use the same key for everything:
-
-```yaml
-cache:
-  key: one-key-to-rule-them-all
-```
-
-To share a cache between branches, but have a unique cache for each job:
-
-```yaml
-cache:
-  key: $CI_JOB_NAME
-```
-
-### Use a variable to control a job's cache policy
+## Cache key names
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371480) in GitLab 16.1.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0.
+- `-protected` suffix for Maintainer role and higher [introduced](https://about.gitlab.com/releases/2025/11/26/patch-release-gitlab-18-6-1-released/) in GitLab 18.4.5.
 
 {{< /history >}}
 
-To reduce duplication of jobs where the only difference is the pull policy, you can use a [CI/CD variable](../variables/_index.md).
+A suffix is added to the cache key, with the exception of the [global fallback cache key](#global-fallback-key).
 
-For example:
+Cache keys receive the `-protected` suffix if the pipeline:
 
-```yaml
-conditional-policy:
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      variables:
-        POLICY: pull-push
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-      variables:
-        POLICY: pull
-  stage: build
-  cache:
-    key: gems
-    policy: $POLICY
-    paths:
-      - vendor/bundle
-  script:
-    - echo "This job pulls and pushes the cache depending on the branch"
-    - echo "Downloading dependencies..."
-```
+- Runs for a protected branch or tag. The user must have permission to merge to the
+  [protected branch](../../user/project/repository/branches/protected.md) or permission to
+  create a [protected tag](../../user/project/protected_tags.md).
+- Was started by a user with at least the Maintainer role.
 
-In this example, the job's cache policy is:
+Keys generated in other pipelines receive the `non_protected` suffix.
 
-- `pull-push` for changes to the default branch.
-- `pull` for changes to other branches.
+For example, if:
 
-### Cache Node.js dependencies
+- `cache:key` is set to `$CI_COMMIT_REF_SLUG`.
+- `main` is a protected branch.
+- `feature` is an unprotected branch.
 
-If your project uses [npm](https://www.npmjs.com/) to install Node.js
-dependencies, the following example defines a default `cache` so that all jobs inherit it.
-By default, npm stores cache data in the home folder (`~/.npm`). However, you
-[can't cache things outside of the project directory](../yaml/_index.md#cachepaths).
-Instead, tell npm to use `./.npm`, and cache it per-branch:
+| Branch      | Developer role cache key | Maintainer role cache key |
+|-------------|--------------------------|---------------------------|
+| `main`      | `main-protected`         | `main-protected`          |
+| `feature`   | `feature-non_protected`  | `feature-protected`       |
 
-```yaml
-default:
-  image: node:latest
-  cache:  # Cache modules in between jobs
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - .npm/
-  before_script:
-    - npm ci --cache .npm --prefer-offline
+Additionally, for pipelines for tags, the tag's protection status takes precedence for the suffix,
+not the branch where the pipeline executes. This behavior ensures consistent security boundaries,
+because the triggering reference determines cache access permissions.
 
-test_async:
-  script:
-    - node ./specs/start.js ./specs/async.spec.js
-```
+For example, if:
 
-#### Compute the cache key from the lock file
+- `cache:key` is set to `$CI_COMMIT_TAG`.
+- `main` is a protected branch.
+- `feature` is an unprotected branch.
+- `1.0.0` is a protected tag.
+- `1.1.1-rc1` is an unprotected tag.
 
-You can use [`cache:key:files`](../yaml/_index.md#cachekeyfiles) to compute the cache
-key from a lock file like `package-lock.json` or `yarn.lock`, and reuse it in many jobs.
+| Tag         | Branch    | Developer role cache key  | Maintainer role cache key |
+|-------------|-----------|---------------------------|---------------------------|
+| `1.0.0`     | `main`    | `1.0.0-protected`         | `1.0.0-protected`         |
+| `1.0.0`     | `feature` | `1.0.0-protected`         | `1.0.0-protected`         |
+| `1.1.1-rc1` | `main`    | `1.1.1-rc1-non_protected` | `1.1.1-rc1-protected`     |
+| `1.1.1-rc1` | `feature` | `1.1.1-rc1-non_protected` | `1.1.1-rc1-protected`     |
 
-```yaml
-default:
-  cache:  # Cache modules using lock file
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - .npm/
-```
+### Use the same cache for all branches
 
-If you're using [Yarn](https://yarnpkg.com/), you can use [`yarn-offline-mirror`](https://classic.yarnpkg.com/blog/2016/11/24/offline-mirror/)
-to cache the zipped `node_modules` tarballs. The cache generates more quickly, because
-fewer files have to be compressed:
+{{< history >}}
 
-```yaml
-job:
-  script:
-    - echo 'yarn-offline-mirror ".yarn-cache/"' >> .yarnrc
-    - echo 'yarn-offline-mirror-pruning true' >> .yarnrc
-    - yarn install --frozen-lockfile --no-progress
-  cache:
-    key:
-      files:
-        - yarn.lock
-    paths:
-      - .yarn-cache/
-```
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361643) in GitLab 15.0.
 
-### Cache C/C++ compilation using Ccache
+{{< /history >}}
 
-If you are compiling C/C++ projects, you can use [Ccache](https://ccache.dev/) to
-speed up your build times. Ccache speeds up recompilation by caching previous compilations
-and detecting when the same compilation is being done again. When building big projects like the Linux kernel,
-you can expect significantly faster compilations.
+If you do not want to use [cache key names](#cache-key-names),
+you can have all branches (protected and unprotected) use the same cache.
 
-Use `cache` to reuse the created cache between jobs, for example:
+The cache separation with [cache key names](#cache-key-names) is a security feature
+and should only be disabled in an environment where all users with Developer role are highly trusted.
 
-```yaml
-job:
-  cache:
-    paths:
-      - ccache
-  before_script:
-    - export PATH="/usr/lib/ccache:$PATH"  # Override compiler path with ccache (this example is for Debian)
-    - export CCACHE_DIR="${CI_PROJECT_DIR}/ccache"
-    - export CCACHE_BASEDIR="${CI_PROJECT_DIR}"
-    - export CCACHE_COMPILERCHECK=content  # Compiler mtime might change in the container, use checksums instead
-  script:
-    - ccache --zero-stats || true
-    - time make                            # Actually build your code while measuring time and cache efficiency.
-    - ccache --show-stats || true
-```
+To use the same cache for all branches:
 
-If you have multiple projects in a single repository you do not need a separate `CCACHE_BASEDIR` for each of them.
-
-### Cache PHP dependencies
-
-If your project uses [Composer](https://getcomposer.org/) to install
-PHP dependencies, the following example defines a default `cache` so that
-all jobs inherit it. PHP libraries modules are installed in `vendor/` and
-are cached per-branch:
-
-```yaml
-default:
-  image: php:latest
-  cache:  # Cache libraries in between jobs
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - vendor/
-  before_script:
-    # Install and run Composer
-    - curl --show-error --silent "https://getcomposer.org/installer" | php
-    - php composer.phar install
-
-test:
-  script:
-    - vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
-```
-
-### Cache Python dependencies
-
-If your project uses [pip](https://pip.pypa.io/en/stable/) to install
-Python dependencies, the following example defines a default `cache` so that
-all jobs inherit it. pip's cache is defined under `.cache/pip/` and is cached per-branch:
-
-```yaml
-default:
-  image: python:latest
-  cache:                      # Pip's cache doesn't store the python packages
-    paths:                    # https://pip.pypa.io/en/stable/topics/caching/
-      - .cache/pip
-  before_script:
-    - python -V               # Print out python version for debugging
-    - pip install virtualenv
-    - virtualenv venv
-    - source venv/bin/activate
-
-variables:  # Change pip's cache directory to be inside the project directory because GitLab can only cache local items.
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-
-test:
-  script:
-    - python setup.py test
-    - pip install ruff
-    - ruff --format=gitlab .
-```
-
-### Cache Ruby dependencies
-
-If your project uses [Bundler](https://bundler.io) to install
-gem dependencies, the following example defines a default `cache` so that all
-jobs inherit it. Gems are installed in `vendor/ruby/` and are cached per-branch:
-
-```yaml
-default:
-  image: ruby:latest
-  cache:                                            # Cache gems in between builds
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - vendor/ruby
-  before_script:
-    - ruby -v                                       # Print out ruby version for debugging
-    - bundle config set --local path 'vendor/ruby'  # The location to install the specified gems to
-    - bundle install -j $(nproc)                    # Install dependencies into ./vendor/ruby
-
-rspec:
-  script:
-    - rspec spec
-```
-
-If you have jobs that need different gems, use the `prefix`
-keyword in the global `cache` definition. This configuration generates a different
-cache for each job.
-
-For example, a testing job might not need the same gems as a job that deploys to
-production:
-
-```yaml
-default:
-  cache:
-    key:
-      files:
-        - Gemfile.lock
-      prefix: $CI_JOB_NAME
-    paths:
-      - vendor/ruby
-
-test_job:
-  stage: test
-  before_script:
-    - bundle config set --local path 'vendor/ruby'
-    - bundle install --without production
-  script:
-    - bundle exec rspec
-
-deploy_job:
-  stage: production
-  before_script:
-    - bundle config set --local path 'vendor/ruby'   # The location to install the specified gems to
-    - bundle install --without test
-  script:
-    - bundle exec deploy
-```
-
-### Cache Go dependencies
-
-If your project uses [Go Modules](https://go.dev/wiki/Modules) to install
-Go dependencies, the following example defines `cache` in a `go-cache` template, that
-any job can extend. Go modules are installed in `${GOPATH}/pkg/mod/` and
-are cached for all of the `go` projects:
-
-```yaml
-.go-cache:
-  variables:
-    GOPATH: $CI_PROJECT_DIR/.go
-  before_script:
-    - mkdir -p .go
-  cache:
-    paths:
-      - .go/pkg/mod/
-
-test:
-  image: golang:latest
-  extends: .go-cache
-  script:
-    - go test ./... -v -short
-```
-
-### Cache curl downloads
-
-If your project uses [cURL](https://curl.se/) to download dependencies or files,
-you can cache the downloaded content. The files are automatically updated when
-newer downloads are available.
-
-```yaml
-job:
-  script:
-    - curl --remote-time --time-cond .curl-cache/caching.md --output .curl-cache/caching.md "https://docs.gitlab.com/ci/caching/"
-  cache:
-    paths:
-      - .curl-cache/
-```
-
-In this example cURL downloads a file from a webserver and saves it to a local file in `.curl-cache/`.
-The `--remote-time` flag saves the last modification time reported by the server,
-and cURL compares it to the timestamp of the cached file with `--time-cond`. If the remote file has
-a more recent timestamp the local cache is automatically updated.
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Settings** > **CI/CD**.
+1. Expand **General pipelines**.
+1. Clear the **Use separate caches for protected branches** checkbox.
+1. Select **Save changes**.
 
 ## Availability of the cache
 
@@ -570,61 +320,6 @@ is stored on the machine where GitLab Runner is installed. The location also dep
 
 If you use cache and artifacts to store the same path in your jobs, the cache might
 be overwritten because caches are restored before artifacts.
-
-#### Cache key names
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0.
-
-{{< /history >}}
-
-A suffix is added to the cache key, with the exception of the [global fallback cache key](#global-fallback-key).
-
-As an example, assuming that `cache.key` is set to `$CI_COMMIT_REF_SLUG`, and that you have two branches `main`
-and `feature`, then the following table represents the resulting cache keys:
-
-| Branch name | Cache key               |
-|-------------|-------------------------|
-| `main`      | `main-protected`        |
-| `feature`   | `feature-non_protected` |
-
-##### Cache suffix with tag triggers
-
-When a pipeline is triggered by a tag (like `$CI_COMMIT_TAG`), the cache suffix (`-protected` or `-non_protected`)
-is determined by the tag's protection status, not the branch where the pipeline executes.
-
-This behavior ensures consistent security boundaries, because the triggering reference determines cache access permissions.
-
-For example, with tags that trigger pipelines on different branches:
-
-| Trigger type                | Tag protection | Branch                  | Cache suffix     |
-|-----------------------------|----------------|-------------------------|------------------|
-| Tag `0.26.1` (unprotected)  | Unprotected    | `main` (protected)      | `-non_protected` |
-| Tag `1.0.0` (protected)     | Protected      | `main` (protected)      | `-protected`     |
-| Tag `dev-123` (unprotected) | Unprotected    | `feature` (unprotected) | `-non_protected` |
-
-##### Use the same cache for all branches
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361643) in GitLab 15.0.
-
-{{< /history >}}
-
-If you do not want to use [cache key names](#cache-key-names),
-you can have all branches (protected and unprotected) use the same cache.
-
-The cache separation with [cache key names](#cache-key-names) is a security feature
-and should only be disabled in an environment where all users with Developer role are highly trusted.
-
-To use the same cache for all branches:
-
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Settings** > **CI/CD**.
-1. Expand **General pipelines**.
-1. Clear the **Use separate caches for protected branches** checkbox.
-1. Select **Save changes**.
 
 ### How archiving and extracting works
 
@@ -715,7 +410,7 @@ The next time the pipeline runs, the cache is stored in a different location.
 
 You can clear the cache in the GitLab UI:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. In the upper-right corner, select **Clear runner caches**.
 

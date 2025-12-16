@@ -163,6 +163,11 @@
     "MemberRole",
     "StandardRole"
   ],
+  "NamespaceMetadata": [
+    "GroupNamespaceMetadata",
+    "ProjectNamespaceMetadata",
+    "UserNamespaceMetadata"
+  ],
   "NamespaceUnion": [
     "CiDeletedNamespace",
     "Namespace"
@@ -259,6 +264,12 @@
     "SnippetRepositoryRegistry",
     "TerraformStateVersionRegistry",
     "UploadRegistry"
+  ],
+  "RegistryInterface": [
+    "ContainerRegistry",
+    "ContainerRegistryDetails",
+    "MavenRegistry",
+    "MavenRegistryDetails"
   ],
   "ResolvableInterface": [
     "Discussion",

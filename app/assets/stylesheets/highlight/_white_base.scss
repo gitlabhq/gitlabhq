@@ -86,6 +86,8 @@ $white-gc-bg: #eaf2f5;
 
   --code-background: #{$gl-color-neutral-0};
   --code-empty-background: #{$gl-color-neutral-10};
+  --code-border-color: #{$gl-color-neutral-100};
+  --code-changed-border-color: #{rgba(0,0,0,0.1)};
 
   --code-old-diff-line-number-background-color: #{$line-number-old};
   --code-old-diff-background-color: #{$line-removed};

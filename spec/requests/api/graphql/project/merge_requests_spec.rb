@@ -57,10 +57,12 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
     end
 
     before do
+      # create AI Setting singleton record to prevent N+1
+      Ai::Setting.instance if Gitlab.ee?
       # We cannot disable SQL query limiting here, since the transaction does not
       # begin until we enter the controller.
       headers = {
-        'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => '224,https://gitlab.com/gitlab-org/gitlab/-/issues/469250'
+        'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => '230,https://gitlab.com/gitlab-org/gitlab/-/issues/469250'
       }
 
       post_graphql(query, current_user: current_user, headers: headers)

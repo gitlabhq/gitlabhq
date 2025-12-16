@@ -65,9 +65,7 @@ module Gitlab
         timeout: timeout)
     end
 
-    def signature
-      return unless context[:has_signature]
-    end
+    def signature; end
 
     def lazy_cached_signature(timeout: GitalyClient.fast_timeout)
       BatchLoader.for(self).batch(key: @repository.container.id) do |signed_tags, loader, args|

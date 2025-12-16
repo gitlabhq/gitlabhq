@@ -19,7 +19,7 @@ see [Troubleshooting Code Suggestions](../../user/project/repository/code_sugges
 
 To enable debug logs in JetBrains:
 
-1. On the top bar, go to **Help** > **Diagnostic Tools > Debug Log Settings**, or
+1. On the top bar, go to **Help** > **Diagnostic Tools** > **Debug Log Settings**, or
    search for the action by going to **Help** > **Find Action** > **Debug log settings**.
 1. Add this line: `com.gitlab.plugin`
 1. Select **OK** or **Save**.
@@ -90,8 +90,8 @@ setting only if you are absolutely certain the proxy causes the problem.
 
 Prerequisites:
 
-- You have verified the certificate chain is valid, using your system browser,
-  or you have confirmed with your machine's administrator that this error is safe to ignore.
+- You verified the certificate chain in your system browser or your machine's administrator
+  confirmed that this error is safe to ignore.
 
 To do this:
 
@@ -129,14 +129,14 @@ If you experience issues with GitLab Duo Chat related to JCEF (Java Chromium Emb
 
 ## Required information for support
 
-Before contacting Support, make sure the latest GitLab Workflow extension is installed. All releases
+Before contacting Support, make sure the latest GitLab Duo plugin is installed. All releases
 are available in the [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/22325-gitlab-duo/versions),
 on the **Versions** tab.
 
 Gather this information from affected users, and provide it in your bug report:
 
 1. The error message shown to the user.
-1. Workflow and Language Server logs:
+1. Plugin and Language Server logs:
    - [Debug logs](#enable-debug-mode).
    - [Language Server debug logs](#enable-gitlab-language-server-debug-logs).
    - [Logs output](#get-debug-logs)
@@ -151,7 +151,7 @@ Gather this information from affected users, and provide it in your bug report:
 1. Describe how other GitLab Duo features are affected:
    - Is GitLab Quick Chat functional?
    - Is Code Suggestions working?
-   - Does Web IDE Duo Chat return responses?
+   - Does GitLab Duo Chat in the Web IDE return responses?
 1. Perform extension isolation testing. Try disabling (or uninstalling) all other extensions to determine
    if another extension is causing the issue. This helps determine if the problem is with our extension,
    or from an external source.

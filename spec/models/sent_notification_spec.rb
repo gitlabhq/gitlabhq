@@ -2,9 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SentNotification, :request_store, feature_category: :shared do
-  include SentNotificationHelpers
-
+RSpec.describe SentNotification, :request_store, feature_category: :notifications do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group) }
@@ -106,7 +104,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
 
   shared_examples 'a successful sent notification' do
     it 'creates a new SentNotification' do
-      expect { subject }.to change { PartitionedSentNotification.count }.by(1)
+      expect { subject }.to change { described_class.count }.by(1)
     end
   end
 
@@ -117,6 +115,58 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
       Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
         expect(Gitlab::Database::LoadBalancing::SessionMap.current(lb).use_primary?).to be false
       end
+    end
+  end
+
+  describe 'sliding_list partitioning' do
+    let(:partition_manager) { Gitlab::Database::Partitioning::PartitionManager.new(described_class) }
+    let(:active_partition) { described_class.partitioning_strategy.active_partition }
+
+    describe 'next_partition_if callback' do
+      subject(:value) { described_class.partitioning_strategy.next_partition_if.call(active_partition) }
+
+      context 'when the partition is empty' do
+        it { is_expected.to be(false) }
+      end
+
+      context 'when the partition has records' do
+        before do
+          create(:sent_notification, project: project)
+          create(:sent_notification, project: project)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when the first record of the partition is older than PARTITION_DURATION' do
+        before do
+          create(:sent_notification,
+            project: project,
+            created_at: (described_class::PARTITION_DURATION + 1.day).ago
+          )
+          create(:sent_notification)
+        end
+
+        it { is_expected.to be(true) }
+      end
+    end
+
+    describe 'detach_partition_if' do
+      subject { described_class.partitioning_strategy.detach_partition_if.call(active_partition) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '.create' do
+    it 'sets partition after saving the record' do
+      sent_notification = create(:sent_notification, project: project)
+
+      new = described_class.new(
+        sent_notification.attributes.except('id', 'partition').merge(reply_key: described_class.reply_key)
+      )
+
+      expect { new.save! }.to change { new.partition }.from(nil).to(instance_of(Integer))
     end
   end
 
@@ -137,46 +187,30 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
 
       it { is_expected.to eq(sent_notification) }
 
-      it 'finds in the partitioned p_sent_notifications table' do
-        expect(PartitionedSentNotification).to receive(:find_by)
-
-        found_sent_notification
-      end
-
-      context 'when sent_notification is only found in the legacy table' do
+      context 'when more than one record exists with the same reply_key' do
         before do
-          PartitionedSentNotification.where(id: sent_notification.id).delete_all
+          sent_notification.dup.save!
         end
 
         it { is_expected.to be_nil }
-
-        context 'when sent_notifications_without_fallback feature flag is disabled' do
-          before do
-            stub_feature_flags(sent_notifications_without_fallback: false)
-          end
-
-          it { is_expected.to eq(sent_notification) }
-
-          it 'logs that a record was only found in the legacy table' do
-            expect(Gitlab::AppLogger).to receive(:info).with(
-              class: described_class.name,
-              message: 'SentNotification found but not backfilled',
-              sent_notification_id: sent_notification.id
-            )
-
-            found_sent_notification
-          end
-        end
       end
     end
 
     context 'when reply key uses partitioned table format' do
-      let_it_be(:sent_notification) { create_sent_notification(project: project) }
+      let_it_be(:sent_notification) { create(:sent_notification, project: project) }
       let_it_be(:reply_key) do
         sent_notification.partitioned_reply_key
       end
 
       it { is_expected.to eq(sent_notification) }
+
+      context 'when more than one record exists with the same reply_key' do
+        before do
+          sent_notification.dup.save!
+        end
+
+        it { is_expected.to be_nil }
+      end
     end
   end
 
@@ -187,28 +221,6 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
 
     it_behaves_like 'a successful sent notification'
     it_behaves_like 'a non-sticky write'
-
-    it 'creates a record only on the partitioned table' do
-      expect do
-        sent_notification
-      end.to not_change { SentNotification.count }.and(
-        change { PartitionedSentNotification.count }.by(1)
-      )
-    end
-
-    context 'when insert_into_p_sent_notifications feature flag is disabled' do
-      before do
-        stub_feature_flags(insert_into_p_sent_notifications: false)
-      end
-
-      it 'creates a record in both tables' do
-        expect do
-          sent_notification
-        end.to change { SentNotification.count }.by(1).and(
-          change { PartitionedSentNotification.count }.by(1)
-        )
-      end
-    end
 
     context 'with issue email participant' do
       let!(:issue_email_participant) { create(:issue_email_participant, issue: issue) }
@@ -228,11 +240,19 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
   describe '.record_note' do
     subject { described_class.record_note(note, note.author.id) }
 
-    context 'for a discussion note' do
+    context 'for a diff_note_on_merge_request' do
       let_it_be(:note) { create(:diff_note_on_merge_request) }
 
       it_behaves_like 'a successful sent notification'
       it_behaves_like 'a non-sticky write'
+
+      it 'sets in_reply_to_discussion_id' do
+        expect(subject.in_reply_to_discussion_id).to eq(note.discussion_id)
+      end
+    end
+
+    context 'for a discussion note' do
+      let_it_be(:note) { create(:discussion_note) }
 
       it 'sets in_reply_to_discussion_id' do
         expect(subject.in_reply_to_discussion_id).to eq(note.discussion_id)
@@ -249,6 +269,14 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
         expect(subject.in_reply_to_discussion_id).to eq(note.discussion_id)
       end
     end
+
+    context 'for a design note' do
+      let_it_be(:note) { create(:note_on_design, project: project) }
+
+      it 'does not set in_reply_to_discussion_id' do
+        expect(subject.in_reply_to_discussion_id).to be_nil
+      end
+    end
   end
 
   describe '#partitioned_reply_key' do
@@ -256,7 +284,13 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
 
     subject { sent_notification.partitioned_reply_key }
 
-    it { is_expected.to eq(sent_notification.reply_key) }
+    it { is_expected.to match(described_class::PARTITIONED_REPLY_KEY_REGEX) }
+
+    context 'when sent_notification is not persisted' do
+      let(:sent_notification) { build(:sent_notification) }
+
+      it { is_expected.to eq(sent_notification.reply_key) }
+    end
   end
 
   describe '#unsubscribable?' do

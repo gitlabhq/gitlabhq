@@ -77,7 +77,7 @@ module Gitlab
       end
 
       def appearance
-        Gitlab::SafeRequestStore[:appearance] ||= (Appearance.current || Appearance.new)
+        Gitlab::SafeRequestStore[:appearance] ||= Appearance.current || Appearance.new
       end
     end
   end

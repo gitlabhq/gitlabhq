@@ -21,6 +21,7 @@ module Gitlab
           :build_not_pending,
           :build_queue_push,
           :build_queue_pop,
+          :build_status_stale,
           :build_temporary_locked,
           :build_conflict_lock,
           :build_conflict_exception,
@@ -33,9 +34,6 @@ module Gitlab
           :runner_pre_assign_checks_failed,
           :runner_pre_assign_checks_success,
           :runner_queue_tick,
-          :runner_queue_timeout,
-          :runner_assigned_waiting,
-          :runner_assigned_run,
           :shared_runner_build_new,
           :shared_runner_build_done
         ].to_set.freeze

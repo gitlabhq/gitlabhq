@@ -816,7 +816,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
         expect(entry).to be_valid
         expect(entry.value[:inputs]).to eq(
           test_string: {
-            default: 'hello'
+            default: 'hello',
+            type: 'string'
           },
           test_number: {
             type: 'number',
@@ -870,6 +871,39 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
         end
       end
 
+      context 'when there are more than 50 inputs' do
+        let(:config) do
+          inputs_hash = (1..51).to_h { |i| ["input#{i}", { default: "value#{i}" }] }
+          {
+            script: 'echo',
+            inputs: inputs_hash
+          }
+        end
+
+        it 'reports an error about too many inputs' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to contain_exactly('job inputs has too many entries (maximum 50)')
+        end
+      end
+
+      context 'when type is not specified' do
+        let(:config) do
+          {
+            script: 'echo',
+            inputs: {
+              test_input: {
+                default: 'hello'
+              }
+            }
+          }
+        end
+
+        it 'defaults the type to string' do
+          expect(entry).to be_valid
+          expect(entry.value[:inputs][:test_input]).to eq(default: 'hello', type: 'string')
+        end
+      end
+
       context 'when the ci_job_inputs feature flag is disabled' do
         let(:ci_job_inputs_flag_enabled) { false }
 
@@ -897,7 +931,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
       :pages | {} | true
       :pages | { pages: false } | false
       :pages | { pages: true } | true
-      :pages | { pages: nil } | true
       :pages | { pages: { path_prefix: 'foo' } } | true
       :'pages:staging' | {} | false
       :'something:pages:else' | {} | false
@@ -906,7 +939,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
       :'something-else' | { pages: { path_prefix: 'foo' } } | true
       :'something-else' | { pages: { publish: '/some-folder' } } | true
       :'something-else' | { pages: false } | false
-      :'something-else' | { pages: nil } | false
     end
 
     with_them do
@@ -926,6 +958,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
       :pages | { pages: { publish: 'public' }, artifacts: { paths: ['public'] } } | { paths: ["public"] }
       :pages | { artifacts: {} } | { paths: ["public"] }
       :pages | { artifacts: { paths: [] } } | { paths: ["public"] }
+      :pages | { artifacts: { paths: nil } } | { paths: ["public"] }
       :pages | { pages: false } | nil
       :'non-pages' | {} | nil
       :custom | { pages: { publish: 'foo' } } | { paths: ["foo"] }

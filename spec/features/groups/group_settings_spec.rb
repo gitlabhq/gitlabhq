@@ -346,7 +346,7 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
 
     context 'when group is archived' do
       before do
-        subgroup.archive
+        subgroup.namespace_settings.update!(archived: true)
 
         visit edit_group_path(subgroup)
       end
@@ -364,12 +364,19 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
 
     context 'when ancestor is archived' do
       before do
-        ancestor.archive
+        ancestor.namespace_settings.update!(archived: true)
 
         visit edit_group_path(subgroup)
       end
 
-      it 'cannot archive or unarchive group', :aggregate_failures do
+      it 'renders section with no active button', :aggregate_failures do
+        find('[data-testid=cancel-icon]').hover
+
+        expect(page).to have_content(s_('GroupProjectArchiveSettings|Unarchive group'))
+        expect(page).to have_selector('[role="tooltip"]', text: s_(
+          'GroupProjectUnarchiveSettings|To unarchive this group, you must unarchive its parent group.'
+        ))
+
         expect(page).not_to have_button(s_('GroupProjectArchiveSettings|Archive'))
         expect(page).not_to have_button(s_('GroupProjectUnarchiveSettings|Unarchive'))
       end

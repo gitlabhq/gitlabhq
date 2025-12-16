@@ -1,0 +1,24 @@
+- return if remote_mirror.new_record?
+
+%tr.rspec-mirrored-repository-row{ class: ('bg-secondary' if remote_mirror.disabled?), data: { testid: 'mirrored-repository-row-container' } }
+  %td{ data: { testid: 'mirror-repository-url-content' } }
+    = remote_mirror.safe_url || _('Invalid URL')
+    = render_if_exists 'projects/mirrors/mirror_branches_setting_badge', record: remote_mirror
+  %td= _('Push')
+  %td
+    = remote_mirror.last_update_started_at.present? ? time_ago_with_tooltip(remote_mirror.last_update_started_at) : _('Never')
+  %td{ data: { testid: 'mirror-last-update-at-content' } }= remote_mirror.last_update_at.present? ? time_ago_with_tooltip(remote_mirror.last_update_at) : _('Never')
+  %td
+    - if remote_mirror.disabled?
+      = render 'projects/mirrors/disabled_mirror_badge'
+    - if remote_mirror.last_error.present?
+      = gl_badge_tag _('Error'), { variant: :danger }, { data: { toggle: 'tooltip', html: 'true', testid: 'mirror-error-badge-content' }, title: html_escape(remote_mirror.last_error.try(:strip)), tabindex: 0 }
+  %td
+    - if mirror_settings_enabled
+      .btn-group.mirror-actions-group{ role: 'group' }
+        - if remote_mirror.ssh_key_auth?
+          = clipboard_button(text: remote_mirror.ssh_public_key, variant: :default, category: :primary, size: :medium, title: _('Copy SSH public key'), testid: 'copy-public-key-button')
+        = render 'shared/remote_mirror_update_button', remote_mirror: remote_mirror
+        = render Pajamas::ButtonComponent.new(variant: :danger,
+        icon: 'remove',
+        button_options: { class: 'js-delete-mirror rspec-delete-mirror', title: _('Remove'), data: { mirror_id: remote_mirror.id, toggle: 'tooltip', container: 'body' } })

@@ -2,20 +2,20 @@
 stage: Analytics
 group: Analytics Instrumentation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
-title: Duo Classification
+title: GitLab Duo Classification
 ---
 
-This guide explains how to properly add the `classification: duo` field to event definitions for AI and Duo features.
+This guide explains how to properly add the `classification: duo` field to event definitions for AI and GitLab Duo features.
 
-## What is the classification field?
+## What is the `classification` field?
 
-The `classification` field is an optional property in event definitions that categorizes events based on their data handling requirements. Currently, the only supported value is `duo`, which is used specifically for AI and Duo-related features.
+The `classification` field is an optional property in event definitions that categorizes events based on their data handling requirements. Currently, the only supported value is `duo`, which is used specifically for AI and GitLab Duo-related features.
 
-## When to use classification: duo
+## When to use `classification: duo`
 
 Add `classification: duo` to your event definition when:
 
-- You are instrumenting AI or Duo features (e.g., Duo Chat, Duo Workflow, AI-powered suggestions)
+- You are instrumenting AI or GitLab Duo features (e.g., GitLab Duo Chat, GitLab Duo Workflow, AI-powered suggestions)
 - Your event is owned by AI Engineering product groups such as:
   - `duo_chat`
   - `ai_framework`
@@ -23,14 +23,14 @@ Add `classification: duo` to your event definition when:
   - Other AI-related product groups
 - The event data should be considered operational data for GitLab self-managed instances
 
-## When NOT to use classification: duo
+## When NOT to use `classification: duo`
 
 **Important**: Do not add `classification: duo` if:
 
-- Your event is not related to AI or Duo features
+- Your event is not related to AI or GitLab Duo features
 - You are instrumenting general GitLab features unrelated to AI
 
-If your event doesn't fall under Duo features, remove the classification field entirely rather than leaving it empty.
+If your event doesn't fall under GitLab Duo features, remove the classification field entirely rather than leaving it empty.
 
 ## Data handling implications
 
@@ -40,9 +40,9 @@ Events with `classification: duo` are treated as operational data, which means:
 - This ensures essential AI feature functionality and monitoring continues to work
 - The data is considered necessary for operational purposes rather than purely analytical
 
-## Example event definition with classification: duo
+## Example event definition with `classification: duo`
 
-Here's an example of a properly configured Duo Chat event:
+Here's an example of a properly configured GitLab Duo Chat event:
 
 ```yaml
 ---
@@ -65,13 +65,13 @@ additional_properties:
     description: Request ID to link to other events of the same AI request.
 ```
 
-### Adding Duo events to external services
+### Adding GitLab Duo events to external services
 
 Events defined by other services that are forwarded through the monolith should be added to the list in [EventEligibilityChecker](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/tracking/event_eligibility_checker.rb#L10).
 
 This ensures that events are forwarded through the instance even when analytics data collection is opted out.
 
-### Duo Workflow Events
+### GitLab Duo Workflow Events
 
 ```yaml
 ---
@@ -92,4 +92,4 @@ tiers:
 
 ## Validation
 
-The classification field is validated against the JSON Schema. Currently, only "duo" is accepted as a valid value.
+The classification field is validated against the JSON Schema. Currently, only `duo` is accepted as a valid value.

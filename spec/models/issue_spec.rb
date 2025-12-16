@@ -10,6 +10,8 @@ RSpec.describe Issue, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:reusable_project) { create(:project) }
 
+  let_it_be(:support_bot) { create(:support_bot) }
+
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
     it { is_expected.to belong_to(:project) }
@@ -577,6 +579,90 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  describe '.non_archived' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:archived_group) { create(:group, :archived) }
+    let_it_be(:subgroup) { create(:group, parent: archived_group) }
+
+    let_it_be(:non_archived_project) { create(:project, group: group) }
+    let_it_be(:archived_project) { create(:project, :archived, group: group) }
+    let_it_be(:project_in_archived_group) { create(:project, group: archived_group) }
+    let_it_be(:project_in_subgroup_of_archived_group) { create(:project, group: subgroup) }
+
+    let_it_be(:issue_in_non_archived_project) { create(:issue, project: non_archived_project) }
+    let_it_be(:issue_in_archived_project) { create(:issue, project: archived_project) }
+    let_it_be(:issue_in_archived_group) { create(:issue, project: project_in_archived_group) }
+    let_it_be(:issue_in_subgroup_of_archived_group) { create(:issue, project: project_in_subgroup_of_archived_group) }
+    let_it_be(:group_level_issue) { create(:issue, :group_level, namespace: group) }
+    let_it_be(:group_level_issue_in_archived_group) { create(:issue, :group_level, namespace: archived_group) }
+
+    subject { described_class.non_archived }
+
+    it 'returns issues from non-archived projects' do
+      is_expected.to include(issue_in_non_archived_project)
+    end
+
+    it 'returns group-level issues from non-archived groups' do
+      is_expected.to include(group_level_issue)
+    end
+
+    it 'does not return issues from archived projects' do
+      is_expected.not_to include(issue_in_archived_project)
+    end
+
+    it 'does not return issues from projects in archived groups' do
+      is_expected.not_to include(issue_in_archived_group)
+    end
+
+    it 'does not return issues from projects in subgroups of archived groups' do
+      is_expected.not_to include(issue_in_subgroup_of_archived_group)
+    end
+
+    it 'does not return group-level issues from archived groups' do
+      is_expected.not_to include(group_level_issue_in_archived_group)
+    end
+
+    context 'when optimize_issuable_non_archived_scope feature flag is disabled' do
+      before do
+        stub_feature_flags(optimize_issuable_non_archived_scope: false)
+      end
+
+      it 'returns issues from non-archived projects' do
+        is_expected.to include(issue_in_non_archived_project)
+      end
+
+      it 'does not return issues from archived projects' do
+        is_expected.not_to include(issue_in_archived_project)
+      end
+
+      it 'returns issues from projects in archived groups' do
+        is_expected.to include(issue_in_archived_group)
+      end
+
+      it 'returns issues from projects in subgroups of archived groups' do
+        is_expected.to include(issue_in_subgroup_of_archived_group)
+      end
+
+      it 'returns group-level issues from non-archived groups' do
+        is_expected.to include(group_level_issue)
+      end
+
+      it 'returns group-level issues from archived groups' do
+        is_expected.to include(group_level_issue_in_archived_group)
+      end
+
+      context 'with use_existing_join parameter' do
+        it 'reuses the existing join when use_existing_join is true' do
+          relation = described_class.joins(:project)
+          result = relation.non_archived(use_existing_join: true)
+
+          expect(result).to include(issue_in_non_archived_project)
+          expect(result).not_to include(issue_in_archived_project)
+        end
+      end
+    end
+  end
+
   describe '#sort' do
     let(:project) { reusable_project }
 
@@ -1027,7 +1113,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     subject { issue.from_service_desk? }
 
     context 'when issue author is support bot' do
-      let(:issue) { create(:issue, project: reusable_project, author: ::Users::Internal.support_bot) }
+      let(:issue) { create(:issue, project: reusable_project, author: support_bot) }
 
       it { is_expected.to be_truthy }
     end
@@ -1321,8 +1407,6 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#check_for_spam?' do
-    let_it_be(:support_bot) { ::Users::Internal.support_bot }
-
     where(:support_bot?, :visibility_level, :confidential, :new_attributes, :check_for_spam?) do
       ### non-support-bot cases
       # spammable attributes changing
@@ -1433,7 +1517,8 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '.service_desk' do
-    let_it_be(:service_desk_issue) { create(:issue, project: reusable_project, author: ::Users::Internal.support_bot) }
+    let_it_be(:service_desk_issue) { create(:issue, project: reusable_project, author: support_bot) }
+
     let_it_be(:regular_issue) { create(:issue, project: reusable_project) }
     let_it_be(:ticket) { create(:work_item, :ticket, project: reusable_project, author: user) }
 
@@ -2064,6 +2149,103 @@ RSpec.describe Issue, feature_category: :team_planning do
 
         expect(issue.reload.description).to eq("new")
         expect(issue.work_item_description.description).to eq("old")
+      end
+    end
+  end
+
+  describe '#show_as_work_item?' do
+    subject(:issue_as_work_item) { issue.show_as_work_item? }
+
+    context 'with a service desk issue' do
+      let(:issue) { build_stubbed(:issue, project: reusable_project, author: support_bot) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'with an incident' do
+      let(:issue) { build_stubbed(:incident, project: reusable_project) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when work_item_type is not set' do
+      let(:issue) { build_stubbed(:issue, work_item_type: nil) }
+
+      it { is_expected.to be true }
+    end
+
+    context 'with a regular issue' do
+      let(:issue) { build_stubbed(:issue, project: reusable_project) }
+
+      it { is_expected.to be true }
+    end
+
+    context 'with a task' do
+      let(:issue) { build_stubbed(:issue, :task, project: reusable_project) }
+
+      it { is_expected.to be true }
+    end
+  end
+
+  describe '#==' do
+    let(:issue) { build_stubbed(:issue, project: reusable_project) }
+
+    it 'returns false when comparing with a non-ActiveRecord object' do
+      expect(issue == :some_symbol).to eq(false)
+    end
+
+    it 'returns false when comparing with an unrelated ActiveRecord object' do
+      user = build_stubbed(:user, id: issue.id)
+
+      expect(issue == user).to eq(false)
+    end
+
+    it 'returns false when issues have different ids' do
+      other_issue = build_stubbed(:issue, project: reusable_project)
+
+      expect(issue == other_issue).to eq(false)
+    end
+
+    it 'returns false when comparing different unpersisted issues' do
+      expect(build(:issue) == build(:issue)).to eq(false)
+    end
+
+    it 'returns true when comparing the same unpersisted issue' do
+      new_issue = build(:issue)
+
+      expect(new_issue == new_issue).to eq(true)
+    end
+
+    it 'returns true when ids are the same' do
+      other_issue_instance = build_stubbed(:issue, project: reusable_project, id: issue.id)
+
+      expect(issue == other_issue_instance).to eq(true)
+    end
+
+    it 'returns true when compared with subclass having the same id' do
+      work_item = build_stubbed(:work_item, project: reusable_project, id: issue.id)
+
+      expect(issue == work_item).to eq(true)
+    end
+  end
+
+  describe '#referenced_mentionables' do
+    let_it_be(:issue) { create(:issue, project: reusable_project) }
+
+    context 'when mentioning an issue from the work item version of itself' do
+      it 'does not include the self-reference' do
+        issue_as_work_item = WorkItem.find(issue.id)
+        issue_as_work_item.description = issue.to_reference
+
+        expect(issue_as_work_item.referenced_mentionables).to be_empty
+      end
+    end
+
+    context 'when mentioning a work item from the issue version of itself' do
+      it 'does not include the self-reference' do
+        issue.description = Gitlab::Routing.url_helpers.project_work_item_url(issue.project, issue)
+
+        expect(issue.referenced_mentionables).to be_empty
       end
     end
   end

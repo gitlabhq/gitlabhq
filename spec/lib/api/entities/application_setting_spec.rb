@@ -2,8 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::ApplicationSetting do
+RSpec.describe API::Entities::ApplicationSetting, feature_category: :shared do
   let_it_be(:application_setting, reload: true) { create(:application_setting) }
+
+  let_it_be(:default_organization) { create(:organization) }
+
+  before do
+    allow(::Organizations::Organization).to receive(:default_organization).and_return(default_organization)
+  end
 
   subject(:output) { described_class.new(application_setting).as_json }
 

@@ -8,8 +8,9 @@ import {
 import { Mousetrap } from '~/lib/mousetrap';
 import eventHub from '~/notes/event_hub';
 import discussionNavigation from '~/notes/mixins/discussion_navigation';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
-export default {
+export default normalizeRender({
   mixins: [discussionNavigation],
   data() {
     return {
@@ -33,5 +34,5 @@ export default {
   render() {
     return this.$scopedSlots.default?.();
   },
-};
+});
 </script>

@@ -38,7 +38,7 @@ RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category:
   end
 
   context 'with authorized user' do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, organizations: [owner_project.organization, new_project.organization].uniq) }
 
     context 'with user owning runner and being maintainer of new project' do
       before do

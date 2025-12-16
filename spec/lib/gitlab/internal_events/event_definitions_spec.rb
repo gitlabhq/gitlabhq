@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::InternalEvents::EventDefinitions, feature_category: :product_analytics do
   around do |example|

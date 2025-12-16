@@ -12,7 +12,7 @@ module Types
         Users::GroupCalloutFeatureNameEnum,
         null: false,
         description: 'Name of the feature that the callout is for.'
-      field :group_id, GraphQL::Types::ID, null: false, description: 'Group id that the callout applies.'
+      field :group_id, ::Types::GlobalIDType[::Group], null: false, description: 'Group id that the callout applies.'
     end
   end
 end

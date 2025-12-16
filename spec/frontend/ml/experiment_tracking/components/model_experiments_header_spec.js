@@ -38,7 +38,7 @@ describe('ml/experiment_tracking/components/model_experiments_header.vue', () =>
 
   it('count area exists', () => {
     expect(findCountIcon().props()).toMatchObject({
-      name: 'issue-type-test-case',
+      name: 'work-item-test-case',
     });
   });
 

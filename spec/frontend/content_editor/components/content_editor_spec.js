@@ -119,6 +119,12 @@ describe('ContentEditor', () => {
     expect(wrapper.findComponent(FormattingToolbar).props().hideAttachmentButton).toBe(true);
   });
 
+  it('does not show the immersive class', () => {
+    createWrapper();
+
+    expect(wrapper.findByTestId('content-editor-container').classes()).not.toContain('immersive');
+  });
+
   describe('when setting initial content', () => {
     it('displays loading indicator', async () => {
       createWrapper();
@@ -330,5 +336,11 @@ describe('ContentEditor', () => {
     expect(commands.focus).toHaveBeenCalled();
     expect(commands.pasteContent).toHaveBeenCalledWith('Paste content');
     expect(commands.run).toHaveBeenCalled();
+  });
+
+  it('does show the immersive class when immersive prop is true', () => {
+    createWrapper({ immersive: true });
+
+    expect(wrapper.findByTestId('content-editor-container').classes()).toContain('immersive');
   });
 });

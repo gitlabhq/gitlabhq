@@ -49,7 +49,7 @@ You can use the UI or the API to enforce 2FA for all users.
 
 ### Use the UI
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-in restrictions**:
    - Select **Enforce two-factor authentication** to enable this feature.
@@ -86,7 +86,7 @@ Administrators can enforce 2FA for both:
 - Administrator users.
 - Regular users who have been assigned a [custom admin role](../user/custom_roles/_index.md).
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand the **Sign-in restrictions** section:
    1. Select **Require administrators to enable 2FA**.
@@ -113,8 +113,11 @@ You can enforce 2FA for all users in a group or subgroup.
 
 {{< alert type="note" >}}
 
-2FA enforcement applies to both [direct and inherited members](../user/project/members/_index.md#membership-types) group members.
-If 2FA is enforced on a subgroup, inherited members (members of the ancestor groups) must also enroll an authentication factor.
+- 2FA enforcement applies to both
+  [direct and inherited members](../user/project/members/_index.md#membership-types) group members.
+- If 2FA is enforced on a subgroup, inherited members must enroll an authentication factor.
+  Inherited members are members of the ancestor groups.
+- Email OTP does not satisfy the 2FA requirement. Members must configure either an app-based TOTP or WebAuthn.
 
 {{< /alert >}}
 
@@ -124,7 +127,7 @@ Prerequisites:
 
 To enforce 2FA for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Select **All users in this group must set up two-factor authentication**.
@@ -141,12 +144,30 @@ The GitLab [incoming email](../administration/incoming_email.md) feature does no
 
 ### 2FA in subgroups
 
-By default, each subgroup can configure 2FA requirements that might differ from the parent group.
+By default, each subgroup can configure 2FA requirements that might differ from the top-level group.
+
+When a user is a member of multiple groups in a hierarchy, the most restrictive 2FA requirement applies across all levels.
+
+For example, when 2FA is enforced in a top-level group:
+
+- All members of the top-level group must use 2FA.
+- All members of descendant subgroups must use 2FA.
+
+When 2FA is not enforced in a top-level group:
+
+- If **Allow more restrictive 2FA enforcement for subgroups** is enabled, each subgroup
+  can enforce a 2FA requirement independently.
+  If a subgroup enables a 2FA requirement:
+  - All members of the top-level group must use 2FA.
+  - All members of any sibling subgroups must use 2FA.
+
+- If **Allow more restrictive 2FA enforcement for subgroups** is disabled, subgroups
+  cannot enforce a 2FA requirement independently. 2FA is not required for any members in the hierarchy.
 
 {{< alert type="note" >}}
 
-Inherited members might also have different 2FA requirements applied at higher levels in the hierarchy.
-In such cases, the most restrictive requirement takes precedence.
+When **All users in this group must set up two-factor authentication** is enabled, it always
+takes precedence over **Allow more restrictive 2FA enforcement for subgroups**.
 
 {{< /alert >}}
 
@@ -154,7 +175,7 @@ To prevent subgroups from setting individual 2FA requirements:
 
 1. Go to the top-level group's **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
-1. Clear the **Allow subgroups to set up their own two-factor authentication rule** checkbox.
+1. Clear the **Allow more restrictive 2FA enforcement for subgroups** checkbox.
 
 ### 2FA in projects
 
@@ -253,7 +274,7 @@ Top-level group Owners can disable two-factor authentication (2FA) for enterpris
 
 To disable 2FA:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Manage** > **Members**.
 1. Find a user with the **Enterprise** and **2FA** badges.
 1. Select **More actions** ({{< icon name="ellipsis_v" >}}) and select **Disable two-factor authentication**.
@@ -288,7 +309,7 @@ Then authenticate by either:
 
 - Entering the correct OTP.
 - Responding to a device push notification if
-  [FortiAuthenticator is enabled](../user/profile/account/two_factor_authentication.md#enable-a-one-time-password-authenticator-using-fortiauthenticator).
+  [FortiAuthenticator is enabled](../user/profile/account/two_factor_authentication.md#add-a-fortiauthenticator-authenticator).
 
 After successful authentication, you can perform Git over SSH operations for 15 minutes (default) with the associated
 SSH key.

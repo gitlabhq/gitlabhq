@@ -106,4 +106,31 @@ RSpec.describe ContainerRegistry::Protection::DeleteTagRuleService, '#execute', 
     it_behaves_like 'an erroneous service response',
       message: 'GitLab container registry API not supported'
   end
+
+  context 'when tracking internal events' do
+    context 'with mutable tag rule' do
+      it 'tracks the delete_container_registry_protected_tag_rule event with mutable rule_type' do
+        expect { service_execute }
+          .to trigger_internal_events('delete_container_registry_protected_tag_rule')
+          .with(
+            project: project,
+            namespace: project.namespace,
+            user: current_user,
+            additional_properties: { rule_type: 'mutable' }
+          )
+          .once
+      end
+    end
+
+    context 'when deletion fails' do
+      before do
+        allow(container_protection_tag_rule).to receive(:destroy!).and_raise(StandardError.new('Some error'))
+      end
+
+      it 'does not track the event' do
+        expect { service_execute }.to raise_error(StandardError, 'Some error')
+          .and not_trigger_internal_events('delete_container_registry_protected_tag_rule')
+      end
+    end
+  end
 end

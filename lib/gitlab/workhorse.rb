@@ -45,6 +45,10 @@ module Gitlab
           }
         }
 
+        ::Gitlab::Auth::Identity.currently_linked do |identity|
+          attrs[:GlScopedUserID] = identity.scoped_user.id.to_s
+        end
+
         if authentication_context[:authentication_method] == :ci_job_token
           attrs[:GlBuildID] = authentication_context[:authentication_method_id].to_s
         end

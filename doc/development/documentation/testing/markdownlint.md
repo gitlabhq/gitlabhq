@@ -23,6 +23,7 @@ markdownlint configuration is found in the following projects:
 - [`charts`](https://gitlab.com/gitlab-org/charts/gitlab)
 - [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit)
 - [`gitlab-operator`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator)
+- [`cli`](https://gitlab.com/gitlab-org/cli)
 
 This configuration is also used in build pipelines.
 

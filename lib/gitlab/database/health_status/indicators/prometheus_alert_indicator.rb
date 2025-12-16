@@ -63,7 +63,8 @@ module Gitlab
             return 'Prometheus Settings not configured' unless prometheus_alert_db_indicators_settings.present?
             return 'Prometheus client is not ready' unless client.ready?
             return "#{indicator_name} SLI query is not configured" unless sli_query
-            return "#{indicator_name} SLO is not configured" unless slo
+
+            "#{indicator_name} SLO is not configured" unless slo
           end
 
           def prometheus_alert_db_indicators_settings

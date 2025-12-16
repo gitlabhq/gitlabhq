@@ -3,8 +3,9 @@
 
 = render ::Layouts::PageHeadingComponent.new(s_('Observability|O11y service settings')) do |c|
   - c.with_actions do
-    = link_button_to new_experimental_o11y_service_setting_path, variant: :confirm do
-      = s_('Observability|New O11y service setting')
+    .gl-flex.gl-align-items-center.gl-gap-3
+      = link_button_to new_experimental_o11y_service_setting_path, variant: :confirm do
+        = s_('Observability|New O11y service setting')
 
 - if @o11y_service_settings.any?
   = render ::Layouts::SettingsBlockComponent.new(s_('Observability|O11y service configurations'),
@@ -36,6 +37,15 @@
                 = link_to s_('Observability|Edit'), edit_experimental_o11y_service_setting_path(setting), class: 'btn btn-sm btn-default'
                 = link_to s_('Observability|Delete'), experimental_o11y_service_setting_path(setting), method: :delete, class: 'btn btn-sm btn-danger', data: { confirm: s_('Observability|Are you sure you want to delete this O11y service setting?') }
 
-      = paginate @o11y_service_settings, theme: 'gitlab'
+      .gl-flex.gl-justify-center.gl-align-items-center.gl-gap-3.gl-flex-wrap-nowrap
+        = paginate @o11y_service_settings, theme: 'gitlab'
+
+        = gitlab_ui_form_with url: request.path, method: :get, local: true, class: 'gl-flex gl-align-items-center gl-gap-2 gl-mt-3' do |f|
+          - request.query_parameters.except(:per_page, :page).each do |k, v|
+            = hidden_field_tag k, v
+          = select_tag :per_page,
+            options_for_select(o11y_per_page_options, params[:per_page]),
+            class: 'gl-form-select'
+          = f.submit s_('Observability|Apply'), pajamas_button: true, size: :small
 - else
   = render ::Layouts::EmptyResultComponent.new(type: :search)

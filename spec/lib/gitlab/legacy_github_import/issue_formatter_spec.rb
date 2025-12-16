@@ -21,7 +21,8 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
       source_user_identifier: octocat[:id],
       namespace: project.root_ancestor,
       source_hostname: 'https://gitea.com',
-      import_type: ::Import::SOURCE_GITEA
+      import_type: ::Import::SOURCE_GITEA,
+      placeholder_user: create(:user, :import_user)
     )
   end
 
@@ -425,6 +426,17 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
     context 'when importing into a personal namespace' do
       before_all do
         project.update!(namespace: create(:namespace))
+      end
+
+      it 'does not push any placeholder references' do
+        issue.create!
+        expect(cached_references).to be_empty
+      end
+    end
+
+    context 'when direct reassignment is supported' do
+      before do
+        allow(Import::DirectReassignService).to receive(:supported?).and_return(true)
       end
 
       it 'does not push any placeholder references' do

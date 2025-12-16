@@ -51,6 +51,8 @@ tags:
   description: Operations about branches
 - name: secure_files
   description: Operations about secure_files
+- name: pipeline_schedules
+  description: Operations about pipeline_schedules
 - name: cargo_packages
   description: Operations about cargo_packages
 - name: commits
@@ -71,6 +73,8 @@ tags:
   description: Operations about protected_tags
 - name: remote_mirrors
   description: Operations about remote_mirrors
+- name: attestations
+  description: Operations about attestations
 - name: tags
   description: Operations about tags
 - name: batched_background_migrations
@@ -93,12 +97,16 @@ tags:
   description: Operations about jobs
 - name: events
   description: Operations about events
+- name: glql
+  description: Operations about glqls
 - name: keys
   description: Operations about keys
 - name: markdown
   description: Operations about markdowns
 - name: namespaces
   description: Operations about namespaces
+- name: offline_exports
+  description: Operations about offline_exports
 - name: organizations
   description: Operations about organizations
 - name: snippets
@@ -115,7 +123,7 @@ tags:
   description: Operations about users
 - name: application
   description: Operations about applications
-- name: import
+- name: imports
   description: Operations about imports
 - name: slack
   description: Operations about slacks
@@ -2291,7 +2299,7 @@ paths:
           schema:
             type: array
             items:
-              "$ref": "#/definitions/EE_API_Entities_AuditEvent"
+              "$ref": "#/definitions/API_Entities_AuditEvent"
       tags:
       - groups
       operationId: getApiV4GroupsIdAuditEvents
@@ -2316,7 +2324,7 @@ paths:
         '200':
           description: Get a specific audit event in this group.
           schema:
-            "$ref": "#/definitions/EE_API_Entities_AuditEvent"
+            "$ref": "#/definitions/API_Entities_AuditEvent"
       tags:
       - groups
       operationId: getApiV4GroupsIdAuditEventsAuditEventId
@@ -2494,7 +2502,7 @@ paths:
           schema:
             type: array
             items:
-              "$ref": "#/definitions/EE_API_Entities_SshCertificate"
+              "$ref": "#/definitions/API_Entities_SshCertificate"
         '401':
           description: Unauthorized
         '403':
@@ -2526,7 +2534,7 @@ paths:
         '201':
           description: Create a ssh certificate for a group.
           schema:
-            "$ref": "#/definitions/EE_API_Entities_SshCertificate"
+            "$ref": "#/definitions/API_Entities_SshCertificate"
         '400':
           description: Bad request
         '401':
@@ -7892,7 +7900,7 @@ paths:
           description: Get the direct memberships of a billable user of a top-level
             group.
           schema:
-            "$ref": "#/definitions/EE_API_Entities_BillableMembership"
+            "$ref": "#/definitions/API_Entities_BillableMembership"
       tags:
       - groups
       operationId: getApiV4GroupsIdBillableMembersUserIdMemberships
@@ -7935,7 +7943,7 @@ paths:
           description: Get the indirect memberships of a billable user of a top-level
             group.
           schema:
-            "$ref": "#/definitions/EE_API_Entities_BillableMembership"
+            "$ref": "#/definitions/API_Entities_BillableMembership"
       tags:
       - groups
       operationId: getApiV4GroupsIdBillableMembersUserIdIndirect
@@ -8344,7 +8352,9 @@ paths:
         '200':
           description: List group merge requests
           schema:
-            "$ref": "#/definitions/API_Entities_MergeRequestBasic"
+            type: array
+            items:
+              "$ref": "#/definitions/API_Entities_MergeRequestBasic"
         '401':
           description: Unauthorized
         '404':
@@ -8607,6 +8617,7 @@ paths:
         example: k813f89485474661234z7109cve5709eFFFFFFFF
       - in: query
         name: same_file_name
+        description: The symbol file name
         type: string
         required: true
       responses:
@@ -9025,13 +9036,27 @@ paths:
         type: boolean
         required: false
       - in: query
+        name: include_archived
+        description: Includes archived projects in the search. Gated by the :search_api_fork_archived_filters
+          feature flag
+        type: boolean
+        default: false
+        required: false
+      - in: query
         name: fields
-        description: Array of fields you wish to search
+        description: Array of fields you wish to search. Available with advanced search.
         type: array
         items:
           type: string
           enum:
           - title
+        required: false
+      - in: query
+        name: exclude_forks
+        description: Excludes forked projects in the search. Available with exact
+          code search. Gated by the :search_api_fork_archived_filters feature flag
+        type: boolean
+        default: true
         required: false
       - in: query
         name: page
@@ -11027,6 +11052,13 @@ paths:
           only on Premium and Ultimate tiers.
         type: string
         required: false
+      - in: query
+        name: search_recent_successful_pipelines
+        description: Search across recent successful pipelines instead of just the
+          latest one.
+        type: boolean
+        default: false
+        required: false
       responses:
         '200':
           description: Download the artifacts archive from a job
@@ -12810,7 +12842,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: getApiV4ProjectsIdPipelineSchedules
     post:
       description: Create a new pipeline schedule
@@ -12844,7 +12876,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: postApiV4ProjectsIdPipelineSchedules
   "/api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}":
     get:
@@ -12877,7 +12909,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: getApiV4ProjectsIdPipelineSchedulesPipelineScheduleId
     put:
       description: Edit a pipeline schedule
@@ -12918,7 +12950,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: putApiV4ProjectsIdPipelineSchedulesPipelineScheduleId
     delete:
       description: Delete a pipeline schedule
@@ -12950,7 +12982,7 @@ paths:
         '412':
           description: Precondition Failed
       tags:
-      - projects
+      - pipeline_schedules
       operationId: deleteApiV4ProjectsIdPipelineSchedulesPipelineScheduleId
   "/api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}/pipelines":
     get:
@@ -13075,7 +13107,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: getApiV4ProjectsIdPipelineSchedulesPipelineScheduleIdPipelines
   "/api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}/take_ownership":
     post:
@@ -13112,7 +13144,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: postApiV4ProjectsIdPipelineSchedulesPipelineScheduleIdTakeOwnership
   "/api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}/play":
     post:
@@ -13146,7 +13178,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: postApiV4ProjectsIdPipelineSchedulesPipelineScheduleIdPlay
   "/api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}/variables":
     post:
@@ -13188,9 +13220,47 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: postApiV4ProjectsIdPipelineSchedulesPipelineScheduleIdVariables
   "/api/v4/projects/{id}/pipeline_schedules/{pipeline_schedule_id}/variables/{key}":
+    get:
+      description: Get a single pipeline schedule variable
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+        example: 18
+      - in: path
+        name: pipeline_schedule_id
+        description: The pipeline schedule id
+        type: integer
+        format: int32
+        required: true
+        example: 13
+      - in: path
+        name: key
+        description: The key of the variable
+        type: string
+        required: true
+        example: NEW_VARIABLE
+      responses:
+        '200':
+          description: Get a single pipeline schedule variable
+          schema:
+            "$ref": "#/definitions/API_Entities_Ci_Variable"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      tags:
+      - pipeline_schedules
+      operationId: getApiV4ProjectsIdPipelineSchedulesPipelineScheduleIdVariablesKey
     put:
       description: Edit a pipeline schedule variable
       produces:
@@ -13236,7 +13306,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: putApiV4ProjectsIdPipelineSchedulesPipelineScheduleIdVariablesKey
     delete:
       description: Delete a pipeline schedule variable
@@ -13274,7 +13344,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipeline_schedules
       operationId: deleteApiV4ProjectsIdPipelineSchedulesPipelineScheduleIdVariablesKey
   "/api/v4/projects/{id}/(ref/{ref}/)trigger/pipeline":
     post:
@@ -25876,7 +25946,7 @@ paths:
         '201':
           description: Upload a metric image for an issue
           schema:
-            "$ref": "#/definitions/EE_API_Entities_IssuableMetricImage"
+            "$ref": "#/definitions/API_Entities_IssuableMetricImage"
       tags:
       - projects
       operationId: postApiV4ProjectsIdIssuesIssueIidMetricImages
@@ -25934,7 +26004,7 @@ paths:
         '200':
           description: Update a metric image for an issue
           schema:
-            "$ref": "#/definitions/EE_API_Entities_IssuableMetricImage"
+            "$ref": "#/definitions/API_Entities_IssuableMetricImage"
       tags:
       - projects
       operationId: putApiV4ProjectsIdIssuesIssueIidMetricImagesMetricImageId
@@ -25963,7 +26033,7 @@ paths:
         '200':
           description: Remove a metric image for an issue
           schema:
-            "$ref": "#/definitions/EE_API_Entities_IssuableMetricImage"
+            "$ref": "#/definitions/API_Entities_IssuableMetricImage"
       tags:
       - projects
       operationId: deleteApiV4ProjectsIdIssuesIssueIidMetricImagesMetricImageId
@@ -27234,7 +27304,9 @@ paths:
         '200':
           description: List project merge requests
           schema:
-            "$ref": "#/definitions/API_Entities_MergeRequestBasic"
+            type: array
+            items:
+              "$ref": "#/definitions/API_Entities_MergeRequestBasic"
         '401':
           description: Unauthorized
         '404':
@@ -28060,7 +28132,7 @@ paths:
           description: 'Deprecated in 16.0: Use the merge request approvals API instead.
             Change approval-related configuration'
           schema:
-            "$ref": "#/definitions/EE_API_Entities_ApprovalState"
+            "$ref": "#/definitions/API_Entities_ApprovalState"
       tags:
       - projects
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals
@@ -28181,7 +28253,7 @@ paths:
         '200':
           description: Get approval state of merge request
           schema:
-            "$ref": "#/definitions/EE_API_Entities_MergeRequestApprovalState"
+            "$ref": "#/definitions/API_Entities_MergeRequestApprovalState"
       tags:
       - projects
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidApprovalState
@@ -28717,6 +28789,7 @@ paths:
         example: k813f89485474661234z7109cve5709eFFFFFFFF
       - in: query
         name: same_file_name
+        description: The symbol file name
         type: string
         required: true
       responses:
@@ -30234,6 +30307,34 @@ paths:
       tags:
       - projects
       operationId: deleteApiV4ProjectsIdRegistryProtectionRepositoryRulesProtectionRuleId
+  "/api/v4/projects/{id}/registry/protection/tag/rules":
+    get:
+      summary: Gets a list of container protection tag rules for a project
+      description: This feature was introduced in GitLab 18.7.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project.
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Gets a list of container protection tag rules for a project
+          schema:
+            type: array
+            items:
+              "$ref": "#/definitions/API_Entities_Projects_ContainerRegistry_Protection_TagRule"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - projects
+      operationId: getApiV4ProjectsIdRegistryProtectionTagRules
   "/api/v4/projects/{id}/debian_distributions":
     post:
       summary: Create a Debian Distribution
@@ -31383,10 +31484,25 @@ paths:
         required: false
       - in: formData
         name: namespace
-        description: The ID or name of the namespace that the project will be imported
-          into. Defaults to the current user's namespace.
+        description: "(deprecated) The ID or path of the namespace to import the project
+          to. Defaults to the current user's namespace."
         type: string
         required: false
+      - in: formData
+        name: namespace_id
+        description: The ID of the namespace that the project will be imported into.
+          Defaults to the current user's namespace.
+        type: integer
+        format: int32
+        required: false
+        example: 1
+      - in: formData
+        name: namespace_path
+        description: The path of the namespace that the project will be imported into.
+          Defaults to the current user's namespace.
+        type: string
+        required: false
+        example: new_path/gitlab
       - in: formData
         name: overwrite
         description: If there is a project in the same namespace and with the same
@@ -31946,6 +32062,11 @@ paths:
       - in: formData
         name: override_params[duo_remote_flows_enabled]
         description: Enable GitLab Duo remote flows for this project
+        type: boolean
+        required: false
+      - in: formData
+        name: override_params[duo_sast_fp_detection_enabled]
+        description: Enable GitLab Duo SAST false positive detection for this project
         type: boolean
         required: false
       - in: formData
@@ -32080,10 +32201,25 @@ paths:
         required: false
       - in: formData
         name: namespace
-        description: The ID or name of the namespace that the project will be imported
-          into. Defaults to the current user's namespace.
+        description: "(deprecated) The ID or path of the namespace to import the project
+          to. Defaults to the current user's namespace."
         type: string
         required: false
+      - in: formData
+        name: namespace_id
+        description: The ID of the namespace that the project will be imported into.
+          Defaults to the current user's namespace.
+        type: integer
+        format: int32
+        required: false
+        example: 1
+      - in: formData
+        name: namespace_path
+        description: The path of the namespace that the project will be imported into.
+          Defaults to the current user's namespace.
+        type: string
+        required: false
+        example: new_path/gitlab
       - in: formData
         name: overwrite
         description: If there is a project in the same namespace and with the same
@@ -32643,6 +32779,11 @@ paths:
       - in: formData
         name: override_params[duo_remote_flows_enabled]
         description: Enable GitLab Duo remote flows for this project
+        type: boolean
+        required: false
+      - in: formData
+        name: override_params[duo_sast_fp_detection_enabled]
+        description: Enable GitLab Duo SAST false positive detection for this project
         type: boolean
         required: false
       - in: formData
@@ -32856,10 +32997,25 @@ paths:
         required: false
       - in: formData
         name: namespace
-        description: The ID or name of the namespace that the project will be imported
-          into. Defaults to the current user's namespace.
+        description: "(deprecated) The ID or path of the namespace to import the project
+          to. Defaults to the current user's namespace."
         type: string
         required: false
+      - in: formData
+        name: namespace_id
+        description: The ID of the namespace that the project will be imported into.
+          Defaults to the current user's namespace.
+        type: integer
+        format: int32
+        required: false
+        example: 1
+      - in: formData
+        name: namespace_path
+        description: The path of the namespace that the project will be imported into.
+          Defaults to the current user's namespace.
+        type: string
+        required: false
+        example: new_path/gitlab
       - in: formData
         name: overwrite
         description: If there is a project in the same namespace and with the same
@@ -33419,6 +33575,11 @@ paths:
       - in: formData
         name: override_params[duo_remote_flows_enabled]
         description: Enable GitLab Duo remote flows for this project
+        type: boolean
+        required: false
+      - in: formData
+        name: override_params[duo_sast_fp_detection_enabled]
+        description: Enable GitLab Duo SAST false positive detection for this project
         type: boolean
         required: false
       - in: formData
@@ -36064,7 +36225,7 @@ paths:
           schema:
             type: array
             items:
-              "$ref": "#/definitions/EE_API_Entities_AuditEvent"
+              "$ref": "#/definitions/API_Entities_AuditEvent"
       tags:
       - projects
       operationId: getApiV4ProjectsIdAuditEvents
@@ -36089,7 +36250,7 @@ paths:
         '200':
           description: Get a specific audit event in this project.
           schema:
-            "$ref": "#/definitions/EE_API_Entities_AuditEvent"
+            "$ref": "#/definitions/API_Entities_AuditEvent"
       tags:
       - projects
       operationId: getApiV4ProjectsIdAuditEventsAuditEventId
@@ -38258,7 +38419,7 @@ paths:
         required: false
       - in: query
         name: fields
-        description: Array of fields you wish to search
+        description: Array of fields you wish to search. Available with advanced search.
         type: array
         items:
           type: string
@@ -38331,7 +38492,7 @@ paths:
     get:
       summary: Fetch the list of all attestations for a specific project and artifact
         hash
-      description: This feature was introduced in GitLab 18.5
+      description: This feature was introduced in GitLab 18.7
       produces:
       - application/json
       parameters:
@@ -38349,15 +38510,38 @@ paths:
         '200':
           description: Fetch the list of all attestations for a specific project and
             artifact hash
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
+          schema:
+            "$ref": "#/definitions/API_Entities_SupplyChain_Attestation"
         '404':
-          description: Artifact not found
+          description: Artifact SHA-256 not found
       tags:
-      - projects
+      - attestations
       operationId: getApiV4ProjectsIdAttestationsSubjectDigest
+  "/api/v4/projects/{id}/attestations/{attestation_iid}/download":
+    get:
+      summary: Fetch a specific bundle by iid
+      description: This feature was introduced in GitLab 18.7
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: attestation_iid
+        description: The iid of the attestation
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Fetch a specific bundle by iid
+        '404':
+          description: Artifact SHA-256 not found
+      tags:
+      - attestations
+      operationId: getApiV4ProjectsIdAttestationsAttestationIidDownload
   "/api/v4/projects/{id}/repository/tags":
     get:
       description: Get a project repository tags
@@ -40525,6 +40709,25 @@ paths:
       tags:
       - runners
       operationId: postApiV4RunnersResetAuthenticationToken
+  "/api/v4/runners/router/discovery":
+    get:
+      summary: Discover Job Router information
+      description: This endpoint can be used by the runner to retrieve information
+        about the Job Router.
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: Discover Job Router information
+          schema:
+            "$ref": "#/definitions/API_Entities_Ci_JobRouter_DiscoveryInformation"
+        '403':
+          description: 403 Forbidden
+        '501':
+          description: 501 Not Implemented
+      tags:
+      - runners
+      operationId: getApiV4RunnersRouterDiscovery
   "/api/v4/runners/all":
     get:
       summary: List all runners
@@ -43618,7 +43821,7 @@ paths:
         '200':
           description: Posts the current node status to the primary site
           schema:
-            "$ref": "#/definitions/EE_API_Entities_GeoNodeStatus"
+            "$ref": "#/definitions/API_Entities_GeoNodeStatus"
         '400':
           description: 400 Bad Request
         '401':
@@ -43756,6 +43959,36 @@ paths:
       tags:
       - geo
       operationId: postApiV4GeoNodeProxyIdGraphql
+  "/api/v4/glql":
+    post:
+      summary: Execute GLQL query
+      description: Execute a GLQL (GitLab Query Language) query
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: postApiV4Glql
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4Glql"
+      responses:
+        '200':
+          description: Execute GLQL query
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '429':
+          description: Too Many Requests
+        '500':
+          description: Internal server error
+      tags:
+      - glql
+      operationId: postApiV4Glql
   "/api/v4/integrations/slack/events":
     post:
       description: Receive Slack events
@@ -44643,7 +44876,9 @@ paths:
         '200':
           description: List merge requests
           schema:
-            "$ref": "#/definitions/API_Entities_MergeRequestBasic"
+            type: array
+            items:
+              "$ref": "#/definitions/API_Entities_MergeRequestBasic"
         '401':
           description: Unauthorized
         '422':
@@ -44911,6 +45146,72 @@ paths:
       tags:
       - namespaces
       operationId: getApiV4NamespacesIdExists
+  "/api/v4/offline_exports":
+    get:
+      description: List all offline transfer exports
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
+      - in: query
+        name: sort
+        description: Return offline transfer exports sorted in created by `asc` or
+          `desc` order.
+        type: string
+        default: desc
+        enum:
+        - asc
+        - desc
+        required: false
+      - in: query
+        name: status
+        description: Return offline transfer exports with specified status
+        type: string
+        enum:
+        - created
+        - started
+        - finished
+        - failed
+        required: false
+      responses:
+        '200':
+          description: List all offline transfer exports
+      tags:
+      - offline_exports
+      operationId: getApiV4OfflineExports
+  "/api/v4/offline_exports/{id}":
+    get:
+      description: Get offline transfer export details
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of user's offline transfer export
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '200':
+          description: Get offline transfer export details
+      tags:
+      - offline_exports
+      operationId: getApiV4OfflineExportsId
   "/api/v4/organizations":
     post:
       summary: Create an organization
@@ -45310,13 +45611,27 @@ paths:
         type: boolean
         required: false
       - in: query
+        name: include_archived
+        description: Includes archived projects in the search. Gated by the :search_api_fork_archived_filters
+          feature flag
+        type: boolean
+        default: false
+        required: false
+      - in: query
         name: fields
-        description: Array of fields you wish to search
+        description: Array of fields you wish to search. Available with advanced search.
         type: array
         items:
           type: string
           enum:
           - title
+        required: false
+      - in: query
+        name: exclude_forks
+        description: Excludes forked projects in the search. Available with exact
+          code search. Gated by the :search_api_fork_archived_filters feature flag
+        type: boolean
+        default: true
         required: false
       - in: query
         name: page
@@ -46800,7 +47115,7 @@ paths:
         '429':
           description: Too Many Requests
       tags:
-      - import
+      - imports
       operationId: postApiV4ImportGithubGists
   "/api/v4/slack/trigger":
     post:
@@ -47582,9 +47897,9 @@ definitions:
       ldap_access:
         type: string
       ldap_group_links:
-        "$ref": "#/definitions/EE_API_Entities_LdapGroupLink"
+        "$ref": "#/definitions/API_Entities_LdapGroupLink"
       saml_group_links:
-        "$ref": "#/definitions/EE_API_Entities_SamlGroupLink"
+        "$ref": "#/definitions/API_Entities_SamlGroupLink"
       file_template_project_id:
         type: string
       wiki_access_level:
@@ -47655,7 +47970,7 @@ definitions:
         type: integer
         format: int32
         description: Wiki size in bytes.
-  EE_API_Entities_LdapGroupLink:
+  API_Entities_LdapGroupLink:
     type: object
     properties:
       cn:
@@ -47675,7 +47990,7 @@ definitions:
         type: integer
         format: int32
         example: 12
-  EE_API_Entities_SamlGroupLink:
+  API_Entities_SamlGroupLink:
     type: object
     properties:
       name:
@@ -47881,6 +48196,12 @@ definitions:
       duo_remote_flows_availability:
         type: boolean
         description: Enable GitLab Duo remote flows for this group
+      duo_foundational_flows_availability:
+        type: boolean
+        description: Enable GitLab foundational Duo flows for this group
+      duo_sast_fp_detection_availability:
+        type: boolean
+        description: Enable GitLab Duo SAST false position detection for this group
       amazon_q_auto_review_enabled:
         type: boolean
         description: Enable Amazon Q auto review for merge request
@@ -47890,16 +48211,73 @@ definitions:
       model_prompt_cache_enabled:
         type: boolean
         description: Enable model prompt cache for this group
+      foundational_agents_statuses:
+        type: array
+        description: Whether each foundational agent has been enabled or disabled.
+        items:
+          type: object
+          properties:
+            reference:
+              type: string
+              description: Reference of the foundational agent.
+            enabled:
+              type: boolean
+              description: Whether foundational agent has been enabled or disabled.
+          required:
+          - reference
+          - enabled
       ai_settings_attributes:
         type: object
         description: AI-related settings
         properties:
+          duo_agent_platform_enabled:
+            type: boolean
+            description: Whether Duo Agent Platform features are enabled
           duo_workflow_mcp_enabled:
             type: boolean
             description: Enable MCP support for Duo Agent Platform
           foundational_agents_default_enabled:
             type: boolean
             description: Whether new foundational agents are enabled by default
+          minimum_access_level_execute:
+            type: integer
+            format: int32
+            description: The minimum access level required to execute Duo Agent Platform.
+              This field is behind a feature flag.
+            enum:
+            - 10
+            - 15
+            - 20
+            - 30
+            - 40
+            - 50
+          minimum_access_level_execute_async:
+            type: integer
+            format: int32
+            description: The minimum access level required to execute Duo Agent Platform
+              features in CI/CD. This field is behind a feature flag.
+            enum:
+            - 30
+            - 40
+            - 50
+          minimum_access_level_manage:
+            type: integer
+            format: int32
+            description: The minimum access level required to manage Duo Agent Platform.
+              This field is behind a feature flag.
+            enum:
+            - 30
+            - 40
+            - 50
+          minimum_access_level_enable_on_projects:
+            type: integer
+            format: int32
+            description: The minimum access level required to enable Duo Agent Platform.
+              This field is behind a feature flag.
+            enum:
+            - 30
+            - 40
+            - 50
     required:
     - name
     - path
@@ -48084,6 +48462,12 @@ definitions:
       duo_remote_flows_availability:
         type: boolean
         description: Enable GitLab Duo remote flows for this group
+      duo_foundational_flows_availability:
+        type: boolean
+        description: Enable GitLab foundational Duo flows for this group
+      duo_sast_fp_detection_availability:
+        type: boolean
+        description: Enable GitLab Duo SAST false position detection for this group
       amazon_q_auto_review_enabled:
         type: boolean
         description: Enable Amazon Q auto review for merge request
@@ -48093,16 +48477,73 @@ definitions:
       model_prompt_cache_enabled:
         type: boolean
         description: Enable model prompt cache for this group
+      foundational_agents_statuses:
+        type: array
+        description: Whether each foundational agent has been enabled or disabled.
+        items:
+          type: object
+          properties:
+            reference:
+              type: string
+              description: Reference of the foundational agent.
+            enabled:
+              type: boolean
+              description: Whether foundational agent has been enabled or disabled.
+          required:
+          - reference
+          - enabled
       ai_settings_attributes:
         type: object
         description: AI-related settings
         properties:
+          duo_agent_platform_enabled:
+            type: boolean
+            description: Whether Duo Agent Platform features are enabled
           duo_workflow_mcp_enabled:
             type: boolean
             description: Enable MCP support for Duo Agent Platform
           foundational_agents_default_enabled:
             type: boolean
             description: Whether new foundational agents are enabled by default
+          minimum_access_level_execute:
+            type: integer
+            format: int32
+            description: The minimum access level required to execute Duo Agent Platform.
+              This field is behind a feature flag.
+            enum:
+            - 10
+            - 15
+            - 20
+            - 30
+            - 40
+            - 50
+          minimum_access_level_execute_async:
+            type: integer
+            format: int32
+            description: The minimum access level required to execute Duo Agent Platform
+              features in CI/CD. This field is behind a feature flag.
+            enum:
+            - 30
+            - 40
+            - 50
+          minimum_access_level_manage:
+            type: integer
+            format: int32
+            description: The minimum access level required to manage Duo Agent Platform.
+              This field is behind a feature flag.
+            enum:
+            - 30
+            - 40
+            - 50
+          minimum_access_level_enable_on_projects:
+            type: integer
+            format: int32
+            description: The minimum access level required to enable Duo Agent Platform.
+              This field is behind a feature flag.
+            enum:
+            - 30
+            - 40
+            - 50
       prevent_sharing_groups_outside_hierarchy:
         type: boolean
         description: Prevent sharing groups within this namespace with any groups
@@ -48181,6 +48622,21 @@ definitions:
       web_based_commit_signing_enabled:
         type: boolean
         description: Enable web based commit signing for this group
+      only_allow_merge_if_pipeline_succeeds:
+        type: boolean
+        description: Only allow to merge if builds succeed
+      allow_merge_on_skipped_pipeline:
+        type: boolean
+        description: Allow to merge if pipeline is skipped
+      only_allow_merge_if_all_discussions_are_resolved:
+        type: boolean
+        description: Only allow to merge if all threads are resolved
+      enabled_foundational_flows:
+        type: array
+        description: IDs of enabled foundational flows
+        items:
+          type: integer
+          format: int32
     description: Update a group. Available only for users who can administrate groups.
   API_Entities_GroupDetail:
     type: object
@@ -48282,9 +48738,9 @@ definitions:
       ldap_access:
         type: string
       ldap_group_links:
-        "$ref": "#/definitions/EE_API_Entities_LdapGroupLink"
+        "$ref": "#/definitions/API_Entities_LdapGroupLink"
       saml_group_links:
-        "$ref": "#/definitions/EE_API_Entities_SamlGroupLink"
+        "$ref": "#/definitions/API_Entities_SamlGroupLink"
       file_template_project_id:
         type: string
       wiki_access_level:
@@ -48331,6 +48787,12 @@ definitions:
       ip_restriction_ranges:
         type: string
       allowed_email_domains_list:
+        type: string
+      only_allow_merge_if_pipeline_succeeds:
+        type: string
+      allow_merge_on_skipped_pipeline:
+        type: string
+      only_allow_merge_if_all_discussions_are_resolved:
         type: string
       unique_project_download_limit:
         type: string
@@ -48750,6 +49212,10 @@ definitions:
         type: string
       duo_remote_flows_enabled:
         type: string
+      duo_foundational_flows_enabled:
+        type: string
+      duo_sast_fp_detection_enabled:
+        type: string
       web_based_commit_signing_enabled:
         type: string
       spp_repository_pipeline_access:
@@ -48986,7 +49452,7 @@ definitions:
     required:
     - token
     description: Revoke a single token
-  EE_API_Entities_AuditEvent:
+  API_Entities_AuditEvent:
     type: object
     properties:
       id:
@@ -49003,7 +49469,7 @@ definitions:
         type: string
       created_at:
         type: string
-    description: EE_API_Entities_AuditEvent model
+    description: API_Entities_AuditEvent model
   API_Entities_UserPublic:
     type: object
     properties:
@@ -49149,7 +49615,7 @@ definitions:
         type: string
       active:
         type: string
-  EE_API_Entities_SshCertificate:
+  API_Entities_SshCertificate:
     type: object
     properties:
       id:
@@ -49165,7 +49631,7 @@ definitions:
         type: string
         format: date-time
         example: '2022-01-31T15:10:45.080Z'
-    description: EE_API_Entities_SshCertificate model
+    description: API_Entities_SshCertificate model
   postApiV4GroupsIdSshCertificates:
     type: object
     properties:
@@ -52394,9 +52860,9 @@ definitions:
       membership_state:
         type: string
       member_role:
-        "$ref": "#/definitions/EE_API_Entities_MemberRole"
+        "$ref": "#/definitions/API_Entities_MemberRole"
     description: API_Entities_Member model
-  EE_API_Entities_MemberRole:
+  API_Entities_MemberRole:
     type: object
     properties:
       id:
@@ -52471,6 +52937,8 @@ definitions:
       admin_web_hook:
         type: boolean
       read_compliance_dashboard:
+        type: boolean
+      read_security_scan_profiles:
         type: boolean
       read_admin_cicd:
         type: boolean
@@ -52552,7 +53020,7 @@ definitions:
     required:
     - state
     description: Changes the state of the memberships of a user in the group
-  EE_API_Entities_BillableMembership:
+  API_Entities_BillableMembership:
     type: object
     properties:
       id:
@@ -52576,7 +53044,7 @@ definitions:
             type: string
           custom_role:
             type: string
-    description: EE_API_Entities_BillableMembership model
+    description: API_Entities_BillableMembership model
   API_Entities_MergeRequestBasic:
     type: object
     properties:
@@ -61020,7 +61488,7 @@ definitions:
     required:
     - file
     description: Upload a metric image for an issue
-  EE_API_Entities_IssuableMetricImage:
+  API_Entities_IssuableMetricImage:
     type: object
     properties:
       id:
@@ -61035,7 +61503,7 @@ definitions:
         type: string
       url_text:
         type: string
-    description: EE_API_Entities_IssuableMetricImage model
+    description: API_Entities_IssuableMetricImage model
   putApiV4ProjectsIdIssuesIssueIidMetricImagesMetricImageId:
     type: object
     properties:
@@ -61841,7 +62309,7 @@ definitions:
           auth on approval
         example: secret
     description: Approve a merge request
-  EE_API_Entities_MergeRequestApprovalState:
+  API_Entities_MergeRequestApprovalState:
     type: object
     properties:
       approval_rules_overwritten:
@@ -61849,9 +62317,9 @@ definitions:
       rules:
         type: array
         items:
-          "$ref": "#/definitions/EE_API_Entities_MergeRequestApprovalStateRule"
-    description: EE_API_Entities_MergeRequestApprovalState model
-  EE_API_Entities_MergeRequestApprovalStateRule:
+          "$ref": "#/definitions/API_Entities_MergeRequestApprovalStateRule"
+    description: API_Entities_MergeRequestApprovalState model
+  API_Entities_MergeRequestApprovalStateRule:
     type: object
     properties:
       id:
@@ -61888,7 +62356,7 @@ definitions:
         type: string
         example: Backend
       source_rule:
-        "$ref": "#/definitions/EE_API_Entities_MergeRequestApprovalRule_SourceRule"
+        "$ref": "#/definitions/API_Entities_MergeRequestApprovalRule_SourceRule"
       overridden:
         type: boolean
       code_owner:
@@ -61899,7 +62367,7 @@ definitions:
           "$ref": "#/definitions/API_Entities_UserBasic"
       approved:
         type: boolean
-  EE_API_Entities_MergeRequestApprovalRule_SourceRule:
+  API_Entities_MergeRequestApprovalRule_SourceRule:
     type: object
     properties:
       approvals_required:
@@ -61919,7 +62387,7 @@ definitions:
     - approvals_required
     description: 'Deprecated in 16.0: Use the merge request approvals API instead.
       Change approval-related configuration'
-  EE_API_Entities_ApprovalState:
+  API_Entities_ApprovalState:
     type: object
     properties:
       id:
@@ -61985,7 +62453,7 @@ definitions:
       approval_rules_left:
         type: array
         items:
-          "$ref": "#/definitions/EE_API_Entities_ApprovalRuleShort"
+          "$ref": "#/definitions/API_Entities_ApprovalRuleShort"
       has_approval_rules:
         type: boolean
       merge_request_approvers_available:
@@ -61995,9 +62463,9 @@ definitions:
       invalid_approvers_rules:
         type: array
         items:
-          "$ref": "#/definitions/EE_API_Entities_ApprovalRuleShort"
-    description: EE_API_Entities_ApprovalState model
-  EE_API_Entities_ApprovalRuleShort:
+          "$ref": "#/definitions/API_Entities_ApprovalRuleShort"
+    description: API_Entities_ApprovalState model
+  API_Entities_ApprovalRuleShort:
     type: object
     properties:
       id:
@@ -62509,6 +62977,27 @@ definitions:
         - admin
         - ''
     description: Update a container protection rule for a project
+  API_Entities_Projects_ContainerRegistry_Protection_TagRule:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
+      project_id:
+        type: integer
+        format: int32
+        example: 123
+      tag_name_pattern:
+        type: string
+        example: v*-release
+      minimum_access_level_for_push:
+        type: string
+        example: maintainer
+      minimum_access_level_for_delete:
+        type: string
+        example: maintainer
+    description: API_Entities_Projects_ContainerRegistry_Protection_TagRule model
   postApiV4ProjectsIdDebianDistributions:
     type: object
     properties:
@@ -64059,6 +64548,9 @@ definitions:
       duo_remote_flows_enabled:
         type: boolean
         description: Enable GitLab Duo remote flows for this project
+      duo_sast_fp_detection_enabled:
+        type: boolean
+        description: Enable GitLab Duo SAST false positive detection for this project
       spp_repository_pipeline_access:
         type: boolean
         description: Grant read-only access to security policy configurations for
@@ -64502,6 +64994,9 @@ definitions:
       duo_remote_flows_enabled:
         type: boolean
         description: Enable GitLab Duo remote flows for this project
+      duo_sast_fp_detection_enabled:
+        type: boolean
+        description: Enable GitLab Duo SAST false positive detection for this project
       spp_repository_pipeline_access:
         type: boolean
         description: Grant read-only access to security policy configurations for
@@ -64946,6 +65441,10 @@ definitions:
       auto_duo_code_review_enabled:
         type: string
       duo_remote_flows_enabled:
+        type: string
+      duo_foundational_flows_enabled:
+        type: string
+      duo_sast_fp_detection_enabled:
         type: string
       web_based_commit_signing_enabled:
         type: string
@@ -65426,6 +65925,9 @@ definitions:
       duo_remote_flows_enabled:
         type: boolean
         description: Enable GitLab Duo remote flows for this project
+      duo_sast_fp_detection_enabled:
+        type: boolean
+        description: Enable GitLab Duo SAST false positive detection for this project
       spp_repository_pipeline_access:
         type: boolean
         description: Grant read-only access to security policy configurations for
@@ -66652,6 +67154,50 @@ definitions:
     - commit_sha
     - branch
     description: Update existing submodule reference in repository
+  API_Entities_SupplyChain_Attestation:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
+      iid:
+        type: integer
+        format: int32
+        example: 14
+      created_at:
+        type: string
+        format: date-time
+        example: '2025-09-17T02:26:10.898Z'
+      updated_at:
+        type: string
+        format: date-time
+        example: '2025-09-17T02:26:10.898Z'
+      expire_at:
+        type: string
+        format: date-time
+        example: '2025-09-17T02:26:10.898Z'
+      project_id:
+        type: integer
+        format: int32
+      build_id:
+        type: integer
+        format: int32
+      status:
+        type: string
+        example: success
+      predicate_kind:
+        type: string
+        example: provenance
+      predicate_type:
+        type: string
+        example: https://slsa.dev/provenance/v1
+      subject_digest:
+        type: string
+        example: 5db1fee4b5703808c48078a76768b155b421b210c0761cd6a5d223f4d99f1eaa
+      download_url:
+        type: string
+    description: API_Entities_SupplyChain_Attestation model
   API_Entities_Tag:
     type: object
     properties:
@@ -67533,6 +68079,13 @@ definitions:
     required:
     - token
     description: Reset runner authentication token with current token
+  API_Entities_Ci_JobRouter_DiscoveryInformation:
+    type: object
+    properties:
+      server_url:
+        type: string
+        example: wss://kas.example.com
+    description: API_Entities_Ci_JobRouter_DiscoveryInformation model
   API_Entities_Ci_RunnerDetails:
     type: object
     properties:
@@ -67789,7 +68342,7 @@ definitions:
         description: Job's authentication token
       state:
         type: string
-        description: 'Job''s status: pending, running, success, failed'
+        description: 'Job''s status: running, success, failed'
       checksum:
         type: string
         description: Job's trace CRC32 checksum
@@ -68700,7 +69253,7 @@ definitions:
         required:
         - geo_node_id
     description: Posts the current node status to the primary site
-  EE_API_Entities_GeoNodeStatus:
+  API_Entities_GeoNodeStatus:
     type: object
     properties:
       geo_node_id:
@@ -69206,7 +69759,7 @@ definitions:
             type: string
           node:
             type: string
-    description: EE_API_Entities_GeoNodeStatus model
+    description: API_Entities_GeoNodeStatus model
   StorageShardEntity:
     type: object
     properties:
@@ -69326,6 +69879,15 @@ definitions:
     description: |-
       Responsible for making HTTP POST /repo.git/info/refs?service=git-receive-pack
                         request from secondary gitlab-shell to primary
+  postApiV4Glql:
+    type: object
+    properties:
+      glql_yaml:
+        type: string
+        description: The full GLQL code block containing YAML configuration and query
+    required:
+    - glql_yaml
+    description: Execute GLQL query
   postApiV4IntegrationsSlackEvents:
     type: object
     properties:

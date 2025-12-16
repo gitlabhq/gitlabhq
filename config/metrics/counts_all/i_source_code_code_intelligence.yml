@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.source_code.i_source_code_code_intelligence
 description: Count of unique users who use code intelligence
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame:

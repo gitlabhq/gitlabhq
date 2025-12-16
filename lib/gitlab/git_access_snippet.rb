@@ -83,13 +83,6 @@ module Gitlab
       end
     end
 
-    override :can_read_project?
-    def can_read_project?
-      return true if user&.migration_bot?
-
-      super
-    end
-
     override :can_download?
     def can_download?
       guest_can_download? || user_can_download?
@@ -126,13 +119,6 @@ module Gitlab
     override :user_access
     def user_access
       @user_access ||= UserAccessSnippet.new(user, snippet: snippet)
-    end
-
-    override :check_size_limit?
-    def check_size_limit?
-      return false if user&.migration_bot?
-
-      super
     end
   end
 end

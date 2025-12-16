@@ -31,8 +31,8 @@
   %div{ class: ["gl-self-start", is_blob_page ? "gl-block": "gl-hidden @sm/panel:gl-block"] }
     = author_avatar(commit, size: 32, has_tooltip: false, css_class: 'gl-inline-block')
 
-  .commit-detail.flex-list.gl-flex.gl-justify-between.gl-items-start.gl-grow.gl-min-w-0
-    .commit-content.gl-self-center{ data: { testid: 'commit-content' } }
+  .commit-detail.flex-list.gl-flex.gl-flex-col.gl-justify-start.gl-items-start.gl-grow.gl-min-w-0{ class: '@sm/panel:gl-flex-row @sm/panel:gl-items-center @sm/panel:gl-justify-between' }
+    .commit-content{ data: { testid: 'commit-content' } }
       - if is_blob_page
         .gl-flex.gl-gap-3.gl-items-center{ class: '@sm/panel:gl-hidden' }
           .committer.gl-text-sm
@@ -61,7 +61,7 @@
               = preserve(markdown_field(commit, :description))
 
     .commit-actions.gl-flex.gl-items-center.gl-gap-3
-      %div{ class: is_blob_page ? "gl-hidden @sm/panel:gl-flex gl-items-center gl-gap-3": "gl-flex gl-items-center gl-gap-3" }
+      %div{ class: is_blob_page ? "gl-hidden @sm/panel:gl-flex gl-items-center gl-gap-3 gl-my-2": "gl-flex gl-items-center gl-gap-3 gl-my-2" }
         - if tags.present?
           - if tags.size > 1
             = gl_badge_tag(variant: :neutral, icon: 'tag', class: 'gl-font-monospace has-tooltip',  title: tags.join(', '),  href: project_commit_path(project, commit.id)) do
@@ -81,7 +81,8 @@
           = render partial: 'projects/commit/ajax_signature', locals: { commit: commit }
         - if show_legacy_ci_icon && commit_status
           = render_commit_status(commit, commit_status, ref: pipeline_ref)
-        .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id, ref: pipeline_ref) } }
+        - if commit_status
+          .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id, ref: pipeline_ref) } }
         .btn-group.gl-hidden{ class: '@sm/panel:gl-flex' }
           = render Pajamas::ButtonComponent.new(label: true, button_text_classes: 'gl-font-monospace', button_options: { class: 'dark:!gl-bg-neutral-800' }) do
             = commit.short_id

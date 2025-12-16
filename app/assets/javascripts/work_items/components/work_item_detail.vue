@@ -537,9 +537,6 @@ export default {
     namespaceFullName() {
       return this.workItem?.namespace?.fullName || '';
     },
-    contextualViewEnabled() {
-      return this.glFeatures?.workItemViewForIssues;
-    },
     hasChildren() {
       return this.workItemHierarchy?.hasChildren;
     },
@@ -593,9 +590,7 @@ export default {
       return this.duoRemoteFlowsAvailability && this.glFeatures.duoWorkflowInCi;
     },
     duoWorkflowDefinition() {
-      return this.glFeatures.duoDeveloperButton
-        ? 'developer/experimental'
-        : 'issue_to_merge_request';
+      return this.glFeatures.duoDeveloperButton ? 'developer/v1' : 'issue_to_merge_request';
     },
     agentPrivileges() {
       return [1, 2, 3, 4, 5];
@@ -628,6 +623,8 @@ export default {
   mounted() {
     addShortcutsExtension(ShortcutsWorkItems);
     document.addEventListener('actioncable:reconnected', this.refetchIfStale);
+
+    this.enableEditModeFromQuery();
   },
   methods: {
     async fetchAllowedChildTypes(workItemId) {
@@ -699,11 +696,7 @@ export default {
         return;
       }
 
-      if (
-        !this.contextualViewEnabled ||
-        modalWorkItem.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT ||
-        this.isDrawer
-      ) {
+      if (modalWorkItem.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT || this.isDrawer) {
         return;
       }
       if (event) {
@@ -929,6 +922,11 @@ export default {
       if (now - this.lastRealtimeUpdatedAt > staleThreshold) {
         this.$apollo.queries.workItem.refetch();
         this.lastRealtimeUpdatedAt = now;
+      }
+    },
+    enableEditModeFromQuery() {
+      if (getParameterByName('edit') === 'true') {
+        this.enableEditMode();
       }
     },
   },
@@ -1229,6 +1227,7 @@ export default {
                         :goal="workItem.webUrl"
                         :workflow-definition="duoWorkflowDefinition"
                         :agent-privileges="agentPrivileges"
+                        :work-item-id="workItem.iid"
                         size="medium"
                         >{{ __('Generate MR with Duo') }}</duo-workflow-action
                       >
@@ -1339,7 +1338,7 @@ export default {
                 :confidential="workItem.confidential"
                 :allowed-child-types="allowedChildTypes"
                 :is-drawer="isDrawer"
-                :contextual-view-enabled="contextualViewEnabled"
+                contextual-view-enabled
                 @show-modal="openContextualView"
                 @addChild="$emit('addChild')"
               />
@@ -1353,7 +1352,7 @@ export default {
                 :can-admin-work-item-link="canAdminWorkItemLink"
                 :active-child-item-id="activeChildItemId"
                 :has-blocked-work-items-feature="hasBlockedWorkItemsFeature"
-                :contextual-view-enabled="contextualViewEnabled"
+                contextual-view-enabled
                 @showModal="openContextualView"
               />
 
@@ -1405,7 +1404,7 @@ export default {
         </section>
       </section>
       <work-item-drawer
-        v-if="contextualViewEnabled && !isDrawer"
+        v-if="!isDrawer"
         :active-item="activeChildItem"
         :open="isItemSelected"
         :issuable-type="activeChildItemType"

@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Connect EKS clusters through cluster certificates (deprecated)
 ---
@@ -266,7 +266,7 @@ For example, the following policy document allows assuming a role whose name sta
 To configure Amazon authentication in GitLab, generate an access key for the
 IAM user in the Amazon AWS console, and follow these steps:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Amazon EKS**.
 1. Check **Enable Amazon EKS integration**.

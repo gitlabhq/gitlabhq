@@ -27,7 +27,8 @@ class Upload < ApplicationRecord
   before_save :ensure_sharding_key
   # as the FileUploader is not mounted, the default CarrierWave ActiveRecord
   # hooks are not executed and the file will not be deleted
-  after_destroy :delete_file!, if: -> { uploader_class <= FileUploader }
+  after_destroy :delete_file!,
+    if: -> { uploader_class <= FileUploader || uploader_class == BulkImports::ExportUploader }
   after_commit :schedule_checksum, if: :needs_checksum?
 
   after_commit :update_project_statistics, on: [:create, :destroy], if: :project?

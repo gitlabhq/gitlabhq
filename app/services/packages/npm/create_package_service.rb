@@ -17,12 +17,19 @@ module Packages
       ERROR_REASON_UNAUTHORIZED = :unauthorized
 
       def execute
+        # TODO: Remove with the rollout of the FF packages_npm_temp_package
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/579369
         return error('Unauthorized', ERROR_REASON_UNAUTHORIZED) unless can_create_package?
+
         return error('Version is empty.', ERROR_REASON_INVALID_PARAMETER) if version.blank?
         return error('Name is empty.', ERROR_REASON_INVALID_PARAMETER) if name.blank?
         return error('Attachment data is empty.', ERROR_REASON_INVALID_PARAMETER) if attachment['data'].blank?
         return error('Package already exists.', ERROR_REASON_PACKAGE_EXISTS) if current_package_exists?
+
+        # TODO: Remove with the rollout of the FF packages_npm_temp_package
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/579369
         return error('Package protected.', ERROR_REASON_PACKAGE_PROTECTED) if package_protected?
+
         return error('File is too large.', ERROR_REASON_INVALID_PARAMETER) if file_size_exceeded?
 
         package, package_file = try_obtain_lease do
@@ -45,9 +52,17 @@ module Packages
       end
 
       def create_npm_package!
-        package = create_package!(::Packages::Npm::Package, name: name, version: version, status: :processing)
+        # TODO: The flow with temporary package will become a single flow
+        # and temporary package will be a required attribute
+        # with the rollout of the FF packages_npm_temp_package
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/579369
+        if use_temp_package?
+          package, package_file = update_temp_package
+        else
+          package = create_package!(::Packages::Npm::Package, name: name, version: version, status: :processing)
+          package_file = ::Packages::CreatePackageFileService.new(package, file_params).execute
+        end
 
-        package_file = ::Packages::CreatePackageFileService.new(package, file_params).execute
         ::Packages::CreateDependencyService.new(package, package_dependencies).execute
         ::Packages::Npm::CreateTagService.new(package, dist_tag).execute
 
@@ -181,6 +196,22 @@ module Packages
 
       def field_sizes_for_error_tracking
         filtered_field_sizes.empty? ? largest_fields : filtered_field_sizes
+      end
+
+      def update_temp_package
+        temp_package.update!(version: version)
+        package_file = temp_package.package_files.first
+        package_file.update!(file_params.except(:build).merge(status: :default))
+
+        [temp_package, package_file]
+      end
+
+      def use_temp_package?
+        temp_package.present?
+      end
+
+      def temp_package
+        params[:temp_package]
       end
     end
   end

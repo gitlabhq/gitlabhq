@@ -51,6 +51,7 @@ const ACCESS_LEVEL_REPORTER = __('Reporter');
 const ACCESS_LEVEL_DEVELOPER = __('Developer');
 const ACCESS_LEVEL_MAINTAINER = __('Maintainer');
 const ACCESS_LEVEL_OWNER = __('Owner');
+export const ACCESS_LEVEL_ADMIN = __('Admin');
 
 export const BASE_ROLES = [
   {

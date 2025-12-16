@@ -30,7 +30,7 @@ Alternatively, with the [SAST component](https://gitlab.com/components/sast/-/bl
 
 ```yaml
 include:
-  - component: gitlab.com/components/sast/sast
+  - component: gitlab.com/components/sast/sast@main
     inputs:
       run_advanced_sast_cpp: "true"
 

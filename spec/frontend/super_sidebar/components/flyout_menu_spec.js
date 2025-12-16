@@ -1,10 +1,12 @@
 import { autoUpdate } from '@floating-ui/dom';
+import { throttle } from 'lodash';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import FlyoutMenu, { FLYOUT_PADDING } from '~/super_sidebar/components/flyout_menu.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import { setHTMLFixture } from 'helpers/fixtures';
 
 jest.mock('@floating-ui/dom');
+jest.mock('lodash/throttle', () => jest.fn((fn) => fn));
 
 describe('FlyoutMenu', () => {
   const targetId = 'section-1';
@@ -28,6 +30,7 @@ describe('FlyoutMenu', () => {
 
   const findHeader = () => wrapper.find('header');
   const findNavItem = () => wrapper.findComponent(NavItem);
+  const findTargetElement = () => document.getElementById(`${targetId}`);
 
   beforeEach(() => {
     autoUpdateCleanup = autoUpdate.mockReturnValue(jest.fn());
@@ -71,9 +74,18 @@ describe('FlyoutMenu', () => {
     expect(findNavItem().text()).toBe('item 1');
   });
 
+  it('throttles onMouseMove', () => {
+    createComponent();
+    expect(throttle).toHaveBeenCalledWith(wrapper.vm.onMouseMove, 50);
+  });
+
   it('cleans up', () => {
+    const targetElement = findTargetElement();
+    jest.spyOn(targetElement, 'removeEventListener');
+
     createComponent();
     wrapper.destroy();
     expect(autoUpdateCleanup).toHaveBeenCalled();
+    expect(targetElement.removeEventListener).toHaveBeenCalled();
   });
 });

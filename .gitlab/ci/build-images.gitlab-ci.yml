@@ -49,5 +49,12 @@ build-gdk-image:
     - job: cache:assets-hash
     - job: retag-gdk-image
       optional: true
+    - job: e2e-test-pipeline-generate
+      artifacts: true
   script:
+    - |
+      if grep -q "^no-op:" "${CI_PROJECT_DIR}/qa/tmp/test-on-gdk-pipeline.yml" 2>/dev/null; then
+        echo "Skipping GDK image build - no-op pipeline detected"
+        exit 0
+      fi
     - scripts/build_gdk_image

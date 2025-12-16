@@ -89,7 +89,7 @@ Example response:
 Get a single advanced search migration by providing the migration version or name.
 
 ```plaintext
-GET /admin/search/mirations/:version_or_name
+GET /admin/search/migrations/:version_or_name
 ```
 
 Parameters:

@@ -24,11 +24,11 @@ You can import issues to a project by uploading a CSV (comma-separated values) f
 
 | Name          | Required                             | Description |
 | ------------- | ------------------------------------ | ----------- |
-| `title`       | {{< icon name="check-circle" >}} Yes | Issue title. |
-| `description` | {{< icon name="check-circle" >}} Yes | Issue description. |
-| `due_date`    | {{< icon name="dotted-circle" >}} No | Issue due date in `YYYY-MM-DD` format. |
-| `milestone`   | {{< icon name="dotted-circle" >}} No | Title of the issue milestone. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112204) in GitLab 16.7. |
-| `type`        | {{< icon name="dotted-circle" >}} No | Type of issue. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200893) in GitLab 18.4. |
+| `title`       | {{< yes >}} | Issue title. |
+| `description` | {{< yes >}} | Issue description. |
+| `due_date`    | {{< no >}} | Issue due date in `YYYY-MM-DD` format. |
+| `milestone`   | {{< no >}} | Title of the issue milestone. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112204) in GitLab 16.7. |
+| `type`        | {{< no >}} | Type of issue. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200893) in GitLab 18.4. |
 
 Data in other columns is not imported.
 

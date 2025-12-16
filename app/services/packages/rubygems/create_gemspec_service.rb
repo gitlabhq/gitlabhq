@@ -32,7 +32,8 @@ module Packages
             file_name: "#{gemspec.name}.gemspec",
             file_sha1: Digest::SHA1.hexdigest(content),
             file_md5: md5,
-            file_sha256: Digest::SHA256.hexdigest(content)
+            file_sha256: Digest::SHA256.hexdigest(content),
+            project_id: package.project_id
           )
         ensure
           file.close

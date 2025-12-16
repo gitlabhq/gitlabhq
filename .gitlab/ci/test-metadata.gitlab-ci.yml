@@ -74,7 +74,7 @@ export-predictive-test-metrics:
   extends:
     - .yarn-cache
     - .with-ci-node-image
-    - .predictive:rules:default
+    - .test-metadata:rules:export-predictive-test-metrics
   variables:
     GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR: "tmp/predictive_tests"
   dependencies:

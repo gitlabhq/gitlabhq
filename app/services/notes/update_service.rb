@@ -12,7 +12,11 @@ module Notes
 
       return note unless note.valid?
 
-      track_note_edit_usage_for_issues(note) if note.for_issue?
+      if note.for_issue?
+        track_note_edit_usage_for_issues(note)
+        track_work_item_note_update(note.noteable)
+      end
+
       track_note_edit_usage_for_merge_requests(note) if note.for_merge_request?
 
       only_commands = false
@@ -127,6 +131,14 @@ module Notes
 
     def track_note_edit_usage_for_merge_requests(note)
       Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_edit_comment_action(note: note)
+    end
+
+    def track_work_item_note_update(work_item)
+      ::Gitlab::WorkItems::Instrumentation::TrackingService.new(
+        work_item: work_item,
+        current_user: current_user,
+        event: Gitlab::WorkItems::Instrumentation::EventActions::NOTE_UPDATE
+      ).execute
     end
   end
 end

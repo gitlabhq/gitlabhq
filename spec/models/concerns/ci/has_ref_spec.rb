@@ -75,5 +75,14 @@ RSpec.describe Ci::HasRef do
         is_expected.to be_nil
       end
     end
+
+    context 'when it is a workload ref' do
+      let_it_be(:workload_ref) { 'refs/workloads/abc123' }
+      let(:build) { create(:ci_build, ref: workload_ref, tag: false) }
+
+      it 'returns the workload ref as-is' do
+        is_expected.to eq(workload_ref)
+      end
+    end
   end
 end

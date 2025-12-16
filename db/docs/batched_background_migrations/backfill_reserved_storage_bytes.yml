@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillReservedStorageBytes
-description: Set the value of reserved_storage_bytes in the zoekt_indices table
-feature_category: global_search
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160302
-milestone: '17.3'
-queued_migration_version: 20240801195253
-finalized_by: '20250220231823'

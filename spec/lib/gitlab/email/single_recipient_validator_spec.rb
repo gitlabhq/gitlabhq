@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Email::SingleRecipientValidator, feature_category: :system_access do
   let(:receiver) { Class.new.include(described_class).new }

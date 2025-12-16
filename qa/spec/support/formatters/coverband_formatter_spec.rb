@@ -72,7 +72,7 @@ describe QA::Support::Formatters::CoverbandFormatter do
   context 'when example finished' do
     context 'with success response and non empty coverage' do
       let(:status) { :passed }
-      let(:body) { '{"test mapping":1}' }
+      let(:body) { '{"app/models/user.rb":{"1":"5","2":"10"},"app/controllers/application_controller.rb":{"1":"3"}}' }
 
       it 'logs success message and does not log any errors' do
         formatter.example_finished(rspec_example_notification)
@@ -102,24 +102,48 @@ describe QA::Support::Formatters::CoverbandFormatter do
     end
   end
 
-  context 'when save_test_mapping is called' do
-    let(:file_name_pattern) { "test-code-paths-mapping-job-name" }
+  context 'when save_coverage_data is called' do
+    let(:mapping_file_pattern) { "test-code-paths-mapping-job-name" }
+    let(:coverage_file_pattern) { "coverband-coverage-job-name" }
+    let(:full_coverage) do
+      {
+        "./qa/specs/features/browser_ui/2_plan/issue/create_issue_spec.rb:5" => {
+          "app/models/user.rb" => { "1" => "5" }
+        }
+      }
+    end
 
     before do
       stub_env('CI_JOB_NAME_SLUG', 'job-name')
+      allow(formatter).to receive(:full_coverage_by_example).and_return(full_coverage)
     end
 
-    context 'with mapping data present' do
+    context 'with coverage data present' do
       before do
-        allow(formatter).to receive(:test_mapping).and_return(mapping)
         allow(::File).to receive(:write)
       end
 
-      it 'writes to file' do
-        formatter.save_test_mapping
+      it 'writes both mapping and full coverage files' do
+        formatter.send(:save_coverage_data)
 
-        expect(::File).to have_received(:write).with(/#{file_name_pattern}/, mapping.to_json).once
+        expect(::File).to have_received(:write).with(/#{mapping_file_pattern}/, anything).once
+        expect(::File).to have_received(:write).with(/#{coverage_file_pattern}/, full_coverage.to_json).once
         expect(logger).to have_received(:info).with(/Saved test coverage mapping data to \S+\.json/).once
+        expect(logger).to have_received(:info).with(/Saved full Coverband coverage data to \S+\.json/).once
+      end
+    end
+
+    context 'with empty coverage data' do
+      before do
+        allow(formatter).to receive(:full_coverage_by_example).and_return({})
+        allow(::File).to receive(:write)
+      end
+
+      it 'does not write any files' do
+        formatter.send(:save_coverage_data)
+
+        expect(::File).not_to have_received(:write)
+        expect(logger).not_to have_received(:info)
       end
     end
 
@@ -128,11 +152,11 @@ describe QA::Support::Formatters::CoverbandFormatter do
         allow(::File).to receive(:write).and_raise("some error")
       end
 
-      it 'raises an error' do
-        formatter.save_test_mapping
+      it 'logs error message' do
+        formatter.send(:save_coverage_data)
 
         expect(logger).to have_received(:error)
-          .with("Failed to save test coverage mapping data, error: some error")
+          .with("Failed to save coverage data, error: some error")
           .once
       end
     end

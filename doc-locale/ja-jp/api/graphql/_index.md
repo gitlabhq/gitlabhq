@@ -29,7 +29,7 @@ GitLab GraphQL APIエンドポイントは`/api/graphql`にあります。
 
 ### インタラクティブGraphQLエクスプローラー {#interactive-graphql-explorer}
 
-次のいずれかで、インタラクティブGraphQLエクスプローラーを使用してGraphQL APIを調査できます。
+次のいずれかで、インタラクティブGraphQLエクスプローラーを使用してGraphQL APIを調査できます:
 
 - [GitLab.com](https://gitlab.com/-/graphql-explorer)。
 - `https://<your-gitlab-site.com>/-/graphql-explorer`でのGitLab Self-Managed。
@@ -38,7 +38,7 @@ GitLab GraphQL APIエンドポイントは`/api/graphql`にあります。
 
 ### GraphQLの例を見る {#view-graphql-examples}
 
-GitLab.comのパブリックプロジェクトからデータをプルするサンプルクエリを使用できます。
+GitLab.comのパブリックプロジェクトからデータをプルするサンプルクエリを使用できます:
 
 - [監査レポートの作成](audit_report.md)
 - [イシューボードの特定](sample_issue_boards.md)
@@ -51,12 +51,12 @@ GitLab.comのパブリックプロジェクトからデータをプルするサ�
 
 一部のクエリには認証無しでアクセスできますが、その他のクエリには認証が必要です。ミューテーションには常に認証が必要です。
 
-次のいずれかを使用して認証できます。
+次のいずれかを使用して認証できます:
 
 - [トークン](#token-authentication)
 - [セッションクッキー](#session-cookie-authentication)
 
-認証情報が無効である場合、GitLabはステータスコード`401`とエラーメッセージを返します。
+認証情報が無効である場合、GitLabはステータスコード`401`とエラーメッセージを返します:
 
 ```json
 {"errors":[{"message":"Invalid token"}]}
@@ -64,7 +64,7 @@ GitLab.comのパブリックプロジェクトからデータをプルするサ�
 
 #### トークン認証 {#token-authentication}
 
-次のいずれかのトークンを使用して、GraphQL APIで認証します。
+次のいずれかのトークンを使用して、GraphQL APIで認証します:
 
 - [OAuth 2.0トークン](../oauth2.md)
 - [パーソナルアクセストークン](../../user/profile/personal_access_tokens.md)
@@ -98,7 +98,7 @@ curl --request POST \
   --data "{\"query\": \"query {currentUser {name}}\"}"
 ```
 
-`private_token`パラメータを使用して、パーソナルアクセストークン、プロジェクトアクセストークン、またはグループアクセストークンを渡すことができます。
+`private_token`パラメータを使用して、パーソナルアクセストークン、プロジェクトアクセストークン、またはグループアクセストークンを渡すことができます:
 
 ```shell
 curl --request POST \
@@ -109,10 +109,10 @@ curl --request POST \
 
 ##### トークンスコープ {#token-scopes}
 
-GraphQL APIにアクセスするには、トークンに次のいずれかの正しいスコープが必要です。
+GraphQL APIにアクセスするには、トークンに次のいずれかの正しいスコープが必要です:
 
-| スコープ      | アクセス  |
-|------------|---------|
+| スコープ      | アクセス |
+|------------|--------|
 | `read_api` | APIへの読み取りアクセスを許可します。クエリ実行には十分です。 |
 | `api`      | APIへの読み取り/書き込みアクセスを許可します。ミューテーションに必要です。 |
 
@@ -128,13 +128,13 @@ GitLab GraphQL APIは、さまざまな識別子を使用します。
 
 [グローバルID](#global-ids)、フルパス、内部ID（IID）はすべて、GitLab GraphQL APIで引数として使用されますが、多くの場合、スキーマの特定の部分は、これらのすべてを同時に受け入れるわけではありません。
 
-これまで、この点に関してGitLab GraphQL APIは一貫性がありませんでしたが、一般的には次のことが言えます。
+これまで、この点に関してGitLab GraphQL APIは一貫性がありませんでしたが、一般的には次のことが言えます:
 
 - オブジェクトがプロジェクト、グループ、またはネームスペースである場合は、オブジェクトのフルパスを使用します。
 - オブジェクトにIIDがある場合は、フルパスとIIDの組み合わせを使用します。
 - その他のオブジェクトについては、[グローバルID](#global-ids)を使用します。
 
-たとえば、フルパス`"gitlab-org/gitlab"`でプロジェクトを見つける場合は、次のように使用します。
+たとえば、フルパス`"gitlab-org/gitlab"`でプロジェクトを見つける場合は、次のように使用します:
 
 ```graphql
 {
@@ -145,7 +145,7 @@ GitLab GraphQL APIは、さまざまな識別子を使用します。
 }
 ```
 
-別の例として、プロジェクトのフルパス`"gitlab-org/gitlab"`とイシューのIID `"1"`でイシューをロックする場合は、次のように使用します。
+別の例として、プロジェクトのフルパス`"gitlab-org/gitlab"`とイシューのIID `"1"`でイシューをロックする場合は、次のように使用します:
 
 ```graphql
 mutation {
@@ -158,7 +158,7 @@ mutation {
 }
 ```
 
-グローバルIDでCI Runnerを見つける例は次のとおりです。
+グローバルIDでCI Runnerを見つける例は次のとおりです:
 
 ```graphql
 {
@@ -168,9 +168,9 @@ mutation {
 }
 ```
 
-これまで、フルパスフィールドとIIDフィールドおよび引数の型に関して、GitLab GraphQL APIは一貫性がありませんでしたが、一般的には次のことが言えます。
+これまで、フルパスフィールドとIIDフィールドおよび引数の型に関して、GitLab GraphQL APIは一貫性がありませんでしたが、一般的には次のことが言えます:
 
-- フルパスフィールドと引数はGraphQL `ID`型です。
+- フルパスフィールドと引数は、GraphQLの`ID`型です。
 - IIDフィールドと引数はGraphQL `String`型です。
 
 ### グローバルID {#global-ids}
@@ -195,12 +195,12 @@ GitLab GraphQL APIは[バージョンなし](https://graphql.org/learn/best-prac
 
 ただし、GitLabは下位互換性なしでGraphQL APIを変更する場合があります。これらの変更は破壊的な変更と見なされ、フィールド、引数、またはスキーマのその他の部分の削除または名前変更が含まれる場合があります。GitLabは破壊的な変更を作成する場合、[非推奨と削除のプロセス](#deprecation-and-removal-process)に従います。
 
-破壊的な変更がインテグレーションに影響を与えないようにするには、次のようにする必要があります。
+破壊的な変更がインテグレーションに影響を与えないようにするには、次のようにする必要があります:
 
 - [非推奨と削除のプロセス](#deprecation-and-removal-process)を理解する。
 - [将来の破壊的な変更のスキーマに対してAPIコールを頻繁に検証](#verify-against-the-future-breaking-change-schema)する。
 
-GitLab Self-Managedの場合、EEインスタンスからCEインスタンスに[ダウングレード](../../downgrade_ee_to_ce/_index.md)すると、破壊的な変更が発生します。
+GitLab Self-Managedの場合、EEインスタンスからCEインスタンスに[リバート](../../update/convert_to_ee/revert.md)すると、破壊的な変更が発生します。
 
 ### 破壊的な変更の適用除外 {#breaking-change-exemptions}
 
@@ -230,7 +230,7 @@ GitLabは、あらゆる方法で[非推奨と削除のプロセス](#deprecatio
 
 GitLab GraphQL APIからの削除対象としてマークされたスキーマの一部は、最初に非推奨になりますが、少なくとも6つのリリースでは引き続き利用できます。その後、次の`XX.0`メジャーリリース中に完全に削除されます。
 
-アイテムは以下で非推奨とマークされます。
+アイテムは以下で非推奨とマークされます:
 
 - [スキーマ](https://spec.graphql.org/October2021/#sec--deprecated)。
 - [GraphQL APIリファレンス](reference/_index.md)。
@@ -243,7 +243,7 @@ GitLab GraphQL APIからの削除対象としてマークされたスキーマ�
 
 #### 非推奨の例 {#deprecation-example}
 
-次のフィールドは、さまざまなマイナーリリースで非推奨になっていますが、GitLab 17.0で両方とも削除されます。
+次のフィールドは、さまざまなマイナーリリースで非推奨になっていますが、GitLab 17.0で両方とも削除されます:
 
 | フィールドが非推奨になるバージョン | 理由 |
 |:--------------------|:-------|
@@ -263,7 +263,7 @@ GitLab GraphQL APIからの削除対象としてマークされたスキーマ�
 | 最大ページサイズ                                     | 1ページあたり100レコード（ノード）。APIのほとんどの接続に適用されます。特定の接続では、最大ページサイズの制限が異なる場合があり、制限が高くなっているか、低くなっています。 |
 | [最大クエリ複雑度](#maximum-query-complexity) | 認証されていないリクエストの場合は200、認証されているリクエストの場合は250です。 |
 | 最大クエリサイズ                                    | クエリまたはミューテーションあたり10,000文字。この制限に達した場合は、[変数](https://graphql.org/learn/queries/#variables)と[フラグメント](https://graphql.org/learn/queries/#fragments)を使用して、クエリまたはミューテーションのサイズを削減してください。最後の手段として空白を削除します。 |
-| レート制限 | GitLab.comの場合、[GitLab.com固有のレート制限](../../user/gitlab_com/_index.md#rate-limits-on-gitlabcom)を参照してください。 |
+| レート制限                                           | GitLab.comの場合、[GitLab.com固有のレート制限](../../user/gitlab_com/_index.md#rate-limits-on-gitlabcom)を参照してください。 |
 | リクエストタイムアウト                                       | 30秒。 |
 
 ### 最大クエリ複雑度 {#maximum-query-complexity}
@@ -278,9 +278,9 @@ GitLab GraphQL APIは、クエリの複雑度にスコアを付けます。一�
 
 ## スパムとして検出されたミューテーションを解決する {#resolve-mutations-detected-as-spam}
 
-GraphQLミューテーションはスパムとして検出される可能性があります。ミューテーションがスパムとして検出されたときは、次のようになります。
+GraphQLミューテーションはスパムとして検出される可能性があります。ミューテーションがスパムとして検出されたときは、次のようになります:
 
-- CAPTCHAサービスが設定されていない場合、[GraphQLトップレベルエラー](https://spec.graphql.org/June2018/#sec-Errors)が発生します。例は次のとおりです。
+- CAPTCHAサービスが設定されていない場合、[GraphQLトップレベルエラー](https://spec.graphql.org/June2018/#sec-Errors)が発生します。次に例を示します: 
 
   ```json
   {
@@ -302,11 +302,11 @@ GraphQLミューテーションはスパムとして検出される可能性が�
   }
   ```
 
-- CAPTCHAサービスが設定されている場合、次の内容の応答が返されます。
+- CAPTCHAサービスが設定されている場合、次の内容の応答が返されます:
   - `needsCaptchaResponse`が`true`に設定されます。
   - `spamLogId`フィールドと`captchaSiteKey`フィールドが設定されます。
 
-  例は次のとおりです。
+  次に例を示します: 
 
   ```json
   {
@@ -335,7 +335,7 @@ GraphQLミューテーションはスパムとして検出される可能性が�
 
 {{< alert type="note" >}}
 
-GitLab GraphiQLの実装では、ヘッダーを渡すことが許可されていないため、これをcURLクエリとして記述する必要があります。`--data-binary`は、エスケープされた二重引用符をJSON埋め込みクエリで適切に処理するために使用されます。
+GitLab GraphiQLの実装では、ヘッダーの受け渡しが許可されていないため、リクエストはcURLのクエリとして記述する必要があります。`--data-binary`は、JSON埋め込みクエリ内のエスケープされた二重引用符を適切に処理するために使用されます。
 
 {{< /alert >}}
 

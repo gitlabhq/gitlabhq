@@ -24,7 +24,7 @@ Before attempting more advanced troubleshooting:
 
 On the **primary** site:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
 
 We perform the following health checks on each **secondary** site
@@ -115,7 +115,7 @@ The following environment variables are supported.
 | Variable      | Description | Default value |
 | ------------- | ----------- | ------------- |
 | `NTP_HOST`    | The NTP host. | `pool.ntp.org` |
-| `NTP_PORT`    | The NTP port the host listens on. | `ntp` |
+| `NTP_PORT`    | The NTP port the host listens on. | `123` |
 | `NTP_TIMEOUT` | The NTP timeout in seconds. | The value defined in the `net-ntp` Ruby library ([60 seconds](https://github.com/zencoder/net-ntp/blob/3d0990214f439a5127782e0f50faeaf2c8ca7023/lib/net/ntp/ntp.rb#L6)). |
 
 If the Rake task skips the `OpenSSH configured to use AuthorizedKeysCommand` check, the
@@ -621,7 +621,7 @@ If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for t
 
 In this case, make sure to update the changed URL on all your sites:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Change the URL and save the change.
 

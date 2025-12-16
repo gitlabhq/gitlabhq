@@ -9,6 +9,8 @@ import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
 import { createAlert } from '~/alert';
 import { initNewDiscussionToggle } from '~/rapid_diffs/app/init_new_discussions_toggle';
+import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
+import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 
 jest.mock('~/alert');
 jest.mock('~/lib/graphql');
@@ -36,20 +38,24 @@ describe('Commit Rapid Diffs app', () => {
   const createApp = (data = {}) => {
     setHTMLFixture(
       `
-        <div
-          data-rapid-diffs
-          data-app-data='${JSON.stringify({ ...appData, ...data })}'
-        >
-          <diff-file>
-            <button>Click me!</button>
-          </diff-file>
-          <div data-view-settings></div>
-          <div data-list-loading></div>
-          <div data-file-browser></div>
-          <div data-file-browser-toggle></div>
-          <div data-hidden-files-warning></div>
-          <div data-stream-remaining-diffs></div>
+      <main>
+        <div class="container-fluid">
+          <div
+            data-rapid-diffs
+            data-app-data='${JSON.stringify({ ...appData, ...data })}'
+          >
+            <diff-file>
+              <button>Click me!</button>
+            </diff-file>
+            <div data-view-settings></div>
+            <div data-list-loading></div>
+            <div data-file-browser></div>
+            <div data-file-browser-toggle></div>
+            <div data-hidden-files-warning></div>
+            <div data-stream-remaining-diffs></div>
+          </div>
         </div>
+      </main>
       `,
     );
     app = createCommitRapidDiffsApp();
@@ -64,17 +70,18 @@ describe('Commit Rapid Diffs app', () => {
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
-    createTestingPinia();
+    createTestingPinia({ stubActions: false });
     useDiffsView().loadDiffsStats.mockResolvedValue();
+    useDiffsList().reloadDiffs.mockResolvedValue();
+    useDiffsList().streamRemainingDiffs.mockResolvedValue();
     initFileBrowser.mockResolvedValue();
   });
 
   it('initializes discussions', async () => {
-    const discussions = [{}];
+    const discussions = [{ notes: [] }];
     axiosMock.onGet(appData.discussionsEndpoint).reply(HTTP_STATUS_OK, { discussions });
     createApp();
-    app.init();
-    await app.initDiscussions();
+    await app.init();
     expect(useDiffDiscussions().setInitialDiscussions).toHaveBeenCalledWith(discussions);
     expect(initNewDiscussionToggle).toHaveBeenCalledWith(app.root);
   });
@@ -82,12 +89,23 @@ describe('Commit Rapid Diffs app', () => {
   it('shows alert when failed to init discussions', async () => {
     axiosMock.onGet(appData.discussionsEndpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
     createApp();
-    app.init();
-    await app.initDiscussions();
+    await app.init();
     expect(useDiffDiscussions().setInitialDiscussions).not.toHaveBeenCalled();
     expect(createAlert).toHaveBeenCalledWith({
       message: 'Failed to load discussions. Try to reload the page.',
       error: expect.any(Error),
     });
+  });
+
+  it('switches container layout', async () => {
+    const discussions = [{}];
+    axiosMock.onGet(appData.discussionsEndpoint).reply(HTTP_STATUS_OK, { discussions });
+    createApp();
+    await app.init();
+    useDiffsView().updateViewType(PARALLEL_DIFF_VIEW_TYPE);
+    useDiffsView().updateViewType(INLINE_DIFF_VIEW_TYPE);
+    expect(document.querySelector('.container-fluid').classList.contains('container-limited')).toBe(
+      true,
+    );
   });
 });

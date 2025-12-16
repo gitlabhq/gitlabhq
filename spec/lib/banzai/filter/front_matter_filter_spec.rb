@@ -43,6 +43,26 @@ RSpec.describe Banzai::Filter::FrontMatterFilter, feature_category: :markdown do
     end
   end
 
+  it "doesn't insert an extra preceding newline when faced with CRLF line endings" do
+    content = <<~MD.gsub("\n", "\r\n")
+      ---
+      foo: :foo_symbol
+      bar: :bar_symbol
+      ---
+
+      # Header
+
+      Content
+    MD
+
+    output = filter(content)
+
+    aggregate_failures do
+      expect(output).not_to include '---'
+      expect(output).to include "```yaml:frontmatter\nfoo: :foo_symbol"
+    end
+  end
+
   it 'converts TOML frontmatter to a fenced code block' do
     content = <<~MD
       +++

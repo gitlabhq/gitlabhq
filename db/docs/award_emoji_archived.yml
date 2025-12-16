@@ -1,0 +1,13 @@
+---
+table_name: award_emoji_archived
+classes:
+- Gitlab::BackgroundMigration::BackfillAwardEmojiShardingKey
+feature_categories:
+- team_planning
+description: Temporary archive table for orphaned award_emoji during sharding key
+  backfill migration. Stores award_emoji that cannot be resolved to a namespace or
+  organization before deletion.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211844
+milestone: '18.7'
+gitlab_schema: gitlab_main_org
+table_size: small

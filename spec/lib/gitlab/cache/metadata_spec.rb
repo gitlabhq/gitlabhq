@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Cache::Metadata, feature_category: :source_code_management do
   subject(:attributes) do

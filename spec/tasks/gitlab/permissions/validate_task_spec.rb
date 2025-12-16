@@ -19,7 +19,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
       }
     end
 
-    let(:permission) { Authz::Permission.new(permission_definition, permission_source_file) }
+    let(:permission) { Authz::Permission.new(permission_definition, Rails.root.join(permission_source_file).to_s) }
 
     let(:enabled_permissions) { [] }
     let(:mock_policy_class) do
@@ -47,6 +47,13 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
       # Stub exclusion list
       File.open(exclusion_file.path, "w+b") { |f| f.write exclusion_list_data }
       stub_const('Tasks::Gitlab::Permissions::ValidateTask::PERMISSION_TODO_FILE', exclusion_file.path)
+
+      # Stubs to make _metadata.yml file validation pass
+      allow(Authz::Resource).to receive(:get).and_return(instance_double(Authz::Resource, definition: {}))
+      allow(JSONSchemer).to receive(:schema).and_call_original
+      allow(JSONSchemer).to receive(:schema)
+        .with(Rails.root.join("#{described_class::PERMISSION_DIR}/resource_metadata_schema.json"))
+        .and_return(instance_double(JSONSchemer::Schema, validate: []))
     end
 
     context 'when all permissions are valid' do
@@ -124,8 +131,6 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           name: permission_name,
           description: 'a defined permission',
           feature_category: 'unknown',
-          action: 'defined',
-          resource: 'permission',
           key: 'not allowed'
         }
       end
@@ -162,20 +167,57 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
       end
     end
 
-    context 'when the permission definition is at the wrong file location' do
-      let(:permission_source_file) { 'config/authz/permissions/defined_permission.yml' }
+    describe 'file path checks' do
+      context 'when the permission definition is not under a resource directory' do
+        let(:permission_source_file) { 'config/authz/permissions/defined_permission.yml' }
 
-      it 'returns an error' do
-        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
-          #######################################################################
-          #
-          #  The following permission definitions do not exist at the expected path.
-          #
-          #    - Name: defined_permission
-          #      Expected Path: config/authz/permissions/permission/defined.yml
-          #
-          #######################################################################
-        OUTPUT
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following permission definitions do not exist at the expected path.
+            #
+            #    - defined_permission in config/authz/permissions/defined_permission.yml
+            #      Expected path: config/authz/permissions/<resource>/defined_permission.yml
+            #
+            #######################################################################
+          OUTPUT
+        end
+      end
+
+      context 'when the resource directory is not directly under config/authz/permissions/' do
+        let(:permission_source_file) { 'config/authz/permissions/another_dir/resource_dir/defined_permission.yml' }
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following permission definitions do not exist at the expected path.
+            #
+            #    - defined_permission in config/authz/permissions/another_dir/resource_dir/defined_permission.yml
+            #      Expected path: config/authz/permissions/resource_dir/defined_permission.yml
+            #
+            #######################################################################
+          OUTPUT
+        end
+      end
+
+      context 'when the permission definition path does not match the permission name' do
+        let(:permission_name) { 'action_on_a_resource' } # action: 'action_on', resource: 'a_resource'
+        let(:permission_source_file) { 'config/authz/permissions/wrong_resource_name/wrong_action_name.yml' }
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following permission definitions do not exist at the expected path.
+            #
+            #    - action_on_a_resource in config/authz/permissions/wrong_resource_name/wrong_action_name.yml
+            #      Path must match 'config/authz/permissions/<resource>/<action>.yml' based on <resource> and <action> values from 'action_on_a_resource' ('<action>_<resource>')
+            #
+            #######################################################################
+          OUTPUT
+        end
       end
     end
 
@@ -207,12 +249,62 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #######################################################################
           #
           #  The following permissions have a definition file but are not found in declarative policy.
-          #  Remove the definition files for the unkonwn permissions.
+          #  Remove the definition files for the unknown permissions.
           #
           #    - defined_permission
           #
           #######################################################################
         OUTPUT
+      end
+    end
+
+    describe 'permission resource validation' do
+      let(:resource) { 'permission' }
+      let(:permission_source_file) { "config/authz/permissions/#{resource}/defined.yml" }
+
+      context 'when resource definition for the permission does not exist' do
+        before do
+          allow(Authz::Resource).to receive(:get).with(resource).and_return(nil)
+        end
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following permission resource directories are missing a _metadata.yml file.
+            #
+            #    - config/authz/permissions/**/permission/
+            #
+            #######################################################################
+          OUTPUT
+        end
+      end
+
+      context 'when resource definition for the permission is not in the correct schema' do
+        let(:resource_definition) do
+          definition = { description: 'The resource', feature_category: 'unknown_feature_category' }
+          Authz::Resource.new(definition, 'source_file')
+        end
+
+        before do
+          allow(Authz::Resource).to receive(:get).with(resource).and_return(resource_definition)
+          allow(JSONSchemer).to receive(:schema)
+            .with(Rails.root.join("#{described_class::PERMISSION_DIR}/resource_metadata_schema.json"))
+            .and_call_original
+        end
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following resource metadata files failed schema validation.
+            #
+            #    - permission
+            #        - property '/feature_category' does not match format: known_product_category
+            #
+            #######################################################################
+          OUTPUT
+        end
       end
     end
   end

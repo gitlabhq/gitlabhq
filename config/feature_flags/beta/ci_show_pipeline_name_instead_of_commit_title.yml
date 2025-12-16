@@ -1,0 +1,10 @@
+---
+name: ci_show_pipeline_name_instead_of_commit_title
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/545098
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193274
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581929
+milestone: '18.7'
+group: group::ci platform
+type: beta
+default_enabled: false

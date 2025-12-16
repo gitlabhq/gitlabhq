@@ -116,7 +116,7 @@ class PushEvent < Event
 
   private
 
-  def project_as_target?(original_value)
+  def project_as_target?(target_type)
     return false if validation_context
 
     super

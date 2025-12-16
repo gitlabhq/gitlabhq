@@ -12,7 +12,7 @@ module QA
         def initialize(output)
           super
 
-          @test_mapping = Hash.new { |hsh, key| hsh[key] = [] }
+          @full_coverage_by_example = {}
           @logger = Runtime::Logger.logger
           @cov_api_endpoint = "#{Runtime::Scenario.gitlab_address}/api/v4/internal/coverage"
           @headers_access_token = {
@@ -32,7 +32,7 @@ module QA
         # @param [RSpec::Core::Notifications::ExamplesNotification] notification
         # @return [void]
         def stop(_notification)
-          save_test_mapping
+          save_coverage_data
         end
 
         # Example start event
@@ -71,7 +71,11 @@ module QA
           end
 
           example_path = example_notification.example.metadata[:location]
-          test_mapping[example_path] = JSON.parse(response.body)
+          full_coverage_data = JSON.parse(response.body)
+
+          # Store full coverage data for both test selection and LCOV conversion
+          full_coverage_by_example[example_path] = full_coverage_data
+
           logger.info("Fetched coverage data")
         rescue StandardError
           logger.error("Failed to fetch coverage data, code: #{response.code}, body: #{response.body}")
@@ -81,22 +85,31 @@ module QA
           example_notification.example.execution_result.status == :failed
         end
 
-        # Save coverage test mapping file
+        # Save coverage data
+        # - Test mapping (file paths only) for test selection
+        # - Full coverage data for LCOV conversion
         #
         # @return [void]
-        def save_test_mapping
-          file = "tmp/test-code-paths-mapping-#{ENV['CI_JOB_NAME_SLUG'] || 'local'}-#{SecureRandom.hex(6)}.json"
-          # To write two different files in case of failed specs being retried
+        def save_coverage_data
+          return if full_coverage_by_example.empty?
 
-          File.write(file, test_mapping.to_json)
-          logger.info("Saved test coverage mapping data to #{file}")
+          # Derive test mapping from full coverage data
+          test_mapping = full_coverage_by_example.transform_values(&:keys)
+
+          mapping_file = "tmp/test-code-paths-mapping-#{ENV['CI_JOB_NAME_SLUG'] || 'local'}-#{SecureRandom.hex(6)}.json"
+          File.write(mapping_file, test_mapping.to_json)
+          logger.info("Saved test coverage mapping data to #{mapping_file}")
+
+          coverage_file = "tmp/coverband-coverage-#{ENV['CI_JOB_NAME_SLUG'] || 'local'}-#{SecureRandom.hex(6)}.json"
+          File.write(coverage_file, full_coverage_by_example.to_json)
+          logger.info("Saved full Coverband coverage data to #{coverage_file}")
         rescue StandardError => e
-          logger.error("Failed to save test coverage mapping data, error: #{e}")
+          logger.error("Failed to save coverage data, error: #{e}")
         end
 
         private
 
-        attr_reader :test_mapping, :logger, :headers_access_token, :cov_api_endpoint
+        attr_reader :full_coverage_by_example, :logger, :headers_access_token, :cov_api_endpoint
       end
     end
   end

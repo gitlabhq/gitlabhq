@@ -21,9 +21,6 @@ export default {
     listPath: {
       default: null,
     },
-    isGroup: {
-      default: false,
-    },
   },
   props: {
     staticBreadcrumbs: {
@@ -32,14 +29,14 @@ export default {
     },
   },
   computed: {
-    isWorkItemOnly() {
+    isWorkItemPlanningViewEnabled() {
       return this.glFeatures.workItemPlanningView;
     },
     isEpicsList() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     listName() {
-      if (this.isWorkItemOnly) {
+      if (this.isWorkItemPlanningViewEnabled) {
         return s__('WorkItem|Work items');
       }
 
@@ -49,16 +46,39 @@ export default {
 
       return __('Issues');
     },
-    workItemsViewEnabled() {
-      return this.glFeatures.workItemViewForIssues || this.isWorkItemOnly || this.isGroup;
+    breadcrumbType() {
+      if (this.isWorkItemPlanningViewEnabled) {
+        return 'work_items';
+      }
+
+      if (this.isEpicsList) {
+        return 'epics';
+      }
+
+      return 'issues';
+    },
+    shouldUseRouterNavigation() {
+      // NOTE: task are redirected to /issues -> /work_items from BE
+      // When clicking breadcrumb, we navigate to the list view using the same path prefix.
+      // This redirect users to /work_items in case of "tasks"
+      // even if the feature flag is off as we don't show 404 for work_items path when feature flag is off anymore
+      const isOnWorkItemsPath = this.$route.path?.includes('work_items');
+      if (isOnWorkItemsPath && !this.isWorkItemPlanningViewEnabled) {
+        return false;
+      }
+      return true;
     },
     crumbs() {
       const indexCrumb = {
         text: this.listName,
       };
 
-      if (this.workItemsViewEnabled) {
-        indexCrumb.to = { name: ROUTES.index, query: this.$route.query };
+      if (this.shouldUseRouterNavigation) {
+        indexCrumb.to = {
+          name: ROUTES.index,
+          query: this.$route.query,
+          params: { type: this.breadcrumbType },
+        };
       } else {
         indexCrumb.href = this.listPath;
       }
@@ -68,14 +88,20 @@ export default {
       if (this.$route.name === ROUTES.new) {
         crumbs.push({
           text: BREADCRUMB_LABELS[ROUTES.new],
-          to: ROUTES.new,
+          to: { name: ROUTES.new, params: { type: this.breadcrumbType } },
         });
       }
 
       if (this.$route.name === ROUTES.workItem) {
         crumbs.push({
           text: `#${this.$route.params.iid}`,
-          to: this.$route.path,
+          to: {
+            name: ROUTES.workItem,
+            params: {
+              type: this.$route.params.type,
+              iid: this.$route.params.iid,
+            },
+          },
         });
       }
 
@@ -86,5 +112,5 @@ export default {
 </script>
 
 <template>
-  <gl-breadcrumb :key="crumbs.length" :items="crumbs" :auto-resize="false" />
+  <gl-breadcrumb :key="crumbs.length" :items="crumbs" :auto-resize="true" />
 </template>

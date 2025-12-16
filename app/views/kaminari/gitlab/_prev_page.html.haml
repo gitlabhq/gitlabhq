@@ -9,6 +9,5 @@
 - is_first_page = current_page.first?
 - view = is_first_page ? 'kaminari/gitlab/disabled_page_cursor_nav' : 'kaminari/gitlab/page_cursor_nav'
 
-= render view, testid: 'kaminari-pagination-prev', rel: 'prev', url: url, remote: remote do
-  = sprite_icon('chevron-left')
-  = s_('Pagination|Previous')
+= render view, testid: 'kaminari-pagination-prev', rel: 'prev', url: url, remote: remote, aria: { label: s_('Pagination|Go to previous page') } do
+  = sprite_icon('chevron-lg-left')

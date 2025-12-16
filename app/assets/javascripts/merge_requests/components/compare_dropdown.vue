@@ -46,6 +46,11 @@ export default {
       required: false,
       default: '',
     },
+    ariaDescribedby: {
+      type: String,
+      required: false,
+      default: '',
+    },
     disabled: {
       type: Boolean,
       required: false,
@@ -128,6 +133,7 @@ export default {
       type="hidden"
       :value="current.value"
       :name="inputName"
+      :aria-describedby="ariaDescribedby"
       data-testid="target-project-input"
     />
     <gl-collapsible-listbox

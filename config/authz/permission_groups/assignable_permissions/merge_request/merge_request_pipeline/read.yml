@@ -1,0 +1,8 @@
+---
+name: read_merge_request_pipeline
+description: Grants the ability to read merge request pipelines
+feature_category: continuous_integration
+boundaries:
+  - project
+permissions:
+  - read_merge_request_pipeline

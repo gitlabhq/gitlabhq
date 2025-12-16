@@ -2,3 +2,5 @@
 name: read_ci_config
 description: Grants the ability to read CI/CD configuration for validation
 feature_category: pipeline_composition
+boundaries:
+  - project

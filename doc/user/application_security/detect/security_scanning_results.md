@@ -43,12 +43,16 @@ pipeline.
 
 Vulnerabilities identified in the default branch are listed in the [vulnerability report](../vulnerability_report/_index.md).
 
-| Vulnerability information                          | Branch<br />pipeline                                              | Merge request</br >pipeline |
-|----------------------------------------------------|-------------------------------------------------------------------|-----------------------------|
-| Security reports                                   | {{< icon name="check-circle-filled" >}} Yes                       | {{< icon name="check-circle-filled" >}} Yes |
-| Pipeline security report<br />(Ultimate only)      | {{< icon name="check-circle-filled" >}} Yes                       | {{< icon name="check-circle-filled" >}} Yes |
-| Merge request security widget<br />(Ultimate only) | {{< icon name="dash-circle" >}} No                                | {{< icon name="check-circle-filled" >}} Yes |
-| Vulnerability report                               | {{< icon name="check-circle-filled" >}} Yes - Default branch only | {{< icon name="dash-circle" >}} No |
+| Vulnerability information                          | Branch pipeline         | Merge request pipeline |
+|----------------------------------------------------|-------------------------|------------------------|
+| Security reports                                   | {{< yes >}}             | {{< yes >}}            |
+| Pipeline security report<br />(Ultimate only)      | {{< yes >}}             | {{< yes >}}            |
+| Merge request security widget<br />(Ultimate only) | {{< no >}}              | {{< yes >}}            |
+| Vulnerability report                               | {{< yes >}}<sup>1</sup> | {{< no >}}             |
+
+**Footnotes**:
+
+1. Vulnerability report is only available for the default branch.
 
 ## Security report artifacts
 
@@ -75,7 +79,7 @@ purposes. A security report is a JSON file.
 
 To download a security report:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
@@ -112,7 +116,7 @@ branch.
 
 To view a pipeline security report:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select the latest pipeline.
 
@@ -131,7 +135,7 @@ Prerequisites:
 
 To change the status and severity of findings or vulnerabilities:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select the latest pipeline.
 1. Select the **Security** tab.
@@ -150,7 +154,7 @@ To change the status and severity of findings or vulnerabilities:
 
 Create an issue to track, document, and manage the remediation work for a finding or vulnerability.
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
@@ -192,7 +196,7 @@ View the merge request security widget to see the difference in findings the cha
 
 To view the security widget:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Merge requests**.
 1. Select a merge request.
 

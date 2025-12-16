@@ -673,4 +673,34 @@ describe('Blob content viewer component', () => {
       },
     );
   });
+
+  describe('file navigation', () => {
+    it('fetches fresh content when navigating to a different file', async () => {
+      mockAxios.onGet(/format=json/).reply(HTTP_STATUS_OK, { html: 'content', binary: false });
+
+      await createComponent({ blob: { ...richViewerMock, fileType: 'unknown' } });
+      expect(mockAxios.history.get[0].url).toContain('some_file.js');
+
+      blobInfoMockResolver.mockResolvedValueOnce({
+        data: {
+          project: {
+            ...projectMock,
+            repository: {
+              __typename: 'Repository',
+              empty: false,
+              blobs: {
+                __typename: 'RepositoryBlobConnection',
+                nodes: [{ ...richViewerMock, fileType: 'unknown', webPath: '/different_file.js' }],
+              },
+            },
+          },
+        },
+      });
+
+      await wrapper.setProps({ path: 'different_file.js' });
+      await waitForPromises();
+
+      expect(mockAxios.history.get[1].url).toContain('different_file.js');
+    });
+  });
 });

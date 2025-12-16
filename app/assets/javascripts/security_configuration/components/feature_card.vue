@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlCard, GlIcon, GlLink } from '@gitlab/ui';
+import { GlButton, GlCard, GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
 import FeatureCardBadge from './feature_card_badge.vue';
@@ -12,6 +12,9 @@ export default {
     GlLink,
     FeatureCardBadge,
     ManageViaMr,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     feature: {
@@ -76,9 +79,6 @@ export default {
       const shouldDisplay = this.available || this.feature.badge?.alwaysDisplay;
       return Boolean(shouldDisplay && this.feature.badge?.text);
     },
-    showSecondaryConfigurationHelpPath() {
-      return Boolean(this.available && this.feature.secondary?.configurationHelpPath);
-    },
     hyphenatedFeature() {
       return this.feature.type.replace(/_/g, '-');
     },
@@ -141,64 +141,45 @@ export default {
       <gl-link :href="feature.helpPath">{{ $options.i18n.learnMore }}.</gl-link>
     </p>
 
-    <template v-if="available">
-      <gl-button
-        v-if="feature.configurationPath"
-        :href="feature.configurationPath"
-        variant="confirm"
-        :category="configurationButton.category"
-        :data-testid="`${hyphenatedFeature}-enable-button`"
-        class="gl-mt-5"
-      >
-        {{ configurationButton.text }}
-      </gl-button>
+    <div class="gl-mt-5 gl-flex gl-justify-between">
+      <template v-if="available">
+        <gl-button
+          v-if="feature.configurationPath"
+          :href="feature.configurationPath"
+          variant="confirm"
+          :category="configurationButton.category"
+          :data-testid="`${hyphenatedFeature}-enable-button`"
+        >
+          {{ configurationButton.text }}
+        </gl-button>
 
-      <manage-via-mr
-        v-else-if="showManageViaMr"
-        :feature="feature"
-        variant="confirm"
-        :category="manageViaMrButtonCategory"
-        class="gl-mt-5"
-        :data-testid="`${hyphenatedFeature}-mr-button`"
-        @error="onError"
-      />
+        <manage-via-mr
+          v-else-if="showManageViaMr"
+          :feature="feature"
+          variant="confirm"
+          :category="manageViaMrButtonCategory"
+          :data-testid="`${hyphenatedFeature}-mr-button`"
+          @error="onError"
+        />
 
-      <gl-button
-        v-else-if="feature.configurationHelpPath"
-        icon="external-link"
-        :href="feature.configurationHelpPath"
-        class="gl-mt-5"
-      >
-        {{ $options.i18n.configurationGuide }}
-      </gl-button>
-    </template>
-
-    <div v-if="hasSecondary" data-testid="secondary-feature">
-      <h4 class="gl-m-0 gl-mt-6 gl-text-base" :class="textClasses">
-        {{ feature.secondary.name }}
-      </h4>
-
-      <p class="gl-mb-0 gl-mt-5" :class="textClasses">{{ feature.secondary.description }}</p>
-
-      <gl-button
-        v-if="available && feature.secondary.configurationPath"
-        :href="feature.secondary.configurationPath"
-        variant="confirm"
-        category="secondary"
-        class="gl-mt-5"
-      >
-        {{ feature.secondary.configurationText }}
-      </gl-button>
-
-      <gl-button
-        v-else-if="showSecondaryConfigurationHelpPath"
-        icon="external-link"
-        :href="feature.secondary.configurationHelpPath"
-        category="secondary"
-        class="gl-mt-5"
-      >
-        {{ $options.i18n.configurationGuide }}
-      </gl-button>
+        <gl-button
+          v-else-if="feature.configurationHelpPath"
+          icon="external-link"
+          :href="feature.configurationHelpPath"
+        >
+          {{ $options.i18n.configurationGuide }}
+        </gl-button>
+      </template>
+      <div v-if="hasSecondary" data-testid="secondary-feature">
+        <gl-button
+          v-if="available && feature.secondary.configurationPath"
+          v-gl-tooltip.left.viewport="feature.secondary.configurationText"
+          icon="settings"
+          category="secondary"
+          :href="feature.secondary.configurationPath"
+          :aria-label="feature.secondary.configurationText"
+        />
+      </div>
     </div>
   </gl-card>
 </template>

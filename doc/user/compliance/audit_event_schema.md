@@ -15,21 +15,21 @@ title: Audit event schema and examples
 
 Audit events have a predictable schema in the body of the response.
 
-| Field            | Description                                                | Notes                                                                             | Streaming Only Field                                                                             |
-|------------------|------------------------------------------------------------|-----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
-| `author_id`      | User ID of the user who triggered the event                |                                                                                   | {{< icon name="dotted-circle" >}} No    |
-| `author_name`    | Human-readable name of the author that triggered the event | Helpful when the author no longer exists                                          | {{< icon name="check-circle" >}} Yes      |
-| `created_at`     | Timestamp when event was triggered                         |                                                                                   | {{< icon name="dotted-circle" >}} No     |
-| `details`        | JSON object containing additional metadata                 | Has no defined schema but often contains additional information about an event    | {{< icon name="dotted-circle" >}} No     |
-| `entity_id`      | ID of the audit event's entity                             |                                                                                   | {{< icon name="dotted-circle" >}} No     |
-| `entity_path`    | Full path of the entity affected by the auditable event    |                                                                                   | {{< icon name="check-circle" >}} Yes      |
-| `entity_type`    | String representation of the type of entity                | Acceptable values include `User`, `Group`, and `Key`. This list is not exhaustive | {{< icon name="dotted-circle" >}} No      |
-| `event_type`     | String representation of the type of audit event           |                                                                                   | {{< icon name="check-circle" >}} Yes      |
-| `id`             | Unique identifier for the audit event                      | Can be used for deduplication if required                                         | {{< icon name="dotted-circle" >}} No     |
-| `ip_address`     | IP address of the host used to trigger the event           |                                                                                   | {{< icon name="check-circle" >}} Yes      |
-| `target_details` | Additional details about the target                        |                                                                                   | {{< icon name="check-circle" >}} Yes      |
-| `target_id`      | ID of the audit event's target                             |                                                                                   | {{< icon name="check-circle" >}} Yes      |
-| `target_type`    | String representation of the target's type                 |                                                                                   | {{< icon name="check-circle" >}} Yes      |
+| Field            | Description                                                | Notes                                                                             | Streaming Only Field |
+|------------------|------------------------------------------------------------|-----------------------------------------------------------------------------------|----------------------|
+| `author_id`      | User ID of the user who triggered the event                |                                                                                   | {{< no >}}           |
+| `author_name`    | Human-readable name of the author that triggered the event | Helpful when the author no longer exists                                          | {{< yes >}}          |
+| `created_at`     | Timestamp when event was triggered                         |                                                                                   | {{< no >}}           |
+| `details`        | JSON object containing additional metadata                 | Has no defined schema but often contains additional information about an event    | {{< no >}}           |
+| `entity_id`      | ID of the audit event's entity                             |                                                                                   | {{< no >}}           |
+| `entity_path`    | Full path of the entity affected by the auditable event    |                                                                                   | {{< yes >}}          |
+| `entity_type`    | String representation of the type of entity                | Acceptable values include `User`, `Group`, and `Key`. This list is not exhaustive | {{< no >}}           |
+| `event_type`     | String representation of the type of audit event           |                                                                                   | {{< yes >}}          |
+| `id`             | Unique identifier for the audit event                      | Can be used for deduplication if required                                         | {{< no >}}           |
+| `ip_address`     | IP address of the host used to trigger the event           |                                                                                   | {{< yes >}}          |
+| `target_details` | Additional details about the target                        |                                                                                   | {{< yes >}}          |
+| `target_id`      | ID of the audit event's target                             |                                                                                   | {{< yes >}}          |
+| `target_type`    | String representation of the target's type                 |                                                                                   | {{< yes >}}          |
 
 ### Audit event JSON schema
 

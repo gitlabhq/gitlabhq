@@ -4,7 +4,6 @@ class CreateCustomDashboardSearchData < Gitlab::Database::Migration[2.3]
   milestone '18.6'
   disable_ddl_transaction!
 
-  # rubocop:disable Migration/EnsureFactoryForTable -- Search data table is derived, not a primary entity
   def up
     create_table :custom_dashboard_search_data, if_not_exists: true do |t|
       t.bigint :custom_dashboard_id, null: false
@@ -22,7 +21,6 @@ class CreateCustomDashboardSearchData < Gitlab::Database::Migration[2.3]
       column: :custom_dashboard_id,
       on_delete: :cascade
   end
-  # rubocop: enable Migration/EnsureFactoryForTable
 
   def down
     drop_table :custom_dashboard_search_data

@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "AI Setting Feature Settings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "duo_agent_platform_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable or disable the Duo Agent Platform feature"
+    }
+  }
+}

@@ -3,6 +3,8 @@ data_category: operational
 key_path: usage_activity_by_stage_monthly.create.action_monthly_active_users_project_repo_human_users
 description: Count of monthly active human users (excluding bots) who have performed any Git operation (read/write/push)
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: 28d

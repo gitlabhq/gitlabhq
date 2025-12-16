@@ -269,5 +269,5 @@ The workaround is to cause some database writes. For example, you can sign in to
 An alternative workaround is to run the SQL query `CHECKPOINT;` on the database of the primary site:
 
 ```shell
-sudo gitlab-psql -xc 'CHECKPOINT;
+sudo gitlab-psql -xc 'CHECKPOINT;'
 ```

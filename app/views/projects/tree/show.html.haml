@@ -5,7 +5,7 @@
 - add_page_startup_graphql_call('repository/permissions', { projectPath: @project.full_path })
 - add_page_startup_graphql_call('repository/files', { nextPageCursor: "", pageSize: 100, projectPath: @project.full_path, ref: current_ref, path: current_route_path || "/", refType: ref_type_enum_value})
 - breadcrumb_title _("Repository")
-- repository_file_tree_browser_enabled = Feature.enabled?(:repository_file_tree_browser, @project)
+- repository_file_tree_browser_enabled = Feature.enabled?(:repository_file_tree_browser, current_user)
 - @force_fluid_layout = repository_file_tree_browser_enabled
 
 - page_title @path.presence || _("Files"), @ref

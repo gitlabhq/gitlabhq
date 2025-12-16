@@ -462,7 +462,7 @@ module ProjectsHelper
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
       pagesAccessControlForced: project.pages_access_control_forced_by_ancestor?,
       pagesHelpPath: help_page_path('user/project/pages/pages_access_control.md'),
-      issuesHelpPath: help_page_path('user/project/issues/_index.md'),
+      issuesHelpPath: issues_help_page_path(project),
       membersPagePath: project_project_members_path(project),
       environmentsHelpPath: help_page_path('ci/environments/_index.md'),
       featureFlagsHelpPath: help_page_path('operations/feature_flags.md'),
@@ -557,7 +557,6 @@ module ProjectsHelper
       admin_path: admin_path,
       can_read_project: can?(current_user, :read_project, project).to_s,
       cicd_catalog_path: cicd_catalog_path,
-      is_project_archived: project.archived.to_s,
       is_project_empty: project.empty_repo?.to_s,
       is_project_marked_for_deletion: project.self_deletion_scheduled?.to_s,
       project_avatar: project.avatar_url,
@@ -762,6 +761,14 @@ module ProjectsHelper
   end
 
   private
+
+  def issues_help_page_path(project)
+    if project.work_items_consolidated_list_enabled?(current_user)
+      help_page_path('user/work_items/_index.md')
+    else
+      help_page_path('user/project/issues/_index.md')
+    end
+  end
 
   def can_admin_project_clusters?(project)
     project.clusters.any? && can?(current_user, :admin_cluster, project)
@@ -1033,6 +1040,16 @@ module ProjectsHelper
       ),
       duo_remote_flows_cascading_settings: project_cascading_namespace_settings_tooltip_data(
         :duo_remote_flows_enabled,
+        project,
+        method(:edit_group_path)
+      ),
+      duo_foundational_flows_cascading_settings: project_cascading_namespace_settings_tooltip_data(
+        :duo_foundational_flows_enabled,
+        project,
+        method(:edit_group_path)
+      ),
+      duo_sast_fp_detection_cascading_settings: project_cascading_namespace_settings_tooltip_data(
+        :duo_sast_fp_detection_enabled,
         project,
         method(:edit_group_path)
       )

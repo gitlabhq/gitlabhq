@@ -1,9 +1,4 @@
-import {
-  GlAlert,
-  GlDisclosureDropdown,
-  GlDisclosureDropdownItem,
-  GlFormRadioGroup,
-} from '@gitlab/ui';
+import { GlAlert, GlFormRadioGroup } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -11,21 +6,13 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import InboundTokenAccess from '~/token_access/components/inbound_token_access.vue';
-import {
-  JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT,
-  JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG,
-} from '~/token_access/constants';
-import AutopopulateAllowlistModal from '~/token_access/components/autopopulate_allowlist_modal.vue';
+import { JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT } from '~/token_access/constants';
 import NamespaceForm from '~/token_access/components/namespace_form.vue';
-import RemoveAutopopulatedEntriesModal from '~/token_access/components/remove_autopopulated_entries_modal.vue';
-import autopopulateAllowlistMutation from '~/token_access/graphql/mutations/autopopulate_allowlist.mutation.graphql';
 import inboundRemoveGroupCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_remove_group_ci_job_token_scope.mutation.graphql';
 import inboundRemoveProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_remove_project_ci_job_token_scope.mutation.graphql';
 import inboundUpdateCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
 import inboundGetCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
-import getAuthLogCountQuery from '~/token_access/graphql/queries/get_auth_log_count.query.graphql';
 import getCiJobTokenScopeAllowlistQuery from '~/token_access/graphql/queries/get_ci_job_token_scope_allowlist.query.graphql';
-import removeAutopopulatedEntriesMutation from '~/token_access/graphql/mutations/remove_autopopulated_entries.mutation.graphql';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ConfirmActionModal from '~/vue_shared/components/confirm_action_modal.vue';
 import TokenAccessTable from '~/token_access/components/token_access_table.vue';
@@ -36,10 +23,7 @@ import {
   inboundJobTokenScopeDisabledResponse,
   inboundRemoveNamespaceSuccess,
   inboundUpdateScopeSuccessResponse,
-  mockAuthLogsCountResponse,
   mockCiJobTokenScopeAllowlistResponse,
-  mockAutopopulateAllowlistResponse,
-  mockRemoveAutopopulatedEntriesResponse,
 } from './mock_data';
 
 const projectPath = 'root/my-repo';
@@ -53,20 +37,9 @@ jest.mock('~/alert');
 describe('TokenAccess component', () => {
   let wrapper;
 
-  const authLogCountResponseHandler = jest.fn().mockResolvedValue(mockAuthLogsCountResponse(4));
   const ciJobTokenScopeAllowlistResponseHandler = jest
     .fn()
     .mockResolvedValue(mockCiJobTokenScopeAllowlistResponse());
-  const ciJobTokenScopeAllowlistWithoutAutopopulatedEntriesResponseHandler = jest
-    .fn()
-    .mockResolvedValue(mockCiJobTokenScopeAllowlistResponse(false));
-  const authLogZeroCountResponseHandler = jest.fn().mockResolvedValue(mockAuthLogsCountResponse(0));
-  const autopopulateAllowlistResponseHandler = jest
-    .fn()
-    .mockResolvedValue(mockAutopopulateAllowlistResponse());
-  const autopopulateAllowlistResponseErrorHandler = jest
-    .fn()
-    .mockResolvedValue(mockAutopopulateAllowlistResponse({ errorMessage: message }));
   const inboundJobTokenScopeEnabledResponseHandler = jest
     .fn()
     .mockResolvedValue(inboundJobTokenScopeEnabledResponse);
@@ -82,20 +55,9 @@ describe('TokenAccess component', () => {
   const inboundUpdateScopeSuccessResponseHandler = jest
     .fn()
     .mockResolvedValue(inboundUpdateScopeSuccessResponse);
-  const removeAutopopulatedEntriesMutationHandler = jest
-    .fn()
-    .mockResolvedValue(mockRemoveAutopopulatedEntriesResponse());
-  const removeAutopopulatedEntriesMutationErrorHandler = jest
-    .fn()
-    .mockResolvedValue(mockRemoveAutopopulatedEntriesResponse({ errorMessage: message }));
   const failureHandler = jest.fn().mockRejectedValue(error);
   const mockToastShow = jest.fn();
 
-  const findAutopopulateAllowlistModal = () => wrapper.findComponent(AutopopulateAllowlistModal);
-  const findAutopopulationAlert = () => wrapper.findByTestId('autopopulation-alert');
-  const findAllowlistOptions = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findAllowlistOption = (index) =>
-    wrapper.findAllComponents(GlDisclosureDropdownItem).at(index).find('button');
   const findFormSelector = () => wrapper.findByTestId('form-selector');
   const findRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findTokenDisabledAlert = () => wrapper.findComponent(GlAlert);
@@ -105,8 +67,6 @@ describe('TokenAccess component', () => {
   const findGroupCount = () => wrapper.findByTestId('group-count');
   const findProjectCount = () => wrapper.findByTestId('project-count');
   const findConfirmActionModal = () => wrapper.findComponent(ConfirmActionModal);
-  const findRemoveAutopopulatedEntriesModal = () =>
-    wrapper.findComponent(RemoveAutopopulatedEntriesModal);
   const findTokenAccessTable = () => wrapper.findComponent(TokenAccessTable);
 
   const createComponent = (
@@ -153,54 +113,6 @@ describe('TokenAccess component', () => {
 
       expect(findTokenAccessTable().props('loading')).toBe(true);
       expect(findTokenAccessTable().props('loadingMessage')).toBe('');
-    });
-  });
-
-  describe('setting allowlist limit', () => {
-    // in the following tests, group count is 1, project count is 1, and auth log count is 4.
-    describe('when fetching auth log count is successful', () => {
-      const createComponentWithAllowlistLimit = async (projectAllowlistLimit) => {
-        await createComponent(
-          [
-            [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-            [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
-            [getAuthLogCountQuery, authLogCountResponseHandler],
-          ],
-          { projectAllowlistLimit },
-        );
-      };
-
-      it('calls the query with the expected variables', async () => {
-        await createComponentWithAllowlistLimit(5);
-
-        expect(authLogCountResponseHandler).toHaveBeenCalledWith({ fullPath: 'root/my-repo' });
-      });
-
-      it('passes the correct limit values to the autopopulation modal when allowlist limit is not exceeded', async () => {
-        await createComponentWithAllowlistLimit(5);
-
-        expect(findAutopopulateAllowlistModal().props('authLogExceedsLimit')).toBe(true);
-        expect(findAutopopulateAllowlistModal().props('projectAllowlistLimit')).toBe(5);
-      });
-
-      it('passes the correct limit values to the autopopulation modal when allowlist limit is exceeded', async () => {
-        await createComponentWithAllowlistLimit(10);
-
-        expect(findAutopopulateAllowlistModal().props('authLogExceedsLimit')).toBe(false);
-        expect(findAutopopulateAllowlistModal().props('projectAllowlistLimit')).toBe(10);
-      });
-    });
-
-    it('handles fetches auth log count error correctly', async () => {
-      await createComponent([
-        [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-        [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
-        [getAuthLogCountQuery, failureHandler],
-      ]);
-
-      expect(createAlert).toHaveBeenCalledWith({
-        message: 'There was a problem fetching authorization logs count.',
-      });
     });
   });
 
@@ -431,313 +343,6 @@ describe('TokenAccess component', () => {
         findNamespaceForm().vm.$emit('saved');
 
         expect(ciJobTokenScopeAllowlistResponseHandler).toHaveBeenCalledTimes(2);
-      });
-    });
-  });
-
-  describe('when importing entries from authorization log', () => {
-    beforeEach(() =>
-      createComponent(
-        [
-          [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-          [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
-          [autopopulateAllowlistMutation, autopopulateAllowlistResponseHandler],
-          [removeAutopopulatedEntriesMutation, removeAutopopulatedEntriesMutationHandler],
-          [getAuthLogCountQuery, authLogCountResponseHandler],
-        ],
-        {
-          stubs: { CrudComponent, GlDisclosureDropdown, GlDisclosureDropdownItem },
-        },
-      ),
-    );
-
-    describe('autopopulate entries', () => {
-      it('renders the autopopulate allowlist modal when clicking "All projects in authentication log"', async () => {
-        expect(findAutopopulateAllowlistModal().props('showModal')).toBe(false);
-
-        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG);
-        await nextTick();
-
-        expect(findAutopopulateAllowlistModal().props('showModal')).toBe(true);
-      });
-
-      it('unselects dropdown option when autopopulate allowlist modal is hidden', async () => {
-        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG);
-        findAutopopulateAllowlistModal().vm.$emit('hide');
-        await nextTick();
-
-        expect(findFormSelector().props('selected')).toBe(null);
-      });
-
-      it('shows loading state while autopopulating entries', async () => {
-        expect(findCountLoadingIcon().exists()).toBe(false);
-        expect(findTokenAccessTable().props('loading')).toBe(false);
-
-        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG);
-        findAutopopulateAllowlistModal().vm.$emit('autopopulate-allowlist');
-
-        await nextTick();
-
-        expect(findCountLoadingIcon().exists()).toBe(true);
-        expect(findTokenAccessTable().props('loading')).toBe(true);
-        expect(findTokenAccessTable().props('loadingMessage')).toBe(
-          'Auto-populating allowlist entries. Please wait while the action completes.',
-        );
-      });
-
-      it('resets loading state after autopopulating entries', async () => {
-        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG);
-        findAutopopulateAllowlistModal().vm.$emit('autopopulate-allowlist');
-
-        await nextTick();
-
-        expect(findTokenAccessTable().props('loadingMessage')).toBe(
-          'Auto-populating allowlist entries. Please wait while the action completes.',
-        );
-
-        await waitForPromises();
-
-        expect(findCountLoadingIcon().exists()).toBe(false);
-        expect(findTokenAccessTable().props('loading')).toBe(false);
-        expect(findTokenAccessTable().props('loadingMessage')).toBe('');
-      });
-
-      it('calls the autopopulate allowlist mutation and refetches allowlist and job token setting', async () => {
-        expect(autopopulateAllowlistResponseHandler).toHaveBeenCalledTimes(0);
-        expect(ciJobTokenScopeAllowlistResponseHandler).toHaveBeenCalledTimes(1);
-        expect(inboundJobTokenScopeEnabledResponseHandler).toHaveBeenCalledTimes(1);
-
-        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG);
-        findAutopopulateAllowlistModal().vm.$emit('autopopulate-allowlist');
-        await waitForPromises();
-        await nextTick();
-
-        expect(autopopulateAllowlistResponseHandler).toHaveBeenCalledTimes(1);
-        expect(ciJobTokenScopeAllowlistResponseHandler).toHaveBeenCalledTimes(2);
-        expect(inboundJobTokenScopeEnabledResponseHandler).toHaveBeenCalledTimes(3);
-      });
-
-      it('shows error alert when mutation returns an error', async () => {
-        createComponent(
-          [
-            [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-            [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
-            [autopopulateAllowlistMutation, autopopulateAllowlistResponseErrorHandler],
-            [getAuthLogCountQuery, authLogCountResponseHandler],
-          ],
-          {
-            stubs: { CrudComponent, GlDisclosureDropdown, GlDisclosureDropdownItem },
-          },
-        );
-
-        await waitForPromises();
-
-        expect(findAutopopulationAlert().exists()).toBe(false);
-
-        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG);
-        findAutopopulateAllowlistModal().vm.$emit('autopopulate-allowlist');
-        await waitForPromises();
-        await nextTick();
-
-        expect(findAutopopulationAlert().text()).toBe('An error occurred');
-      });
-
-      it('shows error alert when mutation fails', async () => {
-        createComponent(
-          [
-            [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-            [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
-            [autopopulateAllowlistMutation, failureHandler],
-            [getAuthLogCountQuery, authLogCountResponseHandler],
-          ],
-          {
-            stubs: { CrudComponent, GlDisclosureDropdown, GlDisclosureDropdownItem },
-          },
-        );
-
-        await waitForPromises();
-
-        expect(findAutopopulationAlert().exists()).toBe(false);
-
-        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG);
-        findAutopopulateAllowlistModal().vm.$emit('autopopulate-allowlist');
-        await waitForPromises();
-        await nextTick();
-
-        expect(findAutopopulationAlert().text()).toBe(
-          'An error occurred while adding the authentication log entries. Please try again.',
-        );
-      });
-    });
-
-    describe('remove autopopulated entries', () => {
-      const triggerRemoveEntries = () => {
-        findAllowlistOption(0).trigger('click');
-        findRemoveAutopopulatedEntriesModal().vm.$emit('remove-entries');
-      };
-
-      it('additional actions are available in the disclosure dropdown', () => {
-        expect(findAllowlistOptions().exists()).toBe(true);
-      });
-
-      it('"Remove only entries auto-added" renders the remove autopopulated entries modal', async () => {
-        expect(findRemoveAutopopulatedEntriesModal().props('showModal')).toBe(false);
-
-        findAllowlistOption(0).trigger('click');
-        await nextTick();
-
-        expect(findRemoveAutopopulatedEntriesModal().props('showModal')).toBe(true);
-      });
-
-      it('shows loading state while remove autopopulated entries mutation is processing', async () => {
-        expect(findCountLoadingIcon().exists()).toBe(false);
-        expect(findTokenAccessTable().props('loading')).toBe(false);
-
-        triggerRemoveEntries();
-
-        await nextTick();
-
-        expect(findCountLoadingIcon().exists()).toBe(true);
-        expect(findTokenAccessTable().props('loading')).toBe(true);
-        expect(findTokenAccessTable().props('loadingMessage')).toBe(
-          'Removing auto-added allowlist entries. Please wait while the action completes.',
-        );
-      });
-
-      it('resets loading state after removing autopopulated entries', async () => {
-        triggerRemoveEntries();
-        await nextTick();
-
-        expect(findTokenAccessTable().props('loadingMessage')).toBe(
-          'Removing auto-added allowlist entries. Please wait while the action completes.',
-        );
-
-        await waitForPromises();
-
-        expect(findCountLoadingIcon().exists()).toBe(false);
-        expect(findTokenAccessTable().props('loading')).toBe(false);
-        expect(findTokenAccessTable().props('loadingMessage')).toBe('');
-      });
-
-      it('calls the remove autopopulated entries mutation and refetches allowlist', async () => {
-        expect(removeAutopopulatedEntriesMutationHandler).toHaveBeenCalledTimes(0);
-        expect(ciJobTokenScopeAllowlistResponseHandler).toHaveBeenCalledTimes(1);
-
-        triggerRemoveEntries();
-        await waitForPromises();
-        await nextTick();
-
-        expect(removeAutopopulatedEntriesMutationHandler).toHaveBeenCalledTimes(1);
-        expect(ciJobTokenScopeAllowlistResponseHandler).toHaveBeenCalledTimes(2);
-      });
-
-      it('shows toast message when mutation is successful', async () => {
-        triggerRemoveEntries();
-        await waitForPromises();
-        await nextTick();
-
-        expect(mockToastShow).toHaveBeenCalledWith(
-          'Authentication log entries were successfully removed from the allowlist.',
-        );
-      });
-
-      it('shows error alert when mutation returns an error', async () => {
-        createComponent(
-          [
-            [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-            [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
-            [removeAutopopulatedEntriesMutation, removeAutopopulatedEntriesMutationErrorHandler],
-            [getAuthLogCountQuery, authLogCountResponseHandler],
-          ],
-          {
-            stubs: { CrudComponent, GlDisclosureDropdown, GlDisclosureDropdownItem },
-          },
-        );
-
-        await waitForPromises();
-
-        expect(findAutopopulationAlert().exists()).toBe(false);
-
-        triggerRemoveEntries();
-        await waitForPromises();
-        await nextTick();
-
-        expect(findAutopopulationAlert().text()).toBe('An error occurred');
-      });
-
-      it('shows error alert when mutation fails', async () => {
-        createComponent(
-          [
-            [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-            [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
-            [removeAutopopulatedEntriesMutation, failureHandler],
-            [getAuthLogCountQuery, authLogCountResponseHandler],
-          ],
-          {
-            stubs: { CrudComponent, GlDisclosureDropdown, GlDisclosureDropdownItem },
-          },
-        );
-
-        await waitForPromises();
-
-        expect(findAutopopulationAlert().exists()).toBe(false);
-
-        triggerRemoveEntries();
-        await waitForPromises();
-        await nextTick();
-
-        expect(findAutopopulationAlert().text()).toBe(
-          'An error occurred while removing the auto-added log entries. Please try again.',
-        );
-      });
-
-      it('modal can be re-opened again after it closes', async () => {
-        findAllowlistOption(0).trigger('click');
-        await nextTick();
-
-        expect(findRemoveAutopopulatedEntriesModal().props('showModal')).toBe(true);
-
-        findRemoveAutopopulatedEntriesModal().vm.$emit('hide');
-        await nextTick();
-
-        expect(findRemoveAutopopulatedEntriesModal().props('showModal')).toBe(false);
-
-        findAllowlistOption(0).trigger('click');
-        await nextTick();
-
-        expect(findRemoveAutopopulatedEntriesModal().props('showModal')).toBe(true);
-      });
-    });
-
-    describe('allowlist actions', () => {
-      beforeEach(async () => {
-        await createComponent(
-          [
-            [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-            [
-              getCiJobTokenScopeAllowlistQuery,
-              ciJobTokenScopeAllowlistWithoutAutopopulatedEntriesResponseHandler,
-            ],
-            [getAuthLogCountQuery, authLogZeroCountResponseHandler],
-          ],
-          {
-            stubs: { CrudComponent, GlDisclosureDropdown, GlDisclosureDropdownItem },
-          },
-        );
-        await nextTick();
-      });
-
-      it('hides add auth log entries option if auth log count is zero', () => {
-        expect(findFormSelector().props('items')).toMatchObject([
-          {
-            text: 'Group or project',
-            value: 'JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT',
-          },
-        ]);
-      });
-
-      it('hides remove auth log entries option if there are no autopopulated entries', () => {
-        expect(findAllowlistOptions().exists()).toBe(false);
       });
     });
   });

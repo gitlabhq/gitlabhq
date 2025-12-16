@@ -34,10 +34,88 @@ RSpec.describe API::SupplyChain::Attestations, feature_category: :artifact_secur
     project.add_developer(developer)
   end
 
+  shared_examples 'authorization checks' do
+    context 'when user is anonymous' do
+      let(:api_user) { nil }
+
+      context 'when project is public' do
+        before do
+          project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+          project.update_column(:public_builds, true)
+        end
+
+        it 'allows to access attestations' do
+          get_endpoint
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when project is private' do
+        it 'rejects access and hides existence of attestations' do
+          get_endpoint
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when user is guest' do
+      let(:api_user) { guest }
+
+      it 'allows to access attestations if has access' do
+        get_endpoint
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'disallows access if does not have access' do
+        get_endpoint_other_project
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when user is developer' do
+      let(:api_user) { developer }
+
+      it 'allows to access attestations if has access' do
+        get_endpoint
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'disallows access if does not have access' do
+        get_endpoint_other_project
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when user is reporter' do
+      let(:api_user) { reporter }
+
+      it 'allows to access attestations if has access' do
+        get_endpoint
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'disallows access if does not have access' do
+        get_endpoint_other_project
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET /projects/:id/attestations/:subject_digest' do
     let_it_be(:subject_digest) { "5db1fee4b5703808c48078a76768b155b421b210c0761cd6a5d223f4d99f1eaa" }
     let_it_be(:other_subject_digest) { "fffffee4b5703808c48078a76768b155b421b210c0761cd6a5d223f4d99f1eaa" }
     let_it_be(:attestation) { create(:supply_chain_attestation, project: project, subject_digest: subject_digest) }
+    let(:get_endpoint) { get_attestations }
+    let(:get_endpoint_other_project) { get_attestations_other_project }
+
     let_it_be(:other_attestation) do
       create(:supply_chain_attestation, project: other_project, subject_digest: subject_digest)
     end
@@ -65,7 +143,10 @@ RSpec.describe API::SupplyChain::Attestations, feature_category: :artifact_secur
           "status" => "success",
           "predicate_kind" => "provenance",
           "predicate_type" => "https://slsa.dev/provenance/v1",
-          "subject_digest" => subject_digest
+          "subject_digest" => subject_digest,
+          "iid" => attestation.iid,
+          "download_url" => end_with(api_v4_projects_attestations_download_path(id: attestation.project_id,
+            attestation_iid: attestation.iid))
         })
       end
 
@@ -81,80 +162,7 @@ RSpec.describe API::SupplyChain::Attestations, feature_category: :artifact_secur
         end
       end
 
-      describe 'authorization checks' do
-        context 'when user is anonymous' do
-          let(:api_user) { nil }
-
-          context 'when project is public' do
-            before do
-              project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
-              project.update_column(:public_builds, true)
-            end
-
-            it 'allows to access attestations' do
-              get_attestations
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
-          end
-
-          context 'when project is private' do
-            it 'rejects access and hides existence of attestations' do
-              get_attestations
-
-              expect(response).to have_gitlab_http_status(:not_found)
-            end
-          end
-        end
-
-        context 'when user is guest' do
-          let(:api_user) { guest }
-
-          it 'allows to access attestations if has access' do
-            get_attestations
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-
-          it 'disallows access if does not have access' do
-            get_attestations_other_project
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
-        end
-
-        context 'when user is developer' do
-          let(:api_user) { developer }
-
-          it 'allows to access attestations if has access' do
-            get_attestations
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-
-          it 'disallows access if does not have access' do
-            get_attestations_other_project
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
-        end
-
-        context 'when user is reporter' do
-          let(:api_user) { reporter }
-
-          it 'allows to access attestations if has access' do
-            get_attestations
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-
-          it 'disallows access if does not have access' do
-            get_attestations_other_project
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
-        end
-      end
+      include_examples "authorization checks"
     end
 
     context 'when accessing via the project id' do
@@ -180,5 +188,56 @@ RSpec.describe API::SupplyChain::Attestations, feature_category: :artifact_secur
         expect(json_response.length).to eq(0)
       end
     end
+  end
+
+  describe 'GET /projects/:id/attestations/:iid/download' do
+    let!(:attestation) { create(:supply_chain_attestation, project: project) }
+    let!(:other_attestation) do
+      create(:supply_chain_attestation, project: other_project)
+    end
+
+    let(:target_url) { "/projects/#{project.id}/attestations/#{other_attestation.iid}/download" }
+    let(:get_endpoint) { download_attestation }
+    let(:get_endpoint_other_project) { download_attestation_other_project }
+    let(:download_attestation_other_project) do
+      url = "/projects/#{other_project.id}/attestations/#{attestation.iid}/download"
+      get api(url, api_user)
+    end
+
+    subject(:download_attestation) do
+      url = target_url
+      get api(url, api_user)
+    end
+
+    it "returns the contents of the attestation" do
+      status_code = download_attestation
+
+      expect(status_code).to eq(200)
+      expect(response.body).to eq(attestation.file.read)
+    end
+
+    context 'when slsa_provenance_statement is disabled' do
+      before do
+        stub_feature_flags(slsa_provenance_statement: false)
+      end
+
+      it 'returns 404' do
+        download_attestation
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when an invalid iid is passed' do
+      let(:target_url) { "/projects/#{project.id}/attestations/1337/download" }
+
+      it 'returns 404' do
+        download_attestation
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    include_examples "authorization checks"
   end
 end

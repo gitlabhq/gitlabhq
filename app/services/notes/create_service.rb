@@ -185,10 +185,19 @@ module Notes
     end
 
     def track_event(note, user)
-      track_note_creation_usage_for_issues(note) if note.for_issue?
+      if note.for_issue?
+        track_note_creation_usage_for_issues(note)
+        track_note_creation(note.noteable, Gitlab::WorkItems::Instrumentation::EventActions::NOTE_CREATE)
+      end
+
       track_note_creation_usage_for_merge_requests(note) if note.for_merge_request?
       track_incident_action(user, note.noteable, 'incident_comment') if note.for_issue?
       track_note_creation_in_ipynb(note)
+
+      if note.for_design?
+        track_note_creation(note.noteable.issue,
+          Gitlab::WorkItems::Instrumentation::EventActions::DESIGN_NOTE_CREATE)
+      end
     end
 
     def tracking_data_for(note)
@@ -219,6 +228,19 @@ module Notes
       return unless should_track_ipynb_notes?(note)
 
       Gitlab::UsageDataCounters::IpynbDiffActivityCounter.note_created(note)
+    end
+
+    def track_note_creation(work_item, event)
+      return unless [
+        Gitlab::WorkItems::Instrumentation::EventActions::DESIGN_NOTE_CREATE,
+        Gitlab::WorkItems::Instrumentation::EventActions::NOTE_CREATE
+      ].include?(event)
+
+      ::Gitlab::WorkItems::Instrumentation::TrackingService.new(
+        work_item: work_item,
+        current_user: current_user,
+        event: event
+      ).execute
     end
   end
 end

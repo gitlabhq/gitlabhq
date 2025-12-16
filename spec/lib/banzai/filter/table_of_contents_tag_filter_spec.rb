@@ -69,7 +69,7 @@ RSpec.describe Banzai::Filter::TableOfContentsTagFilter, feature_category: :mark
         doc = pipeline_filter("this [[_toc_]]\n\n# Foo")
 
         expect(doc.to_html).to include('this <a href="_toc_" data-wikilink="true">_toc_</a>')
-        expect(doc.to_html).to include('Foo</h1>')
+        expect(doc.to_html).to include('>Foo<a ')
       end
     end
 

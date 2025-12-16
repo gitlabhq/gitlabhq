@@ -1,0 +1,13 @@
+---
+name: allow_resource_access_token_creation_without_expiry_date
+description: |
+  Controls validation of the expires_at field when creating resource access tokens.
+  - When enabled: If require_personal_access_token_expiry is true, a valid expires_at must be provided; if false, expires_at is optional and can be omitted.
+  - When disabled: The expires_at parameter must always be present in the request, regardless of the require_personal_access_token_expiry setting.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/574745
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209400
+rollout_issue_url:
+milestone: '18.7'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

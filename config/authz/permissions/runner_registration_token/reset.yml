@@ -5,4 +5,3 @@ feature_category: runner_core
 boundaries:
   - group
   - project
-available_for_tokens: true

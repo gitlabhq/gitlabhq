@@ -278,6 +278,7 @@ module API
         mount ::API::GroupPackages
         mount ::API::GroupPlaceholderReassignments
         mount ::API::GroupVariables
+        mount ::API::Glql
         mount ::API::HelmPackages
         mount ::API::ImportBitbucket
         mount ::API::ImportBitbucketServer
@@ -307,6 +308,7 @@ module API
         mount ::API::NpmProjectPackages
         mount ::API::NugetGroupPackages
         mount ::API::NugetProjectPackages
+        mount ::API::OfflineTransfers
         mount ::API::Organizations
         mount ::API::PackageFiles
         mount ::API::Pages
@@ -318,6 +320,7 @@ module API
         mount ::API::ProjectClusters
         mount ::API::ProjectContainerRepositories
         mount ::API::ProjectContainerRegistryProtectionRules
+        mount ::API::ProjectContainerRegistryProtectionTagRules
         mount ::API::ProjectDebianDistributions
         mount ::API::ProjectEvents
         mount ::API::ProjectExport

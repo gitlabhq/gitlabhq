@@ -27,7 +27,15 @@ module WorkItems
         assignee_ids = assignee_ids.first(1) unless work_item.allows_multiple_assignees?
 
         assignees = User.id_in(assignee_ids)
-        assignees.select { |assignee| assignee.can?(:read_work_item, work_item.resource_parent) }.map(&:id)
+        assignees.select do |assignee|
+          link_composite_identity(assignee) if assignee.composite_identity_enforced? && assignee.service_account?
+
+          assignee.can?(:read_work_item, work_item.resource_parent)
+        end.map(&:id)
+      end
+
+      def link_composite_identity(user)
+        ::Gitlab::Auth::Identity.link_from_scoped_user(user, current_user)
       end
     end
   end

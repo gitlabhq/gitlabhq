@@ -12,21 +12,7 @@ module Users
     end
 
     def enabled?
-      return true if ENV["GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED"] == "true"
-
-      return false unless available?
-
-      return true if user.nil?
-
-      return true if user.project_studio_enabled # allow us to control those already in vs everyone else below
-
-      return true if user.new_ui_enabled.nil?
-
-      user.new_ui_enabled
-    end
-
-    def available?
-      return true if ENV["GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED"] == "true"
+      return false if ENV["GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED"] == "false"
 
       Feature.enabled?(:paneled_view, user)
     end

@@ -52,7 +52,9 @@ module EmailsHelper
   end
 
   def sanitize_name(name)
-    if URI::DEFAULT_PARSER.regexp[:URI_REF].match?(name)
+    # RFC3986_PARSER does not expose :URI_REF (removed in newer RFC),
+    # so we use the legacy RFC2396_PARSER for backward-compatible URI_REF matching.
+    if ::URI::RFC2396_PARSER.regexp[:URI_REF].match?(name)
       name.tr('.', '_')
     else
       name
@@ -70,6 +72,35 @@ module EmailsHelper
     end
 
     pluralize(valid_length, unit)
+  end
+
+  def confirmation_link_for(resource, token)
+    if Feature.disabled?(:devise_email_organization_routes, :instance)
+      return confirmation_url(resource, confirmation_token: token)
+    end
+
+    case resource
+    when Email
+      organization_email_confirmation_url(resource.organization, confirmation_token: token)
+    when User
+      organization_user_confirmation_url(resource.organization, confirmation_token: token)
+    else
+      raise ArgumentError, "Resource not confirmable: #{resource}"
+    end
+  end
+
+  def edit_password_link_for(resource, token)
+    if Feature.disabled?(:devise_email_organization_routes, :instance)
+      return edit_password_url(resource, reset_password_token: token)
+    end
+
+    edit_organization_user_password_url(resource.organization, reset_password_token: token)
+  end
+
+  def unlock_link_for(resource, token)
+    return unlock_url(resource, unlock_token: token) if Feature.disabled?(:devise_email_organization_routes, :instance)
+
+    organization_user_unlock_url(resource.organization, unlock_token: token)
   end
 
   def header_logo

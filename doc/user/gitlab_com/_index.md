@@ -3,7 +3,7 @@ stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab.com settings
-description: Instance configurations.
+description: Configuration for the GitLab.com instance.
 ---
 
 {{< details >}}
@@ -77,7 +77,7 @@ the related documentation:
 | Artifacts [expiry time](../../ci/yaml/_index.md#artifactsexpire_in)               | 30 days unless otherwise specified                                                                         | See [Default artifacts expiration](../../administration/settings/continuous_integration.md#set-default-artifacts-expiration). Artifacts created before June 22, 2020 have no expiry. |
 | Scheduled Pipeline Cron                                                          | `*/5 * * * *`                                                                                              | See [Pipeline schedules advanced configuration](../../administration/cicd/_index.md#change-maximum-scheduled-pipeline-frequency). |
 | Maximum jobs in a single pipeline                                                | `500` for Free tier, `1000` for all trial tiers, `1500` for Premium, and `2000` for Ultimate.              | See [Maximum number of jobs in a pipeline](../../administration/instance_limits.md#maximum-number-of-jobs-in-a-pipeline). |
-| Maximum jobs in active pipelines                                                 | `500` for Free tier, `1000` for all trial tiers, `20000` for Premium, and `100000` for Ultimate.           | See [Number of jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines). |
+| Maximum jobs in active pipelines                                                 | `500` for Free tier, `1000` for all trial tiers, `20000` for Premium, and `60000` for Ultimate.            | See [Number of jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines). |
 | Maximum CI/CD subscriptions to a project                                         | `2`                                                                                                        | See [Number of CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project). |
 | Maximum number of pipeline triggers in a project                                 | `25000`                                                                                                    | See [Limit the number of pipeline triggers](../../administration/instance_limits.md#limit-the-number-of-pipeline-triggers). |
 | Maximum pipeline schedules in projects                                           | `10` for Free tier, `50` for all paid tiers                                                                | See [Number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules). |
@@ -187,8 +187,8 @@ Some settings for [GitLab Pages](../project/pages/_index.md) differ from the
 |--------------------------------------------------------|------------|
 | Domain name                                            | `gitlab.io` |
 | IP address                                             | `35.185.44.232` |
-| Support for custom domains                             | {{< icon name="check-circle" >}} Yes |
-| Support for TLS certificates                           | {{< icon name="check-circle" >}} Yes |
+| Support for custom domains                             | {{< yes >}} |
+| Support for TLS certificates                           | {{< yes >}} |
 | Maximum site size                                      | 1 GB       |
 | Number of custom domains for each GitLab Pages website | 150        |
 
@@ -282,7 +282,7 @@ GitLab.com uses settings to limit importing data into GitLab.
 
 ### Default import sources
 
-The [import sources](../project/import/_index.md#supported-import-sources) that are available to you by default depend on
+The [import sources](../import/_index.md) (migration tools) that are available to you by default depend on
 which GitLab you use:
 
 - GitLab.com: All available import sources are enabled by default.
@@ -291,10 +291,10 @@ which GitLab you use:
 
 ### Import placeholder user limits
 
-Imports into GitLab.com limit the number of [placeholder users](../project/import/_index.md#placeholder-users)
+Imports into GitLab.com limit the number of [placeholder users](../import/mapping.md#placeholder-users)
 for each top-level namespace. The limits differ depending on your plan and seat count.
 For more information, see the
-[table of placeholder user limits for GitLab.com](../project/import/_index.md#placeholder-user-limits).
+[table of placeholder user limits for GitLab.com](../import/mapping.md#placeholder-user-limits).
 
 ## IP range
 
@@ -464,47 +464,47 @@ for the Projects, Groups, and Users APIs do not include informational headers.
 
 The following table describes the rate limits for GitLab.com:
 
-| Rate limit                                                       | Setting                       |
-|:-----------------------------------------------------------------|:------------------------------|
-| Protected paths for an IP address                                | 10 requests each minute        |
-| Raw endpoint traffic for a project, commit, or file path         | 300 requests each minute       |
-| Unauthenticated traffic from an IP address                       | 500 requests each minute       |
-| Authenticated API traffic for a user                             | 2,000 requests each minute     |
-| Authenticated non-API HTTP traffic for a user                    | 1,000 requests each minute     |
-| All traffic from an IP address                                   | 2,000 requests each minute     |
-| Issue creation                                                   | 200 requests each minute       |
-| Note creation on issues and merge requests                       | 60 requests each minute        |
-| Advanced, project, or group search API for an IP address         | 10 requests each minute        |
+| Rate limit                                                       | Setting                         |
+|:-----------------------------------------------------------------|:--------------------------------|
+| Protected paths for an IP address                                | 10 requests each minute         |
+| Raw endpoint traffic for a project, commit, or file path         | 300 requests each minute        |
+| Unauthenticated traffic from an IP address                       | 500 requests each minute        |
+| Authenticated API traffic for a user                             | 2,000 requests each minute      |
+| Authenticated non-API HTTP traffic for a user                    | 1,000 requests each minute      |
+| All traffic from an IP address                                   | 2,000 requests each minute      |
+| Issue creation                                                   | 200 requests each minute        |
+| Note creation on issues and merge requests                       | 60 requests each minute         |
+| Advanced, project, or group search API for an IP address         | 10 requests each minute         |
 | GitLab Pages requests for an IP address                          | 1,000 requests every 50 seconds |
 | GitLab Pages requests for a GitLab Pages domain                  | 5,000 requests every 10 seconds |
 | GitLab Pages TLS connections for an IP address                   | 1,000 requests every 50 seconds |
 | GitLab Pages TLS connections for a GitLab Pages domain           | 400 requests every 10 seconds   |
-| Pipeline creation requests for a project, user, or commit        | 25 requests each minute        |
+| Pipeline creation requests for a project, user, or commit        | 25 requests each minute         |
 | Alert integration endpoint requests for a project                | 3,600 requests every hour       |
 | GitLab Duo `aiAction`  requests                                  | 160 requests every 8 hours      |
-| [Pull mirroring](../project/repository/mirror/pull.md) intervals | 5 minutes                     |
+| [Pull mirroring](../project/repository/mirror/pull.md) intervals | 5 minutes                       |
 | API requests from a user to `/api/v4/users/:id`                  | 300 requests every 10 minutes   |
-| GitLab package cloud requests for an IP address ([introduced](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/24083) in GitLab 16.11) | 3,000 requests each minute |
-| GitLab repository files | 500 requests each minute |
-| User followers requests (`/api/v4/users/:id/followers`)            | 100 requests each minute       |
-| User following requests (`/api/v4/users/:id/following`)            | 100 requests each minute       |
-| User status requests (`/api/v4/users/:user_id/status`)             | 240 requests each minute       |
-| User SSH keys requests (`/api/v4/users/:user_id/keys`)             | 120 requests each minute       |
-| Single SSH key requests (`/api/v4/users/:id/keys/:key_id`)         | 120 requests each minute       |
-| User GPG keys requests (`/api/v4/users/:id/gpg_keys`)              | 120 requests each minute       |
-| Single GPG key requests (`/api/v4/users/:id/gpg_keys/:key_id`)     | 120 requests each minute       |
-| User projects requests (`/api/v4/users/:user_id/projects`)         | 300 requests each minute       |
-| User contributed projects requests (`/api/v4/users/:user_id/contributed_projects`) | 100 requests each minute |
-| User starred projects requests (`/api/v4/users/:user_id/starred_projects`) | 100 requests each minute      |
+| GitLab package cloud requests for an IP address ([introduced](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/24083) in GitLab 16.11) | 3,000 requests each minute      |
+| GitLab repository files | 500 requests each minute        |
+| User followers requests (`/api/v4/users/:id/followers`)            | 100 requests each minute        |
+| User following requests (`/api/v4/users/:id/following`)            | 100 requests each minute        |
+| User status requests (`/api/v4/users/:user_id/status`)             | 240 requests each minute        |
+| User SSH keys requests (`/api/v4/users/:user_id/keys`)             | 120 requests each minute        |
+| Single SSH key requests (`/api/v4/users/:id/keys/:key_id`)         | 120 requests each minute        |
+| User GPG keys requests (`/api/v4/users/:id/gpg_keys`)              | 120 requests each minute        |
+| Single GPG key requests (`/api/v4/users/:id/gpg_keys/:key_id`)     | 120 requests each minute        |
+| User projects requests (`/api/v4/users/:user_id/projects`)         | 300 requests each minute        |
+| User contributed projects requests (`/api/v4/users/:user_id/contributed_projects`) | 100 requests each minute        |
+| User starred projects requests (`/api/v4/users/:user_id/starred_projects`) | 100 requests each minute        |
 | Projects list requests (`/api/v4/projects`)                        | 2,000 requests every 10 minutes |
-| Group projects requests (`/api/v4/groups/:id/projects`)            | 600 requests each minute       |
-| Single project requests (`/api/v4/projects/:id`)                   | 400 requests each minute       |
-| Groups list requests (`/api/v4/groups`)                            | 200 requests each minute       |
-| Single group requests (`/api/v4/groups/:id`)                       | 400 requests each minute       |
-| Runner jobs requests using a runner token (`/api/v4/jobs/request`) | 2,000 requests each minute     |
-| Runner job trace patch requests using a job token (`/api/v4/jobs/trace`) | 2,000 requests each minute     |
-| Runner jobs requests using a job token (`/api/v4/jobs/*`)          | 200 requests each minute       |
-| List all project members in a project                              | 60 requests each minute        |
+| Group projects requests (`/api/v4/groups/:id/projects`)            | 600 requests each minute        |
+| Single project requests (`/api/v4/projects/:id`)                   | 400 requests each minute        |
+| Groups list requests (`/api/v4/groups`)                            | 200 requests each minute        |
+| Single group requests (`/api/v4/groups/:id`)                       | 400 requests each minute        |
+| Runner jobs requests using a runner token (`/api/v4/jobs/request`) | 2,000 requests each minute      |
+| Runner job trace patch requests using a job token (`/api/v4/jobs/trace`) | 2,000 requests each minute      |
+| Runner jobs requests using a job token (`/api/v4/jobs/*`)          | 200 requests each minute        |
+| List all project members in a project                              | 200 requests each minute        |
 
 More details are available on the rate limits for
 [protected paths](#protected-paths-throttle) and

@@ -204,7 +204,7 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       it 'do not create new backup codes if exists' do
         expect(user).to receive(:otp_backup_codes?).and_return(true)
         go
-        expect(response).to redirect_to(profile_two_factor_auth_path)
+        expect(response).to redirect_to(profile_two_factor_auth_url)
       end
 
       it 'calls to delete other sessions when backup codes already exist' do
@@ -380,7 +380,7 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       it 'registers and redirects back if user is already having backup codes' do
         expect(user).to receive(:otp_backup_codes?).and_return(true)
         post :create_webauthn, params: params_with_password
-        expect(response).to redirect_to(profile_two_factor_auth_path)
+        expect(response).to redirect_to(profile_two_factor_auth_url)
         expect(flash[:notice]).to match(/Your WebAuthn device was registered!/)
       end
 
@@ -390,6 +390,25 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
         end
 
         post :create_webauthn, params: params_with_password
+      end
+
+      context 'when registration fails' do
+        context "with a service error" do
+          let(:device_response) { 'invalid_response' }
+          let(:perform_request) { post :create_webauthn, params: params_with_password }
+
+          it "renders the 2FA profile page with a flash alert from the registration service" do
+            perform_request
+
+            expect(flash[:alert]).to be_present
+          end
+
+          it 'does not change the WebAuthn authenticator count' do
+            perform_request
+
+            expect { response }.not_to change { user.second_factor_webauthn_registrations.count }
+          end
+        end
       end
     end
 
@@ -421,10 +440,10 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
         expect(user.reload.two_factor_enabled?).to eq(false)
       end
 
-      it 'redirects to profile_account_path' do
+      it 'redirects to profile_two_factor_auth_url' do
         go
 
-        expect(response).to redirect_to(profile_account_path)
+        expect(response).to redirect_to(profile_two_factor_auth_url)
       end
 
       it 'displays a notice on success' do
@@ -440,10 +459,10 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
     context 'for a user that does not have 2FA enabled' do
       let_it_be_with_reload(:user) { create(:user) }
 
-      it 'redirects to profile_account_path' do
+      it 'redirects to profile_two_factor_auth_url' do
         go
 
-        expect(response).to redirect_to(profile_account_path)
+        expect(response).to redirect_to(profile_two_factor_auth_url)
       end
 
       it 'displays an alert on failure' do
@@ -482,10 +501,10 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
         expect(user.two_factor_webauthn_enabled?).to eq(true)
       end
 
-      it 'redirects to profile_two_factor_auth_path' do
+      it 'redirects to profile_two_factor_auth_url' do
         go
 
-        expect(response).to redirect_to(profile_two_factor_auth_path)
+        expect(response).to redirect_to(profile_two_factor_auth_url)
       end
 
       it 'displays a notice on success' do
@@ -533,10 +552,10 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
         expect(user.two_factor_webauthn_enabled?).to eq(true)
       end
 
-      it 'redirects to profile_two_factor_auth_path' do
+      it 'redirects to profile_two_factor_auth_url' do
         go
 
-        expect(response).to redirect_to(profile_two_factor_auth_path)
+        expect(response).to redirect_to(profile_two_factor_auth_url)
       end
 
       it 'displays a alert on failure' do
@@ -578,7 +597,7 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
     it 'redirects to the profile two factor authentication page' do
       go
 
-      expect(response).to redirect_to profile_two_factor_auth_path
+      expect(response).to redirect_to profile_two_factor_auth_url
     end
 
     it 'displays a notice on success' do
@@ -627,7 +646,7 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
 
         go
 
-        expect(response).to redirect_to(profile_two_factor_auth_path)
+        expect(response).to redirect_to(profile_two_factor_auth_url)
         expect(flash[:alert]).to eq('an error occurred')
       end
     end

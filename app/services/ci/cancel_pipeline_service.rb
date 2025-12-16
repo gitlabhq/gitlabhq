@@ -93,14 +93,14 @@ module Ci
       @execute_async
     end
 
-    def cancel_jobs(jobs)
-      retries = 3
-      retry_lock(jobs, retries, name: 'ci_pipeline_cancel_running') do |jobs_to_cancel|
-        jobs_to_cancel.find_in_batches do |batch|
-          relation = CommitStatus.id_in(batch)
-          ::Ci::Preloaders::CommitStatusPreloader.new(relation).execute(build_preloads)
+    def cancel_jobs(cancelable_jobs)
+      # Small batch size to avoid reprocessing many records during retries
+      cancelable_jobs.each_batch(of: 50) do |batch_relation|
+        retry_lock(batch_relation, name: 'ci_pipeline_cancel_running') do |jobs_to_cancel|
+          ::Ci::Preloaders::CommitStatusPreloader
+            .new(jobs_to_cancel).execute(build_preloads)
 
-          relation.each { |job| cancel_job(job) }
+          jobs_to_cancel.each { |job| cancel_job(job) }
         end
       end
     end

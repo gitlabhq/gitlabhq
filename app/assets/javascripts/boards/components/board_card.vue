@@ -4,9 +4,6 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { sprintf, __ } from '~/locale';
 import { WORK_ITEM_TYPE_ENUM_INCIDENT } from '~/work_items/constants';
-import setSelectedBoardItemsMutation from '~/boards/graphql/client/set_selected_board_items.mutation.graphql';
-import unsetSelectedBoardItemsMutation from '~/boards/graphql/client/unset_selected_board_items.mutation.graphql';
-import selectedBoardItemsQuery from '~/boards/graphql/client/selected_board_items.query.graphql';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import BoardCardInner from './board_card_inner.vue';
@@ -65,10 +62,6 @@ export default {
         };
       },
     },
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
-    selectedBoardItems: {
-      query: selectedBoardItemsQuery,
-    },
   },
   computed: {
     activeItemId() {
@@ -76,9 +69,6 @@ export default {
     },
     isActive() {
       return this.item.id === this.activeItemId;
-    },
-    multiSelectVisible() {
-      return !this.activeItemId && this.selectedBoardItems?.includes(this.item.id);
     },
     isDisabled() {
       return this.disabled || !this.item.id || this.item.isLoading || !this.canAdmin;
@@ -100,7 +90,7 @@ export default {
       };
     },
     showFocusBackground() {
-      return !this.isActive && !this.multiSelectVisible;
+      return !this.isActive;
     },
     itemPrefix() {
       return this.isEpicBoard ? '&' : '#';
@@ -123,9 +113,8 @@ export default {
 
       // Allow Ctrl/Cmd+click to open link in new tab
       const isMetaKey = e.ctrlKey || e.metaKey;
-      const boardMultiSelectEnabled = gon?.features?.boardMultiSelect;
 
-      if (isMetaKey && !boardMultiSelectEnabled) {
+      if (isMetaKey) {
         // Let the browser handle the new tab open
         return;
       }
@@ -139,44 +128,17 @@ export default {
         return;
       }
 
-      if (isMetaKey && boardMultiSelectEnabled) {
-        this.toggleBoardItemMultiSelection(this.item);
-      } else {
-        this.$el.querySelector('.board-card-button')?.focus();
-        this.toggleItem();
-        this.track('click_card', { label: 'right_sidebar' });
-      }
+      this.$el.querySelector('.board-card-button')?.focus();
+      this.toggleItem();
+      this.track('click_card', { label: 'right_sidebar' });
     },
     async toggleItem() {
-      await this.$apollo.mutate({
-        mutation: unsetSelectedBoardItemsMutation,
-      });
       this.$apollo.mutate({
         mutation: setActiveBoardItemMutation,
         variables: {
           boardItem: this.isActive ? null : this.item,
           listId: this.list.id,
           isIssue: this.isActive ? undefined : this.isIssueBoard,
-        },
-      });
-    },
-    async toggleBoardItemMultiSelection(item) {
-      if (this.activeItemId) {
-        await this.$apollo.mutate({
-          mutation: setSelectedBoardItemsMutation,
-          variables: {
-            itemId: this.activeItemId,
-          },
-        });
-        await this.$apollo.mutate({
-          mutation: setActiveBoardItemMutation,
-          variables: { boardItem: null, listId: null },
-        });
-      }
-      this.$apollo.mutate({
-        mutation: setSelectedBoardItemsMutation,
-        variables: {
-          itemId: item.id,
         },
       });
     },
@@ -240,7 +202,6 @@ export default {
   <li
     :class="[
       {
-        'multi-select gl-border-blue-200 gl-bg-blue-50': multiSelectVisible,
         'gl-cursor-grab': isDraggable,
         'is-active !gl-bg-blue-50 hover:!gl-bg-blue-50': isActive,
         'is-disabled': isDisabled,

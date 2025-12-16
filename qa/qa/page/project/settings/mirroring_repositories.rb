@@ -17,7 +17,7 @@ module QA
             element 'add-new-mirror'
           end
 
-          view 'app/views/projects/mirrors/_mirror_repos_list.html.haml' do
+          view 'app/views/projects/mirrors/_remote_mirror.html.haml' do
             element 'mirror-repository-url-content'
             element 'mirror-last-update-at-content'
             element 'mirror-error-badge-content'

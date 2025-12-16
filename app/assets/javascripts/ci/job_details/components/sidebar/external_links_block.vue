@@ -2,6 +2,7 @@
 import { GlIcon, GlLink } from '@gitlab/ui';
 
 export default {
+  name: 'ExternalLinksBlock',
   components: {
     GlIcon,
     GlLink,

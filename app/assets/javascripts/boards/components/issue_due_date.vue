@@ -110,7 +110,7 @@ export default {
   <work-item-attribute
     anchor-id="board-card-due-date"
     wrapper-component="button"
-    :wrapper-component-class="`${cssClass} board-card-info gl-mr-3 !gl-cursor-help gl-text-subtle gl-bg-transparent gl-border-0 gl-p-0 focus-visible:gl-focus-inset`"
+    :wrapper-component-class="`${cssClass} board-card-info !gl-cursor-help gl-text-subtle gl-bg-transparent gl-border-0 gl-p-0 focus-visible:gl-focus-inset`"
     :aria-label="createAriaLabel()"
   >
     <template #icon>

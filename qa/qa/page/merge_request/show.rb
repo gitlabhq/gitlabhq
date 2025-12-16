@@ -4,9 +4,6 @@ module QA
   module Page
     module MergeRequest
       class Show < Page::Base
-        include Page::Component::Note
-        include Page::Component::Issuable::Sidebar
-
         view 'app/assets/javascripts/batch_comments/components/review_drawer.vue' do
           element 'submit-review-button'
         end
@@ -47,9 +44,44 @@ module QA
           element 'left-line-number'
         end
 
+        view 'app/assets/javascripts/notes/components/comment_form.vue' do
+          element 'comment-field'
+          element 'add-to-review-button'
+          element 'start-review-button'
+        end
+
+        view 'app/assets/javascripts/notes/components/discussion_actions.vue' do
+          element 'resolve-discussion-button'
+        end
+
         view 'app/assets/javascripts/notes/components/note_form.vue' do
           element 'start-review-button'
           element 'comment-now-button'
+        end
+
+        view 'app/assets/javascripts/notes/components/noteable_discussion.vue' do
+          element 'discussion-content'
+        end
+
+        view 'app/assets/javascripts/notes/components/noteable_note.vue' do
+          element 'noteable-note-container'
+        end
+
+        view 'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_value.vue' do
+          element 'selected-label-content'
+        end
+
+        view 'app/assets/javascripts/sidebar/components/labels/labels_select_widget/labels_select_root.vue' do
+          element 'sidebar-labels'
+        end
+
+        view 'app/assets/javascripts/sidebar/components/sidebar_dropdown_widget.vue' do
+          element 'milestone-link', 'data-testid="`${formatIssuableAttribute.kebab}-link`"' # rubocop:disable QA/ElementWithPattern
+        end
+
+        view 'app/views/shared/issuable/_sidebar.html.haml' do
+          element 'assignee-block-container'
+          element 'sidebar-milestones'
         end
 
         view 'app/views/projects/merge_requests/_code_dropdown.html.haml' do
@@ -154,6 +186,56 @@ module QA
           element 'author-link'
         end
 
+        def has_assignee?(username)
+          wait_assignees_block_finish_loading do
+            has_text?(username)
+          end
+        end
+
+        def has_label?(label)
+          wait_labels_block_finish_loading do
+            has_element?('selected-label-content', label_name: label)
+          end
+        end
+
+        def has_milestone?(milestone_title)
+          wait_milestone_block_finish_loading do
+            has_element?('milestone-link', text: milestone_title)
+          end
+        end
+
+        def has_comment?(comment_text, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+          has_element?(
+            'noteable-note-container',
+            text: comment_text,
+            wait: wait
+          )
+        end
+
+        def has_comment_author?(author_username)
+          within_element('noteable-note-container') do
+            has_element?('author-name', text: author_username, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+          end
+        end
+
+        def resolve_discussion_at_index(index)
+          within_element_by_index('discussion-content', index) do
+            click_element 'resolve-discussion-button'
+          end
+        end
+
+        def start_review_with_comment(text)
+          fill_editor_element('comment-field', text)
+          click_element('start-review-button')
+          has_comment?(text, wait: 3)
+        end
+
+        def add_comment_to_review(text)
+          fill_editor_element('comment-field', text)
+          click_element('add-to-review-button')
+          has_comment?(text, wait: 3)
+        end
+
         def start_review
           has_active_element?('start-review-button', wait: 0.5)
           click_element('start-review-button')
@@ -223,8 +305,9 @@ module QA
         def click_diffs_tab
           click_element('diffs-tab')
 
-          wait_until(message: 'Wait for MR to be built') do
-            page.has_no_text?('Building your merge request')
+          # We check for the file-tree-button as sometimes the MR takes some time to be built
+          wait_until(message: 'Wait for file tree button to load') do
+            has_element?('file-tree-button')
           end
         end
 
@@ -556,6 +639,33 @@ module QA
         end
 
         private
+
+        def wait_assignees_block_finish_loading
+          within_element('assignee-block-container') do
+            wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
+              finished_loading_block?
+              yield
+            end
+          end
+        end
+
+        def wait_labels_block_finish_loading
+          within_element('sidebar-labels') do
+            wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
+              finished_loading_block?
+              yield
+            end
+          end
+        end
+
+        def wait_milestone_block_finish_loading
+          within_element('sidebar-milestones') do
+            wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
+              finished_loading_block?
+              yield
+            end
+          end
+        end
 
         def submit_commit
           # There may be two modals due to https://gitlab.com/gitlab-org/gitlab/-/issues/538079

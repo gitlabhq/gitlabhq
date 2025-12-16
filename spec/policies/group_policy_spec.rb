@@ -302,39 +302,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
   end
 
-  context 'migration bot' do
-    let_it_be(:migration_bot) { Users::Internal.migration_bot }
-    let_it_be(:current_user) { migration_bot }
-
-    it :aggregate_failures do
-      expect_allowed(:read_resource_access_tokens, :destroy_resource_access_tokens)
-      expect_disallowed(*guest_permissions)
-      expect_disallowed(*planner_permissions)
-      expect_disallowed(*reporter_permissions)
-      expect_disallowed(*developer_permissions)
-      expect_disallowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
-    end
-
-    it_behaves_like 'deploy token does not get confused with user' do
-      let(:user_id) { migration_bot.id }
-    end
-
-    context 'with no user' do
-      let(:current_user) { nil }
-
-      it :aggregate_failures do
-        expect_disallowed(:read_resource_access_tokens, :destroy_resource_access_tokens)
-        expect_disallowed(*guest_permissions)
-        expect_disallowed(*planner_permissions)
-        expect_disallowed(*reporter_permissions)
-        expect_disallowed(*developer_permissions)
-        expect_disallowed(*maintainer_permissions)
-        expect_disallowed(*owner_permissions)
-      end
-    end
-  end
-
   describe 'private nested group use the highest access level from the group and inherited permissions' do
     let_it_be(:nested_group) do
       create(:group, :private, :owner_subgroup_creation_only, parent: group)
@@ -561,7 +528,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         admin_compliance_pipeline_configuration
         admin_custom_field
         admin_epic
-        admin_group_member
         admin_integrations
         admin_issue
         admin_issue_board
@@ -1499,7 +1465,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'support bot' do
     let_it_be_with_refind(:group) { create(:group, :private) }
-    let_it_be(:current_user) { Users::Internal.support_bot }
+    let_it_be(:current_user) { Users::Internal.for_organization(group.organization_id).support_bot }
 
     before do
       allow(::ServiceDesk).to receive(:supported?).and_return(true)
@@ -2161,6 +2127,31 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
         it { is_expected.to be_disallowed(:view_edit_page) }
       end
+    end
+  end
+
+  describe 'create_saved_view' do
+    context 'when user can read the group' do
+      let(:current_user) { create(:user) }
+
+      before do
+        group.add_guest(current_user)
+      end
+
+      it { is_expected.to be_allowed(:create_saved_view) }
+    end
+
+    context 'when user cannot read the group' do
+      let(:group) { create(:group, :private) }
+      let(:current_user) { create(:user) }
+
+      it { is_expected.to be_disallowed(:create_saved_view) }
+    end
+
+    context 'when user is anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:create_saved_view) }
     end
   end
 end

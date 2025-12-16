@@ -118,6 +118,7 @@ describe('GroupsShowApp', () => {
         { ...SHARED_GROUPS_TAB, variables: { fullPath: defaultPropsData.fullPath } },
         INACTIVE_TAB,
       ],
+      filteredSearchTestid: null,
       filteredSearchSupportedTokens: [],
       filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,

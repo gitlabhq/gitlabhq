@@ -43,7 +43,7 @@ Prerequisites:
 
 To view the compliance violations report:
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Secure** > **Compliance center**.
 
 The compliance violations report displays:
@@ -63,6 +63,26 @@ In the report, you can:
 - View detailed information about each violation.
 - Export the report as a CSV file.
 
+### Filter compliance violations
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/555541) in GitLab 18.7.
+
+{{< /history >}}
+
+You can filter the compliance violations report to focus on specific violations:
+
+1. In the compliance violations report, use the filter options at the top of the page.
+1. Select one or more filters:
+   - **Status**: Filter by violation status (Detected, Dismissed, In Review, or Resolved).
+   - **Project**: Filter by specific projects in your group.
+   - **Control**: Filter by compliance control.
+
+The report updates automatically to show only violations matching your selected filters.
+
+To clear filters, clear the filter options or select **Clear**.
+
 ## Violation details
 
 When you select **Details** for a specific violation, you can view:
@@ -80,6 +100,23 @@ When you select **Details** for a specific violation, you can view:
   - Associated compliance framework.
   - Requirements.
 - Fix suggestions with links to resolve the violation.
+- Comments and discussion threads related to the violation.
+
+### Add comments to violations
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/541095) in GitLab 18.7.
+
+{{< /history >}}
+
+You can add comments to violations to collaborate with your team on remediation efforts:
+
+1. In the violation details view, scroll to the comments section.
+1. Enter your comment in the text field.
+1. Select **Comment** to post your comment.
+
+Your comment is added to the violation and visible to all users with access to the compliance violations report.
 
 ## Manage violation statuses
 
@@ -131,7 +168,7 @@ Prerequisites:
 
 To export a compliance violations report:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. In the upper-right corner, select **Export**.
 1. Select **Export violations report**.
@@ -174,7 +211,7 @@ Prerequisites:
 
 To view the static compliance violations report:
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Secure** > **Compliance center**.
 
 You can sort the compliance report on:
@@ -245,7 +282,7 @@ Prerequisites:
 
 To export a report of merge request compliance violations for projects in a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. In the upper-right corner, select **Export**.
 1. Select **Export violations report**.

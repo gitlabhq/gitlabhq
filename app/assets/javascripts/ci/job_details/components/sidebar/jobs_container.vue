@@ -2,6 +2,7 @@
 import JobContainerItem from './job_container_item.vue';
 
 export default {
+  name: 'JobsContainer',
   components: {
     JobContainerItem,
   },

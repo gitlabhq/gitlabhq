@@ -11,7 +11,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { sortMilestonesByDueDate } from '~/milestones/utils';
-import searchMilestonesQuery from '~/issues/list/queries/search_milestones.query.graphql';
+import searchMilestonesQuery from '~/vue_shared/components/filtered_search_bar/queries/search_milestones.query.graphql';
 import { DEFAULT_MILESTONES } from '~/vue_shared/components/filtered_search_bar/constants';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';

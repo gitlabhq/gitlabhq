@@ -11,7 +11,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
     sign_in(user)
   end
 
-  context 'when there are some existing pages' do
+  context 'when there are some existing pages', :js do
     before do
       create(:wiki_page, wiki: wiki, title: 'home', content: 'home')
       create(:wiki_page, wiki: wiki, title: 'another', content: 'another')
@@ -31,7 +31,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
         end
       end
 
-      it 'can create a custom sidebar', :js do
+      it 'can create a custom sidebar' do
         click_on 'Add custom sidebar'
         fill_in :wiki_content, with: 'My custom sidebar'
         click_on 'Create custom sidebar'
@@ -45,7 +45,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
       end
     end
 
-    context 'when there is a custom sidebar' do
+    context 'when there is a custom sidebar', :js do
       before do
         create(:wiki_page, wiki: wiki, title: '_sidebar', content: 'My custom sidebar')
 
@@ -60,7 +60,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
         end
       end
 
-      it 'can expand list of pages in sidebar', :js do
+      it 'can expand list of pages in sidebar' do
         find("[data-testid='expand-pages-list']").click
 
         within('.wiki-sidebar') do
@@ -68,7 +68,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
         end
       end
 
-      it 'can edit the custom sidebar', :js do
+      it 'can edit the custom sidebar' do
         click_on 'Edit custom sidebar'
 
         expect(page).to have_field(:wiki_content, with: 'My custom sidebar')

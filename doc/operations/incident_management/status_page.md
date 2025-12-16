@@ -50,7 +50,7 @@ Prerequisites:
 
 To provide GitLab with the AWS account information needed to push content to your Status Page:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Monitor**.
 1. Expand **Status page**.
 1. Select the **Active** checkbox.
@@ -66,8 +66,8 @@ To provide GitLab with the AWS account information needed to push content to you
 
 1. Within your AWS account, create two new IAM policies, using the following files
    as examples:
-    - [Create bucket](https://gitlab.com/gitlab-org/status-page/-/blob/master/deploy/etc/s3_create_policy.json).
-    - [Update bucket contents](https://gitlab.com/gitlab-org/status-page/-/blob/master/deploy/etc/s3_update_bucket_policy.json) (Remember replace `S3_BUCKET_NAME` with your bucket name).
+   - [Create bucket](https://gitlab.com/gitlab-org/status-page/-/blob/master/deploy/etc/s3_create_policy.json).
+   - [Update bucket contents](https://gitlab.com/gitlab-org/status-page/-/blob/master/deploy/etc/s3_update_bucket_policy.json) (Remember replace `S3_BUCKET_NAME` with your bucket name).
 1. Create a new AWS access key with the permissions policies created in the first step.
 
 ### Create a status page project
@@ -104,7 +104,7 @@ the incident can potentially [publish comments to your GitLab Status Page](#publ
 After creating the CI/CD variables, configure the Project you want to use for
 Incidents:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Monitor**.
 1. Expand **Status page**.
 1. Fill in your cloud provider's credentials and make sure to select the **Active** checkbox.
@@ -141,7 +141,7 @@ To publish an incident:
 
 1. Create an incident in the project you enabled the GitLab Status Page settings in.
 1. A [project or group owner](../../user/permissions.md) must use the
-   `/publish` [quick action](../../user/project/quick_actions.md) to publish the
+   [`/publish` quick action](../../user/project/quick_actions.md#publish) to publish the
    incident to the GitLab Status Page. [Confidential incidents](../../user/project/issues/confidential_issues.md) can't be published.
 
 A background worker publishes the incident onto the Status Page using the credentials

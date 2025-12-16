@@ -416,8 +416,7 @@ export const canRouterNav = ({ fullPath, webUrl, isGroup, issueAsWorkItem }) => 
   const escapedFullPath = escapeRegExp(fullPath);
   // eslint-disable-next-line no-useless-escape
   const groupRegex = new RegExp(`groups\/${escapedFullPath}\/-\/(work_items|epics)\/\\d+`);
-  // eslint-disable-next-line no-useless-escape
-  const projectRegex = new RegExp(`${escapedFullPath}\/-\/(work_items|issues)\/\\d+`);
+  const projectRegex = new RegExp(`${escapedFullPath}/-/(work_items|issues)(/\\d+)?/?$`);
   const canGroupNavigate = groupRegex.test(webUrl) && isGroup;
   const canProjectNavigate = projectRegex.test(webUrl) && issueAsWorkItem;
   return canGroupNavigate || canProjectNavigate;
@@ -509,4 +508,21 @@ export function trackCrudCollapse(action) {
   const category = 'Work item widget collapse';
 
   Tracking.event(category, action);
+}
+
+const LAST_USED_WORK_ITEM_TYPE_PREFIX = 'freq-wi-type';
+
+export function setLastUsedWorkItemTypeIdForNamespace(workItemTypeId, namespaceFullPath) {
+  if (AccessorUtilities.canUseLocalStorage()) {
+    const storageKey = `${LAST_USED_WORK_ITEM_TYPE_PREFIX}:${namespaceFullPath}`;
+    localStorage.setItem(storageKey, workItemTypeId.toString());
+  }
+}
+
+export function getLastUsedWorkItemTypeIdForNamespace(namespaceFullPath) {
+  if (AccessorUtilities.canUseLocalStorage()) {
+    const storageKey = `${LAST_USED_WORK_ITEM_TYPE_PREFIX}:${namespaceFullPath}`;
+    return localStorage.getItem(storageKey);
+  }
+  return null;
 }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe 'ConfigLint', :silence_stdout do
   let(:config_lint) { ConfigLint }

@@ -34,7 +34,7 @@ Prerequisites:
 
 To create an issue:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Either:
 
    - On the left sidebar, select **Plan** > **Issues**, and then, in the upper-right corner, select **New issue**.
@@ -57,7 +57,7 @@ Prerequisites:
 
 To create an issue from a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**.
 1. In the upper-right corner, select **Select project to create issue**.
 1. Select the project you'd like to create an issue for. The button now reflects the selected
@@ -101,7 +101,7 @@ Prerequisites:
 
 To create an issue from a project issue board:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issue boards**.
 1. At the top of a board list, select **Create new issue** ({{< icon name="plus-square" >}}).
 1. Enter the issue's title.
@@ -109,7 +109,7 @@ To create an issue from a project issue board:
 
 To create an issue from a group issue board:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issue boards**.
 1. At the top of a board list, select **Create new issue** ({{< icon name="plus-square" >}}).
 1. Enter the issue's title.
@@ -120,6 +120,12 @@ The issue is created and shows up in the board list. It shares the list's charac
 example, if the list is scoped to a label `Frontend`, the new issue also has this label.
 
 ## By sending an email
+
+{{< history >}}
+
+- **Email a new issue to this project** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/560277) to **Email issue to this project** in GitLab 18.6.
+
+{{< /history >}}
 
 You can send an email to create an issue in a project on the project's
 **Issues** page.
@@ -133,9 +139,9 @@ Prerequisites:
 
 To email an issue to a project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
 1. Select **Plan** > **Issues**.
-1. At the bottom of the page, select **Email a new issue to this project**.
+1. At the bottom of the page, select **Email issue to this project**.
 1. To copy the email address, select **Copy** ({{< icon name="copy-to-clipboard" >}}).
 1. From your email client, send an email to this address.
    The subject is used as the title of the new issue, and the email body becomes the description.
@@ -154,7 +160,7 @@ were you.
 
 To regenerate the email address:
 
-1. On the **Issues** page, select **Email a new issue to this project**.
+1. On the **Issues** page, select **Email issue to this project**.
 1. Select **reset this token**.
 
 ## Using a URL with prefilled values
@@ -178,7 +184,7 @@ To build the URL to create an issue with prefilled values, combine:
 | Title                                                                                          | `issue[title]`         | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). |
 | Issue type                                                                                     | `issue[issue_type]`    | Either `incident` or `issue`. |
 | Description template (issues, incidents, and merge requests)                                   | `issuable_template`    | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). |
-| Description template (tasks, OKRs, issues [with the new look](issue_work_items.md), and epics. | `description_template` | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513095) in GitLab 17.9. |
+| Description template (tasks, OKRs, issues, and epics. | `description_template` | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513095) in GitLab 17.9. |
 | Description | `issue[description]` | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). If used in combination with `issuable_template` or a [default issue template](../description_templates.md#set-a-default-template-for-merge-requests-and-issues), the `issue[description]` value overwrites the template. |
 | Confidential                                                                                   | `issue[confidential]`  | If `true`, the issue is marked as confidential. |
 | Relate to…                                                                                     | `add_related_issue`    | A numeric issue ID. If present, the issue form shows a [**Relate to** checkbox](#from-another-issue-or-incident) to optionally link the new issue to the specified existing issue. |
@@ -232,10 +238,10 @@ When you're creating a new issue, you can complete the following fields:
 - Checkbox to make the issue [confidential](confidential_issues.md)
 - [Assignees](managing_issues.md#assignees)
 - [Weight](issue_weight.md)
-- [Epic](../../group/epics/_index.md) (named Parent if [the new look for issues](issue_work_items.md) is enabled)
-- [Due date](due_dates.md) (named Dates if [the new look for issues](issue_work_items.md) is enabled)
+- [Parent](../../group/epics/_index.md)
+- [Dates](due_dates.md)
 - [Milestone](../milestones/_index.md)
 - [Labels](../labels.md)
 - [Iteration](../../group/iterations/_index.md)
-- [Health status](managing_issues.md#health-status) ([the new look for issues](issue_work_items.md) must be enabled)
-- [Contacts](../../crm/_index.md) ([the new look for issues](issue_work_items.md) must be enabled)
+- [Health status](managing_issues.md#health-status)
+- [Contacts](../../crm/_index.md)

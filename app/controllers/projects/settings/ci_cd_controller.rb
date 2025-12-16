@@ -5,8 +5,6 @@ module Projects
     class CiCdController < Projects::ApplicationController
       include RunnerSetupScripts
 
-      NUMBER_OF_RUNNERS_PER_PAGE = 20
-
       layout 'project_settings'
       before_action :authorize_admin_pipeline!, except: [:reset_cache, :show, :update]
       before_action :authorize_show_cicd_settings!, only: :show
@@ -193,32 +191,10 @@ module Projects
       end
 
       def define_variables
-        define_runners_variables
         define_ci_variables
         define_triggers_variables
         define_badges_variables
         define_auto_devops_variables
-      end
-
-      def define_runners_variables
-        return if Feature.enabled?(:vue_project_runners_settings, @project)
-
-        @project_runners = @project.runners.ordered.page(params[:project_page]).per(NUMBER_OF_RUNNERS_PER_PAGE).with_tags
-
-        @assignable_runners = current_user
-          .ci_available_runners
-          .assignable_for(project)
-          .ordered
-          .page(params[:specific_page]).per(NUMBER_OF_RUNNERS_PER_PAGE)
-          .with_tags
-
-        active_shared_runners = ::Ci::Runner.instance_type.active
-        @shared_runners_count = active_shared_runners.count
-        @shared_runners = active_shared_runners.page(params[:shared_runners_page]).per(NUMBER_OF_RUNNERS_PER_PAGE).with_tags
-
-        parent_group_runners = ::Ci::Runner.belonging_to_parent_groups_of_project(@project.id)
-        @group_runners_count = parent_group_runners.count
-        @group_runners = parent_group_runners.page(params[:group_runners_page]).per(NUMBER_OF_RUNNERS_PER_PAGE).with_tags
       end
 
       def define_ci_variables

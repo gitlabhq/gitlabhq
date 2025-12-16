@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: グループおよびプロジェクトメンバーAPI
@@ -59,7 +59,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/members"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -125,7 +125,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ユーザーがこのグループまたはプロジェクト、および1つ以上の祖先グループのメンバーである場合、`access_level`がもっとも高いメンバーシップのみが返されます。これは、ユーザーの有効な権限を表します。
 
-招待グループのメンバーは、次のいずれかの場合に返されます。
+招待グループのメンバーは、次のいずれかの場合に返されます:
 
 - 招待グループが公開されている。
 - リクエスタも招待グループのメンバーである。
@@ -159,7 +159,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/members/all"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -253,7 +253,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/members/:user_id"
 ```
 
-グループメンバーのカスタムロールを更新または削除するには、空の`member_role_id`値を渡します。
+グループメンバーのカスタムロールを更新または削除するには、空の`member_role_id`値を渡します:
 
 ```shell
 # Updates a project membership
@@ -267,7 +267,7 @@ curl --request PUT --header "Content-Type: application/json" \
   --data '{"member_role_id": null, "access_level": 10}' "https://gitlab.example.com/api/v4/groups/<group_id>/members/<user_id>"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -329,7 +329,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/members/all/:user_id"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -359,7 +359,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 請求対象としてカウントされるグループメンバーのリストを取得します。このリストには、サブグループとプロジェクトのメンバーが含まれています。
 
-前提要件:
+前提要件: 
 
 - [請求権限](../user/free_user_limit.md)に示されているように、課金権限のAPIエンドポイントにアクセスするには、オーナーロールが必要です。
 - このAPIエンドポイントは、トップレベルグループでのみ機能します。サブグループでは機能しません。
@@ -378,7 +378,7 @@ GET /groups/:id/billable_members
 | `search`  | 文字列            | いいえ       | 名前、ユーザー名、または公開メールアドレスでグループメンバーを検索するためのクエリ文字列。 |
 | `sort`    | 文字列            | いいえ       | 並べ替え属性と順序を指定するパラメータを含むクエリ文字列。以下にサポートされている値を示します。 |
 
-`sort`属性でサポートされている値は次のとおりです。
+`sort`属性でサポートされている値は次のとおりです:
 
 | 値                   | 説明                  |
 | ----------------------- | ---------------------------- |
@@ -398,7 +398,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/billable_members"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -449,7 +449,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 グループの請求対象メンバーについて、メンバーシップのリストを取得します。
 
-前提要件:
+前提要件: 
 
 - 応答は、直接メンバーシップのみを表します。継承されたメンバーシップは含まれていません。
 - このAPIエンドポイントは、トップレベルグループでのみ機能します。サブグループでは機能しません。
@@ -473,7 +473,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/billable_members/:user_id/memberships"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -520,7 +520,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 グループの請求対象メンバーの間接的なメンバーシップのリストを取得します。
 
-前提要件:
+前提要件: 
 
 - このAPIエンドポイントは、トップレベルグループでのみ機能します。サブグループでは機能しません。
 - このAPIエンドポイントを使用するには、グループのメンバーシップを管理するための権限が必要です。
@@ -545,7 +545,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/billable_members/:user_id/indirect"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -623,7 +623,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/members/:user_id/state?state=active"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -657,7 +657,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      --data "user_id=1&access_level=30" "https://gitlab.example.com/api/v4/projects/:id/members"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -689,7 +689,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /alert >}}
 
-**請求対象でないプロモーションの管理**を有効にするには、最初に`enable_member_promotion_management`アプリケーション設定を有効にする必要があります。
+**Manage Non-Billable Promotions**（請求対象でないプロモーションの管理）を有効にするには、最初に`enable_member_promotion_management`アプリケーション設定を有効にする必要があります。
 
 単一のユーザーをキューに入れる例:
 
@@ -751,7 +751,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/members/:user_id?access_level=40"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -783,9 +783,9 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /alert >}}
 
-**請求対象でないプロモーションの管理**を有効にするには、最初に`enable_member_promotion_management`アプリケーション設定を有効にする必要があります。
+**Manage non-billable promotions**（請求対象でないプロモーションの管理）を有効にするには、最初に`enable_member_promotion_management`アプリケーション設定を有効にする必要があります。
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -813,7 +813,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/members/:user_id/override"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -857,7 +857,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/members/:user_id/override"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -953,7 +953,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 グループとそのサブグループおよびプロジェクトについて、`awaiting`状態のすべてのメンバーと、招待されているがGitLabアカウントを持っていないメンバーのリストを取得します。
 
-前提要件:
+前提要件: 
 
 - このAPIエンドポイントは、トップレベルグループでのみ機能します。サブグループでは機能しません。
 - このAPIエンドポイントには、グループのメンバーを管理するための権限が必要です。
@@ -977,7 +977,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/pending_members"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [

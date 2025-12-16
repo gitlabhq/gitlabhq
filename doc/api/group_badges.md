@@ -14,9 +14,8 @@ title: Group badges API
 
 Use this API to interact with group badges. For more information, see [group badges](../user/project/badges.md#group-badges).
 
-## Placeholder tokens
-
-[Badges](../user/project/badges.md) support placeholders that are replaced in real time in both the link and image URL. The allowed placeholders are:
+Badges support placeholders that are replaced in real time in both the link and image URL.
+The following placeholders are available:
 
 <!-- vale gitlab_base.Spelling = NO -->
 
@@ -35,7 +34,7 @@ Use this API to interact with group badges. For more information, see [group bad
 <!-- vale gitlab_base.Spelling = YES -->
 
 Because these endpoints aren't inside a project's context, the information used to replace the placeholders comes
-from the first group's project by creation date. If the group hasn't got any project the original URL with the placeholders is returned.
+from the first group's project by creation date. If the group has no project, the original URL with the placeholders is returned.
 
 ## List all badges of a group
 

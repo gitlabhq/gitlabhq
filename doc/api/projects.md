@@ -390,7 +390,7 @@ Supported attributes:
 | `last_activity_after`         | datetime | No       | Limit results to projects with last activity after specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `last_activity_before`        | datetime | No       | Limit results to projects with last activity before specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `membership`                  | boolean  | No       | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer  | No       | Limit by current user minimal [role (`access_level`)](project_members.md#roles). |
+| `min_access_level`            | integer  | No       | Limit to projects where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `order_by`                    | string   | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count`, `last_activity_at`, or `similarity` fields. `repository_size`, `storage_size`, `packages_size` or `wiki_size` fields are only allowed for administrators. `similarity` is only available when searching and is limited to projects that the current user is a member of. Default is `created_at`. |
 | `owned`                       | boolean  | No       | Limit by projects explicitly owned by the current user. |
 | `repository_checksum_failed`  | boolean  | No       | Limit projects where the repository checksum calculation has failed. Premium and Ultimate only. |
@@ -676,7 +676,7 @@ Supported attributes:
 | `id_after`                    | integer  | No       | Limit results to projects with IDs greater than the specified ID. |
 | `id_before`                   | integer  | No       | Limit results to projects with IDs less than the specified ID. |
 | `membership`                  | boolean  | No       | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer  | No       | Limit by current user minimal [role (`access_level`)](project_members.md#roles). |
+| `min_access_level`            | integer  | No       | Limit to projects where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `order_by`                    | string   | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean  | No       | Limit by projects explicitly owned by the current user. |
 | `search`                      | string   | No       | Return list of projects matching the search criteria. |
@@ -1287,7 +1287,7 @@ Supported attributes:
 |:--------------------------|:------------------|:---------|:------------|
 | `id`                      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `search`                  | string            | No       | Search for specific groups. |
-| `shared_min_access_level` | integer           | No       | Limit to shared groups with at least this [role (`access_level`)](group_members.md#roles). |
+| `shared_min_access_level` | integer           | No       | Limit to shared groups with at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `shared_visible_only`     | boolean           | No       | Limit to shared groups user has access to. |
 | `skip_groups`             | array of integers | No       | Skip the group IDs passed. |
 | `with_shared`             | boolean           | No       | Include projects shared with this group. Default is `false`. |
@@ -1373,7 +1373,7 @@ Supported attributes:
 |:-------------------------|:-----------------|:---------|:------------|
 | `id`                     | integer or string   | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `search`                 | string           | no       | Return the list of authorized groups matching the search criteria |
-| `min_access_level`       | integer          | no       | Limit to groups where current user has at least the specified [role (`access_level`)](project_members.md#roles) |
+| `min_access_level`       | integer          | no       | Limit to groups where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `relation`               | array of strings | no       | Filter the groups by relation (direct or inherited) |
 | `with_custom_attributes` | boolean          | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 
@@ -1706,7 +1706,7 @@ Supported general project attributes:
 | `auto_cancel_pending_pipelines`                    | string            | No       | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
 | `auto_devops_deploy_strategy`                      | string            | No       | Auto Deploy strategy (`continuous`, `manual`, or `timed_incremental`). |
 | `auto_devops_enabled`                              | boolean           | No       | Enable Auto DevOps for this project. |
-| `auto_duo_code_review_enabled`                     | boolean           | No       | Enable automatic reviews by GitLab Duo on merge requests. See [Duo in merge requests](../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code). Ultimate only. |
+| `auto_duo_code_review_enabled`                     | boolean           | No       | Enable automatic reviews by GitLab Duo on merge requests. See [GitLab Duo in merge requests](../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code). Ultimate only. |
 | `autoclose_referenced_issues`                      | boolean           | No       | Set whether auto-closing referenced issues on default branch. |
 | `avatar`                                           | mixed             | No       | Image file for avatar of the project. |
 | `build_git_strategy`                               | string            | No       | The Git strategy. Defaults to `fetch`. |
@@ -1717,7 +1717,7 @@ Supported general project attributes:
 | `ci_forward_deployment_enabled`                    | boolean           | No       | Enable or disable [prevent outdated deployment jobs](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_forward_deployment_rollback_allowed`           | boolean           | No       | Enable or disable [allow job retries for rollback deployments](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean           | No       | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.)_ |
-| `ci_id_token_sub_claim_components`                 | array             | No       | Fields included in the `sub` claim of the [ID Token](../ci/secrets/id_token_authentication.md). Accepts an array starting with `project_path`. The array might also include `ref_type` and `ref`. Defaults to `["project_path", "ref_type", "ref"]`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477260) in GitLab 17.10. |
+| `ci_id_token_sub_claim_components`                 | array             | No       | Fields included in the `sub` claim of the [ID Token](../ci/secrets/id_token_authentication.md). Accepts an array starting with `project_path`. The array might also include `ref_type`, `ref`, `environment_protected`, and `deployment_tier`. Defaults to `["project_path", "ref_type", "ref"]`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477260) in GitLab 17.10. Support for `environment_protected` and `deployment_tier` introduced in GitLab 18.7. |
 | `ci_separated_caches`                              | boolean           | No       | Set whether or not caches should be [separated](../ci/caching/_index.md#cache-key-names) by branch protection status. |
 | `ci_restrict_pipeline_cancellation_role`           | string            | No       | Set the [role required to cancel a pipeline or job](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). One of `developer`, `maintainer`, or `no_one`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429921) in GitLab 16.8. Premium and Ultimate only. |
 | `ci_pipeline_variables_minimum_override_role`      | string            | No       | You can specify which role can override variables. One of `owner`, `maintainer`, `developer` or `no_one_allowed`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1. In GitLab 17.1 to 17.7, `restrict_user_defined_variables` must be enabled. |
@@ -2513,6 +2513,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 
 Share a project with a group.
 
+For more information, see [Invite a group to a project](../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project).
+
 ### Share a project with a group
 
 Share a project with a group.
@@ -2525,7 +2527,7 @@ Supported attributes:
 
 | Attribute      | Type              | Required | Description |
 |:---------------|:------------------|:---------|:------------|
-| `group_access` | integer           | Yes      | The [role (`access_level`)](project_members.md#roles) to grant the group. |
+| `group_access` | integer           | Yes      | The access level to grant to the group. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `group_id`     | integer           | Yes      | The ID of the group to share with. |
 | `id`           | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `expires_at`   | string            | No       | Share expiration date in ISO 8601 format. For example, `2016-09-26`. |

@@ -1,8 +1,8 @@
 import Wikis from './wikis';
-import { mountWikiSidebarEntries } from './show';
+import { mountWikiSidebar } from './show';
 
 export const mountApplications = () => {
-  mountWikiSidebarEntries();
+  mountWikiSidebar();
 
   new Wikis(); // eslint-disable-line no-new
 };

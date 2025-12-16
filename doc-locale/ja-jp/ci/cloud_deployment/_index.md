@@ -2,6 +2,7 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: GitLab CI/CDからAWS（EC2およびECSを含む）へのデプロイは、GitLabが提供するDockerイメージとCloudFormationテンプレートを使用して行います。
 title: GitLab CI/CDからAWSにデプロイする
 ---
 
@@ -14,7 +15,7 @@ title: GitLab CI/CDからAWSにデプロイする
 
 GitLabでは、AWSへのデプロイに必要なライブラリとツールを含むDockerイメージを提供しています。CI/CDパイプラインでこれらのイメージを参照できます。
 
-GitLab.comを使用して、[Amazon Elastic Container Service](https://aws.amazon.com/ecs/)（ECS）にデプロイする場合は、[ECSへのデプロイ](ecs/deploy_to_aws_ecs.md)についての説明をお読みください。
+GitLab.comを使用して、[Amazon Elastic Container Service](https://aws.amazon.com/ecs/) （ECS）にデプロイする場合は、[ECSへのデプロイ](ecs/deploy_to_aws_ecs.md)についての説明をお読みください。
 
 {{< alert type="note" >}}
 
@@ -28,9 +29,9 @@ GitLab CI/CDを使用してAWSに接続するには、認証する必要があ�
 
 1. AWSアカウントにサインインします。
 1. [IAMユーザー](https://console.aws.amazon.com/iam/home#/home)を作成します。
-1. ユーザーを選択して、その詳細にアクセスします。**Security credentials（セキュリティ認証情報） > Create a new access key（新しいアクセスキーの作成）**に移動します。
-1. **アクセスキーID**と**シークレットアクセスキー**をメモしておきます。
-1. GitLabプロジェクトで、**設定 > CI/CD**に移動します。次の[CI/CD変数](../variables/_index.md)を設定します。
+1. ユーザーを選択して、その詳細にアクセスします。**Security credentials**（セキュリティ認証情報） > **Create a new access key**（新しいアクセスキーを作成）に移動します。
+1. **Access key ID**（アクセスキーID）と**Secret access key**（シークレットアクセスキー）をメモしておきます。
+1. GitLabプロジェクトで、**設定** > **CI/CD**に移動します。次の[CI/CD変数](../variables/_index.md)を設定します:
 
    | 環境変数名 | 値 |
    |:--------------------------|:------|
@@ -44,7 +45,7 @@ GitLab CI/CDを使用してAWSに接続するには、認証する必要があ�
 
 イメージに[AWS CLI](https://aws.amazon.com/cli/)が含まれている場合は、プロジェクトの`.gitlab-ci.yml`ファイルでイメージを参照できます。次に、CI/CDジョブで`aws`コマンドを実行できます。
 
-次に例を示します。
+例: 
 
 ```yaml
 deploy:
@@ -56,7 +57,7 @@ deploy:
   environment: production
 ```
 
-GitLabでは、AWS CLIを含むDockerイメージを提供しています。
+GitLabでは、AWS CLIを含むDockerイメージを提供しています:
 
 - イメージは、GitLabコンテナレジストリでホスティングされています。最新のイメージは`registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest`です。
 - [イメージはGitLabリポジトリに保存されます](https://gitlab.com/gitlab-org/cloud-deploy/-/tree/master/aws)。
@@ -69,25 +70,25 @@ GitLabでは、AWS CLIを含むDockerイメージを提供しています。
 
 [Amazon ECS](https://aws.amazon.com/ecs/)クラスターへのアプリケーションのデプロイを自動化できます。
 
-前提要件:
+前提要件: 
 
 - [GitLabでAWSを認証します](#authenticate-gitlab-with-aws)。
 - Amazon ECSでクラスターを作成します。
 - ECSサービスやAmazon RDSのデータベースなど、関連コンポーネントを作成します。
-- `containerDefinitions[].name`属性の値が、ターゲットのECSサービスで定義されている`Container name`と同じであるECSタスク定義を作成します。タスク定義としては、次のいずれかが可能です。
+- `containerDefinitions[].name`属性の値が、ターゲットのECSサービスで定義されている`Container name`と同じであるECSタスク定義を作成します。タスク定義としては、次のいずれかが可能です:
   - ECS内の既存のタスク定義。
   - GitLabプロジェクトのJSONファイル。[AWSドキュメントのテンプレート](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html#task-definition-template)を使用して、プロジェクトにファイルを保存します。たとえば、`<project-root>/ci/aws/task-definition.json`などです。
 
-ECSクラスターにデプロイするには、次のようにします。
+ECSクラスターにデプロイするには、次のようにします:
 
-1. GitLabプロジェクトで、**設定 > CI/CD**に移動します。次の[CI/CD変数](../variables/_index.md)を設定します。これらの名前は、[Amazon ECSダッシュボード](https://console.aws.amazon.com/ecs/home)でターゲットクラスターを選択すると確認できます。
+1. GitLabプロジェクトで、**設定** > **CI/CD**に移動します。次の[CI/CD変数](../variables/_index.md)を設定します。これらの名前は、[Amazon ECSダッシュボード](https://console.aws.amazon.com/ecs/home)でターゲットクラスターを選択すると確認できます。
 
    | 環境変数名         | 値 |
    |:----------------------------------|:------|
    | `CI_AWS_ECS_CLUSTER`              | デプロイのターゲットにしているAWS ECSクラスターの名前。 |
    | `CI_AWS_ECS_SERVICE`              | AWS ECSクラスターに紐付けられた、ターゲットサービスの名前。この変数のスコープが適切な環境（`production`、`staging`、`review/*`）に設定されていることを確認してください。 |
    | `CI_AWS_ECS_TASK_DEFINITION`      | タスク定義がECSにある場合、サービスに紐付けられたタスク定義の名前。 |
-   | `CI_AWS_ECS_TASK_DEFINITION_FILE` | タスク定義がGitLabのJSONファイルである場合、パスを含むファイル名。たとえば、`ci/aws/my_task_definition.json`などです。JSONファイル内のタスク定義の名前が、ECS内の既存のタスク定義と同じ名前である場合、CI/CDの実行時に新しいリビジョンが作成されます。それ以外の場合は、完全に新しいタスク定義がリビジョン1から作成されます。 |
+   | `CI_AWS_ECS_TASK_DEFINITION_FILE` | タスク定義がGitLabのJSONファイルである場合、パスを含むファイル名。たとえば`ci/aws/my_task_definition.json`などです。JSONファイル内のタスク定義の名前が、ECS内の既存のタスク定義と同じ名前である場合、CI/CDの実行時に新しいリビジョンが作成されます。それ以外の場合は、完全に新しいタスク定義がリビジョン1から作成されます。 |
 
    {{< alert type="warning" >}}
 
@@ -95,7 +96,7 @@ ECSクラスターにデプロイするには、次のようにします。
 
    {{< /alert >}}
 
-1. このテンプレートを`.gitlab-ci.yml`に含めます。
+1. このテンプレートを`.gitlab-ci.yml`に含めます:
 
    ```yaml
    include:
@@ -128,11 +129,11 @@ ECSデプロイジョブは、ロールアウトが完了するまで待機し�
 
 GitLabは、Amazon EC2へのデプロイを支援するために、`AWS/CF-Provision-and-Deploy-EC2`というテンプレートを提供します。
 
-関連するJSONオブジェクトを設定して、テンプレートを使用する場合、パイプラインは次のようになります。
+関連するJSONオブジェクトを設定して、テンプレートを使用する場合、パイプラインは次のようになります:
 
-1. **スタックを作成します**: インフラストラクチャは、[AWS CloudFormation](https://aws.amazon.com/cloudformation/) APIを使用してプロビジョニングされます。
-1. **S3バケットにプッシュします**: ビルドを実行すると、アーティファクトが作成されます。そのアーティファクトが[AWS S3](https://aws.amazon.com/s3/)バケットにプッシュされます。
-1. **EC2にデプロイします**: 次の図に示すように、コンテンツが[AWS EC2](https://aws.amazon.com/ec2/)インスタンスにデプロイされます。
+1. **Creates the stack**（スタックを作成します）: インフラストラクチャは、[AWS CloudFormation](https://aws.amazon.com/cloudformation/) APIを使用してプロビジョニングされます。
+1. **Pushes to an S3 bucket**（S3バケットにプッシュします）: ビルドを実行すると、アーティファクトが作成されます。そのアーティファクトが[AWS S3](https://aws.amazon.com/s3/)バケットにプッシュされます。
+1. **Deploys to EC2**（EC2にデプロイします）: 次の図に示すように、コンテンツが[AWS EC2](https://aws.amazon.com/ec2/)インスタンスにデプロイされます:
 
 ![インフラストラクチャのプロビジョニング、S3へのアーティファクトのプッシュ、EC2へのデプロイの手順など、CF-Provision-and-Deploy-EC2パイプラインを示します。](img/cf_ec2_diagram_v13_5.png)
 
@@ -154,10 +155,10 @@ EC2にデプロイするには、次の手順を実行します。
    `source`は、`build`ジョブがアプリケーションをビルドした場所です。ビルドは[`artifacts:paths`](../yaml/_index.md#artifactspaths)に保存されます。
 
 1. EC2にデプロイするJSONを作成します。[AWSテンプレート](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html)を使用します。
-1. JSONオブジェクトをパイプラインからアクセスできるようにします。
+1. JSONオブジェクトをパイプラインからアクセスできるようにします:
    - これらのJSONオブジェクトをリポジトリに保存する場合は、オブジェクトを3つの個別のファイルとして保存します。
 
-     `.gitlab-ci.yml`ファイルで、プロジェクトルートからの相対ファイルパスを指す[CI/CD変数](../variables/_index.md)を追加します。たとえば、JSONファイルが`<project_root>/aws`フォルダーにある場合は、次のようにします。
+     `.gitlab-ci.yml`ファイルで、プロジェクトルートからの相対ファイルパスを指す[CI/CD変数](../variables/_index.md)を追加します。たとえば、JSONファイルが`<project_root>/aws`フォルダーにある場合は、次のようにします:
 
      ```yaml
      variables:
@@ -168,14 +169,14 @@ EC2にデプロイするには、次の手順を実行します。
 
    - これらのJSONオブジェクトをリポジトリに保存しない場合は、プロジェクト設定で各オブジェクトを個別の[ファイルタイプCI/CD変数](../variables/_index.md#use-file-type-cicd-variables)として追加します。前と同じ変数名を使用してください。
 
-1. `.gitlab-ci.yml`ファイルで、スタックの名前のCI/CD変数を作成します。次に例を示します。
+1. `.gitlab-ci.yml`ファイルで、スタックの名前のCI/CD変数を作成します。例: 
 
    ```yaml
    variables:
      CI_AWS_CF_STACK_NAME: 'YourStackName'
    ```
 
-1. `.gitlab-ci.yml`ファイルで、CIテンプレートを追加します。
+1. `.gitlab-ci.yml`ファイルで、CIテンプレートを追加します:
 
    ```yaml
    include:
@@ -185,13 +186,13 @@ EC2にデプロイするには、次の手順を実行します。
 1. パイプラインを実行します。
 
    - AWS CloudFormationスタックは、`CI_AWS_CF_CREATE_STACK_FILE`変数の内容に基づいて作成されます。スタックが既に存在する場合、この手順はスキップされますが、それが属する`provision`ジョブは引き続き実行されます。
-   - ビルドされたアプリケーションはS3バケットにプッシュされ、関連するJSONオブジェクトの内容に基づいてEC2インスタンスにデプロイされます。EC2へのデプロイが完了または失敗すると、デプロイメントジョブが完了します。
+   - ビルドされたアプリケーションはS3バケットにプッシュされ、関連するJSONオブジェクトの内容に基づいてEC2インスタンスにデプロイされます。EC2へのデプロイが完了または失敗すると、デプロイジョブが完了します。
 
 ## トラブルシューティング {#troubleshooting}
 
 ### エラー`'ascii' codec can't encode character '\uxxxx'` {#error-ascii-codec-cant-encode-character-uxxxx}
 
-このエラーは、Cloud Deployイメージで使用される`aws-cli`ユーティリティからの応答にUnicode文字が含まれている場合に発生する可能性があります。提供するCloud Deployイメージにはロケールが定義されておらず、デフォルトでASCIIを使用します。このエラーを解決するには、次のCI/CD変数を追加します。
+このエラーは、Cloud Deployイメージで使用される`aws-cli`ユーティリティからの応答にUnicode文字が含まれている場合に発生する可能性があります。Cloud Deployイメージには、定義されたロケールがなく、デフォルトではASCIIを使用します。このエラーを解決するには、次のCI/CD変数を追加します:
 
 ```yaml
 variables:

@@ -7,18 +7,7 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
 
   let_it_be(:current_user) { create(:user) }
 
-  let(:permission_source_file) { 'config/authz/permissions/member_role/read.yml' }
-  let(:permission_definition) do
-    {
-      name: 'read_member_role',
-      description: 'Grants the ability to read member roles',
-      feature_category: 'system_access',
-      available_for_tokens: true,
-      boundaries: %w[project group]
-    }
-  end
-
-  let(:mock_permission) { ::Authz::Permission.new(permission_definition, permission_source_file) }
+  let(:target_permission) { ::Authz::PermissionGroups::Assignable.get(:update_wiki) }
 
   let(:query) do
     <<~GQL
@@ -38,7 +27,9 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
   let(:permissions_data) { graphql_data['accessTokenPermissions'] }
 
   before do
-    allow(::Authz::Permission).to receive_messages(all_for_tokens: [mock_permission])
+    allow(::Authz::PermissionGroups::Assignable).to receive(:all).and_return(
+      target_permission.name => target_permission
+    )
   end
 
   context 'when user is authenticated' do
@@ -46,19 +37,19 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
       post_graphql(query, current_user: current_user)
 
       expect(permissions_data).to eq([{
-        'name' => 'read_member_role',
-        'description' => 'Grants the ability to read member roles',
-        'action' => 'read',
-        'resource' => 'member_role',
-        'category' => 'system_access',
-        'boundaries' => %w[PROJECT GROUP]
+        'name' => 'update_wiki',
+        'description' => 'Grants the ability to update wikis',
+        'action' => 'update',
+        'resource' => 'wiki',
+        'category' => 'wiki',
+        'boundaries' => %w[GROUP PROJECT]
       }])
     end
   end
 
-  context 'when feature-flag `fine_grained_personal_access_tokens` is disabled' do
+  context 'when feature-flag `granular_personal_access_tokens` is disabled' do
     before do
-      stub_feature_flags(fine_grained_personal_access_tokens: false)
+      stub_feature_flags(granular_personal_access_tokens: false)
     end
 
     it 'returns an error' do

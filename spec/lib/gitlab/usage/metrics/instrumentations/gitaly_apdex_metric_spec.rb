@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::GitalyApdexMetric, feature_category: :service_ping do
   let(:prometheus_client) { instance_double(Gitlab::PrometheusClient) }

@@ -12,6 +12,7 @@ import { __ } from '~/locale';
 import Translate from '~/vue_shared/translate';
 import Pipelines from '~/ci/pipelines_page/pipelines.vue';
 import PipelinesGraphql from '~/ci/pipelines_page/pipelines_graphql.vue';
+import { DEFAULT_MANUAL_ACTIONS_LIMIT } from '../constants';
 import PipelinesStore from './stores/pipelines_store';
 
 Vue.use(Translate);
@@ -61,7 +62,7 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
       canCreatePipeline: parseBoolean(canCreatePipeline),
       defaultBranchName,
       fullPath,
-      manualActionsLimit: 50,
+      manualActionsLimit: DEFAULT_MANUAL_ACTIONS_LIMIT,
       pipelineEditorPath,
       pipelineSchedulesPath,
       pipelinesAnalyticsPath,
@@ -143,7 +144,7 @@ export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
       identityVerificationPath,
       projectId,
       defaultBranchName,
-      manualActionsLimit: 50,
+      manualActionsLimit: DEFAULT_MANUAL_ACTIONS_LIMIT,
       pipelineSchedulesPath,
       suggestedCiTemplates: JSON.parse(suggestedCiTemplates),
       canCreatePipeline: parseBoolean(canCreatePipeline),

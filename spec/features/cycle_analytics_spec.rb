@@ -205,7 +205,9 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
       end
 
       def go_to_next_page
-        page.find(stage_table_pagination_selector).find_link("Next").click
+        page.within stage_table_pagination_selector do
+          find_by_testid("nextButton").click
+        end
       end
     end
   end

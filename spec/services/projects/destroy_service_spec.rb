@@ -347,7 +347,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     end
   end
 
-  context 'when project has exports' do
+  context 'when project has file exports' do
     let!(:project_with_export) do
       create(:project, :repository, namespace: user.namespace).tap do |project|
         create(
@@ -364,6 +364,18 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       end.to change(ImportExportUpload, :count).by(-1)
 
       expect(Project.all).not_to include(project_with_export)
+    end
+  end
+
+  context 'when project has bulk import exports' do
+    it 'destroys project and export' do
+      expect_next_instance_of(::Import::BulkImports::RemoveExportUploadsService) do |service|
+        expect(service).to receive(:execute)
+      end
+
+      destroy_project(project, user, {})
+
+      expect(Project.all).not_to include(project)
     end
   end
 

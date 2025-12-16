@@ -13,7 +13,9 @@ module Gitlab
     # TABLES_TO_BE_RENAMED = {
     #   'old_name' => 'new_name'
     # }.freeze
-    TABLES_TO_BE_RENAMED = {}.freeze
+    TABLES_TO_BE_RENAMED = {
+      'virtual_registries_packages_maven_cache_entries' => 'virtual_registries_packages_maven_cache_remote_entries'
+    }.freeze
 
     # Minimum PostgreSQL version requirement per documentation:
     # https://docs.gitlab.com/ee/install/requirements.html#postgresql-requirements
@@ -230,19 +232,11 @@ module Gitlab
     # We use ApplicationRecord here but these quoting helpers can be used on any query fragment
     # since all our databases use the same PostgreSQL adapter
     def self.quote_table_name(table_name)
-      if ::Gitlab.next_rails?
-        ApplicationRecord.adapter_class.quote_table_name(table_name)
-      else
-        ApplicationRecord.connection.quote_table_name(table_name)
-      end
+      ApplicationRecord.adapter_class.quote_table_name(table_name)
     end
 
     def self.quote_column_name(column_name)
-      if ::Gitlab.next_rails?
-        ApplicationRecord.adapter_class.quote_column_name(column_name)
-      else
-        ApplicationRecord.connection.quote_column_name(column_name)
-      end
+      ApplicationRecord.adapter_class.quote_column_name(column_name)
     end
 
     def self.all_uncached(&block)

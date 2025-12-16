@@ -6,6 +6,7 @@ import csrf from '~/lib/utils/csrf';
 import { __, s__, sprintf } from '~/locale';
 import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
 import { parseUserDeletionObstacles } from '~/vue_shared/components/user_deletion_obstacles/utils';
+// eslint-disable-next-line no-restricted-imports
 import {
   LEAVE_MODAL_ID,
   MEMBER_MODEL_TYPE_GROUP_MEMBER,

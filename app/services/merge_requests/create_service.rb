@@ -73,7 +73,11 @@ module MergeRequests
     end
 
     def set_default_attributes!
-      # Implemented in EE
+      set_default_squash! unless params.key?(:squash) || params.key?('squash')
+    end
+
+    def set_default_squash!
+      params[:squash] = @project.squash_enabled_by_default?
     end
   end
 end

@@ -44,7 +44,7 @@ merge request again.
 
 {{< /details >}}
 
-In addition to the `/rebase` [quick action](../quick_actions.md#issues-merge-requests-and-epics),
+In addition to the [`/rebase` quick action](../quick_actions.md#ready),
 users with access to the [Rails console](../../../administration/operations/rails_console.md)
 can rebase a merge request from the Rails console. Replace `<username>`,
 `<namespace/project>`, and `<iid>` with appropriate values:

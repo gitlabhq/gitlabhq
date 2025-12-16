@@ -48,8 +48,7 @@ RSpec.describe ClickHouse::MigrationSupport::ExclusiveLock, feature_category: :d
       end
     end
 
-    it 'is compatible with Redis 6.0',
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4160' do
+    it 'is compatible with Redis 6.0', :freeze_time do
       redis_mock = instance_double(Redis)
       expect(redis_mock).to receive(:zscore).and_return(1)
       allow(redis_mock).to receive(:zadd)

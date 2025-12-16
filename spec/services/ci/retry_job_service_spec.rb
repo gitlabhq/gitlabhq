@@ -711,6 +711,32 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
             .not_to change { Ci::Build.count }
         end
       end
+
+      describe 'job inputs metrics' do
+        it 'tracks when new input values are provided' do
+          expect { service.execute(job, inputs: { environment: 'production', debug: true }) }
+            .to trigger_internal_events('retry_job_with_new_input_values')
+            .with(
+              category: 'Ci::RetryJobService',
+              project: project,
+              user: user
+            )
+        end
+
+        context 'when all inputs match defaults' do
+          it 'does not track the event' do
+            expect { service.execute(job, inputs: { environment: 'staging', debug: false }) }
+              .not_to trigger_internal_events('retry_job_with_new_input_values')
+          end
+        end
+
+        context 'when no inputs are provided' do
+          it 'does not track the event' do
+            expect { service.execute(job, inputs: {}) }
+              .not_to trigger_internal_events('retry_job_with_new_input_values')
+          end
+        end
+      end
     end
   end
 end

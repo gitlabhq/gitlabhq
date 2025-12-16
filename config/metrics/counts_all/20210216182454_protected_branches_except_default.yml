@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.protected_branches_except_default
 description: Count of branches that have been protected and are not the default branch
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: all

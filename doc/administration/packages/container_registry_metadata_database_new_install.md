@@ -26,6 +26,7 @@ Enable the metadata database for a new container registry.
 Prerequisites:
 
 - You must have a new container registry with no images pushed to the registry.
+
 To enable the database:
 
 1. Enable the database by editing `/etc/gitlab/gitlab.rb` and setting `enabled` to `true`:

@@ -5,8 +5,9 @@ import { fetchPolicies } from '~/lib/graphql';
 import { confidentialityQueries } from '~/sidebar/queries/constants';
 import { defaultClient as gqlClient } from '~/graphql_shared/issuable_client';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
-export default {
+export default normalizeRender({
   props: {
     noteableData: {
       type: Object,
@@ -55,5 +56,5 @@ export default {
   render() {
     return null;
   },
-};
+});
 </script>

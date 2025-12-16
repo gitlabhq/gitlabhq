@@ -29,6 +29,11 @@ module RapidDiffs
     unexpose :resolve_with_issue_path
     unexpose :cached_markdown_version
     unexpose :discussion, :base_discussion
+    unexpose :description_version_id
+    unexpose :description_diff_path
+    unexpose :delete_description_version_path
+    unexpose :can_delete_description_version
+    unexpose :description_version_deleted
 
     expose :current_user do
       expose :can_edit do |note|

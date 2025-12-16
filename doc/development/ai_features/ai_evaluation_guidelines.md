@@ -102,7 +102,7 @@ See the [step-by-step guide for conducting evaluations using the CEF](https://gi
 
 The CEF uses LangSmith to store and analyze evaluation results. See the [LangSmith guide for how to analyze an experiment](https://docs.smith.langchain.com/evaluation/how_to_guides/analyze_single_experiment).
 
-For guidance regarding specific features, see the Analyze Results section of the feature-specific documentation for [running evaluations locally](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/tree/main/doc/running_evaluation_locally). You can also find some information about interpreting evaluation metrics in the [Duo Chat evaluation documentation](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/tree/main/doc/duo_chat).
+For guidance regarding specific features, see the Analyze Results section of the feature-specific documentation for [running evaluations locally](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/tree/main/doc/running_evaluation_locally). You can also find some information about interpreting evaluation metrics in the [GitLab Duo Chat evaluation documentation](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/tree/main/doc/duo_chat).
 
 Please note that we're updating the documentation on executing and interpreting the results of existing evaluation pipelines (see [#671](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/issues/671)).
 

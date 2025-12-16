@@ -13,6 +13,14 @@ module API
 
     helpers ::API::Helpers::PackagesHelpers
 
+    helpers do
+      def projects
+        ::Packages::ProjectsFinder
+          .new(current_user: current_user, group: user_group, params: declared(params).slice(:exclude_subgroups))
+          .execute
+      end
+    end
+
     params do
       requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group'
       optional :exclude_subgroups, type: Boolean, default: false, desc: 'Determines if subgroups should be excluded'
@@ -59,14 +67,24 @@ module API
           desc: 'Return packages with specified status'
       end
       get ':id/packages' do
-        packages = Packages::GroupPackagesFinder.new(
-          current_user,
-          user_group,
-          declared(params).slice(
-            :exclude_subgroups, :order_by, :sort, :package_type, :package_name,
-            :package_version, :include_versionless, :status
-          )
-        ).execute
+        packages = if Feature.enabled?(:packages_projects_finder, user_group)
+                     ::Packages::PackagesFinder.new(
+                       projects,
+                       declared(params).slice(
+                         :exclude_subgroups, :order_by, :sort, :package_type, :package_name,
+                         :package_version, :include_versionless, :status
+                       )
+                     ).execute
+                   else
+                     Packages::GroupPackagesFinder.new(
+                       current_user,
+                       user_group,
+                       declared(params).slice(
+                         :exclude_subgroups, :order_by, :sort, :package_type, :package_name,
+                         :package_version, :include_versionless, :status
+                       )
+                     ).execute
+                   end
 
         present paginate(packages), with: ::API::Entities::Package, user: current_user, group: true,
           namespace: user_group

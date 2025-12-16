@@ -44,7 +44,12 @@ module Types
           null: false,
           description: 'List of scopes applied to a personal access token.'
 
-        field :last_used_at,
+        field :last_used_ips,
+          [GraphQL::Types::String],
+          null: false,
+          description: 'IP addresses where the personal access token was recently used.'
+
+        field :last_used_at, # rubocop: disable GraphQL/ExtractType -- matches REST API result
           Types::TimeType,
           null: true,
           description: 'Timestamp of when the personal access token was last used.'
@@ -61,6 +66,10 @@ module Types
 
         def scopes
           object.granular? ? object.granular_scopes : object.scopes
+        end
+
+        def last_used_ips
+          object.last_used_ips.map(&:ip_address)
         end
       end
       # rubocop:enable Graphql/AuthorizeTypes

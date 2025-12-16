@@ -27,8 +27,10 @@ RSpec.describe ActiveContext::Concerns::Queue do
       mock_queue_class.register!
 
       expect(ActiveContext::Queues.queues).to include(mock_queue_class.redis_key)
-      expect(ActiveContext::Queues.raw_queues.size).to eq(2)
-      expect(ActiveContext::Queues.raw_queues.all?(mock_queue_class)).to be true
+      expect(ActiveContext::Queues.raw_queues.size).to eq(3)
+      mock_queue_instances = ActiveContext::Queues.raw_queues.select { |q| q.is_a?(mock_queue_class) }
+      expect(mock_queue_instances.size).to eq(2)
+      expect(mock_queue_instances.all?(mock_queue_class)).to be true
     end
   end
 
@@ -36,7 +38,7 @@ RSpec.describe ActiveContext::Concerns::Queue do
     it 'pushes references to Redis' do
       references = %w[ref1 ref2 ref3]
 
-      allow(ActiveContext::Hash).to receive(:consistent_hash).and_return(0, 1, 0)
+      allow(ActiveContext::Hasher).to receive(:consistent_hash).and_return(0, 1, 0)
       expect(redis_double).to receive(:incrby).with('mockmodule:{test_queue}:0:score', 2).and_return(2)
       expect(redis_double).to receive(:incrby).with('mockmodule:{test_queue}:1:score', 1).and_return(1)
       expect(redis_double).to receive(:zadd).with('mockmodule:{test_queue}:0:zset', [[1, 'ref1'], [2, 'ref3']])

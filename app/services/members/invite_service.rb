@@ -19,7 +19,7 @@ module Members
     def parsed_emails
       # can't put this in the initializer since `invites_from_params` is called in super class
       # and needs it
-      @parsed_emails ||= (formatted_param(params[:email]) || [])
+      @parsed_emails ||= formatted_param(params[:email]) || []
     end
 
     def formatted_param(parameter)

@@ -8,6 +8,7 @@ import AjaxCache from '~/lib/utils/ajax_cache';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import FilterDropdown from '~/search/sidebar/components/shared/filter_dropdown.vue';
 
+// eslint-disable-next-line no-restricted-imports
 import { AUTHOR_ENDPOINT_PATH, AUTHOR_PARAM, NOT_AUTHOR_PARAM } from '../../constants';
 
 export default {

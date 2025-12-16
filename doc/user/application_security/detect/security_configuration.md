@@ -80,7 +80,7 @@ Not enabled
 
 To view a project's security configuration:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 
 To see a historic view of changes to the CI/CD configuration file, select **Configuration history**.
@@ -89,7 +89,7 @@ To see a historic view of changes to the CI/CD configuration file, select **Conf
 
 To edit a project's security configuration:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. Select the security scanner you want to enable or configure and follow the instructions.
 
@@ -165,7 +165,7 @@ base address for Docker images. You can override this for most scanners by setti
 The [container scanning](../container_scanning/_index.md) analyzer is an exception, and it
 does not use the `SECURE_ANALYZERS_PREFIX` variable. To override its Docker image, see
 the instructions for
-[Running container scanning in an offline environment](../container_scanning/_index.md#running-container-scanning-in-an-offline-environment).
+[Running container scanning in an offline environment](../container_scanning/_index.md#offline-environment).
 
 ### Use security scanning tools with merge request pipelines
 

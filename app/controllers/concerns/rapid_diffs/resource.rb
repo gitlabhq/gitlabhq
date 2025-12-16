@@ -30,6 +30,7 @@ module RapidDiffs
       old_path = diff_file_params[:old_path]
       new_path = diff_file_params[:new_path]
       ignore_whitespace_changes = Gitlab::Utils.to_boolean(diff_file_params[:ignore_whitespace_changes])
+      full = Gitlab::Utils.to_boolean(diff_file_params[:full])
 
       options = {
         expanded: true,
@@ -44,6 +45,12 @@ module RapidDiffs
         diff_file = find_diff_file(options, old_path, new_path)
       end
 
+      if full
+        return head :payload_too_large if blob_too_large?(diff_file.blob)
+
+        diff_file.expand_to_full!
+      end
+
       render diff_file_component(diff_file: diff_file, parallel_view: diff_view == :parallel), layout: false
     end
 
@@ -53,8 +60,10 @@ module RapidDiffs
       raise NotImplementedError
     end
 
+    attr_reader :environment
+
     def diff_file_component(base_args)
-      ::RapidDiffs::DiffFileComponent.new(**base_args)
+      ::RapidDiffs::DiffFileComponent.new(**base_args, environment: environment)
     end
 
     def find_diff_file(extra_options, old_path, new_path)
@@ -64,7 +73,7 @@ module RapidDiffs
       end
     end
 
-    # When overridden this mthod should return a path to view diffs in an email-friendly format.
+    # When overridden this method should return a path to view diffs in an email-friendly format.
     def email_format_path
       nil
     end
@@ -74,8 +83,14 @@ module RapidDiffs
       nil
     end
 
+    def blob_too_large?(blob)
+      return false unless blob
+
+      blob.raw_size > Gitlab::CurrentSettings.diff_max_patch_bytes
+    end
+
     def diff_file_params
-      params.permit(:old_path, :new_path, :ignore_whitespace_changes, :view)
+      params.permit(:old_path, :new_path, :ignore_whitespace_changes, :view, :full)
     end
   end
 end

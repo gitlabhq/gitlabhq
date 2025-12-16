@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Memory::UploadAndCleanupReports, :aggregate_failures do
   let(:uploader) { instance_double(Gitlab::Memory::ReportsUploader) }

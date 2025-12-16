@@ -279,7 +279,7 @@ module CommitsHelper
       button_options: {
         rel: 'noopener noreferrer',
         title: "View on #{environment.formatted_external_url}",
-        class: 'has-tooltip',
+        class: 'has-tooltip gl-ml-3',
         data: { container: 'body' }
       }
     )

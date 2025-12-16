@@ -15,12 +15,15 @@ describe('Sidebar participant component', () => {
 
   const findAvatar = () => wrapper.findComponent(GlAvatarLabeled);
   const findIcon = () => wrapper.findComponent(GlIcon);
+  const findBusyBadge = () => wrapper.find('[data-testid="busy-badge"]');
+  const findAgentBadge = () => wrapper.find('[data-testid="agent-badge"]');
 
   const createComponent = ({
     status = null,
     issuableType = TYPE_ISSUE,
     canMerge = false,
     selected = false,
+    compositeIdentityEnforced = false,
   } = {}) => {
     wrapper = shallowMount(SidebarParticipant, {
       propsData: {
@@ -28,6 +31,7 @@ describe('Sidebar participant component', () => {
           ...user,
           canMerge,
           status,
+          compositeIdentityEnforced,
         },
         issuableType,
         selected,
@@ -38,17 +42,37 @@ describe('Sidebar participant component', () => {
     });
   };
 
-  it('does not show `Busy` status when user is not busy', () => {
-    createComponent();
+  describe('when is not busy and is not agent', () => {
+    it('does not show `Busy` status', () => {
+      createComponent();
 
-    expect(findAvatar().props('label')).toBe(user.name);
-    expect(wrapper.text()).not.toContain('Busy');
+      expect(findAvatar().props('label')).toBe(user.name);
+      expect(findBusyBadge().exists()).toBe(false);
+    });
+
+    it('does not show agent badge', () => {
+      createComponent();
+
+      expect(findAgentBadge().exists()).toBe(false);
+    });
   });
 
-  it('shows `Busy` status when user is busy', () => {
-    createComponent({ status: { availability: 'BUSY' } });
+  describe('when is busy', () => {
+    it('shows `Busy` status', () => {
+      createComponent({ status: { availability: 'BUSY' } });
 
-    expect(wrapper.text()).toContain('Busy');
+      expect(findBusyBadge().exists()).toBe(true);
+      expect(findAgentBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('when is agent', () => {
+    it('renders agent badge', () => {
+      createComponent({ compositeIdentityEnforced: true });
+
+      expect(findAgentBadge().exists()).toBe(true);
+      expect(findBusyBadge().exists()).toBe(false);
+    });
   });
 
   it('does not render a warning icon', () => {

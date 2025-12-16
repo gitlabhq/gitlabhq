@@ -641,8 +641,8 @@ export default {
   },
 
   PAGE_SIZES,
-  permissionsHelpPath: helpPagePath('user/permissions', { anchor: 'group-members-permissions' }),
-  placeholderUserLimitsHelpPath: helpPagePath('user/project/import/_index', {
+  permissionsHelpPath: helpPagePath('user/permissions', { anchor: 'group-permissions' }),
+  placeholderUserLimitsHelpPath: helpPagePath('user/import/mapping', {
     anchor: 'placeholder-user-limits',
   }),
   visibilityRulesHelpPath: helpPagePath('user/group/import/_index', {

@@ -218,6 +218,7 @@ func TestNewMcpManager(t *testing.T) {
 		assert.Equal(t, "test-server_test_tool", mgr.tools[0].Name)
 		assert.Len(t, mgr.toolSessionsByName, 1)
 		assert.Len(t, mgr.serverSessions, 1)
+		assert.Empty(t, mgr.preApprovedTools)
 	})
 
 	t.Run("successful initialization with multiple servers", func(t *testing.T) {
@@ -274,6 +275,61 @@ func TestNewMcpManager(t *testing.T) {
 		require.NotNil(t, mgr)
 		assert.Len(t, mgr.tools, 1)
 		assert.Equal(t, "test-server_allowed_tool", mgr.tools[0].Name)
+		assert.Empty(t, mgr.preApprovedTools)
+	})
+
+	t.Run("includes preapproved tools when configured", func(t *testing.T) {
+		mcpServer := setupMockMcpServer(t, "", []mcpTool{
+			{Name: "tool1", Description: "Tool 1"},
+			{Name: "tool2", Description: "Tool 2"},
+		})
+
+		req := httptest.NewRequest("GET", "/test", nil)
+
+		preApprovedTools := []string{"tool1"}
+		servers := map[string]api.McpServerConfig{
+			"test-server": {
+				URL:              mcpServer.URL,
+				Headers:          map[string]string{},
+				Tools:            &([]string{"tool1", "tool2"}),
+				PreApprovedTools: &preApprovedTools,
+			},
+		}
+
+		mgr, err := newMcpManager(nil, req, servers)
+
+		require.NoError(t, err)
+		require.NotNil(t, mgr)
+		assert.Len(t, mgr.tools, 2)
+		assert.Len(t, mgr.preApprovedTools, 1)
+		assert.Equal(t, "test-server_tool1", mgr.preApprovedTools[0])
+	})
+
+	t.Run("only includes preapproved tools that are also in enabled tools", func(t *testing.T) {
+		mcpServer := setupMockMcpServer(t, "", []mcpTool{
+			{Name: "tool1", Description: "Tool 1"},
+			{Name: "tool2", Description: "Tool 2"},
+		})
+
+		req := httptest.NewRequest("GET", "/test", nil)
+
+		preApprovedTools := []string{"tool1", "tool3"}
+		servers := map[string]api.McpServerConfig{
+			"test-server": {
+				URL:              mcpServer.URL,
+				Headers:          map[string]string{},
+				Tools:            &([]string{"tool1"}),
+				PreApprovedTools: &preApprovedTools,
+			},
+		}
+
+		mgr, err := newMcpManager(nil, req, servers)
+
+		require.NoError(t, err)
+		require.NotNil(t, mgr)
+		assert.Len(t, mgr.tools, 1)
+		assert.Len(t, mgr.preApprovedTools, 1)
+		assert.Equal(t, "test-server_tool1", mgr.preApprovedTools[0])
 	})
 
 	t.Run("includes all tools when Tools config is empty", func(t *testing.T) {
@@ -420,6 +476,35 @@ func TestManager_Tools(t *testing.T) {
 		}
 
 		result := mgr.Tools()
+		assert.NotNil(t, result)
+		assert.Empty(t, result)
+	})
+}
+
+func TestManager_PreApprovedTools(t *testing.T) {
+	t.Run("returns preapproved tools list", func(t *testing.T) {
+		preApprovedTools := []string{"tool1", "tool2"}
+
+		mgr := &manager{
+			preApprovedTools: preApprovedTools,
+		}
+
+		result := mgr.PreApprovedTools()
+		assert.Equal(t, preApprovedTools, result)
+		assert.Len(t, result, 2)
+	})
+
+	t.Run("returns nil when manager is nil", func(t *testing.T) {
+		var mgr *manager
+		assert.Nil(t, mgr.PreApprovedTools())
+	})
+
+	t.Run("returns empty list when no preapproved tools", func(t *testing.T) {
+		mgr := &manager{
+			preApprovedTools: []string{},
+		}
+
+		result := mgr.PreApprovedTools()
 		assert.NotNil(t, result)
 		assert.Empty(t, result)
 	})

@@ -9,7 +9,7 @@ module API
 
     helpers do
       def current_appearance
-        @current_appearance ||= (::Appearance.current || ::Appearance.new)
+        @current_appearance ||= ::Appearance.current || ::Appearance.new
       end
     end
 

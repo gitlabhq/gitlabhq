@@ -12,6 +12,7 @@ import PerformanceBarService from '~/performance_bar/services/performance_bar_se
 import { getInstrumentationLink } from './apollo/instrumentation_link';
 import { getSuppressNetworkErrorsDuringNavigationLink } from './apollo/suppress_network_errors_during_navigation_link';
 import { getPersistLink } from './apollo/persist_link';
+import { getOperationFinishedLink } from './apollo/operation_finished_link';
 import { persistenceMapper } from './apollo/persistence_mapper';
 import { sentryBreadcrumbLink } from './apollo/sentry_breadcrumb_link';
 import { correlationIdLink } from './apollo/correlation_id_link';
@@ -260,17 +261,17 @@ function createApolloClient(resolvers = {}, config = {}) {
   const hasMutation = (operation) =>
     (operation?.query?.definitions || []).some((x) => x.operation === 'mutation');
 
-  const requestCounterLink = new ApolloLink((operation, forward) => {
-    if (hasMutation(operation)) {
-      pendingApolloMutations += 1;
-    }
-
-    return forward(operation).map((response) => {
+  const mutationCounterLink = getOperationFinishedLink({
+    started: (operation) => {
+      if (hasMutation(operation)) {
+        pendingApolloMutations += 1;
+      }
+    },
+    finished: (operation) => {
       if (hasMutation(operation)) {
         pendingApolloMutations -= 1;
       }
-      return response;
-    });
+    },
   });
 
   const persistLink = getPersistLink();
@@ -284,7 +285,7 @@ function createApolloClient(resolvers = {}, config = {}) {
         getInstrumentationLink(),
         sentryBreadcrumbLink,
         correlationIdLink,
-        requestCounterLink,
+        mutationCounterLink,
         performanceBarLink,
         new StartupJSLink(),
         apolloCaptchaLink,

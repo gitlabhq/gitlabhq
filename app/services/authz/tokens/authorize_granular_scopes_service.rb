@@ -42,7 +42,7 @@ module Authz
       def validate_permissions!
         return if permissions.empty?
 
-        invalid_permissions = permissions - Authz::Permission.all.keys
+        invalid_permissions = permissions - Authz::PermissionGroups::Assignable.all_permissions
         return if invalid_permissions.empty?
 
         raise InvalidInputError, "Invalid permissions: #{invalid_permissions.join(', ')}"
@@ -54,7 +54,7 @@ module Authz
       end
 
       def feature_enabled?
-        Feature.enabled?(:authorize_granular_pats, boundary&.namespace)
+        Feature.enabled?(:granular_personal_access_tokens, token.user)
       end
 
       def authorized?

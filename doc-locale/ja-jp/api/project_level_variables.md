@@ -26,13 +26,13 @@ GET /projects/:id/variables
 |-----------|----------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-リクエストの例:
+リクエスト例:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -63,7 +63,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## 単一の変数を取得する {#get-a-single-variable}
 
-単一の変数の詳細を取得します。同じを持つ変数が複数ある場合は、`filter`を使用して、正しい`environment_scope`を選択します。
+単一の変数の詳細を取得します。同じキーを持つ変数が複数ある場合は、`filter`を使用して、正しい`environment_scope`を選択します。
 
 ```plaintext
 GET /projects/:id/variables/:key
@@ -75,13 +75,13 @@ GET /projects/:id/variables/:key
 | `key`     | 文字列         | はい      | 変数の`key`。 |
 | `filter`  | ハッシュ           | いいえ       | 利用可能なフィルターは`[environment_scope]`です。[`filter`パラメータ](#the-filter-parameter)の詳細を参照してください。 |
 
-リクエストの例:
+リクエスト例:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables/TEST_VARIABLE_1"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -121,17 +121,17 @@ POST /projects/:id/variables
 | `masked`            | ブール値        | いいえ       | 変数がマスクされるかどうかを指定します。デフォルトは`false`です。 |
 | `masked_and_hidden` | ブール値        | いいえ       | 変数がマスクされ、非表示になるかどうかを指定します。デフォルトは`false`です。 |
 | `protected`         | ブール値        | いいえ       | 変数が保護されるかどうかを指定します。デフォルトは`false`です。 |
-| `raw`               | ブール値        | いいえ       | 変数がraw文字列として扱われるかどうかを指定します。デフォルトは`false`です。`true`の場合、値の変数は[展開](../ci/variables/_index.md#prevent-cicd-variable-expansion)されません。 |
+| `raw`               | ブール値        | いいえ       | 変数がraw文字列として扱われるかどうかを指定します。デフォルトは`true`です。`false`の場合、値の変数は[展開](../ci/variables/_index.md#allow-cicd-variable-expansion)されます。 |
 | `variable_type`     | 文字列         | いいえ       | 変数の型。利用可能な型は、`env_var`（デフォルト）と`file`です。 |
 
-リクエストの例:
+リクエスト例:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/1/variables" --form "key=NEW_VARIABLE" --form "value=new value"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -149,7 +149,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## 変数を更新する {#update-a-variable}
 
-プロジェクトの変数を更新します。同じを持つ変数が複数ある場合は、`filter`を使用して、正しい`environment_scope`を選択します。
+プロジェクトの変数を更新します。同じキーを持つ変数が複数ある場合は、`filter`を使用して、正しい`environment_scope`を選択します。
 
 ```plaintext
 PUT /projects/:id/variables/:key
@@ -165,17 +165,17 @@ PUT /projects/:id/variables/:key
 | `filter`            | ハッシュ           | いいえ       | 利用可能なフィルターは`[environment_scope]`です。[`filter`パラメータ](#the-filter-parameter)の詳細を参照してください。 |
 | `masked`            | ブール値        | いいえ       | 変数がマスクされるかどうかを指定します。 |
 | `protected`         | ブール値        | いいえ       | 変数が保護されるかどうかを指定します。 |
-| `raw`               | ブール値        | いいえ       | 変数がraw文字列として扱われるかどうかを指定します。デフォルトは`false`です。`true`の場合、値の変数は[展開](../ci/variables/_index.md#prevent-cicd-variable-expansion)されません。 |
+| `raw`               | ブール値        | いいえ       | 変数がraw文字列として扱われるかどうかを指定します。デフォルトは`true`です。`false`の場合、値の変数は[展開](../ci/variables/_index.md#allow-cicd-variable-expansion)されます。 |
 | `variable_type`     | 文字列         | いいえ       | 変数の型。利用可能な型は、`env_var`（デフォルト）と`file`です。 |
 
-リクエストの例:
+リクエスト例:
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/1/variables/NEW_VARIABLE" --form "value=updated value"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -193,7 +193,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## 変数を削除する {#delete-a-variable}
 
-プロジェクトの変数を削除します。同じを持つ変数が複数ある場合は、`filter`を使用して、正しい`environment_scope`を選択します。
+プロジェクトの変数を削除します。同じキーを持つ変数が複数ある場合は、`filter`を使用して、正しい`environment_scope`を選択します。
 
 ```plaintext
 DELETE /projects/:id/variables/:key
@@ -205,7 +205,7 @@ DELETE /projects/:id/variables/:key
 | `key`     | 文字列         | はい      | 変数の`key`。 |
 | `filter`  | ハッシュ           | いいえ       | 利用可能なフィルターは`[environment_scope]`です。[`filter`パラメータ](#the-filter-parameter)の詳細を参照してください。 |
 
-リクエストの例:
+リクエスト例:
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables/VARIABLE_1"
@@ -213,7 +213,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## `filter`パラメータ {#the-filter-parameter}
 
-複数の変数が同じ`key`を持っている場合、[GET](#get-a-single-variable) 、[PUT](#update-a-variable) 、または[DELETE](#delete-a-variable)リクエストは次のメッセージを返す可能性があります。
+複数の変数が同じ`key`を持っている場合、[GET](#get-a-single-variable) 、[PUT](#update-a-variable) 、または[DELETE](#delete-a-variable)リクエストは次のメッセージを返す可能性があります:
 
 ```plaintext
 There are multiple variables with provided parameters. Please use 'filter[environment_scope]'.

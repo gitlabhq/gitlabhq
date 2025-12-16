@@ -18,18 +18,17 @@ To install GitLab in a Docker container, use Docker Compose, Docker Engine, or D
 Prerequisites:
 
 - You must have a working [Docker installation](https://docs.docker.com/engine/install/#server) that is not Docker for Windows.
-Docker for Windows is not officially supported as the images have known compatibility issues with volume
-permissions and potentially other unknown issues. If you are trying to run on Docker
-for Windows, see the [getting help page](https://about.gitlab.com/get-help/). This page
-contains links to community resources (like IRC or forums) where you can seek help
-from other users.
+  Docker for Windows is not officially supported as the images have known compatibility issues with volume
+  permissions and potentially other unknown issues. If you are trying to run on Docker
+  for Windows, see the [getting help page](https://about.gitlab.com/get-help/). This page
+  contains links to community resources (like IRC or forums) where you can seek help
+  from other users.
 - You must have a mail transport agent (MTA), such as Postfix or Sendmail. The GitLab images don't include an MTA. You can
-install an MTA in a separate container. While you can install an MTA in the same container as GitLab, you might need to
-reinstall the MTA after every upgrade or restart.
+  install an MTA in a separate container. While you can install an MTA in the same container as GitLab, you might need to
+  reinstall the MTA after every upgrade or restart.
 - You should not plan to deploy the GitLab Docker image in Kubernetes as it creates a
-single point of failure. If you want to deploy GitLab in Kubernetes, use the
-[GitLab Helm Chart](https://docs.gitlab.com/charts/) or [GitLab Operator](https://docs.gitlab.com/operator/)
-instead.
+  single point of failure. If you want to deploy GitLab in Kubernetes, use the
+  [GitLab Helm Chart](https://docs.gitlab.com/charts/) or [GitLab Operator](https://docs.gitlab.com/operator/) instead.
 - You must have a valid, externally accessible hostname for your Docker installation. Do not use `localhost`.
 
 ## Configure the SSH port
@@ -222,7 +221,7 @@ install, and upgrade your Docker-based GitLab installation:
 Alternatively, you can install GitLab using Docker Engine.
 
 1. If you've set up the `GITLAB_HOME` variable, adjust the directories to meet your requirements
-and run the image:
+   and run the image:
 
    - If you are not on SELinux, run this command:
 
@@ -265,10 +264,10 @@ and run the image:
      files in the mounted volumes.
 
 1. If you're using the [Kerberos integration](../../integration/kerberos.md),
-you must also publish your Kerberos port (for example, `--publish 8443:8443`).
-Failing to do so prevents Git operations with Kerberos.
-The initialization process may take a long time. You can track this
-process with:
+   you must also publish your Kerberos port (for example, `--publish 8443:8443`).
+   Failing to do so prevents Git operations with Kerberos.
+   The initialization process may take a long time. You can track this
+   process with:
 
    ```shell
    sudo docker logs -f gitlab
@@ -278,7 +277,7 @@ process with:
    a while before the Docker container starts to respond to queries.
 
 1. Visit the GitLab URL, and sign in with the username `root`
-and the password from the following command:
+   and the password from the following command:
 
    ```shell
    sudo docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password

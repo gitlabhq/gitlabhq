@@ -68,6 +68,24 @@ module Users
 
       has_many :members_deletion_schedules, class_name: 'Members::DeletionSchedule', dependent: :destroy
 
+      has_many :ml_candidates,
+        class_name: 'Ml::Candidate',
+        foreign_key: :user_id,
+        inverse_of: :user,
+        dependent: :nullify
+
+      has_many :ml_experiments,
+        class_name: 'Ml::Experiment',
+        foreign_key: :user_id,
+        inverse_of: :user,
+        dependent: :nullify
+
+      has_many :ml_models,
+        class_name: 'Ml::Model',
+        foreign_key: :user_id,
+        inverse_of: :user,
+        dependent: :nullify
+
       has_many :project_export_jobs,
         foreign_key: :user_id,
         inverse_of: :user,
@@ -111,9 +129,15 @@ module Users
         foreign_key: :creator_id,
         inverse_of: :creator,
         dependent: :nullify
+
+      has_many :design_management_versions,
+        class_name: 'DesignManagement::Version',
+        foreign_key: :author_id,
+        inverse_of: :author,
+        dependent: :nullify
+
       # rubocop:enable Cop/ActiveRecordDependent
     end
   end
 end
-
 Users::DependentAssociations.include_mod_with('Users::DependentAssociations')

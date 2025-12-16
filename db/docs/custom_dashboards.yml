@@ -1,7 +1,7 @@
 ---
 table_name: custom_dashboards
 classes:
-- Analytics::CustomDashboard
+- Analytics::CustomDashboards::Dashboard
 feature_categories:
 - custom_dashboards_foundation
 description: |

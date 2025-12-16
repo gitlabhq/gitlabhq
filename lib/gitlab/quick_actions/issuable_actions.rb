@@ -22,8 +22,7 @@ module Gitlab
         end
         types ::Issuable
         condition do
-          quick_action_target.persisted? &&
-            quick_action_target.open? &&
+          quick_action_target.open? &&
             current_user.can?(:"update_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         command :close do

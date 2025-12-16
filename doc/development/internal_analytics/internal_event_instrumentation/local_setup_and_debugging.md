@@ -48,7 +48,7 @@ The monitor can show two tables:
   The second right-most column shows the value of each metric when the monitor was started and the right most column shows the current value of each metric.
 
 - The `SNOWPLOW EVENTS` table lists a selection of properties from only Snowplow events fired after the monitor was started and those that match the event name.
-For this table to be visible, you can either enable event tracking (**Admin area** > **Settings** > **Metrics and profiling** > **Event tracking**, then select "Enable event tracking" & save changes) or configure GDK to run with [Snowplow Micro](#snowplow-micro).
+  For this table to be visible, you can either enable event tracking (**Admin area** > **Settings** > **Metrics and profiling** > **Event tracking**, then select "Enable event tracking" & save changes) or configure GDK to run with [Snowplow Micro](#snowplow-micro).
 
 If a new `i_code_review_user_create_mr` event is fired, the metrics values get updated and a new event appears in the `SNOWPLOW EVENTS` table.
 
@@ -160,7 +160,7 @@ On GitLab.com events are sent to a collector configured by GitLab. By default, G
 
 You can configure your instance to use a custom Snowplow collector.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Snowplow**.
 1. Select **Enable Snowplow tracking** and enter your Snowplow configuration information. For example if your custom snowplow collector is available at `your-snowplow-collector.net`:

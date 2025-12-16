@@ -58,7 +58,7 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
 
     response = default_responses[response_type].merge(custom_options)
 
-    allow_next_instance_of(::Integrations::Glql::QueryService) do |instance|
+    allow_next_instance_of(::Analytics::Glql::QueryService) do |instance|
       allow(instance).to receive(:execute).and_return(response)
     end
   end
@@ -153,7 +153,7 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
       end
 
       it 'uses QueryService which handles load balancing' do
-        expect_next_instance_of(::Integrations::Glql::QueryService) do |instance|
+        expect_next_instance_of(::Analytics::Glql::QueryService) do |instance|
           expect(instance).to receive(:execute).with(
             query: query,
             variables: {},
@@ -332,7 +332,7 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
     end
 
     it 'creates QueryService with correct parameters' do
-      expect(::Integrations::Glql::QueryService).to receive(:new) do |args|
+      expect(::Analytics::Glql::QueryService).to receive(:new) do |args|
         expect(args[:current_user]).to eq(user)
         expect(args[:original_query]).to eq(query)
         expect(args[:request]).to eq(request)
@@ -345,7 +345,7 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
     end
 
     it 'calls QueryService#execute with correct parameters' do
-      expect_next_instance_of(::Integrations::Glql::QueryService) do |instance|
+      expect_next_instance_of(::Analytics::Glql::QueryService) do |instance|
         expect(instance).to receive(:execute).with(
           query: query,
           variables: {},

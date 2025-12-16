@@ -74,6 +74,16 @@ module Gitlab
             args
           end
         end
+
+        def health_context_tables
+          []
+        end
+
+        def tables_to_check_for_vacuum(*args)
+          define_singleton_method(:health_context_tables) do
+            args.map(&:to_s)
+          end
+        end
       end
 
       def initialize(

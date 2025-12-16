@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
-import { getApolloProvider } from '~/issues/list/issue_client';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { JS_TOGGLE_EXPAND_CLASS, CONTEXT_NAMESPACE_GROUPS } from './constants';
 import createStore from './components/global_search/store';
@@ -47,25 +47,6 @@ const getTrialStatusWidgetData = (sidebarData) => {
   };
 };
 
-const getDuoAgentPlatformWidgetData = (sidebarData) => {
-  if (sidebarData.duoAgentWidgetProvide) {
-    const { actionPath, stateProgression, initialState, contextualAttributes } =
-      sidebarData.duoAgentWidgetProvide;
-
-    return {
-      showDuoAgentPlatformWidget: true,
-      actionPath,
-      stateProgression,
-      initialState,
-      contextualAttributes,
-    };
-  }
-
-  return {
-    showDuoAgentPlatformWidget: false,
-  };
-};
-
 export const getSuperSidebarData = () => {
   const el = document.querySelector('.js-super-sidebar');
   if (!el) return false;
@@ -87,7 +68,7 @@ export const getSuperSidebarData = () => {
   const isImpersonating = parseBoolean(sidebarData.is_impersonating);
   const isGroup = Boolean(sidebarData.current_context?.namespace === CONTEXT_NAMESPACE_GROUPS);
 
-  const { projectStudioEnabled, projectStudioAvailable } = document.body.dataset;
+  const { projectStudioEnabled } = document.body.dataset;
 
   return {
     el,
@@ -112,11 +93,10 @@ export const getSuperSidebarData = () => {
     isImpersonating,
     isGroup,
     projectStudioEnabled: parseBoolean(projectStudioEnabled),
-    projectStudioAvailable: parseBoolean(projectStudioAvailable),
   };
 };
 
-export const initSuperSidebar = async ({
+export const initSuperSidebar = ({
   el,
   rootPath,
   currentPath,
@@ -139,7 +119,6 @@ export const initSuperSidebar = async ({
   isImpersonating,
   isGroup,
   projectStudioEnabled,
-  projectStudioAvailable,
 }) => {
   if (!el) return false;
 
@@ -149,13 +128,12 @@ export const initSuperSidebar = async ({
   return new Vue({
     el,
     name: 'SuperSidebarRoot',
-    apolloProvider: await getApolloProvider(),
+    apolloProvider,
     provide: {
       rootPath,
       currentPath,
       isImpersonating,
       ...getTrialStatusWidgetData(sidebarData),
-      ...getDuoAgentPlatformWidgetData(sidebarData),
       commandPaletteCommands,
       commandPaletteLinks,
       contextSwitcherLinks,
@@ -180,7 +158,6 @@ export const initSuperSidebar = async ({
       isGroup,
       isSaas: parseBoolean(isSaas),
       projectStudioEnabled,
-      projectStudioAvailable,
     },
     store: createStore({
       searchPath,
@@ -229,7 +206,7 @@ export const initSuperSidebarToggle = () => {
  * TODO: When we clean up the `paneled_view` feature flag, we should remove the unused args from
  * both functions.
  */
-export const initSuperTopbar = async ({
+export const initSuperTopbar = ({
   rootPath,
   sidebarData,
   searchPath,
@@ -249,14 +226,13 @@ export const initSuperTopbar = async ({
   isGroup,
   isSaas,
   projectStudioEnabled,
-  projectStudioAvailable,
 }) => {
   const el = document.querySelector('.js-super-topbar');
   if (!el) return false;
 
   return new Vue({
     el,
-    apolloProvider: await getApolloProvider(),
+    apolloProvider,
     provide: {
       rootPath,
       isImpersonating,
@@ -279,7 +255,6 @@ export const initSuperTopbar = async ({
       isGroup,
       isSaas: parseBoolean(isSaas),
       projectStudioEnabled,
-      projectStudioAvailable,
     },
     store: createStore({
       searchPath,

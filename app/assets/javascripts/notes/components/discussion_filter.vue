@@ -166,9 +166,7 @@ export default {
       @input="setDiscussionSortDirection({ direction: $event })"
     />
     <gl-disclosure-dropdown
-      id="discussion-preferences-dropdown"
       class="full-width-mobile"
-      data-testid="discussion-preferences-dropdown"
       :toggle-text="__('Sort or filter')"
       :disabled="isLoading"
       placement="bottom-end"
@@ -205,7 +203,6 @@ export default {
           :is-selected="filter.value === currentValue"
           :class="{ 'is-active': filter.value === currentValue }"
           :data-filter-type="filterType(filter.value)"
-          data-testid="filter-menu-item"
           @action="selectFilter(filter.value)"
         >
           <template #list-item>

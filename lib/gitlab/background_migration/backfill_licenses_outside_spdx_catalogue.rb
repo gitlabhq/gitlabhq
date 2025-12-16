@@ -9,5 +9,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::BackgroundMigration::BackfillLicensesOutsideSpdxCatalogue.prepend_mod

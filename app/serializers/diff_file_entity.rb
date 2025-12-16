@@ -8,6 +8,7 @@ class DiffFileEntity < DiffFileBaseEntity
 
   expose :added_lines
   expose :removed_lines
+  expose :code_review_id
 
   expose :load_collapsed_diff_url, if: ->(diff_file, options) { options[:merge_request] } do |diff_file|
     merge_request = options[:merge_request]

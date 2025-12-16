@@ -109,3 +109,48 @@
   }
 }
 
+.issuable-list-container {
+  .sticky-filter {
+    position: fixed;
+    top: $calc-application-header-height;
+    width: 100%;
+    padding-right: 2rem;
+
+    // Fixed layout width constraint
+    .container-limited & {
+      max-width: $fixed-layout-width;
+
+      :where(.page-with-panels) & {
+        padding-right: 1rem !important;
+      }
+    }
+
+    // XL breakpoint adjustments
+    @media (min-width: $breakpoint-xl) {
+
+      // Super sidebar adjustments at XL
+      .page-with-super-sidebar & {
+        width: calc(100% - #{$super-sidebar-width});
+      }
+
+      .page-with-super-sidebar-collapsed & {
+        width: 100%;
+      }
+    }
+
+    // Panel-specific overrides
+    :where(.page-with-panels) & {
+      width: 100% !important;
+    }
+  }
+}
+
+// Saved Views selectors
+.saved-views-selectors .tab-content {
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+.saved-views-selectors .nav {
+  margin-top: 4px;
+}

@@ -2,26 +2,6 @@
 
 RSpec.shared_examples 'tracks namespace creation experiments' do
   context 'with experiments' do
-    it 'adds nav experiment context and tracks group', :experiment do
-      stub_saas_features(onboarding: true)
-      stub_experiments(default_pinned_nav_items: :candidate)
-
-      user.user_detail.update!(onboarding_status: {
-        registration_type: 'trial',
-        role: 0, # software_developer
-        registration_objective: 1 # move_repository
-      })
-
-      expect_any_instance_of(DefaultPinnedNavItemsExperiment) do |instance|
-        expect(instance).to receive(:track).with(:assignment, namespace: anything).and_call_original
-      end
-
-      execute
-
-      user.reload
-      expect(user.onboarding_status[:experiments]).to include('default_pinned_nav_items')
-    end
-
     context 'with experiment premium_trial_positioning', :experiment do
       before do
         stub_experiments(premium_trial_positioning: :control)
@@ -48,23 +28,36 @@ RSpec.shared_examples 'tracks namespace creation experiments' do
     end
 
     context 'with experiment lightweight_trial_registration_redesign' do
-      let(:experiment) { instance_double(ApplicationExperiment) }
+      let(:lightweight_experiment) { instance_double(ApplicationExperiment) }
+      let(:premium_positioning_experiment) { instance_double(ApplicationExperiment) }
+      let(:premium_message_experiment) { instance_double(ApplicationExperiment) }
+      let(:trial_registration_hierarchy_education_experiment) { instance_double(ApplicationExperiment) }
 
       it 'tracks experiment assignment' do
         allow_next_instance_of(::Projects::CreateService) do |service|
           allow(service).to receive(:after_create_actions)
         end
 
+        allow(premium_positioning_experiment).to receive(:exclude!)
+        allow(premium_message_experiment).to receive(:exclude!)
+        allow(trial_registration_hierarchy_education_experiment).to receive(:exclude!)
+
         expect_next_instance_of(described_class) do |service|
           expect(service).to receive(:experiment).with(:lightweight_trial_registration_redesign,
-            actor: user).and_return(experiment)
+            actor: user).and_return(lightweight_experiment)
           expect(service).to receive(:experiment).with(:premium_trial_positioning,
-            actor: user).and_call_original
+            actor: user).and_yield(premium_positioning_experiment)
           expect(service).to receive(:experiment).with(:premium_message_during_trial,
-            namespace: an_instance_of(Group)).and_call_original
+            namespace: an_instance_of(Group)).and_yield(premium_message_experiment)
+          expect(service).to receive(:experiment).with(:trial_registration_hierarchy_education,
+            actor: user).and_yield(trial_registration_hierarchy_education_experiment)
         end
 
-        expect(experiment).to receive(:track).with(:assignment, namespace: an_instance_of(Group))
+        expect(lightweight_experiment).to receive(:track).with(:assignment, namespace: an_instance_of(Group))
+        expect(premium_positioning_experiment).to receive(:track).with(:assignment, namespace: an_instance_of(Group))
+        expect(trial_registration_hierarchy_education_experiment).to receive(:track).with(:assignment,
+          namespace: an_instance_of(Group))
+
         expect(execute).to be_success
       end
     end

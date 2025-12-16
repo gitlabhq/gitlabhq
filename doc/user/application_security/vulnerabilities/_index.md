@@ -38,6 +38,33 @@ For further details on this additional data, see [vulnerability risk assessment 
 If the scanner determined the vulnerability to be a false positive, an alert message is included at
 the top of the vulnerability's page.
 
+## SAST false positive detection
+
+{{< details >}}
+
+- Tier: Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18977) in GitLab 18.7 as a [beta](../../../policy/development_stages_support.md#beta) feature [with feature flags](../../../administration/feature_flags/_index.md) named `enable_vulnerability_fp_detection` and `ai_experiment_sast_fp_detection`. Enabled by default.
+
+{{< /history >}}
+
+GitLab Duo automatically analyzes Critical and High severity SAST vulnerabilities to identify potential false positives. This reduces noise in your vulnerability report by flagging findings that are likely not actual security risks.
+
+For each analyzed vulnerability, GitLab Duo provides:
+
+- A confidence score indicating the likelihood of the assessment
+- An explanation of why the finding might or might not be a true positive
+- Visual indicators that a vulnerability has been identified as a potential false positive in the vulnerability report
+
+For more information, see [SAST false positive detection](false_positive_detection.md).
+
 ## Vulnerability Explanation
 
 {{< details >}}
@@ -81,7 +108,7 @@ Prerequisites:
 
 To explain the vulnerability:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Optional. To remove the default filters, select **Clear** ({{< icon name="clear" >}}).
 1. Above the list of vulnerabilities, select the filter bar.
@@ -159,7 +186,7 @@ Learn more about [how to enable all GitLab Duo features](../../gitlab_duo/turn_o
 
 To resolve the vulnerability:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Optional. To remove the default filters, select **Clear** ({{< icon name="clear" >}}).
 1. Above the list of vulnerabilities, select the filter bar.
@@ -284,7 +311,7 @@ resolves the vulnerability finding. By default, it is powered by the Anthropic [
 
 To resolve the vulnerability finding:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Merge requests**.
 1. Select a merge request.
    - Vulnerability findings supported by Vulnerability Resolution are indicated by the tanuki AI icon ({{< icon name="tanuki-ai" >}}).
@@ -420,7 +447,7 @@ Prerequisites:
 
 To change a vulnerability's status from its Vulnerability Page:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Change status**.
@@ -436,7 +463,7 @@ vulnerability's action log.
 You can create a GitLab issue to track any action taken to resolve or mitigate a vulnerability.
 To create a GitLab issue for a vulnerability:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Create issue**.
@@ -459,7 +486,7 @@ Prerequisites:
 
 To link a vulnerability to existing GitLab issues:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. In the **Linked issues** section, select the plus icon ({{< icon name="plus" >}}).
@@ -533,7 +560,7 @@ To resolve a vulnerability, you can either:
 
 To resolve the vulnerability with a merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. From the **Resolve with merge request** dropdown list, select **Resolve with merge request**.
@@ -545,7 +572,7 @@ Process the merge request according to your standard workflow.
 
 To manually apply the patch that GitLab generated for a vulnerability:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. From the **Resolve with merge request** dropdown list, select **Download patch to resolve**.
@@ -569,7 +596,7 @@ Security training helps your developers learn how to fix vulnerabilities. Develo
 
 To enable security training for vulnerabilities in your project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. On the tab bar, select **Vulnerability Management**.
 1. To enable a security training provider, turn on the toggle.
@@ -587,7 +614,7 @@ Vulnerabilities with a CWE are most likely to return a training result.
 
 To view the security training for a vulnerability:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability for which you want to view security training.
 1. Select **View training**.

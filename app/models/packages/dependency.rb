@@ -11,6 +11,8 @@ class Packages::Dependency < ApplicationRecord
   validates :name, uniqueness: { scope: :version_pattern }, unless: :project_id
   validates :name, uniqueness: { scope: %i[version_pattern project_id] }, if: :project_id
 
+  scope :excluding_empty_nuget, -> { where.not(arel_table[:name].matches("#{::Packages::Nuget::EMPTY_DEPENDENCY_PREFIX}%")) }
+
   NAME_VERSION_PATTERN_TUPLE_MATCHING = '(name, version_pattern) = (?, ?)'
   MAX_STRING_LENGTH = 255
   MAX_CHUNKED_QUERIES_COUNT = 10

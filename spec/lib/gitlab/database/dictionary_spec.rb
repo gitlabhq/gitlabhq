@@ -55,7 +55,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
           partition_detach_info:
             - partition_name: foo_table_100
               bounds_clause: "FOR VALUES IN ('100')"
-              required_constraint: "((partition_id = 100))"
+              required_constraint: "(partition_id = 100)"
               parent_schema: "public"
 
         YAML
@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
       expect(dictionary.find_detach_allowed_partitions).to include(
         {
           foo_table_100: { bounds_clause: "FOR VALUES IN ('100')",
-                           required_constraint: "((partition_id = 100))",
+                           required_constraint: "(partition_id = 100)",
                            parent_table: "p_foo_table",
                            parent_schema: "public" }
         }

@@ -34,6 +34,7 @@ export default {
       required: true,
     },
   },
+  emits: ['switch-drawer'],
   computed: {
     editorA11yHelpPagePath() {
       return helpPagePath('ci/pipeline_editor/_index.md', {
@@ -71,7 +72,7 @@ export default {
 
 <template>
   <div
-    class="gl-flex gl-flex-col gl-gap-3 gl-border-1 gl-border-solid gl-border-default gl-p-3 @md/panel:gl-flex-row @md/panel:gl-items-center"
+    class="gl-flex gl-flex-col gl-gap-3 gl-rounded-t-lg gl-border-1 gl-border-solid gl-border-default gl-p-3 @md/panel:gl-flex-row @md/panel:gl-items-center"
   >
     <slot></slot>
     <gl-button

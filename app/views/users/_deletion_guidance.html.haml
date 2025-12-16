@@ -4,8 +4,8 @@
   %li
     %p
       - link = link_to('', help_page_path("user/profile/account/delete_account.md", anchor: "associated-records"))
-      = safe_format(_('Certain user content will be moved to a system-wide "Ghost User" in order to maintain content for posterity. For further information, please refer to the %{link_start}user account deletion documentation.%{link_end}'), tag_pair(link, :link_start, :link_end))
+      = safe_format(_('Moves your associated user content to a system-wide "Ghost User" to maintain data integrity. %{link_start}Learn more%{link_end}.'), tag_pair(link, :link_start, :link_end))
   - personal_projects_count = user.personal_projects.count
   - unless personal_projects_count == 0
     %li
-      = n_('%d personal project will be removed and cannot be restored.', '%d personal projects will be removed and cannot be restored.', personal_projects_count) % personal_projects_count
+      = n_('Removes %d personal project. This project cannot be restored.', 'Removes %d personal projects. These projects cannot be restored.', personal_projects_count) % personal_projects_count

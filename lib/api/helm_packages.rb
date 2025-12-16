@@ -71,7 +71,7 @@ module API
 
           helm_metadata_cache = find_metadata_cache(project.id)
           if helm_metadata_cache
-            helm_metadata_cache.touch_last_downloaded_at
+            helm_metadata_cache.touch_last_downloaded_at unless request.head?
             present_carrierwave_file!(helm_metadata_cache.file)
 
             break

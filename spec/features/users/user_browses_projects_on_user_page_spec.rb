@@ -54,7 +54,7 @@ RSpec.describe 'Users > User browses projects on user page', :js, feature_catego
 
     expect(page).to have_content(project.name)
 
-    click_link('Next')
+    find_by_testid('kaminari-pagination-next').click
 
     expect(page).to have_content(project2.name)
   end

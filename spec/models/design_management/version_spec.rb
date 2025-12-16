@@ -7,6 +7,7 @@ RSpec.describe DesignManagement::Version do
   describe 'relations' do
     it { is_expected.to have_many(:actions) }
     it { is_expected.to have_many(:designs).through(:actions) }
+    it { is_expected.to belong_to(:author).class_name('User').inverse_of(:design_management_versions) }
 
     it 'constrains the designs relation correctly' do
       design = create(:design)

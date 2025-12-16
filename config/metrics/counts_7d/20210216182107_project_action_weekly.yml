@@ -4,6 +4,8 @@ key_path: redis_hll_counters.source_code.project_action_weekly
 description: Count of unique actions done on projects and related resources (create,
   edit, delete, comment)
 product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: 7d

@@ -25,7 +25,9 @@ module Pajamas
     # Using the content slot
     # ---
     #
-    # Use the content slot instead of the `text` param when things get more complicated than a plain string.
+    # Use the content slot instead of the `text` param when things get more complicated than a plain
+    # string.
+    #
     # All other options (`icon`, etc.) work as usual.
     def slot
       render Pajamas::BadgeComponent.new(variant: :info) do
@@ -73,9 +75,10 @@ module Pajamas
     # Icon only
     # ---
     #
-    # Uses an icon only.
+    # Shows only the icon. The text parameter is still required for accessibility and becomes the
+    # aria-label.
     def icon_only
-      render Pajamas::BadgeComponent.new(variant: :success, icon: 'calendar')
+      render Pajamas::BadgeComponent.new('Due date', variant: :success, icon: 'calendar', icon_only: true)
     end
   end
 end

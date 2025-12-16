@@ -64,13 +64,13 @@ end
 # Usage:
 #
 #   it_behaves_like 'pipeline timing check'
-RSpec.shared_examples 'pipeline timing check' do |context: {}|
+RSpec.shared_examples 'pipeline timing check' do |**opts|
   it 'checks the pipeline timing' do
     expect_next_instance_of(described_class) do |instance|
       expect(instance).to receive(:exceeded_pipeline_max?).and_return(true)
     end
 
-    filter = described_class.new('text', context)
+    filter = described_class.new('text', defined?(context) ? context : opts.fetch(:context, {}))
     filter.call
   end
 end

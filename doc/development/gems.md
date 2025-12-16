@@ -64,7 +64,7 @@ Using Gems can provide several benefits for code maintenance:
 Gems can fall under three different case:
 
 - `unique_gem`: Don't include `gitlab` in the gem name if the gem doesn't include anything specific to GitLab
-- `existing_gem-gitlab`: When you fork and modify/extend a publicly available gem, add the `-gitlab` suffix, according to [Rubygems' convention](https://guides.rubygems.org/name-your-gem/)
+- `existing_gem-gitlab`: When you fork and modify/extend a publicly available gem, add the `-gitlab` suffix, according to [RubyGems convention](https://guides.rubygems.org/name-your-gem/)
 - `gitlab-unique_gem`: Include a `gitlab-` prefix to gems that are only useful in the context of GitLab projects.
 
 Examples of existing gems:
@@ -269,7 +269,7 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
    gem owner <gem-name> --add gitlab_rubygems
    ```
 
-   - Ping [Rémy Coutable](https://gitlab.com/rymai) to confirm the ownership in the private [Rubygems committee project](https://gitlab.com/gitlab-dependency-committees/rubygems-committee/-/issues/).
+   - Ping [Rémy Coutable](https://gitlab.com/rymai) to confirm the ownership in the private [RubyGems committee project](https://gitlab.com/gitlab-dependency-committees/rubygems-committee/-/issues/).
 1. Optional. Add some or all of the following users as co-owners:
    - [Marin Jankovski](https://rubygems.org/profiles/marinjankovski)
    - [Rémy Coutable](https://rubygems.org/profiles/rymai)
@@ -289,7 +289,7 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
         - component: $CI_SERVER_FQDN/gitlab-org/components/gem-release/gem-release@~latest
       ```
 
-      This job will handle building and publishing the gem (it uses a `gitlab_rubygems` Rubygems.org
+      This job will handle building and publishing the gem (it uses a `gitlab_rubygems` RubyGems
       API token inherited from the `gitlab-org/ruby/gems` group, in order to publish the gem
       package), as well as creating the tag, release and populating its release notes by
       using the

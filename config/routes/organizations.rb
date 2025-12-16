@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-get '/o', to: 'organizations/organizations#index', as: 'organizations_scope'
+get '/o', to: 'organizations/organizations#index', as: 'organizations_scope', format: false
 
 scope path: '-' do
   resources(:organizations, only: [:show, :index, :new], param: :organization_path, module: :organizations) do

@@ -1,13 +1,13 @@
 <script>
 import { mapState } from 'pinia';
-import { GlTooltipDirective, GlLoadingIcon, GlFormInput, GlIcon, GlTooltip } from '@gitlab/ui';
-import micromatch from 'micromatch';
+import { GlTooltipDirective, GlLoadingIcon, GlTooltip, GlButton } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import { s__, __ } from '~/locale';
+import { waitForElement } from '~/lib/utils/dom_utils';
 import { InternalEvents } from '~/tracking';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { joinPaths, buildURLwithRefType, visitUrl } from '~/lib/utils/url_utility';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { TREE_PAGE_SIZE } from '~/repository/constants';
 import { getRefType } from '~/repository/utils/ref_type';
@@ -16,6 +16,8 @@ import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
 import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
+import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
+import getRefMixin from '~/repository/mixins/get_ref';
 import {
   normalizePath,
   dedupeByFlatPathAndId,
@@ -24,7 +26,6 @@ import {
   shouldStopPagination,
   hasMorePages,
   isExpandable,
-  handleTreeKeydown,
   createItemVisibilityObserver,
   observeElements,
 } from '../utils';
@@ -36,15 +37,14 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    GlFormInput,
-    GlIcon,
+    GlButton,
     FileRow,
     GlLoadingIcon,
     FileTreeBrowserToggle,
     GlTooltip,
     Shortcut,
   },
-  mixins: [InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin(), getRefMixin],
   props: {
     currentRef: {
       type: String,
@@ -62,12 +62,12 @@ export default {
   },
   data() {
     return {
-      filter: '',
       directoriesCache: {},
       expandedPathsMap: {},
       loadingPathsMap: {},
       appearedItems: {},
       itemObserver: null,
+      activeItemId: null,
     };
   },
   computed: {
@@ -87,41 +87,37 @@ export default {
     shortcutsDisabled() {
       return shouldDisableShortcuts();
     },
-    filteredFlatFilesList() {
-      const filter = this.filter.trim();
-      if (!filter) return this.flatFilesList;
-
-      const terms = filter
-        .toLowerCase()
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean);
-      const pattern = terms.length > 1 ? `(${terms.join('|')})` : terms[0];
-
-      return this.flatFilesList.filter((item) =>
-        micromatch.contains(item.path || '', pattern, { nocase: true }),
-      );
-    },
     currentRouterPath() {
       return this.$route.params?.path && normalizePath(this.$route.params.path);
     },
     siblingMap() {
       const map = new Map();
-      this.filteredFlatFilesList.forEach((item) => {
+      this.flatFilesList.forEach((item) => {
         const key = `${item.parentPath || ''}-${item.level}`;
         if (!map.has(key)) map.set(key, []);
         map.get(key).push(item.id);
       });
       return map;
     },
+    activeStyles() {
+      return {
+        backgroundColor: 'var(--gl-highlight-target-background-color)',
+      };
+    },
     ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsPeekOn']),
   },
   watch: {
-    filteredFlatFilesList() {
+    flatFilesList(newList) {
       this.$nextTick(() => this.observeListItems());
+      if (newList.length && !newList.find((item) => item.id === this.activeItemId)) {
+        this.activeItemId = newList[0].id; // Reset active item to first in list if current active item was filtered out
+      }
     },
     fileTreeBrowserIsPeekOn() {
       this.$nextTick(() => this.observeItemVisibility());
+    },
+    currentRouterPath(newPath, oldPath) {
+      if (newPath && newPath !== oldPath) this.expandPathAncestors(newPath);
     },
   },
   mounted() {
@@ -156,8 +152,8 @@ export default {
     buildList(path, level) {
       const contents = this.getDirectoryContents(path);
       return this.processDirectories({ trees: contents.trees, path, level })
-        .concat(this.processFiles({ blobs: contents.blobs, path, level }))
-        .concat(this.processSubmodules({ submodules: contents.submodules, path, level }));
+        .concat(this.processSubmodules({ submodules: contents.submodules, path, level }))
+        .concat(this.processFiles({ blobs: contents.blobs, path, level }));
     },
     processDirectories({ trees = [], path, level }) {
       const directoryList = [];
@@ -167,7 +163,15 @@ export default {
         directoryList.push({
           id: `${treePath}-${tree.id}-${index}`,
           path: treePath,
-          routerPath: joinPaths('/-/tree', this.currentRef, treePath),
+          parentPath: path,
+          routerPath: buildURLwithRefType({
+            path: joinPaths(
+              '/-/tree',
+              this.escapedRef,
+              treePath.split('/').map(encodeURIComponent).join('/'),
+            ),
+            refType: this.refType,
+          }),
           type: 'tree',
           name: tree.name,
           level,
@@ -195,7 +199,15 @@ export default {
           id: `${blobPath}-${blob.id}-${index}`,
           fileHash: blob.sha,
           path: blobPath,
-          routerPath: joinPaths('/-/blob', this.currentRef, blobPath),
+          parentPath: path,
+          routerPath: buildURLwithRefType({
+            path: joinPaths(
+              '/-/blob',
+              this.escapedRef,
+              blobPath.split('/').map(encodeURIComponent).join('/'),
+            ),
+            refType: this.refType,
+          }),
           name: blob.name,
           mode: blob.mode,
           level,
@@ -216,6 +228,8 @@ export default {
           id: `${submodulePath}-${submodule.id}-${index}`,
           fileHash: submodule.sha,
           path: submodulePath,
+          parentPath: path,
+          webUrl: submodule.webUrl,
           name: submodule.name,
           submodule: true,
           level,
@@ -359,13 +373,22 @@ export default {
         this.trackEvent('focus_file_tree_browser_filter_bar_on_repository_page', {
           label: 'shortcut',
         });
-        filterBar.focus();
+        this.openGlobalSearch();
       }
     },
     onFilterBarClick() {
       this.trackEvent('focus_file_tree_browser_filter_bar_on_repository_page', {
         label: 'click',
       });
+
+      this.openGlobalSearch();
+    },
+    async openGlobalSearch() {
+      document.dispatchEvent(new CustomEvent(EVENT_OPEN_GLOBAL_SEARCH));
+      const searchInput = await waitForElement('#super-sidebar-search-modal #search');
+      if (!searchInput) return;
+      searchInput.value = '~';
+      searchInput.dispatchEvent(new Event('input')); // Ensures the @input handler is called on global_search.vue
     },
     filterInputTooltipTarget() {
       // The input might not always be available (i.e. when the FTB is in collapsed state)
@@ -376,19 +399,119 @@ export default {
       return [siblings.length, siblings.indexOf(item.id) + 1];
     },
     onTreeKeydown(event) {
-      handleTreeKeydown(event);
+      const items = this.flatFilesList;
+      const current = items.findIndex((i) => i.id === this.activeItemId);
+      const item = items[current];
+
+      // Enter/Space
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        if (item?.isShowMore) this.handleShowMore(item.parentPath, event);
+        if (item?.type === 'tree') this.toggleDirectory(item.path, { toggleClose: false });
+        if (item?.submodule && item?.webUrl) visitUrl(item.webUrl);
+        if (item?.routerPath && !this.isCurrentPath(item?.path)) this.$router.push(item.routerPath);
+        return;
+      }
+
+      // Home/End
+      if (event.key === 'Home' || event.key === 'End') {
+        event.preventDefault();
+        const index = event.key === 'Home' ? 0 : items.length - 1;
+        if (items.length) {
+          this.activeItemId = items[index].id;
+          this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+        }
+        return;
+      }
+
+      // Asterisk (*)
+      if (event.key === '*' && item) {
+        event.preventDefault();
+        items
+          .filter((i) => i.type === 'tree' && !i.opened && i.parentPath === item.parentPath)
+          .forEach((i) => this.toggleDirectory(i.path, { toggleClose: false }));
+      }
+
+      // a-z
+      if (/^[a-zA-Z]$/.test(event.key)) {
+        event.preventDefault();
+        const key = event.key.toLowerCase();
+        const idx = items.findIndex((i) => i.id === this.activeItemId);
+
+        // Search after current, then wrap to beginning
+        const match =
+          items.slice(idx + 1).find((i) => i.name?.[0]?.toLowerCase() === key) ||
+          items.slice(0, idx + 1).find((i) => i.name?.[0]?.toLowerCase() === key);
+
+        if (match) {
+          this.activeItemId = match.id;
+          this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+        }
+        return;
+      }
+
+      // Right Arrow
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        if (item?.type === 'tree' && !item.opened) {
+          this.toggleDirectory(item.path, { toggleClose: false });
+          return;
+        }
+        const child = items[current + 1];
+        if (item?.type === 'tree' && child?.level > item.level) {
+          this.activeItemId = child.id;
+          this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+        }
+        return;
+      }
+
+      // Left Arrow
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        if (item?.type === 'tree' && item.opened) {
+          this.toggleDirectory(item.path);
+          return;
+        }
+        const parent = items
+          .slice(0, current)
+          .reverse()
+          .find((i) => i.level === item.level - 1);
+        if (parent) {
+          this.activeItemId = parent.id;
+          this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+        }
+        return;
+      }
+
+      // Arrow keys (Up/Down)
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+
+      event.preventDefault();
+      const move = event.key === 'ArrowDown' ? 1 : -1;
+      const next = current + move;
+
+      if (next < 0 || next >= items.length) return;
+
+      this.activeItemId = items[next].id;
+      this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
     },
     observeListItems() {
       this.$nextTick(() => observeElements(this.$refs.fileTreeList, this.itemObserver));
+    },
+    handleClickSubmodule(webUrl) {
+      visitUrl(webUrl);
     },
     async handleShowMore(parentPath, event) {
       const prevItem = event.target.closest('li')?.previousElementSibling;
       await this.fetchDirectory(parentPath);
       await this.$nextTick();
-      prevItem?.nextElementSibling?.firstElementChild?.focus(); // Ensures the next available item is focussed after loading more items
+      const nextItem = prevItem?.nextElementSibling;
+      if (!nextItem) return;
+      this.activeItemId = nextItem.dataset?.itemId;
+      nextItem.focus(); // Ensures the next available item is focussed after loading more items
     },
   },
-  filterPlaceholder: s__('Repository|Filter files (*.vue, *.rb...)'),
+  searchLabel: s__('Repository|Search files (*.vue, *.rb...)'),
 };
 </script>
 
@@ -402,23 +525,24 @@ export default {
     </div>
 
     <div class="gl-relative gl-flex">
-      <gl-icon name="filter" class="gl-absolute gl-left-3 gl-top-3" variant="subtle" />
-      <gl-form-input
+      <gl-button
         ref="filterInput"
-        v-model="filter"
-        :aria-label="__('Filter input')"
+        icon="search"
+        data-testid="search-trigger"
+        :aria-label="$options.searchLabel"
         :aria-keyshortcuts="filterSearchShortcutKey"
-        type="search"
-        class="!gl-pl-7"
-        :placeholder="$options.filterPlaceholder"
+        class="gl-w-full !gl-px-3"
+        button-text-classes="gl-flex gl-w-full gl-text-secondary"
         @click="onFilterBarClick"
-      />
+      >
+        <span class="gl-grow gl-text-left">{{ $options.searchLabel }}</span>
+      </gl-button>
       <gl-tooltip
         v-if="!shortcutsDisabled"
         custom-class="file-browser-filter-tooltip"
         :target="filterInputTooltipTarget"
       >
-        {{ __('Focus on the filter bar') }}
+        {{ __('Focus on the search bar') }}
         <shortcut
           class="gl-whitespace-nowrap"
           :shortcuts="$options.FOCUS_FILE_TREE_BROWSER_FILTER_BAR.defaultKeys"
@@ -432,17 +556,17 @@ export default {
       :aria-label="__('File tree')"
     >
       <ul
-        v-if="filteredFlatFilesList.length"
+        v-if="flatFilesList.length"
         ref="fileTreeList"
         class="gl-h-full gl-min-h-0 gl-flex-grow gl-list-none gl-overflow-y-auto !gl-pl-2"
         role="tree"
         @keydown="onTreeKeydown"
       >
         <li
-          v-for="item in filteredFlatFilesList"
+          v-for="item in flatFilesList"
           :key="`${item.path}-${item.type}`"
+          :ref="item.id === activeItemId ? 'activeItem' : undefined"
           :data-item-id="item.id"
-          :aria-current="isCurrentPath(item.path)"
           role="treeitem"
           :aria-expanded="item.opened"
           :aria-selected="isCurrentPath(item.path)"
@@ -450,7 +574,10 @@ export default {
           :aria-setsize="siblingInfo(item)[0]"
           :aria-posinset="siblingInfo(item)[1]"
           :aria-label="item.name"
-          tabindex="-1"
+          :tabindex="item.id === activeItemId ? 0 : -1"
+          class="gl-action-neutral-colors gl-rounded-lg focus-visible:gl-focus-inset"
+          :style="isCurrentPath(item.path) ? activeStyles : {}"
+          @click="activeItemId = item.id"
         >
           <file-row
             v-if="appearedItems[item.id]"
@@ -460,17 +587,19 @@ export default {
             :opened="item.opened"
             :loading="item.loading"
             show-tree-toggle
+            roving-tabindex
             :style="{ '--level': item.level }"
             :class="{
               'tree-list-parent': item.level > 0,
-              '!gl-bg-gray-50': isCurrentPath(item.path),
             }"
+            :file-classes="isCurrentPath(item.path) ? 'gl-font-bold' : 'gl-text-subtle'"
             class="gl-relative !gl-mx-0 gl-w-fit gl-min-w-full"
             truncate-middle
             @clickTree="(options) => toggleDirectory(item.path, options)"
+            @clickSubmodule="handleClickSubmodule"
             @showMore="handleShowMore(item.parentPath, $event)"
           />
-          <div v-else data-placeholder-item class="gl-h-7" tabindex="0"></div>
+          <div v-else data-placeholder-item class="gl-h-7" tabindex="-1"></div>
         </li>
       </ul>
       <p v-else class="gl-my-6 gl-text-center">

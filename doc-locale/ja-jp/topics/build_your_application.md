@@ -17,7 +17,7 @@ CI/CDを使用してアプリケーションを生成します。
 - [ジョブ](../ci/jobs/_index.md)
 - [CI/CDコンポーネント](../ci/components/_index.md)
 - [CI/CD変数](../ci/variables/_index.md)
-- [パイプラインセキュリティ](../ci/pipelines/pipeline_security.md)
+- [パイプラインセキュリティ](../ci/pipeline_security/_index.md)
 - [デバッグ](../ci/debugging.md)
 - [Auto DevOps](autodevops/_index.md)
 - [テスト](../ci/testing/_index.md)

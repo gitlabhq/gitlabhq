@@ -105,6 +105,7 @@ describe('Downstream Pipeline Dropdown', () => {
       expect(downstreamPipelineJobsResponse).toHaveBeenCalledWith({
         iid: singlePipeline.iid,
         fullPath: singlePipeline.project.fullPath,
+        retried: false,
       });
     });
 

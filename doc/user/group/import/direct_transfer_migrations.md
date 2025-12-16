@@ -16,8 +16,7 @@ description: "Migrate groups and projects between GitLab instances by using dire
 To migrate GitLab groups and projects by using direct transfer:
 
 1. Ensure you meet the [prerequisites](#prerequisites).
-1. Review [user contribution](../../project/import/_index.md#user-contribution-and-membership-mapping)
-   and [user membership](#user-membership-mapping) mapping.
+1. Review [user contribution](../../import/mapping.md) and [user membership](#user-membership-mapping) mapping.
 1. [Connect the source GitLab instance](#connect-the-source-gitlab-instance).
 1. [Select groups and projects to import](#select-the-groups-and-projects-to-import) and begin the migration.
 1. [Review the results of the import](#review-results-of-the-import).
@@ -59,7 +58,7 @@ This requirement does not apply for migrations from GitLab.com to GitLab Dedicat
 
 ### Configuration
 
-- Ensure [Sidekiq is properly configured](../../project/import/_index.md#sidekiq-configuration).
+- Ensure [Sidekiq is properly configured](../../../administration/sidekiq/configuration_for_imports.md).
 - Both GitLab instances must have group migration by direct transfer
   [enabled in application settings](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer)
   by an instance administrator.
@@ -105,7 +104,7 @@ Instead, user memberships on the source instance are mapped to users on the dest
 The type of mapping for user memberships depends on the
 [membership type](../../project/members/_index.md#membership-types) on the source instance:
 
-- Imported memberships are initially mapped to [placeholder users](../../project/import/_index.md#placeholder-users).
+- Imported memberships are initially mapped to [placeholder users](../../import/mapping.md#placeholder-users).
 - Direct memberships are mapped as direct memberships on the destination instance.
 - Inherited memberships are mapped as inherited memberships on the destination instance.
 - Shared memberships are mapped as direct memberships on the destination instance unless the user has an existing shared
@@ -151,10 +150,10 @@ a lot of user accounts to have public email addresses, see
 On the destination GitLab instance, create the group you want to import to and connect the source GitLab instance:
 
 1. Create either:
-   - A new group. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner. Then select **Import group**.
+   - A new group. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New group**. Then select **Import group**.
    - A new subgroup. On existing group's page, either:
      - Select **New subgroup**.
-     - On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New subgroup**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner. Then select the **import an existing group** link.
+     - In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New subgroup**. Then select the **import an existing group** link.
 1. Enter the base URL of a GitLab instance.
 1. Enter the [personal access token](../../profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
@@ -217,7 +216,7 @@ You can view all groups migrated by you by direct transfer listed on the group i
 To view group import history:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. Select **Import group**.
 1. In the upper-right corner, select **View import history**.
 1. If there are any errors for a particular import, select **Show errors** to see their details.

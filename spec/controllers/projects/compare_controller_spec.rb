@@ -867,13 +867,14 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
   describe 'GET #rapid_diffs' do
     subject(:send_request) { get :show, params: request_params }
 
-    let(:format) { :html }
+    let(:format) { nil }
     let(:request_params) do
       {
         namespace_id: project.namespace,
         project_id: project,
         from: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
-        to: '5937ac0a7beb003549fc5fd26fc247adbce4a52e'
+        to: '5937ac0a7beb003549fc5fd26fc247adbce4a52e',
+        format: format
       }
     end
 
@@ -883,134 +884,144 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
       expect(response).to render_template(:rapid_diffs)
     end
 
-    describe 'Get #diff_files_metadata' do
-      let(:params) do
-        {
-          namespace_id: project.namespace,
-          project_id: project,
-          from: from,
-          to: to
-        }
-      end
+    context 'when format is not supported' do
+      let(:format) { :png }
 
-      let(:send_request) { get :diff_files_metadata, params: params }
+      it 'returns a 404 error' do
+        send_request
 
-      context 'with valid params' do
-        let(:from) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
-        let(:to) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
-
-        include_examples 'diff files metadata'
-      end
-
-      context 'with invalid params' do
-        let(:from) { '0123456789' }
-        let(:to) { '987654321' }
-
-        include_examples 'missing diff files metadata'
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+  end
 
-    describe 'GET #diffs_stats' do
-      let(:params) do
-        {
-          namespace_id: project.namespace,
-          project_id: project,
-          from: from,
-          to: to
-        }
-      end
-
-      let(:send_request) { get :diffs_stats, params: params }
-
-      context 'with valid params' do
-        let(:from) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
-        let(:to) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
-
-        include_examples 'diffs stats' do
-          let(:expected_stats) do
-            {
-              added_lines: 15,
-              removed_lines: 6,
-              diffs_count: 4
-            }
-          end
-        end
-
-        context 'when diffs overflow' do
-          include_examples 'overflow' do
-            let(:expected_stats) do
-              {
-                visible_count: 4,
-                email_path: nil,
-                diff_path: nil
-              }
-            end
-          end
-        end
-      end
-
-      context 'with invalid params' do
-        let(:from) { '0123456789' }
-        let(:to) { '987654321' }
-
-        include_examples 'missing diffs stats'
-      end
+  describe 'Get #diff_files_metadata' do
+    let(:params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        from: from,
+        to: to
+      }
     end
 
-    describe 'GET #diff_file' do
+    let(:send_request) { get :diff_files_metadata, params: params }
+
+    context 'with valid params' do
       let(:from) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
       let(:to) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
 
-      let(:diff_file) { compare.diffs.diff_files.first }
-      let(:old_path) { diff_file.old_path }
-      let(:new_path) { diff_file.new_path }
-      let(:ignore_whitespace_changes) { false }
-      let(:view) { 'inline' }
+      include_examples 'diff files metadata'
+    end
 
-      let(:params) do
-        {
-          namespace_id: project.namespace,
-          project_id: project,
-          from: from,
-          to: to,
-          old_path: old_path,
-          new_path: new_path,
-          ignore_whitespace_changes: ignore_whitespace_changes,
-          view: view
-        }.compact
+    context 'with invalid params' do
+      let(:from) { '0123456789' }
+      let(:to) { '987654321' }
+
+      include_examples 'missing diff files metadata'
+    end
+  end
+
+  describe 'GET #diffs_stats' do
+    let(:params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        from: from,
+        to: to
+      }
+    end
+
+    let(:send_request) { get :diffs_stats, params: params }
+
+    context 'with valid params' do
+      let(:from) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
+      let(:to) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+
+      include_examples 'diffs stats' do
+        let(:expected_stats) do
+          {
+            added_lines: 15,
+            removed_lines: 6,
+            diffs_count: 4
+          }
+        end
       end
 
-      let(:send_request) { get :diff_file, params: params }
-
-      let(:compare) do
-        CompareService.new(project, to).execute(project, from)
+      context 'when diffs overflow' do
+        include_examples 'overflow' do
+          let(:expected_stats) do
+            {
+              visible_count: 4,
+              email_path: nil,
+              diff_path: nil
+            }
+          end
+        end
       end
+    end
+
+    context 'with invalid params' do
+      let(:from) { '0123456789' }
+      let(:to) { '987654321' }
+
+      include_examples 'missing diffs stats'
+    end
+  end
+
+  describe 'GET #diff_file' do
+    let(:from) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
+    let(:to) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+
+    let(:diff_file) { compare.diffs.diff_files.first }
+    let(:old_path) { diff_file.old_path }
+    let(:new_path) { diff_file.new_path }
+    let(:ignore_whitespace_changes) { false }
+    let(:view) { 'inline' }
+
+    let(:params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        from: from,
+        to: to,
+        old_path: old_path,
+        new_path: new_path,
+        ignore_whitespace_changes: ignore_whitespace_changes,
+        view: view
+      }.compact
+    end
+
+    let(:send_request) { get :diff_file, params: params }
+
+    let(:compare) do
+      CompareService.new(project, to).execute(project, from)
+    end
+
+    before do
+      sign_in(user)
+    end
+
+    include_examples 'diff file endpoint'
+
+    context 'with whitespace-only diffs' do
+      let(:ignore_whitespace_changes) { true }
+      let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
 
       before do
-        sign_in(user)
+        allow(diff_file).to receive(:whitespace_only?).and_return(true)
       end
 
-      include_examples 'diff file endpoint'
+      it 'makes a call to diffs_resource with ignore_whitespace_change: false' do
+        allow(controller).to receive(:diffs_resource).and_return(diffs_collection)
 
-      context 'with whitespace-only diffs' do
-        let(:ignore_whitespace_changes) { true }
-        let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+        expect(controller).to receive(:diffs_resource).with(
+          hash_including(ignore_whitespace_change: false)
+        ).and_return(diffs_collection)
 
-        before do
-          allow(diff_file).to receive(:whitespace_only?).and_return(true)
-        end
+        send_request
 
-        it 'makes a call to diffs_resource with ignore_whitespace_change: false' do
-          allow(controller).to receive(:diffs_resource).and_return(diffs_collection)
-
-          expect(controller).to receive(:diffs_resource).with(
-            hash_including(ignore_whitespace_change: false)
-          ).and_return(diffs_collection)
-
-          send_request
-
-          expect(response).to have_gitlab_http_status(:success)
-        end
+        expect(response).to have_gitlab_http_status(:success)
       end
     end
   end

@@ -1,19 +1,20 @@
 <script>
 import { debounce, difference } from 'lodash';
-import { GlCollapsibleListbox, GlButton, GlAvatar, GlIcon } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlButton, GlAvatar, GlIcon, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { uuids } from '~/lib/utils/uuids';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import userAutocompleteWithMRPermissionsQuery from '~/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
+import userAutocompleteWithMRPermissionsQuery from 'ee_else_ce/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import setReviewersMutation from '~/merge_requests/components/reviewers/queries/set_reviewers.mutation.graphql';
 import {
   REQUEST_REVIEW_SIMPLE,
   SEARCH_SELECT_REVIEWER_EVENT,
   SELECT_REVIEWER_EVENT,
+  REMOVE_REVIEWER_EVENT,
 } from '../../constants';
 import {
   getReviewersForList,
@@ -44,6 +45,7 @@ export default {
     GlButton,
     GlAvatar,
     GlIcon,
+    GlSprintf,
     InviteMembersTrigger,
   },
   mixins: [InternalEvents.mixin()],
@@ -222,7 +224,7 @@ export default {
     removeAllReviewers() {
       this.currentSelectedReviewers = [];
     },
-    trackReviewersSelectEvent() {
+    trackReviewersChangeEvent() {
       const telemetryEvent = this.search ? SEARCH_SELECT_REVIEWER_EVENT : SELECT_REVIEWER_EVENT;
       const previousUsernames = toUsernames(this.selectedReviewers);
       const listUsernames = toUsernames(this.usersForList);
@@ -234,6 +236,7 @@ export default {
       // so we should exclude them for when we check the position
       const selectableList = difference(listUsernames, previousUsernames);
       const additions = difference(this.currentSelectedReviewers, previousUsernames);
+      const removals = difference(previousUsernames, this.currentSelectedReviewers);
 
       additions.forEach((added) => {
         // Convert from 0- to 1-index
@@ -246,12 +249,19 @@ export default {
           selectable_reviewers_count: selectableList.length,
         });
       });
+      removals.forEach(() => {
+        this.trackEvent(REMOVE_REVIEWER_EVENT, {
+          via: `ui_${this.usage}`,
+        });
+      });
+
+      return additions.length;
     },
     processReviewers() {
-      this.trackReviewersSelectEvent();
+      const additions = this.trackReviewersChangeEvent();
       this.updateReviewers();
 
-      if (this.usage === 'simple') {
+      if (additions > 0 && this.usage === 'simple') {
         this.trackEvent(REQUEST_REVIEW_SIMPLE);
       }
     },
@@ -285,6 +295,14 @@ export default {
       }
 
       return [this.mapUser(this.currentUser), ...users];
+    },
+    approvalRulesCount(reviewer) {
+      return reviewer?.mergeRequestInteraction?.applicableApprovalRules?.length;
+    },
+    approvalRuleName(reviewer) {
+      const [rule] = reviewer.mergeRequestInteraction.applicableApprovalRules;
+
+      return rule.type.toLowerCase() === 'code_owner' ? __('Code Owner') : rule.name;
     },
   },
   i18n: {
@@ -337,9 +355,23 @@ export default {
             class="reviewer-merge-icon"
           />
         </div>
-        <span class="gl-flex gl-flex-col">
+        <span class="gl-flex gl-flex-col gl-gap-1">
           <span class="gl-whitespace-nowrap gl-font-bold">{{ item.text }}</span>
           <span class="gl-text-subtle"> {{ item.secondaryText }}</span>
+          <span
+            v-if="approvalRulesCount(item)"
+            class="gl-flex gl-text-sm"
+            data-testid="approval-rule"
+          >
+            <span class="gl-truncate">{{ approvalRuleName(item) }}</span>
+            <span v-if="approvalRulesCount(item) > 1" class="gl-ml-2">
+              <gl-sprintf :message="__('(+%{count} rules)')">
+                <template #count>
+                  {{ approvalRulesCount(item) }}
+                </template>
+              </gl-sprintf>
+            </span>
+          </span>
         </span>
       </span>
     </template>

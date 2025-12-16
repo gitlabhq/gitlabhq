@@ -15,6 +15,7 @@ import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import getCiCatalogResourceComponents from '../../graphql/queries/get_ci_catalog_resource_components.query.graphql';
 
 export default {
+  name: 'CiResourceComponents',
   components: {
     GlEmptyState,
     GlIcon,

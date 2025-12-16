@@ -18,7 +18,7 @@ module Sidebars
 
         override :sprite_icon
         def sprite_icon
-          'issues'
+          'work-item-issue'
         end
 
         override :render?

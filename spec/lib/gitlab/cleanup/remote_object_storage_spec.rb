@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Cleanup::RemoteObjectStorage, feature_category: :geo_replication do
   # Create an anonymous class that inherits from RemoteObjectStorage but doesn't implement

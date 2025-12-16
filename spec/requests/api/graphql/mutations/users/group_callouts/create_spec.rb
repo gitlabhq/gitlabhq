@@ -32,7 +32,7 @@ RSpec.describe 'Create a user group callout', feature_category: :shared do
         expect(response).to have_gitlab_http_status(:success)
         expect(mutation_response['userGroupCallout']['featureName']).to eq(feature_name.upcase)
         expect(mutation_response['userGroupCallout']['dismissedAt']).to eq(Time.current.iso8601)
-        expect(mutation_response['userGroupCallout']['groupId']).to eq(group.id.to_s)
+        expect(mutation_response['userGroupCallout']['groupId']).to eq(group.to_global_id.to_s)
       end
     end
 
@@ -54,7 +54,7 @@ RSpec.describe 'Create a user group callout', feature_category: :shared do
 
           expect(response).to have_gitlab_http_status(:success)
           expect(mutation_response['userGroupCallout']['featureName']).to eq(feature_name.upcase)
-          expect(mutation_response['userGroupCallout']['groupId']).to eq(group.id.to_s)
+          expect(mutation_response['userGroupCallout']['groupId']).to eq(group.to_global_id.to_s)
         end
       end
     end

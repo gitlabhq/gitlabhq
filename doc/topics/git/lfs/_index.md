@@ -93,7 +93,7 @@ Prerequisites:
 
 To enable or disable Git LFS for your project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Select the **Git Large File Storage (LFS)** toggle.
@@ -137,7 +137,7 @@ on how to migrate an existing Git repository with Git LFS.
 It's important to understand the differences between untracking a file in Git LFS and deleting a file:
 
 - Untrack: The file remains on disk and in your repository history.
-If users check out historical branches or tags, they still need the LFS version of the file.
+  If users check out historical branches or tags, they still need the LFS version of the file.
 - Delete: The file is removed but remains in your repository history.
 
 To delete a tracked file with Git LFS, see [Remove a file](../undo.md#remove-a-file-from-a-repository).

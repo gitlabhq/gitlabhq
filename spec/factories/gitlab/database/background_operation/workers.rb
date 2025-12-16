@@ -16,6 +16,7 @@ FactoryBot.define do
     sequence(:job_arguments) { |n| [["column_#{n}"], ["column_#{n}_convert_to_bigint"]] }
     min_cursor { [1] }
     max_cursor { [1000] }
+    on_hold_until { nil }
     user
 
     trait :queued do

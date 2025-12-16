@@ -265,7 +265,7 @@ Resources:
 
 ### Explain, test, and refactor a Kotlin application
 
-In this example, the adventure application from the [Kotlin Code Generation prompts](use_cases.md#kotlin-code-generation-prompts)
+In this example, the adventure application from the [Kotlin code generation prompts](use_cases.md#kotlin-code-generation-prompts)
 must be analyzed, and improved with refactoring and tests.
 
 The current source code looks like this:
@@ -476,7 +476,7 @@ PowerShell support is [experimental](../project/repository/code_suggestions/supp
    ```
 
 1. Wait for Code Suggestions to complete the prompt, and then add the following prompts to
-experiment with different output formats:
+   experiment with different output formats:
 
    ```powershell
    # Collect the files in a directory and print their size
@@ -644,12 +644,11 @@ and fixed. If the `go` command is not found in the container's runtime context,
 it might be due to multiple reasons:
 
 - The job uses a minimal container image like `alpine`, and the Go language
-runtime was not installed.
+  runtime was not installed.
 - The job uses the wrong default container image specified in
-the CI/CD configuration, or uses the `default` keyword.
+  the CI/CD configuration, or uses the `default` keyword.
 - The job uses the shell executor instead of the container image. The host operating
-system is broken, doesn't have the Go language runtime installed, or is not
-configured.
+  system is broken, doesn't have the Go language runtime installed, or is not configured.
 
 The project [Challenge: Root Cause Analysis - Go GitLab Release Fetcher](https://gitlab.com/gitlab-da/use-cases/ai/ai-workflows/gitlab-duo-challenges/root-cause-analysis/challenge-root-cause-analysis-go-gitlab-release-fetcher)
 provides an exercise to analyze and fix CI/CD problems with a Go Tanuki app. In this exercise,

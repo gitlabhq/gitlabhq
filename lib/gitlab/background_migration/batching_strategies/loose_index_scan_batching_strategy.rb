@@ -19,7 +19,7 @@ module Gitlab
         def next_batch(table_name, column_name, batch_min_value:, batch_size:, job_arguments:, job_class: nil)
           model_class = define_batchable_model(table_name, connection: connection)
 
-          quoted_column_name = model_class.connection.quote_column_name(column_name)
+          quoted_column_name = model_class.adapter_class.quote_column_name(column_name)
           relation = model_class.where("#{quoted_column_name} >= ?", batch_min_value)
           next_batch_bounds = nil
 

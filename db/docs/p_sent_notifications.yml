@@ -1,7 +1,7 @@
 ---
 table_name: p_sent_notifications
 classes:
-- PartitionedSentNotification
+- SentNotification
 feature_categories:
 - team_planning
 description: Information related to sent email notifications that supports reply-by-email

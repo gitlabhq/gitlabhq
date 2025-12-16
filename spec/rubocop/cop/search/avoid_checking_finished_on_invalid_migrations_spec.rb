@@ -25,9 +25,13 @@ RSpec.describe RuboCop::Cop::Search::AvoidCheckingFinishedOnInvalidMigrations, f
     end
 
     context 'when a valid migration is used with migration_has_finished?' do
+      before do
+        allow(cop).to receive_messages(find_migration_info: { obsolete: false }, migration_file_exists?: true)
+      end
+
       it 'does not flag it as an offense' do
         expect_no_offenses <<~RUBY
-          return if Elastic::DataMigrationService.migration_has_finished?(:backfill_work_items_incorrect_data)
+          return if Elastic::DataMigrationService.migration_has_finished?(:valid_migration)
         RUBY
       end
     end

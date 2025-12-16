@@ -54,3 +54,5 @@ gitlab_topology_service:
   auto_update: false
 workhorse:
   skip_compile: false
+openbao:
+  enabled: false

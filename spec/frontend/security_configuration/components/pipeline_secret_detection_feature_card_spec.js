@@ -1,4 +1,4 @@
-import { GlCard, GlIcon, GlLink, GlButton, GlAlert, GlExperimentBadge } from '@gitlab/ui';
+import { GlCard, GlIcon, GlLink, GlButton, GlAlert } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -84,7 +84,6 @@ describe('PipelineSecretDetectionFeatureCard component', () => {
   const findValidityChecksSection = () => wrapper.findByTestId('validity-checks-section');
   const findValidityChecksToggle = () => wrapper.findByTestId('validity-checks-toggle');
   const findValidityChecksAlert = () => wrapper.findComponent(GlAlert);
-  const findExperimentBadge = () => wrapper.findComponent(GlExperimentBadge);
 
   afterEach(() => {
     feature = undefined;
@@ -141,7 +140,7 @@ describe('PipelineSecretDetectionFeatureCard component', () => {
       expect(findManageViaMr().props()).toMatchObject({
         feature,
         variant: 'confirm',
-        category: 'primary',
+        category: 'secondary',
       });
     });
 
@@ -245,7 +244,6 @@ describe('PipelineSecretDetectionFeatureCard component', () => {
       createComponent({}, { validityChecksAvailable: true });
 
       expect(findValidityChecksSection().exists()).toBe(true);
-      expect(findExperimentBadge().props('type')).toBe('beta');
     });
 
     it('should not render when validityChecksAvailable=false', () => {
@@ -253,7 +251,6 @@ describe('PipelineSecretDetectionFeatureCard component', () => {
       createComponent({}, { validityChecksAvailable: false });
 
       expect(findValidityChecksSection().exists()).toBe(false);
-      expect(findExperimentBadge().exists()).toBe(false);
     });
 
     describe('toggle state', () => {

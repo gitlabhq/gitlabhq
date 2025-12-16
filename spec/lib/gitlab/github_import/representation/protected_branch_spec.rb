@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Representation::ProtectedBranch, feature_category: :importers do
   shared_examples 'a ProtectedBranch rule' do

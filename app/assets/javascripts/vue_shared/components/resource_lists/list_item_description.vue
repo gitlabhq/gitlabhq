@@ -48,7 +48,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="isPendingDeletion" class="md gl-mt-2 gl-text-sm gl-text-secondary">
+  <div v-if="isPendingDeletion" class="md gl-mt-2 gl-text-sm gl-text-subtle">
     <gl-icon name="calendar" />
     <gl-sprintf :message="$options.i18n.scheduledDeletion">
       <template #date>

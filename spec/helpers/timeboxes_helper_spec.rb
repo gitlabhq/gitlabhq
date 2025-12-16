@@ -110,4 +110,279 @@ RSpec.describe TimeboxesHelper, feature_category: :team_planning do
       end
     end
   end
+
+  describe 'work items feature flag behavior' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:milestone) { create(:milestone, project: project, title: 'Project Milestone') }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      assign(:project, project)
+    end
+
+    describe '#milestone_work_items_icon' do
+      context 'when work_item_planning_view feature flag is enabled' do
+        before do
+          stub_feature_flags(work_item_planning_view: true)
+        end
+
+        it 'returns work-items icon' do
+          expect(helper.milestone_work_items_icon).to eq('work-items')
+        end
+      end
+
+      context 'when work_item_planning_view feature flag is disabled' do
+        before do
+          stub_feature_flags(work_item_planning_view: false)
+        end
+
+        it 'returns work-item-issue icon' do
+          expect(helper.milestone_work_items_icon).to eq('work-item-issue')
+        end
+      end
+    end
+
+    describe '#milestones_issues_path' do
+      context 'when work_item_planning_view feature flag is enabled' do
+        before do
+          stub_feature_flags(work_item_planning_view: true)
+        end
+
+        context 'with project' do
+          it 'returns project work items path' do
+            expect(helper.milestones_issues_path).to eq(project_work_items_path(project))
+          end
+        end
+
+        context 'with group' do
+          let_it_be(:group) { create(:group) }
+
+          before do
+            assign(:project, nil)
+            assign(:group, group)
+          end
+
+          it 'returns group work items path' do
+            expect(helper.milestones_issues_path).to eq(group_work_items_path(group))
+          end
+        end
+
+        context 'when neither project nor group is assigned (dashboard)' do
+          before do
+            assign(:project, nil)
+          end
+
+          it 'returns dashboard issues path' do
+            expect(helper.milestones_issues_path).to eq(issues_dashboard_path)
+          end
+        end
+      end
+
+      context 'when work_item_planning_view feature flag is disabled' do
+        before do
+          stub_feature_flags(work_item_planning_view: false)
+        end
+
+        context 'with project' do
+          it 'returns project issues path' do
+            expect(helper.milestones_issues_path).to eq(project_issues_path(project))
+          end
+        end
+
+        context 'with group' do
+          let_it_be(:group) { create(:group) }
+
+          before do
+            assign(:project, nil)
+            assign(:group, group)
+          end
+
+          it 'returns group issues path' do
+            expect(helper.milestones_issues_path).to eq(issues_group_path(group))
+          end
+        end
+      end
+
+      context 'when neither project nor group is assigned (dashboard)' do
+        before do
+          assign(:project, nil)
+        end
+
+        it 'returns dashboard issues path' do
+          expect(helper.milestones_issues_path).to eq(issues_dashboard_path)
+        end
+      end
+    end
+
+    describe '#milestones_browse_issuables_path' do
+      context 'when work_item_planning_view feature flag is enabled' do
+        before do
+          stub_feature_flags(work_item_planning_view: true)
+        end
+
+        it 'returns work items path for issues type' do
+          path = helper.milestones_browse_issuables_path(milestone, type: :issues)
+          expect(path).to eq(project_work_items_path(project, milestone_title: milestone.title, state: nil))
+        end
+
+        it 'returns work items path for issues type with state' do
+          path = helper.milestones_browse_issuables_path(milestone, type: :issues, state: 'closed')
+          expect(path).to eq(project_work_items_path(project, milestone_title: milestone.title, state: 'closed'))
+        end
+
+        it 'returns merge requests path for merge_requests type' do
+          path = helper.milestones_browse_issuables_path(milestone, type: :merge_requests)
+          expect(path).to eq(project_merge_requests_path(project, milestone_title: milestone.title, state: nil))
+        end
+      end
+
+      context 'when work_item_planning_view feature flag is disabled' do
+        before do
+          stub_feature_flags(work_item_planning_view: false)
+        end
+
+        context 'with project' do
+          it 'returns issues path for issues type' do
+            path = helper.milestones_browse_issuables_path(milestone, type: :issues)
+            expect(path).to eq(project_issues_path(project, milestone_title: milestone.title, state: nil))
+          end
+
+          it 'returns issues path for issues type with state' do
+            path = helper.milestones_browse_issuables_path(milestone, type: :issues, state: 'closed')
+            expect(path).to eq(project_issues_path(project, milestone_title: milestone.title, state: 'closed'))
+          end
+
+          it 'returns merge requests path for merge_requests type' do
+            path = helper.milestones_browse_issuables_path(milestone, type: :merge_requests)
+            expect(path).to eq(project_merge_requests_path(project, milestone_title: milestone.title, state: nil))
+          end
+        end
+
+        context 'with group' do
+          let_it_be(:group) { create(:group) }
+          let_it_be(:group_milestone) { create(:milestone, group: group, title: 'Group Milestone') }
+
+          before do
+            assign(:project, nil)
+            assign(:group, group)
+          end
+
+          it 'returns group issues path for issues type' do
+            path = helper.milestones_browse_issuables_path(group_milestone, type: :issues)
+            expect(path).to eq(issues_group_path(group, milestone_title: group_milestone.title, state: nil))
+          end
+
+          it 'returns group merge requests path for merge_requests type' do
+            path = helper.milestones_browse_issuables_path(group_milestone, type: :merge_requests)
+            expect(path).to eq(merge_requests_group_path(group, milestone_title: group_milestone.title, state: nil))
+          end
+        end
+      end
+
+      context 'when neither project nor group is assigned (dashboard)' do
+        before do
+          assign(:project, nil)
+        end
+
+        it 'returns dashboard issues path for issues type' do
+          path = helper.milestones_browse_issuables_path(milestone, type: :issues)
+          expect(path).to eq(issues_dashboard_path(milestone_title: milestone.title, state: nil))
+        end
+
+        it 'returns dashboard merge requests path for merge_requests type' do
+          path = helper.milestones_browse_issuables_path(milestone, type: :merge_requests)
+          expect(path).to eq(merge_requests_dashboard_path(milestone_title: milestone.title, state: nil))
+        end
+      end
+    end
+
+    describe '#milestone_issues_count_message' do
+      before do
+        assign(:milestone, milestone)
+        allow(milestone).to receive(:issues_visible_to_user).with(user).and_return(instance_double(ActiveRecord::Relation, size: 600))
+      end
+
+      context 'when work_item_planning_view feature flag is enabled' do
+        before do
+          stub_feature_flags(work_item_planning_view: true)
+        end
+
+        context 'with project' do
+          it 'includes link to work items path' do
+            message = helper.milestone_issues_count_message(milestone)
+            expect(message).to include('Showing 500 of 600 items.')
+            expect(message).to include('View all')
+            expect(message).to include(project_work_items_path(project, milestone_title: milestone.title))
+          end
+        end
+
+        context 'with group' do
+          let_it_be(:group) { create(:group) }
+          let_it_be(:group_milestone) { create(:milestone, group: group, title: 'Group Milestone') }
+
+          before do
+            assign(:project, nil)
+            assign(:group, group)
+            assign(:milestone, group_milestone)
+            allow(group_milestone).to receive(:issues_visible_to_user).with(user).and_return(instance_double(ActiveRecord::Relation, size: 600))
+          end
+
+          it 'includes link to group work items path' do
+            message = helper.milestone_issues_count_message(group_milestone)
+            expect(message).to include('Showing 500 of 600 items.')
+            expect(message).to include('View all')
+            expect(message).to include(group_work_items_path(group, milestone_title: group_milestone.title))
+          end
+        end
+      end
+
+      context 'when work_item_planning_view feature flag is disabled' do
+        before do
+          stub_feature_flags(work_item_planning_view: false)
+        end
+
+        context 'with project' do
+          it 'includes link to issues path' do
+            message = helper.milestone_issues_count_message(milestone)
+            expect(message).to include('Showing 500 of 600 items.')
+            expect(message).to include('View all')
+            expect(message).to include(project_issues_path(project, milestone_title: milestone.title))
+          end
+        end
+
+        context 'with group' do
+          let_it_be(:group) { create(:group) }
+          let_it_be(:group_milestone) { create(:milestone, group: group, title: 'Group Milestone') }
+
+          before do
+            assign(:project, nil)
+            assign(:group, group)
+            assign(:milestone, group_milestone)
+            allow(group_milestone).to receive(:issues_visible_to_user).with(user).and_return(instance_double(ActiveRecord::Relation, size: 600))
+          end
+
+          it 'includes link to group issues path' do
+            message = helper.milestone_issues_count_message(group_milestone)
+            expect(message).to include('Showing 500 of 600 items.')
+            expect(message).to include('View all')
+            expect(message).to include(issues_group_path(group, milestone_title: group_milestone.title))
+          end
+        end
+      end
+
+      context 'when neither project nor group is assigned (dashboard)' do
+        before do
+          assign(:project, nil)
+        end
+
+        it 'includes link to dashboard issues path' do
+          message = helper.milestone_issues_count_message(milestone)
+          expect(message).to include('Showing 500 of 600 items.')
+          expect(message).to include('View all')
+          expect(message).to include(issues_dashboard_path(milestone_title: milestone.title))
+        end
+      end
+    end
+  end
 end

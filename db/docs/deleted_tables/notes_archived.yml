@@ -1,0 +1,14 @@
+---
+table_name: notes_archived
+classes:
+- Gitlab::BackgroundMigration::BackfillMissingNamespaceIdOnNotes
+feature_categories:
+- code_review_workflow
+description: Temporary archive table for orphaned notes during namespace_id backfill
+  migration. Stores notes that cannot be resolved to a namespace before deletion.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201253
+milestone: '18.4'
+gitlab_schema: gitlab_main_org
+table_size: small
+removed_in_milestone: '18.7'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213384

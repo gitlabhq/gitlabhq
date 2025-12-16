@@ -40,11 +40,6 @@ export default {
       required: false,
       default: false,
     },
-    workItemType: {
-      type: String,
-      required: false,
-      default: '',
-    },
     workItemId: {
       type: String,
       required: true,
@@ -229,25 +224,27 @@ export default {
         this.updateInProgress = false;
       }
     },
-    addWorkItemQuery({ iid }) {
-      this.$apollo.addSmartQuery('prefetchedWorkItem', {
-        query: workItemByIidQuery,
-        variables: {
-          fullPath: this.fullPath,
-          iid,
-        },
-        update(data) {
-          return data.workspace?.workItem;
-        },
-      });
+    fetchChildWorkItem({ iid }) {
+      this.$apollo
+        .query({
+          query: workItemByIidQuery,
+          variables: {
+            fullPath: this.fullPath,
+            iid,
+          },
+          update(data) {
+            return data.workspace?.workItem;
+          },
+        })
+        .catch((error) => {
+          Sentry.captureException(error);
+        });
     },
     prefetchWorkItem({ iid }) {
-      if (this.workItemType !== WORK_ITEM_TYPE_NAME_OBJECTIVE) {
-        this.prefetch = setTimeout(
-          () => this.addWorkItemQuery({ iid }),
-          DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
-        );
-      }
+      this.prefetch = setTimeout(
+        () => this.fetchChildWorkItem({ iid }),
+        DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
+      );
     },
     clearPrefetching() {
       if (this.prefetch) {

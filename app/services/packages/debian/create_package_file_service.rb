@@ -22,6 +22,7 @@ module Packages
           file_sha1: params[:file_sha1],
           file_sha256: params[:file]&.sha256,
           file_md5: params[:file_md5],
+          project_id: package.project_id,
           debian_file_metadatum_attributes: {
             file_type: 'unknown',
             architecture: nil,

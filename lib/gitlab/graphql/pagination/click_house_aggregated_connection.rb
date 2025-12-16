@@ -98,11 +98,7 @@ module Gitlab
 
           # Build nested OR conditions for stable ordering
           or_conditions.reduce do |accumulated, condition|
-            if Gitlab.next_rails?
-              Arel::Nodes::Or.new([accumulated, condition])
-            else
-              Arel::Nodes::Or.new(accumulated, condition)
-            end
+            Arel::Nodes::Or.new([accumulated, condition])
           end
         end
 
@@ -191,8 +187,11 @@ module Gitlab
         def expression_name(attr)
           attr.expr.respond_to?(:name) ? attr.expr.name.to_s : attr.expr.to_s
         end
-      end
 
+        def execute_query(query)
+          super.map(&:with_indifferent_access)
+        end
+      end
       # rubocop:enable CodeReuse/ActiveRecord
     end
   end

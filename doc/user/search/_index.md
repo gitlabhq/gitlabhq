@@ -31,18 +31,18 @@ For code search, GitLab uses these types in this order:
 Scopes describe the type of data you're searching.
 The following scopes are available for basic search:
 
-| Scope          | Global <sup>1</sup>                         | Group                                       | Project |
-|----------------|:-------------------------------------------:|:-------------------------------------------:|:-------:|
-| Code           | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
-| Comments       | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
-| Commits        | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
-| Epics          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| Issues         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Merge requests | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Milestones     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Projects       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| Users          | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Wikis          | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
+| Scope          | Global <sup>1</sup> |    Group    | Project |
+|----------------|:-------------------:|:-----------:|:-------:|
+| Code           |     {{< no >}}      | {{< no >}}  | {{< yes >}} |
+| Comments       |     {{< no >}}      | {{< no >}}  | {{< yes >}} |
+| Commits        |     {{< no >}}      | {{< no >}}  | {{< yes >}} |
+| Epics          |     {{< no >}}      | {{< yes >}} | {{< no >}} |
+| Issues         |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
+| Merge requests |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
+| Milestones     |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
+| Projects       |     {{< yes >}}     | {{< yes >}} | {{< no >}} |
+| Users          |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
+| Wikis          |     {{< no >}}      | {{< no >}}  | {{< yes >}} |
 
 **Footnotes**:
 
@@ -94,7 +94,7 @@ To restrict `/search` to authenticated users only, do one of the following:
   for the project or group.
 - Restrict access in the **Admin** area:
 
-  1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+  1. In the upper-right corner, select **Admin**.
   1. Select **Settings** > **Search**.
   1. Expand **Advanced search**.
   1. Clear the **Allow unauthenticated users to use search** checkbox.
@@ -102,7 +102,7 @@ To restrict `/search` to authenticated users only, do one of the following:
 
 To restrict global search to authenticated users only:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Visibility and access controls**
 1. Select the **Restrict global search to authenticated users only** checkbox.
@@ -112,7 +112,6 @@ To restrict global search to authenticated users only:
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -133,11 +132,38 @@ All global search scopes are enabled by default on GitLab Self-Managed instances
 
 To disable one or more global search scopes:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Visibility and access controls**.
 1. Clear the checkboxes for the scopes you want to disable.
 1. Select **Save changes**.
+
+## Configure a default search scope
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+By default, when users do not select a search scope,
+a scope is selected automatically based on context and availability.
+To configure a default search scope instead:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Search**.
+1. Expand **Visibility and access controls**.
+1. From the **Default search scope** dropdown list, select a scope.
+   For automatic selection, select **System default (automatic)**.
+1. Select **Save changes**.
+
+Users can override the default scope by selecting another scope.
+If the default scope is not available (for example, code in global search),
+a scope is selected automatically.
 
 ## Global search validation
 
@@ -184,7 +210,7 @@ For more information, see the history.
 
 As you type in the search box, autocomplete suggestions are displayed for:
 
-- [Projects](#search-for-a-project-by-full-path) and groups
+- Projects and groups
 - Users from authorized projects and groups
 - Help pages
 - Project features (for example, milestones)
@@ -197,7 +223,7 @@ As you type in the search box, autocomplete suggestions are displayed for:
 
 To search in all GitLab:
 
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to**.
 1. Type your search query. You must type at least two characters.
 1. Press <kbd>Enter</kbd> to search, or select from the list.
 
@@ -207,28 +233,11 @@ The results are displayed. To filter the results, on the left sidebar, select a 
 
 To search in a project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Search or go to** again and type the string you want to search for.
 1. Press <kbd>Enter</kbd> to search, or select from the list.
 
 The results are displayed. To filter the results, on the left sidebar, select a filter.
-
-## Search for a project by full path
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108906) in GitLab 15.9 [with a flag](../../administration/feature_flags/_index.md) named `full_path_project_search`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114932) in GitLab 15.11. Feature flag `full_path_project_search` removed.
-
-{{< /history >}}
-
-You can search for a project by entering its full path (including the namespace it belongs to) in the search box.
-As you type the project path, [autocomplete suggestions](#autocomplete-suggestions) are displayed.
-
-For example:
-
-- `gitlab-org/gitlab` searches for the `gitlab` project in the `gitlab-org` namespace.
-- `gitlab-org/` displays autocomplete suggestions for projects that belong to the `gitlab-org` namespace.
 
 ## Include archived projects in search results
 
@@ -249,7 +258,7 @@ To include archived projects in search results:
 
 To search for code in a project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Search or go to** again and type the code you want to search for.
 1. Press <kbd>Enter</kbd> to search, or select from the list.
 
@@ -287,7 +296,7 @@ To filter code search results by one or more languages:
 
 To search for a commit SHA:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Search or go to** again and type the commit SHA you want to search for.
 1. Press <kbd>Enter</kbd> to search, or select from the list.
 
@@ -306,12 +315,8 @@ Basic search uses exact substring matching with the following options:
 
 ### Examples
 
-<!-- markdownlint-disable MD044 -->
-
 | Query                                 | Description |
 |---------------------------------------|-------------|
 | `rails -filename:gemfile.lock`        | Returns `rails` in all files except the `gemfile.lock` file. |
 | `helper -extension:yml -extension:js` | Returns `helper` in all files except files with a `.yml` or `.js` extension. |
 | `helper path:lib/git`                 | Returns `helper` in all files with a `lib/git*` path (for example, `spec/lib/gitlab`). |
-
-<!-- markdownlint-enable MD044 -->

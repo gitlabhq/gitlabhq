@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system_access do
   let_it_be_with_reload(:primary_user) { create(:user, :service_account) }
-  let_it_be(:scoped_user) { create(:user) }
+  # We need to refind so that @composite_identity_enforced_override is reset
+  let_it_be_with_refind(:scoped_user) { create(:user) }
 
   describe '.link_from_oauth_token' do
     let_it_be(:token_scopes) { [:api, :"user:#{scoped_user.id}"] }
@@ -103,6 +104,24 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
 
       it 'returns nil' do
         expect(identity).to be_nil
+      end
+    end
+  end
+
+  describe '.link_from_scoped_user' do
+    subject(:identity) { described_class.link_from_scoped_user(primary_user, scoped_user) }
+
+    context 'when composite identity is required for the actor' do
+      before do
+        primary_user.update!(composite_identity_enforced: true)
+      end
+
+      it 'returns an identity' do
+        expect(identity).to be_composite
+        expect(identity).to be_linked
+        expect(identity).to be_valid
+
+        expect(identity.scoped_user).to eq(scoped_user)
       end
     end
   end

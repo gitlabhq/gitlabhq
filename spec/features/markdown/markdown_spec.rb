@@ -36,12 +36,8 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
   # `tmp/capybara/<filename>.html`.
   def write_markdown(filename = 'markdown_spec')
     File.open(Rails.root.join("tmp/capybara/#{filename}.html"), 'w') do |file|
-      file.puts @html
+      file.puts html
     end
-  end
-
-  def doc(html = @html)
-    @doc ||= Nokogiri::HTML::DocumentFragment.parse(html)
   end
 
   # Shared behavior that all pipelines should exhibit
@@ -220,233 +216,232 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
     end
   end
 
-  before do
-    @feat = MarkdownFeature.new
-
-    # `markdown` helper expects a `@project` and `@group` variable
-    @project = @feat.project
-    @group = @feat.group
-
-    stub_application_setting(plantuml_enabled: true, plantuml_url: 'http://localhost:8080')
-    stub_application_setting(kroki_enabled: true, kroki_url: 'http://localhost:8000')
+  let_it_be(:context) do
+    # Ensure CI contention doesn't cause Banzai timeouts in this relatively heavy test case.
+    { disable_banzai_timeout: true }
   end
 
-  let(:project) { @feat.project } # Shadow this so matchers can use it
+  let_it_be(:feat) { MarkdownFeature.new }
+  let_it_be(:html) do
+    # `markdown` helper expects a `@project` and `@group` variable
+    @project = feat.project
+    @group = feat.group
+
+    stub_feature_flags(disable_all_mention: false)
+
+    RSpec::Mocks.with_temporary_scope do
+      stub_application_setting(plantuml_enabled: true, plantuml_url: 'http://localhost:8080')
+      stub_application_setting(kroki_enabled: true, kroki_url: 'http://localhost:8000')
+
+      markdown(feat.raw_markdown, context)
+    end
+  end
+
+  let(:doc) { Nokogiri::HTML::DocumentFragment.parse(html) }
+  let(:project) { feat.project }
 
   context 'default pipeline' do
-    before do
-      stub_feature_flags(disable_all_mention: false)
-
-      @html = markdown(@feat.raw_markdown)
-    end
-
     it_behaves_like 'all pipelines'
 
     context 'when `disable_all_mention` FF is enabled' do
       before do
         stub_feature_flags(disable_all_mention: true)
-
-        @html = markdown(@feat.raw_markdown)
       end
 
-      it 'includes custom filters' do
+      let(:html) { markdown(feat.raw_markdown, context) }
+
+      it 'includes user reference filter excluding all' do
         expect(doc).to reference_users_excluding_all
       end
     end
 
-    it 'includes custom filters' do
-      aggregate_failures 'UploadLinkFilter' do
-        expect(doc).to parse_upload_links
-      end
+    it 'includes UploadLinkFilter' do
+      expect(doc).to parse_upload_links
+    end
 
-      aggregate_failures 'RepositoryLinkFilter' do
-        expect(doc).to parse_repository_links
-      end
+    it 'includes RepositoryLinkFilter' do
+      expect(doc).to parse_repository_links
+    end
 
-      aggregate_failures 'EmojiFilter' do
-        expect(doc).to parse_emoji
-      end
+    it 'includes EmojiFilter' do
+      expect(doc).to parse_emoji
+    end
 
-      aggregate_failures 'TableOfContentsTagFilter' do
-        expect(doc).to create_toc
-      end
+    it 'includes TableOfContentsTagFilter' do
+      expect(doc).to create_toc
+    end
 
-      aggregate_failures 'Autolinking in MarkdownFilter' do
-        expect(doc).to create_autolinks
-      end
+    it 'includes Autolinking in MarkdownFilter' do
+      expect(doc).to create_autolinks
+    end
 
-      aggregate_failures 'all reference filters' do
-        expect(doc).to reference_users
-        expect(doc).to reference_issues
-        expect(doc).to reference_work_items
-        expect(doc).to reference_merge_requests
-        expect(doc).to reference_snippets
-        expect(doc).to reference_commit_ranges
-        expect(doc).to reference_commits
-        expect(doc).to reference_labels
-        expect(doc).to reference_milestones
-        expect(doc).to reference_alerts
-        expect(doc).to reference_wiki_pages
-      end
+    it 'includes all reference filters' do
+      expect(doc).to reference_users
+      expect(doc).to reference_issues
+      expect(doc).to reference_work_items
+      expect(doc).to reference_merge_requests
+      expect(doc).to reference_snippets
+      expect(doc).to reference_commit_ranges
+      expect(doc).to reference_commits
+      expect(doc).to reference_labels
+      expect(doc).to reference_milestones
+      expect(doc).to reference_alerts
+      expect(doc).to reference_wiki_pages
+    end
 
-      aggregate_failures 'TaskListFilter' do
-        expect(doc).to parse_task_lists
-      end
+    it 'includes TaskListFilter' do
+      expect(doc).to parse_task_lists
+    end
 
-      aggregate_failures 'MathFilter' do
-        expect(doc).to parse_math
-      end
+    it 'includes MathFilter' do
+      expect(doc).to parse_math
+    end
 
-      aggregate_failures 'InlineDiffFilter' do
-        expect(doc).to parse_inline_diffs
-      end
+    it 'includes InlineDiffFilter' do
+      expect(doc).to parse_inline_diffs
+    end
 
-      aggregate_failures 'VideoLinkFilter' do
-        expect(doc).to parse_video_links
-      end
+    it 'includes VideoLinkFilter' do
+      expect(doc).to parse_video_links
+    end
 
-      aggregate_failures 'ColorFilter' do
-        expect(doc).to parse_colors
-      end
+    it 'includes ColorFilter' do
+      expect(doc).to parse_colors
+    end
 
-      aggregate_failures 'MermaidFilter' do
-        expect(doc).to parse_mermaid
-      end
+    it 'includes MermaidFilter' do
+      expect(doc).to parse_mermaid
+    end
 
-      aggregate_failures 'PlantumlFilter' do
-        expect(doc).to parse_plantuml
-      end
+    it 'includes AttributeFilter' do
+      img = doc.at_css('img[alt="Sized Image"]')
 
-      aggregate_failures 'KrokiFilter' do
-        expect(doc).to parse_kroki
-      end
+      expect(img.attr('width')).to eq('75%')
+      expect(img.attr('height')).to eq('100')
 
-      aggregate_failures 'AttributeFilter' do
-        img = doc.at_css('img[alt="Sized Image"]')
+      vid = doc.at_css('video[data-title="Sized Video"]')
 
-        expect(img.attr('width')).to eq('75%')
-        expect(img.attr('height')).to eq('100')
+      expect(vid.attr('width')).to eq('75%')
+      expect(vid.attr('height')).to eq('100')
+    end
 
-        vid = doc.at_css('video[data-title="Sized Video"]')
+    it 'includes PlantumlFilter' do
+      expect(doc).to parse_plantuml
+    end
 
-        expect(vid.attr('width')).to eq('75%')
-        expect(vid.attr('height')).to eq('100')
-      end
+    it 'includes KrokiFilter' do
+      expect(doc).to parse_kroki
     end
   end
 
   context 'wiki pipeline' do
-    before do
+    let_it_be(:wiki) { feat.wiki }
+    let_it_be(:wiki_page) { feat.wiki_page }
+
+    let_it_be(:html) do
       stub_feature_flags(disable_all_mention: false)
 
-      @wiki = @feat.wiki
-      @wiki_page = @feat.wiki_page
+      RSpec::Mocks.with_temporary_scope do
+        stub_application_setting(plantuml_enabled: true, plantuml_url: 'http://localhost:8080')
+        stub_application_setting(kroki_enabled: true, kroki_url: 'http://localhost:8000')
 
-      name = 'example.jpg'
-      path = "images/#{name}"
-      blob = instance_double('Gitlab::Git::Blob', name: name, path: path, mime_type: 'image/jpeg', data: nil)
-      expect(@wiki).to receive(:find_file).with(path, load_content: false).and_return(Gitlab::Git::WikiFile.new(blob))
-      allow(@wiki).to receive(:wiki_base_path) { '/namespace1/gitlabhq/wikis' }
+        name = 'example.jpg'
+        path = "images/#{name}"
+        blob = instance_double('Gitlab::Git::Blob', name: name, path: path, mime_type: 'image/jpeg', data: nil)
+        allow(wiki).to receive(:find_file).with(path, load_content: false).and_return(Gitlab::Git::WikiFile.new(blob))
+        allow(wiki).to receive(:wiki_base_path) { '/namespace1/gitlabhq/wikis' }
 
-      @html = markdown(@feat.raw_markdown, { pipeline: :wiki, wiki: @wiki, page_slug: @wiki_page.slug })
+        markdown(feat.raw_markdown, context.merge({ pipeline: :wiki, wiki: wiki, page_slug: wiki_page.slug }))
+      end
     end
 
     context 'when `disable_all_mention` FF is enabled' do
       before do
         stub_feature_flags(disable_all_mention: true)
-
-        @wiki = @feat.wiki
-        @wiki_page = @feat.wiki_page
-
-        name = 'example.jpg'
-        path = "images/#{name}"
-        blob = instance_double('Gitlab::Git::Blob', name: name, path: path, mime_type: 'image/jpeg', data: nil)
-        expect(@wiki).to receive(:find_file).with(path, load_content: false).and_return(Gitlab::Git::WikiFile.new(blob))
-        allow(@wiki).to receive(:wiki_base_path) { '/namespace1/gitlabhq/wikis' }
-
-        @html = markdown(@feat.raw_markdown, { pipeline: :wiki, wiki: @wiki, page_slug: @wiki_page.slug })
       end
 
-      it 'includes custom filters' do
+      let(:html) do
+        markdown(feat.raw_markdown, context.merge({ pipeline: :wiki, wiki: wiki, page_slug: wiki_page.slug }))
+      end
+
+      it 'includes user reference filter excluding all' do
         expect(doc).to reference_users_excluding_all
       end
     end
 
     it_behaves_like 'all pipelines'
 
-    it 'includes custom filters', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/538412' do
-      aggregate_failures 'UploadLinkFilter' do
-        expect(doc).to parse_upload_links
-      end
+    it 'includes UploadLinkFilter' do
+      expect(doc).to parse_upload_links
+    end
 
-      aggregate_failures 'RepositoryLinkFilter' do
-        expect(doc).not_to parse_repository_links
-      end
+    it 'includes RepositoryLinkFilter' do
+      expect(doc).not_to parse_repository_links
+    end
 
-      aggregate_failures 'EmojiFilter' do
-        expect(doc).to parse_emoji
-      end
+    it 'includes EmojiFilter' do
+      expect(doc).to parse_emoji
+    end
 
-      aggregate_failures 'TableOfContentsTagFilter' do
-        expect(doc).to create_toc
-      end
+    it 'includes TableOfContentsTagFilter' do
+      expect(doc).to create_toc
+    end
 
-      aggregate_failures 'AutolinkFilter' do
-        expect(doc).to create_autolinks
-      end
+    it 'includes AutolinkFilter' do
+      expect(doc).to create_autolinks
+    end
 
-      aggregate_failures 'all reference filters' do
-        expect(doc).to reference_users
-        expect(doc).to reference_issues
-        expect(doc).to reference_work_items
-        expect(doc).to reference_merge_requests
-        expect(doc).to reference_snippets
-        expect(doc).to reference_commit_ranges
-        expect(doc).to reference_commits
-        expect(doc).to reference_labels
-        expect(doc).to reference_milestones
-      end
+    it 'includes all reference filters' do
+      expect(doc).to reference_users
+      expect(doc).to reference_issues
+      expect(doc).to reference_work_items
+      expect(doc).to reference_merge_requests
+      expect(doc).to reference_snippets
+      expect(doc).to reference_commit_ranges
+      expect(doc).to reference_commits
+      expect(doc).to reference_labels
+      expect(doc).to reference_milestones
+    end
 
-      aggregate_failures 'TaskListFilter' do
-        expect(doc).to parse_task_lists
-      end
+    it 'includes TaskListFilter' do
+      expect(doc).to parse_task_lists
+    end
 
-      aggregate_failures 'WikiLinkGollumFilter' do
-        expect(doc).to parse_wiki_link_gollum_tags
-      end
+    it 'includes WikiLinkGollumFilter' do
+      expect(doc).to parse_wiki_link_gollum_tags
+    end
 
-      aggregate_failures 'InlineDiffFilter' do
-        expect(doc).to parse_inline_diffs
-      end
+    it 'includes InlineDiffFilter' do
+      expect(doc).to parse_inline_diffs
+    end
 
-      aggregate_failures 'VideoLinkFilter' do
-        expect(doc).to parse_video_links
-      end
+    it 'includes VideoLinkFilter' do
+      expect(doc).to parse_video_links
+    end
 
-      aggregate_failures 'AudioLinkFilter' do
-        expect(doc).to parse_audio_links
-      end
+    it 'includes AudioLinkFilter' do
+      expect(doc).to parse_audio_links
+    end
 
-      aggregate_failures 'ColorFilter' do
-        expect(doc).to parse_colors
-      end
+    it 'includes ColorFilter' do
+      expect(doc).to parse_colors
+    end
 
-      aggregate_failures 'MermaidFilter' do
-        expect(doc).to parse_mermaid
-      end
+    it 'includes MermaidFilter' do
+      expect(doc).to parse_mermaid
+    end
 
-      aggregate_failures 'PlantumlFilter' do
-        expect(doc).to parse_plantuml
-      end
+    it 'includes PlantumlFilter' do
+      expect(doc).to parse_plantuml
+    end
 
-      aggregate_failures 'KrokiFilter' do
-        expect(doc).to parse_kroki
-      end
+    it 'includes KrokiFilter' do
+      expect(doc).to parse_kroki
     end
   end
 
   # Fake a `current_user` helper
   def current_user
-    @feat.user
+    feat.user
   end
 end

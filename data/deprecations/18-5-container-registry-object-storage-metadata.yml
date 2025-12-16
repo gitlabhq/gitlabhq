@@ -1,6 +1,6 @@
 - title: "Container Registry legacy metadata storage"
   announcement_milestone: "18.5"
-  removal_milestone: "21.0"
+  removal_milestone: "Pending"
   breaking_change: false
   reporter: trizzi
   stage: Package

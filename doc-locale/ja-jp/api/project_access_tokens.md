@@ -141,7 +141,7 @@ POST projects/:id/access_tokens
 | -------------- | ----------------- | -------- | ----------- |
 | `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `name`         | 文字列            | はい      | トークンの名前。 |
-| `description`  | 文字列            | いいえ       | プロジェクトアクセストークンの説明。 |
+| `description`  | 文字列            | いいえ       | プロジェクトアクセストークンの説明。最大: 255文字。 |
 | `scopes`       | `Array[String]`   | はい      | トークンで使用可能な[スコープ](../user/project/settings/project_access_tokens.md#scopes-for-a-project-access-token)のリスト。 |
 | `access_level` | 整数           | いいえ       | トークンのロール。使用可能な値: `10`（ゲスト）、`15`（プランナー）、`20`（レポーター）、`30`（デベロッパー）、`40`（メンテナー）、および`50`（オーナー）。デフォルト値: `40`。 |
 | `expires_at`   | 日付              | はい      | ISO形式（`YYYY-MM-DD`）のトークンの有効期限。未定義の場合、日付は[最大許容ライフタイム制限](../user/profile/personal_access_tokens.md#access-token-expiration)に設定されます。 |
@@ -186,7 +186,7 @@ curl --request POST \
 
 このエンドポイントを使用して、以前に失効したトークンをローテーションしようとすると、同じトークンファミリーのアクティブなトークンはすべて失効します。詳細については、[自動再利用の検出](personal_access_tokens.md#automatic-reuse-detection)を参照してください。
 
-前提要件:
+前提要件: 
 
 - 別のプロジェクトアクセストークンをローテーションするには、[`api`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を持つパーソナルアクセストークンが必要です。
 - プロジェクトアクセストークンを[自己ローテーション](#self-rotate)するには、トークンが[`api`スコープまたは`self_rotate`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を持っている必要があります。
@@ -207,7 +207,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/<token_id>/rotate"
 ```
 
-応答例:
+レスポンス例:
 
 ```json
 {
@@ -226,12 +226,12 @@ curl --request POST \
 }
 ```
 
-成功すると、`200: OK`を返します。
+成功した場合、`200: OK`を返します。
 
 その他の発生しうる応答:
 
 - ローテーションが正常に完了しなかった場合は`400: Bad Request`。
-- 次のいずれかの条件に該当する場合は`401: Unauthorized`。
+- 次のいずれかの条件に該当する場合は`401: Unauthorized`:
   - トークンが存在しない。
   - トークンの有効期限が切れた。
   - トークンが失効した。
@@ -243,7 +243,7 @@ curl --request POST \
 
 ### 自己ローテーション {#self-rotate}
 
-特定のプロジェクトアクセストークンをローテーションする代わりに、リクエストの認証に使用したものと同じプロジェクトアクセストークンをローテーションすることができます。プロジェクトアクセストークンを自己ローテーションするには、次のことを行う必要があります。
+特定のプロジェクトアクセストークンをローテーションする代わりに、リクエストの認証に使用したものと同じプロジェクトアクセストークンをローテーションすることができます。プロジェクトアクセストークンを自己ローテーションするには、次のことを行う必要があります:
 
 - [`api`スコープまたは`self_rotate`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を使用して、プロジェクトアクセストークンをローテーションします。
 - リクエストURLで`self`キーワードを使用します。
@@ -275,7 +275,7 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/<token_id>"
 ```
 
-成功すると、`204 No content`を返します。
+成功した場合、`204 No content`を返します。
 
 その他の発生しうる応答:
 

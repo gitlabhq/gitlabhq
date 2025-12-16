@@ -83,7 +83,16 @@ module API
               no_content! unless state.latest_file && state.latest_file.exists?
 
               env['api.format'] = :binary # this bypasses json serialization
-              body state.latest_file.read
+
+              if state.latest_version.is_encrypted?
+                body state.latest_file.read
+              elsif state.latest_file.file_storage?
+                sendfile state.latest_file.path
+              else
+                workhorse_headers = Gitlab::Workhorse.send_url(state.latest_file.url)
+                header workhorse_headers[0], workhorse_headers[1]
+                body ""
+              end
             end
           end
 

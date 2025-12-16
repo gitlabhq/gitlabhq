@@ -88,22 +88,48 @@ RSpec.describe DashboardController, feature_category: :system_access do
       sign_in current_user
     end
 
-    it 'returns 20 events by default' do
-      get activity_dashboard_path, params: { filter: filter }, as: :json
+    shared_examples 'returns the default number of project events' do |params|
+      it 'returns the default number of events' do
+        get activity_dashboard_path, params: { filter: filter }.merge(params), as: :json
 
-      expect(json_response['count']).to be(20)
+        expect(json_response['count']).to be(20)
+      end
     end
 
-    it 'returns the requested number of events' do
-      get activity_dashboard_path, params: { filter: filter, limit: 10 }, as: :json
+    describe 'limit parameter validation' do
+      context 'when the limit param is not present' do
+        it_behaves_like 'returns the default number of project events', {}
+      end
 
-      expect(json_response['count']).to be(10)
+      context 'when the param value is negative' do
+        it_behaves_like 'returns the default number of project events', { limit: -1 }
+      end
+
+      context 'when the param value is non-numeric' do
+        it_behaves_like 'returns the default number of project events', { limit: 'woof' }
+      end
+
+      context 'when the param value is zero' do
+        it_behaves_like 'returns the default number of project events', { limit: 0 }
+      end
+
+      context 'when the param value is a valid positive integer' do
+        it 'returns the requested number of events' do
+          get activity_dashboard_path, params: { filter: filter, limit: 10 }, as: :json
+
+          expect(json_response['count']).to be(10)
+        end
+      end
     end
 
-    it 'returns the default amount of events if the `limit` parameter is invalid' do
-      get activity_dashboard_path, params: { filter: filter, limit: 'user input' }, as: :json
+    describe 'offset parameter validation' do
+      context 'when the offset param is negative' do
+        it_behaves_like 'returns the default number of project events', { offset: -1 }
+      end
 
-      expect(json_response['count']).to be(20)
+      context 'when the offset param is non-numeric' do
+        it_behaves_like 'returns the default number of project events', { offset: 'woof' }
+      end
     end
   end
 
@@ -117,5 +143,103 @@ RSpec.describe DashboardController, feature_category: :system_access do
     let_it_be(:filter) { 'starred' }
 
     it_behaves_like 'load project events'
+  end
+
+  context "when fetching all user activity" do
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:recent_project) { create(:project, :public, title: "Recent Project") }
+    let_it_be(:old_project) { create(:project, :public, title: "Old Project") }
+    let_it_be(:oldest_event) { create(:event, author: current_user, project: old_project, created_at: 2.days.ago.beginning_of_day) }
+    let_it_be(:most_recent_event) { create(:event, author: current_user, project: recent_project, created_at: 1.day.ago.beginning_of_day) }
+
+    before do
+      sign_in current_user
+    end
+
+    describe "limit parameter validation" do
+      before do
+        stub_const('UserRecentEventsFinder::DEFAULT_LIMIT', 1)
+      end
+
+      context "when the limit parameter is not present" do
+        it "responds with the default number of events" do
+          get activity_dashboard_path, as: :json
+
+          expect(json_response['count']).to be(1)
+        end
+      end
+
+      context "when the limit param value is negative" do
+        it "responds with the default number of events" do
+          get activity_dashboard_path, params: { limit: -2 }, as: :json
+
+          expect(json_response['count']).to be(1)
+        end
+      end
+
+      context "when the limit param value is zero" do
+        it "responds with no events" do
+          get activity_dashboard_path, params: { limit: 0 }, as: :json
+
+          expect(json_response['count']).to be(0)
+        end
+      end
+
+      context "when the limit param value is non-numeric" do
+        it "responds with no events" do
+          get activity_dashboard_path, params: { limit: 'xyz' }, as: :json
+
+          expect(json_response['count']).to be(0)
+        end
+      end
+
+      context "when the limit parameter value is a valid positive integer" do
+        it "responds with the corresponding number of events" do
+          get activity_dashboard_path, params: { limit: 2 }, as: :json
+
+          expect(json_response['count']).to be(2)
+        end
+      end
+    end
+
+    shared_examples 'it returns the first page of events' do |params|
+      it 'returns the first page of events' do
+        get activity_dashboard_path, params: params, as: :json
+
+        expect(json_response['count']).to be(1)
+        expect(json_response['html']).to match(/#{recent_project.title}/)
+      end
+    end
+
+    describe "offset parameter validation" do
+      before do
+        stub_const('UserRecentEventsFinder::DEFAULT_LIMIT', 1)
+      end
+
+      context "when the offset param is not present" do
+        it_behaves_like 'it returns the first page of events', {}
+      end
+
+      context "when the offset param value is negative" do
+        it_behaves_like 'it returns the first page of events', { offset: -2 }
+      end
+
+      context "when the offset param value is non-numeric" do
+        it_behaves_like 'it returns the first page of events', { offset: 'woof' }
+      end
+
+      context "when the offset param value is zero" do
+        it_behaves_like 'it returns the first page of events', { offset: 0 }
+      end
+
+      context "when the offset param value is a valid positive integer" do
+        it "responds with the corresponding page of events" do
+          get activity_dashboard_path, params: { offset: 1 }, as: :json
+
+          expect(json_response['count']).to be(1)
+          expect(json_response['html']).to match(/#{old_project.title}/)
+        end
+      end
+    end
   end
 end

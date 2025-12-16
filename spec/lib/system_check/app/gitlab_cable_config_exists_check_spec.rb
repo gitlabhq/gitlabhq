@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe SystemCheck::App::GitlabCableConfigExistsCheck, feature_category: :redis do
   subject(:system_check) { described_class.new }

@@ -14,7 +14,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   let(:spam_action_response_fields) { { 'stub_spam_action_response_fields' => true } }
 
   before do
-    stub_feature_flags(work_item_view_for_issues: false)
     # We need the spam_params object to be present in the request context
     Gitlab::RequestContext.start_request_context(request: request)
   end
@@ -201,10 +200,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'when issue is not a task and work items feature flag is enabled' do
-      before do
-        stub_feature_flags(work_item_view_for_issues: true)
-      end
-
       context 'when work_item_planning_view is enabled' do
         before do
           stub_feature_flags(work_item_planning_view: true)
@@ -254,11 +249,11 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
 
       context 'edit action' do
-        let(:query) { { query: 'any' } }
+        let(:query) { { query: 'any', edit: 'true' } }
 
         it_behaves_like 'redirects to show work item page' do
           subject(:make_request) do
-            get :edit, params: { namespace_id: project.namespace, project_id: project, id: task.iid, **query }
+            get :edit, params: { namespace_id: project.namespace, project_id: project, id: task.iid, query: 'any' }
           end
         end
       end
@@ -274,6 +269,52 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
             }
           end
         end
+      end
+    end
+  end
+
+  describe 'GET #edit' do
+    context 'when visiting issues edit route and user can edit issue' do
+      before do
+        project.add_developer(user)
+        sign_in(user)
+      end
+
+      it 'redirects to issues detail page with edit parameter' do
+        get :edit, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+
+        expect(response).to redirect_to(project_issue_path(project, issue, edit: 'true'))
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+
+    context 'when visiting issues edit route and user cannot edit issue' do
+      before do
+        project.add_guest(user)
+        sign_in(user)
+      end
+
+      it 'redirects to issue detail page without edit parameter' do
+        get :edit, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+
+        expect(response).to redirect_to(project_issue_path(project, issue, params: {}))
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+
+    context 'when item is a work item type and user cannot edit' do
+      let(:work_item_issue) { create(:issue, :task, project: project) }
+
+      before do
+        project.add_guest(user)
+        sign_in(user)
+      end
+
+      it 'redirects to work item detail page without edit parameter' do
+        get :edit, params: { namespace_id: project.namespace, project_id: project, id: work_item_issue }
+
+        expect(response).to redirect_to(project_work_item_path(project, work_item_issue.iid, params: {}))
+        expect(response).to have_gitlab_http_status(:found)
       end
     end
   end
@@ -803,6 +844,10 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     let_it_be(:unescaped_parameter_value) { create(:issue, :confidential, project: project, author: author) }
     let_it_be(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignees: [assignee]) }
 
+    before do
+      stub_feature_flags(work_item_planning_view: false)
+    end
+
     shared_examples_for 'restricted action' do |http_status|
       it 'returns 404 for guests' do
         sign_out(:user)
@@ -891,7 +936,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
 
       it_behaves_like 'restricted action', success: 200
-      it_behaves_like 'update invalid issuable', Issue
 
       context 'changing the assignee' do
         it 'limits the attributes exposed on the assignee' do
@@ -1034,34 +1078,53 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
           }
       end
 
-      it 'avoids (most) N+1s loading labels', :request_store do
-        label = create(:label, project: project).to_reference
-        labels = create_list(:label, 10, project: project).map(&:to_reference)
-        issue = create(:issue, project: project, description: 'Test issue')
+      context 'when work_item_planning_view: true' do
+        before do
+          stub_feature_flags(work_item_planning_view: true)
+        end
 
-        control = ActiveRecord::QueryRecorder.new { issue.update!(description: [issue.description, label].join(' ')) }
+        it 'redirects to consolidated list' do
+          sign_in(user)
+          go(id: issue.to_param)
 
-        # Follow-up to get rid of this `2 * label.count` requirement: https://gitlab.com/gitlab-org/gitlab-foss/issues/52230
-        expect { issue.update!(description: [issue.description, labels].join(' ')) }
-          .not_to exceed_query_limit(control).with_threshold(2 * labels.count)
+          expect(response).to redirect_to(project_work_item_path(project, issue.iid))
+        end
       end
 
-      it 'logs the view with Gitlab::Search::RecentIssues' do
-        sign_in(user)
-        recent_issues_double = instance_double(::Gitlab::Search::RecentIssues, log_view: nil)
-        expect(::Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(recent_issues_double)
+      context 'when work_item_planning_view: false' do
+        before do
+          stub_feature_flags(work_item_planning_view: false)
+        end
 
-        go(id: issue.to_param)
+        it 'avoids (most) N+1s loading labels', :request_store do
+          label = create(:label, project: project).to_reference
+          labels = create_list(:label, 10, project: project).map(&:to_reference)
+          issue = create(:issue, project: project, description: 'Test issue')
 
-        expect(response).to be_successful
-        expect(recent_issues_double).to have_received(:log_view).with(issue)
-      end
+          control = ActiveRecord::QueryRecorder.new { issue.update!(description: [issue.description, label].join(' ')) }
 
-      context 'when not logged in' do
-        it 'does not log the view with Gitlab::Search::RecentIssues' do
-          expect(::Gitlab::Search::RecentIssues).not_to receive(:new)
+          # Follow-up to get rid of this `2 * label.count` requirement: https://gitlab.com/gitlab-org/gitlab-foss/issues/52230
+          expect { issue.update!(description: [issue.description, labels].join(' ')) }
+            .not_to exceed_query_limit(control).with_threshold(2 * labels.count)
+        end
+
+        it 'logs the view with Gitlab::Search::RecentIssues' do
+          sign_in(user)
+          recent_issues_double = instance_double(::Gitlab::Search::RecentIssues, log_view: nil)
+          expect(::Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(recent_issues_double)
 
           go(id: issue.to_param)
+
+          expect(response).to be_successful
+          expect(recent_issues_double).to have_received(:log_view).with(issue)
+        end
+
+        context 'when not logged in' do
+          it 'does not log the view with Gitlab::Search::RecentIssues' do
+            expect(::Gitlab::Search::RecentIssues).not_to receive(:new)
+
+            go(id: issue.to_param)
+          end
         end
       end
     end
@@ -1080,7 +1143,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     describe 'GET #edit' do
-      it_behaves_like 'restricted action', success: 200
+      it_behaves_like 'restricted action', success: 302
 
       def go(id:)
         get :edit,
@@ -1785,7 +1848,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
   describe 'GET service_desk' do
     let_it_be(:project) { create(:project_empty_repo, :public) }
-    let_it_be(:support_bot) { Users::Internal.support_bot }
+    let_it_be(:support_bot) { create(:support_bot) }
     let_it_be(:other_user) { create(:user) }
     let_it_be(:service_desk_issue_1) { create(:issue, project: project, author: support_bot) }
     let_it_be(:service_desk_issue_2) { create(:issue, project: project, author: support_bot, assignees: [other_user]) }

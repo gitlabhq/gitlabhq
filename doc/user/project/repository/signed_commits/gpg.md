@@ -124,7 +124,7 @@ If you don't already have a GPG key, create one:
 To add a GPG key to your user settings:
 
 1. Sign in to GitLab.
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. Select **GPG keys** ({{< icon name="key" >}}).
 1. Select **Add new key**.
@@ -235,7 +235,7 @@ If a GPG key becomes compromised, revoke it. Revoking a key changes both future 
 
 To revoke a GPG key:
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. Select **GPG keys** ({{< icon name="key" >}}).
 1. Select **Revoke** next to the GPG key you want to delete.
@@ -250,7 +250,7 @@ When you remove a GPG key from your GitLab account:
 
 To remove a GPG key from your account:
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. Select **GPG keys** ({{< icon name="key" >}}).
 1. Select **Remove** ({{< icon name="remove" >}}) next to the GPG key you want to delete.
@@ -266,7 +266,7 @@ If you must unverify both future and past commits,
   - [Managing OpenPGP Keys](https://riseup.net/en/security/message-security/openpgp/gpg-keys)
   - [OpenPGP Best Practices](https://riseup.net/en/security/message-security/openpgp/best-practices)
   - [Creating a new GPG key with subkeys](https://www.void.gr/kargig/blog/2013/12/02/creating-a-new-gpg-key-with-subkeys/) (advanced)
-  - [View GPG keys in your instance](../../../../administration/credentials_inventory.md#view-gpg-keys)
+  - [View GPG keys in your instance](../../../../administration/credentials_inventory.md#view-the-credentials-inventory)
   - [Beyond Identity integration](../../integrations/beyond_identity.md)
 
 ## Troubleshooting

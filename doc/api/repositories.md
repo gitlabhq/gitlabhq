@@ -652,7 +652,9 @@ However, until that issue has been completed, the expected version header format
 {{< /history >}}
 
 Get statistics related to the health of a project repository.
-This endpoint is rate-limited to 5 requests/hour per project.
+
+This endpoint is rate-limited to 5 requests/hour per project when `generate` is `true`. The endpoint is only available
+to users with push access to the repository.
 
 ```plaintext
 GET /projects/:id/repository/health

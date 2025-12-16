@@ -1090,7 +1090,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
     with_them do
       it 'outputs changed message for automation after operations happen' do
-        connection_pool = ::Gitlab.next_rails? ? ActiveRecord::Base.connection_pool : ActiveRecord::Base.connection
+        connection_pool = ActiveRecord::Base.connection_pool
         allow(connection_pool).to receive_message_chain(:schema_migration, :table_exists?).and_return(schema_migration_table_exists)
         allow_any_instance_of(ActiveRecord::MigrationContext).to receive(:needs_migration?).and_return(needs_migrations)
 

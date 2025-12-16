@@ -59,6 +59,19 @@ RSpec.describe Packages::Dependency, type: :model, feature_category: :package_re
     end
   end
 
+  describe 'scopes' do
+    describe '.excluding_empty_nuget' do
+      let_it_be(:regular_dependency) { create(:packages_dependency, project:) }
+      let_it_be(:empty_nuget_dependency) do
+        create(:packages_dependency, name: "#{::Packages::Nuget::EMPTY_DEPENDENCY_PREFIX}-.NETStandard2.0", project: project)
+      end
+
+      subject { described_class.excluding_empty_nuget }
+
+      it { is_expected.to contain_exactly(regular_dependency) }
+    end
+  end
+
   describe '.ids_for_package_project_id_names_and_version_patterns' do
     let_it_be(:package_dependency1) do
       create(:packages_dependency, name: 'foo', version_pattern: '~1.0.0', project: project)

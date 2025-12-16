@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Protected environments
 ---
@@ -42,7 +42,7 @@ Prerequisites:
 
 To protect an environment:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Protected environments**.
 1. Select **Protect an environment**.
@@ -159,7 +159,7 @@ they have the following privileges:
 Users granted access to a protected environment, but not push or merge access
 to the branch deployed to it, are only granted access to deploy the environment.
 [Invited groups](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project) added
-to the project with [Reporter role](../../user/permissions.md#project-members-permissions), appear in the dropdown list for deployment-only access.
+to the project with [Reporter role](../../user/permissions.md#project-permissions), appear in the dropdown list for deployment-only access.
 
 To add deployment-only access:
 
@@ -276,7 +276,7 @@ To protect a group-level environment, make sure your environments have the corre
 
 {{< /history >}}
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Environment** list, select the [deployment tier of environments](_index.md#deployment-tier-of-environments) you want to protect.
@@ -295,6 +295,6 @@ Protected environments can also be used to require manual approvals before deplo
 
 ### Reporter can't run a trigger job that deploys to a protected environment in downstream pipeline
 
-A user who has [deployment-only access to protected environments](#deployment-only-access-to-protected-environments) might **not** be able to run a job if it's with a [`trigger`](../yaml/_index.md#trigger) keyword. This is because the job is missing the [`environment`](../yaml/_index.md#environment) keyword definition to associate the job with the protected environment, therefore the job is recognized as a standard job that uses [regular CI/CD permission model](../../user/permissions.md#cicd).
+A user who has [deployment-only access to protected environments](#deployment-only-access-to-protected-environments) might **not** be able to run a job if it's with a [`trigger`](../yaml/_index.md#trigger) keyword. This is because the job is missing the [`environment`](../yaml/_index.md#environment) keyword definition to associate the job with the protected environment, therefore the job is recognized as a standard job that uses [regular CI/CD permission model](../../user/permissions.md#project-cicd).
 
 See [this issue](https://gitlab.com/groups/gitlab-org/-/epics/8483) for more information about supporting `environment` keyword with `trigger` keyword.

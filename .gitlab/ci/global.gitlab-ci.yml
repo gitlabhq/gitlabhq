@@ -94,26 +94,6 @@
       alias: postgres
     - !reference [.redis-services, services]
 
-.use-pg14:
-  extends:
-    - .pg-base-variables
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-  variables:
-    PG_VERSION: "14"
-    REDIS_VERSION: "6.0"
-    REDIS_CLUSTER_VERSION: "6.0"
-
-.use-pg15:
-  extends:
-    - .pg-base-variables
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-  variables:
-    PG_VERSION: "15"
-    REDIS_VERSION: "7.0"
-    REDIS_CLUSTER_VERSION: "7.0.11"
-
 .use-pg16:
   extends:
     - .pg-base-variables
@@ -134,24 +114,21 @@
     REDIS_VERSION: "7.0"
     REDIS_CLUSTER_VERSION: "7.0.11"
 
+.use-pg18:
+  extends:
+    - .pg-base-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+  variables:
+    PG_VERSION: "18"
+    REDIS_VERSION: "7.0"
+    REDIS_CLUSTER_VERSION: "7.0.11"
+
+
 .es7-services:
   services:
     - name: elasticsearch:7.17.6
       command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
-
-.use-pg14-es7-ee:
-  extends:
-    - .use-pg14
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-    - !reference [.es7-services, services]
-
-.use-pg15-es7-ee:
-  extends:
-    - .use-pg15
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-    - !reference [.es7-services, services]
 
 .use-pg16-es7-ee:
   extends:
@@ -167,6 +144,13 @@
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.es7-services, services]
 
+.use-pg18-es7-ee:
+  extends:
+    - .use-pg18
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.es7-services, services]
+
 .es8-services:
   services:
     - name: elasticsearch:8.17.4
@@ -176,22 +160,6 @@
     ES_SETTING_DISCOVERY_TYPE: "single-node"
     ES_SETTING_XPACK_SECURITY_ENABLED: "false"
     ES_SETTING_CLUSTER_ROUTING_ALLOCATION_DISK_THRESHOLD__ENABLED: "false"
-
-.use-pg14-es8-ee:
-  extends:
-    - .use-pg14
-    - .es8-variables
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-    - !reference [.es8-services, services]
-
-.use-pg15-es8-ee:
-  extends:
-    - .use-pg15
-    - .es8-variables
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-    - !reference [.es8-services, services]
 
 .use-pg16-es8-ee:
   extends:
@@ -209,9 +177,17 @@
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.es8-services, services]
 
+.use-pg18-es8-ee:
+  extends:
+    - .use-pg18
+    - .es8-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.es8-services, services]
+
 .es9-services:
   services:
-    - name: elasticsearch:9.0.1
+    - name: elasticsearch:9.2.1
 
 .es9-variables:
   variables:
@@ -246,20 +222,6 @@
       alias: elasticsearch
       command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
 
-.use-pg14-opensearch1-ee:
-  extends:
-    - .use-pg14
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-    - !reference [.os1-services, services]
-
-.use-pg15-opensearch1-ee:
-  extends:
-    - .use-pg15
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-    - !reference [.os1-services, services]
-
 .use-pg16-opensearch1-ee:
   extends:
     - .use-pg16
@@ -274,25 +236,18 @@
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.os1-services, services]
 
+.use-pg18-opensearch1-ee:
+  extends:
+    - .use-pg18
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.os1-services, services]
+
 .os2-services:
   services:
     - name: opensearchproject/opensearch:2.15.0
       alias: elasticsearch
       command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
-
-.use-pg14-opensearch2-ee:
-  extends:
-    - .use-pg14
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-    - !reference [.os2-services, services]
-
-.use-pg15-opensearch2-ee:
-  extends:
-    - .use-pg15
-  services:
-    - !reference [.db-services-with-auto-explain, services]
-    - !reference [.os2-services, services]
 
 .use-pg16-opensearch2-ee:
   extends:
@@ -304,6 +259,13 @@
 .use-pg17-opensearch2-ee:
   extends:
     - .use-pg17
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.os2-services, services]
+
+.use-pg18-opensearch2-ee:
+  extends:
+    - .use-pg18
   services:
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.os2-services, services]
@@ -415,7 +377,12 @@
     files:
       - Gemfile.lock
       - Gemfile.checksum
-    prefix: "ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}"
+    # Include the Go, Git, and Rust versions here to ensure that the
+    # Ruby gem cache will be used by a CI image that has the right
+    # version of OpenSSL and other native libraries. We have seen
+    # distributions update the underlying OpenSSL version, which breaks
+    # the Ruby openssl gem.
+    prefix: "ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}-go-${GO_VERSION}-rust-${RUST_VERSION}-git-${GIT_VERSION}"
   paths:
     - vendor/ruby/
   policy: pull

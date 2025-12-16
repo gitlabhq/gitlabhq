@@ -1,5 +1,6 @@
 import { GlToggle, GlIcon, GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import DisabledByPolicyPopover from '~/projects/settings/branch_rules/components/view/disabled_by_policy_popover.vue';
 import GroupInheritancePopover from '~/projects/settings/branch_rules/components/view/group_inheritance_popover.vue';
 import ProtectionToggle from '~/projects/settings/branch_rules/components/view/protection_toggle.vue';
 
@@ -36,6 +37,8 @@ describe('ProtectionToggle', () => {
     });
   };
 
+  const findDisabledByPolicyPopover = () => wrapper.findComponent(DisabledByPolicyPopover);
+  const findGroupInheritancePopover = () => wrapper.findComponent(GroupInheritancePopover);
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findIcon = () => wrapper.findByTestId('force-push-icon');
 
@@ -58,7 +61,12 @@ describe('ProtectionToggle', () => {
 
     it('does not render group inheritance popover', () => {
       expect(findToggle().props('disabled')).toBe(false);
-      expect(wrapper.findComponent(GroupInheritancePopover).exists()).toBe(false);
+      expect(findGroupInheritancePopover().exists()).toBe(false);
+    });
+
+    it('does not render the disabled by policy popover', () => {
+      expect(findToggle().props('disabled')).toBe(false);
+      expect(findDisabledByPolicyPopover().exists()).toBe(false);
     });
 
     it('renders the toggle description, when protection is on', () => {
@@ -78,7 +86,21 @@ describe('ProtectionToggle', () => {
         });
 
         expect(findToggle().props('disabled')).toBe(true);
-        expect(wrapper.findComponent(GroupInheritancePopover).exists()).toBe(true);
+        expect(findGroupInheritancePopover().exists()).toBe(true);
+      });
+    });
+
+    describe('when protected by security policies', () => {
+      beforeEach(() => {
+        createComponent({
+          props: { isProtected: true, isProtectedByPolicy: true },
+          provided: { canAdminProtectedBranches: true },
+        });
+      });
+
+      it('renders disabled by policy popover and disabled toggle, when protection is on', () => {
+        expect(findToggle().props('disabled')).toBe(true);
+        expect(findDisabledByPolicyPopover().exists()).toBe(true);
       });
     });
   });

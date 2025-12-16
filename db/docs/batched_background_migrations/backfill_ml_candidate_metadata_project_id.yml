@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillMlCandidateMetadataProjectId
-description: Backfills sharding key `ml_candidate_metadata.project_id` from `ml_candidates`.
-feature_category: mlops
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157484
-milestone: '17.2'
-queued_migration_version: 20240626142206
-finalized_by: '20250113233040'

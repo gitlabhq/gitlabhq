@@ -1,9 +1,11 @@
 <script>
 import { GlBadge, GlTab, GlTabs, GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
+// eslint-disable-next-line no-restricted-imports
 import { SCOPE } from '../../constants';
 
 export default {
+  name: 'CatalogTabs',
   components: {
     GlBadge,
     GlTab,
@@ -20,6 +22,7 @@ export default {
       required: true,
     },
   },
+  emits: ['setScope'],
   computed: {
     tabs() {
       return [

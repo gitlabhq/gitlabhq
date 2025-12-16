@@ -26,9 +26,13 @@ module Packages
       attr_reader :package
 
       def package_files
-        package.installable_package_files.preload_pipelines_with_user_project_namespace_route.map do |package_file|
+        package
+          .installable_package_files
+          .preload_pipelines_with_user_project_namespace_route
+          .preload_project
+          .map do |package_file|
           package_file
-            .as_json(methods: :download_path)
+            .as_json(methods: :download_path, only: [:id, :file_name])
             .merge('pipelines' => pipelines(package_file))
         end
       end

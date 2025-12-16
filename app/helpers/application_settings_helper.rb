@@ -111,6 +111,15 @@ module ApplicationSettingsHelper
     ]
   end
 
+  def default_search_scope_options_for_select
+    options = Search::Scopes.scope_definitions.map do |scope, definition|
+      [definition[:label].call, scope.to_s]
+    end
+
+    sorted_options = options.sort_by { |_label, value| Search::Scopes.scope_definitions[value.to_sym][:sort] }
+    sorted_options.prepend([_('System default (automatic)'), 'system default'])
+  end
+
   def restricted_level_checkboxes(form)
     restricted_visibility_levels_help_text = {
       Gitlab::VisibilityLevel::PUBLIC => s_(
@@ -274,6 +283,7 @@ module ApplicationSettingsHelper
       :asset_proxy_allowlist,
       :static_objects_external_storage_auth_token,
       :static_objects_external_storage_url,
+      :authn_data_retention_cleanup_enabled,
       :authorized_keys_enabled,
       :auto_devops_enabled,
       :auto_devops_domain,
@@ -365,6 +375,9 @@ module ApplicationSettingsHelper
       :housekeeping_incremental_repack_period,
       :housekeeping_optimize_repository_period,
       :html_emails_enabled,
+      :iframe_rendering_enabled,
+      :iframe_rendering_allowlist,
+      :iframe_rendering_allowlist_raw,
       :import_sources,
       :inactive_resource_access_tokens_delete_after_days,
       :inactive_projects_delete_after_months,
@@ -650,7 +663,8 @@ module ApplicationSettingsHelper
       :resource_usage_limits,
       :runner_jobs_request_api_limit,
       :runner_jobs_patch_trace_api_limit,
-      :runner_jobs_endpoints_api_limit
+      :runner_jobs_endpoints_api_limit,
+      :background_operations_max_jobs
     ].tap do |settings|
       unless Gitlab.com?
         settings << :deactivate_dormant_users

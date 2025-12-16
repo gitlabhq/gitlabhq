@@ -1,0 +1,6 @@
+---
+name: create_merge_request_pipeline
+description: Grants the ability to create merge request pipelines
+feature_category: continuous_integration
+boundaries:
+  - project

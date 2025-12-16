@@ -38,6 +38,7 @@ module Groups
       user_ids_for_project_authorizations_refresh = obtain_user_ids_for_project_authorizations_refresh
 
       destroy_associated_users
+      ::Import::BulkImports::RemoveExportUploadsService.new(group).execute
 
       group.destroy
 

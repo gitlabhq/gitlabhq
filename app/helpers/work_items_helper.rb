@@ -18,9 +18,7 @@ module WorkItemsHelper
   def work_item_views_only_data(resource_parent, current_user)
     group = extract_group(resource_parent)
 
-    base_data_legacy_only(resource_parent, current_user, group).tap do |data|
-      add_project_specific_data(data, resource_parent, current_user)
-    end
+    base_data_legacy_only(resource_parent, current_user, group)
   end
 
   # overridden in EE
@@ -51,6 +49,7 @@ module WorkItemsHelper
     resource_parent.is_a?(Group) ? resource_parent : resource_parent.group
   end
 
+  # rubocop:disable Metrics/AbcSize -- Need to add additonal FF
   def base_data(resource_parent, current_user, group)
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
@@ -83,19 +82,16 @@ module WorkItemsHelper
       rss_path: rss_path_for(resource_parent),
       calendar_path: calendar_path_for(resource_parent),
       has_projects: has_group_projects?(resource_parent).to_s,
-      work_item_planning_view_enabled: resource_parent.work_items_consolidated_list_enabled?(current_user).to_s
+      work_item_planning_view_enabled: resource_parent.work_items_consolidated_list_enabled?(current_user).to_s,
+      work_items_saved_views_enabled: resource_parent.work_items_saved_views_enabled?(current_user).to_s
     }
   end
+  # rubocop:enable Metrics/AbcSize
 
   def base_data_legacy_only(resource_parent, current_user, group)
     {
-      autocomplete_award_emojis_path: autocomplete_award_emojis_path,
-      can_bulk_update: can?(current_user, :admin_issue, resource_parent).to_s,
-      can_edit: can?(current_user, :admin_project, resource_parent).to_s,
       full_path: resource_parent.full_path,
-      group_path: group&.full_path,
       issues_list_path: issues_path_for(resource_parent),
-      new_trial_path: instance_type_new_trial_path(group),
       default_branch: resource_parent.is_a?(Project) ? resource_parent.default_branch_or_main : nil,
       initial_sort: current_user&.user_preference&.issues_sort,
       is_signed_in: current_user.present?.to_s,
@@ -108,10 +104,9 @@ module WorkItemsHelper
       can_read_crm_contact: can?(current_user, :read_crm_contact, resource_parent.crm_group).to_s,
       max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
       can_read_crm_organization: can?(current_user, :read_crm_organization, resource_parent.crm_group).to_s,
-      rss_path: rss_path_for(resource_parent),
-      calendar_path: calendar_path_for(resource_parent),
       has_projects: has_group_projects?(resource_parent).to_s,
-      work_item_planning_view_enabled: resource_parent.work_items_consolidated_list_enabled?(current_user).to_s
+      work_item_planning_view_enabled: resource_parent.work_items_consolidated_list_enabled?(current_user).to_s,
+      work_items_saved_views_enabled: resource_parent.work_items_saved_views_enabled?(current_user).to_s
     }
   end
 

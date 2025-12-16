@@ -7,6 +7,7 @@ import { __ } from '~/locale';
 const VARIABLES_PER_PAGE = 15;
 
 export default {
+  name: 'VariableTable',
   components: {
     GlButton,
     GlPagination,

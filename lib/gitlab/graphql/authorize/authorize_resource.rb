@@ -32,7 +32,11 @@ module Gitlab
             @authorizes_object = true
           end
 
-          def raise_resource_not_available_error!(msg = RESOURCE_ACCESS_ERROR)
+          def raise_resource_not_available_error!(msg = RESOURCE_ACCESS_ERROR, extensions = {})
+            if extensions.present?
+              raise ::Gitlab::Graphql::Errors::ResourceNotAvailable.new(msg, extensions: extensions)
+            end
+
             raise ::Gitlab::Graphql::Errors::ResourceNotAvailable, msg
           end
 

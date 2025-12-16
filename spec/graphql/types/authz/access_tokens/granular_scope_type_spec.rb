@@ -10,4 +10,11 @@ RSpec.describe Types::Authz::AccessTokens::GranularScopeType, feature_category: 
   specify { expect(described_class.graphql_name).to eq('AccessTokenGranularScope') }
 
   specify { expect(described_class).to have_graphql_fields(fields) }
+
+  describe 'access' do
+    it 'has matching enum values' do
+      expect(Types::Authz::AccessTokens::GranularScopeAccessEnum.values.keys.map(&:downcase))
+        .to match_array(Authz::GranularScope.accesses.keys)
+    end
+  end
 end

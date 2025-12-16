@@ -42,7 +42,7 @@ Replace these values in the directory path:
 - `WINDOWS_USERNAME`: Your Windows username.
 - `VS_VERSION`: The version of your Visual Studio installation.
 
-## Required Information for Support
+## Required information for support
 
 Before contacting Support, make sure the latest GitLab extension is installed. Visual Studio should automatically update to the latest version of the extension.
 
@@ -64,7 +64,7 @@ Gather this information from affected users, and provide it in your bug report:
 1. Describe how to reproduce the error Include a screen recording, if possible.
 1. Describe how other GitLab Duo features are affected:
    - Is Code Suggestions working?
-   - Does Web IDE Duo Chat return responses?
+   - Does GitLab Duo Chat in the Web IDE return responses?
 1. Perform extension isolation testing. Try disabling (or uninstalling) all other extensions to determine
    if another extension is causing the issue. This helps determine if the problem is with our extension,
    or from an external source.

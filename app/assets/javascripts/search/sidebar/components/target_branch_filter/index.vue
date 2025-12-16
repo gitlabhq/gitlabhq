@@ -8,6 +8,7 @@ import AjaxCache from '~/lib/utils/ajax_cache';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { InternalEvents } from '~/tracking';
 import FilterDropdown from '~/search/sidebar/components/shared/filter_dropdown.vue';
+// eslint-disable-next-line no-restricted-imports
 import {
   EVENT_SELECT_TARGET_BRANCH_FILTER_ON_MERGE_REQUEST_PAGE,
   TARGET_BRANCH_PARAM,

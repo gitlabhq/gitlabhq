@@ -1,0 +1,18 @@
+---
+key_path: counts.container_registry_protection_rules
+description: Total number of container repository protection rules
+product_group: container_registry
+product_categories:
+  - container_registry
+value_type: number
+status: active
+milestone: "18.7"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213721
+time_frame: all
+data_source: database
+data_category: optional
+tiers:
+  - free
+  - premium
+  - ultimate
+instrumentation_class: CountContainerRegistryProtectionRulesMetric

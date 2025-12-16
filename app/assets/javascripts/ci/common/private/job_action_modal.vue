@@ -31,6 +31,7 @@ export default {
       required: true,
     },
   },
+  emits: ['change', 'confirm'],
   computed: {
     modalText() {
       return {

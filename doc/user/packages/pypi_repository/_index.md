@@ -42,7 +42,7 @@ Prerequisites:
 
 To turn off package request forwarding:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Packages and registries**.
 1. Under **Package forwarding**, clear the **Forward PyPI package requests** checkbox.
 
@@ -296,6 +296,20 @@ When using private packages, keep in mind the following best practices:
 - Check your group's package forwarding settings.
 - Use `--no-index` and `--index-url` flags together when installing private packages.
 - Regularly audit your package sources using `pip debug`.
+
+## Delete a PyPI package
+
+Prerequisites:
+
+- You must have at least the Maintainer role.
+
+Before you delete a package, make sure you understand
+the [associated security risks](../package_registry/supported_functionality.md#deleting-packages).
+
+To delete a package, you can either:
+
+- [Use the UI](../package_registry/reduce_package_registry_storage.md#delete-a-package).
+- [Use the API](../../../api/packages.md#delete-a-project-package).
 
 ## Using `requirements.txt`
 

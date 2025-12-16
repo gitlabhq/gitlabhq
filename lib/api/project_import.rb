@@ -17,8 +17,30 @@ module API
         declared_params(include_missing: false)
       end
 
+      params :namespace_params do
+        optional :namespace,
+          type: String,
+          desc: "(deprecated) The ID or path of the namespace to import the project to. Defaults to the current " \
+            "user's namespace."
+        optional :namespace_id,
+          type: Integer,
+          desc: "The ID of the namespace that the project will be imported into. Defaults to the current user's " \
+            "namespace.",
+          documentation: { example: 1 }
+        optional :namespace_path,
+          type: String,
+          desc: "The path of the namespace that the project will be imported into. Defaults to the current user's " \
+            "namespace.",
+          documentation: { example: 'new_path/gitlab' }
+        mutually_exclusive :namespace, :namespace_id, :namespace_path
+      end
+
       def namespace_from(params, current_user)
-        if params[:namespace]
+        if params[:namespace_id].present?
+          find_namespace!(params[:namespace_id])
+        elsif params[:namespace_path].present?
+          find_namespace_by_path!(params[:namespace_path])
+        elsif params[:namespace].present?
           find_namespace!(params[:namespace])
         else
           current_user.namespace
@@ -56,7 +78,7 @@ module API
         requires :path, type: String, desc: 'The new project path and name'
         requires :file, type: ::API::Validations::Types::WorkhorseFile, desc: 'The project export file to be imported', documentation: { type: 'file' }
         optional :name, type: String, desc: 'The name of the project to be imported. Defaults to the path of the project if not provided.'
-        optional :namespace, type: String, desc: "The ID or name of the namespace that the project will be imported into. Defaults to the current user's namespace."
+        use :namespace_params
         optional :overwrite, type: Boolean, default: false, desc: 'If there is a project in the same namespace and with the same name overwrite it'
         optional :override_params,
           type: Hash,
@@ -140,7 +162,7 @@ module API
         requires :url, type: String, desc: 'The URL for the file.'
         requires :path, type: String, desc: 'The new project path and name'
         optional :name, type: String, desc: 'The name of the project to be imported. Defaults to the path of the project if not provided.'
-        optional :namespace, type: String, desc: "The ID or name of the namespace that the project will be imported into. Defaults to the current user's namespace."
+        use :namespace_params
         optional :overwrite, type: Boolean, default: false, desc: 'If there is a project in the same namespace and with the same name overwrite it'
         optional :override_params,
           type: Hash,
@@ -295,7 +317,7 @@ module API
         requires :secret_access_key, type: String, desc: 'Secret access key'
         requires :path, type: String, desc: 'The new project path and name'
         optional :name, type: String, desc: 'The name of the project to be imported. Defaults to the path of the project if not provided.'
-        optional :namespace, type: String, desc: "The ID or name of the namespace that the project will be imported into. Defaults to the current user's namespace."
+        use :namespace_params
         optional :overwrite, type: Boolean, default: false, desc: 'If there is a project in the same namespace and with the same name overwrite it'
         optional :override_params,
           type: Hash,

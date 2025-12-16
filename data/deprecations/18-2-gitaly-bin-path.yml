@@ -1,5 +1,5 @@
 - title: "`bin_path` and `use_bundled_binaries` configuration options in Gitaly"
-  removal_milestone: "19.0"
+  removal_milestone: "Pending"
   announcement_milestone: "18.2"
   breaking_change: true
   reporter: divya_gitlab

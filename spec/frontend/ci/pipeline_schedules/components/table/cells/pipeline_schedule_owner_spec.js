@@ -3,16 +3,15 @@ import { shallowMount } from '@vue/test-utils';
 import PipelineScheduleOwner from '~/ci/pipeline_schedules/components/table/cells/pipeline_schedule_owner.vue';
 import { mockPipelineScheduleNodes } from '../../../mock_data';
 
+const mockSchedule = mockPipelineScheduleNodes[0];
+
 describe('Pipeline schedule owner', () => {
   let wrapper;
 
-  const defaultProps = {
-    schedule: mockPipelineScheduleNodes[0],
-  };
-
-  const createComponent = (props = defaultProps) => {
+  const createComponent = ({ props } = {}) => {
     wrapper = shallowMount(PipelineScheduleOwner, {
       propsData: {
+        schedule: mockSchedule,
         ...props,
       },
     });
@@ -27,10 +26,27 @@ describe('Pipeline schedule owner', () => {
 
   it('displays avatar', () => {
     expect(findAvatar().exists()).toBe(true);
-    expect(findAvatar().props('src')).toBe(defaultProps.schedule.owner.avatarUrl);
+    expect(findAvatar().props('src')).toBe(mockSchedule.owner.avatarUrl);
   });
 
   it('avatar links to user', () => {
-    expect(findAvatarLink().attributes('href')).toBe(defaultProps.schedule.owner.webPath);
+    expect(findAvatarLink().attributes('href')).toBe(mockSchedule.owner.webPath);
+  });
+
+  describe('when owner is missing', () => {
+    beforeEach(() => {
+      createComponent({
+        props: {
+          schedule: {
+            ...mockSchedule,
+            owner: null,
+          },
+        },
+      });
+    });
+
+    it('displays empty component', () => {
+      expect(findAvatar().exists()).toBe(false);
+    });
   });
 });

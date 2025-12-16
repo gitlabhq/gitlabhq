@@ -116,5 +116,8 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
       it_behaves_like 'cloneable and moveable work item'
       it_behaves_like 'cloneable and moveable widget data'
     end
+
+    it_behaves_like 'tracks work item event', :original_work_item, :current_user,
+      Gitlab::WorkItems::Instrumentation::EventActions::CLONE
   end
 end

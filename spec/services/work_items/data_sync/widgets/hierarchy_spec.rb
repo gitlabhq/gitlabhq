@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::DataSync::Widgets::Hierarchy, feature_category: :team_planning do
-  let_it_be(:support_bot) { Users::Internal.support_bot }
   let_it_be(:current_user) { create(:user) }
+  let_it_be(:support_bot) { create(:support_bot) }
 
   let(:params) { { operation: :move } }
 

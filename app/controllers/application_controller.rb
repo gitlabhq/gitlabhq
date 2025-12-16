@@ -31,6 +31,16 @@ class ApplicationController < BaseActionController
   include Gitlab::HttpRouter::RuleMetrics
   include CookiesHelper
 
+  content_security_policy do |p|
+    next if p.directives.blank?
+    next unless Gitlab::CurrentSettings.try(:iframe_rendering_enabled?)
+
+    add_frame_srcs = Gitlab::CurrentSettings.iframe_rendering_allowlist.map { |domain| "https://#{domain}" }
+
+    append_to_content_security_policy(p, 'frame-src', add_frame_srcs)
+    append_to_content_security_policy(p, 'child-src', add_frame_srcs)
+  end
+
   around_action :set_current_ip_address
 
   before_action :authenticate_user!, except: [:route_not_found]

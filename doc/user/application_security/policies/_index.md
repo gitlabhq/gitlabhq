@@ -125,9 +125,9 @@ The Owner role and custom roles with the `manage_security_policy_link` permissio
 
 | Organization unit | Group owner or group `manage_security_policy_link` permission | Subgroup owner or subgroup `manage_security_policy_link` permission | Project owner or project `manage_security_policy_link` permission |
 |-------------------|---------------------------------------------------------------|---------------------------------------------------------------------|-------------------------------------------------------------------|
-| Group             | {{< icon name="check-circle" >}} Yes                          | {{< icon name="dotted-circle" >}} No                                | {{< icon name="dotted-circle" >}} No                              |
-| Subgroup          | {{< icon name="check-circle" >}} Yes                          | {{< icon name="check-circle" >}} Yes                                | {{< icon name="dotted-circle" >}} No                              |
-| Project           | {{< icon name="check-circle" >}} Yes                          | {{< icon name="check-circle" >}} Yes                                | {{< icon name="check-circle" >}} Yes                              |
+| Group             | {{< yes >}} | {{< no >}}  | {{< no >}}  |
+| Subgroup          | {{< yes >}} | {{< yes >}} | {{< no >}}  |
+| Project           | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 
 ### Required permissions
 
@@ -202,7 +202,7 @@ The Policies page displays deployed policies for all available environments. You
 policy's information (for example, description or enforcement status), and create and edit deployed
 policies:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Policies**.
 
 ![Policies List Page](img/policies_list_v17_7.png)
@@ -213,7 +213,7 @@ A green checkmark in the first column indicates that the policy is enabled and e
 
 Use the policy editor to create, edit, and delete policies:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Policies**.
    - To create a new policy, select **New policy** which is located in the **Policies** page's header.
      You can then select which type of policy to create.

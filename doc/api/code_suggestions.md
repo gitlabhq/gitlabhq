@@ -6,7 +6,7 @@ description: Documentation for the REST API for Code Suggestions.
 title: Code Suggestions API
 ---
 
-Use this API to access the [Code Suggestions](../user/project/repository/code_suggestions/_index.md) feature.
+Use this API to access the [GitLab Duo Code Suggestions](../user/project/repository/code_suggestions/_index.md) feature.
 
 ## Generate code completions
 
@@ -140,13 +140,12 @@ Example request:
 
 ```shell
 curl --request POST \
-  --url "https://gitlab.example.com/api/v4/code_suggestions/enabled"
+  --url "https://gitlab.example.com/api/v4/code_suggestions/enabled" \
   --header "PRIVATE-TOKEN: <YOUR_ACCESS_TOKEN>" \
   --header "Content-Type: application/json" \
   --data '{
       "project_path": "group/project_name"
-    }' \
-
+    }'
 ```
 
 ## Fetch direct connection details for the AI gateway

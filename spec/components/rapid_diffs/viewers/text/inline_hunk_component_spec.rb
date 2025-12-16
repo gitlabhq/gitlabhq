@@ -82,6 +82,12 @@ RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, type: :component,
     expect(page).to have_selector("[data-hunk-lines]")
   end
 
+  it "renders data-expanded" do
+    lines.each { |line| line.expanded = true }
+    render_component
+    expect(page).to have_selector("[data-expanded]")
+  end
+
   def render_component(diff_hunk = hunk)
     render_inline(
       described_class.new(

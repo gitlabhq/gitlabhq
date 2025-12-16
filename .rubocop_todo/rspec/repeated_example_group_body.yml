@@ -21,7 +21,6 @@ RSpec/RepeatedExampleGroupBody:
     - 'spec/helpers/gitlab_routing_helper_spec.rb'
     - 'spec/helpers/groups_helper_spec.rb'
     - 'spec/lib/api/entities/application_setting_spec.rb'
-    - 'spec/lib/banzai/filter/references/commit_range_reference_filter_spec.rb'
     - 'spec/lib/banzai/filter/references/commit_reference_filter_spec.rb'
     - 'spec/lib/gitlab/blob_helper_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/release_spec.rb'

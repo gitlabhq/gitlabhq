@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'help/instance_configuration' do
+RSpec.describe 'help/instance_configuration', feature_category: :configuration do
   describe 'General Sections:' do
     let(:instance_configuration) { build(:instance_configuration) }
     let(:settings) { instance_configuration.settings }
@@ -21,6 +21,7 @@ RSpec.describe 'help/instance_configuration' do
       expect(rendered).to have_link(nil, href: '#size-limits')
       expect(rendered).to have_link(nil, href: '#package-registry')
       expect(rendered).to have_link(nil, href: '#rate-limits')
+      expect(rendered).to have_link(nil, href: '#users-api-rate-limits')
       expect(rendered).to have_link(nil, href: '#ci-cd-limits')
     end
 
@@ -32,6 +33,7 @@ RSpec.describe 'help/instance_configuration' do
       expect(rendered).to have_css('h2#size-limits')
       expect(rendered).to have_css('h2#package-registry')
       expect(rendered).to have_css('h2#rate-limits')
+      expect(rendered).to have_css('h2#users-api-rate-limits')
       expect(rendered).to have_css('h2#ci-cd-limits')
     end
   end

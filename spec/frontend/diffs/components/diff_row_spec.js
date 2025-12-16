@@ -194,13 +194,19 @@ describe('DiffRow', () => {
   it('renders left line numbers', () => {
     wrapper = createWrapper({ props: { line: testLines[0] } });
     const lineNumber = testLines[0].left.old_line;
-    expect(wrapper.find(`[data-linenumber="${lineNumber}"]`).exists()).toBe(true);
+    const line = wrapper.find(`[data-linenumber="${lineNumber}"]`);
+
+    expect(line.exists()).toBe(true);
+    expect(line.attributes('aria-label')).toBe(String(lineNumber));
   });
 
   it('renders right line numbers', () => {
     wrapper = createWrapper({ props: { line: testLines[0] } });
     const lineNumber = testLines[0].right.new_line;
-    expect(wrapper.find(`[data-linenumber="${lineNumber}"]`).exists()).toBe(true);
+    const line = wrapper.find(`[data-linenumber="${lineNumber}"]`);
+
+    expect(line.exists()).toBe(true);
+    expect(line.attributes('aria-label')).toBe(String(lineNumber));
   });
 
   describe('drag operations', () => {
