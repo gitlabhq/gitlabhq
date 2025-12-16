@@ -2,7 +2,7 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Dynamic Application Security Testing (DAST)
+title: Dynamic application security testing
 description: Automated penetration testing, vulnerability detection, web application scanning, security assessment, and CI/CD integration.
 ---
 
@@ -39,7 +39,7 @@ together with the other GitLab security tools to provide a comprehensive securit
 applications.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Dynamic Application Security Testing (DAST) - Advanced Security Testing](https://www.youtube.com/watch?v=nbeDUoLZJTo).
+For an overview, see [DAST - advanced security testing](https://www.youtube.com/watch?v=nbeDUoLZJTo).
 
 ## GitLab DAST
 

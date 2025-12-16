@@ -123,13 +123,23 @@ RSpec.describe 'User explores projects', feature_category: :user_profile do
           [archived_project, public_project].each { |project| create(:note_on_issue, project: project) }
 
           TrendingProject.refresh!
-
-          visit(trending_explore_projects_path)
         end
 
-        include_examples 'shows public projects'
-        include_examples 'empty search results'
-        include_examples 'minimum search length'
+        it 'redirects to root explore page' do
+          visit trending_explore_projects_path
+          expect(page).to have_current_path(explore_root_path)
+        end
+
+        context 'when `retire_trending_projects` flag is disabled' do
+          before do
+            stub_feature_flags(retire_trending_projects: false)
+            visit(trending_explore_projects_path)
+          end
+
+          include_examples 'shows public projects'
+          include_examples 'empty search results'
+          include_examples 'minimum search length'
+        end
       end
     end
   end

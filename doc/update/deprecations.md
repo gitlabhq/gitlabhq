@@ -4822,7 +4822,7 @@ Specifically, the following are being deprecated and will no longer be updated a
 - Container scanning: version 5
 - Coverage-guided fuzz testing: version 3
 - Dependency scanning: version 3
-- Dynamic Application Security Testing (DAST): version 3
+- Dynamic application security testing (DAST): version 3
 - DAST API: version 2
 - IaC scanning: version 3
 - License scanning: version 4
@@ -6593,7 +6593,7 @@ Specifically, the following are being deprecated and will no longer be updated a
 - Container scanning: version 4
 - Coverage-guided fuzz testing: version 2
 - Dependency scanning: version 2
-- Dynamic Application Security Testing (DAST): version 2
+- Dynamic application security testing (DAST): version 2
 - Infrastructure as Code (IaC) scanning: version 1
 - License scanning: version 3
 - Secret detection: version 3

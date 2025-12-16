@@ -26,7 +26,20 @@ export default {
       /** @type {'pending'|'success'|'error'} */
       state: 'error',
       credentials: null,
+      form: { deviceName: '', password: '' },
     };
+  },
+  computed: {
+    disabled() {
+      const isEmptyDeviceName = this.form.deviceName.trim() === '';
+      const isEmptyPassword = this.form.password.trim() === '';
+
+      if (this.passwordRequired === false) {
+        return isEmptyDeviceName;
+      }
+
+      return isEmptyDeviceName || isEmptyPassword;
+    },
   },
   created() {
     if (this.initialError) {
@@ -97,8 +110,10 @@ export default {
         >
           <password-input
             id="passkey-registration-current-password"
+            v-model="form.password"
             name="current_password"
             data-testid="current-password-input"
+            type="password"
           />
         </gl-form-group>
 
@@ -109,6 +124,7 @@ export default {
         >
           <gl-form-input
             id="device-name"
+            v-model="form.deviceName"
             name="device_registration[name]"
             :placeholder="__('Macbook Touch ID on Edge')"
             data-testid="device-name-input"
@@ -119,7 +135,7 @@ export default {
         <input type="hidden" name="authenticity_token" :value="$options.csrfToken" />
 
         <div class="gl-flex gl-gap-3">
-          <gl-button type="submit" variant="confirm">{{
+          <gl-button type="submit" :disabled="disabled" variant="confirm">{{
             s__('Add passkey|Add passkey')
           }}</gl-button>
           <gl-button data-testid="cancel-btn" :href="twoFactorAuthPath">{{

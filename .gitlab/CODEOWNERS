@@ -1822,6 +1822,9 @@ lib/api/entities/project_identity.rb
 lib/api/entities/project.rb
 ee/lib/ee/api/entities/project.rb
 
+[Category:Groups & Projects] @gitlab-com/gl-infra/tenant-scale/organizations/groups-and-projects
+app/views/explore/projects/trending.html.haml
+
 [Compliance] @gitlab-org/software-supply-chain-security/compliance/engineering
 /app/services/audit_events/build_service.rb
 /ee/app/services/ee/audit_events/build_service.rb

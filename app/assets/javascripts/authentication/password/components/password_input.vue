@@ -95,6 +95,7 @@ export default {
       :title="title"
       :type="type"
       :disabled="disabled"
+      v-on="$listeners"
     />
     <gl-button
       v-gl-tooltip="toggleVisibilityLabel"

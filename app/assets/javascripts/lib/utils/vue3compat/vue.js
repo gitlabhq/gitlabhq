@@ -1,9 +1,14 @@
 import VueCompatOriginal from '@vue/compat';
+import { logDevNotice } from '~/lib/logger';
 
 export * from '@vue/compat';
 
 class GitLabPatchedVue extends VueCompatOriginal {
   constructor(rawConfig, ...rest) {
+    if (rawConfig?.name) {
+      logDevNotice(`[V] Using Vue.js 3 (with @vue/compat) for ${rawConfig.name}`);
+    }
+
     const config = rawConfig?.el ? { ...rawConfig } : rawConfig;
     let originalEl;
     if (config?.el) {

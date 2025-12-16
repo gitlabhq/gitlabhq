@@ -130,14 +130,17 @@ If a site profile's target or authenticated URL is updated, the request headers 
 
 ### Delete a site profile
 
-Prerequisites:
-
-- If a DAST scan uses the profile, you must be able to push to the branch associated with the scan.
-
 {{< alert type="note" >}}
 
 If a site profile is linked to a security policy, a user cannot delete the profile from this page.
 See [Scan execution policies](../policies/scan_execution_policies.md) for more information.
+
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
+If a site profile is linked to an [on-demand scan](on-demand_scan.md) and is deleted,
+the on-demand scan is also deleted.
 
 {{< /alert >}}
 
@@ -334,14 +337,17 @@ To edit a scanner profile:
 
 ### Delete a scanner profile
 
-Prerequisites:
-
-- If a DAST scan uses the profile, you must be able to push to the branch associated with the scan.
-
 {{< alert type="note" >}}
 
 If a scanner profile is linked to a security policy, a user cannot delete the profile from this
 page. For more information, see [Scan execution policies](../policies/scan_execution_policies.md).
+
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
+If a scanner profile is linked to an [on-demand scan](on-demand_scan.md) and is deleted,
+the on-demand scan is also deleted.
 
 {{< /alert >}}
 

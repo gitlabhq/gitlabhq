@@ -75,7 +75,7 @@ unexpected behavior.
 
 Behavioral testing tools include:
 
-- Dynamic Application Security Testing (DAST): Test your application for known attack vectors.
+- Dynamic application security testing (DAST): Test your application for known attack vectors.
 - API security testing: Test your application's API for known attacks and vulnerabilities to input.
 - Coverage-guided fuzz testing: Test your application for unexpected behavior.
 

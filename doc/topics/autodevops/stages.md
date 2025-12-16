@@ -289,7 +289,7 @@ in the first place, and thus not realize that it needs to re-apply the old confi
 
 {{< /details >}}
 
-Dynamic Application Security Testing (DAST) uses the popular open source tool
+Dynamic application security testing (DAST) uses the popular open source tool
 [OWASP ZAProxy](https://github.com/zaproxy/zaproxy) to analyze the current code
 and check for potential security issues. The Auto DAST stage is skipped on
 licenses other than [Ultimate](https://about.gitlab.com/pricing/).
@@ -304,7 +304,7 @@ on the [Security Dashboard](../../user/application_security/security_dashboard/_
 and the merge request widget.
 
 For more information, see
-[Dynamic Application Security Testing (DAST)](../../user/application_security/dast/_index.md).
+[DAST](../../user/application_security/dast/_index.md).
 
 ### Overriding the DAST target
 

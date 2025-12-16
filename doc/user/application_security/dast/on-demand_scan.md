@@ -138,10 +138,6 @@ To edit an on-demand scan:
 
 ### Delete an on-demand scan
 
-Prerequisites:
-
-- You must be able to push to the branch associated with the DAST scan.
-
 To delete an on-demand scan:
 
 1. On the top bar, select **Search or go to** and find your project.

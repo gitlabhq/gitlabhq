@@ -44,6 +44,14 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def trending
+    if Feature.enabled?(:retire_trending_projects, current_user)
+      respond_to do |format|
+        format.html { redirect_to explore_root_path }
+        format.json { redirect_to explore_root_path(format: :json), status: :found }
+      end
+      return
+    end
+
     params[:trending] = true
     @projects = load_projects
 

@@ -24,15 +24,25 @@ RSpec.describe Explore::ProjectsController, :with_current_organization, feature_
     describe 'GET #trending.json' do
       render_views
 
-      before do
+      it 'redirects to explore root path with json format', :aggregate_failures do
         get :trending, format: :json
+
+        expect(response).to redirect_to(explore_root_path(format: :json))
+        expect(response).to have_gitlab_http_status(:found)
       end
 
-      it { is_expected.to respond_with(:success) }
+      context 'when `retire_trending_projects` flag is disabled' do
+        before do
+          stub_feature_flags(retire_trending_projects: false)
+          get :trending, format: :json
+        end
 
-      it 'sets a default sort parameter' do
-        expect(controller.params[:sort]).to eq(expected_default_sort)
-        expect(assigns[:sort]).to eq(expected_default_sort)
+        it { is_expected.to respond_with(:success) }
+
+        it 'sets a default sort parameter' do
+          expect(controller.params[:sort]).to eq(expected_default_sort)
+          expect(assigns[:sort]).to eq(expected_default_sort)
+        end
       end
     end
 
@@ -52,43 +62,55 @@ RSpec.describe Explore::ProjectsController, :with_current_organization, feature_
     end
 
     describe 'GET #trending' do
-      context 'sorting by update date' do
-        let(:project1) { create(:project, :public, updated_at: 3.days.ago) }
-        let(:project2) { create(:project, :public, updated_at: 1.day.ago) }
+      it 'redirects to explore root path' do
+        get :trending
 
-        before do
-          create(:trending_project, project: project1)
-          create(:trending_project, project: project2)
-        end
-
-        it 'sorts by last updated' do
-          get :trending, params: { sort: 'updated_desc' }
-
-          expect(assigns(:projects)).to eq [project2, project1]
-        end
-
-        it 'sorts by oldest updated' do
-          get :trending, params: { sort: 'updated_asc' }
-
-          expect(assigns(:projects)).to eq [project1, project2]
-        end
+        expect(response).to redirect_to(explore_root_path)
       end
 
-      context 'projects aimed for deletion' do
-        let_it_be(:project1) { create(:project, :public, path: 'project-1') }
-        let_it_be(:project2) { create(:project, :public, path: 'project-2') }
-        let_it_be(:aimed_for_deletion_project) { create(:project, :public, :archived, marked_for_deletion_at: 2.days.ago) }
-
+      context 'when `retire_trending_projects` flag is disabled' do
         before do
-          create(:trending_project, project: project1)
-          create(:trending_project, project: project2)
-          create(:trending_project, project: aimed_for_deletion_project)
+          stub_feature_flags(retire_trending_projects: false)
         end
 
-        it 'does not list projects aimed for deletion' do
-          get :trending
+        context 'sorting by update date' do
+          let(:project1) { create(:project, :public, updated_at: 3.days.ago) }
+          let(:project2) { create(:project, :public, updated_at: 1.day.ago) }
 
-          expect(assigns(:projects)).to eq [project2, project1]
+          before do
+            create(:trending_project, project: project1)
+            create(:trending_project, project: project2)
+          end
+
+          it 'sorts by last updated' do
+            get :trending, params: { sort: 'updated_desc' }
+
+            expect(assigns(:projects)).to eq [project2, project1]
+          end
+
+          it 'sorts by oldest updated' do
+            get :trending, params: { sort: 'updated_asc' }
+
+            expect(assigns(:projects)).to eq [project1, project2]
+          end
+        end
+
+        context 'projects aimed for deletion' do
+          let_it_be(:project1) { create(:project, :public, path: 'project-1') }
+          let_it_be(:project2) { create(:project, :public, path: 'project-2') }
+          let_it_be(:aimed_for_deletion_project) { create(:project, :public, :archived, marked_for_deletion_at: 2.days.ago) }
+
+          before do
+            create(:trending_project, project: project1)
+            create(:trending_project, project: project2)
+            create(:trending_project, project: aimed_for_deletion_project)
+          end
+
+          it 'does not list projects aimed for deletion' do
+            get :trending
+
+            expect(assigns(:projects)).to eq [project2, project1]
+          end
         end
       end
     end
@@ -245,6 +267,7 @@ RSpec.describe Explore::ProjectsController, :with_current_organization, feature_
           render_views
 
           before do
+            stub_feature_flags(retire_trending_projects: false) if endpoint == :trending
             get endpoint, params: { page: page_limit }
           end
 
@@ -256,6 +279,7 @@ RSpec.describe Explore::ProjectsController, :with_current_organization, feature_
           render_views
 
           before do
+            stub_feature_flags(retire_trending_projects: false) if endpoint == :trending
             get endpoint, params: { page: page_limit }, format: :json
           end
 

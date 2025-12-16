@@ -172,6 +172,21 @@ describe('Registration', () => {
             expect(findPrimaryButton().text()).toBe('Add passkey');
             expect(findCancelButton().exists()).toBe(true);
           });
+
+          it('enables the register device button when device name and password are filled', async () => {
+            createComponent();
+
+            await setupDevice();
+
+            expect(findPrimaryButton().props('disabled')).toBe(true);
+
+            // Visible inputs
+            findCurrentPasswordInput().vm.$emit('input', 'my current password');
+            findDeviceNameInput().vm.$emit('input', 'my device name');
+            await nextTick();
+
+            expect(findPrimaryButton().props('disabled')).toBe(false);
+          });
         });
 
         describe('when password is not required', () => {
@@ -195,6 +210,19 @@ describe('Registration', () => {
             );
 
             expect(findPrimaryButton().text()).toBe('Add passkey');
+          });
+
+          it('enables the register device button when device name is filled', async () => {
+            createComponent({ passwordRequired: false });
+
+            await setupDevice();
+
+            expect(findPrimaryButton().props('disabled')).toBe(true);
+
+            findDeviceNameInput().vm.$emit('input', 'my device name');
+            await nextTick();
+
+            expect(findPrimaryButton().props('disabled')).toBe(false);
           });
         });
       });

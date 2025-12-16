@@ -37,18 +37,18 @@ Auto DevOps supports development during each of the [DevOps stages](stages.md).
 
 | Stage  | Auto DevOps feature |
 |--------|---------------------|
-| Build  | [Auto Build](stages.md#auto-build) |
-| Build  | [Auto Dependency Scanning](stages.md#auto-dependency-scanning) |
-| Test   | [Auto Test](stages.md#auto-test) |
-| Test   | [Auto Browser Performance Testing](stages.md#auto-browser-performance-testing) |
-| Test   | [Auto Code Intelligence](stages.md#auto-code-intelligence) |
-| Test   | [Auto Code Quality](stages.md#auto-code-quality) |
+| Build  | [Auto build](stages.md#auto-build) |
+| Build  | [Auto dependency scanning](stages.md#auto-dependency-scanning) |
+| Test   | [Auto test](stages.md#auto-test) |
+| Test   | [Auto browser performance testing](stages.md#auto-browser-performance-testing) |
+| Test   | [Auto code intelligence](stages.md#auto-code-intelligence) |
+| Test   | [Auto code quality](stages.md#auto-code-quality) |
 | Test   | [Auto container scanning](stages.md#auto-container-scanning) |
-| Deploy | [Auto Review Apps](stages.md#auto-review-apps) |
-| Deploy | [Auto Deploy](stages.md#auto-deploy) |
-| Secure | [Auto Dynamic Application Security Testing (DAST)](stages.md#auto-dast) |
+| Deploy | [Auto review apps](stages.md#auto-review-apps) |
+| Deploy | [Auto deploy](stages.md#auto-deploy) |
+| Secure | [Auto dynamic application security testing (DAST)](stages.md#auto-dast) |
 | Secure | [Auto static application security testing (SAST)](stages.md#auto-sast) |
-| Secure | [Auto Secret Detection](stages.md#auto-secret-detection) |
+| Secure | [Auto secret detection](stages.md#auto-secret-detection) |
 
 ### Comparison to application platforms and PaaS
 

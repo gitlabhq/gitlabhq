@@ -169,7 +169,24 @@ module Ci
     end
 
     def process_build(build, params, queue_size:, queue_depth:)
-      return remove_from_queue!(build) unless build.pending?
+      unless build.pending?
+        refresh = Feature.enabled?(:ci_build_confirm_pending_state, build.project)
+
+        if refresh
+          refreshed_build = refresh_build(build)
+
+          # If refreshed_build is nil, that means the primary no longer has the
+          # record of the build ID. We have a foreign key constraint that ensures
+          # this entry has been removed, so let's just return here.
+          return ResultFactory.invalid unless refreshed_build.present?
+
+          build = refreshed_build
+        end
+
+        # Recheck the status to ensure that the build is pending in case we refreshed
+        # from the primary. Otherwise remove it from the pending list.
+        return remove_from_queue!(build, refresh) unless build.pending?
+      end
 
       if runner_matched?(build)
         @metrics.increment_queue_operation(:build_can_pick)
@@ -218,11 +235,31 @@ module Ci
       nil
     end
 
+    def refresh_build(build)
+      # Check the primary to be absolutely sure the build state isn't
+      # stale before removing from queue. ::Ci::Runner.sticking.find_caught_up_replica
+      # should have picked an up-to-date replica for the build, but if that's not
+      # working properly this is a defensive measure.
+      refreshed_build = ::Gitlab::Database::LoadBalancing::SessionMap
+        .with_sessions.use_primary do
+        Ci::Build.in_partition(build).find_by_id(build.id)
+      end
+
+      if refreshed_build.present?
+        ::Gitlab::AppJsonLogger.info(message: "build refreshed from primary",
+          original_status: build.status,
+          refreshed_status: refreshed_build.status,
+          build_id: build.id)
+      end
+
+      refreshed_build
+    end
+
     def max_queue_depth
       MAX_QUEUE_DEPTH
     end
 
-    def remove_from_queue!(build)
+    def remove_from_queue!(build, refreshed)
       @metrics.increment_queue_operation(:build_not_pending)
 
       ##
@@ -231,7 +268,7 @@ module Ci
       # could cause it to be lost. Instead, we return an invalid result to signal
       # the runner to retry.
       #
-      unless @replica_caught_up
+      if !refreshed && !@replica_caught_up
         ::Gitlab::AppJsonLogger.info(message: "build left on pending queue because replica not caught up",
           build_status: build.status,
           build_id: build.id,

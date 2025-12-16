@@ -122,7 +122,7 @@ approver groups. [Issue 457541](https://gitlab.com/gitlab-org/gitlab/-/issues/45
 proposes to change this behavior so that the same user can give multiple
 approvals per deployment from different approver groups.
 
-The corresponding deployment job does not run automatically after a deployment is approved.
+Deployment approval doesn't automatically trigger the corresponding deployment job. You must [manually run the job](../jobs/job_control.md#run-a-manual-job).
 
 ### View the approval details of a deployment
 

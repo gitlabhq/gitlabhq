@@ -32,11 +32,11 @@ detected prior to deployment. For example, misconfigurations of your application
 assumptions about security controls may not be visible from the source code, but they can be
 detected with browser-based DAST.
 
-Dynamic Application Security Testing (DAST) examines applications for vulnerabilities like these in
+Dynamic application security testing (DAST) examines applications for vulnerabilities like these in
 deployed environments.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Dynamic Application Security Testing (DAST) - Advanced Security Testing](https://www.youtube.com/watch?v=nbeDUoLZJTo).
+For an overview, see [DAST - advanced security testing](https://www.youtube.com/watch?v=nbeDUoLZJTo).
 
 {{< alert type="warning" >}}
 

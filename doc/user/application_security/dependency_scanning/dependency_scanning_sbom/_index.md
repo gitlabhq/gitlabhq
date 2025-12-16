@@ -481,25 +481,22 @@ for all lock files scanned.
 The dependency scanning report is:
 
 - Named `gl-dependency-scanning-report.json`.
-- Available as a job artifact of the dependency scanning job
+- Available as a job artifact of the dependency scanning job.
 - Uploaded as a `dependency_scanning` report.
 - Saved in the root directory of the project.
 
 ## Optimization
 
-To optimize dependency scanning with SBOM, you can use either or
-both of the following methods:
+To optimize dependency scanning with SBOM, use any of the following methods:
 
-- Exclude files and directories
+- Exclude paths
 - Limit scanning to a maximum directory depth
 
-### Exclude files and directories
+### Exclude paths
 
-Exclude files and directories when you want to optimize scanning performance and focus scanning on
-relevant repository content.
+Exclude paths to optimize scanning performance and focus on relevant repository content.
 
-To exclude files and directories from scanning, specify the list of patterns in the `.gitlab-ci.yml`
-file:
+List excluded paths in the `.gitlab-ci.yml` file:
 
 - If using the dependency scanning template, use the `DS_EXCLUDED_PATHS` CI/CD variable.
 - If using the dependency scanning CI/CD component, use the `excluded_paths` spec input.
@@ -515,8 +512,8 @@ Exclusion patterns follow these rules:
 
 ### Limit scanning to a maximum directory depth
 
-Limit scanning to a maximum directory depth when you want to optimize scanning performance and
-reduce the number of files analyzed.
+Limit scanning to a maximum directory depth to optimize scanning performance and reduce the number
+of files analyzed.
 
 The root directory is counted as depth `1`, and each subdirectory increments the depth by 1. The
 default depth is `2`. A value of `-1` scans all directories regardless of depth.
