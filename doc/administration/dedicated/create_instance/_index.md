@@ -21,6 +21,7 @@ Your GitLab Dedicated instance will be set up using Switchboard. To gain access 
 provide the following information to your account team:
 
 - Expected number of users.
+- [Total purchased storage](storage_types.md#total-purchased-storage).
 - Initial storage size for your repositories in GiB.
 - Email addresses of any users that need to complete the onboarding and create your GitLab Dedicated instance.
 - Whether you want to [bring your own encryption keys (BYOK)](../encryption.md#bring-your-own-key-byok). If so, GitLab provides an AWS account ID, which is necessary to enable BYOK.
@@ -39,40 +40,48 @@ complete your onboarding to create a new instance.
 
 After you sign in to Switchboard, follow these steps to create your instance:
 
-1. On the **Account details** page, review and confirm your subscription settings. These settings are based on the information you provided to your account team:
+1. On the **Account details** page, review and confirm your subscription settings:
 
-   - **Reference architecture**: The maximum number of users allowed in your instance. For more information, see [availability and scalability](data_residency_high_availability.md#availability-and-scalability). For example, up to 3,000 users.
+   | Field | Predetermined by | Description |
+   | :---- | :---- | :---- |
+   | **Reference architecture** | Account team (from contract) | The infrastructure sizing tier for your instance, based on expected load and usage patterns. Named by maximum recommended user count (e.g., "Up to 3,000 users"). See [Expected load (RPS or user count)](../../reference_architectures/_index.md#expected-load-rps-or-user-count) for more information |
+   | **Total purchased storage** | Account team (from contract) | The total purchased storage space (repository and object storage) purchased with your contract. |
+   | **Repository storage** | Initial capacity planning discussions ([Evaluate](https://gitlab.com/gitlab-org/professional-services-automation/tools/utilities/evaluate) tool) | The total storage space available for all repositories in your instance (for example, 16 GiB). Can be increased but not decreased after provisioning. |
 
-   - **Total repository capacity**: The total storage space available for all repositories in your instance. For example, 16 GiB. This setting cannot be reduced after you create your instance. You can increase storage capacity later if needed. For more information about how storage is calculated for GitLab Dedicated, see [GitLab Dedicated storage types](storage_types.md).
+   These settings are based on information provided to your account team. If you need to change any of these values, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 
-   If you need to change either of these values, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+   For more information, see [storage types](storage_types.md).
 
-1. On the **Configuration** page, choose your environment access, location, and maintenance window settings:
+1. On the **Configuration** page, choose your tenant, location, and maintenance window settings:
 
-   - **Tenant name**: Enter a name for your tenant. This name is permanent unless you [configure a custom domain](../configure_instance/network_security.md#custom-domains).
+   | Field | Determined by | Description |
+   | :---- | :---- | :---- |
+   | **Tenant name** | Your choice | Displayed name for your instance. Forms part of your URL as `<tenant_name>.gitlab-dedicated.com`. Permanent unless using a custom domain like `gitlab.yourcompany.com` instead of the default URL. |
+   | **Primary region** | Infrastructure/compliance requirements | AWS region for primary operations and data storage. Can't be changed after creation because all infrastructure (compute, storage, databases) is provisioned in this region. |
+   | **Secondary region** | Infrastructure/DR requirements | AWS region for Geo-based disaster recovery. Some regions have limited support. Can't be changed after creation. If you are using a Geo migration method, this field is not required. |
+   | **Backup region** | Compliance/redundancy requirements | AWS region for backup replication. Can be the same as primary/secondary or different for increased redundancy. Can't be changed after creation because backup vaults and replication are configured during provisioning. |
+   | **Maintenance window** | Operational preferences | Weekly 4-hour window for updates and [maintenance](../maintenance.md). Options align with time zones (APAC, EU, US). See the [Dedicated Info Portal](https://gitlab-com.gitlab.io/cs-tools/gitlab-cs-tools/dedicated-info-portal/) for more information.|
+   
+   For more information, see [data residency and high availability](data_residency_high_availability.md).
 
-   - **Tenant URL**: Your instance URL is automatically generated as `<tenant_name>.gitlab-dedicated.com`.
+1. Optional. On the **Security** page, add your [AWS KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) for encrypted AWS services. If you don't add keys, GitLab generates encryption keys for your instance.
 
-   - **Primary region**: Select the primary AWS region to use for data storage. For more information, see [available AWS regions](data_residency_high_availability.md#primary-regions).
-     - Optional. Select Availability Zone IDs for the primary region. Otherwise, AZ IDs are selected automatically during instance provisioning.
+   If enabling BYOK:
 
-   - **Secondary region**: Select a secondary AWS region to use for data storage and [disaster recovery](../disaster_recovery.md). This field does not appear for Geo migrations from an existing GitLab Self-Managed instance. Some regions have [limited support](data_residency_high_availability.md#secondary-regions-with-limited-support).
-     - Optional. Select Availability Zone IDs for the secondary region. Otherwise, AZ IDs are selected automatically during instance provisioning.
+   - Use symmetric keys for encrypt/decrypt with AWS-managed key material (AWS\_KMS origin).
+   - Use multi-region keys with replicas in each region.
+   - Grant key policy access to your GitLab Dedicated AWS account (provided during sales).
+   - Configure keys during onboarding - they can't be added later.
+   - Provide one key (or key replica) per region.
+   - Encrypted services include EBS volumes, RDS databases, S3 buckets, and backup vaults.
 
-   - **Backup region**: Select a region to replicate and store your primary data backups.
-     You can use the same option as your primary or secondary regions, or choose a different region for [increased redundancy](../disaster_recovery.md).
+   For more information, see [encrypting your data at rest](../encryption.md#encrypted-data-at-rest).
 
-   - **Time zone**: Select a weekly four-hour time slot when GitLab performs routine
-     maintenance and upgrades. For more information, see [maintenance windows](../maintenance.md#maintenance-windows).
-
-1. Optional. On the **Security** page, add your [AWS KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) for encrypted AWS services. If you do not add keys, GitLab generates encryption keys for your instance. For more information, see [encrypting your data at rest](../encryption.md#encrypted-data-at-rest).
-
-1. On the **Tenant summary** page, review the tenant configuration details. After you confirm that the information you've provided in the previous steps is accurate, select  **Create tenant**.
+1. On the **Tenant summary** page, review the tenant configuration details.
 
    {{< alert type="note" >}}
 
-   Confirm these settings carefully before you create your instance,
-   as you cannot change them later:
+   Review these settings carefully. You can't change them later:
 
    - Security keys and AWS KMS keys (BYOK) configuration
    - AWS regions (primary, secondary, backup)
@@ -81,7 +90,9 @@ After you sign in to Switchboard, follow these steps to create your instance:
 
    {{< /alert >}}
 
-Your GitLab Dedicated instance can take up to three hours to create. GitLab sends a confirmation email when the setup is complete.
+   After you confirm that the information you've provided in the previous steps is accurate, select **Create tenant**.
+
+Your GitLab Dedicated instance can take up to three hours to provision. You receive a confirmation email when setup is complete.
 
 ## Step 3: Access and configure your GitLab Dedicated instance
 

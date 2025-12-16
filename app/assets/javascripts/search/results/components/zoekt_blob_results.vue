@@ -1,16 +1,19 @@
 <script>
 import { GlCard, GlPagination, GlLoadingIcon } from '@gitlab/ui';
+import { debounce } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import BlobHeader from '~/search/results/components/blob_header.vue';
 import BlobFooter from '~/search/results/components/blob_footer.vue';
 import BlobBody from '~/search/results/components/blob_body.vue';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
 import {
   getSystemColorScheme,
   listenSystemColorSchemeChange,
   removeListenerSystemColorSchemeChange,
 } from '~/lib/utils/css_utils';
+import { scrollTo, getScrollingElement } from '~/lib/utils/scroll_utils';
 
 import { DEFAULT_SHOW_CHUNKS } from '~/search/results/constants';
 
@@ -41,6 +44,8 @@ export default {
   data() {
     return {
       systemColorScheme: getSystemColorScheme(),
+      scrollHandler: null,
+      scrollingElement: null,
     };
   },
   computed: {
@@ -57,11 +62,25 @@ export default {
       return this.query.page ? parseInt(this.query.page, 10) : 1;
     },
   },
+  watch: {
+    isLoading: {
+      handler(newVal) {
+        if (!newVal) {
+          this.restoreScrollPosition();
+        }
+      },
+      immediate: true,
+    },
+  },
   mounted() {
     listenSystemColorSchemeChange(this.changeSystemColorScheme);
+    this.scrollingElement = getScrollingElement(this.$el);
+    this.scrollHandler = debounce(this.saveScrollPosition, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+    this.scrollingElement.addEventListener('scroll', this.scrollHandler);
   },
   destroyed() {
     removeListenerSystemColorSchemeChange(this.changeSystemColorScheme);
+    this.scrollingElement.removeEventListener('scroll', this.scrollHandler);
   },
   methods: {
     ...mapActions(['setQuery']),
@@ -84,6 +103,21 @@ export default {
     },
     changeSystemColorScheme(glScheme) {
       this.systemColorScheme = glScheme;
+    },
+    saveScrollPosition() {
+      const currentState = window.history.state || {};
+      window.history.replaceState(
+        { ...currentState, scrollPosition: this.scrollingElement.scrollTop },
+        null,
+      );
+    },
+    restoreScrollPosition() {
+      const scrollPosition = window.history.state?.scrollPosition;
+      if (scrollPosition != null) {
+        this.$nextTick(() => {
+          scrollTo({ top: scrollPosition, behavior: 'auto' }, this.scrollingElement);
+        });
+      }
     },
   },
 };

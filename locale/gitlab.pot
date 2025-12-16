@@ -25459,6 +25459,9 @@ msgstr ""
 msgid "DuoAgenticChat|GitLab Duo is already responding to this chat in another tab or location. Start a new chat, or wait for GitLab Duo to finish before sending a new message."
 msgstr ""
 
+msgid "DuoAgenticChat|I don't have access to that resource at the moment. Is there something else I can help you with?"
+msgstr ""
+
 msgid "DuoAgenticChat|Invalid chat state provided"
 msgstr ""
 

@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database do
-  describe 'verify all definitions' do
-    subject(:definitions) { described_class.definitions }
+  subject(:definitions) { described_class.definitions }
 
+  describe 'verify all definitions' do
     it 'all definitions have assigned a known gitlab_schema and on_delete' do
       is_expected.to all(
         have_attributes(
@@ -310,6 +310,58 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
       it 'raises ArgumentError with descriptive message' do
         expect { subject }.to raise_error(ArgumentError, "Worker class 'UnknownWorker' is not in the allowed list")
       end
+    end
+  end
+
+  describe 'Loose Foreign Key sharding key coverage' do
+    # Cell-local schemas don't need sharding keys
+    let(:cell_local_schemas) { %i[gitlab_main_cell_local gitlab_ci_cell_local] }
+
+    # PENDING: Remove tables from this list as sharding keys are added
+    let(:pending_exceptions) do
+      %w[
+        application_settings
+        deployment_clusters
+        merge_request_diff_commits
+        plans
+        push_rules
+      ]
+    end
+
+    let(:tables_requiring_sharding_keys) do
+      definitions.flat_map { |definition| [definition.to_table, definition.from_table] }
+                 .uniq
+                 .reject { |table| cell_local_table?(table) }
+                 .sort
+    end
+
+    let(:tables_without_sharding_keys) do
+      tables_requiring_sharding_keys.reject { |table| has_sharding_key?(table) }
+    end
+
+    it 'has no new tables without sharding keys (exception list must not grow)' do
+      expect(tables_without_sharding_keys).to eq(pending_exceptions), <<~MSG
+        **Exception list mismatch**
+
+        NEW tables without sharding keys detected:
+        A sharding key needs to be added to the following table(s) : #{(tables_without_sharding_keys - pending_exceptions).inspect}
+
+        Remove table(s) from pending_exceptions list:
+        Tables that have sharding keys: #{(pending_exceptions - tables_without_sharding_keys).inspect}
+
+      MSG
+    end
+
+    def cell_local_table?(name)
+      schema = Gitlab::Database::GitlabSchema.table_schema(name)
+      cell_local_schemas.include?(schema)
+    end
+
+    def has_sharding_key?(table_name)
+      dictionary = Gitlab::Database::Dictionary.entries.find_by_table_name(table_name)
+      return false unless dictionary
+
+      dictionary.sharding_key.present?
     end
   end
 end
