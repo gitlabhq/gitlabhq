@@ -127,7 +127,6 @@ RSpec/RailsControllerTesting:
     - 'ee/spec/requests/projects/security/policies_controller_spec.rb'
     - 'ee/spec/requests/projects/settings/analytics_controller_spec.rb'
     - 'ee/spec/requests/projects/settings/repository_controller_spec.rb'
-    - 'ee/spec/requests/registrations/trial_welcome_controller_spec.rb'
     - 'ee/spec/requests/users/identity_verification_controller_spec.rb'
     - 'ee/spec/requests/users/registrations_identity_verification_controller_spec.rb'
     - 'spec/controllers/admin/application_settings_controller_spec.rb'

@@ -1394,10 +1394,10 @@
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/duo-ui@^15.0.8":
-  version "15.0.8"
-  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-15.0.8.tgz#b9cf5f08a67fd89a68db8a2255445bb39ea8668e"
-  integrity sha512-yI5VA/3vghzNvYgTNmtkdZ1zdm5nqfu/aCgn3FuIKk6SKuRGPW7PXyN0exh3XAvcSML72fZLET3DpMO4QgISSg==
+"@gitlab/duo-ui@^15.4.0":
+  version "15.4.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-15.4.0.tgz#8b914a7e9116e52d7415fa3304e62da82e469675"
+  integrity sha512-yCSPm2d79OlDfKwUdEokOrdxZS5UMGZjfdVR01i8ljBhsZAf8Dfic5TUc+m6uuoMxXneLCg11kCxwR7STrk7xA==
   dependencies:
     "@floating-ui/dom" "1.7.4"
     diff "^8.0.2"
@@ -1406,6 +1406,7 @@
     lodash "^4.17.20"
     marked "^12.0.0"
     marked-bidi "^1.0.8"
+    marked-highlight "^2.2.3"
     popper.js "^1.16.1"
     portal-vue "^2.1.7"
     vue-functional-data-merge "^3.1.0"
@@ -10589,6 +10590,11 @@ marked-bidi@^1.0.3, marked-bidi@^1.0.8:
   version "1.0.13"
   resolved "https://registry.yarnpkg.com/marked-bidi/-/marked-bidi-1.0.13.tgz#ca9e488ee58d52e50d5d0c62358300e3242f4788"
   integrity sha512-mXCLPK6lPWlJoTqz1tBoVRYafBGMH6R7EbV7YQFifIx4Mxjsivkwb09Tn5nBKVZCR6mYZKCY6/H7hHVqz3mlcw==
+
+marked-highlight@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/marked-highlight/-/marked-highlight-2.2.3.tgz#e7e5e7ccfb1699356c3a45d851db8fe983689172"
+  integrity sha512-FCfZRxW/msZAiasCML4isYpxyQWKEEx44vOgdn5Kloae+Qc3q4XR7WjpKKf8oMLk7JP9ZCRd2vhtclJFdwxlWQ==
 
 marked@^12.0.0:
   version "12.0.0"

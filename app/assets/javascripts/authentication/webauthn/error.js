@@ -12,6 +12,7 @@ export default class WebAuthnError {
   }
 
   message() {
+    // Browser side errors due to calling navigator.credentials.create
     if (this.errorName === 'NotSupportedError') {
       return __('Your device is not compatible with GitLab. Please try another device');
     }
@@ -27,6 +28,6 @@ export default class WebAuthnError {
       );
     }
 
-    return __('There was a problem communicating with your device.');
+    return __('Failed to connect to your device. Try again.');
   }
 }

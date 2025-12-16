@@ -55,7 +55,7 @@ If your AI Gateway URL points to a local network or private IP address (for exam
 
 {{< /alert >}}
 
-### Configure timeout for the AI Gateway
+## Configure timeout for the AI Gateway
 
 {{< history >}}
 
@@ -63,12 +63,8 @@ If your AI Gateway URL points to a local network or private IP address (for exam
 
 {{< /history >}}
 
-Prerequisites:
-
-- You must be an administrator.
-
-Configure the timeout for GitLab requests to the AI Gateway when using self-hosted models. You can use longer timeouts for models
-that need extended processing times for large context windows or complex queries.
+To conserve resources and prevent long-running queries, configure the timeout for GitLab requests to the AI Gateway when waiting for model responses.
+Use longer timeouts for self-hosted models with large context windows or complex queries.
 
 You can configure a timeout between 60 and 600 seconds (10 minutes). If you don't set the timeout, GitLab uses the default timeout of 60 seconds.
 
@@ -80,7 +76,7 @@ To configure the AI Gateway timeout:
 1. Under **AI Gateway request timeout**, enter the timeout value in seconds (between 60 and 600).
 1. Select **Save changes**.
 
-#### Determine the timeout value
+### Determine the timeout value
 
 The timeout value depends on your specific deployment and use case.
 

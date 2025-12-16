@@ -23,6 +23,13 @@ Add `classification: duo` to your event definition when:
   - Other AI-related product groups
 - The event data should be considered operational data for GitLab self-managed instances
 
+{{< alert type="note" >}}
+
+Events with `classification: duo` should also include the **AI Context** for comprehensive tracking of AI-specific attributes such as session identifiers, workflow information, token usage, and model details.
+See the [AI Context Fields documentation](ai_context_fields.md) for complete field descriptions and usage examples.
+
+{{< /alert >}}
+
 ## When NOT to use `classification: duo`
 
 **Important**: Do not add `classification: duo` if:

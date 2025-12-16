@@ -3,8 +3,6 @@
 module Ci
   class BuildSourceFinder
     def initialize(relation:, sources:, project:, params: {})
-      raise ArgumentError, 'Only Ci::Builds are source searchable' unless relation.klass == Ci::Build
-
       @relation = relation
       @sources = sources
       @project = project

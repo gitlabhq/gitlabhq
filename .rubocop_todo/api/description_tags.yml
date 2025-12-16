@@ -12,7 +12,6 @@ API/DescriptionTags:
     - 'ee/lib/api/ai/third_party_agents.rb'
     - 'ee/lib/api/analytics/code_review_analytics.rb'
     - 'ee/lib/api/analytics/project_deployment_frequency.rb'
-    - 'ee/lib/api/audit_events.rb'
     - 'ee/lib/api/code_suggestions.rb'
     - 'ee/lib/api/dependencies.rb'
     - 'ee/lib/api/elasticsearch_indexed_namespaces.rb'

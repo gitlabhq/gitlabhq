@@ -346,7 +346,6 @@ Style/InlineDisableAnnotation:
     - 'app/models/concerns/featurable.rb'
     - 'app/models/concerns/file_store_mounter.rb'
     - 'app/models/concerns/from_set_operator.rb'
-    - 'app/models/concerns/has_repository.rb'
     - 'app/models/concerns/ignorable_columns.rb'
     - 'app/models/concerns/integrations/reset_secret_fields.rb'
     - 'app/models/concerns/issuable.rb'

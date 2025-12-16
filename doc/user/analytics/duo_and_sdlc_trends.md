@@ -146,7 +146,7 @@ The Pipeline metrics table displays metrics for the pipelines run in the selecte
 - **Success rate**: Percentage of pipeline runs that completed successfully.
 - **Failure rate**: Percentage of pipeline runs that completed with failures.
 
-## Code Suggestions acceptance rate by language
+## GitLab Duo Code Suggestions acceptance by language
 
 {{< history >}}
 
@@ -154,9 +154,14 @@ The Pipeline metrics table displays metrics for the pipelines run in the selecte
 
 {{< /history >}}
 
-The **Code Suggestions acceptance rate by language** chart displays the acceptance rate of Code Suggestions broken down by programming language for the last 30 days.
+The **GitLab Duo Code Suggestions acceptance by language** chart displays the number of Code Suggestions accepted by programming language for the last 30 days.
 
-The acceptance rate for each language is calculated as the number of accepted code suggestions divided by the total number of code suggestions shown.
+Hover over a bar to view for each language:
+
+- **Suggestions accepted**: Number of suggestions accepted by users.
+- **Suggestions shown**: Number of suggestions shown to users.
+- **Acceptance rate**: Percentage of suggestions accepted.
+  Calculated as the number of accepted code suggestions divided by the total number of code suggestions shown.
 
 ## GitLab Duo Code Suggestions acceptance by IDE
 

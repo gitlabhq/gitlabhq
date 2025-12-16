@@ -429,9 +429,9 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 
 {{< alert type="warning" >}}
 
-Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), you can't add repositories to the
-Praefect tracking database with Praefect-generated replica paths (`@cluster`). These repositories are not associated with the repository path used by GitLab and are
-inaccessible.
+Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), in GitLab 16.0 and earlier, you can't
+add repositories to the Praefect tracking database with Praefect-generated replica paths (`@cluster`). These
+repositories are not associated with the repository path used by GitLab and are inaccessible.
 
 {{< /alert >}}
 
@@ -488,9 +488,9 @@ This command fails if:
 
 {{< alert type="warning" >}}
 
-Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), you can't add repositories to the
-Praefect tracking database with Praefect-generated replica paths (`@cluster`). These repositories are not associated with the repository path used by GitLab and are
-inaccessible.
+Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), in GitLab 16.0 and earlier, you can't
+add repositories to the Praefect tracking database with Praefect-generated replica paths (`@cluster`). These
+repositories are not associated with the repository path used by GitLab and are inaccessible.
 
 {{< /alert >}}
 

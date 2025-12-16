@@ -39,4 +39,6 @@ This page is a work in progress. If you have access to the GitLab Slack workspac
 - [Internal Events CLI contribution guide](../cli_contribution_guidelines.md)
 - [Internal Events Payload Samples](internal_events_payload.md)
 - [Standard context fields description](standard_context_fields.md)
+- [AI context fields description](ai_context_fields.md)
+- [DAP (Duo Agentic Platform) instrumentation guide](dap_instrumentation_guide.md)
 - [GitLab Duo Classification](duo_classification.md)

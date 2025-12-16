@@ -62693,7 +62693,7 @@ msgstr ""
 msgid "SecurityReports|GitLab Duo SAST false positive detection - available for a limited time in free Beta"
 msgstr ""
 
-msgid "SecurityReports|GitLab Duo will automatically review new critical and high severity %{linkStart}SAST vulnerabilities on the default branch to identify potential false positives%{linkEnd}. GitLab Duo assigns each false positive a confidence score and %{dismissLinkStart}you can bulk dismiss the identified false positives%{dismissLinkEnd} in the vulnerability report. The service is enabled by default for free during the beta. You can adjust or turn off this feature in the GitLab Duo settings."
+msgid "SecurityReports|GitLab Duo will automatically review new critical and high severity %{linkStart}SAST vulnerabilities on the default branch to identify potential false positives%{linkEnd}. GitLab Duo assigns each false positive a confidence score and %{dismissLinkStart}you can bulk dismiss the identified false positives%{dismissLinkEnd} in the vulnerability report. The service is a free beta for a limited time and is disabled by default. You can turn on this feature in the GitLab Duo settings."
 msgstr ""
 
 msgid "SecurityReports|Go to policies"
@@ -68517,9 +68517,6 @@ msgid "There is no job log to troubleshoot."
 msgstr ""
 
 msgid "There is too much data to calculate. Please change your selection."
-msgstr ""
-
-msgid "There was a problem communicating with your device."
 msgstr ""
 
 msgid "There was a problem creating the incident. Please try again."

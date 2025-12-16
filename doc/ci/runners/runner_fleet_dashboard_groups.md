@@ -33,21 +33,24 @@ The following metrics are available in the runner fleet dashboard:
 | Online                        | Number of online runners. In the **Admin** area, this metric displays the number of runners for the entire instance. In a group, this metric displays the number of runners for the group and its subgroups. |
 | Offline                       | Number of offline runners. |
 | Active runners                | Number of active runners. |
-| Runner usage (previous month) | Number of compute minutes used by each project on group runners. Includes the option to export as CSV for cost analysis. |
-| Wait time to pick a job       | Displays the mean wait time for runners. This metric provides insights into whether the runners are capable of servicing the CI/CD job queue in your organization's target service-level objectives. The data that creates this metric widget is updated every 24 hours. |
+| Runner usage (previous month)<sup>1</sup> | Number of compute minutes used by each project on group runners. Includes the option to export as CSV for cost analysis. |
+| Wait time to pick a job<sup>1</sup>       | Displays the mean wait time for runners. This metric provides insights into whether the runners are capable of servicing the CI/CD job queue in your organization's target service-level objectives. The data that creates this metric widget is updated every 24 hours. |
+
+**Footnotes**:
+
+  1. For GitLab Self-Managed, to view the **Runner usage** and **Wait time to pick a job** metrics,
+you must configure the [ClickHouse integration](../../integration/clickhouse.md).
 
 ## View the runner fleet dashboard for groups
 
 Prerequisites:
 
 - You must have the Maintainer role for the group.
+- For GitLab Self-Managed, to view the **Runner usage** and **Wait time to pick a job** metrics,
+configure the [ClickHouse integration](../../integration/clickhouse.md).
 
 To view the runner fleet dashboard for groups:
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Build** > **Runners**.
 1. Select **Fleet dashboard**.
-
-For GitLab Self-Managed, most of the dashboard metrics work without any additional configuration.
-To use the **Runner usage** and **Wait time to pick a job** metrics,
-you must [configure the ClickHouse analytics database](runner_fleet_dashboard.md#enable-more-ci-analytics-features-with-clickhouse).

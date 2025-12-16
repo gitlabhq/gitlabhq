@@ -104,8 +104,13 @@ You have two options:
 1. Ensure the index is scoped to include their `sharding_key` as one of
    the columns present in the index.
 1. For the rare case where an attribute must be unique globally, across all
-   organizations, use the upcoming
+   organizations, use the
    [Claim service](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/topology_service/#claim-service).
+
+### Claim service
+
+To use the claim service from Rails:
+[Claiming an attribute for a cell](claims.md)
 
 ## Static data
 

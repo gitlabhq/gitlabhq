@@ -665,7 +665,7 @@ gem 'countries', '~> 4.0.0', feature_category: :shared # rubocop:todo Gemfile/Mi
 gem 'retriable', '~> 3.1.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # LRU cache
-gem 'lru_redux', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'lru_redux', feature_category: :importers
 
 # Locked as long as quoted-printable encoding issues are not resolved
 # Monkey-patched in `config/initializers/mail_encoding_patch.rb`

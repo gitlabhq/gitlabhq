@@ -60,10 +60,17 @@ To use false positive detection, you must have:
 
 - A GitLab Duo add-on subscription (GitLab Duo Core, Pro, or Enterprise).
 - [GitLab Duo enabled](../../gitlab_duo/turn_on_off.md) in your project or group.
-- **Use Duo SAST False Positive Detection** enabled for your project in **Settings** > **General** > **GitLab Duo**.
 - GitLab 18.7 or later.
 
-No additional configuration is required. The feature works automatically with your existing SAST scanners.
+To use false positive detection, you must turn it on in GitLab Duo settings:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Settings** > **General**.
+1. Expand **GitLab Duo**.
+1. Enable **Use Duo SAST False Positive Detection**.
+1. Select **Save changes**.
+
+Once enabled, false positive detection works automatically with your existing SAST scanners.
 
 ## Confidence scores
 

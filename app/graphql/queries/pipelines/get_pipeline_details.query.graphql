@@ -70,12 +70,6 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
                   id
                   name
                   kind
-                  needs {
-                    nodes {
-                      id
-                      name
-                    }
-                  }
                   scheduled
                   scheduledAt
                   status: detailedStatus {

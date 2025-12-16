@@ -61,23 +61,53 @@ const unwrapJobWithNeeds = (denodedJobArray, previousStageJobNames = []) => {
   });
 };
 
-const unwrapStagesWithNeedsAndLookup = (denodedStages) => {
+/**
+ * Enrich stages with the needs and previousStageJobs
+ * @param {Array} stages - Stages array
+ * @param {Object} needsData - Needs data object
+ * @returns {Array} - Stages enriched with job needs
+ */
+const enrichStagesWithNeeds = (stages, needsData) => {
+  const needsMap = new Map();
+  needsData.stages.nodes
+    .flatMap((stage) => stage.groups.nodes)
+    .flatMap((group) => group.jobs.nodes)
+    .forEach((job) => {
+      needsMap.set(job.name, job.needs?.nodes || []);
+    });
+
+  return stages.map((stage, stageIdx) => {
+    const previousStageJobNames =
+      stageIdx > 0 ? extractJobNamesFromGroups(stages[stageIdx - 1].groups) : [];
+
+    return {
+      ...stage,
+      groups: stage.groups.map((group) => {
+        const jobsWithNeeds = group.jobs.map((job) => ({
+          ...job,
+          needs: needsMap.get(job.name) || [],
+        }));
+
+        return {
+          ...group,
+          jobs: unwrapJobWithNeeds(jobsWithNeeds, previousStageJobNames),
+        };
+      }),
+    };
+  });
+};
+
+const unwrapStagesWithLookup = (denodedStages) => {
   const unwrappedNestedGroups = unwrapGroups(denodedStages);
 
   const lookupMap = {};
   const processedStages = [];
 
-  const nodes = unwrappedNestedGroups.map(({ node, lookup }, stageIndex) => {
+  const nodes = unwrappedNestedGroups.map(({ node, lookup }) => {
     const { groups } = node;
 
-    // Get all job names from the previous stage for non-DAG jobs
-    const previousStage = processedStages[stageIndex - 1];
-    const previousStageJobNames = previousStage
-      ? extractJobNamesFromGroups(previousStage.groups)
-      : [];
-
     const groupsWithJobs = groups.map((group, idx) => {
-      const jobs = unwrapJobWithNeeds(group.jobs.nodes, previousStageJobNames);
+      const jobs = unwrapJobWithNeeds(group.jobs.nodes, []);
 
       lookupMap[group.name] = { ...lookup, groupIdx: idx };
       return { ...group, jobs };
@@ -117,6 +147,7 @@ export {
   unwrapGroups,
   unwrapJobWithNeeds,
   unwrapNodesWithName,
-  unwrapStagesWithNeedsAndLookup,
+  enrichStagesWithNeeds,
+  unwrapStagesWithLookup,
   unwrapStagesFromMutation,
 };

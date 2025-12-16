@@ -74,4 +74,13 @@ RSpec.describe "GraphQL Pipeline details", '(JavaScript fixtures)', type: :reque
 
     expect_graphql_errors_to_be_empty
   end
+
+  it "pipelines/pipeline_needs.json" do
+    query = get_graphql_query_as_string('app/graphql/queries/pipelines/get_pipeline_needs.query.graphql',
+      with_base_path: false)
+
+    post_graphql(query, current_user: admin, variables: { projectPath: project.full_path, iid: pipeline.iid })
+
+    expect_graphql_errors_to_be_empty
+  end
 end

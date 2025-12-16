@@ -43795,7 +43795,7 @@ paths:
           schema:
             type: array
             items:
-              "$ref": "#/definitions/EE_API_Entities_Geo_PipelineRefs"
+              "$ref": "#/definitions/API_Entities_Geo_PipelineRefs"
         '401':
           description: 401 Unauthorized
         '404':
@@ -68633,7 +68633,7 @@ definitions:
     required:
     - value
     description: Set or create a feature
-  EE_API_Entities_Geo_PipelineRefs:
+  API_Entities_Geo_PipelineRefs:
     type: object
     properties:
       pipeline_refs:
@@ -68642,7 +68642,7 @@ definitions:
           type: string
         example:
         - refs/pipelines/1
-    description: EE_API_Entities_Geo_PipelineRefs model
+    description: API_Entities_Geo_PipelineRefs model
   postApiV4GeoStatus:
     type: object
     properties:

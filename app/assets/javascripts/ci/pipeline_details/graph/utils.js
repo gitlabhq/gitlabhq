@@ -3,7 +3,10 @@ import { getIdFromGraphQLId, etagQueryHeaders } from '~/graphql_shared/utils';
 import { reportToSentry } from '~/ci/utils';
 
 import { listByLayers } from '~/ci/pipeline_details/utils/parsing_utils';
-import { unwrapStagesWithNeedsAndLookup } from '~/ci/pipeline_details/utils/unwrapping_utils';
+import {
+  enrichStagesWithNeeds,
+  unwrapStagesWithLookup,
+} from '~/ci/pipeline_details/utils/unwrapping_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { sanitize } from '~/lib/dompurify';
 import { __, s__, sprintf } from '~/locale';
@@ -92,7 +95,7 @@ const unwrapPipelineData = (mainPipelineProjectPath, data) => {
     stages: { nodes: stages },
   } = pipeline;
 
-  const { stages: updatedStages, lookup } = unwrapStagesWithNeedsAndLookup(stages);
+  const { stages: updatedStages, lookup } = unwrapStagesWithLookup(stages);
 
   return {
     ...pipeline,
@@ -105,6 +108,21 @@ const unwrapPipelineData = (mainPipelineProjectPath, data) => {
     downstream: downstream
       ? downstream.nodes.map(addMulti.bind(null, mainPipelineProjectPath)).map(transformId)
       : [],
+  };
+};
+
+const mergePipelineWithNeeds = (pipeline, needs) => {
+  if (!pipeline || !needs) {
+    return null;
+  }
+
+  const { stages } = pipeline;
+
+  const updatedStages = enrichStagesWithNeeds(stages, needs);
+
+  return {
+    ...pipeline,
+    stages: updatedStages,
   };
 };
 
@@ -133,6 +151,7 @@ export {
   serializeGqlErr,
   serializeLoadErrors,
   unwrapPipelineData,
+  mergePipelineWithNeeds,
   validateConfigPaths,
   confirmJobConfirmationMessage,
 };

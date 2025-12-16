@@ -205,7 +205,7 @@ You can also replace strings with the replacement string `***REMOVED***`. For mo
 
 Prerequisites:
 
-- You must have the Owner role for the project
+- You must have the Owner role for the project.
 - [A list of object IDs](#get-a-list-of-object-ids) to remove.
 - Your project must not be:
   - A fork of a public upstream project.
@@ -228,6 +228,10 @@ To remove blobs from your repository:
 1. Select **Remove blobs**.
 1. On the confirmation dialog, enter your project path.
 1. Select **Yes, remove blobs**.
+1. Wait for the blob removal to complete before continuing:
+   - If [email notifications](../../../user/profile/notifications.md) are enabled,
+     wait until you receive an email stating that the repository history rewrite is completed.
+   - If email notifications are not enabled, wait at least 5 minutes.
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand the section labeled **Advanced**.
 1. Select **Run housekeeping**. Wait at least 30 minutes for the operation to complete.

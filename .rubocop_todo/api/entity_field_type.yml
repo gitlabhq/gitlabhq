@@ -110,7 +110,6 @@ API/EntityFieldType:
     - 'ee/lib/ee/api/entities/ci/job_request/response.rb'
     - 'ee/lib/ee/api/entities/clusters/agent.rb'
     - 'ee/lib/ee/api/entities/deployment_extended.rb'
-    - 'ee/lib/ee/api/entities/geo.rb'
     - 'ee/lib/ee/api/entities/group.rb'
     - 'ee/lib/ee/api/entities/group_detail.rb'
     - 'ee/lib/ee/api/entities/identity.rb'

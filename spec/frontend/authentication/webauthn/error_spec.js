@@ -11,7 +11,7 @@ describe('WebAuthnError', () => {
     ],
     ['InvalidStateError', 'This device has not been registered with us.', WEBAUTHN_AUTHENTICATE],
     ['InvalidStateError', 'This device has already been registered with us.', WEBAUTHN_REGISTER],
-    ['UnknownError', 'There was a problem communicating with your device.', WEBAUTHN_REGISTER],
+    ['UnknownError', 'Failed to connect to your device. Try again.', WEBAUTHN_REGISTER],
   ])('exception %s will have message %s, flow type: %s', (exception, expectedMessage, flowType) => {
     expect(new WebAuthnError(new DOMException('', exception), flowType).message()).toEqual(
       expectedMessage,
@@ -32,7 +32,7 @@ describe('WebAuthnError', () => {
     it('returns a generic error if https is enabled', () => {
       setWindowLocation('https://localhost');
 
-      const expectedMessage = 'There was a problem communicating with your device.';
+      const expectedMessage = 'Failed to connect to your device. Try again.';
       expect(
         new WebAuthnError(new DOMException('', 'SecurityError'), WEBAUTHN_AUTHENTICATE).message(),
       ).toEqual(expectedMessage);

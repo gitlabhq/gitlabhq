@@ -16,6 +16,7 @@ class SentNotification < ApplicationRecord
   LEGACY_REPLY_KEY_REGEX = /(?<legacy_key>[a-f\d]{32})/
   FULL_REPLY_KEY_REGEX = /(?:(#{LEGACY_REPLY_KEY_REGEX})|(#{PARTITIONED_REPLY_KEY_REGEX}))/
   PARTITION_DURATION = 2.months
+  RETENTION_PERIOD = 2.years
 
   attr_readonly :partition
   attribute :partition, default: nil
@@ -45,7 +46,16 @@ class SentNotification < ApplicationRecord
       oldest_record_in_partition.present? &&
         oldest_record_in_partition.created_at < PARTITION_DURATION.ago
     end,
-    detach_partition_if: ->(_) { false }
+    detach_partition_if: ->(partition) do
+      newest_record_in_partition = select(:id, :created_at)
+        .for_partition(partition.value)
+        .order(id: :desc)
+        .limit(1)
+        .take
+
+      newest_record_in_partition.present? &&
+        newest_record_in_partition.created_at < RETENTION_PERIOD.ago
+    end
 
   scope :for_partition, ->(partition) { where(partition: partition) }
 
