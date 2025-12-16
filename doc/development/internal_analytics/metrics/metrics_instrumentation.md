@@ -7,7 +7,7 @@ title: Metrics instrumentation guide
 
 This guide describes how to develop Service Ping metrics using metrics instrumentation.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a video tutorial, see the [Adding Service Ping metric via instrumentation class](https://youtu.be/p2ivXhNxUoY).
 
 ## Nomenclature

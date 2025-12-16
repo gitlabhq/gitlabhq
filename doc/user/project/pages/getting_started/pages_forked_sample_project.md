@@ -18,7 +18,7 @@ You can fork one of the sample projects and run the CI/CD pipeline to generate a
 Fork a sample project when you want to test GitLab Pages or start a new project that's already
 configured to generate a Pages site.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a [video tutorial](https://www.youtube.com/watch?v=TWqh9MtT4Bg) of how this works.
+<i class="fa-youtube-play" aria-hidden="true"></i> Watch a [video tutorial](https://www.youtube.com/watch?v=TWqh9MtT4Bg) of how this works.
 
 To fork a sample project and create a Pages website:
 

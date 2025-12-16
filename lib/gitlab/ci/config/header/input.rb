@@ -22,13 +22,6 @@ module Gitlab
             validates :config, type: Hash, allowed_keys: ALLOWED_KEYS
             validates :config, mutually_exclusive_keys: %i[rules options]
             validates :config, mutually_exclusive_keys: %i[rules default]
-
-            validate do
-              if config.is_a?(Hash) && config.key?(:rules) &&
-                  !Gitlab::Ci::Config::FeatureFlags.enabled?(:ci_dynamic_pipeline_inputs)
-                errors.add(:rules, "is not yet supported")
-              end
-            end
           end
 
           def input_rules

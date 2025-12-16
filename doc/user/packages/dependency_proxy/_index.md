@@ -328,7 +328,7 @@ For information on reducing your storage use on the dependency proxy for contain
 
 ## Docker Hub rate limits and the dependency proxy
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 Watch how to [use the dependency proxy to help avoid Docker Hub rate limits](https://youtu.be/Nc4nUo7Pq08).
 
 Docker Hub enforces [rate limits on pulls](https://docs.docker.com/docker-hub/usage/pulls/).

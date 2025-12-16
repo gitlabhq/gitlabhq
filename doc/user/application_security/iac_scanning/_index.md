@@ -157,11 +157,17 @@ Supported configuration formats:
 
 {{< /details >}}
 
-You can customize IaC scanning by:
+You can optimize IaC scanning to reduce noise and focus on relevant findings:
 
-- Disabling a rule for all files.
-- Disabling scanning of a file, entirely or only for a rule.
-- Overriding a rule's attributes.
+- Disable specific rules by using a `sast-ruleset.toml` file.
+- Override rule attributes (like severity) by using a `sast-ruleset.toml` file.
+- Disable scanning of specific files by using KICS annotations in those files.
+
+Use a `sast-ruleset.toml` file to disable rules or override rule attributes. This approach provides:
+
+- Integration with GitLab vulnerability management to automatically resolve existing findings when rules are disabled.
+- Version-controlled documentation of your security policy decisions.
+- Ability to share rulesets across multiple projects when you roll out IaC scanning.
 
 ### Ruleset definition
 
@@ -179,7 +185,8 @@ Every IaC scanning rule is contained in a `ruleset` section, which contains:
 
 ### Disable rules
 
-You can disable specific IaC scanning rules.
+You can disable specific IaC scanning rules. Findings previously detected by disabled rules are
+[automatically resolved](#automatic-vulnerability-resolution).
 
 To disable analyzer rules:
 

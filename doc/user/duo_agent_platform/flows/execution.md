@@ -19,6 +19,20 @@ Flows use agents to execute tasks.
 You can configure the environment where flows use CI/CD to execute.
 You can also [use your own runners](#configure-runners).
 
+## Flow security
+
+When flows execute in GitLab CI/CD:
+
+- They [use a composite identity](../security.md) to limit access.
+- The tools at their disposal are specific to the purpose of the flow.
+  These tools can include the creation of merge requests or the running of local shell commands in their execution environment.
+
+By default, the runner environment allows network access to the GitLab instance only,
+though [you can change this](#change-the-default-docker-image).
+This separate environment protects from unintended consequences of running shell commands.
+
+To prevent flows from running autonomously in the GitLab UI, you can [turn off flow execution](../../gitlab_duo/turn_on_off.md).
+
 ## Configure CI/CD execution
 
 You can customize how flows are executed in CI/CD by creating an agent configuration file in your project.
@@ -41,8 +55,13 @@ The configuration is applied when flows run in CI/CD for your project.
 ### Change the default Docker image
 
 By default, all flows executed with CI/CD use a standard Docker image provided by GitLab.
+This Docker image automatically includes network protection by using
+[Anthropic Sandbox Runtime (`srt`)](https://github.com/anthropic-experimental/sandbox-runtime).
+This image is configured to allow access to the GitLab instance only.
 However, you can change the Docker image and specify your own instead.
 Your own image can be useful for complex projects that require specific dependencies or tools.
+If you do this agents will be able to reach out to any domain
+that is reachable from the GitLab Runner associated with the session.
 
 To change the default Docker image, add the following to your `agent-config.yml` file:
 

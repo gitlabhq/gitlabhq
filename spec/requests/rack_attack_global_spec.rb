@@ -720,13 +720,17 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
     context 'when rate limit is enabled' do
       before do
+        Gitlab::Redis::RateLimiting.with(&:flushdb)
+        Rack::Attack.clear_configuration
+        Gitlab::RackAttack.configure(Rack::Attack)
+
         settings_to_set[:throttle_authenticated_git_http_requests_per_period] = requests_per_period
         settings_to_set[:throttle_authenticated_git_http_period_in_seconds] = period_in_seconds
         settings_to_set[:throttle_authenticated_git_http_enabled] = true
         stub_application_setting(settings_to_set)
       end
 
-      it 'rejects requests over the rate limit', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/19998' do
+      it 'rejects requests over the rate limit' do
         # First requests should succeed
         requests_per_period.times do
           do_request

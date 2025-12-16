@@ -10,6 +10,8 @@ module Gitlab
 
       cursor :merge_request_diff_id, :relative_order
 
+      tables_to_check_for_vacuum :merge_request_diff_files_99208b8fac
+
       override :perform
       def perform
         column_values = connection.columns(batch_table).map do |column|

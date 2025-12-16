@@ -31,7 +31,7 @@ to enable the `require_email_verification_on_account_locked` attribute.
 
 {{< /alert >}}
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a demo, see [Require email verification - demo](https://www.youtube.com/watch?v=wU6BVEGB3Y0).
 
 On GitLab.com, if you don't receive a verification email, select **Resend Code** before you contact the support team.

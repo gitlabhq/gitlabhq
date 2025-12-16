@@ -12,7 +12,7 @@ title: Repository mirroring
 In December 2018, Tiago Botelho hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/-/issues/1`)
 on the GitLab [Pull Repository Mirroring functionality](../user/project/repository/mirror/pull.md)
 to share his domain specific knowledge with anyone who may work in this part of the
-codebase in the future. You can find the <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=sSZq0fpdY-Y),
+codebase in the future. You can find the <i class="fa-youtube-play" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=sSZq0fpdY-Y),
 and the slides in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/8693404888a941fd851f8a8ecdec9675/Gitlab_Create_-_Pull_Mirroring_Deep_Dive.pdf).
 Specific details may have changed since then, but it should still serve as a good introduction.
 

@@ -39,7 +39,7 @@ in GitLab, so that they can be used to securely sign apps in CI/CD builds:
 - Provision profiles
 - Signing certificates
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Project-level secure files demo](https://youtu.be/O7FbJu3H2YM).
 
 ## Distribution

@@ -39,7 +39,7 @@ when you push code to your repository or create a merge request in GitLab. The
 Jenkins pipeline status displays on merge request widgets and the GitLab
 project's home page.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview of the Jenkins integration for GitLab, see
 [GitLab workflow with Jira issues and Jenkins pipelines](https://youtu.be/Jn-_fyra7xQ).
 

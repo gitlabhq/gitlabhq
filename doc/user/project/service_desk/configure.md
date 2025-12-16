@@ -242,7 +242,7 @@ You can configure GitLab to reopen closed issues when an external participant ad
 a new comment on an issue by email. This also adds an internal comment that mentions
 the assignees of the issue and creates to-do items for them.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a walkthrough, see [a short showcase video](https://youtu.be/163wDM1e43o).
 <!-- Video published on 2023-12-12 -->
 
@@ -279,7 +279,7 @@ To enable this setting:
 Configure a custom email address to show as the sender of your support communication.
 Maintain brand identity and instill confidence among support requesters with a domain they recognize.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [a short showcase video](https://youtu.be/_moD5U3xcQs).
 <!-- Video published on 2023-09-12 -->
 

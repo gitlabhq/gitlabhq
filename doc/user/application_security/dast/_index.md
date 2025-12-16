@@ -38,7 +38,7 @@ deployment in production. DAST is a foundational component of software security 
 together with the other GitLab security tools to provide a comprehensive security assessment of your
 applications.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [DAST - advanced security testing](https://www.youtube.com/watch?v=nbeDUoLZJTo).
 
 ## GitLab DAST

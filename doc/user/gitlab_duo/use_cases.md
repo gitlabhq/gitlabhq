@@ -28,7 +28,7 @@ and explore how to use GitLab Duo AI-native features for more efficiency.
 
 #### CLI tool for querying the GitLab REST API
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 Watch the [GitLab Duo Coffee Chat: Get started with C#](https://www.youtube.com/watch?v=AdRtX9L--Po)
 <!-- Video published on 2024-01-30 -->
 
@@ -119,7 +119,7 @@ Resources:
 
 In this example, existing source code with a single main function exists. It repeats code, and cannot be tested.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 Watch the [GitLab Duo Coffee Chat: C++, SQLite and CMake](https://www.youtube.com/watch?v=zGOo1jzQ5zM)
 <!-- Video published on 2024-01-10 -->
 
@@ -159,7 +159,7 @@ Resources:
 In this example, existing source code has been wrapped into functions.
 To support more database types in the future, the code must be refactored into classes and object inheritance.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 Watch the walkthrough of these steps in [GitLab Duo Coffee Chat: Refactor C++ functions into `OOP` classes](https://www.youtube.com/watch?v=Z9EJh0J9358)
 <!-- Video published on 2024-01-24 -->
 
@@ -542,7 +542,7 @@ PowerShell support is [experimental](../project/repository/code_suggestions/supp
 
 In this example, detected security vulnerabilities in C should be fixed with the help from GitLab Duo.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 Watch the walkthrough of these steps [GitLab Duo Coffee Chat: Vulnerability Resolution Challenge #1](https://www.youtube.com/watch?v=Ypwx4lFnHP0)
 <!-- Video published on 2024-01-30 -->
 
@@ -596,7 +596,7 @@ Resources:
 
 In this example, the challenge is to use GitLab Duo Chat to solve problems.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 Watch the walkthrough of these steps in [GitLab Duo Coffee Chat: Solve problems with GitLab Duo Chat Challenge](https://www.youtube.com/watch?v=Ypwx4lFnHP0)
 <!-- Video published on 2024-02-02 -->
 
@@ -666,7 +666,7 @@ The GitLab codebase is large, and requires to understand sometimes complex algor
 
 In this example, the challenge is to update the GitLab profile page and improve the social networks settings.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 Watch the recording here: [GitLab Duo Coffee Chat: Contribute to GitLab using Code Suggestions and Chat](https://www.youtube.com/watch?v=TauP7soXj-E)
 <!-- Video published on 2024-02-23 -->
 
@@ -1041,7 +1041,7 @@ func printContainers(clientset *kubernetes.Clientset, namespace string) {
 }
 ```
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 Watch the recording here: [GitLab Duo Coffee Chat: Code Generation Challenge with Go and Kubernetes Observability](https://www.youtube.com/watch?v=ORpRqp-A9hQ)
 <!-- Video published on 2024-03-27. Maintainer: Developer Relations. -->
 

@@ -296,8 +296,10 @@ By default this feature is not available. To make it available, an administrator
 
 {{< /alert >}}
 
-You can enforce 2FA for Git over SSH operations. However, you should use
-[ED25519_SK](../user/ssh.md#ed25519_sk-ssh-keys) or [ECDSA_SK](../user/ssh.md#ecdsa_sk-ssh-keys) SSH keys instead. 2FA is enforced for Git operations only, and internal commands from GitLab Shell such as `personal_access_token` are excluded.
+You can enforce 2FA for Git over SSH operations. However, you should use `ED25519_SK` or `ECDSA_SK`
+SSH keys instead. For more information, see [supported SSH key types](../user/ssh.md#supported-ssh-key-types).
+2FA is enforced for Git operations only, and internal commands from GitLab Shell such as
+`personal_access_token` are excluded.
 
 To perform one-time password (OTP) verification, run:
 

@@ -1179,7 +1179,7 @@ An input of `v1.A.B` does not match the regular expression and fails validation.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/582671) in GitLab 18.7 with a flag named `ci_dynamic_pipeline_inputs`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/582671) in GitLab 18.7.
 
 {{< /history >}}
 

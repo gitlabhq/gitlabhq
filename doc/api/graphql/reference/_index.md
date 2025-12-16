@@ -27886,7 +27886,7 @@ Input for pipeline creation.
 | <a id="ciinputsspecoptions"></a>`options` | [`CiInputsValue`](#ciinputsvalue) | Possible values that the input can take, if provided. |
 | <a id="ciinputsspecregex"></a>`regex` | [`String`](#string) | Regular expression pattern that the input value must match if provided. |
 | <a id="ciinputsspecrequired"></a>`required` | [`Boolean!`](#boolean) | Indicates whether the input is required. |
-| <a id="ciinputsspecrules"></a>`rules` {{< icon name="warning-solid" >}} | [`[CiInputsRule!]`](#ciinputsrule) | **Introduced** in GitLab 18.6. **Status**: Experiment. Conditional rules for dynamic input options. |
+| <a id="ciinputsspecrules"></a>`rules` | [`[CiInputsRule!]`](#ciinputsrule) | Conditional rules for dynamic input options. |
 | <a id="ciinputsspectype"></a>`type` | [`CiInputsType!`](#ciinputstype) | Input data type. |
 
 ### `CiInstanceVariable`
@@ -29670,7 +29670,7 @@ Represents a vulnerability. The connection type is countable.
 | <a id="countablevulnerabilitydismissedby"></a>`dismissedBy` | [`UserCore`](#usercore) | User that dismissed the vulnerability. |
 | <a id="countablevulnerabilityexternalissuelinks"></a>`externalIssueLinks` | [`VulnerabilityExternalIssueLinkConnection!`](#vulnerabilityexternalissuelinkconnection) | List of external issue links related to the vulnerability. (see [Connections](#connections)) |
 | <a id="countablevulnerabilityfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. |
-| <a id="countablevulnerabilityfindingtokenstatus"></a>`findingTokenStatus` | [`VulnerabilityFindingTokenStatus`](#vulnerabilityfindingtokenstatus) | Status of the secret token associated with this vulnerability. Returns `null` if the `validity_checks` feature flag is disabled. |
+| <a id="countablevulnerabilityfindingtokenstatus"></a>`findingTokenStatus` | [`VulnerabilityFindingTokenStatus`](#vulnerabilityfindingtokenstatus) | Status of the secret token associated with this vulnerability. |
 | <a id="countablevulnerabilityflags"></a>`flags` {{< icon name="warning-solid" >}} | [`VulnerabilityFlagConnection`](#vulnerabilityflagconnection) | **Introduced** in GitLab 18.5. **Status**: Experiment. Flags set on the vulnerability. |
 | <a id="countablevulnerabilityhasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Indicates whether there is a remediation available for the vulnerability. |
 | <a id="countablevulnerabilityid"></a>`id` | [`ID!`](#id) | GraphQL ID of the vulnerability. |
@@ -48462,7 +48462,7 @@ Represents a vulnerability.
 | <a id="vulnerabilitydismissedby"></a>`dismissedBy` | [`UserCore`](#usercore) | User that dismissed the vulnerability. |
 | <a id="vulnerabilityexternalissuelinks"></a>`externalIssueLinks` | [`VulnerabilityExternalIssueLinkConnection!`](#vulnerabilityexternalissuelinkconnection) | List of external issue links related to the vulnerability. (see [Connections](#connections)) |
 | <a id="vulnerabilityfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. |
-| <a id="vulnerabilityfindingtokenstatus"></a>`findingTokenStatus` | [`VulnerabilityFindingTokenStatus`](#vulnerabilityfindingtokenstatus) | Status of the secret token associated with this vulnerability. Returns `null` if the `validity_checks` feature flag is disabled. |
+| <a id="vulnerabilityfindingtokenstatus"></a>`findingTokenStatus` | [`VulnerabilityFindingTokenStatus`](#vulnerabilityfindingtokenstatus) | Status of the secret token associated with this vulnerability. |
 | <a id="vulnerabilityflags"></a>`flags` {{< icon name="warning-solid" >}} | [`VulnerabilityFlagConnection`](#vulnerabilityflagconnection) | **Introduced** in GitLab 18.5. **Status**: Experiment. Flags set on the vulnerability. |
 | <a id="vulnerabilityhasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Indicates whether there is a remediation available for the vulnerability. |
 | <a id="vulnerabilityid"></a>`id` | [`ID!`](#id) | GraphQL ID of the vulnerability. |

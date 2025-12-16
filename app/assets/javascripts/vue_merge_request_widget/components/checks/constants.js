@@ -29,7 +29,10 @@ export const FAILURE_REASONS = {
   discussions_not_resolved: __('Open threads must be resolved.'),
   draft_status: __('Merge request must not be draft.'),
   not_open: __('Merge request must be open.'),
-  need_rebase: __('Merge request must be rebased, because a fast-forward merge is not possible.'),
+  need_rebase: __('Fast forward merge is not possible. Please rebase.'),
+  need_rebase_merge_train: __(
+    'Fast forward merge is not possible. Please rebase or use merge train.',
+  ),
   not_approved: __('All required approvals must be given.'),
   merge_request_blocked: __('Merge request dependencies must be merged.'),
   status_checks_must_pass: __('Status checks must pass.'),

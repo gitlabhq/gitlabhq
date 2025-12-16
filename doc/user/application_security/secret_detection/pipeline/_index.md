@@ -25,12 +25,12 @@ With GitLab Ultimate, pipeline secret detection results are also processed so yo
 - [Automatically respond](../automatic_response.md) to leaks in public repositories.
 - Enforce consistent secret detection rules across projects by using [security policies](../../policies/_index.md).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For an interactive reading and how-to demo of this pipeline secret detection documentation see:
+<i class="fa-youtube-play" aria-hidden="true"></i> For an interactive reading and how-to demo of this pipeline secret detection documentation see:
 
 - [How to enable secret detection in GitLab Application Security Part 1/2](https://youtu.be/dbMxeO6nJCE?feature=shared)
 - [How to enable secret detection in GitLab Application Security Part 2/2](https://youtu.be/VL-_hdiTazo?feature=shared)
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For other interactive reading and how-to demos, see the [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9).
+<i class="fa-youtube-play" aria-hidden="true"></i> For other interactive reading and how-to demos, see the [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9).
 
 ## Availability
 

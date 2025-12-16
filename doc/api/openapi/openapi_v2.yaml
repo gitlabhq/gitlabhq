@@ -59,6 +59,10 @@ tags:
   description: Operations about commits
 - name: issues
   description: Operations about issues
+- name: issue_participants
+  description: Operations about issue_participants
+- name: metric_images
+  description: Operations about metric_images
 - name: pages
   description: Operations about pages
 - name: pages_domains
@@ -127,8 +131,8 @@ tags:
   description: Operations about imports
 - name: slack
   description: Operations about slacks
-- name: issues_statistics
-  description: Operations about issues_statistics
+- name: issue_statistics
+  description: Operations about issue_statistics
 - name: topics
   description: Operations about topics
 - name: web_commits
@@ -25819,7 +25823,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_MergeRequestBasic"
       tags:
-      - projects
+      - issues
       operationId: getApiV4ProjectsIdIssuesIssueIidRelatedMergeRequests
   "/api/v4/projects/{id}/issues/{issue_iid}/closed_by":
     get:
@@ -25869,7 +25873,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_UserBasic"
       tags:
-      - projects
+      - issue_participants
       operationId: getApiV4ProjectsIdIssuesIssueIidParticipants
   "/api/v4/projects/{id}/issues/{issue_iid}/user_agent_detail":
     get:
@@ -25894,7 +25898,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_UserAgentDetail"
       tags:
-      - projects
+      - issues
       operationId: getApiV4ProjectsIdIssuesIssueIidUserAgentDetail
   "/api/v4/projects/{id}/issues/{issue_iid}/metric_images/authorize":
     post:
@@ -25948,7 +25952,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_IssuableMetricImage"
       tags:
-      - projects
+      - metric_images
       operationId: postApiV4ProjectsIdIssuesIssueIidMetricImages
     get:
       description: Metric Images for issue
@@ -25968,8 +25972,10 @@ paths:
       responses:
         '200':
           description: Metric Images for issue
+          schema:
+            "$ref": "#/definitions/API_Entities_IssuableMetricImage"
       tags:
-      - projects
+      - metric_images
       operationId: getApiV4ProjectsIdIssuesIssueIidMetricImages
   "/api/v4/projects/{id}/issues/{issue_iid}/metric_images/{metric_image_id}":
     put:
@@ -26006,7 +26012,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_IssuableMetricImage"
       tags:
-      - projects
+      - metric_images
       operationId: putApiV4ProjectsIdIssuesIssueIidMetricImagesMetricImageId
     delete:
       description: Remove a metric image for an issue
@@ -26035,7 +26041,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_IssuableMetricImage"
       tags:
-      - projects
+      - metric_images
       operationId: deleteApiV4ProjectsIdIssuesIssueIidMetricImagesMetricImageId
   "/api/v4/projects/{id}/ci/lint":
     get:
@@ -47376,7 +47382,7 @@ paths:
         '200':
           description: Get currently authenticated user's issues statistics
       tags:
-      - issues_statistics
+      - issue_statistics
       operationId: getApiV4IssuesStatistics
   "/api/v4/metadata":
     get:

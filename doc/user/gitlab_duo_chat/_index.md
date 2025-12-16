@@ -44,7 +44,7 @@ contextual, conversational AI. Chat:
 - Integrates directly in the GitLab UI, Web IDE, VS Code, JetBrains IDEs, and Visual Studio.
 - Can include information from your repositories and projects to deliver targeted improvements.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY)
+<i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY)
 <!-- Video published on 2024-04-18 -->
 
 Learn about the new [GitLab Duo Chat (Agentic)](agentic_chat.md).

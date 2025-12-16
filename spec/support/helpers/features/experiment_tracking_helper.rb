@@ -48,15 +48,17 @@ module ExperimentTrackingHelper
       tracked_events.clear
     end
 
-    def verify_single_assignment(event)
-      return unless event.assignment?
+    def verify_single_assignment(event, max_segmentations)
+      return unless event.assignment? && event.key.present?
 
       assignment_events = tracked_events.filter { |e| e.assignment? && e.key.present? }
-      assignment_events.each do |e|
-        unless e.key == event.key
-          raise "#{e.experiment} was segmented twice (multiple assignment keys). #{e.key} and then #{event.key}."
-        end
-      end
+      unique_keys = assignment_events.map(&:key).append(event.key).uniq
+
+      return unless unique_keys.size > max_segmentations
+
+      raise "#{event.experiment} was segmented #{unique_keys.size} " +
+        "time".pluralize(unique_keys.size) +
+        " (expected #{max_segmentations}) - #{unique_keys.join(', ')}."
     end
   end
 
@@ -95,7 +97,7 @@ RSpec::Matchers.define :have_tracked_experiment do |experiment_name, expectation
 end
 
 RSpec.configure do |config|
-  config.before(:each, :experiment_tracking) do
+  config.before(:each, :experiment_tracking) do |example|
     self.class.clear_tracked_events if self.class.respond_to?(:clear_tracked_events)
 
     allow(Gitlab::Tracking).to receive(:event) do |category, action, **kwargs| # rubocop:disable RSpec/ExpectGitlabTracking -- snowplow stubbing wouldn't work here
@@ -103,7 +105,9 @@ RSpec.configure do |config|
 
       next unless event.experiment?
 
-      self.class.verify_single_assignment(event)
+      max_segmentations = example.metadata[:experiment_tracking]
+      max_segmentations = 1 unless max_segmentations.is_a?(Numeric)
+      self.class.verify_single_assignment(event, max_segmentations)
       self.class.tracked_events << event
     end
   end

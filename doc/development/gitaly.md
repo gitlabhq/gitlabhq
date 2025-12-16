@@ -20,7 +20,7 @@ codebase in the future.
 
 <!-- vale gitlab_base.Spelling = YES -->
 
-You can find the <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=BmlEWFS8ORo), and the slides
+You can find the <i class="fa-youtube-play" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=BmlEWFS8ORo), and the slides
 on [Google Slides](https://docs.google.com/presentation/d/1VgRbiYih9ODhcPnL8dS0W98EwFYpJ7GXMPpX-1TM6YE/edit)
 and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/a4fdb1026278bda5c1c5bb574379cf80/Create_Deep_Dive__Gitaly_for_Create_Ruby_Devs.pdf).
 

@@ -22,7 +22,7 @@ title: Pipeline execution policies
 
 Use pipeline execution policies to manage and enforce CI/CD jobs for multiple projects with a single configuration.
 
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [Security Policies: Pipeline Execution Policy Type](https://www.youtube.com/watch?v=QQAOpkZ__pA).
+- <i class="fa-youtube-play" aria-hidden="true"></i> For a video walkthrough, see [Security Policies: Pipeline Execution Policy Type](https://www.youtube.com/watch?v=QQAOpkZ__pA).
 
 ## Schema
 

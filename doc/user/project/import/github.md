@@ -33,7 +33,7 @@ Using the GitLab UI, the GitHub importer always imports from the
 
 You can change the target namespace and target repository name before you import.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview of the import process, see [How to migrate from GitHub to GitLab including Actions](https://www.youtube.com/watch?v=0Id5oMl1Kqs).
 
 ## Estimating import duration

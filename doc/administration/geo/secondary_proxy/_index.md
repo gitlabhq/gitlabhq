@@ -35,7 +35,7 @@ This behavior enables use-cases including:
 - Putting all Geo sites behind a single URL, to deliver a consistent, seamless, and comprehensive experience whichever site the user lands on. Users don't need to juggle multiple GitLab URLs.
 - Geographically load-balancing traffic without worrying about write access.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Geo proxying for secondary sites](https://www.youtube.com/watch?v=TALLy7__Na8).
 <!-- Video published on 2022-01-26 -->
 

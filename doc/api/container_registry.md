@@ -345,7 +345,7 @@ This operation does not delete blobs. To reclaim disk space, [run garbage collec
 
 Delete registry repository tags in bulk based on given criteria.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Use the container registry API to delete all tags except *](https://youtu.be/Hi19bKe_xsg).
 
 ```plaintext

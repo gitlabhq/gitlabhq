@@ -35,7 +35,7 @@ detected with browser-based DAST.
 Dynamic application security testing (DAST) examines applications for vulnerabilities like these in
 deployed environments.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [DAST - advanced security testing](https://www.youtube.com/watch?v=nbeDUoLZJTo).
 
 {{< alert type="warning" >}}

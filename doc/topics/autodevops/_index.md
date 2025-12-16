@@ -27,7 +27,7 @@ With Auto DevOps you get:
 - Quick deployments to Kubernetes clusters
 - Progressive deployment strategies that reduce risk and downtime
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an introduction to Auto DevOps, watch [Auto DevOps](https://youtu.be/0Tc0YYBxqi4).
 <!-- Video published on 2018-06-22 -->
 

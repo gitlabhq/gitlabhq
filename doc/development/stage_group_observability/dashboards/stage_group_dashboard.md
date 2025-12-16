@@ -163,7 +163,7 @@ stageGroupDashboards.dashboard('source_code')
 
 ![Stage Group Dashboard Customization](img/stage_group_dashboards_time_customization_v14_10.png)
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 If you want to see the workflow in action, we've recorded a pairing session on customizing a dashboard,
 available on [GitLab Unfiltered](https://youtu.be/shEd_eiUjdI).
 

@@ -227,7 +227,7 @@ To create a group:
 
 <!-- vale gitlab_base.FutureTense = YES -->
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For details about groups, watch [GitLab Namespaces (users, groups and subgroups)](https://youtu.be/r0sJgjR2f5A).
 
 ## Edit group name, description, and avatar

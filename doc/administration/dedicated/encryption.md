@@ -269,4 +269,4 @@ You can configure custom TLS certificates to use your organization's certificate
 communications.
 
 For more information on configuring custom certificates, see
-[custom certificates](configure_instance/network_security.md#custom-certificate-authority).
+[custom certificates](configure_instance/network_security.md#custom-certificate-authorities).

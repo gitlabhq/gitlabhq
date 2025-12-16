@@ -88,7 +88,7 @@ To install a pre-release build, either:
   To see the alpha release after adding the `alpha` plugin repository, you might need to uninstall and reinstall the GitLab Duo plugin.
   {{< /alert >}}
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a video tutorial of this process, see
 [Install alpha releases of the GitLab Duo plugin for JetBrains](https://www.youtube.com/watch?v=Z9AuKybmeRU).
 <!-- Video published on 2024-04-04 -->

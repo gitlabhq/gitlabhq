@@ -41,15 +41,11 @@ module Types
           null: true,
           description: 'Regular expression pattern that the input value must match if provided.'
 
-        field :rules, [Types::Ci::Inputs::RuleType],
+        field :rules, [Types::Ci::Inputs::RuleType], # rubocop:disable GraphQL/FieldHashKey -- field requires custom method
           null: true,
-          experiment: { milestone: '18.6' },
           description: 'Conditional rules for dynamic input options.'
 
         def rules
-          # TODO: Remove project logic as well as FF when ci_dynamic_pipeline_inputs is removed
-          return unless Feature.enabled?(:ci_dynamic_pipeline_inputs, object[:project])
-
           object[:rules]
         end
       end

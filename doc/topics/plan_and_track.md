@@ -13,7 +13,7 @@ use Git to interact with GitLab.
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a thorough demo of Plan features, see
 [Multi-team planning with GitLab Ultimate](https://www.youtube.com/watch?v=KmASFwSap7c).
 In this video, Gabe describes a use case of a multi-team organization that uses GitLab

@@ -80,7 +80,7 @@ It takes three steps to install the agent in your cluster:
 1. [Register the agent with GitLab](#register-the-agent-with-gitlab).
 1. [Install the agent in your cluster](#install-the-agent-in-the-cluster).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a [walk-through of this process](https://www.youtube.com/watch?v=XuBpKtsgGkE).
+<i class="fa-youtube-play" aria-hidden="true"></i> Watch a [walk-through of this process](https://www.youtube.com/watch?v=XuBpKtsgGkE).
 <!-- Video published on 2021-09-02 -->
 
 ### Create an agent configuration file

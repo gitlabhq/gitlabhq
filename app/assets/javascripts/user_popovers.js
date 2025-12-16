@@ -72,15 +72,29 @@ function createPopover(el, user) {
   if (preloadedUserInfo.userId) {
     populateUserInfo(user);
   }
-  const UserPopoverComponent = Vue.extend(UserPopover);
 
-  return new UserPopoverComponent({
-    propsData: {
-      target: el,
-      user,
-      show: true,
-      placement: el.dataset.placement || 'top',
-      container: el.parentNode?.id || null,
+  return new Vue({
+    name: 'UserPopoverRoot',
+    render(createElement) {
+      return createElement(UserPopover, {
+        props: {
+          target: el,
+          user,
+          show: true,
+          placement: el.dataset.placement || 'top',
+          container: el.parentNode?.id || null,
+        },
+        on: {
+          follow: () => {
+            UsersCache.updateById(preloadedUserInfo.userId, { is_followed: true });
+            el.user.isFollowed = true;
+          },
+          unfollow: () => {
+            UsersCache.updateById(preloadedUserInfo.userId, { is_followed: false });
+            el.user.isFollowed = false;
+          },
+        },
+      });
     },
   });
 }
@@ -112,18 +126,6 @@ function launchPopover(el, mountPopover) {
     { once: true },
   );
   const popoverInstance = createPopover(el, Vue.observable(emptyUser));
-
-  const { userId } = el.dataset;
-
-  popoverInstance.$on('follow', () => {
-    UsersCache.updateById(userId, { is_followed: true });
-    el.user.isFollowed = true;
-  });
-
-  popoverInstance.$on('unfollow', () => {
-    UsersCache.updateById(userId, { is_followed: false });
-    el.user.isFollowed = false;
-  });
 
   mountPopover(popoverInstance);
 }

@@ -51,7 +51,7 @@ to create a merge request description.
 
 The description is inserted where your cursor was.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=CKjkVsfyFd8&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
+<i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=CKjkVsfyFd8&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 
 Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org/gitlab/-/issues/443236).
 
@@ -94,7 +94,7 @@ When your merge request is ready to be reviewed, use GitLab Duo Code Review to p
 1. Select **Code** > **Merge requests** and find your merge request.
 1. In a comment box, enter the quick action `/assign_reviewer @GitLabDuo`, or assign GitLab Duo as reviewer.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=SG3bhD1YjeY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW&index=2)
+<i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=SG3bhD1YjeY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW&index=2)
 
 Learn about the new [GitLab Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md).
 
@@ -363,7 +363,7 @@ When you've completed your review of a merge request and are ready to [submit yo
 
 The summary is displayed in the comment box. You can edit and refine the summary before you submit your review.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=Bx6Zajyuy9k)
+<i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=Bx6Zajyuy9k)
 
 Provide feedback on this experimental feature in [issue 408991](https://gitlab.com/gitlab-org/gitlab/-/issues/408991).
 
@@ -409,7 +409,7 @@ by using GitLab Duo Merge Commit Message Generation.
 1. Select **Generate commit message**.
 1. Review the commit message provided and choose **Insert** to add it to the commit.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=fUHPNT4uByQ)
+<i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=fUHPNT4uByQ)
 
 Data usage: When you use this feature, the following data is sent to the large language model:
 

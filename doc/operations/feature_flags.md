@@ -21,7 +21,7 @@ delivery from customer launch.
 
 A [complete list of feature flags](../administration/feature_flags/list.md) in GitLab is also available.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an example of feature flags in action, see [Eliminating risk with feature flags](https://www.youtube.com/watch?v=U9WqoK9froI).
 <!-- Video published on 2024-02-01 -->
 

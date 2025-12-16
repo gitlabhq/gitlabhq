@@ -294,7 +294,7 @@ default branch.
 When you trigger a SAST scan, the content of the active file is passed to GitLab and checked against
 SAST vulnerability rules. GitLab shows scan results in the primary side bar.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 To learn about setting up SAST scanning, see
 [SAST scanning in VS Code](https://www.youtube.com/watch?v=s-qOSQO0i-8) on GitLab Unfiltered.
 <!-- Video published on 2025-02-10 -->

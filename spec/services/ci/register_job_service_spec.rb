@@ -109,7 +109,8 @@ module Ci
                   build_status: 'created',
                   build_id: pending_job.id,
                   runner_id: runner.id,
-                  runner_type: runner.runner_type
+                  runner_type: runner.runner_type,
+                  class: described_class.to_s
                 )
               )
 
@@ -140,7 +141,8 @@ module Ci
                     build_status: 'created',
                     build_id: pending_job.id,
                     runner_id: runner.id,
-                    runner_type: runner.runner_type
+                    runner_type: runner.runner_type,
+                    class: described_class.to_s
                   )
                 )
 
@@ -1128,7 +1130,8 @@ module Ci
                   message: 'build refreshed from primary',
                   original_status: 'running',
                   refreshed_status: 'running',
-                  build_id: pending_job.id
+                  build_id: pending_job.id,
+                  class: described_class.to_s
                 )
               )
               expect(Gitlab::AppJsonLogger).to receive(:info).once.with(
@@ -1137,7 +1140,8 @@ module Ci
                   build_status: 'running',
                   build_id: pending_job.id,
                   runner_id: runner.id,
-                  runner_type: runner.runner_type
+                  runner_type: runner.runner_type,
+                  class: described_class.to_s
                 )
               )
               expect(Gitlab::AppJsonLogger).to receive(:info).once.with(

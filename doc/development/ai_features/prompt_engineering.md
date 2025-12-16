@@ -10,7 +10,7 @@ including prompt design, optimization, evaluation, and monitoring.
 
 ## Understanding prompt engineering
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [this video](https://youtu.be/bOA6BtBaMTQ).
 
 Most important takeaways:
@@ -62,7 +62,7 @@ Most important takeaways:
 
 ### Best practices for writing effective prompts
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [this video about writing effective prompts](https://youtu.be/xL-zj-Z4Mh4).
 
 Here are the key takeaways from this video:
@@ -110,34 +110,34 @@ Here are the key takeaways from this video:
 
 #### Iterating on the prompt using Anthropic console
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [this video](https://youtu.be/03nOKxr8BS4).
 
 #### Iterating on the prompt using LangSmith
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [this video](https://youtu.be/9WXT0licAdg).
 
 #### Using Datasets for prompt tuning with LangSmith
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [this video](https://www.youtube.com/watch?v=kUnm0c2LMlQ).
 
 #### Using automated evaluation in LangSmith
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [this video](https://youtu.be/MT6SK4y47Zw).
 
 #### Using pairwise experiments in LangSmith
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [this video](https://youtu.be/mhpY7ddjXqc).
 
 [View the CEF documentation](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/running_evaluation_locally/pairwise_evaluation.md).
 
 #### When to use LangSmith and when CEF
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [this video](https://youtu.be/-DK-XFFllwg).
 
 ##### Key Points on CEF (Centralized Evaluation Framework) Project

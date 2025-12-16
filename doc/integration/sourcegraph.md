@@ -32,7 +32,7 @@ When visiting one of these views, hover over a code reference to see a popover w
 - **Go to definition**, which goes to the line of code where this reference was defined.
 - **Find references**, which goes to the configured Sourcegraph instance, showing a list of references to the highlighted code.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, watch the video [Sourcegraph's new GitLab native integration](https://www.youtube.com/watch?v=LjVxkt4_sEA).
 <!-- Video published on 2019-11-12 -->
 

@@ -115,7 +115,10 @@ module API
       end
     end
 
-    desc "Get currently authenticated user's issues statistics"
+    desc "Get currently authenticated user's issues statistics" do
+      success code: 200
+      tags ['issue_statistics']
+    end
     params do
       use :issues_stats_params
       optional :scope, type: String, values: %w[created_by_me assigned_to_me all], default: 'created_by_me',
@@ -131,6 +134,7 @@ module API
     resource :issues do
       desc "Get currently authenticated user's issues" do
         success Entities::Issue
+        tags ['issues']
       end
       params do
         use :issues_params
@@ -157,6 +161,7 @@ module API
 
       desc "Get specified issue (admin only)" do
         success Entities::Issue
+        tags ['issues']
       end
       params do
         requires :id, type: String, desc: 'The ID of the Issue'
@@ -174,6 +179,7 @@ module API
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a list of group issues' do
+        tags ['groups']
         success Entities::Issue
       end
       params do
@@ -195,7 +201,10 @@ module API
         present issues, options
       end
 
-      desc 'Get statistics for the list of group issues'
+      desc 'Get statistics for the list of group issues' do
+        success code: 200
+        tags ['groups']
+      end
       params do
         use :issues_stats_params
       end
@@ -214,6 +223,7 @@ module API
 
       desc 'Get a list of project issues' do
         success Entities::Issue
+        tags ['projects']
       end
       params do
         use :issues_params
@@ -244,7 +254,10 @@ module API
         present paginate_with_strategies(issues), options
       end
 
-      desc 'Get statistics for the list of project issues'
+      desc 'Get statistics for the list of project issues' do
+        tags ['projects']
+        success code: 200
+      end
       params do
         use :issues_stats_params
       end
@@ -256,6 +269,7 @@ module API
 
       desc 'Get a single project issue' do
         success Entities::Issue
+        tags ['projects']
       end
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
@@ -272,6 +286,7 @@ module API
 
       desc 'Create a new project issue' do
         success Entities::Issue
+        tags ['projects']
       end
       params do
         requires :title, type: String, desc: 'The title of an issue'
@@ -323,6 +338,7 @@ module API
 
       desc 'Update an existing issue' do
         success Entities::Issue
+        tags ['projects']
       end
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
@@ -368,6 +384,7 @@ module API
 
       desc 'Reorder an existing issue' do
         success Entities::Issue
+        tags ['projects']
       end
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
@@ -392,6 +409,7 @@ module API
 
       desc 'Move an existing issue' do
         success Entities::Issue
+        tags ['projects']
       end
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
@@ -423,6 +441,7 @@ module API
 
       desc 'Clone an existing issue' do
         success Entities::Issue
+        tags ['projects']
       end
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
@@ -454,7 +473,10 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Delete a project issue'
+      desc 'Delete a project issue' do
+        success code: 204
+        tags ['projects']
+      end
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
@@ -473,6 +495,7 @@ module API
 
       desc 'List merge requests that are related to the issue' do
         success Entities::MergeRequestBasic
+        tags ['issues']
       end
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
@@ -494,6 +517,7 @@ module API
 
       desc 'List merge requests closing issue' do
         success Entities::MergeRequestBasic
+        tags ['projects']
       end
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
@@ -511,6 +535,7 @@ module API
 
       desc 'List participants for an issue' do
         success Entities::UserBasic
+        tags ['issue_participants']
       end
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
@@ -524,6 +549,7 @@ module API
 
       desc 'Get the user agent details for an issue' do
         success Entities::UserAgentDetail
+        tags ['issues']
       end
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'

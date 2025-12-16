@@ -251,45 +251,24 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
       GQL
     end
 
-    context 'when the feature flag is enabled' do
-      before do
-        stub_feature_flags(ci_dynamic_pipeline_inputs: project)
-      end
+    it 'includes the rules field in the response' do
+      post_query
 
-      it 'includes the rules field in the response' do
-        post_query
+      inputs = graphql_data_at(:ciCatalogResource, :versions, :nodes, 0, :components, :nodes, 0, :inputs)
+      instance_type_input = inputs.find { |i| i['name'] == 'instance_type' }
 
-        inputs = graphql_data_at(:ciCatalogResource, :versions, :nodes, 0, :components, :nodes, 0, :inputs)
-        instance_type_input = inputs.find { |i| i['name'] == 'instance_type' }
-
-        expect(instance_type_input['rules']).to contain_exactly(
-          a_hash_including(
-            'if' => '$[[ inputs.environment ]] == "dev"',
-            'options' => %w[t3.micro t3.small],
-            'default' => 't3.micro'
-          ),
-          a_hash_including(
-            'if' => '$[[ inputs.environment ]] == "prod"',
-            'options' => %w[m5.large m5.xlarge],
-            'default' => 'm5.large'
-          )
+      expect(instance_type_input['rules']).to contain_exactly(
+        a_hash_including(
+          'if' => '$[[ inputs.environment ]] == "dev"',
+          'options' => %w[t3.micro t3.small],
+          'default' => 't3.micro'
+        ),
+        a_hash_including(
+          'if' => '$[[ inputs.environment ]] == "prod"',
+          'options' => %w[m5.large m5.xlarge],
+          'default' => 'm5.large'
         )
-      end
-    end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_dynamic_pipeline_inputs: false)
-      end
-
-      it 'does not include the rules field in the response' do
-        post_query
-
-        inputs = graphql_data_at(:ciCatalogResource, :versions, :nodes, 0, :components, :nodes, 0, :inputs)
-        instance_type_input = inputs.find { |i| i['name'] == 'instance_type' }
-
-        expect(instance_type_input['rules']).to be_nil
-      end
+      )
     end
   end
 

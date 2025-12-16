@@ -113,7 +113,7 @@ If the issue contains a large amount of text (more than 40,000 words), GitLab Du
 
 {{< /alert >}}
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For tips on how GitLab Duo Chat can improve your productivity with issues and epics, see [Boost your productivity with GitLab Duo Chat](https://youtu.be/RJezT5_V6dI).
 <!-- Video published on 2024-04-17 -->
 
@@ -538,7 +538,7 @@ For more information, see:
 
 - <i class="fa-youtube-play" aria-hidden="true"></i> [Application modernization with GitLab Duo (C++ to Java)](https://youtu.be/FjoAmt5eeXA?si=SLv9Mv8eSUAVwW5Z).
   <!-- Video published on 2025-03-18 -->
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://youtu.be/oxziu7_mWVk?si=fS2JUO-8doARS169)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://youtu.be/oxziu7_mWVk?si=fS2JUO-8doARS169)
 
 ## Fix code in the IDE
 
@@ -624,7 +624,7 @@ You can include additional instructions to be considered. For example:
 
 For more information, see [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-duo-chat-in-vs-code).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
+<i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
 
 ## Ask about CI/CD
 
@@ -700,7 +700,7 @@ It analyzes the last 100,000 characters of the job log to determine the cause of
 
 You can access this feature either from the **Pipelines** tab in merge requests or directly from the job log.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=MLjhVbMjFAY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
+<i class="fa-youtube-play" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=MLjhVbMjFAY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 
 Root Cause Analysis does not support:
 

@@ -249,7 +249,8 @@ module Ci
         ::Gitlab::AppJsonLogger.info(message: "build refreshed from primary",
           original_status: build.status,
           refreshed_status: refreshed_build.status,
-          build_id: build.id)
+          build_id: build.id,
+          class: self.class.to_s)
       end
 
       refreshed_build
@@ -273,7 +274,8 @@ module Ci
           build_status: build.status,
           build_id: build.id,
           runner_id: runner.id,
-          runner_type: runner.runner_type)
+          runner_type: runner.runner_type,
+          class: self.class.to_s)
         @metrics.increment_queue_operation(:build_status_stale)
         return ResultFactory.invalid
       end
@@ -289,7 +291,8 @@ module Ci
         build_status: build.status,
         build_id: build.id,
         runner_id: runner.id,
-        runner_type: runner.runner_type)
+        runner_type: runner.runner_type,
+        class: self.class.to_s)
       ResultFactory.invalid
     end
 

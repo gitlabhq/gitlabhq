@@ -533,7 +533,7 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
 
     context 'when database was updated recently', :clean_gitlab_redis_cache do
       before do
-        runner_manager.contacted_at = Time.current
+        runner_manager.update!(contacted_at: Time.current)
       end
 
       context 'when version is changed' do
@@ -549,12 +549,13 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
           expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async).with(version).once
         end
 
-        it 'updates cache' do
+        it 'updates Redis cache but not database' do
+          expect(runner_manager).not_to receive(:update_columns)
           expect_redis_update
 
-          heartbeat
-
-          expect(runner_manager.runner_version).to be_nil
+          expect { heartbeat }
+            .to not_change { runner_manager.reload.read_attribute(:updated_at) }
+            .and not_change { runner_manager.runner_version }.from(nil)
         end
 
         context 'when fetching runner releases is disabled' do
@@ -609,6 +610,8 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
 
     context 'when database was not updated recently' do
       before do
+        # Set contacted_at in memory to a value larger than UPDATE_CONTACT_COLUMN_EVERY
+        # This ensures persist_cached_data? returns true
         runner_manager.contacted_at = 2.hours.ago
 
         allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).with(version)
@@ -714,6 +717,104 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
 
             expect(runner_manager.reload.read_attribute(:labels)).to eq(values[:labels])
           end
+        end
+      end
+
+      context 'when no attributes have changed' do
+        let(:version) { runner_manager.version } # Same version as current
+        let(:values) { {} } # No new values
+
+        it 'updates contacted_at in Redis cache' do
+          expect_redis_update(
+            contacted_at: Time.current,
+            creation_state: :finished
+          )
+
+          heartbeat
+        end
+
+        it 'updates contacted_at in database but not updated_at' do
+          expect(runner_manager).to receive(:update_columns).and_call_original
+
+          expect { heartbeat }
+            .to change { runner_manager.reload.read_attribute(:contacted_at) }
+            .and not_change { runner_manager.reload.read_attribute(:updated_at) }
+        end
+      end
+
+      context 'when only contacted_at would change' do
+        let(:version) { runner_manager.version }
+        let(:values) do
+          {
+            # All values match current state
+            version: runner_manager.version,
+            architecture: runner_manager.architecture,
+            ip_address: runner_manager.ip_address
+          }
+        end
+
+        it 'updates contacted_at in Redis cache' do
+          expect_redis_update
+
+          heartbeat
+        end
+
+        it 'updates contacted_at in database but not updated_at' do
+          expect { heartbeat }
+            .to change { runner_manager.reload.read_attribute(:contacted_at) }
+            .and not_change { runner_manager.reload.read_attribute(:updated_at) }
+        end
+
+        it 'does not update unchanged columns in SQL' do
+          recorder = ActiveRecord::QueryRecorder.new do
+            heartbeat
+          end
+
+          update_queries = recorder.log.select { |q| q.include?('UPDATE') }
+          expect(update_queries).not_to include(match(/version/))
+          expect(update_queries).not_to include(match(/architecture/))
+          expect(update_queries).not_to include(match(/ip_address/))
+        end
+      end
+
+      context 'when version changes' do
+        let(:version) { '15.0.1' }
+
+        before do
+          allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).with(version)
+        end
+
+        it 'updates both Redis cache and database' do
+          expect_redis_update
+
+          expect { heartbeat }
+            .to change { runner_manager.reload.read_attribute(:version) }.to(version)
+            .and change { runner_manager.reload.read_attribute(:updated_at) }
+        end
+
+        it 'calls update_columns' do
+          expect(runner_manager).to receive(:update_columns).and_call_original
+
+          heartbeat
+        end
+      end
+
+      context 'when labels change' do
+        let(:version) { runner_manager.version }
+        let(:values) do
+          {
+            labels: { 'environment' => 'production', 'team' => 'backend' },
+            version: version
+          }
+        end
+
+        it 'updates both Redis cache and database' do
+          expect_redis_update
+
+          expect { heartbeat }
+            .to change { runner_manager.reload.read_attribute(:labels) }
+            .from({}).to({ 'environment' => 'production', 'team' => 'backend' })
+            .and change { runner_manager.reload.read_attribute(:updated_at) }
         end
       end
     end

@@ -1,0 +1,9 @@
+---
+name: delete_protected_branch
+description: Grants the ability to delete protected branches
+feature_category: source_code_management
+boundaries:
+  - project
+  - group
+permissions:
+  - delete_protected_branch

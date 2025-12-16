@@ -41,7 +41,7 @@ The following restrictions apply:
 - The maximum number of path-based exclusions per project is 10.
 - The maximum depth for path-based exclusions is 20.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Secret Detection Exclusions - Demo](https://www.youtube.com/watch?v=vh_Uh4_4aoc).
 <!-- Video published on 2024-10-12 -->
 

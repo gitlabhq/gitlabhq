@@ -1481,6 +1481,7 @@ class MergeRequest < ApplicationRecord
 
   def skipped_auto_merge_checks(options = {})
     merge_when_checks_pass_strat = options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS || options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
+    merge_train_strat = options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_MERGE_TRAIN || options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
 
     {
       skip_ci_check: merge_when_checks_pass_strat,
@@ -1495,7 +1496,8 @@ class MergeRequest < ApplicationRecord
       skip_locked_lfs_files_check: merge_when_checks_pass_strat,
       skip_security_policy_check: merge_when_checks_pass_strat,
       skip_merge_time_check: merge_when_checks_pass_strat,
-      skip_merge_request_title_check: merge_when_checks_pass_strat
+      skip_merge_request_title_check: merge_when_checks_pass_strat,
+      skip_rebase_check: merge_train_strat
     }
   end
 

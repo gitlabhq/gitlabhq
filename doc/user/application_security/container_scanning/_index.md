@@ -18,9 +18,9 @@ Container scanning detects these risks early, before they reach production envir
 vulnerabilities appear in your base images or operating system's packages, container scanning
 identifies them and provides a remediation path for those that it can.
 
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+- <i class="fa-youtube-play" aria-hidden="true"></i>
   For an overview, see [Container scanning - Advanced Security Testing](https://www.youtube.com/watch?v=C0jn2eN5MAs).
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up container scanning using GitLab](https://youtu.be/h__mcXpil_4?si=w_BVG68qnkL9x4l1).
+- <i class="fa-youtube-play" aria-hidden="true"></i> For a video walkthrough, see [How to set up container scanning using GitLab](https://youtu.be/h__mcXpil_4?si=w_BVG68qnkL9x4l1).
 - For an introductory tutorial, see [Scan a Docker container for vulnerabilities](../../../tutorials/container_scanning/_index.md).
 
 Container scanning is often considered part of Software Composition Analysis (SCA). SCA can contain

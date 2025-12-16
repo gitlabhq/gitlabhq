@@ -219,7 +219,7 @@ final result is `https://example.com`.
 
 The assigned URL for the `review/your-branch-name` environment is visible in the UI.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Set dynamic URLs after a job finished](https://youtu.be/70jDXtOf4Ig).
 
 In the following example a review app creates a new environment for each merge request:

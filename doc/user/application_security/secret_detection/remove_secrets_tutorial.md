@@ -14,7 +14,7 @@ In this tutorial, you'll commit a fake secret, then remove the secret from your
 commit history before you push it to a project. You'll also learn what to do when
 a secret is pushed to a repository.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 This tutorial is adapted from the GitLab Unfiltered video [Remove a secret from your commits](https://www.youtube.com/watch?v=2jBC3uBUlyU).
 <!-- Video published on 2024-06-12 -->
 

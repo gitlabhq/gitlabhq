@@ -87,31 +87,37 @@ In your support ticket, specify:
   and [GitLab agent server for Kubernetes](../../clusters/kas.md).
   For example, `registry.company.com` and `kas.company.com`.
 
-## Custom certificate authority
+## Custom certificate authorities
 
-If your GitLab Dedicated instance connects to external services with certificates from a private
-or internal certificate authority (CA), you must add that CA to your instance. By default, GitLab
-trusts only publicly recognized certificate authorities and rejects connections to services with
-certificates from untrusted sources.
+By default, GitLab trusts only publicly recognized certificate authorities
+and rejects connections to services with certificates from untrusted sources.
 
-For example, you might need to add a certificate authority to connect to:
+If your GitLab Dedicated instance needs to connect to external services
+with certificates from a private or internal certificate authority,
+you must add custom certificates to your instance.
 
-- Internal webhook endpoints
-- Private container registries
+For example, you might need to add custom certificates to connect to
+internal webhook endpoints or private container registries.
 
-### Add a custom certificate with Switchboard
+### Add a custom certificate
+
+Certificate chain blocks (multiple certificates in a single text block) are not supported.
+If you have multiple certificates in your chain, add each certificate separately.
+
+To add a custom certificate:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
 1. Expand **Custom certificates**.
 1. Select **+ Add Certificate**.
-1. Paste the certificate into the text box.
+1. Paste a single certificate into the text box. Include the `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` lines.
 1. Select **Save**.
+1. Repeat steps 4-6 for each additional certificate in your chain.
 1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window.
 
-### Add a custom certificate with a Support Request
-
-If you are unable to use Switchboard to add a custom certificate, you can open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) and attach your custom public certificate files to request this change.
+If you cannot use Switchboard to add a custom certificate,
+open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650)
+and attach each custom certificate as a separate file.
 
 ## AWS Private Link connectivity
 

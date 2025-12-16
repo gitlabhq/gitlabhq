@@ -45,7 +45,7 @@ The right sidebar shows the list of reviewers, and (if they follow the review fl
   [blocked this merge request](#prevent-merge-when-you-request-changes) until changes are made.
   This block [can be bypassed](#prevent-merge-when-you-request-changes).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
 <!-- Video published on 2023-04-29 -->
 

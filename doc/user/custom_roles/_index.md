@@ -40,7 +40,7 @@ There are two types of custom roles:
   - Can be assigned to any user on the instance.
   - Gains permissions to perform specific admin actions.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code on private repositories via custom role](https://www.youtube.com/watch?v=46cp_-Rtxps).
 <!-- Video published on 2023-02-13 -->
 

@@ -12,7 +12,7 @@ you through the structure of the merge request itself, and then the process of
 giving constructive, helpful feedback. By the end of the tutorial, you're ready to
 approve the merge request, or request more changes.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
 <!-- Video published on 2023-04-29 -->
 

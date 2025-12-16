@@ -25,7 +25,7 @@ Teams can:
 Teams use test cases to streamline collaboration between development and testing teams,
 which eliminates the need for external test planning tools.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 To learn how to use issues and epics to manage your requirements and testing needs
 while integrating with your development workflows, see
 [Streamline Software Development: Integrating Requirements, Testing, and Development Workflows](https://www.youtube.com/watch?v=wbfWM4y2VmM).

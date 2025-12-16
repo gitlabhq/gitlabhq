@@ -236,7 +236,6 @@ create_pages
 create_path_lock
 create_project_secrets
 create_projects
-create_protected_branch
 create_protected_tags
 create_release
 create_requirement
@@ -627,7 +626,6 @@ read_project_security_dashboard
 read_project_security_exclusions
 read_project_subscription
 read_prometheus
-read_protected_branch
 read_protected_tags
 read_reject_non_dco_commits
 read_reject_unsigned_commits
@@ -817,7 +815,6 @@ update_pages_deployments
 update_pipeline
 update_project_member
 update_project_secrets
-update_protected_branch
 update_protected_tags
 update_release
 update_requirement

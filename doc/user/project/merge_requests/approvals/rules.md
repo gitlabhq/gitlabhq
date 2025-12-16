@@ -116,7 +116,7 @@ reduces the number of approvals left (the **Approvals** column) for all rules th
 
 ![Merge request approvals widget](img/mr_approvals_widget_v16_0.png)
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Multiple Approvers](https://www.youtube.com/watch?v=8JQJ5821FrA).
 
 ## Get notified about all merge requests you can approve

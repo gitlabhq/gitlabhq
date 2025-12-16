@@ -29,5 +29,5 @@ To use [Auto DevOps](../_index.md) to deploy to EC2:
          - <built artifact>
    ```
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a video walkthrough of this process, view [Auto Deploy to EC2](https://www.youtube.com/watch?v=4B-qSwKnacA).

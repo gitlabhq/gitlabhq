@@ -113,7 +113,7 @@ and complete an integration with the Secure stage.
      doing a [blog post](https://handbook.gitlab.com/handbook/marketing/blog/),
      doing a co-branded webinar, or producing a co-branded white paper.
 
-We have a <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [video playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KpMqYxJiOLz-uBIr5w-yP4A)
+We have a <i class="fa-youtube-play" aria-hidden="true"></i> [video playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KpMqYxJiOLz-uBIr5w-yP4A)
 that may be helpful as part of this process. This covers various topics related to integrating your
 tool.
 

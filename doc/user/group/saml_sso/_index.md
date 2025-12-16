@@ -72,7 +72,7 @@ To set up SSO with Azure as your identity provider:
 1. Optional. If you use [Group Sync](group_sync.md), customize the name of the
    group claim to match the required attribute.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 View a demo of [SCIM provisioning on Azure using SAML SSO for groups](https://youtu.be/24-ZxmTeEBU). The `objectID` mapping is outdated in this video. Follow the [SCIM documentation](scim_setup.md#configure-microsoft-entra-id-formerly-azure-active-directory) instead.
 
 For more information, see the [Azure configuration example](example_saml_config.md#azure-active-directory).
@@ -111,7 +111,7 @@ the warning that recommends setting the **NameID** format to `persistent`.
 
 For more information, see the [Google Workspace configuration example](example_saml_config.md#google-workspace).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 View a demo of [how to configure SAML with Google Workspaces and set up Group Sync](https://youtu.be/NKs0FSQVfCY).
 
 ### Okta
@@ -146,7 +146,7 @@ To set up SSO with Okta as your identity provider:
 The Okta GitLab application available in the App Catalog only supports [SCIM](scim_setup.md). Support
 for SAML is proposed in [issue 216173](https://gitlab.com/gitlab-org/gitlab/-/issues/216173).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a demo of the Okta SAML setup including SCIM, see [Demo: Okta Group SAML & SCIM setup](https://youtu.be/0ES9HsZq0AQ).
 
 For more information, see the [Okta configuration example](example_saml_config.md#okta).

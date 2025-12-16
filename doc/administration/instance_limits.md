@@ -792,6 +792,13 @@ This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#cicd).
 
 ### Number of pipeline schedules
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 The total number of pipeline schedules can be limited per project. This limit is
 checked each time a new pipeline schedule is created. If a new pipeline schedule
 would cause the total number of pipeline schedules to exceed the limit, the
@@ -801,12 +808,14 @@ On GitLab.com, the limit is
 [defined for each subscription tier](../user/gitlab_com/_index.md#cicd),
 and this limit affects all projects with that tier.
 
-On GitLab Self-Managed [Premium or Ultimate](https://about.gitlab.com/pricing/),
-this limit is defined under a `default` plan that affects all
-projects. By default, there is a limit of `10` pipeline schedules.
+On GitLab Self-Managed and GitLab Dedicated, this limit is defined
+under a `default` plan that affects all projects.
+By default, there is a limit of `10` pipeline schedules.
 
-To set this limit for a GitLab Self-Managed instance, run the following in the
-[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+To set this limit, use the [Plan Limits API](../api/plan_limits.md).
+
+For GitLab Self-Managed, you can also use the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+For example, to set the limit to 100:
 
 ```ruby
 Plan.default.actual_limits.update!(ci_pipeline_schedules: 100)

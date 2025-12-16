@@ -9,7 +9,7 @@ import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon
 import StateContainer from '~/vue_merge_request_widget/components/state_container.vue';
 import { COMPONENTS } from '~/vue_merge_request_widget/components/checks/constants';
 import conflictsStateQuery from '~/vue_merge_request_widget/queries/states/conflicts.query.graphql';
-import rebaseStateQuery from '~/vue_merge_request_widget/queries/states/rebase.query.graphql';
+import rebaseStateQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/rebase.query.graphql';
 
 Vue.use(VueApollo);
 
@@ -54,6 +54,9 @@ function factory(mountFn, { canMerge = true, mergeabilityChecks = [] } = {}) {
             project: {
               id: '1',
               allowMergeOnSkippedPipeline: true,
+              ciCdSettings: {
+                mergeTrainsEnabled: false,
+              },
               mergeRequest: {
                 id: '2',
                 rebaseInProgress: false,

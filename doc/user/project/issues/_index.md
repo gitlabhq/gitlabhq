@@ -36,7 +36,7 @@ projects in a group, you can view all of the projects' issues at once.
 </figure>
 <!-- Video published on 2023-10-30 -->
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 To learn how the GitLab Strategic Marketing department uses GitLab issues with [labels](../labels.md) and
 [issue boards](../issue_board.md), see the video on
 [Managing Commitments with Issues](https://www.youtube.com/watch?v=cuIHNintg1o&t=3).

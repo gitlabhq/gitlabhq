@@ -66,7 +66,7 @@ GitLab Duo Chat (Agentic) can:
 - Provide customized responses by using your customized rules.
 - Create commits, when you use Chat in the GitLab UI.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [GitLab Duo Chat (Agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ).
 <!-- Video published on 2025-06-02 -->
 

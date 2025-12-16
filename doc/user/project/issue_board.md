@@ -57,7 +57,7 @@ Read more about [GitLab Enterprise features for issue boards](#gitlab-enterprise
 
 ![GitLab issue board - Premium](img/issue_boards_premium_v17_1.png)
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 Watch a [video presentation](https://youtu.be/vjccjHI7aGI) of the issue board feature.
 <!-- Video published on 2020-04-02 -->
 

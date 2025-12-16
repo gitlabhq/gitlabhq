@@ -25,7 +25,7 @@ server's FQDN, and that you have access to a different server with Internet acce
 
 {{< /alert >}}
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a video walkthrough of this process, see [Offline GitLab Installation: Downloading & Installing](https://www.youtube.com/watch?v=TJaq4ua2Prw).
 
 ### Download the GitLab package

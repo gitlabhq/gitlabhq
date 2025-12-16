@@ -71,7 +71,7 @@ yourself to have the same sense of progress.
 
 GitLab plots it for you and presents it in a clear and beautiful chart.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, check the video demonstration on [Mapping work versus time with burndown charts](https://www.youtube.com/watch?v=zJU2MuRChzs).
 
 To view a project's burndown chart:

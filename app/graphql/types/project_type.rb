@@ -1056,8 +1056,7 @@ module Types
           regex: input.regex,
           required?: input.required?,
           options: input.options,
-          rules: input.rules,
-          project: object # TODO: Remove when ci_dynamic_pipeline_inputs flag is removed
+          rules: input.rules
         }
       end
     end

@@ -38,7 +38,7 @@ Organize your environment by configuring your groups and projects.
 - [Groups](../user/group/_index.md): Organize a collection of users or projects. Use these groups to quickly assign people and projects.
 - [Roles](../user/permissions.md): Define user access and visibility for your projects and groups.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 Watch an overview of [groups and projects](https://www.youtube.com/watch?v=cqb2m41At6s).
 
 Get started:

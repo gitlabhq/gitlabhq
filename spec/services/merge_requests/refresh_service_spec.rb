@@ -10,13 +10,11 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
   let(:user) { create(:user) }
   let(:service) { described_class }
 
-  let(:webhook_ff) { false }
   let(:pipeline_ff) { false }
 
   describe '#execute' do
     before do
       stub_feature_flags(
-        split_refresh_worker_web_hooks: webhook_ff,
         split_refresh_worker_pipeline: pipeline_ff
       )
 
@@ -86,7 +84,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       let(:notification_service) { spy('notification_service') }
 
       before do
-        allow(refresh_service).to receive(:execute_hooks)
         allow(NotificationService).to receive(:new) { notification_service }
       end
 
@@ -105,12 +102,9 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         end
       end
 
-      it 'executes hooks with update action' do
+      it 'refreshes the merge requests' do
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
         reload_mrs
-
-        expect(refresh_service).to have_received(:execute_hooks)
-          .with(@merge_request, 'update', old_rev: @oldrev)
 
         expect(notification_service).to have_received(:push_to_merge_request)
           .with(@merge_request, @user, new_commits: anything, existing_commits: anything)
@@ -127,27 +121,25 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         expect(@fork_build_failed_todo).to be_done
       end
 
-      context 'when split_refresh_worker_web_hooks is on' do
-        let(:webhook_ff) { true }
+      it 'calls the web hooks worker async' do
+        expect(MergeRequests::Refresh::WebHooksWorker).to receive(:perform_async)
+          .with(
+            @project.id,
+            @user.id,
+            @oldrev,
+            @newrev,
+            'refs/heads/master'
+          )
 
-        it 'calls the web hooks worker async' do
-          expect(MergeRequests::Refresh::WebHooksWorker).to receive(:perform_async)
-            .with(
-              @project.id,
-              @user.id,
-              @oldrev,
-              @newrev,
-              'refs/heads/master'
-            )
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+      end
 
-          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-        end
+      it 'does not execute the web hooks' do
+        allow(refresh_service).to receive(:execute_hooks)
 
-        it 'does not execute the web hooks' do
-          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
 
-          expect(refresh_service).not_to have_received(:execute_hooks)
-        end
+        expect(refresh_service).not_to have_received(:execute_hooks)
       end
 
       it 'triggers mergeRequestMergeStatusUpdated GraphQL subscription conditionally' do
@@ -509,15 +501,12 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       let(:notification_service) { spy('notification_service') }
 
       before do
-        allow(refresh_service).to receive(:execute_hooks)
         allow(NotificationService).to receive(:new) { notification_service }
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
         reload_mrs
       end
 
-      it 'executes hooks with update action' do
-        expect(refresh_service).to have_received(:execute_hooks)
-          .with(@merge_request, 'update', old_rev: @oldrev)
+      it 'refreshes the merge requests' do
         expect(notification_service).to have_received(:push_to_merge_request)
           .with(@merge_request, @user, new_commits: anything, existing_commits: anything)
         expect(notification_service).to have_received(:push_to_merge_request)
@@ -657,7 +646,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       let(:refresh_service) { service.new(project: @fork_project, current_user: @user) }
 
       def refresh
-        allow(refresh_service).to receive(:execute_hooks)
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
         reload_mrs
       end
@@ -671,11 +659,8 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           refresh
         end
 
-        it 'executes hooks with update action' do
+        it 'refreshes the merge requests' do
           refresh
-
-          expect(refresh_service).to have_received(:execute_hooks)
-            .with(@fork_merge_request, 'update', old_rev: @oldrev)
 
           expect(@merge_request.notes).to be_empty
           expect(@merge_request).to be_open
@@ -697,12 +682,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       context 'closed fork merge request' do
         before do
           @fork_merge_request.close!
-        end
-
-        it 'do not execute hooks with update action' do
-          refresh
-
-          expect(refresh_service).not_to have_received(:execute_hooks)
         end
 
         it 'updates merge request to closed state' do
@@ -843,8 +822,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       let(:refresh_service) { service.new(project: @fork_project, current_user: @user) }
 
       it 'refreshes the merge request' do
-        expect(refresh_service).to receive(:execute_hooks)
-                                       .with(@fork_merge_request, 'update', old_rev: Gitlab::Git::SHA1_BLANK_SHA)
         allow_any_instance_of(Repository).to receive(:merge_base).and_return(@oldrev)
 
         refresh_service.execute(Gitlab::Git::SHA1_BLANK_SHA, @newrev, 'refs/heads/master')
@@ -892,7 +869,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           )
 
           refresh_service = service.new(project: project, current_user: user)
-          allow(refresh_service).to receive(:execute_hooks)
           refresh_service.execute(@oldrev, @newrev, 'refs/heads/close-by-commit')
 
           expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
@@ -918,7 +894,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           )
 
           refresh_service = service.new(project: forked_project, current_user: user)
-          allow(refresh_service).to receive(:execute_hooks)
           refresh_service.execute(@oldrev, @newrev, 'refs/heads/close-by-commit')
 
           expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
@@ -930,10 +905,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
 
     context 'marking the merge request as draft' do
       let(:refresh_service) { service.new(project: @project, current_user: @user) }
-
-      before do
-        allow(refresh_service).to receive(:execute_hooks)
-      end
 
       it 'marks the merge request as draft from fixup commits' do
         fixup_merge_request = create(

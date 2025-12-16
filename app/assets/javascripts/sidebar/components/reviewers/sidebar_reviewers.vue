@@ -1,7 +1,6 @@
 <script>
 // NOTE! For the first iteration, we are simply copying the implementation of Assignees
 // It will soon be overhauled in Issue https://gitlab.com/gitlab-org/gitlab/-/issues/233736
-import Vue from 'vue';
 import { MountingPortal } from 'portal-vue';
 import { GlButton } from '@gitlab/ui';
 import { createAlert } from '~/alert';
@@ -13,18 +12,12 @@ import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import ReviewerDrawer from '~/merge_requests/components/reviewers/reviewer_drawer.vue';
 import { useBatchComments } from '~/batch_comments/store';
 import ReviewerTitle from 'ee_else_ce/sidebar/components/reviewers/reviewer_title.vue';
-import eventHub from '../../event_hub';
-import getMergeRequestReviewersQuery from '../../queries/get_merge_request_reviewers.query.graphql';
-import mergeRequestReviewersUpdatedSubscription from '../../queries/merge_request_reviewers.subscription.graphql';
-import Store from '../../stores/sidebar_store';
+import Store from '~/sidebar/stores/sidebar_store';
+import eventHub from '~/sidebar/event_hub';
+import getMergeRequestReviewersQuery from '~/sidebar/queries/get_merge_request_reviewers.query.graphql';
+import mergeRequestReviewersUpdatedSubscription from '~/sidebar/queries/merge_request_reviewers.subscription.graphql';
+import { sidebarState } from '~/sidebar/sidebar_state';
 import Reviewers from './reviewers.vue';
-
-export const state = Vue.observable({
-  issuable: {},
-  loading: false,
-  initialLoading: true,
-  drawerOpen: false,
-});
 
 export default {
   name: 'SidebarReviewers',
@@ -113,7 +106,7 @@ export default {
     },
   },
   data() {
-    return state;
+    return sidebarState;
   },
   computed: {
     reviewers() {

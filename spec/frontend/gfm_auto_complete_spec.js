@@ -40,20 +40,6 @@ jest.mock('fuzzaldrin-plus', () => ({
   filter: jest.fn((items) => items),
 }));
 
-describe('escape', () => {
-  it.each`
-    xssPayload                                           | escapedPayload
-    ${'<script>alert(1)</script>'}                       | ${'&lt;script&gt;alert(1)&lt;/script&gt;'}
-    ${'%3Cscript%3E alert(1) %3C%2Fscript%3E'}           | ${'&lt;script&gt; alert(1) &lt;/script&gt;'}
-    ${'%253Cscript%253E alert(1) %253C%252Fscript%253E'} | ${'&lt;script&gt; alert(1) &lt;/script&gt;'}
-  `(
-    'escapes the input string correctly accounting for multiple encoding',
-    ({ xssPayload, escapedPayload }) => {
-      expect(escape(xssPayload)).toBe(escapedPayload);
-    },
-  );
-});
-
 describe('GfmAutoComplete', () => {
   const fetchDataMock = { fetchData: jest.fn() };
   let gfmAutoCompleteCallbacks = GfmAutoComplete.prototype.getDefaultCallbacks.call(fetchDataMock);
@@ -1618,5 +1604,19 @@ describe('GfmAutoComplete', () => {
 
       defaultSorterSpy.mockRestore();
     });
+  });
+
+  describe('escape', () => {
+    it.each`
+      xssPayload                                           | escapedPayload
+      ${'<script>alert(1)</script>'}                       | ${'&lt;script&gt;alert(1)&lt;/script&gt;'}
+      ${'%3Cscript%3E alert(1) %3C%2Fscript%3E'}           | ${'&lt;script&gt; alert(1) &lt;/script&gt;'}
+      ${'%253Cscript%253E alert(1) %253C%252Fscript%253E'} | ${'&lt;script&gt; alert(1) &lt;/script&gt;'}
+    `(
+      'escapes the input string correctly accounting for multiple encoding',
+      ({ xssPayload, escapedPayload }) => {
+        expect(escape(xssPayload)).toBe(escapedPayload);
+      },
+    );
   });
 });

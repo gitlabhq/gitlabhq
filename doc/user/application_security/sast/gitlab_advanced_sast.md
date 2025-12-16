@@ -36,7 +36,7 @@ The Semgrep analyzer does not scan these files.
 An automated [transition process](#transitioning-from-semgrep-to-gitlab-advanced-sast)
 removes duplicate findings when both analyzers detect the same vulnerability.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview of GitLab Advanced SAST and how it works, see [GitLab Advanced SAST: Accelerating Vulnerability Resolution](https://youtu.be/xDa1MHOcyn8).
 
 For a product tour, see the [GitLab Advanced SAST product tour](https://gitlab.navattic.com/advanced-sast).

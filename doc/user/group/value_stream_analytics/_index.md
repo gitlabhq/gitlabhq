@@ -510,7 +510,7 @@ To create a value stream with custom stages:
 1. To re-order the stages, select the up or down arrows.
 1. Select **New value stream**.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a video explanation, see [Optimizing merge request review process with Value Stream Analytics](https://www.youtube.com/watch?v=kblpge6xeL8).
 <!-- Video published on 2024-07-29 -->
 

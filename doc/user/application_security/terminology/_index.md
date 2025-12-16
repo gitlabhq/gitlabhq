@@ -107,6 +107,12 @@ A flexible and non-destructive way to visually organize vulnerabilities in group
 that are likely related but do not qualify for deduplication. For example, you can include findings that should be
 evaluated together, would be fixed by the same action, or come from the same source.
 
+## Identifier
+
+An identifier is an ID for the vulnerability from an external database, such as Common Vulnerabilities and Exposures (CVE)
+or Common Weakness Enumeration (CWE). A vulnerability may have multiple identifiers.
+An identifier is composed of a type (like `CVE`) and an ID (like `CVE-2021-44228`).
+
 ## Insignificant finding
 
 A legitimate finding that a particular customer doesn't care about.
@@ -262,13 +268,8 @@ Examples: `DS_EXCLUDED_PATHS` should `Exclude files and directories from the sca
 
 ## Primary identifier
 
-A finding's primary identifier is a value that is unique to each finding. The external type and external ID
-of the finding's [first identifier](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/v2.4.0-rc1/dist/sast-report-format.json#L228)
-combine to create the value.
-
-An example primary identifier is `CVE`, which is used for Trivy. The identifier must be stable.
-Subsequent scans must return the same value for the same finding, even if the location has slightly
-changed.
+The first [identifier](#identifier) is the primary identifier. The primary identifier must be stable.
+Subsequent scans must return the same value for the same finding, even if the location of the vulnerability has changed.
 
 ## Processor
 

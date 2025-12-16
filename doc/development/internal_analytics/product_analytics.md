@@ -45,7 +45,7 @@ By using the data collected with product analytics in GitLab, you can better und
 identify friction points in funnels, make data-driven product decisions, and ultimately build better
 products that drive user engagement and business growth.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview of the product analytics setup and functionality,
 watch the [Product Analytics walkthrough videos](https://www.youtube.com/playlist?list=PL05JrBw4t0Kqfb4oLOFKkXxNrBJzDQ3sL&feature=shared).
 

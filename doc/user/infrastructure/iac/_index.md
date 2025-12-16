@@ -21,7 +21,7 @@ To manage your infrastructure with GitLab, you can use the integration with Open
 - Store and use OpenTofu modules to simplify common and complex infrastructure patterns.
 - Incorporate GitOps deployments and Infrastructure-as-Code (IaC) workflows.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch [a video overview](https://www.youtube.com/watch?v=iGXjUrkkzDI) of the features GitLab provides with the integration with OpenTofu.
+<i class="fa-youtube-play" aria-hidden="true"></i> Watch [a video overview](https://www.youtube.com/watch?v=iGXjUrkkzDI) of the features GitLab provides with the integration with OpenTofu.
 
 The following examples primarily use OpenTofu, but they can work with Terraform as well.
 

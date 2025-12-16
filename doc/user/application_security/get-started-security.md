@@ -18,10 +18,10 @@ where you can review and address them.
 These features can also be integrated with other GitLab features like merge requests
 and pipelines to ensure that security is a priority throughout the development process.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Adopting GitLab application security](https://www.youtube.com/watch?v=5QlxkiKR04k)
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 [View an interactive reading and how-to demo playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
 
 This process is part of a larger workflow:

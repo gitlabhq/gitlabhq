@@ -46,57 +46,21 @@ To view the version of SSH installed on your system, run `ssh -V`.
 
 ## Supported SSH key types
 
-To communicate with GitLab, you can use the following SSH key types:
-
-- [ED25519](#ed25519-ssh-keys)
-- [ED25519_SK](#ed25519_sk-ssh-keys)
-- [ECDSA_SK](#ecdsa_sk-ssh-keys)
-- [RSA](#rsa-ssh-keys)
-- ECDSA (As noted in [Practical Cryptography With Go](https://leanpub.com/gocrypto/read#leanpub-auto-ecdsa), the security issues related to DSA also apply to ECDSA.)
-
-Administrators can [restrict which keys are permitted and their minimum lengths](../security/ssh_keys_restrictions.md).
-
-### ED25519 SSH keys
-
-The book [Practical Cryptography With Go](https://leanpub.com/gocrypto/read#leanpub-auto-chapter-5-digital-signatures)
-suggests that [ED25519](https://ed25519.cr.yp.to/) keys are more secure and performant than RSA keys.
-
-OpenSSH 6.5 introduced ED25519 SSH keys in 2014, and they should be available on most
-operating systems.
-
-{{< alert type="note" >}}
-
-ED25519 keys might not be fully supported by all FIPS systems. For more information, see [issue 367429](https://gitlab.com/gitlab-org/gitlab/-/issues/367429).
-
-{{< /alert >}}
-
-### ED25519_SK SSH keys
-
-To use ED25519_SK SSH keys on GitLab, your local client and GitLab server
-must have [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) or later installed.
-
-### ECDSA_SK SSH keys
-
-To use ECDSA_SK SSH keys on GitLab, your local client and GitLab server
-must have [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) or later installed.
-
-### RSA SSH keys
-
 {{< history >}}
 
 - Maximum RSA key length [changed](https://gitlab.com/groups/gitlab-org/-/epics/11186) in GitLab 16.3.
 
 {{< /history >}}
 
-Available documentation suggests ED25519 is more secure than RSA.
+To communicate with GitLab, you can use the following SSH key types:
 
-If you use an RSA key, the US National Institute of Standards and Technology in
-[Publication 800-57 Part 3 (PDF)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57Pt3r1.pdf)
-recommends a key size of at least 2048 bits. Due to limitations in Go,
-RSA keys [cannot exceed 8192 bits](ssh_troubleshooting.md#tls-server-sent-certificate-containing-rsa-key-larger-than-8192-bits).
-
-The default key size depends on your version of `ssh-keygen`.
-Review the `man` page for your installed `ssh-keygen` command for details.
+| Algorithm           | Notes |
+| ------------------- | ----- |
+| ED25519 (preferred) | More secure and performant than RSA keys. Introduced in OpenSSH 6.5 (2014) and available on most operating systems. Might not be fully supported by all FIPS systems. For more information, see [issue 367429](https://gitlab.com/gitlab-org/gitlab/-/issues/367429). |
+| ED25519_SK          | Requires OpenSSH 8.2 or later on both your local client and the GitLab server. |
+| ECDSA_SK            | Requires OpenSSH 8.2 or later on both your local client and the GitLab server. |
+| RSA                 | Less secure than ED25519. If used, GitLab recommends a key size of at least 2048 bits. Maximum key length is 8192 bits due to Go limitations. Default key size depends on your `ssh-keygen` version. |
+| ECDSA               | [Security issues](https://leanpub.com/gocrypto/read#leanpub-auto-ecdsa) related to DSA also apply to ECDSA keys. |
 
 ## See if you have an existing SSH key pair
 
@@ -537,7 +501,7 @@ on the files make them readable to you but not accessible to others.
 
 You can set up two-factor authentication (2FA) for
 [Git over SSH](../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations). You should use
-[ED25519_SK](#ed25519_sk-ssh-keys) or [ECDSA_SK](#ecdsa_sk-ssh-keys) SSH keys.
+`ED25519_SK` or `ECDSA_SK` SSH keys. For more information, see [supported SSH key types](#supported-ssh-key-types).
 
 ## Use EGit on Eclipse
 
