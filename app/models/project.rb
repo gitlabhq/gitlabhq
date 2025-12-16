@@ -835,26 +835,14 @@ class Project < ApplicationRecord
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
   scope :visible_to_user_and_access_level, ->(user, access_level) { where(id: user.authorized_projects.where('project_authorizations.access_level >= ?', access_level).select(:id).reorder(nil)) }
 
-  scope :archived, -> do
-    if Feature.enabled?(:ancestor_aware_archive_scopes, Feature.current_request, type: :gitlab_com_derisk)
-      self_or_ancestors_archived
-    else
-      where(archived: true)
-    end
-  end
+  scope :archived, -> { self_or_ancestors_archived }
   scope :self_or_ancestors_archived, -> do
     left_joins(:group)
       .where(archived: true)
       .or(where(Group.self_or_ancestors_archived_setting_subquery.exists))
   end
 
-  scope :non_archived, -> do
-    if Feature.enabled?(:ancestor_aware_archive_scopes, Feature.current_request, type: :gitlab_com_derisk)
-      self_and_ancestors_non_archived
-    else
-      where(archived: false)
-    end
-  end
+  scope :non_archived, -> { self_and_ancestors_non_archived }
   scope :self_and_ancestors_non_archived, -> do
     left_joins(:group)
       .where(archived: false)

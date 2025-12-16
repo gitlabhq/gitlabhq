@@ -5505,24 +5505,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
-  describe '.find_by_private_commit_email' do
-    context 'with email' do
-      let_it_be(:user) { create(:user) }
-
-      it 'returns user through private commit email' do
-        expect(described_class.find_by_private_commit_email(user.private_commit_email)).to eq(user)
-      end
-
-      it 'returns nil when email other than private_commit_email is used' do
-        expect(described_class.find_by_private_commit_email(user.email)).to be_nil
-      end
-    end
-
-    it 'returns nil when email is nil' do
-      expect(described_class.find_by_private_commit_email(nil)).to be_nil
-    end
-  end
-
   describe '#sort_by_attribute' do
     let_it_be(:user) { create :user, created_at: Date.today, current_sign_in_at: Date.today, username: 'user0' }
     let_it_be(:user1) { create :user, created_at: Date.today - 1, last_activity_on: Date.today - 1, current_sign_in_at: Date.today - 1, username: 'user1' }

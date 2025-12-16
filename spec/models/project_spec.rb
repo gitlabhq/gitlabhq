@@ -852,19 +852,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       subject { described_class.archived }
 
       it_behaves_like 'includes projects in archived hierarchy'
-
-      context 'with ancestor_aware_archive_scopes feature flag disabled' do
-        before do
-          stub_feature_flags(ancestor_aware_archive_scopes: false)
-        end
-
-        it 'returns archived projects' do
-          result = described_class.archived
-
-          expect(result).to include(archived_project)
-          expect(result).not_to include(active_project)
-        end
-      end
     end
 
     describe '.self_or_ancestors_archived' do
@@ -880,19 +867,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       subject { described_class.non_archived }
 
       it_behaves_like 'excludes projects in archived hierarchy'
-
-      context 'with ancestor_aware_archive_scopes feature flag disabled' do
-        before do
-          stub_feature_flags(ancestor_aware_archive_scopes: false)
-        end
-
-        it 'returns non-archived projects' do
-          result = described_class.non_archived
-
-          expect(result).to include(active_project)
-          expect(result).not_to include(archived_project)
-        end
-      end
     end
 
     describe '.self_and_ancestors_non_archived' do

@@ -25412,7 +25412,7 @@ CREATE TABLE project_settings (
     merge_request_title_regex_description text,
     duo_remote_flows_enabled boolean,
     duo_foundational_flows_enabled boolean,
-    duo_sast_fp_detection_enabled boolean DEFAULT true NOT NULL,
+    duo_sast_fp_detection_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
     CONSTRAINT check_237486989c CHECK ((char_length(merge_request_title_regex_description) <= 255)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),

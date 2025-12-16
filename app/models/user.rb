@@ -937,12 +937,6 @@ class User < ApplicationRecord
       from_union(items)
     end
 
-    def find_by_private_commit_email(email)
-      user_id = Gitlab::PrivateCommitEmail.user_id_for_email(email)
-
-      find_by(id: user_id)
-    end
-
     def filter_items(filter_name)
       case filter_name
       when 'blocked', 'blocked_pending_approval', 'banned',

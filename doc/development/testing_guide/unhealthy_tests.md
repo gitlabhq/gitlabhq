@@ -228,16 +228,26 @@ Fast quarantine is used when a test needs immediate quarantine and you expect to
 **Fast quarantine process:**
 
 1. **Immediate action**:
-   - Follow [the fast quarantining process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/-/tree/main/#fast-quarantine-a-test)
+   - Follow [the fast quarantining process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/-/blob/main/.gitlab/merge_request_templates/Default.md#fast-quarantine-process)
    - Update related test failure issue in the [Test Failure Issues](https://gitlab.com/gitlab-org/quality/test-failure-issues/) project with correct stage and group labels
+
+1. **Re-running failed jobs with the latest fast quarantine file**:
+   - **RSpec tests (unit/integration/system)**: Re-trigger the `retrieve-tests-metadata` job, then retry the failed RSpec job. Simply restarting the job will NOT pick up new fast quarantine updates.
+   - **E2E tests**: Simply retry the failed E2E job - E2E tests automatically download the latest fast quarantine file.
+   - **Alternative**: Running a new pipeline will pick up the latest fast quarantine for all test types.
 
 1. **Within 3 days** (fast quarantine expectation):
    - **Option A**: Implement a fix for the flaky test
    - **Option B**: Remove the test entirely (if it's duplicating other tests or the flakiness cannot be fixed)
    - **Option C**: If investigation reveals the issue is more complex, convert to long-term quarantine with updated timeline.
 
-1. **After long-term quarantine MR reaches production**:
-   - Revert the fast-quarantine MR you created earlier
+1. **After merging fast quarantine**:
+   - You will receive an automated reminder comment with instructions for creating a permanent quarantine
+   - **⚠️ IMPORTANT:** To prevent a build up of fast quarantines, the file is **automatically cleared** every Sunday at 10:00 AM UTC via scheduled pipeline. You **must** merge a permanent quarantine or fix **before 10:00 AM UTC Sunday**, otherwise the test may start failing again.
+
+1. **After long-term quarantine MR is merged**:
+   - If the test was failing in the default branch only, revert the fast-quarantine MR you created earlier
+   - If the test was failing in a test environment, wait for the long-term quarantine to reach the desired environment before removing the fast-quarantine
    - Update the test failure issue with long term quarantine MR
 
 **Important notes:**
@@ -245,6 +255,8 @@ Fast quarantine is used when a test needs immediate quarantine and you expect to
 - Fast quarantine commits you to providing an update within 3 days
 - If you cannot meet the 3-day timeline, always convert to long-term quarantine
 - Fast-quarantined tests still run locally by default
+- Fast-quarantined tests apply to all branches including stable branches (e.g., `17-6-stable-ee`)
+- Fast-quarantined tests can be ignored in merge requests by applying the ~"pipeline:run-flaky-tests" label
 
 ##### Long-term quarantine
 

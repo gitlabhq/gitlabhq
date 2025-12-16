@@ -1,0 +1,7 @@
+---
+migration_job_name: UpdateDuoSastFpDetectionEnabledToFalse
+description: Sets duo_sast_fp_detection_enabled to false for all project_settings
+feature_category: vulnerability_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216559
+milestone: '18.7'
+queued_migration_version: 20251214205217

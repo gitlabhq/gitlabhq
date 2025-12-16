@@ -419,8 +419,6 @@ owner_class_attribute_default:
   file: app/models/user.rb
 inactive_message:
   file: app/models/user.rb
-find_by_private_commit_email:
-  file: app/models/user.rb
 will_save_change_to_login?:
   file: app/models/user.rb
 render_items_list:
