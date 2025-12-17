@@ -42,7 +42,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
       let(:options) do
         {
           select_fields: [:name, :stage_id],
-          aggregations: [:mean_duration_in_seconds],
+          aggregations: [:mean_duration],
           sort: 'name_asc',
           source: 'web',
           ref: 'main',
@@ -55,7 +55,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
       it 'sets all values correctly', :aggregate_failures do
         expect(instance.project).to eq(project)
         expect(instance.select_fields).to contain_exactly(:name, :stage_id)
-        expect(instance.aggregations).to contain_exactly(:mean_duration_in_seconds)
+        expect(instance.aggregations).to contain_exactly(:mean_duration)
         expect(instance.sort).to eq('name_asc')
         expect(instance.source).to eq('web')
         expect(instance.ref).to eq('main')
@@ -95,7 +95,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
     end
 
     context 'with aggregations only' do
-      let(:options) { { aggregations: [:mean_duration_in_seconds] } }
+      let(:options) { { aggregations: [:mean_duration] } }
 
       it { expect { query_result }.not_to raise_error }
     end
@@ -104,13 +104,13 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
       let(:options) do
         {
           select_fields: [:name],
-          aggregations: [:mean_duration_in_seconds],
-          sort: 'mean_duration_in_seconds_asc'
+          aggregations: [:mean_duration],
+          sort: 'mean_duration_asc'
         }
       end
 
       it 'builds query with sorting' do
-        durations = query_result.pluck('mean_duration_in_seconds')
+        durations = query_result.pluck('mean_duration')
         expect(durations).to eq(durations.sort)
       end
     end
@@ -143,8 +143,8 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
       let(:options) do
         {
           select_fields: [:name],
-          aggregations: [:mean_duration_in_seconds, :rate_of_success],
-          sort: 'mean_duration_in_seconds_desc',
+          aggregations: [:mean_duration, :rate_of_success],
+          sort: 'mean_duration_desc',
           source: 'push',
           ref: 'master',
           from_time: 1.day.ago,
@@ -155,7 +155,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
 
       it 'builds complex query successfully', :aggregate_failures do
         expect(query_result).to be_a(Array)
-        expect(query_result.first.keys).to include('name', 'mean_duration_in_seconds', 'rate_of_success')
+        expect(query_result.first.keys).to include('name', 'mean_duration', 'rate_of_success')
         expect(query_result.pluck('name').uniq).to contain_exactly('compile', 'compile-slow')
       end
     end
@@ -193,7 +193,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
     let(:options) do
       {
         select_fields: [:name],
-        aggregations: [:mean_duration_in_seconds],
+        aggregations: [:mean_duration],
         sort: 'name_asc',
         name_search: 'test',
         source: 'web',
@@ -227,10 +227,10 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
     end
 
     context 'with descending sort' do
-      let(:sort_value) { 'mean_duration_in_seconds_desc' }
+      let(:sort_value) { 'mean_duration_desc' }
 
       it 'returns correct field and direction' do
-        is_expected.to eq([:mean_duration_in_seconds, :desc])
+        is_expected.to eq([:mean_duration, :desc])
       end
     end
 
@@ -247,7 +247,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
     let(:options) do
       {
         select_fields: [:name],
-        aggregations: [:mean_duration_in_seconds],
+        aggregations: [:mean_duration],
         name_search: 'compile'
       }
     end
@@ -256,7 +256,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
       direct_finder_result = ClickHouse::Finders::Ci::FinishedBuildsFinder.new
                                                                           .for_project(project.id)
                                                                           .select(:name)
-                                                                          .mean_duration_in_seconds
+                                                                          .mean_duration
                                                                           .filter_by_job_name('compile')
                                                                           .execute
 
@@ -269,14 +269,14 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
     let(:options) do
       {
         select_fields: [:name],
-        aggregations: [:mean_duration_in_seconds]
+        aggregations: [:mean_duration]
       }
     end
 
     it 'generates valid SQL' do
       sql = query_builder.to_sql
       expected_sql = <<~SQL.squish.lines(chomp: true).join(' ')
-        SELECT `ci_finished_builds`.`name`, round((avg(`ci_finished_builds`.`duration`) / 1000.0), 2) AS mean_duration_in_seconds
+        SELECT `ci_finished_builds`.`name`, round((avg(`ci_finished_builds`.`duration`) / 1000.0), 2) AS mean_duration
         FROM `ci_finished_builds` WHERE `ci_finished_builds`.`project_id` = #{project.id} AND `ci_finished_builds`.`pipeline_id` IN
         (SELECT `ci_finished_pipelines`.`id` FROM `ci_finished_pipelines` WHERE `ci_finished_pipelines`.`path` = '#{project.project_namespace.traversal_path}'
         AND `ci_finished_pipelines`.`started_at` >= toDateTime64('#{7.days.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC'))
@@ -322,17 +322,17 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
     let(:options) { { aggregations: aggregations, select_fields: [:name] } }
 
     context 'with mean duration aggregation' do
-      let(:aggregations) { [:mean_duration_in_seconds] }
+      let(:aggregations) { [:mean_duration] }
 
       it 'calculates mean duration correctly' do
         is_expected.to include(
-          a_hash_including('name' => 'compile', 'mean_duration_in_seconds' => 1.0),
-          a_hash_including('name' => 'compile-slow', 'mean_duration_in_seconds' => 5.0)
+          a_hash_including('name' => 'compile', 'mean_duration' => 1.0),
+          a_hash_including('name' => 'compile-slow', 'mean_duration' => 5.0)
         )
       end
 
       it 'rounds results to 2 decimal places' do
-        expect(query_result.map { |r| r['mean_duration_in_seconds'].to_s.split('.').last.size }).to all(be <= 2)
+        expect(query_result.map { |r| r['mean_duration'].to_s.split('.').last.size }).to all(be <= 2)
       end
     end
 
@@ -348,10 +348,10 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
     end
 
     context 'with multiple aggregations' do
-      let(:aggregations) { [:mean_duration_in_seconds, :rate_of_success] }
+      let(:aggregations) { [:mean_duration, :rate_of_success] }
 
       it 'applies multiple aggregations' do
-        expect(query_result.first.keys).to contain_exactly('name', 'mean_duration_in_seconds', 'rate_of_success')
+        expect(query_result.first.keys).to contain_exactly('name', 'mean_duration', 'rate_of_success')
       end
     end
   end
@@ -360,25 +360,25 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
     let(:options) do
       {
         select_fields: [:name],
-        aggregations: [:mean_duration_in_seconds],
+        aggregations: [:mean_duration],
         sort: sort
       }
     end
 
     context 'with ascending sort' do
-      let(:sort) { 'mean_duration_in_seconds_asc' }
+      let(:sort) { 'mean_duration_asc' }
 
       it 'sorts results in ascending order' do
-        durations = query_result.pluck('mean_duration_in_seconds')
+        durations = query_result.pluck('mean_duration')
         expect(durations).to eq(durations.sort)
       end
     end
 
     context 'with descending sort' do
-      let(:sort) { 'mean_duration_in_seconds_desc' }
+      let(:sort) { 'mean_duration_desc' }
 
       it 'sorts results in descending order' do
-        durations = query_result.pluck('mean_duration_in_seconds')
+        durations = query_result.pluck('mean_duration')
         expect(durations).to eq(durations.sort.reverse)
       end
     end
@@ -489,8 +489,8 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
       let(:options) do
         {
           select_fields: [:name, :stage_id],
-          aggregations: [:mean_duration_in_seconds, :rate_of_success],
-          sort: 'mean_duration_in_seconds_desc',
+          aggregations: [:mean_duration, :rate_of_success],
+          sort: 'mean_duration_desc',
           name_search: 'compile',
           from_time: 1.day.ago,
           to_time: Time.current
@@ -500,12 +500,12 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
       it 'combines all features correctly', :aggregate_failures do
         expect(query_result).not_to be_empty
         expect(query_result.first.keys).to contain_exactly(
-          'name', 'stage_id', 'mean_duration_in_seconds', 'rate_of_success'
+          'name', 'stage_id', 'mean_duration', 'rate_of_success'
         )
         expect(query_result.pluck('name').uniq).to contain_exactly('compile', 'compile-slow')
 
         # Assert sorting
-        durations = query_result.pluck('mean_duration_in_seconds')
+        durations = query_result.pluck('mean_duration')
         expect(durations).to eq(durations.sort.reverse)
       end
     end

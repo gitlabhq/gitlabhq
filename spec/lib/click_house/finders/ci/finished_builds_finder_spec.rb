@@ -99,18 +99,18 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     end
 
     context 'with single aggregation' do
-      let(:selected_aggregations) { [:mean_duration_in_seconds] }
+      let(:selected_aggregations) { [:mean_duration] }
 
-      it 'returns only mean_duration_in_seconds grouped by name' do
-        expect(result.first.keys).to contain_exactly('name', 'mean_duration_in_seconds')
+      it 'returns only mean_duration grouped by name' do
+        expect(result.first.keys).to contain_exactly('name', 'mean_duration')
       end
     end
 
     context 'with multiple aggregations' do
-      let(:selected_aggregations) { [:mean_duration_in_seconds, :p95_duration_in_seconds] }
+      let(:selected_aggregations) { [:mean_duration, :p95_duration] }
 
       it 'returns multiple aggregations grouped by name' do
-        expect(result.first.keys).to contain_exactly('name', 'mean_duration_in_seconds', 'p95_duration_in_seconds')
+        expect(result.first.keys).to contain_exactly('name', 'mean_duration', 'p95_duration')
       end
     end
 
@@ -121,8 +121,8 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
         expect do
           result
         end.to raise_error(ArgumentError,
-          "Cannot aggregate columns: [:invalid_aggregation]. Allowed: mean_duration, mean_duration_in_seconds, " \
-            "p50_duration, p75_duration, p90_duration, p95_duration, p99_duration, p95_duration_in_seconds, " \
+          "Cannot aggregate columns: [:invalid_aggregation]. Allowed: mean_duration, " \
+            "p50_duration, p75_duration, p90_duration, p95_duration, p99_duration, " \
             "rate_of_success, rate_of_failed, rate_of_canceled, rate_of_skipped, " \
             "count_success, count_failed, count_canceled, count_skipped, total_count"
         )
@@ -255,7 +255,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
 
         it "calculates rate correctly" do
           is_expected.not_to be_empty
-          expect(result.first.fetch("rate_of_#{status}")).to be_a(Integer)
+          expect(result.first.fetch("rate_of_#{status}")).to be_a(Float)
         end
       end
 
@@ -363,24 +363,24 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     subject(:result) do
       instance.for_project(project.id)
               .select(:name)
-              .mean_duration_in_seconds
+              .mean_duration
               .order_by(*order_by_args)
               .execute
     end
 
     context 'with aggregated columns' do
-      let(:order_by_args) { [:mean_duration_in_seconds] }
+      let(:order_by_args) { [:mean_duration] }
 
       it 'orders by mean duration correctly' do
-        durations = result.pluck('mean_duration_in_seconds')
+        durations = result.pluck('mean_duration')
         expect(durations).to eq(durations.sort)
       end
 
       context 'with order by desc' do
-        let(:order_by_args) { [:mean_duration_in_seconds, :desc] }
+        let(:order_by_args) { [:mean_duration, :desc] }
 
         it 'orders by mean duration DESC correctly' do
-          durations = result.pluck('mean_duration_in_seconds')
+          durations = result.pluck('mean_duration')
           expect(durations).to eq(durations.sort.reverse)
         end
       end
@@ -460,11 +460,11 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     subject(:result) do
       instance.for_project(project.id)
               .select([:name, :stage_id])
-              .mean_duration_in_seconds
-              .p95_duration_in_seconds
+              .mean_duration
+              .p95_duration
               .rate_of_success
               .rate_of_failed
-              .order_by(:mean_duration_in_seconds, :desc)
+              .order_by(:mean_duration, :desc)
               .limit(3)
               .execute
     end
@@ -472,12 +472,12 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     it 'combines multiple operations correctly' do
       expect(result.size).to be <= 3
       expect(result.first.keys).to include(
-        'name', 'stage_id', 'mean_duration_in_seconds',
-        'p95_duration_in_seconds', 'rate_of_success', 'rate_of_failed'
+        'name', 'stage_id', 'mean_duration',
+        'p95_duration', 'rate_of_success', 'rate_of_failed'
       )
 
       # Assert ordering
-      durations = result.pluck('mean_duration_in_seconds')
+      durations = result.pluck('mean_duration')
       expect(durations).to eq(durations.sort.reverse)
     end
   end
@@ -486,8 +486,8 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     it 'finds top 10 slowest builds by p95 duration' do
       result = instance.for_project(project.id)
                        .select(:name)
-                       .p95_duration_in_seconds
-                       .order_by(:p95_duration_in_seconds, :desc)
+                       .p95_duration
+                       .order_by(:p95_duration, :desc)
                        .limit(10)
                        .execute
 
@@ -536,13 +536,13 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     it 'generates correct SQL for inspection' do
       sql = instance.for_project(123)
                     .select(:name)
-                    .mean_duration_in_seconds
+                    .mean_duration
                     .to_sql
 
       expect(sql).to include('SELECT')
       expect(sql).to include('ci_finished_builds')
       expect(sql).to include('project_id')
-      expect(sql).to include('mean_duration_in_seconds')
+      expect(sql).to include('mean_duration')
     end
   end
 

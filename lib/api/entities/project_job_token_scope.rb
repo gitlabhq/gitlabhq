@@ -3,10 +3,10 @@
 module API
   module Entities
     class ProjectJobTokenScope < Grape::Entity
-      expose(:inbound_enabled, documentation: { type: 'boolean' }) do |project, _|
+      expose(:inbound_enabled, documentation: { type: 'Boolean' }) do |project, _|
         project.ci_inbound_job_token_scope_enabled?
       end
-      expose(:outbound_enabled, documentation: { type: 'boolean' }) do |project, _|
+      expose(:outbound_enabled, documentation: { type: 'Boolean' }) do |project, _|
         project.ci_outbound_job_token_scope_enabled?
       end
     end

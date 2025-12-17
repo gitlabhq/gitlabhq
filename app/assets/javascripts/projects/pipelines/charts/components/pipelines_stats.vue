@@ -12,11 +12,6 @@ export default {
     GlLink,
     GlSingleStat,
   },
-  inject: {
-    failedPipelinesLink: {
-      default: null,
-    },
-  },
   props: {
     aggregate: {
       type: Object,
@@ -28,11 +23,16 @@ export default {
       required: false,
       default: false,
     },
+    failedPipelinesPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
-    failureRatioLink() {
+    failureRatioPath() {
       try {
-        return BigInt(this.aggregate.failedCount) > 0n ? this.failedPipelinesLink : null;
+        return BigInt(this.aggregate.failedCount) > 0n ? this.failedPipelinesPath : null;
       } catch {
         return null;
       }
@@ -55,7 +55,7 @@ export default {
           label: s__('PipelineCharts|Failure rate'),
           identifier: 'failure-ratio',
           value: formatPipelineCountPercentage(failedCount, count),
-          link: this.failureRatioLink,
+          path: this.failureRatioPath,
         },
         {
           label: s__('PipelineCharts|Success rate'),
@@ -85,9 +85,9 @@ export default {
           should-animate
         />
         <gl-link
-          v-if="stat.link"
+          v-if="stat.path"
           class="gl-p-2"
-          :href="stat.link"
+          :href="stat.path"
           data-event-tracking="click_view_all_link_in_pipeline_analytics"
           >{{ s__('Pipeline|View all') }}</gl-link
         >

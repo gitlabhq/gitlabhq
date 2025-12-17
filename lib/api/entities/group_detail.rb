@@ -12,7 +12,7 @@ module API
         if: ->(group) { group.root? && group.namespace_settings.present? }
       expose :step_up_auth_required_oauth_provider,
         documentation: {
-          type: 'string',
+          type: 'String',
           desc: 'OAuth provider required for step-up authentication.'
         },
         if: ->(group, options) {

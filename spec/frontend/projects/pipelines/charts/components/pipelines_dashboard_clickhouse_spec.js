@@ -35,6 +35,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 const projectPath = 'gitlab-org/gitlab';
 const defaultBranch = 'main';
 const projectBranchCount = 99;
+const failedPipelinesLink = '/pipelines?status=failed';
 
 describe('PipelinesDashboardClickhouse', () => {
   useFakeDate('2022-02-15T08:30'); // a date with a time
@@ -55,6 +56,7 @@ describe('PipelinesDashboardClickhouse', () => {
         defaultBranch,
         projectPath,
         projectBranchCount,
+        failedPipelinesLink,
       },
       stubs: {
         GlTruncate,
@@ -234,11 +236,21 @@ describe('PipelinesDashboardClickhouse', () => {
       expect(findPipelinesStats().props('aggregate')).toEqual(
         pipelineAnalyticsData.data.project.pipelineAnalytics.aggregate,
       );
+      expect(findPipelinesStats().props('failedPipelinesPath')).toEqual(
+        '/pipelines?status=failed&ref=main',
+      );
 
       expect(findAllSingleStats().at(0).text()).toBe('Total pipeline runs 8');
       expect(findAllSingleStats().at(1).text()).toBe('Median duration 30m');
       expect(findAllSingleStats().at(2).text()).toBe('Failure rate 25%');
       expect(findAllSingleStats().at(3).text()).toBe('Success rate 25%');
+    });
+
+    it('renders with no branch selected', () => {
+      setWindowLocation('?branch=~any');
+      createComponent({ mountFn: mount });
+
+      expect(findPipelinesStats().props('failedPipelinesPath')).toEqual('/pipelines?status=failed');
     });
   });
 

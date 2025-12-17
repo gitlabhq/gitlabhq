@@ -1302,8 +1302,17 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       end
     end
 
-    context 'with form encoding' do
+    context 'with multipart form encoding' do
       let(:body_encoding) { :multipart_form }
+
+      it_behaves_like 'validates file params'
+      it_behaves_like 'when authenticated'
+      it_behaves_like 'when authenticated', 'as a direct project member'
+      it_behaves_like 'rate limiting for large commit content'
+    end
+
+    context 'with form encoding' do
+      let(:body_encoding) { :form }
 
       it_behaves_like 'validates file params'
       it_behaves_like 'when authenticated'
@@ -1456,8 +1465,15 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       it_behaves_like 'rate limiting for large commit content'
     end
 
-    context 'with form encoding' do
+    context 'with multipart form encoding' do
       let(:body_encoding) { :multipart_form }
+
+      it_behaves_like 'updates to an existing file'
+      it_behaves_like 'rate limiting for large commit content'
+    end
+
+    context 'with form encoding' do
+      let(:body_encoding) { :form }
 
       it_behaves_like 'updates to an existing file'
       it_behaves_like 'rate limiting for large commit content'

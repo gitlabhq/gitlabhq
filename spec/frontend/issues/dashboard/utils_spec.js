@@ -1,7 +1,7 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { AutocompleteCache } from '~/issues/dashboard/utils';
-import { MAX_LIST_SIZE } from '~/issues/list/constants';
+import { MAX_LIST_SIZE } from '~/work_items/list/constants';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 

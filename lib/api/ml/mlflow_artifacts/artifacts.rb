@@ -19,6 +19,7 @@ module API
 
         desc 'MLflow artifact API' do
           detail 'MLflow artifacts mapping to GitLab artifacts'
+          tags ['mlops']
         end
 
         route_setting :api, write: true

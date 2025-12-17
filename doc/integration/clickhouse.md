@@ -219,7 +219,18 @@ In the following example, replace `CLUSTER_NAME_HERE` with your cluster's name:
  GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE ON gitlab_clickhouse_main_production.* TO gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
  GRANT SELECT ON information_schema.* TO gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
  GRANT gitlab_app TO gitlab ON CLUSTER CLUSTER_NAME_HERE;
- ```
+
+ -- Create the schema_migrations table manually
+
+CREATE TABLE gitlab_clickhouse_main_production.schema_migrations (
+  version LowCardinality(String),
+  active UInt8 NOT NULL DEFAULT 1,
+  applied_at DateTime64(6, 'UTC') NOT NULL DEFAULT now64()
+)
+ENGINE = ReplicatedReplacingMergeTree(applied_at)
+PRIMARY KEY(version)
+ORDER BY (version)
+```
 
 ### Load balancer considerations
 

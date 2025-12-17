@@ -17,12 +17,12 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import { issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { getSortKey, getSortOptions } from '~/issues/list/utils';
+import { getSortKey, getSortOptions } from '~/work_items/list/utils';
 import { STATUS_CLOSED, STATUS_OPEN, STATUS_ALL } from '~/issues/service_desk/constants';
 import getServiceDeskIssuesQuery from 'ee_else_ce/issues/service_desk/queries/get_service_desk_issues.query.graphql';
 import getServiceDeskIssuesCountsQuery from 'ee_else_ce/issues/service_desk/queries/get_service_desk_issues_counts.query.graphql';
-import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
-import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
+import IssueCardTimeInfo from 'ee_else_ce/work_items/list/components/issue_card_time_info.vue';
+import IssueCardStatistics from 'ee_else_ce/work_items/list/components/issue_card_statistics.vue';
 import setSortingPreferenceMutation from '~/issues/service_desk/queries/set_sorting_preference.mutation.graphql';
 import ServiceDeskListApp from '~/issues/service_desk/components/service_desk_list_app.vue';
 import InfoBanner from '~/issues/service_desk/components/info_banner.vue';
@@ -45,7 +45,7 @@ import {
   RELATIVE_POSITION_ASC,
   RELATIVE_POSITION,
   urlSortParams,
-} from '~/issues/list/constants';
+} from '~/work_items/list/constants';
 import {
   getServiceDeskIssuesQueryResponse,
   getServiceDeskIssuesQueryEmptyResponse,

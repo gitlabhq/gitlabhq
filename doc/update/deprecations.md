@@ -935,16 +935,12 @@ To prepare for this change, we recommend reviewing and updating your GraphQL que
 
 </div>
 
-{{< alert type="note" >}}
-This change affects you only if you're using the
-[GitLab NGINX chart](https://docs.gitlab.com/charts/charts/nginx/), and
-you have set your own NGINX RBAC rules.
-
-If you're using your own
-[external NGINX chart](https://docs.gitlab.com/charts/advanced/external-nginx/),
-or you're using the GitLab NGINX chart without any NGINX RBAC rules
-changes, this deprecation doesn't apply to you.
-{{< /alert >}}
+> [!note]
+> This change affects you only if you're using the [GitLab NGINX chart](https://docs.gitlab.com/charts/charts/nginx/),
+> and you have set your own NGINX RBAC rules.
+>
+> If you're using your own [external NGINX chart](https://docs.gitlab.com/charts/advanced/external-nginx/),
+> or you're using the GitLab NGINX chart without any NGINX RBAC rules changes, this deprecation doesn't apply to you.
 
 In GitLab 17.6 (Helm chart 8.6), the GitLab chart updated the default NGINX
 controller image from version 1.3.1 to 1.11.2. This new version requires new
@@ -955,14 +951,10 @@ ultimately create those rules. This change is also backported to:
 - GitLab 17.4.3 (Helm chart 8.4.3)
 - GitLab 17.3.6 (Helm chart 8.3.6)
 
-{{< alert type="note" >}}
-
-The latest patch versions of Helm chart 8.3 to 8.7 contain the NGINX
-controller version 1.11.2.
-Later chart versions include version 1.11.5, since it contains various
-security fixes. GitLab 18.0 will default to controller version 1.11.5.
-
-{{< /alert >}}
+> [!note]
+> The latest patch versions of Helm chart 8.3 to 8.7 contain the NGINX controller version 1.11.2.
+> Later chart versions include version 1.11.5, since it contains various
+> security fixes. GitLab 18.0 will default to controller version 1.11.5.
 
 If you manage your own NGINX RBAC rules, it means that you have set
 `nginx-ingress.rbac.create` to `false`. In that case, from GitLab 17.3 (Helm
@@ -7158,11 +7150,8 @@ The following changes have been removed from their original milestone and are be
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 In GitLab 19.0, we will remove CodeClimate-based Code Quality scanning.
 This change was previously scheduled for GitLab 18.0 and has now been delayed.
@@ -7194,11 +7183,8 @@ For more details, see [Scan code for quality violations](https://docs.gitlab.com
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 The GitLab container registry's legacy metadata storage approach is deprecated in favor of the container registry metadata database.
 
@@ -7225,11 +7211,8 @@ The metadata database provides better performance, reliability, and enables new 
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 Coverage-guided fuzz testing is deprecated and will not be supported
 from GitLab 18.0. The feature will be completely removed in GitLab 19.0.
@@ -7251,11 +7234,8 @@ or migrate to another security feature like [GitLab Advanced SAST](https://docs.
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 The [Dependency Scanning for JavaScript vendored libraries](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript) feature
 provided by the Gemnasium analyzer for Dependency Scanning is deprecated in GitLab 17.9.
@@ -7278,11 +7258,8 @@ A replacement feature will be developed with [Dependency Scanning on vendored li
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 The dependency scanning feature is upgrading to the GitLab SBOM vulnerability scanner. As part of this change, the Gemnasium analyzer (previously used in CI/CD pipelines) is deprecated in GitLab 17.9.
 
@@ -7330,11 +7307,8 @@ Please review the fully detailed changes below and consult [the migration guide]
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 In GitLab 19.0, we will update the [SAST CI/CD templates](https://docs.gitlab.com/user/application_security/sast#stable-vs-latest-sast-templates) to enable [GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast) by default in projects with GitLab Ultimate.
 Before this change, the GitLab Advanced SAST analyzer is enabled only if you set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
@@ -7361,11 +7335,8 @@ You can set this variable in your project, group, or policy now to prevent Advan
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 The [GitLab Runner Docker Machine executor](https://docs.gitlab.com/runner/executors/docker_machine/) is deprecated and will be fully removed from the product as a supported feature in GitLab 20.0 (May 2027). The replacement for Docker Machine, [GitLab Runner Autoscaler](https://docs.gitlab.com/runner/runner_autoscale/) with GitLab developed plugins for Amazon Web Services (AWS) EC2, Google Compute Engine (GCE) and Microsoft Azure virtual machines (VMs) is generally available. With this announcement, the GitLab Runner team will no longer accept community contributions for the GitLab maintained Docker Machine fork, or resolve newly identified bugs.
 
@@ -7382,11 +7353,8 @@ The [GitLab Runner Docker Machine executor](https://docs.gitlab.com/runner/execu
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 The `runnerPlatforms` and `runnerSetup` queries to get GitLab Runner platforms and installation instructions
 are deprecated and will be removed from the GraphQL API. For installation instructions, see the
@@ -7405,11 +7373,8 @@ are deprecated and will be removed from the GraphQL API. For installation instru
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 The certificate-based integration with Kubernetes [will be deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
 
@@ -7437,11 +7402,8 @@ For updates and details about this deprecation, see [epic 8](https://gitlab.com/
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 The certificate-based integration with Kubernetes will be [deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/). As a GitLab.com user, on new namespaces, you will no longer be able to integrate GitLab and your cluster using the certificate-based approach as of GitLab 15.0. The integration for current users will be enabled per namespace.
 
@@ -7465,11 +7427,8 @@ GitLab Self-Managed customers can still use the feature [with a feature flag](ht
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 You can use GraphQL to query the amount of storage used by the GitLab Dependency Proxy. However, the `dependencyProxyTotalSizeInBytes` field is limited to about 2 gigabytes, which is not always large enough for the Dependency Proxy. As a result, `dependencyProxyTotalSizeInBytes` is deprecated.
 
@@ -7488,11 +7447,8 @@ Use `dependencyProxyTotalSizeBytes` instead, introduced in GitLab 16.1.
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 Grouping the vulnerability report by OWASP top 10 2017 is deprecated, replaced by grouping by OWASP top 10 2021.
 In the future we will support the most recent version of OWASP top 10 for grouping on the vulnerability report.
@@ -7511,11 +7467,8 @@ Along with this change we are also deprecating and removing the 2017 GraphQL API
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 GitLab believes in secure-by-default practices. To honor this, we are making some changes to support least privilege principles relating to the use of CI/CD variables.
 Today, users with the Developer role or higher are able to use [pipeline variables](https://docs.gitlab.com/ci/variables/#use-pipeline-variables) by default, without any verification or opt-in.
@@ -7536,11 +7489,8 @@ Starting in 17.7, `no one allowed` is the default for all new projects in new na
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 We introduced the OpenTofu CI/CD template in 16.8 as CI/CD components were not available for GitLab Self-Managed yet.
 With the introduction of [GitLab CI/CD components for GitLab Self-Managed](https://docs.gitlab.com/ci/components/#use-a-gitlabcom-component-in-a-self-managed-instance)
@@ -7561,11 +7511,8 @@ For information about migrating from the CI/CD template to the component, see th
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 With the introduction of [custom stages](https://gitlab.com/gitlab-org/gitlab/-/issues/475152) in pipeline execution policies (available in GitLab 17.9), we've introduced the configuration option `inject_policy` to replace the deprecated `inject_ci`.
 
@@ -7586,11 +7533,8 @@ To prepare for the pending removal, update all pipeline execution policies that 
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 Rate limits will be enabled by default for commonly used [User](https://docs.gitlab.com/administration/settings/user_and_ip_rate_limits/),
 [Project](https://docs.gitlab.com/administration/settings/rate_limit_on_projects_api/), and [Group](https://docs.gitlab.com/administration/settings/rate_limit_on_groups_api/) endpoints.
@@ -7614,11 +7558,8 @@ Instance administrators can set higher or lower limits as needed in the Admin ar
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 The `migrationState` field in the `ContainerRepositoryType` of the GitLab GraphQL API is deprecated. This deprecation is part of our efforts to streamline and improve our API.
 
@@ -7637,11 +7578,8 @@ To prepare for this change, we recommend reviewing and updating your GraphQL que
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 The `previousStageJobsOrNeeds` field in GraphQL will be removed as it has been replaced by the `previousStageJobs` and `needs` fields.
 
@@ -7658,11 +7596,8 @@ The `previousStageJobsOrNeeds` field in GraphQL will be removed as it has been r
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 The GraphQL field `take_ownership_pipeline_schedule` will be deprecated. To
 determine if a user can take ownership of a pipeline schedule, use the
@@ -7681,11 +7616,8 @@ determine if a user can take ownership of a pipeline schedule, use the
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 The [Resolve a vulnerability](https://docs.gitlab.com/user/application_security/vulnerabilities/#resolve-a-vulnerability) feature for Yarn projects
 provided by the Gemnasium analyzer for Dependency Scanning is deprecated in GitLab 17.9.
@@ -7708,11 +7640,8 @@ A replacement feature is planned as part of the [Auto Remediation vision](https:
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 The following endpoints in the public REST API will be removed:
 
@@ -7746,11 +7675,8 @@ You shouldn't experience any impact as a result of this change, as these are end
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 We are moving the `agentk` container registry from
 [its project-specific registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/1223205)
@@ -7778,11 +7704,8 @@ the new `agentk` image will start deploying from the new location seamlessly in 
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 In GitLab 19.0, CI/CD job tokens will switch from a string token format to the JWT token format. This changes impacts new and existing CI/CD job tokens in all projects. If you experience issues, you can still [use the legacy format for your CI/CD tokens](https://docs.gitlab.com/ci/jobs/ci_job_token#use-legacy-format-for-cicd-tokens) until the GitLab 20.0 release.
 
@@ -7804,11 +7727,8 @@ Known issues:
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 Support for using `bin_path` and `use_bundled_binaries` configuration options in Gitaly is deprecated and will be
 removed in GitLab 19.0.
@@ -7828,11 +7748,8 @@ The Git binaries provided by Gitaly will be the only supported way to execute Gi
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 We'll remove support for the `kpt`-based installation of the agent for Kubernetes.
 Instead, you should install the agent with one of the supported installation methods:
@@ -7856,11 +7773,8 @@ To migrate from `kpt` to Helm, follow [the agent installation documentation](htt
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 The GraphQL field `mergeTrainIndex` and `mergeTrainsCount` in `MergeRequest` are deprecated. To
 determine the position of the merge request on the merge train use the
@@ -7880,11 +7794,8 @@ use `count` from `cars` in `MergeTrains::TrainType` instead.
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 
 In 16.10, scan result policies were renamed to merge request approval policies to more accurately reflect the change in scope and capability for the policy type.
 
@@ -7910,11 +7821,8 @@ The following changes have been canceled.
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been canceled.
-
-{{< /alert >}}
+> [!note]
+> This change has been canceled.
 
 The container scanning security feature generates a lot of security findings and this volume is often difficult for engineering teams to manage.
 By changing the severity threshold to `medium`, we provide a more reasonable default to our users, where any findings with a severity below `medium` are not reported.
@@ -7936,11 +7844,8 @@ To continue showing these findings, you must configure the `CS_SEVERITY_THRESHOL
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been canceled.
-
-{{< /alert >}}
+> [!note]
+> This change has been canceled.
 
 The CI/CD [artifact report](https://docs.gitlab.com/ci/yaml/artifacts_reports/) type is deprecated in GitLab 16.9, and will be removed in GitLab 18.0. CI/CD configurations using this keyword will stop working in GitLab 18.0.
 
@@ -7960,11 +7865,8 @@ Instead, you should use [License scanning of CycloneDX files](https://docs.gitla
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been canceled.
-
-{{< /alert >}}
+> [!note]
+> This change has been canceled.
 
 In GitLab 18.0, we will update the SAST CI/CD template to remove analyzer jobs that have reached End of Support in previous releases.
 The following jobs will be removed from `SAST.gitlab-ci.yml` and `SAST.latest.gitlab-ci.yml`:
@@ -7998,11 +7900,8 @@ upgrading to 18.0 to avoid disruptions to your CI/CD pipelines.
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been canceled.
-
-{{< /alert >}}
+> [!note]
+> This change has been canceled.
 
 Container registries under `registry.gitlab.com/gitlab-org/security-products/`
 are no longer accessible in GitLab 18.0. [Since GitLab 14.8](https://docs.gitlab.com/update/deprecations/#secure-and-protect-analyzer-images-published-in-new-location)
@@ -8032,11 +7931,8 @@ to ensure the correct locations are being used to mirror the required scanner im
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been canceled.
-
-{{< /alert >}}
+> [!note]
+> This change has been canceled.
 
 In GitLab 18.0, we will update SAST and IaC scanning to explicitly [disable the use of the CI/CD job cache](https://docs.gitlab.com/ci/caching/#disable-cache-for-specific-jobs) by default.
 
@@ -8065,11 +7961,8 @@ If you need to use the cache when scanning a project, you can restore the previo
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been canceled.
-
-{{< /alert >}}
+> [!note]
+> This change has been canceled.
 
 This planned change to the secret detection analyzer is cancelled. You can still use the root user by default.
 
@@ -8086,11 +7979,8 @@ This planned change to the secret detection analyzer is cancelled. You can still
 
 </div>
 
-{{< alert type="note" >}}
-
-This change has been canceled.
-
-{{< /alert >}}
+> [!note]
+> This change has been canceled.
 
 The SpotBugs [SAST analyzer](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks)
 can perform a build when the artifacts to be scanned aren't present. While this usually works well for simple projects, it can fail on more complex builds.
@@ -8105,4 +7995,4 @@ This is not a change in functionality, so we have marked this announcement "Canc
 </div>
 </div>
 
-{{< alert type="disclaimer" />}}
+> [!disclaimer]

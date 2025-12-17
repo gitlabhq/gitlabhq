@@ -14,8 +14,8 @@ import { isEmpty, unionBy } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
-import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
+import IssueCardStatistics from 'ee_else_ce/work_items/list/components/issue_card_statistics.vue';
+import IssueCardTimeInfo from 'ee_else_ce/work_items/list/components/issue_card_time_info.vue';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -26,7 +26,7 @@ import {
   getInitialPageParams,
   getSortOptions,
   groupMultiSelectFilterTokens,
-} from 'ee_else_ce/issues/list/utils';
+} from 'ee_else_ce/work_items/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { TYPENAME_NAMESPACE, TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -38,8 +38,6 @@ import {
   WORKSPACE_PROJECT,
 } from '~/issues/constants';
 import { AutocompleteCache } from '~/issues/dashboard/utils';
-import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
-import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   CREATED_DESC,
@@ -53,8 +51,8 @@ import {
   urlSortParams,
   UPDATED_DESC,
   RELATIVE_POSITION_ASC,
-} from '~/issues/list/constants';
-import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
+} from '~/work_items/list/constants';
+import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import { fetchPolicies } from '~/lib/graphql';
@@ -116,7 +114,6 @@ import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_
 import getWorkItemsQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_count_only.query.graphql';
-import searchProjectsQuery from '~/issues/list/queries/search_projects.query.graphql';
 import hasWorkItemsQuery from '~/work_items/graphql/list/has_work_items.query.graphql';
 import { initWorkItemsFeedback } from '~/work_items_feedback';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
@@ -138,6 +135,9 @@ import {
   WORK_ITEM_CREATE_SOURCES,
 } from '../constants';
 import workItemsReorderMutation from '../graphql/work_items_reorder.mutation.graphql';
+import EmptyStateWithAnyIssues from '../list/components/empty_state_with_any_issues.vue';
+import EmptyStateWithoutAnyIssues from '../list/components/empty_state_without_any_issues.vue';
+import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
 import { findHierarchyWidget } from '../utils';
 import getUserWorkItemsPreferences from '../graphql/get_user_preferences.query.graphql';
 

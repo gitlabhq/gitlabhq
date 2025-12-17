@@ -27,7 +27,7 @@ import ciPipelineStatusesUpdatedSubscription from '~/ci/pipelines_page/graphql/s
 import {
   setIdTypePreferenceMutationResponse,
   setIdTypePreferenceMutationResponseWithErrors,
-} from 'jest/issues/list/mock_data';
+} from 'jest/work_items/list/mock_data';
 import {
   mockPipelinesData,
   mockPipelinesCount,

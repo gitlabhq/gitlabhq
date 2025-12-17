@@ -1,5 +1,5 @@
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { MAX_LIST_SIZE } from '~/issues/list/constants';
+import { MAX_LIST_SIZE } from '~/work_items/list/constants';
 import axios from '~/lib/utils/axios_utils';
 
 export class AutocompleteCache {

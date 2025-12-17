@@ -19,7 +19,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { s__, sprintf, __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
-import { findWidget } from '~/issues/list/utils';
+import { findWidget } from '~/work_items/list/utils';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ZenMode from '~/zen_mode';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';

@@ -4677,6 +4677,17 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#environments_in_self_and_project_descendants' do
     subject { pipeline.environments_in_self_and_project_descendants }
 
+    before_all do
+      Ci::ApplicationRecord.connection.execute(<<~SQL)
+        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_100"
+          PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (100);
+        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_101"
+          PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (101);
+        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_102"
+          PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (102);
+      SQL
+    end
+
     shared_examples_for 'fetches environments in self and project descendant pipelines' do |factory_type|
       context 'when pipeline is not child nor parent' do
         let_it_be(:pipeline) { create(:ci_pipeline, :created) }

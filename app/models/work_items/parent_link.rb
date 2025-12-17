@@ -74,7 +74,7 @@ module WorkItems
     def validate_hierarchy_restrictions
       return unless work_item && work_item_parent
 
-      restriction = ::WorkItems::SystemDefined::HierarchyRestriction.find_by(
+      restriction = ::WorkItems::TypesFramework::SystemDefined::HierarchyRestriction.find_by(
         parent_type_id: work_item_parent.work_item_type_id,
         child_type_id: work_item.work_item_type_id
       )

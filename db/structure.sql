@@ -14931,6 +14931,7 @@ CREATE TABLE ci_runner_controllers (
     description text,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
+    enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0d6af097e9 CHECK ((char_length(description) <= 1024))
 );
 

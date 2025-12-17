@@ -108,18 +108,12 @@ The following changes have been removed from their original milestone and are be
 </div>
 <% if is_cancelled -%>
 
-{{< alert type="note" >}}
-
-This change has been canceled.
-
-{{< /alert >}}
+> [!note]
+> This change has been canceled.
 <%- elsif is_pending -%>
 
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
+> [!note]
+> This change has been removed from its original milestone and is being reassessed.
 <%- end -%>
 
 <%= deprecation["body"] -%>
@@ -129,4 +123,4 @@ This change has been removed from its original milestone and is being reassessed
 </div>
 <%- end -%>
 
-{{< alert type="disclaimer" />}}
+> [!disclaimer]

@@ -575,7 +575,7 @@ export default {
           :aria-posinset="siblingInfo(item)[1]"
           :aria-label="item.name"
           :tabindex="item.id === activeItemId ? 0 : -1"
-          class="gl-action-neutral-colors gl-rounded-lg focus-visible:gl-focus-inset"
+          class="gl-action-neutral-colors gl-w-fit gl-min-w-full gl-rounded-lg focus-visible:gl-focus-inset"
           :style="isCurrentPath(item.path) ? activeStyles : {}"
           @click="activeItemId = item.id"
         >
@@ -593,7 +593,7 @@ export default {
               'tree-list-parent': item.level > 0,
             }"
             :file-classes="isCurrentPath(item.path) ? 'gl-font-bold' : 'gl-text-subtle'"
-            class="gl-relative !gl-mx-0 gl-w-fit gl-min-w-full"
+            class="gl-relative !gl-mx-0"
             truncate-middle
             @clickTree="(options) => toggleDirectory(item.path, options)"
             @clickSubmodule="handleClickSubmodule"

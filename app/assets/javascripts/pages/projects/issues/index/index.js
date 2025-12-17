@@ -1,5 +1,5 @@
-import { mountJiraIssuesListApp } from '~/issues/list';
 import { initWorkItemsRoot } from '~/work_items';
+import { initJiraIssuesImportStatusRoot } from '~/work_items/list';
 
-mountJiraIssuesListApp();
 initWorkItemsRoot();
+initJiraIssuesImportStatusRoot();

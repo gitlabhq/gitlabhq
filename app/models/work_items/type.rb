@@ -114,7 +114,7 @@ module WorkItems
     end
 
     def allowed_child_types_by_name
-      child_type_ids = WorkItems::SystemDefined::HierarchyRestriction
+      child_type_ids = WorkItems::TypesFramework::SystemDefined::HierarchyRestriction
         .where(parent_type_id: id)
         .map(&:child_type_id)
 
@@ -122,7 +122,7 @@ module WorkItems
     end
 
     def allowed_parent_types_by_name
-      parent_type_ids = WorkItems::SystemDefined::HierarchyRestriction
+      parent_type_ids = WorkItems::TypesFramework::SystemDefined::HierarchyRestriction
         .where(child_type_id: id)
         .map(&:parent_type_id)
       WorkItems::Type.where(id: parent_type_ids).order_by_name_asc

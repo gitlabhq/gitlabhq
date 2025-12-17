@@ -22,6 +22,8 @@ module ClickHouse
           ORDER BY (version)
         SQL
 
+        query = ClickHouse::ReplicatedTableEnginePatcher.patch_replicated(query) if connection.replicated_engine?
+
         connection.execute(query)
       end
 

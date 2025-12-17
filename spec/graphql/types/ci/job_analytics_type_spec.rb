@@ -9,11 +9,6 @@ RSpec.describe Types::Ci::JobAnalyticsType, feature_category: :fleet_visibility 
     expected_fields = %i[
       name
       stage
-      meanDurationInSeconds
-      p95DurationInSeconds
-      rateOfSuccess
-      rateOfFailed
-      rateOfCanceled
       statistics
     ]
 

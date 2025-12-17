@@ -1,7 +1,7 @@
 import { set, isEmpty } from 'lodash';
 import { produce } from 'immer';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { findWidget } from '~/issues/list/utils';
+import { findWidget } from '~/work_items/list/utils';
 import { newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
 import { updateDraft } from '~/lib/utils/autosave';
 import {

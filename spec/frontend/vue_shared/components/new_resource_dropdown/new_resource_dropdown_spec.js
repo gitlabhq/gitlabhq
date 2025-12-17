@@ -8,7 +8,7 @@ import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/n
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import searchUserProjectsWithIssuesEnabledQuery from '~/vue_shared/components/new_resource_dropdown/graphql/search_user_projects_with_issues_enabled.query.graphql';
 import { RESOURCE_TYPES } from '~/vue_shared/components/new_resource_dropdown/constants';
-import searchProjectsWithinGroupQuery from '~/issues/list/queries/search_projects.query.graphql';
+import searchProjectsWithinGroupQuery from '~/work_items/list/graphql/search_projects.query.graphql';
 import { DASH_SCOPE, joinPaths } from '~/lib/utils/url_utility';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
 import { stubComponent } from 'helpers/stub_component';

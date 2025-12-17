@@ -69,17 +69,6 @@ After you've [created a GitLab for Slack app](#create-a-gitlab-for-slack-app), y
    1. Scroll to **App Credentials**.
 1. Select **Save changes**.
 
-### Test your configuration
-
-To test your GitLab for Slack app configuration:
-
-1. Enter the `/gitlab help` slash command into a channel in your Slack workspace.
-1. Press <kbd>Enter</kbd>.
-
-You should see a list of available Slash commands.
-
-To use Slash commands for a project, configure the [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md) for the project.
-
 ## Install the GitLab for Slack app
 
 {{< history >}}
@@ -102,6 +91,17 @@ To install the GitLab for Slack app from the instance settings:
 1. Select **GitLab for Slack app**.
 1. Select **Install GitLab for Slack app**.
 1. On the Slack confirmation page, select **Allow**.
+
+### Test your configuration
+
+To test your GitLab for Slack app configuration:
+
+1. Enter the `/gitlab help` slash command into a channel in your Slack workspace.
+1. Press <kbd>Enter</kbd>.
+
+You should see a list of available Slash commands.
+
+To use Slash commands for a project, configure the [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md) for the project.
 
 ## Update the GitLab for Slack app
 

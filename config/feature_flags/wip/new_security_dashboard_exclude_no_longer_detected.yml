@@ -1,0 +1,10 @@
+---
+name: new_security_dashboard_exclude_no_longer_detected
+description: Excludes no longer detected vulnerabilities from security dashboard using undetected_since timestamp
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/19780
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215334
+rollout_issue_url:
+milestone: '18.7'
+group: group::security insights
+type: wip
+default_enabled: false

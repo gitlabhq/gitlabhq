@@ -21,6 +21,17 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
   let(:job) { create(:ci_build, pipeline: pipeline, runner: runner) }
   let(:metadata) { create(:ci_build_metadata, build: job) }
 
+  before_all do
+    Ci::ApplicationRecord.connection.execute(<<~SQL)
+      CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_100"
+        PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (100);
+      CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_101"
+        PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (101);
+      CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_102"
+        PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (102);
+    SQL
+  end
+
   it_behaves_like 'having unique enum values'
 
   it { is_expected.to belong_to(:build) }

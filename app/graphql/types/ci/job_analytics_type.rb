@@ -14,31 +14,6 @@ module Types
         null: true,
         description: 'Stage information.'
 
-      field :mean_duration_in_seconds, GraphQL::Types::Float,
-        null: true,
-        description: 'Average duration of jobs in seconds.'
-
-      field :p95_duration_in_seconds, GraphQL::Types::Float,
-        null: true,
-        description: '95th percentile duration of jobs in seconds.'
-
-      # rubocop:disable GraphQL/ExtractType -- this type is based on hash data, not an ActiveRecord model
-      # So extracting to a separate type makes it difficult for both code and the UX
-
-      field :rate_of_success, GraphQL::Types::Float,
-        null: true,
-        description: 'Percentage of successful jobs.'
-
-      field :rate_of_failed, GraphQL::Types::Float,
-        null: true,
-        description: 'Percentage of failed jobs.'
-
-      field :rate_of_canceled, GraphQL::Types::Float,
-        null: true,
-        description: 'Percentage of canceled jobs.'
-
-      # rubocop:enable GraphQL/ExtractType
-
       field :statistics, Types::Ci::JobAnalyticsStatisticsType,
         null: true,
         description: 'Statistics for the jobs.'

@@ -7,10 +7,10 @@ module API
         item.upcase if item.respond_to?(:upcase)
       end
 
-      expose :closed_at, documentation: { type: 'dateTime', example: '2022-11-15T08:30:55.232Z' }
+      expose :closed_at, documentation: { type: 'DateTime', example: '2022-11-15T08:30:55.232Z' }
       expose :closed_by, using: Entities::UserBasic
 
-      expose :labels, documentation: { type: 'string', is_array: true, example: 'bug' } do |issue, options|
+      expose :labels, documentation: { type: 'String', is_array: true, example: 'bug' } do |issue, options|
         if options[:with_labels_details]
           ::API::Entities::LabelBasic.represent(issue.labels.sort_by(&:title))
         else
@@ -33,16 +33,16 @@ module API
       expose(:merge_requests_count) { |issue, options| issuable_metadata.merge_requests_count }
       expose(:upvotes)              { |issue, options| issuable_metadata.upvotes }
       expose(:downvotes)            { |issue, options| issuable_metadata.downvotes }
-      expose :due_date, documentation: { type: 'date', example: '2022-11-20' }
-      expose :confidential, documentation: { type: 'boolean' }
-      expose :discussion_locked, documentation: { type: 'boolean' }
-      expose :issue_type, documentation: { type: 'string', example: 'issue' }
+      expose :due_date, documentation: { type: 'Date', example: '2022-11-20' }
+      expose :confidential, documentation: { type: 'Boolean' }
+      expose :discussion_locked, documentation: { type: 'Boolean' }
+      expose :issue_type, documentation: { type: 'String', example: 'issue' }
 
-      expose :web_url, documentation: { type: 'string', example: 'http://example.com/example/example/issues/14' } do |issue|
+      expose :web_url, documentation: { type: 'String', example: 'http://example.com/example/example/issues/14' } do |issue|
         Gitlab::UrlBuilder.build(issue)
       end
 
-      expose :time_stats, using: 'API::Entities::IssuableTimeStats' do |issue|
+      expose :time_stats, using: ::API::Entities::IssuableTimeStats do |issue|
         issue
       end
 

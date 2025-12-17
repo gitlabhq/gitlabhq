@@ -120,6 +120,17 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
     end
 
     describe 'clone accessors' do
+      before_all do
+        Ci::ApplicationRecord.connection.execute(<<~SQL)
+          CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_100"
+            PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (100);
+          CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_101"
+            PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (101);
+          CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_102"
+            PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (102);
+        SQL
+      end
+
       let(:forbidden_associations) do
         Ci::Build.reflect_on_all_associations.each_with_object(Set.new) do |assoc, memo|
           memo << assoc.name unless assoc.macro == :belongs_to
@@ -167,7 +178,7 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         end
       end
 
-      context 'when the job definitions do not exit' do
+      context 'when the job definitions do not exist' do
         before do
           create(:ci_build_metadata, build: job)
           Ci::JobDefinitionInstance.delete_all
@@ -180,7 +191,7 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         end
       end
 
-      context 'when a job definition for the metadata attributes already exits' do
+      context 'when a job definition for the metadata attributes already exists' do
         let(:metadata) do
           create(:ci_build_metadata, build: job,
             config_options: job.options,

@@ -179,10 +179,21 @@ RSpec.describe RuboCop::Cop::API::EntityFieldType, :config, feature_category: :a
       RUBY
     end
 
-    it 'registers an offense when the value is a string' do
+    it 'registers an offense when the value is an entity ref string' do
       expect_offense(<<~RUBY)
         expose :group, using: 'API::Entities::BasicGroupDetails'
                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        expose :group, using: ::API::Entities::BasicGroupDetails
+      RUBY
+    end
+
+    it 'registers an offense when the value is an entity ref string with leading colons' do
+      expect_offense(<<~RUBY)
+        expose :group, using: '::API::Entities::BasicGroupDetails'
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Invalid type for entity field. https://docs.gitlab.com/development/api_styleguide#defining-entity-fields.
       RUBY
 
       expect_correction(<<~RUBY)

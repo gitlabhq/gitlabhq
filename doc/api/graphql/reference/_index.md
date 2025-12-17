@@ -22,13 +22,10 @@ The API can be explored using the [interactive GraphQL explorer](../_index.md#in
 Each table below documents a GraphQL type. Types match loosely to models, but not all
 fields and methods on a model are available via GraphQL.
 
-{{< alert type="warning" >}}
-
-Fields that are deprecated are marked with {{< icon name="warning-solid" >}}.
-Items (fields, enums, etc) that have been removed according to our [deprecation process](../_index.md#deprecation-and-removal-process) can be found
-in [Removed Items](../removed_items.md).
-
-{{< /alert >}}
+> [!warning]
+> Fields that are deprecated are marked with {{< icon name="warning-solid" >}}.
+> Items (fields, enums, etc) that have been removed according to our [deprecation process](../_index.md#deprecation-and-removal-process)
+> can be found in [Removed Items](../removed_items.md).
 
 <!-- vale off -->
 <!-- Vale linting disabled after this line. -->
@@ -28021,12 +28018,7 @@ CI/CD job analytics data.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cijobanalyticsmeandurationinseconds"></a>`meanDurationInSeconds` | [`Float`](#float) | Average duration of jobs in seconds. |
 | <a id="cijobanalyticsname"></a>`name` | [`String`](#string) | Job name. |
-| <a id="cijobanalyticsp95durationinseconds"></a>`p95DurationInSeconds` | [`Float`](#float) | 95th percentile duration of jobs in seconds. |
-| <a id="cijobanalyticsrateofcanceled"></a>`rateOfCanceled` | [`Float`](#float) | Percentage of canceled jobs. |
-| <a id="cijobanalyticsrateoffailed"></a>`rateOfFailed` | [`Float`](#float) | Percentage of failed jobs. |
-| <a id="cijobanalyticsrateofsuccess"></a>`rateOfSuccess` | [`Float`](#float) | Percentage of successful jobs. |
 | <a id="cijobanalyticsstage"></a>`stage` | [`CiStage`](#cistage) | Stage information. |
 | <a id="cijobanalyticsstatistics"></a>`statistics` | [`CiJobAnalyticsStatistics`](#cijobanalyticsstatistics) | Statistics for the jobs. |
 
@@ -43430,11 +43422,9 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectjobanalyticsaggregations"></a>`aggregations` | [`[CiJobAnalyticsAggregation!]!`](#cijobanalyticsaggregation) | Aggregation functions to apply. |
 | <a id="projectjobanalyticsfromtime"></a>`fromTime` | [`Time`](#time) | Start of the requested time (in UTC). Defaults to the pipelines started in the past week. |
 | <a id="projectjobanalyticsnamesearch"></a>`nameSearch` | [`String`](#string) | Search by name of the pipeline jobs. Supports partial matches. |
 | <a id="projectjobanalyticsref"></a>`ref` | [`String`](#string) | Branch that triggered the pipeline. |
-| <a id="projectjobanalyticsselectfields"></a>`selectFields` | [`[CiJobAnalyticsField!]!`](#cijobanalyticsfield) | Fields to select and group by. |
 | <a id="projectjobanalyticssort"></a>`sort` | [`CiJobAnalyticsSort`](#cijobanalyticssort) | Sort order for the results. |
 | <a id="projectjobanalyticssource"></a>`source` | [`CiPipelineSources`](#cipipelinesources) | Source of the pipeline. |
 | <a id="projectjobanalyticstotime"></a>`toTime` | [`Time`](#time) | End of the requested time (in UTC). Defaults to the pipelines started before the current date. |
@@ -51333,27 +51323,6 @@ Available input types.
 | <a id="ciinputstypeboolean"></a>`BOOLEAN` | Boolean input. |
 | <a id="ciinputstypenumber"></a>`NUMBER` | Number input. |
 | <a id="ciinputstypestring"></a>`STRING` | String input. |
-
-### `CiJobAnalyticsAggregation`
-
-Aggregation functions available for CI/CD job analytics.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="cijobanalyticsaggregationmean_duration_in_seconds"></a>`MEAN_DURATION_IN_SECONDS` | Average duration of jobs in seconds. |
-| <a id="cijobanalyticsaggregationp95_duration_in_seconds"></a>`P95_DURATION_IN_SECONDS` | 95th percentile duration of jobs in seconds. |
-| <a id="cijobanalyticsaggregationrate_of_canceled"></a>`RATE_OF_CANCELED` | Percentage of canceled jobs. |
-| <a id="cijobanalyticsaggregationrate_of_failed"></a>`RATE_OF_FAILED` | Percentage of failed jobs. |
-| <a id="cijobanalyticsaggregationrate_of_success"></a>`RATE_OF_SUCCESS` | Percentage of successful jobs. |
-
-### `CiJobAnalyticsField`
-
-Fields available for selection in CI/CD job analytics.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="cijobanalyticsfieldname"></a>`NAME` | Job name. |
-| <a id="cijobanalyticsfieldstage"></a>`STAGE` | Stage. |
 
 ### `CiJobAnalyticsSort`
 

@@ -194,11 +194,6 @@
     }
   }
 
-  // Siderail agents selector icon
-  .ai-nav-icon-agents .gl-new-dropdown-icon-only {
-    border-radius: 100% !important;
-  }
-
   // Position for search overlay when Performance bar is visible
   &.with-performance-bar #super-sidebar-search-modal {
     padding-top: $performance-bar-height;
@@ -343,8 +338,8 @@
     overflow: inherit;
     @apply gl-px-0 sm:gl-px-3 lg:gl-px-2 lg:-gl-mx-2;
     --ai-panel-width: clamp(25rem, 20vw, 35rem);
-    --ai-panels-gap: var(--gl-spacing-scale-3);
-    --ai-navigation-rail-size: #{$gl-button-medium-size};
+    --ai-panels-gap: var(--gl-spacing-scale-2);
+    --ai-navigation-rail-size: #{$gl-button-small-size};
     --ai-navigation-rail-size-with-gap: calc(var(--ai-navigation-rail-size) + var(--ai-panels-gap));
 
     .ai-panel-header {
@@ -360,7 +355,7 @@
     }
 
     @media (max-width: $breakpoint-lg - 1) {
-      --ai-navigation-rail-size: calc(#{$gl-button-medium-size} + var(--gl-spacing-scale-3) * 2);
+      --ai-navigation-rail-size: calc(#{$gl-button-small-size} + var(--gl-spacing-scale-3) * 2);
     }
   }
 
@@ -650,7 +645,7 @@
       @apply gl-left-5 #{!important};
       top: var(--header-height);
       width: calc(100% - #{$gl-spacing-scale-5 * 2});
-      height: calc(100% - var(--system-header-height) - var(--performance-bar-height) - var(--header-height) - var(--ai-panel-height) + 0.5rem); // 0.5rem is to balance the -0.25rem top margin
+      height: calc(100% - var(--system-header-height) - var(--performance-bar-height) - var(--header-height) - var(--ai-panel-height) + 1rem); // 1rem is to balance the -0.25rem top margin
       z-index: 999;
     }
 

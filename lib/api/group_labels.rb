@@ -18,6 +18,7 @@ module API
       desc 'Get all labels of the group' do
         detail 'This feature was added in GitLab 11.8'
         success Entities::GroupLabel
+        tags ['group_labels']
       end
       params do
         optional :with_counts,
@@ -51,6 +52,7 @@ module API
       desc 'Get a single label' do
         detail 'This feature was added in GitLab 12.4.'
         success Entities::GroupLabel
+        tags ['group_labels']
       end
       params do
         optional :include_ancestor_groups,
@@ -73,6 +75,7 @@ module API
       desc 'Create a new label' do
         detail 'This feature was added in GitLab 11.8'
         success Entities::GroupLabel
+        tags ['group_labels']
       end
       params do
         use :label_create_params
@@ -84,6 +87,7 @@ module API
       desc 'Update an existing label. At least one optional parameter is required.' do
         detail 'This feature was added in GitLab 11.8 and deprecated in GitLab 12.4.'
         success Entities::GroupLabel
+        tags ['group_labels']
       end
       params do
         optional :label_id, type: Integer, desc: 'The ID of the label to be updated'
@@ -98,6 +102,7 @@ module API
       desc 'Delete an existing label' do
         detail 'This feature was added in GitLab 11.8 and deprecated in GitLab 12.4.'
         success Entities::GroupLabel
+        tags ['group_labels']
       end
       params do
         requires :name, type: String, desc: 'The name of the label to be deleted'
@@ -109,6 +114,7 @@ module API
       desc 'Update an existing label. At least one optional parameter is required.' do
         detail 'This feature was added in GitLab 12.4.'
         success Entities::GroupLabel
+        tags ['group_labels']
       end
       params do
         requires :name, type: String, desc: 'The name or id of the label to be updated'
@@ -121,6 +127,7 @@ module API
       desc 'Delete an existing label' do
         detail 'This feature was added in GitLab 12.4.'
         success Entities::GroupLabel
+        tags ['group_labels']
       end
       params do
         requires :name, type: String, desc: 'The name or id of the label to be deleted'

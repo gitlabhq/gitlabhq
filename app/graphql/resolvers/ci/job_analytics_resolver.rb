@@ -10,18 +10,6 @@ module Resolvers
 
       extras [:lookahead]
 
-      argument :select_fields,
-        [Types::Ci::JobAnalyticsFieldEnum],
-        required: true,
-        default_value: [:name],
-        description: 'Fields to select and group by.'
-
-      argument :aggregations,
-        [Types::Ci::JobAnalyticsAggregationEnum],
-        required: true,
-        default_value: [:mean_duration_in_seconds, :rate_of_failed, :p95_duration_in_seconds],
-        description: 'Aggregation functions to apply.'
-
       argument :name_search,
         GraphQL::Types::String,
         required: false,

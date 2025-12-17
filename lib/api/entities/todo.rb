@@ -5,7 +5,7 @@ module API
     class Todo < Grape::Entity
       expose :id
       expose :project, using: Entities::ProjectIdentity, if: ->(todo, _) { todo.project_id }
-      expose :group, using: 'API::Entities::NamespaceBasic', if: ->(todo, _) { todo.group_id }
+      expose :group, using: ::API::Entities::NamespaceBasic, if: ->(todo, _) { todo.group_id }
       expose :author, using: Entities::UserBasic
       expose :action_name
       expose :target_type

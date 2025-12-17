@@ -4,6 +4,22 @@ require 'spec_helper'
 # rubocop:disable RSpec/MultipleMemoizedHelpers -- We need extra helpers to define tables
 
 RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_category: :continuous_integration do
+  before do
+    Ci::ApplicationRecord.connection.execute(<<~SQL)
+      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_builds_101
+        PARTITION OF p_ci_builds FOR VALUES IN (101);
+
+      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_job_definitions_101
+        PARTITION OF p_ci_job_definitions FOR VALUES IN (101);
+
+      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_job_definition_instances_101
+        PARTITION OF p_ci_job_definition_instances FOR VALUES IN (101);
+
+      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_builds_metadata_101
+        PARTITION OF p_ci_builds_metadata FOR VALUES IN (101);
+    SQL
+  end
+
   let(:pipelines_table) { ci_partitioned_table(:p_ci_pipelines) }
   let(:builds_table) do
     ci_partitioned_table(:p_ci_builds).tap do |table|
@@ -94,19 +110,6 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
   end
 
   let(:migration) { described_class.new(**migration_attrs) }
-
-  before do
-    Ci::ApplicationRecord.connection.execute(<<~SQL)
-      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_builds_101
-        PARTITION OF p_ci_builds FOR VALUES IN (101);
-
-      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_job_definitions_101
-        PARTITION OF p_ci_job_definitions FOR VALUES IN (101);
-
-      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_job_definition_instances_101
-        PARTITION OF p_ci_job_definition_instances FOR VALUES IN (101);
-    SQL
-  end
 
   describe '#perform', :aggregate_failures do
     it 'does not raise errors' do

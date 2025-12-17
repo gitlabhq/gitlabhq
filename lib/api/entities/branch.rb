@@ -5,7 +5,7 @@ module API
     class Branch < Grape::Entity
       include Gitlab::Routing
 
-      expose :name, documentation: { type: 'string', example: 'master' }
+      expose :name, documentation: { type: 'String', example: 'master' }
 
       expose :commit, using: Entities::Commit do |repo_branch, options|
         options[:project].repository.commit(repo_branch.dereferenced_target)
@@ -13,7 +13,7 @@ module API
 
       expose :merged,
         documentation: {
-          type: 'boolean',
+          type: 'Boolean',
           example: true
         } do |repo_branch, options|
         if options[:merged_branch_names]
@@ -25,7 +25,7 @@ module API
 
       expose :protected,
         documentation: {
-          type: 'boolean',
+          type: 'Boolean',
           example: true
         } do |repo_branch, options|
         ::ProtectedBranch.protected?(options[:project], repo_branch.name)
@@ -33,7 +33,7 @@ module API
 
       expose :developers_can_push,
         documentation: {
-          type: 'boolean',
+          type: 'Boolean',
           example: true
         } do |repo_branch, options|
         ::ProtectedBranch.developers_can?(:push, repo_branch.name, protected_refs: options[:project].all_protected_branches)
@@ -41,7 +41,7 @@ module API
 
       expose :developers_can_merge,
         documentation: {
-          type: 'boolean',
+          type: 'Boolean',
           example: true
         } do |repo_branch, options|
         ::ProtectedBranch.developers_can?(:merge, repo_branch.name, protected_refs: options[:project].all_protected_branches)
@@ -49,7 +49,7 @@ module API
 
       expose :can_push,
         documentation: {
-          type: 'boolean',
+          type: 'Boolean',
           example: true
         } do |repo_branch, options|
         Gitlab::UserAccess.new(options[:current_user], container: options[:project]).can_push_to_branch?(repo_branch.name)
@@ -57,7 +57,7 @@ module API
 
       expose :default,
         documentation: {
-          type: 'boolean',
+          type: 'Boolean',
           example: true
         } do |repo_branch, options|
         options[:project].default_branch == repo_branch.name
@@ -65,7 +65,7 @@ module API
 
       expose :web_url,
         documentation: {
-          type: 'string',
+          type: 'String',
           example: 'https://gitlab.example.com/Commit921/the-dude/-/tree/master'
         } do |repo_branch|
         project_tree_url(options[:project], repo_branch.name)

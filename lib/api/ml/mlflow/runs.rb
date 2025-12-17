@@ -20,6 +20,7 @@ module API
           desc 'Creates a Run.' do
             success Entities::Ml::Mlflow::Run
             detail 'MLFlow Runs map to GitLab Candidates. https://www.mlflow.org/docs/2.19.0/rest-api.html#create-run'
+            tags ['mlops']
           end
           params do
             requires :experiment_id, type: Integer,
@@ -39,6 +40,7 @@ module API
           desc 'Gets an MLFlow Run, which maps to GitLab Candidates' do
             success Entities::Ml::Mlflow::Run
             detail 'https://www.mlflow.org/docs/1.28.0/rest-api.html#get-run'
+            tags ['mlops']
           end
           params do
             requires :run_id, type: String, desc: 'UUID of the candidate.'
@@ -53,6 +55,7 @@ module API
             detail 'https://www.mlflow.org/docs/2.19.0/rest-api.html#search-runs' \
                    'experiment_ids supports only a single experiment ID.' \
                    'Introduced in GitLab 16.4'
+            tags ['mlops']
           end
           params do
             requires :experiment_ids,
@@ -91,6 +94,7 @@ module API
           desc 'Updates a Run.' do
             success Entities::Ml::Mlflow::UpdateRun
             detail 'MLFlow Runs map to GitLab Candidates. https://www.mlflow.org/docs/2.19.0/rest-api.html#update-run'
+            tags ['mlops']
           end
           params do
             requires :run_id, type: String, desc: 'UUID of the candidate.'
@@ -111,6 +115,7 @@ module API
                     'associated timestamp. Examples include the various metrics that represent ML model accuracy. ' \
                     'A metric can be logged multiple times.'
             detail  'https://www.mlflow.org/docs/1.28.0/rest-api.html#log-metric'
+            tags ['mlops']
           end
           params do
             requires :run_id, type: String, desc: 'UUID of the run.'
@@ -138,6 +143,7 @@ module API
                     'ignored'
 
             detail  'https://www.mlflow.org/docs/2.19.0/rest-api.html#log-param'
+            tags ['mlops']
           end
           params do
             requires :run_id, type: String, desc: 'UUID of the run.'
@@ -152,8 +158,8 @@ module API
 
           desc 'Sets a tag for a run.' do
             summary 'Sets a tag for a run. '
-
-            detail  'https://www.mlflow.org/docs/2.19.0/rest-api.html#set-tag'
+            tags ['mlops']
+            detail 'https://www.mlflow.org/docs/2.19.0/rest-api.html#set-tag'
           end
           params do
             requires :run_id, type: String, desc: 'UUID of the run.'
@@ -169,8 +175,8 @@ module API
           desc 'Logs multiple parameters and metrics.' do
             summary 'Log a batch of metrics and params for a run. Validation errors will block the entire batch, ' \
                     'duplicate errors will be ignored.'
-
-            detail  'https://www.mlflow.org/docs/2.19.0/rest-api.html#log-param'
+            tags ['mlops']
+            detail 'https://www.mlflow.org/docs/2.19.0/rest-api.html#log-param'
           end
           params do
             requires :run_id, type: String, desc: 'UUID of the run.'
@@ -195,7 +201,7 @@ module API
 
           desc 'Delete a run.' do
             summary 'Delete a run.'
-
+            tags ['mlops']
             detail 'https://mlflow.org/docs/2.19.0/rest-api.html#delete-run'
           end
           params do

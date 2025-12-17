@@ -66,7 +66,7 @@ module Ci
       all_count_result =
         execute_select_query(all_query)
           .to_h do |entry|
-            [parse_in_utc(entry[:timestamp]), { count: { any: entry[:all] } }]
+            [to_utc(entry[:timestamp]), { count: { any: entry[:all] } }]
           end
 
       time_series.deep_merge!(all_count_result)
@@ -85,7 +85,7 @@ module Ci
       # such as `{ Time.utc(2023, 1, 1) => { count: { success: 1, failed: 0, other: 1, any: 3 } }`
       counts_by_timestamp =
         execute_select_query(query)
-          .group_by { |entry| parse_in_utc(entry[:timestamp]) }
+          .group_by { |entry| to_utc(entry[:timestamp]) }
           .transform_values { |counts_by_status| { count: group_and_sum_counts(counts_by_status) } }
 
       time_series.deep_merge!(counts_by_timestamp)
@@ -101,7 +101,7 @@ module Ci
 
       time_series.deep_merge!(
         execute_select_query(duration_by_date_query)
-          .group_by { |entry| parse_in_utc(entry[:timestamp]) }
+          .group_by { |entry| to_utc(entry[:timestamp]) }
           .transform_values { |hash| hash.sole.excluding(:timestamp) } # Keep only percentiles
           .transform_values do |percentiles_by_date|
             { duration_statistics: round_percentiles(percentiles_by_date) }
@@ -151,11 +151,7 @@ module Ci
     end
 
     def to_utc(timestamp)
-      timestamp.change(offset: 0).utc
-    end
-
-    def parse_in_utc(timestamp)
-      to_utc(Time.parse(timestamp)) # rubocop:disable Rails/TimeZone -- false positive, to_utc takes care of this
+      timestamp.to_datetime.change(offset: 0).utc
     end
 
     def group_and_sum_counts(counts_by_status_and_time)
