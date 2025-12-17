@@ -65,7 +65,7 @@ describe('ToolbarMoreDropdown', () => {
     ${'Ordered list'}        | ${'1. {text}'}                                                                                                                            | ${'orderedList'}
     ${'Task list'}           | ${'- [ ] {text}'}                                                                                                                         | ${'taskList'}
     ${'Horizontal rule'}     | ${'\n---\n'}                                                                                                                              | ${'horizontalRule'}
-    ${'Embedded view New'}   | ${'```glql\nquery: assignee = currentUser()\nfields: title, createdAt, milestone, assignee\ntitle: Issues assigned to current user\n```'} | ${'glqlView'}
+    ${'Embedded view'}       | ${'```glql\nquery: assignee = currentUser()\nfields: title, createdAt, milestone, assignee\ntitle: Issues assigned to current user\n```'} | ${'glqlView'}
     ${'Mermaid diagram'}     | ${'```mermaid\ngraph TD;\n    A-->B;\n    A-->C;\n    B-->D;\n    C-->D;\n```'}                                                           | ${'diagram'}
     ${'PlantUML diagram'}    | ${'```plantuml\n@startuml\nAlice -> Bob: Authentication Request\nBob --> Alice: Authentication Response\n@enduml\n```'}                   | ${'diagram'}
     ${'Table of contents'}   | ${'[[_TOC_]]'}                                                                                                                            | ${'tableOfContents'}
@@ -210,20 +210,6 @@ describe('ToolbarMoreDropdown', () => {
 
       expect(() => wrapper.vm.insertMarkdown('test')).not.toThrow();
       expect(updateText).not.toHaveBeenCalled();
-    });
-  });
-
-  it('shows a "New" badge for the embedded view option', () => {
-    const embeddedViewItem = findGlDisclosureDropdown()
-      .props()
-      .items.find((item) => item.text === 'Embedded view');
-
-    expect(embeddedViewItem.badge).toMatchObject({
-      text: 'New',
-      variant: 'info',
-      size: 'small',
-      target: '_blank',
-      href: '/help/user/glql/_index',
     });
   });
 });

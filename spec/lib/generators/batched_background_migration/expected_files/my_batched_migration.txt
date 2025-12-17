@@ -9,7 +9,6 @@ module Gitlab
   module BackgroundMigration
     class MyBatchedMigration < BatchedMigrationJob
       # operation_name :my_operation # This is used as the key on collecting metrics
-      # scope_to ->(relation) { relation.where(column: "value") }
       feature_category :database
 
       def perform

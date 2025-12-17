@@ -112,6 +112,7 @@ stages:
     - .qa-install
   stage: report
   when: always
+  allow_failure: true
   variables:
     QA_CODE_PATHS_MAPPING_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/test-code-paths-mapping-*.json
   script:
@@ -124,6 +125,7 @@ stages:
     - .qa-install
   stage: report
   when: always
+  allow_failure: true
   variables:
     QA_FRONTEND_PATHS_MAPPING_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/js-coverage-by-example-*.json
   script:
@@ -131,33 +133,12 @@ stages:
   rules:
     - if: '$BABEL_ENV == "istanbul"'
 
-.process-backend-coverage:
-  extends:
-    - .qa-install
-  stage: report
-  before_script:
-    - cd $CI_PROJECT_DIR
-  script:
-    - echo "Collecting E2E Coverband coverage files..."
-    - mkdir -p coverage-e2e-backend
-    - cp qa/tmp/coverband-coverage-*.json coverage-e2e-backend/ 2>/dev/null || echo "No Coverband files found"
-    - echo "Collecting E2E test mapping files..."
-    - mkdir -p e2e-test-mapping
-    - cp qa/tmp/test-code-paths-mapping-*.json e2e-test-mapping/ 2>/dev/null || echo "No test mapping files found"
-  artifacts:
-    paths:
-      - coverage-e2e-backend/
-      - e2e-test-mapping/
-    expire_in: 7d
-    when: always
-  rules:
-    - if: '$COVERBAND_ENABLED == "true" && $GLCI_EXPORT_COVERAGE == "true"'
-
-.process-frontend-coverage:
+.process-e2e-coverage:
   extends:
     - .with-ci-node-image
     - .yarn-cache
   stage: report
+  allow_failure: true
   variables:
     NODE_ENV: "development"  # Need devDependencies for istanbul packages
   before_script:
@@ -166,17 +147,29 @@ stages:
     - echo "Installing yarn packages with devDependencies..."
     - yarn install --frozen-lockfile --production=false
   script:
-    - echo "Processing E2E Istanbul coverage..."
-    - yarn node scripts/frontend/merge_e2e_coverage.js
+    - echo "Collecting E2E backend coverage files..."
+    - mkdir -p coverage-e2e-backend
+    - cp qa/tmp/coverband-coverage-*.json coverage-e2e-backend/ 2>/dev/null || echo "No Coverband files found"
+    - echo "Collecting E2E backend test mapping files..."
+    - mkdir -p e2e-test-mapping
+    - cp qa/tmp/test-code-paths-mapping-*.json e2e-test-mapping/ 2>/dev/null || echo "No backend test mapping files found"
+    - echo "Processing E2E frontend coverage..."
+    - NODE_OPTIONS="--max-old-space-size=4096" yarn node scripts/frontend/merge_e2e_coverage.js
     - echo "Collecting E2E frontend test mappings..."
-    - find qa/tmp -name 'js-coverage-by-example-*.json' -exec cp {} coverage-e2e-frontend/ \; 2>/dev/null || echo "No E2E test mapping files found"
+    - cp qa/tmp/js-coverage-by-example-*.json coverage-e2e-frontend/ 2>/dev/null || echo "No E2E frontend test mapping files found"
+    - echo "Collecting E2E test report files..."
+    - mkdir -p e2e-test-reports
+    - cp qa/tmp/rspec-*.json e2e-test-reports/ 2>/dev/null || echo "No E2E test report files found"
   artifacts:
     paths:
+      - coverage-e2e-backend/
       - coverage-e2e-frontend/
+      - e2e-test-mapping/
+      - e2e-test-reports/
     expire_in: 7d
     when: always
   rules:
-    - if: '$BABEL_ENV == "istanbul" && $GLCI_EXPORT_COVERAGE == "true"'
+    - if: '$COVERBAND_ENABLED == "true" && $BABEL_ENV == "istanbul" && $GLCI_EXPORT_COVERAGE == "true"'
 
 .notify-slack:
   extends:

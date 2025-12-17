@@ -817,6 +817,25 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION pool_repositories_sharding_key() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF NEW.organization_id IS NOT NULL THEN
+    RETURN NEW;
+  END IF;
+
+  IF NEW.source_project_id IS NOT NULL THEN
+    SELECT p.organization_id
+    INTO NEW.organization_id
+    FROM projects p
+    WHERE p.id = NEW.source_project_id;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION postgres_pg_stat_activity_autovacuum() RETURNS TABLE(query text, query_start timestamp with time zone)
     LANGUAGE sql SECURITY DEFINER
     SET search_path TO 'pg_catalog', 'pg_temp'
@@ -43387,6 +43406,8 @@ CREATE INDEX index_pm_package_version_licenses_on_pm_package_version_id ON pm_pa
 
 CREATE INDEX index_pm_package_versions_on_pm_package_id ON pm_package_versions USING btree (pm_package_id);
 
+CREATE INDEX index_pool_repositories_on_organization_id ON pool_repositories USING btree (organization_id);
+
 CREATE INDEX index_pool_repositories_on_shard_id ON pool_repositories USING btree (shard_id);
 
 CREATE UNIQUE INDEX index_pool_repositories_on_source_project_id_and_shard_id ON pool_repositories USING btree (source_project_id, shard_id);
@@ -49357,6 +49378,8 @@ CREATE TRIGGER trigger_jira_tracker_data_sharding_key_on_insert BEFORE INSERT ON
 
 CREATE TRIGGER trigger_namespaces_traversal_ids_on_update AFTER UPDATE ON namespaces FOR EACH ROW WHEN ((old.traversal_ids IS DISTINCT FROM new.traversal_ids)) EXECUTE FUNCTION insert_namespaces_sync_event();
 
+CREATE TRIGGER trigger_pool_repositories_sharding_key BEFORE INSERT OR UPDATE ON pool_repositories FOR EACH ROW EXECUTE FUNCTION pool_repositories_sharding_key();
+
 CREATE TRIGGER trigger_projects_parent_id_on_insert AFTER INSERT ON projects FOR EACH ROW EXECUTE FUNCTION insert_projects_sync_event();
 
 CREATE TRIGGER trigger_projects_parent_id_on_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((old.namespace_id IS DISTINCT FROM new.namespace_id)) EXECUTE FUNCTION insert_projects_sync_event();
@@ -50687,6 +50710,9 @@ ALTER TABLE ONLY scan_result_policy_violations
 
 ALTER TABLE ONLY approval_project_rules
     ADD CONSTRAINT fk_773289d10b FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY pool_repositories
+    ADD CONSTRAINT fk_775c554d89 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY agent_user_access_project_authorizations
     ADD CONSTRAINT fk_78034b05d8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

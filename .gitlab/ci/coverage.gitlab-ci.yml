@@ -23,14 +23,27 @@ test-coverage:export-rspec-and-e2e:
   stage: post-qa
   needs:
     - job: e2e:test-on-gdk
+      optional: true
     - job: rspec:coverage
+      optional: true
     - job: update-tests-metadata
+      optional: true
   script:
-    - ruby scripts/coverage/download_e2e_coverage_from_child_pipeline.rb
+    - ruby scripts/coverage/download_e2e_artifacts_from_child_pipeline.rb
     - ruby scripts/coverage/merge_backend_coverage.rb
     - echo "Merging E2E test mappings with Crystalball mappings..."
     - ruby scripts/coverage/merge_e2e_backend_test_mapping.rb
     - |
+      if [ ! -f "coverage-backend/coverage.lcov" ]; then
+        echo "Backend coverage report not found. Skipping export to ClickHouse..."
+        exit 0
+      fi
+
+      if ! ls rspec/rspec-*.json e2e-test-reports/rspec-*.json 2>/dev/null | head -1 | grep -q .; then
+        echo "No test reports found. Skipping export to ClickHouse..."
+        exit 0
+      fi
+
       if [ ! -f "crystalball/merged-mapping.json.gz" ]; then
         echo "Merged test mapping not found. Skipping export to ClickHouse..."
         exit 0
@@ -54,10 +67,7 @@ test-coverage:export-rspec-and-e2e:
       - e2e-test-reports/
     expire_in: 7d
 
-# Job is temporary disabled as it relies on `process-frontend-coverage` job that
-# was causing master pipeline failures.
-# Example https://gitlab.com/gitlab-org/gitlab/-/jobs/12319670339
-.test-coverage:export-jest-and-e2e:
+test-coverage:export-jest-and-e2e:
   extends:
     - .coverage-export-base
     - .with-ci-node-image
@@ -66,15 +76,27 @@ test-coverage:export-rspec-and-e2e:
   stage: post-qa
   needs:
     - job: e2e:test-on-gdk
+      optional: true
     - job: coverage-frontend
+      optional: true
   before_script:
     - !reference [.default-utils-before_script, before_script]
     - eval "bundle install ${BUNDLE_INSTALL_FLAGS}"
     - source scripts/utils.sh
     - yarn_install_script
   script:
-    - ruby scripts/coverage/download_e2e_frontend_coverage_from_child_pipeline.rb
+    - ruby scripts/coverage/download_e2e_artifacts_from_child_pipeline.rb
     - |
+      if [ ! -f "coverage-frontend/lcov.info" ]; then
+        echo "Frontend coverage report not found. Skipping export to ClickHouse..."
+        exit 0
+      fi
+
+      if ! ls jest-reports/**/*.json e2e-test-reports/rspec-*.json 2>/dev/null | head -1 | grep -q .; then
+        echo "No test reports found. Skipping export to ClickHouse..."
+        exit 0
+      fi
+
       echo "Merging Jest + E2E coverage..."
       node scripts/frontend/merge_coverage_frontend.js
     - |
@@ -109,7 +131,23 @@ test-coverage:export-workhorse:
     - .workhorse:rules:workhorse-coverage
   needs:
     - job: workhorse-coverage
+      optional: true
   script:
+    - |
+      if [ ! -f "workhorse/coverage.lcov" ]; then
+        echo "Workhorse coverage report not found. Skipping export to ClickHouse..."
+        exit 0
+      fi
+
+      if [ ! -f "workhorse-test-reports/workhorse-tests.json" ]; then
+        echo "Workhorse test report not found. Skipping export to ClickHouse..."
+        exit 0
+      fi
+
+      if [ ! -f "workhorse-test-mapping/workhorse-source-to-test.json" ]; then
+        echo "Workhorse test mapping not found. Skipping export to ClickHouse..."
+        exit 0
+      fi
     - echo "Exporting Workhorse Go coverage to ClickHouse..."
     - bundle exec test-coverage
         --test-reports 'workhorse-test-reports/workhorse-tests.json'

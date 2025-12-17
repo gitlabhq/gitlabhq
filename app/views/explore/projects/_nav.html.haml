@@ -1,7 +1,8 @@
 .gl-flex
   = gl_tabs_nav({ class: 'gl-flex gl-grow gl-border-none'}) do
     = gl_tab_link_to _('Most starred'), starred_explore_projects_path, { item_active: current_page?(starred_explore_projects_path) || current_page?(explore_root_path), data: { event_tracking: 'click_tab_projects_explore', event_label: 'Most starred' } }
-    = gl_tab_link_to _('Trending'), trending_explore_projects_path, { data: { event_tracking: 'click_tab_projects_explore', event_label: 'Trending' } }
+    - unless Feature.enabled?(:retire_trending_projects, current_user)
+      = gl_tab_link_to _('Trending'), trending_explore_projects_path, { data: { event_tracking: 'click_tab_projects_explore', event_label: 'Trending' } }
     = gl_tab_link_to _('Active'), explore_projects_path, { item_active: current_page?(explore_projects_path) && !params['archived'], data: { event_tracking: 'click_tab_projects_explore', event_label: 'Active' } }
     = gl_tab_link_to _('Inactive'), explore_projects_path({ archived: 'only' }), { item_active: current_page?(explore_projects_path) && params['archived'] == 'only', data: { event_tracking: 'click_tab_projects_explore', event_label: 'Inactive' } }
     = gl_tab_link_to _('All'), explore_projects_path({ archived: true }), { item_active: current_page?(explore_projects_path) && params['archived'] == 'true', data: { event_tracking: 'click_tab_projects_explore', event_label: 'All' } }

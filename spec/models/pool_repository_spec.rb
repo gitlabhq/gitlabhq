@@ -10,9 +10,11 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
     it { is_expected.to have_many(:member_projects) }
   end
 
-  describe 'before_validation callbacks' do
+  describe 'setting organization id' do
     let_it_be(:project) { create(:project) }
     let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:default_organization) { create(:organization, id: 1) }
+    let_it_be(:shard) { create(:shard) }
 
     context 'when organization is not set' do
       it 'assigns organization from the source project' do
@@ -43,6 +45,68 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
         pool_repo.valid?
         expect(pool_repo.organization).not_to eq(project.organization)
         expect(pool_repo.organization).to eq(other_organization)
+      end
+    end
+
+    context 'when model hooks are bypassed' do
+      context 'when source project is available' do
+        it 'sets organization_id from the source project via database trigger' do
+          # Use insert_all to bypass ActiveRecord callbacks and model hooks
+          result = described_class.insert_all([{
+            source_project_id: project.id,
+            organization_id: nil,
+            disk_path: 'pool/trigger_test',
+            state: 'ready',
+            shard_id: shard.id
+          }], returning: [:id, :organization_id])
+
+          pool_repo = described_class.find(result.rows.first[0])
+          expect(pool_repo.organization_id).to eq(project.organization_id)
+        end
+      end
+
+      context 'when source project is not available' do
+        it 'does not set the default organization_id' do
+          # Use insert_all to bypass ActiveRecord callbacks and model hooks
+          #
+          result = described_class.insert_all([{
+            source_project_id: nil,
+            organization_id: nil,
+            disk_path: 'pool/trigger_default_test',
+            state: 'ready',
+            shard_id: shard.id
+          }], returning: [:id, :organization_id])
+
+          pool_repo = described_class.find(result.rows.first[0])
+          expect(pool_repo.organization_id).to be_nil
+        end
+      end
+
+      context 'when organization_id is already set' do
+        it 'preserves existing organization_id' do
+          # Use insert_all to bypass ActiveRecord callbacks and model hooks
+          result = described_class.insert_all([{
+            source_project_id: project.id,
+            organization_id: other_organization.id,
+            disk_path: 'pool/trigger_preserve_test',
+            state: 'ready',
+            shard_id: shard.id
+          }], returning: [:id, :organization_id])
+
+          pool_repo = described_class.find(result.rows.first[0])
+          expect(pool_repo.organization_id).to eq(other_organization.id)
+        end
+      end
+
+      it 'works during updates when organization_id is cleared' do
+        pool_repo = create(:pool_repository, source_project: project)
+        original_org_id = pool_repo.organization_id
+
+        # Use update_all to bypass ActiveRecord callbacks
+        described_class.where(id: pool_repo.id).update_all(organization_id: nil)
+
+        pool_repo.reload
+        expect(pool_repo.organization_id).to eq(original_org_id)
       end
     end
   end

@@ -46,10 +46,8 @@ These variables tell the scanner where to look for certain elements, which actio
 | :------------- | :--- | ------- | :---------- |
 | `DAST_ACTIVE_SCAN_TIMEOUT` | [Duration string](https://pkg.go.dev/time#ParseDuration) | `3h` | The maximum amount of time to wait for the active scan phase of the scan to complete. Defaults to 3h. |
 | `DAST_ACTIVE_SCAN_WORKER_COUNT` | number | `3` | The number of active checks to run in parallel. Defaults to 3. |
-| `DAST_CRAWL_EXTRACT_ELEMENT_TIMEOUT` | [Duration string](https://pkg.go.dev/time#ParseDuration) | `5s` | The maximum amount of time to allow the browser to extract newly found elements or navigations. Defaults to `5s`. |
 | `DAST_CRAWL_MAX_ACTIONS` | number | `10000` | The maximum number of actions that the crawler performs. Example actions include selecting a link, or filling out a form. Defaults to `10000`. |
 | `DAST_CRAWL_MAX_DEPTH` | number | `10` | The maximum number of chained actions that the crawler takes. For example, `Click, Form Fill, Click` is a depth of three. Defaults to `10`. |
-| `DAST_CRAWL_SEARCH_ELEMENT_TIMEOUT` | [Duration string](https://pkg.go.dev/time#ParseDuration) | `3s` | The maximum amount of time to allow the browser to search for new elements or user actions. Defaults to `3s`. |
 | `DAST_CRAWL_TIMEOUT` | [Duration string](https://pkg.go.dev/time#ParseDuration) | `5m` | The maximum amount of time to wait for the crawl phase of the scan to complete. Defaults to `24h`. |
 | `DAST_CRAWL_WORKER_COUNT` | number | `3` | The maximum number of concurrent browser instances to use. For instance runners on GitLab.com, we recommended a maximum of three. Private runners with more resources may benefit from a higher number, but are likely to produce little benefit after five to seven instances. The default value is dynamic, equal to the number of usable logical CPUs. |
 | `DAST_PAGE_DOM_READY_TIMEOUT` | [Duration string](https://pkg.go.dev/time#ParseDuration) | `7s` | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after a navigation completes. Defaults to `6s`. |

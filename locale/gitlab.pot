@@ -2502,6 +2502,12 @@ msgstr ""
 msgid "AICatalog|A public %{itemType}:"
 msgstr ""
 
+msgid "AICatalog|A service account is automatically created. This account is used in combination with the user to run the agent."
+msgstr ""
+
+msgid "AICatalog|A service account is automatically created. This account is used in combination with the user to run the flow."
+msgstr ""
+
 msgid "AICatalog|A service account will be added to the project and assigned the Developer role."
 msgstr ""
 
@@ -2566,6 +2572,9 @@ msgid "AICatalog|Agent updated."
 msgstr ""
 
 msgid "AICatalog|Agents"
+msgstr ""
+
+msgid "AICatalog|All project members will be able to use it, after a Maintainer enables it in a project."
 msgstr ""
 
 msgid "AICatalog|All project members will be able to use it."
@@ -2910,16 +2919,10 @@ msgstr ""
 msgid "AICatalog|Is visible to all users."
 msgstr ""
 
-msgid "AICatalog|Learn more"
-msgstr ""
-
 msgid "AICatalog|Learn more about foundational agents"
 msgstr ""
 
 msgid "AICatalog|Learn more about foundational flows"
-msgstr ""
-
-msgid "AICatalog|Learn more about permissions"
 msgstr ""
 
 msgid "AICatalog|Manage agent settings."
@@ -3195,10 +3198,16 @@ msgstr ""
 msgid "AICatalog|Wasting compute or causing performance issues."
 msgstr ""
 
+msgid "AICatalog|When this agent runs, it will have access to the projects the user who runs it has access to."
+msgstr ""
+
 msgid "AICatalog|When this agent runs, it will have access to the projects:"
 msgstr ""
 
 msgid "AICatalog|When this flow runs, it will have access to the projects:"
+msgstr ""
+
+msgid "AICatalog|When you enable this agent, all project members will be able to use it."
 msgstr ""
 
 msgid "AICatalog|When you enable this agent:"
@@ -6765,7 +6774,7 @@ msgstr ""
 msgid "Admin|Subscription"
 msgstr ""
 
-msgid "Admin|Targeted messages"
+msgid "Admin|Targeted Messages"
 msgstr ""
 
 msgid "Admin|The number of max seats in your namespace exceeds the number of seats in your subscription. On %{qrtlyDate}, quarterly reconciliation occurs and you are automatically billed a prorated amount for the overage. No action is needed from you. If you have a credit card on file, it will be charged. Otherwise, you will receive an invoice. For more information about the timing of the invoicing process, view the documentation."
@@ -20608,9 +20617,6 @@ msgstr ""
 msgid "Create custom type"
 msgstr ""
 
-msgid "Create dynamic tables and lists powered by GitLab Query Language (GLQL) to track issues, epics, and merge requests in real time."
-msgstr ""
-
 msgid "Create empty repository"
 msgstr ""
 
@@ -22071,9 +22077,6 @@ msgstr ""
 msgid "DastProfiles|Edit site profile"
 msgstr ""
 
-msgid "DastProfiles|Element search timeout"
-msgstr ""
-
 msgid "DastProfiles|Enable Authentication"
 msgstr ""
 
@@ -22108,9 +22111,6 @@ msgid "DastProfiles|Excluded paths"
 msgstr ""
 
 msgid "DastProfiles|Excluded paths (optional)"
-msgstr ""
-
-msgid "DastProfiles|Extract element timeout"
 msgstr ""
 
 msgid "DastProfiles|Field must not be blank"
@@ -22450,12 +22450,6 @@ msgid "DastProfiles|The URLs to skip during the authenticated scan; comma-separa
 msgstr ""
 
 msgid "DastProfiles|The authentication type to use."
-msgstr ""
-
-msgid "DastProfiles|The maximum amount of time to allow the browser to extract newly found elements or navigations. Defaults to `5s`."
-msgstr ""
-
-msgid "DastProfiles|The maximum amount of time to allow the browser to search for new elements or user actions. Defaults to `3s`."
 msgstr ""
 
 msgid "DastProfiles|The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after a navigation completes. Defaults to `6s`."
@@ -31035,9 +31029,6 @@ msgstr ""
 msgid "Get started with GitLab"
 msgstr ""
 
-msgid "Get started with embedded views"
-msgstr ""
-
 msgid "Get started with error tracking"
 msgstr ""
 
@@ -36589,9 +36580,6 @@ msgid "Internal users cannot be deactivated"
 msgstr ""
 
 msgid "Interval"
-msgstr ""
-
-msgid "Introducing embedded views"
 msgstr ""
 
 msgid "Introducing your DevOps adoption analytics"

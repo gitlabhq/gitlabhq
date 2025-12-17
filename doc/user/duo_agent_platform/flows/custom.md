@@ -10,7 +10,7 @@ title: Custom flows
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
@@ -22,7 +22,7 @@ title: Custom flows
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578228) in GitLab 18.7 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_flows`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578228) in GitLab 18.7 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_flows`. Enabled on GitLab.com.
 
 {{< /history >}}
 

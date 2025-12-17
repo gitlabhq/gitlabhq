@@ -118,7 +118,6 @@ export default {
     'app/assets/javascripts/ci/runner/components/runner_create_wizard_required_fields.vue',
     'app/assets/javascripts/ci/runner/components/runner_filtered_search_bar.vue',
     'app/assets/javascripts/ci/runner/components/runner_form_fields.vue',
-    'app/assets/javascripts/ci/runner/components/runner_google_cloud_option.vue',
     'app/assets/javascripts/ci/runner/components/runner_header_actions.vue',
     'app/assets/javascripts/ci/runner/components/runner_membership_toggle.vue',
     'app/assets/javascripts/ci/runner/components/runner_pagination.vue',

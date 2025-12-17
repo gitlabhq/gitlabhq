@@ -42,13 +42,86 @@ The top section shows important information about your tenant, including:
 - Backup AWS region
 - AWS account IDs for the tenant and hosted runners
 
-### Instance status indicators
+## Tenant status indicators
 
-The status indicates whether any incidents are currently impacting your GitLab Dedicated instance:
+The **Overview** page displays real-time status information about your GitLab Dedicated instance. This way, you can quickly understand whether your instance is operating normally or experiencing issues.
 
-- `Normal`: There are no active incidents. Your instance is working as expected.
-- `Service disruption. GitLab services may be unavailable for users.`: A critical (S1) incident is affecting your instance.
-- `Degraded performance. GitLab services may be slow or unresponsive for users.`: A high-severity (S2) incident is affecting your instance.
+Status indicators communicate incidents affecting your instance. Switchboard displays one of three status states:
+
+- Normal
+- Service disruption
+- Degraded performance
+
+Switchboard does not display:
+
+- Severity 3 or Severity 4 incidents: These incidents have minimal impact on your instance.
+- Severity 1 or Severity 2 incidents in non-impacting lifecycle stages: Incidents being monitored, reviewed, documented, or canceled do not display.
+- Merged incidents: If multiple alerts are consolidated into a single incident, only the primary incident displays.
+
+> [!note]
+>
+> - Status indicators are informational only and are not factored into SLA calculations. Following an S1 or S2 incident, SLA evaluation follows the standard process.
+> - Status updates might take a few moments to appear after an incident state changes while Switchboard syncs with the incident management platform. Updates typically appear within one to two minutes.
+>
+
+### Normal
+
+The following status indicator appears: `Normal`
+
+- What this status means: Your GitLab instance is operating as expected with no known issues.
+- When this status appears: No active critical (S1) or high-severity (S2) incidents are affecting your instance.
+
+### Degraded performance
+
+The following status indicator appears: `Degraded performance. GitLab services may be slow or unresponsive for users.`
+
+- What this status means: GitLab services might be slow or unresponsive for some or all users.
+- When causes this status to appear: One or more active high-severity (S2) incidents are affecting your instance. Core GitLab functionality is significantly impacted.
+- What GitLab is doing: GitLab Dedicated SREs are actively tracking, investigating, and working to resolve the issue.
+
+### Service disruption
+
+The following status indicator appears: `Service disruption. GitLab services may be unavailable for users.`
+
+- What this status means: GitLab services might be unavailable for users.
+- What causes this status to appear: One or more active critical (S1) incidents are affecting your instance. One or more services required to run GitLab are fully down.
+- What GitLab is doing: GitLab Dedicated SREs are tracking, investigating, and working to restore full performance.
+
+## Maintenance indicators
+
+Maintenance indicators communicate details related to your scheduled maintenance window. Switchboard displays one of two maintenance states:
+
+- Scheduled maintenance
+- Emergency maintenance
+
+The following status indicator appears: `Under maintenance. Users may experience disruptions with GitLab services.`
+
+### Scheduled maintenance
+
+- What this maintenance indicator means: Your instance is currently in a scheduled maintenance window.
+  Brief disruptions might occur during maintenance. For more information, see [GitLab Dedicated maintenance operations](maintenance.md#access-during-maintenance).
+- When this maintenance indicator appears: The scheduled maintenance indicator appears during your scheduled maintenance window.
+- What GitLab is doing: Planned updates, patches, or infrastructure improvements are being conducted to keep your instance secure and up-to-date.
+
+### Emergency maintenance
+
+- What this maintenance indicator means: Your instance is undergoing emergency maintenance. Disruptions might occur during maintenance.
+- When this maintenance indicator appears: The emergency maintenance indicator appears during [emergency maintenance procedures](maintenance.md#emergency-maintenance).
+- What GitLab is doing: Critical, time-sensitive updates to keep your instance secure and available are being performed.
+
+> [!note]
+> If an incident occurs during maintenance, both the maintenance indicator and the instance status indicator appear.
+
+### What to do if you have questions
+
+If you see a degraded or disruption status, the GitLab team is already aware and working on the issue. You do not need to open a support ticket unless your workflows require specific assistance. Statuses automatically update as the incident progresses.
+
+If you're experiencing issues but the status displays `Normal`, the issue might be specific to your configuration or usage patterns. In this case, open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) and include details about what you're experiencing and when the behavior started.
+
+### Related resources
+
+- [GitLab incident severity definitions](https://handbook.gitlab.com/handbook/engineering/infrastructure/incident-management/#incident-severity)
+- [GitLab Dedicated maintenance operations](maintenance.md)
 
 ## Maintenance windows
 

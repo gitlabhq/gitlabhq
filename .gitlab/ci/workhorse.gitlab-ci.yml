@@ -55,6 +55,7 @@ workhorse:test go:
   coverage: '/\d+.\d+%/'
   artifacts:
     expire_in: 30 days
+    when: always
     paths:
       - workhorse/coverage.html
       - workhorse/cover.out

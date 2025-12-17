@@ -9,7 +9,9 @@ RSpec.describe Backup::Restore::PoolRepositories, feature_category: :backup_rest
 
   describe '.reinitialize_pools!' do
     context 'with a pool without a source project' do
-      let(:pool_repository) { create(:pool_repository, :without_project) }
+      let_it_be(:default_organization) { create(:organization, id: 1) }
+
+      let(:pool_repository) { create(:pool_repository, :without_project, organization: default_organization) }
 
       it 'yields a skipped result' do
         results = []

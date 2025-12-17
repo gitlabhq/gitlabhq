@@ -87,6 +87,7 @@ describe('RegistrationInstructions', () => {
       },
       stubs: {
         GlSprintf,
+        RunnerGoogleCloudOptions: true,
       },
       ...options,
     });

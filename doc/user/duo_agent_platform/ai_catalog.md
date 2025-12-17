@@ -60,6 +60,83 @@ To view the AI Catalog:
 
 A list of agents is displayed. To view available flows, select the **Flows** tab.
 
+## Agent and flow versions
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/20022) in GitLab 18.7.
+
+{{< /history >}}
+
+Each custom agent and flow in the AI Catalog maintains a version history.
+When you make changes to an item's configuration, GitLab automatically creates a new version.
+Foundational agents and flows do not use versioning.
+
+GitLab uses semantic versioning to indicate the scope of changes.
+For example, an agent can have a version number like `1.0.0` or `1.1.0`.
+GitLab manages semantic versioning automatically. Updates to agents or flows always increment the minor version.
+
+Versioning ensures that your projects and groups continue to use a stable, tested configuration of an agent or flow, even as the catalog item evolves. This prevents unexpected changes from affecting your workflows.
+
+### Creating versions
+
+GitLab creates a version when you:
+
+- Update a custom agent's system prompt.
+- Modify an external agent or flow's configuration.
+
+To ensure consistent behavior, versions are immutable.
+
+### Version pinning
+
+When you enable an AI Catalog item in a group or project, GitLab pins it to a specific version:
+
+- In a group, GitLab pins the latest version.
+- In a project, GitLab pins the same version as the project's top-level group.
+
+Version pinning means:
+
+- Your project or group uses a fixed version of the item.
+- Updates to the agent or flow in the AI Catalog do not affect your configuration.
+- You maintain control over when to adopt new versions.
+
+This approach provides stability and predictability for your AI-powered workflows.
+
+### View the current version
+
+Prerequisites:
+
+- You must have at least the Developer role.
+
+To view the current version of an agent or flow:
+
+1. On the top bar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select either:
+   - **Automate** > **Agents**
+   - **Automate** > **Flows**
+1. Select the agent or flow to view its details.
+
+The details page displays:
+
+- The pinned version your project or group is using.
+- The version identifier. For example, `1.2.0`.
+- Details about that specific version's configuration.
+
+### Update to the latest version
+
+Prerequisites:
+
+- You must have at least the Maintainer role.
+
+To make your group or project use the latest version of an agent or flow:
+
+1. On the top bar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select either:
+   - **Automate** > **Agents**
+   - **Automate** > **Flows**
+1. Select the agent or flow you want to update.
+1. Review the latest version carefully. To update, select **View latest version** > **Update to `<x.y.z>`**
+
 ## Related topics
 
 - [Agents](agents/_index.md)

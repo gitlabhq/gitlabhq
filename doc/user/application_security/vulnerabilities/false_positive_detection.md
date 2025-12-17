@@ -62,15 +62,45 @@ To use false positive detection, you must have:
 - [GitLab Duo enabled](../../gitlab_duo/turn_on_off.md) in your project or group.
 - GitLab 18.7 or later.
 
-To use false positive detection, you must turn it on in GitLab Duo settings:
+### Enable false positive detection
 
-1. On the top bar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **General**.
-1. Expand **GitLab Duo**.
-1. Enable **Use Duo SAST False Positive Detection**.
+False positive detection is turned off by default. You can enable it for an instance, group, or project. When you enable the setting for an instance or group, the setting applies to all of its descendant groups and projects.
+
+Recommended: You should enable the settings for the group to apply the setting to all projects in that group.
+
+#### Enable for a group (recommended)
+
+To enable false positive detection for all projects in a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings** > **GitLab Duo**.
+1. Select **Change configuration** 
+1. Select the **SAST False Positive Detection** checkbox.
 1. Select **Save changes**.
 
-Once enabled, false positive detection works automatically with your existing SAST scanners.
+This setting applies to all descendant projects in the group. Individual projects can override this setting if they need to disable it.
+
+#### Enable for a project
+
+To enable false positive detection for a specific project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings** > **General**.
+1. Expand **GitLab Duo**.
+1. Turn on the **Turn on GitLab Duo SAST False Positive Detection** toggle.
+1. Select **Save changes**.
+
+#### Enable for an instance
+
+GitLab administrators can enable false positive detection for the entire instance:
+
+1. On the left sidebar, select **Admin Area**.
+1. Select **Settings** > **General**.
+1. Expand **GitLab Duo**.
+1. Select the **Use Duo SAST False Positive Detection** checkbox.
+1. Select **Save changes**.
+
+False positive detection works automatically with your existing SAST scanners when enabled for an instance, group, or project.
 
 ## Confidence scores
 

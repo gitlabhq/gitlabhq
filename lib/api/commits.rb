@@ -23,7 +23,7 @@ module API
     end
 
     rescue_from Oj::ParseError do |e|
-      Gitlab::ErrorTracking.track_exception(e)
+      Gitlab::ErrorTracking.log_exception(e)
 
       message = 'Invalid json'
       render_structured_api_error!({ message: message, error: message }, 400)

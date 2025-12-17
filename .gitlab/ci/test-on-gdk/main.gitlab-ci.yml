@@ -151,18 +151,11 @@ export-frontend-code-paths-mapping:
   extends:
     - .export-frontend-code-paths-mapping
 
-process-backend-coverage:
+process-e2e-coverage:
   extends:
-    - .process-backend-coverage
-
-# Job is temporary disabled as it was causing master pipeline failures.
-# Example https://gitlab.com/gitlab-org/gitlab/-/jobs/12319670339
-#
-# process-frontend-coverage:
-#   extends:
-#     - .process-frontend-coverage
-#   needs:
-#     - job: gdk-instance
+    - .process-e2e-coverage
+  needs:
+    - job: gdk-instance
 
 notify-slack:
   extends:

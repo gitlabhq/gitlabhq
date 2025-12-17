@@ -25,6 +25,11 @@ module Ci
     CONFIG_ATTRIBUTES = (CONFIG_ATTRIBUTES_FROM_METADATA + [:tag_list, :run_steps]).freeze
     NORMALIZED_DATA_COLUMNS = %i[interruptible].freeze
 
+    # Partition ID from which we start using the new checksum approach on GitLab.com.
+    # This is set to align with new partition creation to minimize redundant job definitions.
+    # For context, see: https://gitlab.com/gitlab-org/gitlab/-/issues/577902
+    NEW_CHECKSUM_PARTITION_THRESHOLD = 109
+
     query_constraints :id, :partition_id
     partitionable scope: ->(_) { Ci::Pipeline.current_partition_value }, partitioned: true
 
@@ -42,35 +47,58 @@ module Ci
     ignore_column :updated_at, remove_after: '2025-12-22', remove_with: '18.8'
 
     def self.fabricate(config:, project_id:, partition_id:)
-      sanitized_config, checksum = sanitize_and_checksum(config)
+      sanitized_config = sanitize_config(config)
+      config_with_defaults = apply_normalized_defaults!(sanitized_config.deep_dup)
 
-      attrs = {
-        project_id: project_id,
-        partition_id: partition_id,
-        config: sanitized_config,
-        checksum: checksum,
-        created_at: Time.current
-      }
-
-      NORMALIZED_DATA_COLUMNS.each do |col|
-        attrs[col] = sanitized_config.fetch(col) { column_defaults[col.to_s] }
+      if use_new_checksum_approach?(partition_id)
+        # New approach: set defaults before checksum generation
+        checksum = generate_checksum(config_with_defaults)
+        persisted_config = sanitized_config.except(*NORMALIZED_DATA_COLUMNS)
+      else
+        # Old approach: generate checksum before setting defaults, persist original sanitized_config
+        checksum = generate_checksum(sanitized_config)
+        persisted_config = sanitized_config
       end
 
-      new(attrs)
+      new(
+        project_id: project_id,
+        partition_id: partition_id,
+        config: persisted_config,
+        checksum: checksum,
+        created_at: Time.current,
+        **config_with_defaults.slice(*NORMALIZED_DATA_COLUMNS)
+      )
     end
 
-    def self.sanitize_and_checksum(config)
-      sanitized_config = config
+    def self.sanitize_config(config)
+      config
         .symbolize_keys
         .slice(*CONFIG_ATTRIBUTES)
         .then { |data| data.merge!(extract_and_parse_tags(data)) }
+    end
 
-      checksum = sanitized_config
+    def self.generate_checksum(config)
+      config
         .then { |data| Gitlab::Json.dump(data) }
         .then { |data| Digest::SHA256.hexdigest(data) }
-
-      [sanitized_config, checksum]
     end
+
+    def self.apply_normalized_defaults!(config)
+      NORMALIZED_DATA_COLUMNS.each do |col|
+        config[col] = config.fetch(col) { column_defaults[col.to_s] }
+      end
+      config
+    end
+
+    # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- partition gating is only needed on GitLab.com
+    def self.use_new_checksum_approach?(partition_id)
+      return false unless Feature.enabled?(:ci_job_definitions_new_checksum, :instance)
+      # For self-managed instances, use the new approach immediately
+      return true unless Gitlab.com?
+
+      partition_id >= NEW_CHECKSUM_PARTITION_THRESHOLD
+    end
+    # rubocop:enable Gitlab/AvoidGitlabInstanceChecks
 
     def self.extract_and_parse_tags(config)
       tag_list = config[:tag_list]
@@ -86,6 +114,12 @@ module Ci
       tags = config.fetch(:tag_list) { [] }
 
       Gitlab::Ci::Tags::Parser.new(tags).parse
+    end
+
+    # Hash containing all job attributes: config + normalized_data.
+    # Used in spec helpers, to merge with `job_attributes` instead of `config`.
+    def job_attributes
+      attributes.deep_symbolize_keys.slice(*NORMALIZED_DATA_COLUMNS).merge(config)
     end
 
     def readonly?

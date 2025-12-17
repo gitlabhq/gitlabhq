@@ -264,6 +264,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="queryaicatalogconfigureditemsfoundationalflowreference"></a>`foundationalFlowReference` | [`String`](#string) | Filter by foundational flow reference. |
 | <a id="queryaicatalogconfigureditemsgroupid"></a>`groupId` | [`GroupID`](#groupid) | Group ID to retrieve configured AI Catalog items for. |
 | <a id="queryaicatalogconfigureditemsincludeinherited"></a>`includeInherited` | [`Boolean`](#boolean) | Include configured AI Catalog items inherited from parent groups. |
 | <a id="queryaicatalogconfigureditemsitemid"></a>`itemId` | [`AiCatalogItemID`](#aicatalogitemid) | Item ID to retrieve configured AI Catalog items for. |
@@ -25448,6 +25449,7 @@ An AI catalog agent.
 | <a id="aicatalogagentcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item was created. |
 | <a id="aicatalogagentdescription"></a>`description` | [`String!`](#string) | Description of the item. |
 | <a id="aicatalogagentfoundational"></a>`foundational` | [`Boolean!`](#boolean) | Whether the item is a foundational agent (only on GitLab SaaS). |
+| <a id="aicatalogagentfoundationalflowreference"></a>`foundationalFlowReference` | [`String`](#string) | Foundational flow reference. |
 | <a id="aicatalogagentid"></a>`id` | [`ID!`](#id) | ID of the item. |
 | <a id="aicatalogagentitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
 | <a id="aicatalogagentname"></a>`name` | [`String!`](#string) | Name of the item. |
@@ -25550,6 +25552,7 @@ An AI catalog flow.
 | <a id="aicatalogflowcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item was created. |
 | <a id="aicatalogflowdescription"></a>`description` | [`String!`](#string) | Description of the item. |
 | <a id="aicatalogflowfoundational"></a>`foundational` | [`Boolean!`](#boolean) | Whether the item is a foundational flow (only on GitLab SaaS). |
+| <a id="aicatalogflowfoundationalflowreference"></a>`foundationalFlowReference` | [`String`](#string) | Foundational flow reference. |
 | <a id="aicatalogflowid"></a>`id` | [`ID!`](#id) | ID of the item. |
 | <a id="aicatalogflowitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
 | <a id="aicatalogflowname"></a>`name` | [`String!`](#string) | Name of the item. |
@@ -25691,6 +25694,7 @@ An AI catalog third party flow.
 | ---- | ---- | ----------- |
 | <a id="aicatalogthirdpartyflowcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item was created. |
 | <a id="aicatalogthirdpartyflowdescription"></a>`description` | [`String!`](#string) | Description of the item. |
+| <a id="aicatalogthirdpartyflowfoundationalflowreference"></a>`foundationalFlowReference` | [`String`](#string) | Foundational flow reference. |
 | <a id="aicatalogthirdpartyflowid"></a>`id` | [`ID!`](#id) | ID of the item. |
 | <a id="aicatalogthirdpartyflowitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
 | <a id="aicatalogthirdpartyflowname"></a>`name` | [`String!`](#string) | Name of the item. |
@@ -25991,6 +25995,14 @@ Model offered for Model Selection.
 | <a id="aimodelselectionofferedmodelmodelprovider"></a>`modelProvider` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.6. **Status**: Experiment. Provider for the model, e.g "OpenAI". |
 | <a id="aimodelselectionofferedmodelname"></a>`name` | [`String!`](#string) | Humanized name for the offered model, e.g "Chat GPT 4o". |
 | <a id="aimodelselectionofferedmodelref"></a>`ref` | [`String!`](#string) | Identifier for the offered model. |
+
+### `AiNamespaceSettings`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ainamespacesettingsduoworkflowmcpenabled"></a>`duoWorkflowMcpEnabled` | [`Boolean!`](#boolean) | Indicates whether the namespace has MCP enabled. |
 
 ### `AiSelfHostedModel`
 
@@ -33395,6 +33407,7 @@ GPG signature for a signed commit.
 | <a id="groupadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="groupadmineditpath"></a>`adminEditPath` | [`String`](#string) | Admin path for editing group. Only available to admins. |
 | <a id="groupadminshowpath"></a>`adminShowPath` | [`String`](#string) | Admin path of the group. Only available to admins. |
+| <a id="groupaisettings"></a>`aiSettings` {{< icon name="warning-solid" >}} | [`AiNamespaceSettings`](#ainamespacesettings) | **Introduced** in GitLab 18.8. **Status**: Experiment. AI settings for the namespace. |
 | <a id="groupaiusagedata"></a>`aiUsageData` {{< icon name="warning-solid" >}} | [`AiUsageData`](#aiusagedata) | **Introduced** in GitLab 17.5. **Status**: Experiment. AI-related data. |
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
 | <a id="groupamazons3configurations"></a>`amazonS3Configurations` | [`AmazonS3ConfigurationTypeConnection`](#amazons3configurationtypeconnection) | Amazon S3 configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
@@ -39693,6 +39706,7 @@ Version of a machine learning model.
 | <a id="namespaceactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. This limit only applies to namespaces under Project limit enforcement. |
 | <a id="namespaceactualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | The actual storage size limit (in bytes) based on the enforcement type of either repository or namespace. This limit is agnostic of enforcement type. |
 | <a id="namespaceadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
+| <a id="namespaceaisettings"></a>`aiSettings` {{< icon name="warning-solid" >}} | [`AiNamespaceSettings`](#ainamespacesettings) | **Introduced** in GitLab 18.8. **Status**: Experiment. AI settings for the namespace. |
 | <a id="namespaceavailablefeatures"></a>`availableFeatures` {{< icon name="warning-solid" >}} | [`NamespaceAvailableFeatures!`](#namespaceavailablefeatures) | **Introduced** in GitLab 18.3. **Status**: Experiment. Features available on the namespace. |
 | <a id="namespaceavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the namespace. |
 | <a id="namespacecicdsettings"></a>`ciCdSettings` {{< icon name="warning-solid" >}} | [`CiCdSettings`](#cicdsettings) | **Introduced** in GitLab 17.9. **Status**: Experiment. Namespace CI/CD settings for the namespace. |
@@ -56938,6 +56952,7 @@ Implementations:
 | ---- | ---- | ----------- |
 | <a id="aicatalogitemcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item was created. |
 | <a id="aicatalogitemdescription"></a>`description` | [`String!`](#string) | Description of the item. |
+| <a id="aicatalogitemfoundationalflowreference"></a>`foundationalFlowReference` | [`String`](#string) | Foundational flow reference. |
 | <a id="aicatalogitemid"></a>`id` | [`ID!`](#id) | ID of the item. |
 | <a id="aicatalogitemitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
 | <a id="aicatalogitemname"></a>`name` | [`String!`](#string) | Name of the item. |

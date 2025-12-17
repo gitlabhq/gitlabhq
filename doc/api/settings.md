@@ -190,6 +190,7 @@ these parameters:
 - `dependency_scanning_sbom_scan_api_upload_limit`
 - `disable_personal_access_tokens`
 - `duo_features_enabled`
+- `elasticsearch_index_settings`
 - `file_template_project_id`
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
@@ -211,6 +212,13 @@ these parameters:
   "default_project_deletion_protection": false,
   "disable_personal_access_tokens": false,
   "duo_features_enabled": true,
+  "elasticsearch_index_settings": [
+    {
+      "alias_name": "gitlab-production",
+      "number_of_shards": 5,
+      "number_of_replicas": 1
+    }
+  ],
   "file_template_project_id": 1,
   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
   "group_owners_can_manage_default_branch_protection": true,

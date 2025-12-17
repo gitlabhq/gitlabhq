@@ -453,6 +453,76 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
     end
   end
 
+  describe '.use_new_checksum_approach?' do
+    subject { described_class.use_new_checksum_approach?(partition_id) }
+
+    context 'when not on GitLab.com' do
+      before do
+        allow(Gitlab).to receive(:com?).and_return(false)
+      end
+
+      context 'with partition_id below threshold' do
+        let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD - 1 }
+
+        it { is_expected.to be true }
+      end
+
+      context 'with partition_id at or above threshold' do
+        let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD }
+
+        it { is_expected.to be true }
+      end
+    end
+
+    context 'when on GitLab.com' do
+      before do
+        allow(Gitlab).to receive(:com?).and_return(true)
+      end
+
+      context 'with partition_id below threshold' do
+        let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD - 1 }
+
+        it { is_expected.to be false }
+      end
+
+      context 'with partition_id at threshold' do
+        let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD }
+
+        it { is_expected.to be true }
+      end
+
+      context 'with partition_id above threshold' do
+        let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD + 1 }
+
+        it { is_expected.to be true }
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_job_definitions_new_checksum: false)
+        end
+
+        context 'with partition_id below threshold' do
+          let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD - 1 }
+
+          it { is_expected.to be false }
+        end
+
+        context 'with partition_id at threshold' do
+          let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD }
+
+          it { is_expected.to be false }
+        end
+
+        context 'with partition_id above threshold' do
+          let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD + 1 }
+
+          it { is_expected.to be false }
+        end
+      end
+    end
+  end
+
   describe '.fabricate' do
     let(:config) do
       {
@@ -481,9 +551,10 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
     it 'sanitizes the config' do
       expect(fabricate.config).to eq(
         options: { script: ['echo test'] },
-        yaml_variables: [{ key: 'VAR', value: 'value' }],
-        interruptible: true
+        yaml_variables: [{ key: 'VAR', value: 'value' }]
       )
+      # Normalized data column is stored separately
+      expect(fabricate.interruptible).to be true
     end
 
     it 'generates a checksum' do
@@ -500,6 +571,107 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
 
       it 'uses column default for interruptible' do
         expect(fabricate.interruptible).to eq(described_class.column_defaults['interruptible'])
+      end
+    end
+
+    context "when the partition_id is greater than or equal to #{described_class::NEW_CHECKSUM_PARTITION_THRESHOLD}" do
+      let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD }
+
+      before do
+        allow(Gitlab).to receive(:com?).and_return(true)
+      end
+
+      context 'when interruptible is not specified' do
+        let(:config) { { options: { script: ['echo test'] } } }
+        let(:old_fabricate) do
+          described_class.fabricate(config: config, project_id: project_id, partition_id: partition_id - 1)
+        end
+
+        it 'does not include normalized data columns in persisted config' do
+          expect(fabricate.config).not_to have_key(:interruptible)
+        end
+
+        it 'sets normalized data column attribute' do
+          expect(fabricate.interruptible).to eq(described_class.column_defaults['interruptible'])
+        end
+
+        it 'generates different checksum than old approach' do
+          expect(old_fabricate.checksum).not_to eq(fabricate.checksum)
+        end
+      end
+
+      context 'when interruptible is explicitly set' do
+        let(:config) { { options: { script: ['echo test'] }, interruptible: true } }
+
+        it 'does not include normalized data columns in persisted config' do
+          expect(fabricate.config).not_to have_key(:interruptible)
+        end
+
+        it 'sets normalized data column attribute' do
+          expect(fabricate.interruptible).to be true
+        end
+      end
+    end
+
+    context "when the partition_id is less than #{described_class::NEW_CHECKSUM_PARTITION_THRESHOLD}" do
+      let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD - 1 }
+
+      before do
+        allow(Gitlab).to receive(:com?).and_return(true)
+      end
+
+      context 'when interruptible is not specified' do
+        let(:config) { { options: { script: ['echo test'] } } }
+
+        it 'does not include normalized data columns in persisted config' do
+          expect(fabricate.config).not_to have_key(:interruptible)
+        end
+
+        it 'sets normalized data column attribute with default value' do
+          expect(fabricate.interruptible).to eq(described_class.column_defaults['interruptible'])
+        end
+      end
+
+      context 'when interruptible is explicitly set' do
+        let(:config) { { options: { script: ['echo test'] }, interruptible: true } }
+
+        it 'includes normalized data columns in persisted config when explicitly passed' do
+          expect(fabricate.config[:interruptible]).to be true
+        end
+
+        it 'sets normalized data column attribute' do
+          expect(fabricate.interruptible).to be true
+        end
+      end
+    end
+
+    context 'when FF `ci_job_definitions_new_checksum` is disabled' do
+      let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD }
+      let(:old_partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD - 1 }
+
+      before do
+        allow(Gitlab).to receive(:com?).and_return(true)
+        stub_feature_flags(ci_job_definitions_new_checksum: false)
+      end
+
+      context 'when interruptible is not specified' do
+        let(:config) { { options: { script: ['echo test'] } } }
+        let(:old_fabricate) do
+          described_class.fabricate(config: config, project_id: project_id, partition_id: old_partition_id)
+        end
+
+        it 'uses old checksum approach even with partition at threshold' do
+          expect(fabricate.config).not_to have_key(:interruptible)
+          expect(fabricate.interruptible).to eq(described_class.column_defaults['interruptible'])
+        end
+
+        it 'does not include normalized data columns in persisted config when not explicitly passed' do
+          expect(fabricate.config).not_to have_key(:interruptible)
+        end
+
+        it 'generates same checksum as old approach' do
+          expect(fabricate.checksum).to eq(old_fabricate.checksum)
+        end
       end
     end
 
@@ -542,8 +714,22 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
         }
       end
 
-      it 'includes all specified CONFIG_ATTRIBUTES' do
-        expect(fabricate.config.keys).to match_array(described_class::CONFIG_ATTRIBUTES)
+      it 'includes all specified CONFIG_ATTRIBUTES except normalized data columns' do
+        expect(fabricate.config.keys).to match_array(
+          described_class::CONFIG_ATTRIBUTES - described_class::NORMALIZED_DATA_COLUMNS
+        )
+        expect(fabricate.interruptible).to be true
+      end
+
+      context 'when FF `ci_job_definitions_new_checksum` is disabled' do
+        before do
+          stub_feature_flags(ci_job_definitions_new_checksum: false)
+        end
+
+        it 'includes all specified CONFIG_ATTRIBUTES' do
+          expect(fabricate.config.keys).to match_array(described_class::CONFIG_ATTRIBUTES)
+          expect(fabricate.interruptible).to be true
+        end
       end
     end
   end
@@ -582,7 +768,7 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
     end
   end
 
-  describe '.sanitize_and_checksum' do
+  describe '.sanitize_config' do
     let(:config) do
       {
         options: { script: ['echo test'] },
@@ -594,26 +780,61 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
       }
     end
 
-    subject(:result) { described_class.sanitize_and_checksum(config) }
+    subject(:result) { described_class.sanitize_config(config) }
 
-    it 'returns an array with sanitized config and checksum' do
-      expect(result).to be_an(Array)
-      expect(result.size).to eq(2)
-
-      sanitized_config, checksum = result
-      expect(sanitized_config).to be_a(Hash)
-      expect(checksum).to be_a(String)
+    it 'returns a sanitized config hash' do
+      expect(result).to be_a(Hash)
     end
 
     it 'includes only CONFIG_ATTRIBUTES that were present in input' do
-      sanitized_config, _ = result
-      expect(sanitized_config.keys).to contain_exactly(:options, :yaml_variables, :id_tokens, :secrets, :interruptible)
-      expect(sanitized_config).not_to have_key(:extra_field)
+      expect(result.keys).to contain_exactly(:options, :yaml_variables, :id_tokens, :secrets, :interruptible)
+      expect(result).not_to have_key(:extra_field)
+    end
+
+    it 'symbolizes keys in the result' do
+      string_key_config = { 'options' => { 'script' => ['echo test'] } }
+      sanitized_config = described_class.sanitize_config(string_key_config)
+
+      expect(sanitized_config).to have_key(:options)
+      expect(sanitized_config).not_to have_key('options')
+    end
+
+    context 'with tag_list' do
+      let(:config) do
+        {
+          options: { script: ['echo test'] },
+          tag_list: %w[tag1,tag2 tag3]
+        }
+      end
+
+      it 'parses and normalizes tags' do
+        expect(result[:tag_list]).to eq(%w[tag1 tag2 tag3])
+      end
+    end
+  end
+
+  describe '.generate_checksum' do
+    let(:config) do
+      {
+        options: { script: ['echo test'] },
+        yaml_variables: [{ key: 'VAR', value: 'value' }],
+        interruptible: true
+      }
+    end
+
+    subject(:checksum) { described_class.generate_checksum(config) }
+
+    it 'returns a checksum string' do
+      expect(checksum).to be_a(String)
+    end
+
+    it 'uses SHA256 for checksum' do
+      is_expected.to match(/\A[a-f0-9]{64}\z/)
     end
 
     it 'generates consistent checksum for same data' do
-      _, checksum1 = described_class.sanitize_and_checksum(config)
-      _, checksum2 = described_class.sanitize_and_checksum(config)
+      checksum1 = described_class.generate_checksum(config)
+      checksum2 = described_class.generate_checksum(config)
 
       expect(checksum1).to eq(checksum2)
     end
@@ -621,45 +842,31 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
     it 'generates different checksums for different data' do
       config2 = config.merge(options: { script: ['echo different'] })
 
-      _, checksum1 = described_class.sanitize_and_checksum(config)
-      _, checksum2 = described_class.sanitize_and_checksum(config2)
+      checksum1 = described_class.generate_checksum(config)
+      checksum2 = described_class.generate_checksum(config2)
 
       expect(checksum1).not_to eq(checksum2)
     end
 
-    it 'symbolizes keys in the result' do
-      string_key_config = { 'options' => { 'script' => ['echo test'] } }
-      sanitized_config, _ = described_class.sanitize_and_checksum(string_key_config)
+    it 'generates different checksums for different key order' do
+      # Create two configs with same data but different key order
+      config1 = {
+        interruptible: true,
+        options: { script: ['test'] },
+        yaml_variables: [{ key: 'VAR', value: 'val' }]
+      }
 
-      expect(sanitized_config).to have_key(:options)
-      expect(sanitized_config).not_to have_key('options')
-    end
+      config2 = {
+        yaml_variables: [{ key: 'VAR', value: 'val' }],
+        options: { script: ['test'] },
+        interruptible: true
+      }
 
-    describe 'checksum calculation' do
-      it 'uses SHA256 for checksum' do
-        _, checksum = result
-        expect(checksum).to match(/\A[a-f0-9]{64}\z/)
-      end
+      checksum1 = described_class.generate_checksum(config1)
+      checksum2 = described_class.generate_checksum(config2)
 
-      it 'preserves attribute order for consistent checksum' do
-        # Create two configs with same data but different key order
-        config1 = {
-          interruptible: true,
-          options: { script: ['test'] },
-          yaml_variables: [{ key: 'VAR', value: 'val' }]
-        }
-
-        config2 = {
-          yaml_variables: [{ key: 'VAR', value: 'val' }],
-          options: { script: ['test'] },
-          interruptible: true
-        }
-
-        _, checksum1 = described_class.sanitize_and_checksum(config1)
-        _, checksum2 = described_class.sanitize_and_checksum(config2)
-
-        expect(checksum1).to eq(checksum2)
-      end
+      # JSON serialization preserves insertion order, so different key orders produce different checksums
+      expect(checksum1).not_to eq(checksum2)
     end
   end
 end

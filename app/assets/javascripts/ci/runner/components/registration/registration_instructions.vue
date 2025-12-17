@@ -6,7 +6,6 @@ import { s__, sprintf } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
-import RunnerGoogleCloudOption from '~/ci/runner/components/runner_google_cloud_option.vue';
 
 import runnerForRegistrationQuery from '../../graphql/register/runner_for_registration.query.graphql';
 import {
@@ -39,7 +38,8 @@ export default {
     GkeRegistrationInstructions,
     PlatformsDrawer,
     RunnerPlatformsRadioGroup,
-    RunnerGoogleCloudOption,
+    RunnerGoogleCloudOptions: () =>
+      import('ee_component/ci/runner/components/runner_google_cloud_options.vue'),
   },
   props: {
     runnerId: {
@@ -196,7 +196,12 @@ export default {
     </h2>
     <runner-platforms-radio-group :value="platform" @input="onSelectPlatform">
       <template #cloud-options>
-        <runner-google-cloud-option :checked="platform" @input="onSelectPlatform" />
+        <runner-google-cloud-options
+          :checked="platform"
+          :group-path="groupPath"
+          :project-path="projectPath"
+          @input="onSelectPlatform"
+        />
       </template>
     </runner-platforms-radio-group>
     <hr aria-hidden="true" />

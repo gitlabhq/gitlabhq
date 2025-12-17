@@ -32,6 +32,31 @@ RSpec.describe 'User explores projects', feature_category: :user_profile do
     end
   end
 
+  it 'renders all expected tabs', :aggregate_failures do
+    visit(explore_projects_path)
+
+    expect(page).to have_selector('.gl-tab-nav-item', text: 'Most starred')
+    expect(page).to have_selector('.gl-tab-nav-item', text: 'Active')
+    expect(page).to have_selector('.gl-tab-nav-item', text: 'Inactive')
+    expect(page).to have_selector('.gl-tab-nav-item', text: 'All')
+  end
+
+  context 'when `retire_trending_projects` flag is disabled' do
+    before do
+      stub_feature_flags(retire_trending_projects: false)
+    end
+
+    it 'renders all expected tabs', :aggregate_failures do
+      visit(explore_projects_path)
+
+      expect(page).to have_selector('.gl-tab-nav-item', text: 'Most starred')
+      expect(page).to have_selector('.gl-tab-nav-item', text: 'Trending')
+      expect(page).to have_selector('.gl-tab-nav-item', text: 'Active')
+      expect(page).to have_selector('.gl-tab-nav-item', text: 'Inactive')
+      expect(page).to have_selector('.gl-tab-nav-item', text: 'All')
+    end
+  end
+
   describe '"All" tab' do
     it_behaves_like(
       'an "Explore > Projects" page with sidebar and breadcrumbs',

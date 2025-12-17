@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlDisclosureDropdown, GlTooltip, GlBadge, GlPopover } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlTooltip } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarMoreDropdown from '~/content_editor/components/toolbar_more_dropdown.vue';
 import Diagram from '~/content_editor/extensions/diagram';
@@ -54,7 +54,7 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
     ${'Table of contents'}      | ${'tableOfContents'} | ${'insertTableOfContents'} | ${[]}
     ${'Horizontal rule'}        | ${'horizontalRule'}  | ${'setHorizontalRule'}     | ${[]}
     ${'Create or edit diagram'} | ${'drawioDiagram'}   | ${'createOrEditDiagram'}   | ${[]}
-    ${'Embedded view New'}      | ${'glqlView'}        | ${'insertGLQLView'}        | ${[]}
+    ${'Embedded view'}          | ${'glqlView'}        | ${'insertGLQLView'}        | ${[]}
   `('when option $name is clicked', ({ name, command, contentType, params }) => {
     let commands;
     let btn;
@@ -113,46 +113,5 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
 
       expect(findGlTooltip().exists()).toBe(false);
     });
-  });
-
-  it('shows a "New" badge for the embedded view option', () => {
-    buildWrapper();
-
-    const btn = wrapper.findByRole('button', { name: 'Embedded view New' });
-    const badge = wrapper.findComponent(GlBadge);
-
-    expect(btn.exists()).toBe(true);
-    expect(badge.props()).toMatchObject({
-      variant: 'info',
-      target: '_blank',
-      href: '/help/user/glql/_index',
-    });
-    expect(badge.text()).toBe('New');
-  });
-
-  it('shows a GLQL popover that is visible on editor focus', async () => {
-    buildWrapper();
-    await emitEditorEvent({ event: 'focus', tiptapEditor });
-
-    expect(wrapper.text()).toContain('Introducing embedded views');
-  });
-
-  it('saves the value in local storage when popover is hidden', async () => {
-    buildWrapper();
-    await emitEditorEvent({ event: 'focus', tiptapEditor });
-
-    await wrapper.findComponent(GlPopover).vm.$emit('hidden');
-
-    expect(localStorage.getItem('glql-popover-visible')).toBe('false');
-  });
-
-  it('does not show the popover by default if local storage value is false', async () => {
-    localStorage.setItem('glql-popover-visible', 'false');
-
-    buildWrapper();
-    await emitEditorEvent({ event: 'focus', tiptapEditor });
-    await nextTick();
-
-    expect(wrapper.text()).not.toContain('Introducing embedded views');
   });
 });

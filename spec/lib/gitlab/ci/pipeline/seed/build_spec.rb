@@ -312,9 +312,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         let(:rules) { [{ if: '$VAR == null', interruptible: true }] }
 
         it 'overrides the job interruptible value' do
-          expect(seed_resource.temp_job_definition).to have_attributes(
-            config: a_hash_including(interruptible: true)
-          )
+          expect(seed_resource.temp_job_definition).to have_attributes(interruptible: true)
         end
 
         context 'when job does not have an interruptible value' do
@@ -327,9 +325,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           end
 
           it 'adds interruptible value to the job' do
-            expect(seed_resource.temp_job_definition).to have_attributes(
-              config: a_hash_including(interruptible: true)
-            )
+            expect(seed_resource.temp_job_definition).to have_attributes(interruptible: true)
           end
         end
 
@@ -337,9 +333,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           let(:rules) { [{ if: '$VAR == null' }] }
 
           it 'does not change the job interruptible value' do
-            expect(seed_resource.temp_job_definition).to have_attributes(
-              config: a_hash_including(interruptible: false)
-            )
+            expect(seed_resource.temp_job_definition).to have_attributes(interruptible: false)
           end
         end
       end
@@ -348,9 +342,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         let(:rules) { [{ if: '$VAR == true', interruptible: true }] }
 
         it 'does not change the job interruptible value' do
-          expect(seed_resource.temp_job_definition).to have_attributes(
-            config: a_hash_including(interruptible: false)
-          )
+          expect(seed_resource.temp_job_definition).to have_attributes(interruptible: false)
         end
       end
     end
@@ -695,17 +687,16 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         job_def = seed_resource.temp_job_definition
         expect(job_def.project_id).to eq(project.id)
         expect(job_def.partition_id).to eq(pipeline.partition_id)
-        expect(job_def.config).to include(:options, :yaml_variables, :interruptible)
+        expect(job_def.config).to include(:options, :yaml_variables)
       end
 
       it 'assigns attributes to temp_job_definition instead of preserving in build' do
         expect(seed_resource.metadata&.options).to be_nil
         expect(seed_resource.metadata&.yaml_variables).to be_nil
         expect(seed_resource.metadata&.interruptible).to be_nil
-
         expect(seed_resource.temp_job_definition.config[:options]).to eq(attributes[:options])
         expect(seed_resource.temp_job_definition.config[:yaml_variables]).to eq(attributes[:yaml_variables])
-        expect(seed_resource.temp_job_definition.config[:interruptible]).to eq(attributes[:interruptible])
+        expect(seed_resource.temp_job_definition.interruptible).to eq(attributes[:interruptible])
       end
 
       context 'with id_tokens' do

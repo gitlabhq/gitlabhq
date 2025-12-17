@@ -394,6 +394,92 @@ To increase the token duration:
 1. For the **Authorization token duration (minutes)**, update the value.
 1. Select **Save changes**.
 
+## Container registry feature flags
+
+Container registry feature flags are environment variable toggles
+that control experimental or transitional functionality in the
+container registry.
+
+Unlike [GitLab application feature flags](../../administration/feature_flags/list.md),
+container registry feature flags:
+
+- Are managed through registry-specific environment variables
+- Are defined in the container registry codebase
+- Require registry reconfiguration to change
+
+### Configure container registry feature flags
+
+The following table lists active container registry feature flags:
+
+| Feature flag | Description | Milestone | Default state | Removal milestone |
+|--------------|-------------|-----------|---------------|-------------------|
+| `REGISTRY_FF_ONGOING_RENAME_CHECK` | Check Redis for projects undergoing rename operations. | 16.2 | Disabled | |
+| `REGISTRY_FF_DYNAMIC_MEDIA_TYPES` | Allow creation of new media types during runtime. | 17.1 | Disabled | |
+| `REGISTRY_FF_BBM` | Control asynchronous batched background migration processes. | 17.2 | Disabled | |
+| `REGISTRY_FF_ENFORCE_LOCKFILES` | Enable lockfile checking for database or legacy metadata storage. | [Introduced](https://gitlab.com/gitlab-org/container-registry/-/issues/1335) in GitLab 17.6. | Disabled | 18.10 (See [issue 1439](https://gitlab.com/gitlab-org/container-registry/-/issues/1439)) |
+
+To configure container registry feature flags,
+follow the instructions for your platform.
+
+{{< tabs >}}
+
+{{< tab title="Linux package" >}}
+
+In `/etc/gitlab/gitlab.rb`, configure the feature flag:
+
+```ruby
+registry['env'] = {
+  '<REGISTRY_FF_FEATURE_NAME>' => 'true' # or 'false' to disable
+}
+```
+
+Then, reconfigure the container registry:
+
+```shell
+sudo gitlab-ctl reconfigure
+sudo gitlab-ctl restart registry
+```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+In `values.yaml`, configure the feature flag:
+
+```yaml
+registry:
+  extraEnv:
+    <REGISTRY_FF_FEATURE_NAME>: "true"  # or "false" to disable
+```
+
+Then, upgrade `values.yaml`:
+
+```shell
+helm upgrade gitlab gitlab/gitlab -f values.yaml
+```
+
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
+
+> [!note]
+> Setting environment variables directly in Docker Compose does not work.
+> You must configure through `gitlab.rb`.
+
+For Docker or Docker Compose, create or edit `gitlab.rb`:
+
+```ruby
+registry['env'] = {
+  '<REGISTRY_FF_FEATURE_NAME>' => 'true'
+}
+```
+
+Mount this configuration in your Docker Compose setup and make sure GitLab reconfigures on startup.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ## Configure storage for the container registry
 
 {{< alert type="note" >}}
