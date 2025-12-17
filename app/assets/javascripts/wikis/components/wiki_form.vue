@@ -595,6 +595,7 @@ export default {
             :enable-autocomplete="true"
             :autocomplete-data-sources="autocompleteDataSources"
             :drawio-enabled="drawioEnabled"
+            supports-table-of-contents
             :disable-attachments="isTemplate"
             :immersive="glFeatures.wikiImmersiveEditor"
             @contentEditor="notifyContentEditorActive"

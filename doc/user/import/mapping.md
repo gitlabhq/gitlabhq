@@ -2,7 +2,7 @@
 stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Contribution and membership mapping
+title: Post-migration contribution and membership mapping
 ---
 
 {{< details >}}
@@ -41,16 +41,26 @@ To leave feedback about this feature, add a comment to [issue 502565](https://gi
 
 {{< /alert >}}
 
-When you import groups or projects into GitLab, user contributions and memberships from the source instance are initially assigned to placeholder users rather than real users on the destination instance. This gives you time to review the import and reassign contributions to the correct users, ensuring accurate attribution while maintaining control over the mapping process.
+When you import groups or projects into GitLab with post-migration mapping, user contributions and memberships from the
+source instance are initially assigned to placeholder users rather than real users on the destination instance. This
+gives you time to review the import and reassign contributions to the correct users, ensuring accurate attribution while
+maintaining control over the mapping process.
 
-The mapping process allows you to reassign placeholders to existing users, create new users for reassignment, or choose to keep certain contributions assigned to placeholders to preserve historical context.
+The post-migration mapping process allows you to:
 
-This method of user contribution and membership mapping is available by default for
-[direct transfer](../group/import/_index.md), [GitHub importer](../project/import/github.md),
-[Bitbucket Server importer](../project/import/bitbucket_server.md), and [Gitea importer](../project/import/gitea.md) on
-GitLab.com and GitLab Self-Managed.
-For information on the other method available for GitLab Self-Managed with disabled feature flags,
-see the documentation for each importer.
+- Reassign contributions and memberships from placeholder users to existing users.
+- Create new users for reassignment.
+- Keep certain contributions assigned to placeholder users to preserve historical context.
+
+Post-migration user contribution and membership mapping is available on GitLab.com and GitLab Self-Managed by default for
+migrations from:
+
+- [GitLab by direct transfer](../group/import/_index.md)
+- [GitHub](../project/import/github.md)
+- [Bitbucket Server](../project/import/bitbucket_server.md)
+- [Gitea](../project/import/gitea.md)
+
+## Post-migration mapping workflow
 
 Any memberships and contributions you import are first mapped to [placeholder users](#placeholder-users).
 These placeholders are created on the destination instance even if
@@ -658,3 +668,19 @@ be undone. Accepting the reassignment might cause contributions to be incorrectl
 
 The contribution reassignment process starts only after you accept the reassignment request by selecting
 **Approve reassignment** in GitLab. The process doesn't start by selecting links in the email.
+
+## Alternative mapping method
+
+An alternative to post-migration mapping is a method that maps during a migration.
+This method is not recommended, and any problems found are unlikely to be fixed.
+
+The alternative method of mapping:
+
+- Requires some preparation before migration, including disabling feature flags.
+- Is available for migrations from:
+  - GitHub.
+  - Bitbucket Server.
+  - Gitea (for GitLab 18.5 and earlier).
+- Is available for migrations to GitLab Self-Managed and GitLab Dedicated.
+
+For more information, see the alternative method of mapping documentation for each importer.

@@ -10,7 +10,7 @@ title: Enable logging for self-hosted models
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated for Government
 
 {{< /details >}}
 
@@ -23,6 +23,7 @@ title: Enable logging for self-hosted models
 - Generally available in GitLab 17.9.
 - Ability to turn logging on and off through the UI added in GitLab 17.9.
 - Changed to include Premium in GitLab 18.0.
+- [Enabled on GitLab Dedicated for Government](https://gitlab.com/gitlab-org/gitlab/-/issues/569874) in GitLab 18.5.
 
 {{< /history >}}
 

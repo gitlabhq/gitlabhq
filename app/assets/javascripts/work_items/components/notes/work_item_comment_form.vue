@@ -393,6 +393,7 @@ export default {
             :data-work-item-type-id="workItemTypeId"
             use-bottom-toolbar
             supports-quick-actions
+            :supports-table-of-contents="false"
             :autofocus="autofocus"
             :restricted-tool-bar-items="restrictedToolBarItems"
             @focus="$emit('focus')"

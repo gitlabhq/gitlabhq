@@ -165,7 +165,7 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     params = { target_id: merge_request.iid, target_type: 'MergeRequest', text: note.note }
     result = PreviewMarkdownService.new(container: @project, current_user: current_user, params: params)
       .execute do |text|
-      markdown_params = { issuable_reference_expansion_enabled: true }
+      markdown_params = { issuable_reference_expansion_enabled: true, no_header_anchors: true }
       view_context.markdown(text, markdown_params)
     end
 

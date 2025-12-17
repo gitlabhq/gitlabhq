@@ -1696,6 +1696,30 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         expect(json_response['body']).to include(expanded_path)
       end
     end
+
+    context 'when Markdown is previewed on commit' do
+      let(:preview_markdown_params) do
+        {
+          namespace_id: public_project.namespace,
+          project_id: public_project,
+          target_type: 'Commit',
+          text: <<~MARKDOWN
+            [[_TOC_]]
+
+            # Hello
+            ## Tere
+            ### よしよし
+          MARKDOWN
+        }
+      end
+
+      it 'does not render TOCs' do
+        post :preview_markdown, params: preview_markdown_params
+
+        expect(json_response['body']).to include('TOC')
+        expect(json_response['body']).not_to include('<h1 id')
+      end
+    end
   end
 
   describe '#ensure_canonical_path' do

@@ -328,6 +328,7 @@ export default {
               :force-autosize="false"
               :autosave-key="autosaveKey"
               supports-quick-actions
+              :supports-table-of-contents="false"
               autofocus
               @input="$emit('input', $event)"
               @keydown.meta.enter="submitReview"

@@ -55,7 +55,7 @@ To connect to the staging AI Gateway:
 
 If you're having issues with your GitLab Duo license setup:
 
-- Run the [GitLab Duo health check](../../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo) to identify specific issues. Note that if you have GitLab Duo licenses that were generated from a setup script locally, this will show "Cloud Connector access token is missing" but that is OK.
+- Run the [GitLab Duo health check](../../administration/gitlab_duo/configure/gitlab_self_managed.md#run-a-health-check-for-gitlab-duo) to identify specific issues. Note that if you have GitLab Duo licenses that were generated from a setup script locally, this will show "Cloud Connector access token is missing" but that is OK.
 - Verify your license is active by checking the Admin Area
 - Ensure your user has a GitLab Duo seat assigned. The GDK setup scripts assign a GitLab Duo
   seat to the `root` user only. If you want to test with other users, make sure

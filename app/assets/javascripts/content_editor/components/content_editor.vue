@@ -86,6 +86,11 @@ export default {
       required: false,
       default: false,
     },
+    supportsTableOfContents: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     drawioEnabled: {
       type: Boolean,
       required: false,
@@ -162,6 +167,7 @@ export default {
       serializerConfig,
       autofocus,
       drawioEnabled,
+      supportsTableOfContents,
       editable,
       enableAutocomplete,
       autocompleteDataSources,
@@ -176,6 +182,7 @@ export default {
         extensions,
         serializerConfig,
         drawioEnabled,
+        supportsTableOfContents,
         enableAutocomplete,
         autocompleteDataSources,
         codeSuggestionsConfig,

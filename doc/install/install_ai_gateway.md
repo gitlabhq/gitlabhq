@@ -551,13 +551,13 @@ If access issues persist, check that authentication is correctly configured, and
 
 In case of persistent issues, the error message may suggest bypassing authentication with `AIGW_AUTH__BYPASS_EXTERNAL=true`, but only do this for troubleshooting.
 
-You can also run a [health check](../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo) by going to **Admin** > **GitLab Duo**.
+You can also run a [health check](../administration/gitlab_duo/configure/gitlab_self_managed.md#run-a-health-check-for-gitlab-duo) by going to **Admin** > **GitLab Duo**.
 
 These tests are performed for offline environments:
 
 | Test | Description |
 |-----------------|-------------|
-| Network | Tests whether: <br>- The AI gateway URL has been properly configured in the database through the `ai_settings` table.<br> - Your instance can connect to the configured URL.<br><br>If your instance cannot connect to the URL, ensure that your firewall or proxy server settings [allow connection](../administration/gitlab_duo/setup.md). Although the environment variable `AI_GATEWAY_URL` is still supported for legacy compatibility, configuring the URL through the database is recommended for better manageability. |
+| Network | Tests whether: <br>- The AI gateway URL has been properly configured in the database through the `ai_settings` table.<br> - Your instance can connect to the configured URL.<br><br>If your instance cannot connect to the URL, ensure that your firewall or proxy server settings [allow connection](../administration/gitlab_duo/configure/gitlab_self_managed.md). Although the environment variable `AI_GATEWAY_URL` is still supported for legacy compatibility, configuring the URL through the database is recommended for better manageability. |
 | License | Tests whether your license has the ability to access Code Suggestions feature. |
 | System exchange | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
 

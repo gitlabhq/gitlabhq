@@ -22,25 +22,25 @@ description: Repository migration, third-party repositories, and user contributi
 Bring your existing work into GitLab.
 
 A migration tool is available for some third-party platforms. Some support
-[user contribution and membership mapping](mapping.md).
+[post-migration mapping](mapping.md) of user contribution and membership.
 
-| Migrate from                                                                | Groups                  | Projects    | Migration tool | Automatic mapping |
-|:----------------------------------------------------------------------------|:------------------------|:------------|:---------------|:------------------|
-| [GitLab (by using direct transfer)](../group/import/_index.md)              | {{< yes >}}             | {{< yes >}} | {{< yes >}}    | {{< yes >}}       |
-| [GitLab (by using file export)](../project/settings/import_export.md)       | {{< yes >}}<sup>1</sup> | {{< yes >}} | {{< yes >}}    | {{< no >}}        |
-| [Bitbucket Server](../project/import/bitbucket_server.md)                   | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}       |
-| [GitHub](../project/import/github.md)                                       | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}       |
-| [Gitea](../project/import/gitea.md)                                         | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}       |
-| [Bitbucket Cloud](bitbucket_cloud.md)                                       | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< no >}}        |
-| [FogBugz](../project/import/fogbugz.md)                                     | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< no >}}        |
-| Git repository through a [manifest file](../project/import/manifest.md)     | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< no >}}        |
-| Git repository through a [repository URL](../project/import/repo_by_url.md) | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< no >}}        |
-| [ClearCase](../project/import/clearcase.md)                                 | {{< no >}}              | {{< yes >}} | {{< no >}}     | {{< no >}}        |
-| [CVS](../project/import/cvs.md)                                             | {{< no >}}              | {{< yes >}} | {{< no >}}     | {{< no >}}        |
-| [Perforce Helix](../project/import/perforce.md)                             | {{< no >}}              | {{< yes >}} | {{< no >}}     | {{< no >}}        |
-| [Subversion](#migrate-from-subversion)                                      | {{< no >}}              | {{< yes >}} | {{< no >}}     | {{< no >}}        |
-| [Team Foundation Version Control (TFVC)](../project/import/tfvc.md)         | {{< no >}}              | {{< yes >}} | {{< no >}}     | {{< no >}}        |
-| [Jira (issues only)](../project/import/jira.md)                             | {{< no >}}              | {{< no >}}  | {{< yes >}}    | {{< no >}}        |
+| Migrate from                                                                | Groups                  | Projects    | Migration tool | Post-migration mapping |
+|:----------------------------------------------------------------------------|:------------------------|:------------|:---------------|:-----------------------|
+| [GitLab (by using direct transfer)](../group/import/_index.md)              | {{< yes >}}             | {{< yes >}} | {{< yes >}}    | {{< yes >}}            |
+| [GitLab (by using file export)](../project/settings/import_export.md)       | {{< yes >}}<sup>1</sup> | {{< yes >}} | {{< yes >}}    | {{< no >}}             |
+| [Bitbucket Server](../project/import/bitbucket_server.md)                   | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}            |
+| [GitHub](../project/import/github.md)                                       | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}            |
+| [Gitea](../project/import/gitea.md)                                         | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}            |
+| [Bitbucket Cloud](bitbucket_cloud.md)                                       | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< no >}}             |
+| [FogBugz](../project/import/fogbugz.md)                                     | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< no >}}             |
+| Git repository through a [manifest file](../project/import/manifest.md)     | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< no >}}             |
+| Git repository through a [repository URL](../project/import/repo_by_url.md) | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< no >}}             |
+| [ClearCase](../project/import/clearcase.md)                                 | {{< no >}}              | {{< yes >}} | {{< no >}}     | {{< no >}}             |
+| [CVS](../project/import/cvs.md)                                             | {{< no >}}              | {{< yes >}} | {{< no >}}     | {{< no >}}             |
+| [Perforce Helix](../project/import/perforce.md)                             | {{< no >}}              | {{< yes >}} | {{< no >}}     | {{< no >}}             |
+| [Subversion](#migrate-from-subversion)                                      | {{< no >}}              | {{< yes >}} | {{< no >}}     | {{< no >}}             |
+| [Team Foundation Version Control (TFVC)](../project/import/tfvc.md)         | {{< no >}}              | {{< yes >}} | {{< no >}}     | {{< no >}}             |
+| [Jira (issues only)](../project/import/jira.md)                             | {{< no >}}              | {{< no >}}  | {{< yes >}}    | {{< no >}}             |
 
 **Footnotes**:
 

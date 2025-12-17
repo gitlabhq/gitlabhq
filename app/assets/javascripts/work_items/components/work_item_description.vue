@@ -592,6 +592,7 @@ export default {
           :editor-ai-actions="editorAiActions"
           enable-autocomplete
           supports-quick-actions
+          supports-table-of-contents
           :autofocus="autofocus"
           class="gl-mt-3"
           @input="setDescriptionText"

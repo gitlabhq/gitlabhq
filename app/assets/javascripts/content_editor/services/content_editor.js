@@ -9,6 +9,7 @@ export class ContentEditor {
     assetResolver,
     eventHub,
     drawioEnabled,
+    supportsTableOfContents,
     codeSuggestionsConfig,
     autocompleteHelper,
   }) {
@@ -22,6 +23,7 @@ export class ContentEditor {
 
     this.codeSuggestionsConfig = codeSuggestionsConfig;
     this.drawioEnabled = drawioEnabled;
+    this.supportsTableOfContents = supportsTableOfContents;
   }
 
   /**

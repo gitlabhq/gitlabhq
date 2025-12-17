@@ -905,4 +905,9 @@ describe('issue_comment_form component', () => {
     wrapper.vm.append('foo');
     expect(spy).toHaveBeenCalledWith('foo');
   });
+
+  it('disables table of contents support in the markdown editor', () => {
+    mountComponent();
+    expect(findMarkdownEditor().props('supportsTableOfContents')).toBe(false);
+  });
 });

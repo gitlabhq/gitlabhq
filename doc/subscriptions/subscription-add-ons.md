@@ -180,7 +180,7 @@ The user is sent a confirmation email.
   This flag is enabled by default.
 
 After you assign seats,
-[ensure GitLab Duo is set up for your GitLab Self-Managed instance](../administration/gitlab_duo/setup.md).
+[ensure GitLab Duo is set up for your GitLab Self-Managed instance](../administration/gitlab_duo/configure/gitlab_self_managed.md).
 
 ## Assign and remove GitLab Duo seats in bulk
 

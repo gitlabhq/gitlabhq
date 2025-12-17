@@ -33,7 +33,7 @@ WebSocket endpoints in your logs, your WebSocket connections may be blocked.
 
 Your GitLab instance must allow inbound WebSocket connections from IDE clients.
 Ask your network administrator to
-[allow WebSocket traffic to your GitLab instance](../../administration/gitlab_duo/setup.md#allow-inbound-connections-from-clients-to-the-gitlab-instance)
+[allow WebSocket traffic to your GitLab instance](../../administration/gitlab_duo/configure/gitlab_self_managed.md#allow-inbound-connections-from-clients-to-the-gitlab-instance)
 if you suspect this is the issue.
 
 ## View debugging logs in VS Code

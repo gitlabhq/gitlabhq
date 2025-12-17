@@ -120,18 +120,26 @@ The following items are changed when they are imported:
 
 {{< /history >}}
 
-The Bitbucket Server importer uses an [improved method](../../import/mapping.md)
+The Bitbucket Server importer uses a [post-migration method](../../import/mapping.md)
 of mapping user contributions for GitLab.com and GitLab Self-Managed.
 
-### Old method of user contribution mapping
+### Alternative method of mapping
 
-You can use the old user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances.
-To use this method, `bitbucket_server_user_mapping` must be disabled.
-For imports to GitLab.com, you must
-use the [improved method](../../import/mapping.md) instead.
+You can disable the `bitbucket_server_user_mapping` feature flag to use the alternative user contribution mapping method
+for imports.
 
-Using the old method, the importer tries to match a Bitbucket Server user's email address with a confirmed email address in the GitLab user database. If no
-such user is found:
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag. This feature is not recommended and is unavailable for
+migrations to GitLab.com. Problems that are found in this mapping method are unlikely to be fixed. Use the
+[post-migration method](../../import/mapping.md) instead that doesn't have these limitations.
+
+For more information, see [issue 512213](https://gitlab.com/gitlab-org/gitlab/-/work_items/512213).
+
+{{< /alert >}}
+
+Using this method, the importer tries to match a Bitbucket Server user's email address with a confirmed email address in
+the GitLab user database. If no such user is found:
 
 - The project creator is used instead. The importer appends a note in the comment to mark the original creator.
 - For pull request reviewers, no reviewer is assigned.

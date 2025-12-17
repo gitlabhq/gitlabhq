@@ -3,7 +3,7 @@ import { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import MarkdownFieldHeader from '~/vue_shared/components/markdown/header.vue';
 import MarkdownToolbar from '~/vue_shared/components/markdown/toolbar.vue';
@@ -33,7 +33,7 @@ describe('Markdown field component', () => {
     axiosMock.restore();
   });
 
-  function createSubject({ lines = [], enablePreview = true, showContentEditorSwitcher } = {}) {
+  function createSubject({ lines = [], enablePreview = true, ...props } = {}) {
     // We actually mount a wrapper component so that we can force Vue to rerender classes in order to test a regression
     // caused by mixing Vanilla JS and Vue.
     subject = mountExtended(
@@ -64,8 +64,8 @@ describe('Markdown field component', () => {
           lines,
           enablePreview,
           restrictedToolBarItems,
-          showContentEditorSwitcher,
           supportsQuickActions: true,
+          ...props,
         },
         mocks: {
           $apollo: {
@@ -278,6 +278,44 @@ describe('Markdown field component', () => {
           expect(findMarkdownHeader().props()).toMatchObject({
             supportsQuickActions: true,
           });
+        });
+      });
+
+      describe('no_header_anchors', () => {
+        let expectedNoHeaderAnchors;
+
+        beforeEach(() => {
+          axiosMock.onPost(markdownPreviewPath).reply((config) => {
+            if (JSON.parse(config.data).no_header_anchors === expectedNoHeaderAnchors) {
+              return [HTTP_STATUS_OK, `{"body":"Successful match"}`];
+            }
+            return [HTTP_STATUS_INTERNAL_SERVER_ERROR, ``];
+          });
+        });
+
+        it('passes no_header_anchors=true by default', async () => {
+          expectedNoHeaderAnchors = true;
+
+          previewToggle = getPreviewToggle();
+          previewToggle.vm.$emit('click', true);
+          await axios.waitFor(markdownPreviewPath);
+
+          expect(subject.find('.md-preview-holder').element.innerHTML).toContain(
+            'Successful match',
+          );
+        });
+
+        it('passes no_header_anchors=false when supportsTableOfContents is set to true', async () => {
+          createSubject({ supportsTableOfContents: true });
+          expectedNoHeaderAnchors = false;
+
+          previewToggle = getPreviewToggle();
+          previewToggle.vm.$emit('click', true);
+          await axios.waitFor(markdownPreviewPath);
+
+          expect(subject.find('.md-preview-holder').element.innerHTML).toContain(
+            'Successful match',
+          );
         });
       });
     });

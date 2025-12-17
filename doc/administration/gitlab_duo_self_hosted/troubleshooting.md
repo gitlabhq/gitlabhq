@@ -10,7 +10,7 @@ title: Troubleshooting GitLab Duo Self-Hosted
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated for Government
 
 {{< /details >}}
 
@@ -22,6 +22,7 @@ title: Troubleshooting GitLab Duo Self-Hosted
 - Feature flag `ai_custom_model` removed in GitLab 17.8.
 - Generally available in GitLab 17.9.
 - Changed to include Premium in GitLab 18.0.
+- [Enabled on GitLab Dedicated for Government](https://gitlab.com/gitlab-org/gitlab/-/issues/569874) in GitLab 18.5.
 
 {{< /history >}}
 
@@ -118,7 +119,7 @@ raise an issue on the issue tracker.
 
 ## GitLab Duo health check is not working
 
-When you [run a health check for GitLab Duo](../../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo), you might get an error like a `401 response from the AI Gateway`.
+When you [run a health check for GitLab Duo](../../administration/gitlab_duo/configure/gitlab_self_managed.md#run-a-health-check-for-gitlab-duo), you might get an error like a `401 response from the AI Gateway`.
 
 To resolve, first check if GitLab Duo features are functioning correctly. For example, send a message to GitLab Duo Chat.
 

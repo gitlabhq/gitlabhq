@@ -145,6 +145,12 @@ describe('Work item comment form component', () => {
     );
   });
 
+  it('disables table of contents in markdown editor', () => {
+    createComponent();
+
+    expect(findMarkdownEditor().props('supportsTableOfContents')).toBe(false);
+  });
+
   it('passes correct form field props to markdown editor', () => {
     createComponent();
 

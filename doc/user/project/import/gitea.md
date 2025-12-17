@@ -109,18 +109,31 @@ You also can:
 
 {{< /history >}}
 
-The Gitea importer uses an [improved method](../../import/mapping.md)
+The Gitea importer uses a [post-migration method](../../import/mapping.md)
 of mapping user contributions for GitLab.com and GitLab Self-Managed.
 
-### Old method of user contribution mapping
+### Alternative method of mapping
 
-In GitLab 18.5 and earlier, you can disable the `gitea_user_mapping` feature flag to use the legacy
-user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances.
+In GitLab 18.5 and earlier, you can disable the `gitea_user_mapping` feature flag to use the alternative user
+contribution mapping method for imports.
 
-For imports to GitLab.com, you must
-use the [improved method](../../import/mapping.md) instead.
+{{< alert type="flag" >}}
 
-Using the old method, user contributions are assigned to the project creator (usually the user who started the import process) by default.
+The availability of this feature is controlled by a feature flag. This feature is not recommended and is unavailable
+for:
+
+- Migrations to GitLab.com.
+- Migrations to GitLab Self-Managed and GitLab Dedicated 18.6 and later.
+
+Problems that are found in this mapping method are unlikely to be fixed. Use the
+[post-migration method](../../import/mapping.md) instead that doesn't have these limitations.
+
+For more information, see [issue 512211](https://gitlab.com/gitlab-org/gitlab/-/work_items/512211).
+
+{{< /alert >}}
+
+Using this method, user contributions are assigned to the project creator (usually the user who started the import
+process) by default.
 
 ## Related topics
 

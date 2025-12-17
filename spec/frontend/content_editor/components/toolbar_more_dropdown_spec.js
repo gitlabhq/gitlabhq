@@ -20,7 +20,7 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
     tiptapEditor = createTestEditor({
       extensions: [Diagram, HorizontalRule],
     });
-    contentEditor = { drawioEnabled: true };
+    contentEditor = { drawioEnabled: true, supportsTableOfContents: true };
     eventHub = eventHubFactory();
   };
 
@@ -83,6 +83,13 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
     buildWrapper();
 
     expect(wrapper.findByRole('button', { name: 'Create or edit diagram' }).exists()).toBe(false);
+  });
+
+  it('does not show TOC option when supportsTableOfContents is false', () => {
+    contentEditor.supportsTableOfContents = false;
+    buildWrapper();
+
+    expect(wrapper.findByRole('button', { name: 'Table of contents' }).exists()).toBe(false);
   });
 
   describe('a11y tests', () => {

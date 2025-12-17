@@ -71,9 +71,9 @@ on the GitLab instance you import to.
 
 {{< /history >}}
 
-Before using [the old method of user contribution mapping](#old-method-of-user-contribution-mapping) for imports to GitLab Self-Managed and GitLab
-Dedicated, you must meet certain requirements. Imports to GitLab.com use an [improved method](../../import/mapping.md)
-that doesn't require preparation.
+Before using [the alternative method of user contribution mapping](#alternative-method-of-mapping) for imports to GitLab
+Self-Managed and GitLab Dedicated, you must meet certain requirements. Imports to GitLab.com use a
+[post-migration method](../../import/mapping.md) that doesn't require preparation.
 
 These requirements are:
 
@@ -283,17 +283,26 @@ These backticks prevent linking to an incorrect user with the same username on t
 
 {{< /history >}}
 
-The GitHub importer uses an [improved method](../../import/mapping.md)
+The GitHub importer uses a [post-migration method](../../import/mapping.md)
 of mapping user contributions for GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 
-### Old method of user contribution mapping
+### Alternative method of mapping
 
-You can use the old user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances.
-To use this method, `github_user_mapping` must be disabled.
-For imports to GitLab.com, you must
-use the [improved method](../../import/mapping.md) instead.
+You can disable the `github_user_mapping` feature flag to use the alternative user contribution mapping method for
+imports.
 
-Using the old method, when [user accounts are provisioned correctly](#accounts-for-user-contribution-mapping), users are mapped during the import.
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag. This feature is not recommended and is unavailable for
+migrations to GitLab.com. Problems that are found in this mapping method are unlikely to be fixed. Use the
+[post-migration method](../../import/mapping.md) instead that doesn't have these limitations.
+
+For more information, see [issue 510963](https://gitlab.com/gitlab-org/gitlab/-/work_items/510963).
+
+{{< /alert >}}
+
+Using this method, when [user accounts are provisioned correctly](#accounts-for-user-contribution-mapping), users are
+mapped during the import.
 
 If the requirements are not met, the importer can't map the particular user's contributions. In that case:
 

@@ -113,7 +113,7 @@ To edit a text file in the Web Editor:
 
 {{< alert type="note" >}}
 
-If someone edits and commits changes to the same file while your are editing,
+If someone edits and commits changes to the same file while you are editing,
 you can't commit your changes. The following error message is displayed:
 `Someone edited the file the same time you did. Please check out the file and
 make sure your change will not unintentionally remove theirs.`
@@ -168,7 +168,7 @@ To upload a file in the Web Editor:
 1. On the top bar, select **Search or go to** and find your project.
 1. Go to the directory where you want to upload the file.
 1. Next to the directory name, select the plus icon ({{< icon name="plus" >}}) > **Upload file**.
-1. Drop or upload the file your want to add.
+1. Drop or upload the file you want to add.
 1. In the **Commit message** field, enter a reason for the commit.
 1. Choose one of the following options:
 
@@ -215,7 +215,7 @@ To delete a file in the Web Editor:
 
 {{< alert type="note" >}}
 
-If someone edits and commits changes to the same file while your are editing,
+If someone edits and commits changes to the same file while you are editing,
 you can't commit your changes. The following error message is displayed:
 `Someone edited the file the same time you did. Please check out the file and
 make sure your change will not unintentionally remove theirs.`

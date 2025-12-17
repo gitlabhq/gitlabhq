@@ -10,7 +10,7 @@ title: GitLab Duo Self-Hosted
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated for Government
 
 {{< /details >}}
 
@@ -22,6 +22,7 @@ title: GitLab Duo Self-Hosted
 - Feature flag `ai_custom_model` removed in GitLab 17.8.
 - Generally available in GitLab 17.9.
 - Changed to include Premium in GitLab 18.0.
+- [Enabled on GitLab Dedicated for Government](https://gitlab.com/gitlab-org/gitlab/-/issues/569874) in GitLab 18.5.
 
 {{< /history >}}
 
@@ -206,7 +207,7 @@ offering a ready-to-use AI solution without the need for on-premise infrastructu
 
 For more information, see the [GitLab.com AI Gateway configuration diagram](configuration_types.md#gitlabcom-ai-gateway).
 
-To set up this infrastructure, see [how to configure GitLab Duo on a GitLab Self-Managed instance](../../administration/gitlab_duo/setup.md).
+To set up this infrastructure, see [how to configure GitLab Duo on a GitLab Self-Managed instance](../../administration/gitlab_duo/configure/gitlab_self_managed.md).
 
 ## Set up a GitLab Duo Self-Hosted infrastructure
 

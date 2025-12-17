@@ -409,6 +409,7 @@ export default {
           :autocomplete-data-sources="autocompleteDataSources"
           :disabled="shouldDisableField"
           supports-quick-actions
+          :supports-table-of-contents="false"
           :autofocus="autofocus"
           :restore-from-autosave="restoreFromAutosave"
           @keydown.shift.meta.enter="handleKeySubmit((forceUpdate = true))"

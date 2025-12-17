@@ -106,6 +106,20 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       expect(json_response['references']['users']).to include(user2.username)
     end
 
+    it 'does not render tables of contents in draft nodes' do
+      note = <<~MARKDOWN
+        [[_TOC_]]
+
+        # Bonjour
+        ## Zdravo
+        ### Здраво
+      MARKDOWN
+      create_draft_note(draft_overrides: { note: note })
+
+      expect(json_response['note_html']).to include('TOC')
+      expect(json_response['note_html']).not_to include('<h1 id')
+    end
+
     context 'in a thread' do
       let(:discussion) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project).discussion }
 

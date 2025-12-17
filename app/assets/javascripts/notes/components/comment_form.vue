@@ -421,6 +421,7 @@ export default {
                 :autocomplete-data-sources="autocompleteDataSources"
                 :noteable-type="noteableType"
                 supports-quick-actions
+                :supports-table-of-contents="false"
                 @keydown.up="editCurrentUserLastNote()"
                 @keydown.shift.meta.enter="handleSave()"
                 @keydown.shift.ctrl.enter="handleSave()"

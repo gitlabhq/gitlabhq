@@ -9,14 +9,6 @@ code_suggestions_self_hosted?:
   file: ee/app/models/ai/feature_setting.rb
 compatible_self_hosted_models:
   file: ee/app/models/ai/feature_setting.rb
-gcp_secret_manager?:
-  file: ee/app/models/ci/secrets/integration.rb
-azure_key_vault?:
-  file: ee/app/models/ci/secrets/integration.rb
-hashicorp_vault?:
-  file: ee/app/models/ci/secrets/integration.rb
-gitlab_secrets_manager?:
-  file: ee/app/models/ci/secrets/integration.rb
 create_new_key!:
   file: ee/app/models/cloud_connector/keys.rb
 trim!:

@@ -157,6 +157,7 @@ describe('WikiForm', () => {
         uploadsPath: pageInfoPersisted.uploadsPath,
         autofocus: pageInfoPersisted.persisted,
         immersive: false,
+        supportsTableOfContents: true,
       }),
     );
 

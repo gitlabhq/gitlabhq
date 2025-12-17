@@ -23,6 +23,7 @@ export const createContentEditor = ({
   serializerConfig = { marks: {}, nodes: {} },
   tiptapOptions,
   drawioEnabled = false,
+  supportsTableOfContents = false,
   enableAutocomplete,
   autocompleteDataSources = {},
   sidebarMediator = {},
@@ -44,7 +45,7 @@ export const createContentEditor = ({
     render: renderMarkdown,
   });
 
-  const { Suggestions, DrawioDiagram, ...otherExtensions } = builtInExtensions;
+  const { Suggestions, DrawioDiagram, TableOfContents, ...otherExtensions } = builtInExtensions;
 
   const builtInContentEditorExtensions = flatMap(otherExtensions).map((ext) =>
     ext.configure({
@@ -62,6 +63,7 @@ export const createContentEditor = ({
   if (enableAutocomplete)
     allExtensions.push(Suggestions.configure({ autocompleteHelper, serializer }));
   if (drawioEnabled) allExtensions.push(DrawioDiagram.configure({ uploadsPath, assetResolver }));
+  if (supportsTableOfContents) allExtensions.push(TableOfContents);
 
   const trackedExtensions = allExtensions.map(trackInputRulesAndShortcuts);
   const tiptapEditor = createTiptapEditor({ extensions: trackedExtensions, ...tiptapOptions });
@@ -75,6 +77,7 @@ export const createContentEditor = ({
     deserializer,
     assetResolver,
     drawioEnabled,
+    supportsTableOfContents,
     codeSuggestionsConfig,
     autocompleteHelper,
   });

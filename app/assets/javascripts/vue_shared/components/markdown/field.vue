@@ -69,6 +69,11 @@ export default {
       required: false,
       default: false,
     },
+    supportsTableOfContents: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     canAttachFile: {
       type: Boolean,
       required: false,
@@ -316,7 +321,8 @@ export default {
     },
 
     fetchMarkdown() {
-      return axios.post(this.markdownPreviewPath, { text: this.textareaValue }).then(({ data }) => {
+      const params = { text: this.textareaValue, no_header_anchors: !this.supportsTableOfContents };
+      return axios.post(this.markdownPreviewPath, params).then(({ data }) => {
         const { references } = data;
         if (references) {
           this.referencedCommands = references.commands;

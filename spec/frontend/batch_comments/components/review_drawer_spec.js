@@ -14,6 +14,7 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import userCanApproveQuery from '~/batch_comments/queries/can_approve.query.graphql';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -39,6 +40,7 @@ describe('ReviewDrawer', () => {
   const findPlaceholderField = () => wrapper.findByTestId('placeholder-input-field');
   const findDiscardReviewButton = () => wrapper.findByTestId('discard-review-btn');
   const findDiscardReviewModal = () => wrapper.findByTestId('discard-review-modal');
+  const findMarkdownField = () => wrapper.findComponent(MarkdownField);
 
   const submitForm = async () => {
     await findPlaceholderField().vm.$emit('focus');
@@ -373,5 +375,15 @@ describe('ReviewDrawer', () => {
 
       expect(useBatchComments().publishReviewInBatches).toHaveBeenCalled();
     });
+  });
+
+  it('disables table of contents support in the markdown editor', async () => {
+    useBatchComments().drawerOpened = true;
+
+    createComponent();
+
+    await findPlaceholderField().vm.$emit('focus');
+
+    expect(findMarkdownField().props('supportsTableOfContents')).toBe(false);
   });
 });

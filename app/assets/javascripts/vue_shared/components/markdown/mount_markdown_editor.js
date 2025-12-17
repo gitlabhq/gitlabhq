@@ -77,6 +77,7 @@ export function mountMarkdownEditor(options = {}) {
   } = el.dataset;
 
   const supportsQuickActions = parseBoolean(el.dataset.supportsQuickActions ?? true);
+  const supportsTableOfContents = parseBoolean(el.dataset.supportsTableOfContents ?? false);
   const enableAutocomplete = parseBoolean(el.dataset.enableAutocomplete ?? true);
   const disableAttachments = parseBoolean(el.dataset.disableAttachments ?? false);
   const canUseComposer = parseBoolean(el.dataset.canUseComposer ?? false);
@@ -123,6 +124,7 @@ export function mountMarkdownEditor(options = {}) {
           enableAutocomplete,
           autocompleteDataSources: gl.GfmAutoComplete?.dataSources,
           supportsQuickActions,
+          supportsTableOfContents,
           disableAttachments,
           autofocus,
         },

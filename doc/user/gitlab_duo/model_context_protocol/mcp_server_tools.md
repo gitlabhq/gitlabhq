@@ -79,7 +79,7 @@ Get details for issue 42 in project 123
 
 {{< /history >}}
 
-Creates a merge request in a project.
+Creates a merge request in a GitLab project.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
@@ -113,7 +113,7 @@ Get details for merge request 15 in project gitlab-org/gitlab
 
 ## `get_merge_request_commits`
 
-Retrieves the list of commits in a specific merge request.
+Retrieves the list of commits in a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
@@ -130,7 +130,7 @@ Show me all commits in merge request 42 from project 123
 
 ## `get_merge_request_diffs`
 
-Retrieves the diffs for a specific merge request.
+Retrieves the diffs for a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
@@ -147,7 +147,7 @@ What files were changed in merge request 25 in the gitlab project?
 
 ## `get_merge_request_pipelines`
 
-Retrieves the pipelines for a specific merge request.
+Retrieves the pipelines for a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
@@ -162,7 +162,7 @@ Show me all pipelines for merge request 42 in project gitlab-org/gitlab
 
 ## `get_pipeline_jobs`
 
-Retrieves the jobs for a specific CI/CD pipeline.
+Retrieves the jobs for a specific GitLab CI/CD pipeline.
 
 | Parameter     | Type    | Required | Description |
 |---------------|---------|----------|-------------|
@@ -181,7 +181,7 @@ Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213398) in GitLab 18.7.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/581890) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -190,7 +190,7 @@ Creates a new note (comment) on a GitLab work item.
 | Parameter       | Type    | Required | Description |
 |-----------------|---------|----------|-------------|
 | `body`          | string  | Yes      | Content of the note. |
-| `url`           | string  | No       | GitLab URL for the work item (for example, `https://gitlab.com/namespace/project/-/work_items/42`). Required if `group_id` or `project_id` and `work_item_iid` are missing. |
+| `url`           | string  | No       | URL for the work item. Required if `group_id` or `project_id` and `work_item_iid` are missing. |
 | `group_id`      | string  | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
 | `project_id`    | string  | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
 | `work_item_iid` | integer | No       | Internal ID of the work item. Required if `url` is missing. |
@@ -201,6 +201,33 @@ Example:
 
 ```plaintext
 Add a comment "This looks good to me" to work item 42 in project gitlab-org/gitlab
+```
+
+## `get_workitem_notes`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/581892) in GitLab 18.7.
+
+{{< /history >}}
+
+Retrieves all notes (comments) for a specific GitLab work item.
+
+| Parameter       | Type    | Required | Description |
+|-----------------|---------|----------|-------------|
+| `url`           | string  | No       | URL for the work item. Required if `group_id` or `project_id` and `work_item_iid` are missing. |
+| `group_id`      | string  | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
+| `project_id`    | string  | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
+| `work_item_iid` | integer | No       | Internal ID of the work item. Required if `url` is missing. |
+| `after`         | string  | No       | Cursor for forward pagination. |
+| `before`        | string  | No       | Cursor for backward pagination. |
+| `first`         | integer | No       | Number of notes to return for forward pagination. |
+| `last`          | integer | No       | Number of notes to return for backward pagination. |
+
+Example:
+
+```plaintext
+Show me all comments on work item 42 in project gitlab-org/gitlab
 ```
 
 ## `gitlab_search`
@@ -252,7 +279,7 @@ Offering: GitLab.com
 
 {{< /history >}}
 
-Searches for relevant code snippets in a project.
+Searches for relevant code snippets in a GitLab project.
 
 This tool is available only for projects with
 [GitLab Duo turned on](../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).

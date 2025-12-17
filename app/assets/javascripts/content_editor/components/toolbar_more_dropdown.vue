@@ -77,10 +77,14 @@ export default {
               },
             ]
           : []),
-        {
-          text: __('Table of contents'),
-          action: () => this.execute('insertTableOfContents', 'tableOfContents'),
-        },
+        ...(this.contentEditor.supportsTableOfContents
+          ? [
+              {
+                text: __('Table of contents'),
+                action: () => this.execute('insertTableOfContents', 'tableOfContents'),
+              },
+            ]
+          : []),
       ],
     };
   },

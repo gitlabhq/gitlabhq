@@ -156,11 +156,12 @@ describe('WorkItemDescription', () => {
   };
 
   describe('editing description', () => {
-    it('passes correct autocompletion data and preview markdown sources and enables quick actions', async () => {
+    it('passes correct autocompletion data, preview markdown sources, enables quick actions and table of contents', async () => {
       await createComponent({ isEditing: true });
 
       expect(findMarkdownEditor().props()).toMatchObject({
         supportsQuickActions: true,
+        supportsTableOfContents: true,
         renderMarkdownPath: markdownPaths.markdownPreviewPath,
         autocompleteDataSources: markdownPaths.autocompleteSourcesPath,
       });
