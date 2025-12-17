@@ -10374,6 +10374,32 @@ Input type: `PersonalAccessTokenCreateInput`
 | <a id="mutationpersonalaccesstokencreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationpersonalaccesstokencreatetoken"></a>`token` | [`PersonalAccessToken`](#personalaccesstoken) | Created personal access token. |
 
+### `Mutation.personalAccessTokenRotate`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Rotate a specified personal access token.
+
+Input type: `PersonalAccessTokenRotateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationpersonalaccesstokenrotateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationpersonalaccesstokenrotateid"></a>`id` | [`PersonalAccessTokenID!`](#personalaccesstokenid) | Global ID of the personal access token that will be rotated. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationpersonalaccesstokenrotateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationpersonalaccesstokenrotateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationpersonalaccesstokenrotatetoken"></a>`token` | [`String`](#string) | Created personal access token. |
+
 ### `Mutation.pipelineCancel`
 
 Input type: `PipelineCancelInput`
@@ -56339,6 +56365,12 @@ An example `PathLockID` is: `"gid://gitlab/PathLock/1"`.
 ### `PayloadAlertFieldPathSegment`
 
 String or integer.
+
+### `PersonalAccessTokenID`
+
+A `PersonalAccessTokenID` is a global ID. It is encoded as a string.
+
+An example `PersonalAccessTokenID` is: `"gid://gitlab/PersonalAccessToken/1"`.
 
 ### `ProjectHookID`
 

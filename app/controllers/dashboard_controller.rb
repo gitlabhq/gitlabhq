@@ -64,7 +64,7 @@ class DashboardController < Dashboard::ApplicationController
   def load_events
     @events =
       case params[:filter]
-      when "projects", "starred"
+      when "your_projects", "projects", "starred"
         load_project_events
       when "followed"
         load_user_events(current_user.followees)

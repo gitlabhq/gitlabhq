@@ -9,15 +9,17 @@ To allow for asynchronous issue handling, we use [milestones](https://gitlab.com
 and [labels](https://gitlab.com/gitlab-org/gitlab/-/labels). Leads and product managers handle most of the
 scheduling into milestones. Labeling is a task for everyone. (For some projects, labels can be set only by GitLab team members and not by community contributors).
 
-Most issues will have labels for at least one of the following:
+Most issues will have labels for at least one of each of the following when applicable:
 
 - Type. For example: `~"type::feature"`, `~"type::bug"`, or `~"type::maintenance"`.
+- Section. For example: `~"section::dev"` or `~"section::ai"`.
 - Stage. For example: `~"devops::plan"` or `~"devops::create"`.
 - Group. For example: `~"group::source code"`, `~"group::knowledge"`, or `~"group::editor"`.
 - Category. For example: `~"Category:Code Analytics"`, `~"Category:DevOps Reports"`, or `~"Category:Templates"`.
 - Feature. For example: `~wiki`, `~ldap`, `~api`, `~issues`, or `~"merge requests"`.
-- Department: `~UX`, `~Quality`
-- Team: `~"Technical Writing"`, `~Delivery`
+- Feature state: `~"Feature state::Experiment"`, `~"Feature state::Beta"`, or `~"Feature state::GA"`
+- Department. For example: `~UX`, `~Quality`
+- Team. For example: `~"Technical Writing"`, `~Delivery`
 - Specialization: `~frontend`, `~backend`, `~documentation`
 - Release Scoping: `~Deliverable`, `~Stretch`, `~"Next Patch Release"`
 - Priority: `~"priority::1"`, `~"priority::2"`, `~"priority::3"`, `~"priority::4"`
@@ -156,6 +158,18 @@ Examples of feature labels are `~wiki`, `~ldap`, `~api`, `~issues`, and `~"merge
 ### Naming and color convention
 
 Feature labels are all-lowercase.
+
+## Feature state labels
+
+Add a feature state label that will match the [state](../documentation/experiment_beta.md) of the feature when released.
+The label should match the work item title. While the feature state in the title
+already communicates the targeted state, the label is necessary for filtering.
+
+For example, you have an epic for a feature that you would like to release in beta.
+The title of the epic is "Your Feature (Beta)". Add the `~"Feature state::Beta"` label to match.
+
+Work items for features that have already been released as generally available (post-GA)
+do not require a feature state label.
 
 ## Workflow labels
 

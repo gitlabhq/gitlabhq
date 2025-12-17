@@ -139,6 +139,12 @@ RSpec.describe DashboardController, feature_category: :system_access do
     it_behaves_like 'load project events'
   end
 
+  context "when fetching user's projects activity with 'your_projects' filter" do
+    let_it_be(:filter) { 'your_projects' }
+
+    it_behaves_like 'load project events'
+  end
+
   context 'when fetching starred projects activity' do
     let_it_be(:filter) { 'starred' }
 

@@ -555,6 +555,8 @@
   - 2
 - - import_load_placeholder_references
   - 1
+- - import_offline_configuration_purge
+  - 1
 - - import_reassign_placeholder_user_records
   - 1
 - - import_refresh_import_jid
