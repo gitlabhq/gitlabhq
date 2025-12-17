@@ -365,6 +365,27 @@ Returns [`ContextPreset`](#contextpreset).
 | <a id="queryaichatcontextpresetsresourceid"></a>`resourceId` | [`AiModelID`](#aimodelid) | Global ID of the resource from the current page. |
 | <a id="queryaichatcontextpresetsurl"></a>`url` | [`String`](#string) | URL of the page the user is currently on. |
 
+### `Query.aiChatIncludedProjects`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Get projects that can be included by the current user in a GitLab Duo Chat context.
+
+Returns [`ProjectConnection`](#projectconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaichatincludedprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name or path. Minimum 3 characters. |
+
 ### `Query.aiConversationThreads`
 
 {{< details >}}

@@ -193,7 +193,7 @@ Both dashboards include:
 
 To view a security dashboard:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security dashboard**.
 
 ### Project security dashboard

@@ -2974,6 +2974,23 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(relation).to eq([project_c, project_b, project_a])
       end
     end
+
+    context 'when exclude_description is true' do
+      it 'does not consider the description column when sorting' do
+        # with search='similar'
+        # if exclude_description=false:
+        #   project_a goes first because its description adds to the similarity score
+        # if exclude_description=true:
+        #   project_b goes first because the description is not added to the similarity score,
+        #   giving project_a and project_b the same similarity scores,
+        #   with "project_id DESC" becoming the tiebreaker
+        expect(
+          described_class.sorted_by_similarity_desc(search_term, exclude_description: true)
+        ).to eq(
+          [project_b, project_a, project_c]
+        )
+      end
+    end
   end
 
   describe '.with_shared_runners_enabled' do
@@ -3300,6 +3317,48 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       create(:integrations_slack, project: project_4, inherit_from_id: nil)
 
       expect(described_class.without_integration(instance_integration)).to contain_exactly(project_4)
+    end
+  end
+
+  describe 'user and recency scopes', :freeze_time do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project_1) { create(:project) }
+    let_it_be(:project_2) { create(:project) }
+    let_it_be(:project_3) { create(:project) }
+
+    describe '.recently_contributed_by' do
+      before do
+        # user contributed to `project_1` last week
+        create(:event, :created, project: project_1, author: user, created_at: 1.week.ago)
+
+        # user contributed to `project_2` 2 months ago
+        create(:event, :created, project: project_2, author: user, created_at: 2.months.ago)
+      end
+
+      it "returns the user's contributed projects within the given `since` param" do
+        projects = described_class.recently_contributed_by(user, since: 1.month.ago)
+        expect(projects).to match_array([project_1])
+      end
+    end
+
+    describe '.recently_visited_by' do
+      before do
+        # user visited `project_1` last week
+        create(:project_visit, target_user: user, target_project: project_1, visited_at: 1.week.ago)
+
+        # user visited `project_2` 2 months ago
+        create(:project_visit, target_user: user, target_project: project_2, visited_at: 2.months.ago)
+      end
+
+      it "returns the user's visited projects within the given `since` param" do
+        projects = described_class.recently_visited_by(user, since: 1.month.ago)
+        expect(projects).to match_array([project_1])
+      end
+
+      it "returns an empty list when user is `nil`" do
+        projects = described_class.recently_visited_by(nil, since: 1.month.ago)
+        expect(projects).to be_empty
+      end
     end
   end
 
@@ -3762,6 +3821,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it 'returns projects that match the full path' do
         expect(described_class.search(project.full_path, include_namespace: true)).to eq([project])
+      end
+    end
+
+    context 'when exclude_description is true' do
+      it 'does not search on the description' do
+        expect(described_class.search('kitten', exclude_description: true)).to be_empty
       end
     end
 
@@ -5995,6 +6060,43 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
           it { is_expected.to contain_exactly(private_project, private_project2) }
         end
+      end
+    end
+  end
+
+  describe '.public_non_forked_or_visible_to_user' do
+    let_it_be(:user) { create(:user) }
+
+    let_it_be(:private_authorized_project) { create(:project, :private, creator: user, namespace: user.namespace) }
+    let_it_be(:private_unauthorized_project) { create(:project, :private) }
+    let_it_be(:public_project) { create(:project, :public) }
+    let_it_be(:public_forked_project) do
+      create(:project, :public).tap do |forked_project|
+        fork_network = create(:fork_network, root_project: public_project)
+        create(:fork_network_member, project: forked_project, fork_network: fork_network)
+      end
+    end
+
+    subject(:projects) { described_class.public_non_forked_or_visible_to_user(user) }
+
+    it 'returns public non-forked projects and projects visible to the logged in user' do
+      expect(projects).to match_array([
+        private_authorized_project,
+        public_project
+      ])
+    end
+
+    context 'when user can read all resources' do
+      before do
+        allow(user).to receive(:can_read_all_resources?).and_return(true)
+      end
+
+      it 'returns all accessible projects except for public forked projects' do
+        expect(projects).to match_array([
+          private_authorized_project,
+          private_unauthorized_project,
+          public_project
+        ])
       end
     end
   end

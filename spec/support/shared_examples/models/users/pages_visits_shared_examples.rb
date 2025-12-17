@@ -5,6 +5,34 @@ RSpec.shared_examples 'namespace visits model' do
   it { is_expected.to validate_presence_of(:user_id) }
   it { is_expected.to validate_presence_of(:visited_at) }
 
+  describe 'scopes' do
+    describe '.recently_visited', :freeze_time do
+      let!(:visit_last_week) do
+        described_class.create!(
+          entity_id: entity.id, user_id: user.id, visited_at: 1.week.ago
+        )
+      end
+
+      let!(:visit_2_months_ago) do
+        described_class.create!(
+          entity_id: entity.id, user_id: user.id, visited_at: 2.months.ago
+        )
+      end
+
+      it 'returns the expected records' do
+        # returns visits within the last 3 months if `since` is not given
+        expect(described_class.recently_visited.pluck(:id)).to match_array(
+          [visit_last_week.id, visit_2_months_ago.id]
+        )
+
+        # returns visits within the given `since` parameter
+        expect(described_class.recently_visited(since: 1.month.ago).pluck(:id)).to match_array(
+          [visit_last_week.id]
+        )
+      end
+    end
+  end
+
   describe '#visited_around?' do
     before do
       described_class.create!(entity_id: entity.id, user_id: user.id, visited_at: base_time)

@@ -30,7 +30,7 @@ This indicates that something is wrong with your SSH setup.
 - Try to debug the connection by running `ssh -Tv git@example.com`.
   Replace `example.com` with your GitLab URL.
 - Ensure you followed all the instructions in [Use SSH on Microsoft Windows](ssh.md#use-ssh-on-microsoft-windows).
-- Ensure that you have [Verify GitLab SSH ownership and permissions](ssh.md#verify-gitlab-ssh-ownership-and-permissions). If you have several hosts ensure that permissions are correct in all hosts.
+- Ensure that you have [verified GitLab SSH ownership and permissions](../security/ssh_keys_restrictions.md#verify-gitlab-ssh-ownership-and-permissions). If you have several hosts ensure that permissions are correct in all hosts.
 
 ## `Could not resolve hostname` error
 
@@ -74,8 +74,7 @@ The `Permission denied (publickey)` error usually indicates one or more of the f
 - Private key not accessible:
   [Verify](ssh.md#see-if-you-have-an-existing-ssh-key-pair) the private key is accessible on
   your local device.
-- Local permissions incorrect:
-  [Verify the permissions for your keys](ssh.md#verify-gitlab-ssh-ownership-and-permissions).
+- Local permissions incorrect: Verify the permissions for your keys.
   The private key should use `600`, and the `.ssh` directory should use `700`.
 - SSH key not loaded in `ssh-agent`: Verify the key is available to your local SSH client.
   This issue is common after a reboot or in new terminal sessions.

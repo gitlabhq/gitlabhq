@@ -1,12 +1,12 @@
 <script>
 import { GlModal, GlLink } from '@gitlab/ui';
-import rebaseQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/rebase.query.graphql';
 import { s__, __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { createAlert } from '~/alert';
 import toast from '~/vue_shared/plugins/global_toast';
 import simplePoll from '~/lib/utils/simple_poll';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
+import rebaseQuery from '../../queries/states/rebase.query.graphql';
 import eventHub from '../../event_hub';
 import ActionButtons from '../action_buttons.vue';
 import MergeChecksMessage from './message.vue';
@@ -104,13 +104,6 @@ export default {
         },
       ].filter((b) => b);
     },
-    rebaseCheck() {
-      if (this.state?.ciCdSettings?.mergeTrainsEnabled) {
-        return { ...this.check, identifier: 'NEED_REBASE_MERGE_TRAIN' };
-      }
-
-      return this.check;
-    },
   },
   methods: {
     rebase({ skipCi = false } = {}) {
@@ -192,7 +185,7 @@ export default {
 </script>
 
 <template>
-  <merge-checks-message :check="rebaseCheck">
+  <merge-checks-message :check="check">
     <template #failed>
       <action-buttons v-if="!isLoading" :tertiary-buttons="tertiaryActionsButtons" />
     </template>

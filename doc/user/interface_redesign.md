@@ -67,7 +67,7 @@ They open in a sidebar and can stay open as you move across GitLab.
 
 ### Improved opening work items in the details panel
 
-You could already open [work items in a drawer](project/issues/managing_issues.md#open-issues-in-a-drawer).
+You could already open work items in a drawer.
 GitLab now uses a details panel that fits in better with the context of your work.
 
 To open the item in the full page view, either:

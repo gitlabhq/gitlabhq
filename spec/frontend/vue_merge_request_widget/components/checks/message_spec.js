@@ -19,7 +19,7 @@ describe('Merge request merge checks message component', () => {
     ${'discussions_not_resolved'}   | ${'Open threads must be resolved.'}
     ${'draft_status'}               | ${'Merge request must not be draft.'}
     ${'not_open'}                   | ${'Merge request must be open.'}
-    ${'need_rebase'}                | ${'Fast forward merge is not possible. Please rebase.'}
+    ${'need_rebase'}                | ${'Merge request must be rebased, because a fast-forward merge is not possible.'}
     ${'not_approved'}               | ${'All required approvals must be given.'}
     ${'merge_request_blocked'}      | ${'Merge request dependencies must be merged.'}
     ${'status_checks_must_pass'}    | ${'Status checks must pass.'}

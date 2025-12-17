@@ -74,7 +74,7 @@ should adapt this guide to other installation methods.
    ```
 
 1. After NGINX is configured, open the GitLab application.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Web IDE**.
 1. In the **Extension host domain** text box, enter the custom extension host domain.

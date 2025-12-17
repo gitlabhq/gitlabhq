@@ -245,6 +245,7 @@ CI/CD job tokens can access the following REST API endpoints:
 | Get Merge Requests associated with a commit | `GET /projects/:id/repository/commits/:sha/merge_requests` | `READ_REPOSITORIES` | Read |
 | Get a project repository branches | `GET /projects/:id/repository/branches` | `READ_REPOSITORIES` | Read |
 | Get a project repository tags | `GET /projects/:id/repository/tags` | `READ_REPOSITORIES` | Read |
+| Get a single repository tag | `GET /projects/:id/repository/tags/:tag_name` | `READ_REPOSITORIES` | Read |
 | Get a specific commit of a project | `GET /projects/:id/repository/commits/:sha` | `READ_REPOSITORIES` | Read |
 | Get raw file contents from the repository | `GET /projects/:id/repository/files/:file_path/raw` | `READ_REPOSITORIES` | Read |
 

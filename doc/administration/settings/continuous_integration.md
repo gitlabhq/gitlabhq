@@ -616,7 +616,7 @@ To turn on incremental logging for all projects:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/582044) in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/582044) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -647,7 +647,7 @@ You can define entries in the allowlist with:
 
 To configure the CI/CD Catalog publishing allowlist:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Catalog**.
 1. In the **CI/CD Catalog publishing allowlist** text area, enter one path pattern per line.

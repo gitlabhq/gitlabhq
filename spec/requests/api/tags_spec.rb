@@ -331,6 +331,13 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
   describe 'GET /projects/:id/repository/tags/:tag_name' do
     let(:route) { "/projects/#{project_id}/repository/tags/#{tag_name}" }
 
+    it_behaves_like 'enforcing job token policies', :read_repositories,
+      allow_public_access_for_enabled_project_features: :repository do
+      let(:request) do
+        get api(route), params: { job_token: target_job.token }
+      end
+    end
+
     shared_examples_for 'repository tag' do
       it 'returns the repository branch' do
         get api(route, current_user)

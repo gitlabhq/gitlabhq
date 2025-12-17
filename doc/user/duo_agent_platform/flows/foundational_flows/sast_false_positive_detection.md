@@ -42,7 +42,7 @@ The flow runs automatically when:
 
 You can also manually trigger analysis for existing vulnerabilities:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability you want to analyze.
 1. In the upper-right corner, select **Check for false positive**.

@@ -2120,7 +2120,6 @@
 - './ee/spec/services/security/security_orchestration_policies/project_create_service_spec.rb'
 - './ee/spec/services/security/security_orchestration_policies/rule_schedule_service_spec.rb'
 - './ee/spec/services/security/security_orchestration_policies/scan_pipeline_service_spec.rb'
-- './ee/spec/services/security/security_orchestration_policies/sync_opened_merge_requests_service_spec.rb'
 - './ee/spec/services/security/security_orchestration_policies/validate_policy_service_spec.rb'
 - './ee/spec/services/security/store_grouped_scans_service_spec.rb'
 - './ee/spec/services/security/store_scan_service_spec.rb'

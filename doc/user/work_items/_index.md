@@ -69,7 +69,7 @@ When you enable this feature, it:
 
 To view work items for a project or group:
 
-1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Work items**.
 
 ### Filter work items
@@ -187,7 +187,7 @@ GitLab saves your display preferences at different levels:
 
 To configure display preferences:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Epics** or **Plan** > **Issues**.
 1. In the upper-right corner, select **Display options** ({{< icon name="preferences" >}}).
 1. Under **Fields**, turn on or turn off the metadata you want to display:

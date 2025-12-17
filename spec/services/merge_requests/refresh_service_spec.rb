@@ -10,14 +10,8 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
   let(:user) { create(:user) }
   let(:service) { described_class }
 
-  let(:pipeline_ff) { false }
-
   describe '#execute' do
     before do
-      stub_feature_flags(
-        split_refresh_worker_pipeline: pipeline_ff
-      )
-
       @user = create(:user)
       group = create(:group)
       group.add_owner(@user)
@@ -143,8 +137,8 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       end
 
       it 'triggers mergeRequestMergeStatusUpdated GraphQL subscription conditionally' do
-        expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).twice.with(@merge_request)
-        expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).twice.with(@another_merge_request)
+        expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(@merge_request)
+        expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(@another_merge_request)
         expect(GraphqlTriggers).not_to receive(:merge_request_merge_status_updated).with(@fork_merge_request)
 
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
@@ -275,224 +269,26 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
 
       subject { service.new(project: project, current_user: @user, params: { push_options: {}, gitaly_context: { nested: "value" } }).execute(@oldrev, @newrev, ref) }
 
-      context 'when split_refresh_worker_pipeline ff is true' do
-        let(:pipeline_ff) { true }
+      it 'calls the pipeline worker async, forwarding properly formatted push_options and gitaly_context' do
+        expect(MergeRequests::Refresh::PipelineWorker).to receive(:perform_async)
+          .with(
+            @project.id,
+            @user.id,
+            @oldrev,
+            @newrev,
+            'refs/heads/master',
+            {
+              "push_options" => {},
+              "gitaly_context" => { "nested" => "value" }
+            }
+          )
 
-        it 'calls the pipeline worker async, forwarding properly formatted push_options and gitaly_context' do
-          expect(MergeRequests::Refresh::PipelineWorker).to receive(:perform_async)
-            .with(
-              @project.id,
-              @user.id,
-              @oldrev,
-              @newrev,
-              'refs/heads/master',
-              {
-                "push_options" => {},
-                "gitaly_context" => { "nested" => "value" }
-              }
-            )
-
-          subject
-        end
-
-        it 'does not execute create the pipelines' do
-          expect { subject }
-            .not_to change { @merge_request.pipelines_for_merge_request.count + @another_merge_request.pipelines_for_merge_request.count }
-        end
+        subject
       end
 
-      context 'when split_refresh_worker_pipeline ff is false', :sidekiq_inline do
-        context "when .gitlab-ci.yml has merge_requests keywords" do
-          it 'create detached merge request pipeline with commits' do
-            expect { subject }
-              .to change { @merge_request.pipelines_for_merge_request.count }.by(1)
-              .and not_change { @another_merge_request.pipelines_for_merge_request.count }
-
-            expect(@merge_request.has_commits?).to be_truthy
-            expect(@another_merge_request.has_commits?).to be_falsy
-          end
-
-          context 'when push is a branch removal' do
-            before do
-              # If @newrev is a blank SHA, it means the ref has been removed
-              @newrev = Gitlab::Git::SHA1_BLANK_SHA
-            end
-
-            it 'does not create detached merge request pipeline' do
-              expect { subject }
-                .not_to change { @merge_request.pipelines_for_merge_request.count }
-            end
-          end
-
-          context 'when "push_options: nil" is passed' do
-            let(:service_instance) { service.new(project: project, current_user: @user, params: { push_options: nil }) }
-
-            subject { service_instance.execute(@oldrev, @newrev, ref) }
-
-            it 'creates a detached merge request pipeline with commits' do
-              expect { subject }
-                .to change { @merge_request.pipelines_for_merge_request.count }.by(1)
-                .and not_change { @another_merge_request.pipelines_for_merge_request.count }
-
-              expect(@merge_request.has_commits?).to be_truthy
-              expect(@another_merge_request.has_commits?).to be_falsy
-            end
-          end
-
-          context 'when ci.skip push_options are passed' do
-            let(:params) { { push_options: { ci: { skip: true } } } }
-            let(:service_instance) { service.new(project: project, current_user: @user, params: params) }
-
-            subject { service_instance.execute(@oldrev, @newrev, ref) }
-
-            it 'creates a skipped detached merge request pipeline with commits' do
-              expect { subject }
-                .to change { @merge_request.pipelines_for_merge_request.count }.by(1)
-                .and not_change { @another_merge_request.pipelines_for_merge_request.count }
-
-              expect(@merge_request.has_commits?).to be_truthy
-              expect(@another_merge_request.has_commits?).to be_falsy
-
-              pipeline = @merge_request.pipelines_for_merge_request.last
-              expect(pipeline).to be_skipped
-            end
-          end
-
-          it 'does not create detached merge request pipeline for forked project' do
-            expect { subject }
-              .not_to change { @fork_merge_request.pipelines_for_merge_request.count }
-          end
-
-          it 'create detached merge request pipeline for non-fork merge request' do
-            subject
-
-            expect(@merge_request.pipelines_for_merge_request.first)
-              .to be_detached_merge_request_pipeline
-          end
-
-          context 'when service is hooked by target branch' do
-            let(:ref) { 'refs/heads/feature' }
-
-            it 'does not create detached merge request pipeline' do
-              expect { subject }
-                .not_to change { @merge_request.pipelines_for_merge_request.count }
-            end
-          end
-
-          context 'when service runs on forked project' do
-            let(:project) { @fork_project }
-
-            it 'creates detached merge request pipeline for fork merge request' do
-              expect { subject }
-                .to change { @fork_merge_request.pipelines_for_merge_request.count }.by(1)
-
-              merge_request_pipeline = @fork_merge_request.pipelines_for_merge_request.first
-              expect(merge_request_pipeline).to be_detached_merge_request_pipeline
-              expect(merge_request_pipeline.project).to eq(@project)
-            end
-          end
-
-          context "when branch pipeline was created before a detaced merge request pipeline has been created" do
-            before do
-              create(
-                :ci_pipeline,
-                project: @merge_request.source_project,
-                sha: @merge_request.diff_head_sha,
-                ref: @merge_request.source_branch,
-                tag: false
-              )
-
-              subject
-            end
-
-            it 'sets the latest detached merge request pipeline as a head pipeline' do
-              @merge_request.reload
-              expect(@merge_request.diff_head_pipeline).to be_merge_request_event
-            end
-
-            it 'returns pipelines in correct order' do
-              @merge_request.reload
-              expect(@merge_request.all_pipelines.first).to be_merge_request_event
-              expect(@merge_request.all_pipelines.second).to be_push
-            end
-          end
-
-          context "when MergeRequestUpdateWorker is retried by an exception" do
-            it 'does not re-create a duplicate detached merge request pipeline' do
-              expect do
-                service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/master')
-              end.to change { @merge_request.pipelines_for_merge_request.count }.by(1)
-
-              expect do
-                service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/master')
-              end.not_to change { @merge_request.pipelines_for_merge_request.count }
-            end
-          end
-
-          context 'when the pipeline should be skipped' do
-            it 'saves a skipped detached merge request pipeline' do
-              project.repository.create_file(
-                @user, 'new-file.txt', 'A new file',
-                message: '[skip ci] This is a test',
-                branch_name: 'master'
-              )
-
-              expect { subject }
-                .to change { @merge_request.pipelines_for_merge_request.count }.by(1)
-              expect(@merge_request.pipelines_for_merge_request.last).to be_skipped
-            end
-          end
-        end
-
-        context "when .gitlab-ci.yml does not have merge_requests keywords" do
-          let(:config) do
-            YAML.dump({
-              test: {
-                stage: 'test',
-                script: 'echo'
-              }
-            })
-          end
-
-          it 'does not create a detached merge request pipeline' do
-            expect { subject }
-              .not_to change { @merge_request.pipelines_for_merge_request.count }
-          end
-        end
-
-        context 'when .gitlab-ci.yml is invalid' do
-          let(:config) { 'invalid yaml file' }
-
-          it 'persists a pipeline with config error' do
-            expect { subject }
-              .to change { @merge_request.pipelines_for_merge_request.count }.by(1)
-            expect(@merge_request.pipelines_for_merge_request.last).to be_failed
-            expect(@merge_request.pipelines_for_merge_request.last).to be_config_error
-          end
-        end
-
-        context 'when .gitlab-ci.yml file is valid but has a logical error' do
-          let(:config) do
-            YAML.dump({
-              build: {
-                script: 'echo "Valid yaml syntax, but..."',
-                only: ['master']
-              },
-              test: {
-                script: 'echo "... I depend on build, which does not run."',
-                only: ['merge_request'],
-                needs: ['build']
-              }
-            })
-          end
-
-          it 'persists a pipeline with config error' do
-            expect { subject }
-              .to change { @merge_request.pipelines_for_merge_request.count }.by(1)
-            expect(@merge_request.pipelines_for_merge_request.last).to be_failed
-            expect(@merge_request.pipelines_for_merge_request.last).to be_config_error
-          end
-        end
+      it 'does not create the pipelines inline' do
+        expect { subject }
+          .not_to change { @merge_request.pipelines_for_merge_request.count + @another_merge_request.pipelines_for_merge_request.count }
       end
     end
 

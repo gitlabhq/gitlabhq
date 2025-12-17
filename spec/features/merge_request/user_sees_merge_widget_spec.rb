@@ -412,7 +412,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
       click_button 'Expand merge checks'
 
-      expect(page).not_to have_content('Fast forward merge is not possible. Please rebase.')
+      expect(page).not_to have_content('Merge request must be rebased, because a fast-forward merge is not possible.')
     end
 
     context 'when ff is off' do
@@ -424,7 +424,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
         click_button 'Expand merge checks'
 
-        expect(page).to have_content('Fast forward merge is not possible. Please rebase.')
+        expect(page).to have_content('Merge request must be rebased, because a fast-forward merge is not possible.')
       end
     end
   end

@@ -3,7 +3,7 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: yes
-title: Restrict allowed SSH key technologies and minimum length
+title: Configure SSH key restrictions
 ---
 
 {{< details >}}
@@ -55,3 +55,65 @@ By default, the GitLab.com and GitLab Self-Managed settings for the
 - ED25519 SSH keys are allowed.
 - ECDSA_SK SSH keys are allowed.
 - ED25519_SK SSH keys are allowed.
+
+## Override SSH settings on the GitLab server
+
+GitLab integrates with the system-installed SSH daemon and designates a user
+(typically named `git`) through which all access requests are handled. Users
+who connect to the GitLab server over SSH are identified by their SSH key instead
+of their username.
+
+SSH client operations performed on the GitLab server are executed as this
+user. You can modify this SSH configuration. For example, you can specify
+a private SSH key for this user to use for authentication requests. However, this practice
+is not supported and is strongly discouraged as it presents significant
+security risks.
+
+GitLab checks for this condition, and directs you
+to this section if your server is configured this way. For example:
+
+```shell
+$ gitlab-rake gitlab:check
+
+Git user has default SSH configuration? ... no
+  Try fixing it:
+  mkdir ~/gitlab-check-backup-1504540051
+  sudo mv /var/lib/git/.ssh/id_rsa ~/gitlab-check-backup-1504540051
+  sudo mv /var/lib/git/.ssh/id_rsa.pub ~/gitlab-check-backup-1504540051
+  For more information see:
+  doc/user/ssh.md#overriding-ssh-settings-on-the-gitlab-server
+  Please fix the error above and rerun the checks.
+```
+
+{{< alert type="warning" >}}
+
+Remove the custom configuration as soon as you can. These customizations
+are explicitly not supported and may stop working at any time.
+
+{{< /alert >}}
+
+## Verify GitLab SSH ownership and permissions
+
+The GitLab SSH folder and files must have the following permissions:
+
+- The folder `/var/opt/gitlab/.ssh/` must be owned by the `git` group and the `git` user, with permissions set to `700`.
+- The `authorized_keys` file must have permissions set to `600`.
+- The `authorized_keys.lock` file must have permissions set to `644`.
+
+To verify that these permissions are correct, run the following:
+
+```shell
+stat -c "%a %n" /var/opt/gitlab/.ssh/.
+```
+
+### Set permissions
+
+If the permissions are wrong, sign in to the application server and run:
+
+```shell
+cd /var/opt/gitlab/
+chown git:git /var/opt/gitlab/.ssh/
+chmod 700  /var/opt/gitlab/.ssh/
+chmod 600  /var/opt/gitlab/.ssh/authorized_keys
+chmod 644  /var/opt/gitlab/.ssh/authorized_keys.lock
+```

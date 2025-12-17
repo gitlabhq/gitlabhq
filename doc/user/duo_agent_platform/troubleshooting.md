@@ -61,12 +61,12 @@ In the GitLab UI, foundational flows use a service account that:
 To configure push rules for a project:
 
 1. Find the email address associated with the service account:
-   1. On the left sidebar, at the bottom, select **Admin**.
+   1. In the upper-right corner, select **Admin**.
    1. Select **Overview** > **Users** and search for `duo-developer`.
    1. Locate the `duo-developer` user and copy the email address.
 
 1. Allow the email address to push to the project:
-   1. On the left sidebar, select **Search or go to** and find your project.
+   1. On the top bar, select **Search or go to** and find your project.
    1. Select **Settings** > **Repository**.
    1. Expand **Push rules**.
    1. In **Commit author's email**, add a regular expression that allows the email address you just copied.
@@ -80,7 +80,7 @@ To configure push rules for a project:
 
 If you are an administrator, you can create push rules for the instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Push rules**.
 1. Follow the previous steps to allow **Commit author's email** and **Branch name**.
 1. Select **Save push rules**.

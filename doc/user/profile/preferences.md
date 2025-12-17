@@ -33,8 +33,6 @@ To change the appearance:
 1. In the **Mode** section, select an option.
 1. Select **Save changes**.
 
-<!-- When new navigation is released and feature flag `paneled_view` is removed, change **Navigation** to **Theme** -->
-
 ## Change the navigation theme
 
 {{< history >}}
@@ -52,7 +50,7 @@ To change the navigation theme:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. In the **Navigation** section, select a theme.
+1. In the **Theme** section, select a theme.
 
 ## Change the syntax highlighting theme
 

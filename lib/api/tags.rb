@@ -82,6 +82,9 @@ module API
       params do
         requires :tag_name, type: String, desc: 'The name of the tag'
       end
+      route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :read_repositories,
+        allow_public_access_for_enabled_project_features: :repository
       get ':id/repository/tags/:tag_name', requirements: TAG_ENDPOINT_REQUIREMENTS, feature_category: :source_code_management do
         tag = user_project.repository.find_tag(params[:tag_name])
         not_found!('Tag') unless tag

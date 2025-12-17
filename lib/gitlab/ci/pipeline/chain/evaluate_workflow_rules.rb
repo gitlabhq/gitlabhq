@@ -23,6 +23,7 @@ module Gitlab
               # Example: With Pipeline Execution Policies we want to inject policy
               # jobs even if the project pipeline is filtered out by workflow:rules.
               @command.yaml_processor_result&.clear_jobs!
+              @command.pipeline_creation_forced_to_continue = true
 
               return
             end

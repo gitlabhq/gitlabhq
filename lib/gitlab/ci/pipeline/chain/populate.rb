@@ -18,10 +18,14 @@ module Gitlab
             pipeline.stages = @command.pipeline_seed.stages
 
             if no_pipeline_to_create?
-              return error(
-                ::Ci::Pipeline.rules_failure_message,
-                failure_reason: :filtered_by_rules
-              )
+              if force_pipeline_creation_to_continue?
+                @command.pipeline_creation_forced_to_continue = true
+              else
+                return error(
+                  ::Ci::Pipeline.rules_failure_message,
+                  failure_reason: :filtered_by_rules
+                )
+              end
             end
 
             return error('Failed to build the pipeline!') if pipeline.invalid?
@@ -36,13 +40,7 @@ module Gitlab
           private
 
           def no_pipeline_to_create?
-            # If there are security policy pipelines,
-            # they will be merged onto the pipeline in PipelineExecutionPolicies::ApplyPolicies
-            stage_names.empty? && !has_execution_policy_pipelines?
-          end
-
-          def has_execution_policy_pipelines?
-            @command.pipeline_policy_context&.pipeline_execution_context&.has_execution_policy_pipelines?
+            stage_names.empty?
           end
 
           def stage_names
@@ -51,8 +49,15 @@ module Gitlab
             # https://gitlab.com/gitlab-org/gitlab/issues/198518
             pipeline.stages.map(&:name) - ::Gitlab::Ci::Config::Stages::EDGES
           end
+
+          # Overridden in EE
+          def force_pipeline_creation_to_continue?
+            false
+          end
         end
       end
     end
   end
 end
+
+Gitlab::Ci::Pipeline::Chain::Populate.prepend_mod

@@ -2,7 +2,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlModal } from '@gitlab/ui';
 import MergeChecksRebase from '~/vue_merge_request_widget/components/checks/rebase.vue';
-import rebaseQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/rebase.query.graphql';
+import rebaseQuery from '~/vue_merge_request_widget/queries/states/rebase.query.graphql';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import toast from '~/vue_shared/plugins/global_toast';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -35,9 +35,6 @@ const mockQueryHandler = ({
       project: {
         id: '1',
         allowMergeOnSkippedPipeline,
-        ciCdSettings: {
-          mergeTrainsEnabled: false,
-        },
         mergeRequest: {
           id: '2',
           rebaseInProgress,

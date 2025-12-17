@@ -142,7 +142,7 @@ Prerequisites:
 
 To update multiple epics at the same time:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Epics**.
 1. Select **Bulk edit**. On the right, a sidebar with editable fields appears.
 1. Select the checkboxes next to each epic you want to edit.
@@ -237,7 +237,7 @@ Prerequisites:
 
 To change the assignee on an epic:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Epics**, then select your epic to view it.
 1. On the right sidebar, in the **Assignees** section, select **Edit**.
 1. From the dropdown list, select the users to add as an assignee.
@@ -292,7 +292,7 @@ Prerequisites:
 
 To change an epic's color:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Epics**.
 1. Select **New epic** or select an existing epic.
 1. On the right sidebar, in the **Color** section, select **Edit**.
@@ -383,7 +383,7 @@ Prerequisites:
 
 To view epics in a group:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Epics**.
 
 To set which attributes are shown for epics on the epics list, [configure display preferences](../../work_items/_index.md#configure-list-display-preferences).
@@ -414,7 +414,7 @@ the epic's [confidentiality status](#make-an-epic-confidential):
 
 {{< /history >}}
 
-When you select an epic from the Epics page or an epic board, it opens in a drawer.
+When you select an epic from the Epics page or an epic board, it opens in a details panel.
 You can then view and edit its details without losing context of the epic list or board.
 
 When using the drawer:
@@ -423,9 +423,6 @@ When using the drawer:
 - The drawer appears on the right side of the screen.
 - You can edit the epic directly in the drawer.
 - To close the drawer, select the close icon ({{< icon name="close" >}}) or press **Escape**.
-
-If you've [turned on the new navigation](../../interface_redesign.md),
-the epic opens in a details panel.
 
 #### Open an epic in full page view
 
@@ -469,7 +466,7 @@ You can filter the list of epics by:
 
 To filter:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Epics**.
 1. Select the field **Search or filter results**.
 1. From the dropdown list, select the scope or enter plain text to search by epic title or description.
@@ -641,7 +638,7 @@ Prerequisites:
 
 To change the health status of an epic:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Epics**.
 1. Select an epic.
 1. In the right sidebar, in the **Health status** section, select **Edit**.
@@ -800,7 +797,7 @@ Prerequisites:
 
 To add a parent epic:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Epics**.
 1. Select an epic.
 1. In the right sidebar, in the **Parent** section, select **Edit**.

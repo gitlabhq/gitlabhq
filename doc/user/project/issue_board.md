@@ -547,7 +547,7 @@ You can edit the following issue attributes in the right sidebar:
 - [Weight](issues/issue_weight.md)
 - Time tracking
 
-When you select an issue card from the issue board, the [issue opens in a drawer](issues/managing_issues.md#open-issues-in-a-drawer).
+When you select an issue card from the issue board, the issue opens in a details panel.
 There, you can edit all the fields, including the description, comments, or related items.
 
 ### Create a new list
@@ -562,7 +562,7 @@ You can create a new list between two existing lists or at the right of an issue
 
 To create a new list between two lists:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issue boards**.
 1. Hover or move keyboard focus between two lists.
 1. Select **New list**.

@@ -47,7 +47,7 @@ The analysis happens in the background and results appear in the vulnerability r
 
 You can manually trigger false positive detection for existing vulnerabilities:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability you want to analyze.
 1. In the upper-right corner, select **Check for false positive** to trigger false positive detection.
@@ -64,7 +64,7 @@ To use false positive detection, you must have:
 
 To use false positive detection, you must turn it on in GitLab Duo settings:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Enable **Use Duo SAST False Positive Detection**.

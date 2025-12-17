@@ -713,6 +713,19 @@ class Project < ApplicationRecord
         .or(arel_table[:storage_version].eq(nil)))
   end
 
+  scope :recently_contributed_by, ->(user, since: 1.month.ago) do
+    joins(:events)
+      .where(Event.arel_table[:author_id].eq(user.id))
+      .where(Event.arel_table[:created_at].gt(since))
+  end
+
+  # The `projects_visits` table is partitioned on `visited_at` by month
+  # Please avoid setting `since` to more than 3 months ago
+  scope :recently_visited_by, ->(user, since: 3.months.ago) do
+    joins("INNER JOIN #{Users::ProjectVisit.table_name} ON projects_visits.entity_id = projects.id")
+      .merge(Users::ProjectVisit.for_user(user).recently_visited(since: since))
+  end
+
   scope :sorted_by_activity, -> { reorder(self.arel_table['last_activity_at'].desc) }
   scope :sorted_by_updated_asc, -> { reorder(self.arel_table['last_activity_at'].asc) }
   scope :sorted_by_updated_desc, -> { reorder(self.arel_table['last_activity_at'].desc) }
@@ -793,13 +806,17 @@ class Project < ApplicationRecord
     )
   end
 
-  scope :sorted_by_similarity_desc, ->(search, full_path_only: false) do
+  scope :sorted_by_similarity_desc, ->(search, full_path_only: false, exclude_description: false) do
+    path_sort_rule = { column: arel_table["path"], multiplier: 1 }
+    name_sort_rule = { column: arel_table["name"], multiplier: 0.7 }
     rules = if full_path_only
-              [{ column: arel_table["path"], multiplier: 1 }]
+              [path_sort_rule]
+            elsif exclude_description
+              [path_sort_rule, name_sort_rule]
             else
               [
-                { column: arel_table["path"], multiplier: 1 },
-                { column: arel_table["name"], multiplier: 0.7 },
+                path_sort_rule,
+                name_sort_rule,
                 { column: arel_table["description"], multiplier: 0.2 }
               ]
             end
@@ -1077,6 +1094,21 @@ class Project < ApplicationRecord
     end
   end
 
+  # Returns a collection of projects that is either:
+  # - public and not forked
+  # - or visible to the logged in user
+  def self.public_non_forked_or_visible_to_user(user, min_access_level = nil)
+    min_access_level = nil if user.can_read_all_resources?
+
+    left_outer_joins(:fork_network_member)
+      .where(
+        'EXISTS (?) OR (projects.visibility_level IN (?) AND ?)',
+        user.authorizations_for_projects(min_access_level: min_access_level),
+        visibility_levels_for_user(user),
+        ForkNetworkMember.arel_table[:forked_from_project_id].eq(nil)
+      )
+  end
+
   # Auditors can :read_all_resources while admins can :read_all_resources and
   # read_admin_projects. In EE, a regular user can read_admin_projects through
   # custom admin roles.
@@ -1181,13 +1213,15 @@ class Project < ApplicationRecord
     # search.
     #
     # query - The search query as a String.
-    def search(query, include_namespace: false, use_minimum_char_limit: true)
+    def search(query, include_namespace: false, exclude_description: false, use_minimum_char_limit: true)
       if include_namespace
         joins(:route).fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name], :description],
           use_minimum_char_limit: use_minimum_char_limit)
         .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
       else
-        fuzzy_search(query, [:path, :name, :description], use_minimum_char_limit: use_minimum_char_limit)
+        search_columns = [:path, :name]
+        search_columns << :description unless exclude_description
+        fuzzy_search(query, search_columns, use_minimum_char_limit: use_minimum_char_limit)
       end
     end
 

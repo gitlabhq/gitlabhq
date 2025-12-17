@@ -38,7 +38,7 @@ Prerequisites:
 
 To edit an issue:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select the title of your issue to view it.
 1. To the right of the title, select **Edit** ({{< icon name="pencil" >}}).
 1. Edit the available fields.
@@ -114,7 +114,7 @@ Prerequisites:
 
 To edit multiple issues at the same time:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**.
 1. Select **Bulk edit**. On the right, a sidebar with editable fields appears.
 1. Select the checkboxes next to each issue you want to edit.
@@ -155,7 +155,7 @@ Prerequisites:
 
 To move an issue:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) > **Move**.
 1. Search for a project to move the issue to.
@@ -210,7 +210,7 @@ Prerequisites:
 
 To move multiple issues at the same time:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**.
 1. Select **Bulk edit**. On the right, a sidebar with editable fields appears.
 1. Select the checkboxes next to each issue you want to move.
@@ -315,7 +315,7 @@ To close an issue, you can either:
 
 - In an [issue board](../issue_board.md), drag an issue card from its list into the **Closed** list.
 - From any other page in the GitLab UI:
-  1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+  1. On the top bar, select **Search or go to** and find your project.
   1. Select **Plan** > **Issues**, then select your issue to view it.
   1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) and then **Close issue**.
 
@@ -445,7 +445,7 @@ Prerequisites:
 
 To disable automatic issue closing:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch defaults**.
 1. Clear the **Auto-close referenced issues on default branch** checkbox.
@@ -528,7 +528,7 @@ Prerequisites:
 
 To delete an issue:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Delete issue**.
@@ -548,7 +548,7 @@ Prerequisites:
 
 To change issue type:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Change type**
@@ -609,7 +609,7 @@ Prerequisites:
 
 To promote an issue to an epic:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Change type**
@@ -633,7 +633,7 @@ You can use the [`/promote_to Incident` quick action](../quick_actions.md#promot
 
 To add an issue to an [iteration](../../group/iterations/_index.md):
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. On the right sidebar, in the **Iteration** section, select **Edit**.
 1. From the dropdown list, select the iteration to add this issue to.
@@ -649,14 +649,13 @@ To add an issue to an iteration, you can also:
 
 To view all issues assigned to you:
 
-1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to**.
 1. From the dropdown list, select **Issues assigned to me**.
 
 Or:
 
 - To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd>+<kbd>i</kbd>.
-- On the left sidebar, at the top, select **Assigned issues** ({{< icon name="issues" >}}). If you've [turned on the new navigation](../../interface_redesign.md), this button is in the upper-right corner.
-<!-- When the feature flag paneled_view is removed, refer only to the button icon -->
+- In the upper-right corner, select **Assigned issues** ({{< icon name="issues" >}}).
 
 ## Issue list
 
@@ -665,7 +664,7 @@ You can use it to view, sort, and manage issues.
 
 To view the issue list:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**.
 
 To set which attributes are shown for epics on the issue list, [configure display preferences](../../work_items/_index.md#configure-list-display-preferences).
@@ -693,7 +692,7 @@ The following sections describe how to work with the issue list.
 
 To filter the list of issues:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**.
 1. Above the list of issues, select **Search or filter results**.
 1. From the dropdown list that appears, select the attribute you want to filter by.
@@ -734,7 +733,7 @@ To filter the list of issues:
 
 To filter the list issues for text in a title or description:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**.
 1. Above the list of issues, in the **Search or filter results** text box, enter the searched phrase.
 1. In the dropdown list that appears, select **Search within**, and then either **Titles** or **Descriptions**.
@@ -752,14 +751,14 @@ It's a limitation of PostgreSQL full text search.
 
 #### Filter issues by ID
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**.
 1. Above the list of issues, in the **Search or filter results** text box, type `#` followed by the issue ID.
    For example, enter `#362255` to return only issue 362255.
 1. Select **Search for this text**.
 1. Press <kbd>Enter</kbd> or select the search icon ({{< icon name="search" >}}).
 
-### Open issues in a drawer
+### Open issues in a panel
 
 {{< history >}}
 
@@ -768,19 +767,16 @@ It's a limitation of PostgreSQL full text search.
 
 {{< /history >}}
 
-When you select an issue from the list or issue board, it opens in a drawer.
+When you select an issue from the list or issue board, it opens in a details panel.
 
 You can then view and edit its details without losing context of the epic list or board.
 
-When using the drawer:
+When using the panel:
 
-- Select an epic from the list to open it in the drawer.
-- The drawer appears on the right side of the screen.
-- You can edit the epic directly in the drawer.
-- To close the drawer, select the close icon ({{< icon name="close" >}}) or press **Escape**.
-
-If you've [turned on the new navigation](../../interface_redesign.md),
-the issue opens in a details panel
+- Select an epic from the list to open it in the panel.
+- The panel appears on the right side of the screen.
+- You can edit the epic directly in the panel.
+- To close the panel, select the close icon ({{< icon name="close" >}}) or press **Escape**.
 
 #### Open an issue in full page view
 
@@ -789,7 +785,7 @@ To open the issue in full view:
 - Open the issue in a new tab. From the list of issues, either:
   - Right-click the issue and open it in a new browser tab.
   - Hold <kbd>Command</kbd> or <kbd>Control</kbd> and select the issue.
-- Select an issue, and from the drawer, either:
+- Select an issue, and from the panel, either:
   - In the upper-left corner, select the issue reference, for example `my_project#123`.
   - In the upper-right corner, select **Open in full page** ({{< icon name="maximize" >}}).
 
@@ -802,7 +798,7 @@ To refer to an issue elsewhere in GitLab, you can use its full URL or a short re
 
 To copy the issue reference to your clipboard:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) > **Copy Reference**.
 
@@ -820,7 +816,7 @@ For more information about creating comments by sending an email and the necessa
 
 To copy the issue's email address:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) > **Copy issue email address**.
 
@@ -849,7 +845,7 @@ Prerequisites:
 
 To change the assignee on an issue:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. On the right sidebar, in the **Assignees** section, select **Edit**.
 1. From the dropdown list, select the user to add as an assignee.
@@ -895,7 +891,7 @@ Prerequisites:
 
 To edit health status of an issue:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. On the right sidebar, in the **Health status** section, select **Edit**.
 1. From the dropdown list, select the status to add to this issue:
@@ -951,7 +947,7 @@ Prerequisites:
 
 To change the status of an issue:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. On the right sidebar, in the **Status** section, select **Edit**.
 1. From the dropdown list, select the status.
