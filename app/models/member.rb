@@ -210,6 +210,11 @@ class Member < ApplicationRecord
   scope :guests, -> { active.where(access_level: GUEST) }
   scope :planners, -> { active.where(access_level: PLANNER) }
   scope :reporters, -> { active.where(access_level: REPORTER) }
+  scope :security_managers, -> {
+    return none unless Gitlab::Security::SecurityManagerConfig.enabled?
+
+    active.where(access_level: SECURITY_MANAGER)
+  }
   scope :developers, -> { active.where(access_level: DEVELOPER) }
   scope :maintainers, -> { active.where(access_level: MAINTAINER) }
   scope :non_guests, -> { where('members.access_level > ?', GUEST) }

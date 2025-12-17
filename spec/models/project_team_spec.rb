@@ -781,4 +781,26 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
       include_examples 'max member access for users'
     end
   end
+
+  describe '#add_security_manager' do
+    let(:project) { create(:project) }
+    let(:user) { create(:user) }
+
+    context 'when security manager role is enabled' do
+      it 'adds the user as security manager' do
+        project.team.add_security_manager(user)
+
+        expect(project.team.member?(user, Gitlab::Access::SECURITY_MANAGER)).to be_truthy
+      end
+    end
+
+    context 'when security manager role is disabled', :disable_security_manager do
+      it 'returns nil and does not add the user' do
+        result = project.team.add_security_manager(user)
+
+        expect(result).to be_nil
+        expect(project.team.member?(user)).to be_falsey
+      end
+    end
+  end
 end

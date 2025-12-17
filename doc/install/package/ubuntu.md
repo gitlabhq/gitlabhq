@@ -64,6 +64,7 @@ To install GitLab, first add the GitLab package repository.
 1. Install the needed packages:
 
    ```shell
+   sudo apt update
    sudo apt install -y curl
    ```
 

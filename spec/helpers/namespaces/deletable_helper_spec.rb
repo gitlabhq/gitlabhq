@@ -157,9 +157,9 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
       let(:namespace) { build_stubbed(:group) }
 
       specify do
-        expect(message).to eq "This action will place this group, " \
-          "including its subgroups and projects, in a pending deletion state for #{deletion_adjourned_period} days, " \
-          "and delete it permanently on <strong>#{helper.permanent_deletion_date_formatted}</strong>."
+        expect(message).to eq "This action will permanently delete this group, including its subgroups and projects, " \
+          "on <strong>#{helper.permanent_deletion_date_formatted}</strong>. " \
+          "Scheduled pipelines will not run during deletion."
       end
     end
 
@@ -168,9 +168,9 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
         let(:namespace) { build_stubbed(entity) }
 
         specify do
-          expect(message).to eq "This action will place this project, " \
-            "including all its resources, in a pending deletion state for #{deletion_adjourned_period} days, " \
-            "and delete it permanently on <strong>#{helper.permanent_deletion_date_formatted}</strong>."
+          expect(message).to eq "This action will permanently delete this project, including all its resources, " \
+            "on <strong>#{helper.permanent_deletion_date_formatted}</strong>. " \
+            "Scheduled pipelines will not run during deletion."
         end
       end
     end
@@ -251,6 +251,8 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
       "The contents of this group, its subgroups and projects will be permanently deleted after"
     end
 
+    let(:scheduled_pipelines_message) { "Scheduled pipelines will not run during deletion." }
+
     let(:permanent_deletion_message) do
       [
         "You are about to delete the group #{group.name}",
@@ -272,7 +274,7 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
 
     shared_examples 'delayed deletion message' do
       it 'returns the message related to delayed deletion' do
-        expect(message).to include(delayed_deletion_message)
+        expect(message).to include(scheduled_pipelines_message)
         expect(message).not_to include(*permanent_deletion_message)
       end
     end

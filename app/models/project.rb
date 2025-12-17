@@ -558,7 +558,7 @@ class Project < ApplicationRecord
   with_options to: :team do
     delegate :members, prefix: true
     delegate :add_member, :add_members, :member?, :max_member_access_for_user
-    delegate :add_guest, :add_planner, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role
+    delegate :add_guest, :add_planner, :add_reporter, :add_security_manager, :add_developer, :add_maintainer, :add_owner, :add_role
     delegate :has_user?
   end
 

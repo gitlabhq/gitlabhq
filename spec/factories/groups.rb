@@ -13,6 +13,7 @@ FactoryBot.define do
       guests {}
       planners {}
       reporters {}
+      security_managers {}
       developers {}
       maintainers {}
       owners {}
@@ -32,6 +33,7 @@ FactoryBot.define do
       group.add_members(Array.wrap(evaluator.guests), :guest)
       group.add_members(Array.wrap(evaluator.planners), :planner)
       group.add_members(Array.wrap(evaluator.reporters), :reporter)
+      group.add_members(Array.wrap(evaluator.security_managers), :security_manager)
       group.add_members(Array.wrap(evaluator.developers), :developer)
       group.add_members(Array.wrap(evaluator.maintainers), :maintainer)
       group.add_members(Array.wrap(evaluator.owners), :owner)

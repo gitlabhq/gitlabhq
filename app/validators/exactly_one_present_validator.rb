@@ -2,28 +2,47 @@
 
 # ExactlyOnePresentValidator
 #
-# Custom validator for ensuring that exactly one of the specified fields is present.
+# Custom validator for ensuring that exactly one of the specified fields or associations is present.
 #
-# The validator supports three types of fields:
-# - ActiveRecord associations (e.g., belongs_to, has_one)
-# - Database columns (e.g., string, integer fields)
-# - Custom methods that return a value (e.g., dynamically defined methods)
+# Options:
+# - :fields - Array, Symbol, or Proc for database columns and custom methods.
+#             Uses the reader method (public_send) to get the value, so any custom
+#             getter definition will be used.
+# - :associations - Array, Symbol, or Proc for ActiveRecord associations.
+#                   Uses ActiveRecord's association reflection to get the value directly,
+#                   bypassing any custom reader methods.
+# - :error_key - Symbol for the error key (default: :base)
+# - :message - String or Proc for custom error message
+#
+# At least one of :fields or :associations must be provided. Both can be used together.
+#
+# The validator supports three types of values for :fields and :associations:
+# - Array: Static list of field/association names
+# - Symbol: Method name that returns an array of field/association names
+# - Proc/lambda: Dynamic resolution executed in the record's context
 #
 # Examples:
 #
-#   # Using an Array of field names (static fields)
+#   # Using :fields with an Array (database columns and custom methods)
 #   class MyModel < ApplicationRecord
-#     belongs_to :relation, optional: true
-#     validates_with ExactlyOnePresentValidator, fields: %i[relation name url]
+#     validates_with ExactlyOnePresentValidator, fields: %i[name url identifier]
 #   end
 #
-#   # Using custom methods alongside associations
+#   # Using :associations with an Array (ActiveRecord associations)
+#   class MyModel < ApplicationRecord
+#     belongs_to :project, optional: true
+#     belongs_to :group, optional: true
+#     validates_with ExactlyOnePresentValidator, associations: %i[project group]
+#   end
+#
+#   # Combining :fields and :associations
 #   class MyModel < ApplicationRecord
 #     belongs_to :custom_status, optional: true
-#     validates_with ExactlyOnePresentValidator, fields: %i[system_defined_status custom_status]
+#     validates_with ExactlyOnePresentValidator,
+#       fields: %i[system_defined_status],
+#       associations: %i[custom_status]
 #
 #     def system_defined_status
-#       # Custom method that returns a value
 #       @system_defined_status ||= SystemStatus.find_by(id: system_status_id)
 #     end
 #   end
@@ -47,7 +66,8 @@
 #   # Using custom error key and message
 #   class MyModel < ApplicationRecord
 #     validates_with ExactlyOnePresentValidator,
-#       fields: %i[relation name url],
+#       fields: %i[name url],
+#       associations: %i[project],
 #       error_key: :custom_key,
 #       message: 'Please provide exactly one identifier'
 #   end
@@ -55,60 +75,65 @@ class ExactlyOnePresentValidator < ActiveModel::Validator # rubocop:disable Gitl
   def initialize(*args)
     super
 
-    raise 'ExactlyOnePresentValidator: :fields options are required' if options[:fields].blank?
+    return unless options[:fields].blank? && options[:associations].blank?
+
+    raise 'ExactlyOnePresentValidator: :fields or :associations options are required'
   end
 
   def validate(record)
-    fields = resolve_fields(record)
-    present_values = present_field_values(record, fields)
+    resolved_fields = resolve_option(record, :fields)
+    resolved_associations = resolve_option(record, :associations)
+    all_keys = resolved_fields + resolved_associations
+
+    present_values = present_field_values(record, resolved_fields) +
+      present_association_values(record, resolved_associations)
 
     return if present_values.one?
 
-    add_validation_error(record, fields)
+    add_validation_error(record, all_keys)
   end
 
   private
 
-  def resolve_fields(record)
-    option_fields = options[:fields]
-    case option_fields
-    when Symbol
-      raise ArgumentError, "Unknown :fields method #{option_fields}" unless record.respond_to?(option_fields, true)
+  def resolve_option(record, option_name)
+    option_value = options[option_name]
 
-      Array(record.send(option_fields)) # rubocop:disable GitlabSecurity/PublicSend -- options_fields comes from the class definition, not runtime values
-    when Proc
-      Array(record.instance_exec(&option_fields))
+    case option_value
+    when NilClass
+      []
     when Array
-      option_fields
+      option_value
+    when Symbol
+      unless record.respond_to?(option_value, true)
+        raise ArgumentError, "Unknown :#{option_name} method #{option_value}"
+      end
+
+      Array(record.send(option_value)) # rubocop:disable GitlabSecurity/PublicSend -- option_value comes from the class definition, not runtime values
+    when Proc
+      Array(record.instance_exec(&option_value))
     else
-      raise ArgumentError, "Unknown :fields option type #{option_fields.class}"
+      raise ArgumentError, "Unknown :#{option_name} option type #{option_value.class}"
     end
   end
 
   def present_field_values(record, fields)
     fields.filter_map do |field|
-      symbol_field = field.to_sym
-
-      if record.class.reflect_on_association(symbol_field)
-        record.association(symbol_field).reader
-      else
-        record.public_send(symbol_field).presence # rubocop:disable GitlabSecurity/PublicSend -- field comes from class definition
-      end
+      record.public_send(field.to_sym).presence # rubocop:disable GitlabSecurity/PublicSend -- field comes from class definition
     end
   end
 
-  def add_validation_error(record, fields)
+  def present_association_values(record, associations)
+    associations.filter_map { |assoc| record.association(assoc.to_sym).reader }
+  end
+
+  def add_validation_error(record, all_keys)
     error_key = options[:error_key] || :base
-    error_message = build_error_message(fields)
-
-    record.errors.add(error_key.to_sym, error_message)
+    record.errors.add(error_key.to_sym, build_error_message(all_keys))
   end
 
-  def build_error_message(fields)
-    if options[:message].respond_to?(:call)
-      options[:message].call(fields)
-    else
-      options[:message] || format(_("Exactly one of %{fields} must be present"), fields: fields.join(', '))
-    end
+  def build_error_message(all_keys)
+    return options[:message].call(all_keys) if options[:message].respond_to?(:call)
+
+    options[:message] || format(_("Exactly one of %{fields} must be present"), fields: all_keys.join(', '))
   end
 end

@@ -40,7 +40,7 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
         end
       end
 
-      it 'raises an error if no fields are present' do
+      it 'adds an error if no fields are present' do
         instance_object = klass.new
 
         expect(instance_object.valid?).to be_falsey
@@ -53,14 +53,14 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
         expect(instance_object.valid?).to be_truthy
       end
 
-      it 'raises an error if more than one field is present' do
+      it 'adds an error if more than one field is present' do
         instance_object = klass.new(group: group, project: project)
 
         expect(instance_object.valid?).to be_falsey
         expect(instance_object.errors.messages).to eq(base: [default_error_message])
       end
 
-      it 'ignores blank values when checking presence' do
+      it 'ignores blank values when checking presence and validates' do
         instance_object = klass.new(group: group, organization_id: '')
 
         expect(instance_object.valid?).to be_truthy
@@ -81,7 +81,7 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
         end
       end
 
-      it 'raises an error if no fields are present' do
+      it 'adds an error if no fields are present' do
         instance_object = klass.new
 
         expect(instance_object.valid?).to be_falsey
@@ -94,14 +94,14 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
         expect(instance_object.valid?).to be_truthy
       end
 
-      it 'raises an error if more than one field is present' do
+      it 'adds an error if more than one field is present' do
         instance_object = klass.new(title: 'My Label', color: 'red')
 
         expect(instance_object.valid?).to be_falsey
         expect(instance_object.errors.messages).to eq(base: [default_error_message])
       end
 
-      it 'ignores blank values when checking presence' do
+      it 'ignores blank values when checking presence and validates' do
         instance_object = klass.new(title: 'My Label', color: '')
 
         expect(instance_object.valid?).to be_truthy
@@ -152,7 +152,7 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
       end
     end
 
-    it 'uses the custom error message' do
+    it 'adds an error using the custom error message' do
       instance_object = klass.new
 
       expect(instance_object.valid?).to be_falsey
@@ -177,7 +177,7 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
       end
     end
 
-    it 'uses both custom error key and message' do
+    it 'adds an error using both custom error key and message' do
       instance_object = klass.new
 
       expect(instance_object.valid?).to be_falsey
@@ -207,7 +207,7 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
       end
     end
 
-    it 'uses the method to resolve fields' do
+    it 'adds an error and uses the method to resolve fields' do
       instance_object = klass.new
 
       expect(instance_object.valid?).to be_falsey
@@ -220,7 +220,7 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
       expect(instance_object.valid?).to be_truthy
     end
 
-    it 'raises an error if more than one field is present' do
+    it 'adds an error if more than one field is present' do
       instance_object = klass.new(group: group, project: project)
 
       expect(instance_object.valid?).to be_falsey
@@ -248,7 +248,7 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
       end
     end
 
-    it 'uses the private method to resolve fields' do
+    it 'adds an error and uses the private method to resolve fields' do
       instance_object = klass.new
 
       expect(instance_object.valid?).to be_falsey
@@ -302,7 +302,7 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
       end
     end
 
-    it 'uses the Proc to resolve fields' do
+    it 'adds an error and uses the Proc to resolve fields' do
       instance_object = klass.new
 
       expect(instance_object.valid?).to be_falsey
@@ -315,7 +315,7 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
       expect(instance_object.valid?).to be_truthy
     end
 
-    it 'raises an error if more than one field is present' do
+    it 'adds an error if more than one field is present' do
       instance_object = klass.new(group: group, project: project)
 
       expect(instance_object.valid?).to be_falsey
@@ -341,7 +341,7 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
       end
     end
 
-    it 'uses different fields based on record state' do
+    it 'adds an error and uses different fields based on record state' do
       instance_object = klass.new(title: 'My Label')
 
       expect(instance_object.valid?).to be_falsey
@@ -354,7 +354,7 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
       expect(instance_object.valid?).to be_truthy
     end
 
-    it 'uses alternative fields when title is not present' do
+    it 'adds an error and uses alternative fields when title is not present' do
       instance_object = klass.new
 
       expect(instance_object.valid?).to be_falsey
@@ -362,7 +362,7 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
     end
   end
 
-  context 'when validation is missing the fields parameter' do
+  context 'when validation is missing both fields and associations parameters' do
     let(:invalid_klass) do
       Class.new(ApplicationRecord) do
         self.table_name = '_test_exactly_one_present'
@@ -378,7 +378,7 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
     it 'raises an error' do
       expect do
         invalid_klass.new
-      end.to raise_error(RuntimeError, 'ExactlyOnePresentValidator: :fields options are required')
+      end.to raise_error(RuntimeError, 'ExactlyOnePresentValidator: :fields or :associations options are required')
     end
   end
 
@@ -426,7 +426,7 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
       end
     end
 
-    it 'raises an error if no methods return present values' do
+    it 'adds an error if no methods return present values' do
       instance_object = klass.new
 
       expect(instance_object.valid?).to be_falsey
@@ -439,17 +439,303 @@ RSpec.describe ExactlyOnePresentValidator, feature_category: :shared do
       expect(instance_object.valid?).to be_truthy
     end
 
-    it 'raises an error if more than one method returns a present value' do
+    it 'adds an error if more than one method returns a present value' do
       instance_object = klass.new(title: 'My Label', color: 'red')
 
       expect(instance_object.valid?).to be_falsey
       expect(instance_object.errors.messages).to eq(base: [default_error_message])
     end
 
-    it 'ignores methods that return blank values' do
+    it 'validates and ignores methods that return blank values' do
       instance_object = klass.new(title: 'My Label', color: '')
 
       expect(instance_object.valid?).to be_truthy
+    end
+  end
+
+  context 'when using :associations option' do
+    context 'with an Array of associations' do
+      let(:default_error_message) { 'Exactly one of group, project must be present' }
+      let(:klass) do
+        Class.new(ApplicationRecord) do
+          self.table_name = '_test_exactly_one_present'
+
+          def self.name
+            'TestExactlyOnePresent'
+          end
+
+          belongs_to :group, optional: true
+          belongs_to :project, optional: true
+
+          validates_with ExactlyOnePresentValidator, associations: %i[group project]
+        end
+      end
+
+      it 'adds an error if no associations are present' do
+        instance_object = klass.new
+
+        expect(instance_object.valid?).to be_falsey
+        expect(instance_object.errors.messages).to eq(base: [default_error_message])
+      end
+
+      it 'validates if exactly one association is present' do
+        instance_object = klass.new(project: project)
+
+        expect(instance_object.valid?).to be_truthy
+      end
+
+      it 'adds an error if more than one association is present' do
+        instance_object = klass.new(group: group, project: project)
+
+        expect(instance_object.valid?).to be_falsey
+        expect(instance_object.errors.messages).to eq(base: [default_error_message])
+      end
+    end
+
+    context 'with a Symbol that returns associations dynamically' do
+      let(:default_error_message) { 'Exactly one of group, project must be present' }
+      let(:klass) do
+        Class.new(ApplicationRecord) do
+          self.table_name = '_test_exactly_one_present'
+
+          def self.name
+            'TestExactlyOnePresent'
+          end
+
+          belongs_to :group, optional: true
+          belongs_to :project, optional: true
+          belongs_to :organization, class_name: 'Organizations::Organization', optional: true
+
+          validates_with ExactlyOnePresentValidator, associations: :dynamic_associations
+
+          def dynamic_associations
+            %i[group project]
+          end
+        end
+      end
+
+      it 'adds an error if no associations are present' do
+        instance_object = klass.new
+
+        expect(instance_object.valid?).to be_falsey
+        expect(instance_object.errors.messages).to eq(base: [default_error_message])
+      end
+
+      it 'validates if exactly one association is present' do
+        instance_object = klass.new(project: project)
+
+        expect(instance_object.valid?).to be_truthy
+      end
+    end
+
+    context 'with a Proc that returns associations' do
+      let(:default_error_message) { 'Exactly one of group, project must be present' }
+      let(:klass) do
+        Class.new(ApplicationRecord) do
+          self.table_name = '_test_exactly_one_present'
+
+          def self.name
+            'TestExactlyOnePresent'
+          end
+
+          belongs_to :group, optional: true
+          belongs_to :project, optional: true
+
+          validates_with ExactlyOnePresentValidator, associations: -> { %i[group project] }
+        end
+      end
+
+      it 'adds an error if no associations are present' do
+        instance_object = klass.new
+
+        expect(instance_object.valid?).to be_falsey
+        expect(instance_object.errors.messages).to eq(base: [default_error_message])
+      end
+
+      it 'validates if exactly one association is present' do
+        instance_object = klass.new(group: group)
+
+        expect(instance_object.valid?).to be_truthy
+      end
+    end
+
+    context 'with a non-existent Symbol method' do
+      let(:invalid_klass) do
+        Class.new(ApplicationRecord) do
+          self.table_name = '_test_exactly_one_present'
+
+          def self.name
+            'TestExactlyOnePresent'
+          end
+
+          validates_with ExactlyOnePresentValidator, associations: :non_existent_method
+        end
+      end
+
+      it 'raises an ArgumentError' do
+        instance_object = invalid_klass.new
+
+        expect do
+          instance_object.valid?
+        end.to raise_error(ArgumentError, 'Unknown :associations method non_existent_method')
+      end
+    end
+
+    context 'with an invalid type' do
+      let(:invalid_klass) do
+        Class.new(ApplicationRecord) do
+          self.table_name = '_test_exactly_one_present'
+
+          def self.name
+            'TestExactlyOnePresent'
+          end
+
+          validates_with ExactlyOnePresentValidator, associations: 'invalid_string'
+        end
+      end
+
+      it 'raises an ArgumentError' do
+        instance_object = invalid_klass.new
+
+        expect do
+          instance_object.valid?
+        end.to raise_error(ArgumentError, 'Unknown :associations option type String')
+      end
+    end
+
+    context 'with a non-existent association name' do
+      let(:invalid_klass) do
+        Class.new(ApplicationRecord) do
+          self.table_name = '_test_exactly_one_present'
+
+          def self.name
+            'TestExactlyOnePresent'
+          end
+
+          belongs_to :group, optional: true
+
+          validates_with ExactlyOnePresentValidator, associations: %i[group non_existent_association]
+        end
+      end
+
+      it 'raises an ActiveRecord::AssociationNotFoundError' do
+        instance_object = invalid_klass.new
+
+        expect do
+          instance_object.valid?
+        end.to raise_error(ActiveRecord::AssociationNotFoundError)
+      end
+    end
+  end
+
+  context 'when using both :fields and :associations options' do
+    let(:default_error_message) { 'Exactly one of title, group, project must be present' }
+    let(:klass) do
+      Class.new(ApplicationRecord) do
+        self.table_name = '_test_exactly_one_present'
+
+        def self.name
+          'TestExactlyOnePresent'
+        end
+
+        belongs_to :group, optional: true
+        belongs_to :project, optional: true
+
+        validates_with ExactlyOnePresentValidator,
+          fields: %i[title],
+          associations: %i[group project]
+      end
+    end
+
+    it 'adds an error if no fields or associations are present' do
+      instance_object = klass.new
+
+      expect(instance_object.valid?).to be_falsey
+      expect(instance_object.errors.messages).to eq(base: [default_error_message])
+    end
+
+    it 'validates if exactly one field is present' do
+      instance_object = klass.new(title: 'My Title')
+
+      expect(instance_object.valid?).to be_truthy
+    end
+
+    it 'validates if exactly one association is present' do
+      instance_object = klass.new(project: project)
+
+      expect(instance_object.valid?).to be_truthy
+    end
+
+    it 'adds an error if both a field and an association are present' do
+      instance_object = klass.new(title: 'My Title', project: project)
+
+      expect(instance_object.valid?).to be_falsey
+      expect(instance_object.errors.messages).to eq(base: [default_error_message])
+    end
+
+    it 'adds an error if multiple associations are present' do
+      instance_object = klass.new(group: group, project: project)
+
+      expect(instance_object.valid?).to be_falsey
+      expect(instance_object.errors.messages).to eq(base: [default_error_message])
+    end
+  end
+
+  context 'when :associations bypasses custom reader methods' do
+    let(:klass) do
+      Class.new(ApplicationRecord) do
+        self.table_name = '_test_exactly_one_present'
+
+        def self.name
+          'TestExactlyOnePresent'
+        end
+
+        belongs_to :group, optional: true
+        belongs_to :project, optional: true
+
+        validates_with ExactlyOnePresentValidator, associations: %i[group project]
+
+        # Custom reader that always returns nil
+        def project
+          nil
+        end
+      end
+    end
+
+    it 'validates and bypasses custom reader method' do
+      instance_object = klass.new(project: project)
+
+      expect(instance_object.valid?).to be_truthy
+    end
+  end
+
+  context 'when :fields uses custom reader methods' do
+    let(:default_error_message) { 'Exactly one of project, group must be present' }
+    let(:klass) do
+      Class.new(ApplicationRecord) do
+        self.table_name = '_test_exactly_one_present'
+
+        def self.name
+          'TestExactlyOnePresent'
+        end
+
+        belongs_to :group, optional: true
+        belongs_to :project, optional: true
+
+        validates_with ExactlyOnePresentValidator, fields: %i[project group]
+
+        # Custom reader that always returns nil
+        def project
+          nil
+        end
+      end
+    end
+
+    it 'adds an error if custom reader returns nil' do
+      instance_object = klass.new(project: project)
+
+      expect(instance_object.valid?).to be_falsey
+      expect(instance_object.errors.messages).to eq(base: [default_error_message])
     end
   end
 end

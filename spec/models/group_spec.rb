@@ -4629,4 +4629,48 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let(:membership) { create(:group_member, user: user, group: resource) }
     end
   end
+
+  describe '.security_managers' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:security_manager) { create(:group_member, :security_manager, group: group) }
+    let_it_be(:developer) { create(:group_member, :developer, group: group) }
+
+    context 'when security manager role is enabled' do
+      it 'returns security manager members' do
+        expect(group.members.security_managers).to include(security_manager)
+        expect(group.members.security_managers).not_to include(developer)
+      end
+    end
+
+    context 'when security manager role is disabled', :disable_security_manager do
+      it 'returns empty relation' do
+        expect(group.members.security_managers).to be_empty
+      end
+
+      it 'does not return security manager members even if they exist' do
+        expect(group.members.security_managers).not_to include(security_manager)
+      end
+    end
+  end
+
+  describe '#add_security_manager' do
+    let_it_be(:user) { create(:user) }
+
+    context 'with security manager role' do
+      it 'adds security manager when feature is enabled' do
+        member = group.add_security_manager(user)
+        expect(member.access_level).to eq(Gitlab::Access::SECURITY_MANAGER)
+        expect(group.members.security_managers).to include(member)
+      end
+    end
+
+    context 'when security manager role is disabled', :disable_security_manager do
+      it 'returns nil and does not add the user' do
+        result = group.add_security_manager(user)
+
+        expect(result).to be_nil
+        expect(group.members.where(user: user)).to be_empty
+      end
+    end
+  end
 end

@@ -19,6 +19,8 @@ Unlike pipelines triggered by commits or merge requests, scheduled pipelines run
 This makes them suitable for tasks that need to happen regardless of development activity,
 such as keeping deployments current or running periodic maintenance.
 
+Scheduled pipelines stop running when a project or group is marked for deletion.
+
 ## Create a pipeline schedule
 
 {{< history >}}

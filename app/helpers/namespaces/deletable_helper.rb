@@ -80,12 +80,10 @@ module Namespaces
 
     def delete_delayed_namespace_message(namespace)
       messages = {
-        group: _('This action will place this group, including its subgroups and projects, ' \
-          'in a pending deletion state for %{deletion_adjourned_period} days, ' \
-          'and delete it permanently on %{date}.'),
-        project: _('This action will place this project, including all its resources, ' \
-          'in a pending deletion state for %{deletion_adjourned_period} days, ' \
-          'and delete it permanently on %{date}.')
+        group: _('This action will permanently delete this group, including its subgroups and projects, ' \
+          'on %{date}. Scheduled pipelines will not run during deletion.'),
+        project: _('This action will permanently delete this project, including all its resources, ' \
+          'on %{date}. Scheduled pipelines will not run during deletion.')
       }
 
       safe_format(
@@ -136,8 +134,9 @@ module Namespaces
       return _permanently_delete_group_message(group) if permanently_remove || group.self_deletion_scheduled?
 
       safe_format(
-        _("The contents of this group, its subgroups and projects will be permanently deleted after " \
-          "%{deletion_adjourned_period} days on %{date}. After this point, your data cannot be recovered."),
+        _("This group and its contents, including subgroups and projects, will be permanently deleted on %{date}. " \
+          "After this point, your data cannot be recovered. " \
+          "Scheduled pipelines will not run during deletion."),
         deletion_adjourned_period: group.deletion_adjourned_period,
         date: tag.strong(permanent_deletion_date_formatted)
       )

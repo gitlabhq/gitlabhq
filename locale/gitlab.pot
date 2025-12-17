@@ -67859,9 +67859,6 @@ msgstr ""
 msgid "The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository."
 msgstr ""
 
-msgid "The contents of this group, its subgroups and projects will be permanently deleted after %{deletion_adjourned_period} days on %{date}. After this point, your data cannot be recovered."
-msgstr ""
-
 msgid "The current epic"
 msgstr ""
 
@@ -68822,10 +68819,10 @@ msgstr ""
 msgid "This action cannot be undone, and will permanently delete the %{key} SSH key. All commits signed using this SSH key will be marked as unverified."
 msgstr ""
 
-msgid "This action will place this group, including its subgroups and projects, in a pending deletion state for %{deletion_adjourned_period} days, and delete it permanently on %{date}."
+msgid "This action will permanently delete this group, including its subgroups and projects, on %{date}. Scheduled pipelines will not run during deletion."
 msgstr ""
 
-msgid "This action will place this project, including all its resources, in a pending deletion state for %{deletion_adjourned_period} days, and delete it permanently on %{date}."
+msgid "This action will permanently delete this project, including all its resources, on %{date}. Scheduled pipelines will not run during deletion."
 msgstr ""
 
 msgid "This also resolves all related threads"
@@ -69021,6 +69018,9 @@ msgid "This graph shows commit history with branches and merges arranged from ne
 msgstr ""
 
 msgid "This group"
+msgstr ""
+
+msgid "This group and its contents, including subgroups and projects, will be permanently deleted on %{date}. After this point, your data cannot be recovered. Scheduled pipelines will not run during deletion."
 msgstr ""
 
 msgid "This group and its subgroups and projects are pending deletion, and will be deleted on %{date}."

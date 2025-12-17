@@ -9,9 +9,15 @@ title: Advanced SAST C/C++ configuration
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/18368) as a [beta](../../../policy/development_stages_support.md#beta) in GitLab 18.6.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/18369) in GitLab 18.8.
+
+{{< /history >}}
 
 ## Getting started
 

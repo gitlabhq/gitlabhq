@@ -305,7 +305,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
       end
 
       it 'deletes project delayed and is restorable' do
-        expect(page).to have_content("This action will place this project, including all its resources, in a pending deletion state for 7 days, and delete it permanently on #{permanent_deletion_date_formatted}.")
+        expect(page).to have_content("This action will permanently delete this project, including all its resources, on #{permanent_deletion_date_formatted}. Scheduled pipelines will not run during deletion.")
 
         remove_with_confirm("Delete", project_to_delete.path_with_namespace)
 

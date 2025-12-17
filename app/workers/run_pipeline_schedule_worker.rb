@@ -43,6 +43,11 @@ class RunPipelineScheduleWorker
       return false
     end
 
+    if schedule.project.deletion_in_progress_or_scheduled_in_hierarchy_chain?
+      log_error(schedule_id, "Project, namespace or ancestors are scheduled for deletion")
+      return false
+    end
+
     if schedule_owner_not_available?(schedule)
       log_error(schedule_id, "Pipeline schedule owner is no longer available to schedule the pipeline")
       notify_project_owner_and_deactivate_schedule(schedule)
