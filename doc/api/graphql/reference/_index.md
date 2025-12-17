@@ -33477,6 +33477,7 @@ GPG signature for a signed commit.
 | <a id="groupstatuses"></a>`statuses` {{< icon name="warning-solid" >}} | [`WorkItemStatusConnection`](#workitemstatusconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Statuses of work items available to the namespace. |
 | <a id="groupstoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
 | <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | Permission level required to create subgroups within the group. |
+| <a id="groupsubscribedsavedviewlimit"></a>`subscribedSavedViewLimit` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.8. **Status**: Experiment. Maximum number of subscribed saved views allowed on the namespace. |
 | <a id="groupsubscriptionhistory"></a>`subscriptionHistory` {{< icon name="warning-solid" >}} | [`GitlabSubscriptionHistoryConnection`](#gitlabsubscriptionhistoryconnection) | **Introduced** in GitLab 17.3. **Status**: Experiment. Find subscription history records. |
 | <a id="grouptimelogcategories"></a>`timelogCategories` {{< icon name="warning-solid" >}} | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in GitLab 15.3. **Status**: Experiment. Timelog categories for the namespace. |
 | <a id="grouptotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
@@ -39712,6 +39713,7 @@ Version of a machine learning model.
 | <a id="namespacesidebar"></a>`sidebar` {{< icon name="warning-solid" >}} | [`NamespaceSidebar`](#namespacesidebar) | **Introduced** in GitLab 17.6. **Status**: Experiment. Data needed to render the sidebar for the namespace. |
 | <a id="namespacestatuses"></a>`statuses` {{< icon name="warning-solid" >}} | [`WorkItemStatusConnection`](#workitemstatusconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Statuses of work items available to the namespace. |
 | <a id="namespacestoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
+| <a id="namespacesubscribedsavedviewlimit"></a>`subscribedSavedViewLimit` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.8. **Status**: Experiment. Maximum number of subscribed saved views allowed on the namespace. |
 | <a id="namespacesubscriptionhistory"></a>`subscriptionHistory` {{< icon name="warning-solid" >}} | [`GitlabSubscriptionHistoryConnection`](#gitlabsubscriptionhistoryconnection) | **Introduced** in GitLab 17.3. **Status**: Experiment. Find subscription history records. |
 | <a id="namespacetimelogcategories"></a>`timelogCategories` {{< icon name="warning-solid" >}} | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in GitLab 15.3. **Status**: Experiment. Timelog categories for the namespace. |
 | <a id="namespacetotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
@@ -40330,6 +40332,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceavailablefeatureshassubepicsfeature"></a>`hasSubepicsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether subepics are enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasworkitemplanningviewfeature"></a>`hasWorkItemPlanningViewFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Whether work item planning view is enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasworkitemstatusfeature"></a>`hasWorkItemStatusFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether work item statuses are enabled for the namespace. |
+| <a id="namespaceavailablefeatureshasworkitemssavedviewsfeature"></a>`hasWorkItemsSavedViewsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Whether work item saved views are enabled for the namespace. |
 
 ### `NamespaceBan`
 

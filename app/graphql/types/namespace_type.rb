@@ -225,6 +225,14 @@ module Types
       experiment: { milestone: '18.7' },
       resolver: ::Resolvers::WorkItems::SavedViews::SavedViewsResolver
 
+    field :subscribed_saved_view_limit,
+      GraphQL::Types::Int,
+      null: false,
+      scopes: [:api, :read_api],
+      description: 'Maximum number of subscribed saved views allowed on the namespace.',
+      experiment: { milestone: '18.8' },
+      method: :itself
+
     markdown_field :description_html, null: true, &:namespace_details
 
     def achievements_path
@@ -249,6 +257,10 @@ module Types
 
     def root_storage_statistics
       Gitlab::Graphql::Loaders::BatchRootStorageStatisticsLoader.new(object.id).find
+    end
+
+    def subscribed_saved_view_limit
+      ::WorkItems::SavedViews::UserSavedView.user_saved_view_limit(object)
     end
   end
 end

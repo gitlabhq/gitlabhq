@@ -22,7 +22,7 @@ title: OSS License Check
 
 ## OSS Library License Check - GitLab Policy
 
-This guide helps you implement a License Compliance Policy for your projects based on the Blue Oak Council license ratings. The policy will automatically require approval for any dependencies using licenses not included in the Blue Oak Council's Gold, Silver, and Bronze tiers.
+This guide helps you implement a license compliance policy for your projects based on the Blue Oak Council license ratings. The policy will automatically require approval for any dependencies using licenses not included in the Blue Oak Council's Gold, Silver, and Bronze tiers.
 
 You can also [keep your license list up to date](#keeping-your-license-list-up-to-date) with the provided Python script `update_licenses.py` that fetches the latest approved licenses.
 
@@ -45,8 +45,8 @@ The OSS Library License Check provides:
 This guide covers two main scenarios:
 
 1. [Setting up from scratch](#setting-up-from-scratch-using-the-ui) (no existing security policy project)
-   - [Setting up Dependency Scanning](#setting-up-dependency-scanning-from-scratch)
-   - [Setting up License Compliance](#setting-up-license-compliance-from-scratch)
+   - [Setting up dependency scanning](#setting-up-dependency-scanning-from-scratch)
+   - [Setting up license compliance](#setting-up-license-compliance-from-scratch)
 1. [Adding to an existing policy](#adding-to-an-existing-policy) (existing security policy project)
 
 ### Setting up from scratch (using the UI)
@@ -66,7 +66,7 @@ If you don't have a security policy project yet, you'll need to create one and t
 1. Under the **Conditions** section, you can optionally change "Triggers:" to "Schedules:" if you want to run the scan on a schedule instead of at every commit.
 1. Click **Create policy**.
 
-#### Setting up License Compliance from scratch
+#### Setting up license compliance from scratch
 
 After setting up dependency scanning, follow these steps to set up the license compliance policy:
 
@@ -411,6 +411,6 @@ Check that dependency scanning is enabled in your CI/CD configuration, and there
 ## Additional Resources
 
 - [Blue Oak Council License List](https://blueoakcouncil.org/list)
-- [GitLab License Compliance Documentation](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md)
-- [GitLab Merge Request Approval Policies](../../user/compliance/license_approval_policies.md)
-- [GitLab Dependency Scanning](../../user/application_security/dependency_scanning/_index.md)
+- [GitLab license compliance documentation](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md)
+- [GitLab merge request approval policies](../../user/compliance/license_approval_policies.md)
+- [GitLab dependency scanning](../../user/application_security/dependency_scanning/_index.md)

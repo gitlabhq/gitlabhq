@@ -33,7 +33,7 @@ To configure different values for these limits:
 
 ### Choose package registry metadata to sync
 
-To choose the packages you want to synchronize with the GitLab Package Metadata Database (PMDB) for [License Compliance](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md) and [continuous vulnerability scanning](../../user/application_security/continuous_vulnerability_scanning/_index.md):
+To choose the packages you want to synchronize with the GitLab Package Metadata Database (PMDB) for [license compliance](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md) and [continuous vulnerability scanning](../../user/application_security/continuous_vulnerability_scanning/_index.md):
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Security and compliance**.

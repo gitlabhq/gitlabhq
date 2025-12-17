@@ -122,5 +122,38 @@ RSpec.describe Types::Namespaces::AvailableFeaturesType, feature_category: :shar
     end
   end
 
+  describe '#has_work_items_saved_views_feature' do
+    context 'when namespace is a group' do
+      let_it_be(:namespace) { create(:group) }
+
+      it 'delegates to work_items_saved_views_enabled?' do
+        allow(namespace).to receive(:work_items_saved_views_enabled?).with(user).and_return(true)
+
+        expect(resolve_field(:has_work_items_saved_views_feature, namespace, current_user: user)).to be(true)
+      end
+    end
+
+    context 'when namespace is a project namespace' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:namespace) { project.project_namespace }
+
+      it 'delegates to project.work_items_saved_views_enabled?' do
+        allow(project).to receive(:work_items_saved_views_enabled?).with(user).and_return(true)
+
+        expect(resolve_field(:has_work_items_saved_views_feature, namespace, current_user: user)).to be(true)
+      end
+    end
+
+    context 'when namespace is a user namespace' do
+      let_it_be(:namespace) { create(:user_namespace) }
+
+      stub_feature_flags(work_items_saved_views: true, work_items_saved_views_user: true)
+
+      it 'returns false regardless of the feature flag state' do
+        expect(resolve_field(:has_work_items_saved_views_feature, namespace, current_user: user)).to be(false)
+      end
+    end
+  end
+
   it_behaves_like 'expose all available feature fields for the namespace'
 end

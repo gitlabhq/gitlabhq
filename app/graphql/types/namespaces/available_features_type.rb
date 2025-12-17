@@ -126,6 +126,13 @@ module Types
         resolver_method: :has_duo_remote_flows_feature_enabled?,
         experiment: { milestone: '18.6' }
 
+      field :has_work_items_saved_views_feature,
+        GraphQL::Types::Boolean,
+        null: false,
+        description: 'Whether work item saved views are enabled for the namespace.',
+        resolver_method: :has_work_items_saved_views_feature?,
+        experiment: { milestone: '18.8' }
+
       def blocked_issues_enabled?
         object.licensed_feature_available?(:blocked_issues)
       end
@@ -207,6 +214,10 @@ module Types
 
       def has_duo_remote_flows_feature_enabled?
         object.owner_entity.try(:duo_remote_flows_enabled) || false
+      end
+
+      def has_work_items_saved_views_feature?
+        object.owner_entity.try(:work_items_saved_views_enabled?, current_user) || false
       end
     end
   end

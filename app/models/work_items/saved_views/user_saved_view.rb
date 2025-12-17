@@ -8,6 +8,15 @@ module WorkItems
       belongs_to :saved_view, class_name: 'WorkItems::SavedViews::SavedView', inverse_of: :user_saved_views
 
       validates :saved_view_id, uniqueness: { scope: :user_id }
+
+      class << self
+        # Overridden in EE
+        def user_saved_view_limit(_namespace)
+          5
+        end
+      end
     end
   end
 end
+
+WorkItems::SavedViews::UserSavedView.prepend_mod

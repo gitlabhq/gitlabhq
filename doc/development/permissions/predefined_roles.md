@@ -152,11 +152,11 @@ into different features like Merge Requests and CI/CD flow.
 
 | Activity level | Resource                                        | Locations                                         | Permission dependency |
 |----------------|-------------------------------------------------|---------------------------------------------------|-----------------------|
-| View           | License information                             | Dependency list, License Compliance               | Can view repository   |
-| View           | Dependency information                          | Dependency list, License Compliance               | Can view repository   |
+| View           | License information                             | Dependency list, license compliance               | Can view repository   |
+| View           | Dependency information                          | Dependency list, license compliance               | Can view repository   |
 | View           | Vulnerabilities information                     | Dependency list                                   | Can view security findings |
-| View           | Allowlisted/Denylisted licenses for the project | License Compliance, merge request                 | Can view repository   |
+| View           | Allowlisted/Denylisted licenses for the project | License compliance, merge request                 | Can view repository   |
 | View           | Security findings                               | merge request, CI job page, Pipeline security tab | Can read the project and CI jobs |
 | View           | Vulnerability feedback                          | merge request                                     | Can read security findings |
 | View           | Dependency list page                            | Project                                           | Can access dependency information |
-| View           | License Compliance page                         | Project                                           | Can access License information |
+| View           | License compliance page                         | Project                                           | Can access license information |

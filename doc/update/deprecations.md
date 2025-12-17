@@ -3631,40 +3631,6 @@ However, enabling the bundled Grafana will no longer work from GitLab 16.3.
 
 <div class="deprecation breaking-change" data-milestone="16.3">
 
-### License Compliance CI Template
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">16.3</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387561).
-
-</div>
-
-**Update**: We previously announced we would remove the existing License Compliance CI template in GitLab 16.0. However, due to performance issues with the [license scanning of CycloneDX files](https://docs.gitlab.com/user/compliance/license_scanning_of_cyclonedx_files/) we will do this in 16.3 instead.
-
-The GitLab [**License Compliance**](https://docs.gitlab.com/user/compliance/license_approval_policies/) CI/CD template is now deprecated and is scheduled for removal in the GitLab 16.3 release.
-
-To continue using GitLab for license compliance, remove the **License Compliance** template from your CI/CD pipeline and add the **Dependency Scanning** template. The **Dependency Scanning** template is now capable of gathering the required license information, so it is no longer necessary to run a separate license compliance job.
-
-Before you remove the **License Compliance** CI/CD template, verify that the instance has been upgraded to a version that supports the new method of license scanning.
-
-To begin using the Dependency Scanner quickly at scale, you may set up a scan execution policy at the group level to enforce the SBOM-based license scan for all projects in the group. Then, you may remove the inclusion of the `Jobs/License-Scanning.gitlab-ci.yml` template from your CI/CD configuration.
-
-If you wish to continue using the legacy license compliance feature, you can do so by setting the `LICENSE_MANAGEMENT_VERSION CI` variable to `4`. This variable can be set at the project, group, or instance level. This configuration change will allow you to continue using an existing version of license compliance without having to adopt the new approach.
-
-Bugs and vulnerabilities in this legacy analyzer will no longer be fixed.
-
-| CI Pipeline Includes | GitLab <= 15.8 | 15.9 <= GitLab < 16.3 | GitLab >= 16.3 |
-| ------------- | ------------- | ------------- | ------------- |
-| Both DS and LS templates | License data from LS job is used | License data from LS job is used | License data from DS job is used |
-| DS template is included but LS template is not | No license data | License data from DS job is used | License data from DS job is used |
-| LS template is included but DS template is not | License data from LS job is used | License data from LS job is used | No license data |
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.3">
-
 ### RSA key size limits
 
 <div class="deprecation-notes">
@@ -3694,6 +3660,40 @@ You might notice this issue because your logs include an error like `tls: server
 </div>
 
 Twitter OAuth 1.0a OmniAuth is being deprecated and removed on GitLab.com in GitLab 16.3 due to low use, lack of gem support, and the lack of a functional sign-in option for this feature. If you sign in to GitLab.com with Twitter, you can sign in with a password or another [supported OmniAuth provider](https://gitlab.com/users/sign_in).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.3">
+
+### license compliance CI Template
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">15.9</span>
+- Removal in GitLab <span class="milestone">16.3</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387561).
+
+</div>
+
+**Update**: We previously announced we would remove the existing license compliance CI/CD template in GitLab 16.0. However, due to performance issues with the [license scanning of CycloneDX files](https://docs.gitlab.com/user/compliance/license_scanning_of_cyclonedx_files/) we will do this in 16.3 instead.
+
+The GitLab [license compliance](https://docs.gitlab.com/user/compliance/license_approval_policies/) CI/CD template is now deprecated and is scheduled for removal in the GitLab 16.3 release.
+
+To continue using GitLab for license compliance, remove the license compliance template from your CI/CD pipeline and add the dependency scanning template. The dependency scanning template is now capable of gathering the required license information, so it is no longer necessary to run a separate license compliance job.
+
+Before you remove the license compliance CI/CD template, verify that the instance has been upgraded to a version that supports the new method of license scanning.
+
+To begin using the Dependency Scanner quickly at scale, you may set up a scan execution policy at the group level to enforce the SBOM-based license scan for all projects in the group. Then, you may remove the inclusion of the `Jobs/License-Scanning.gitlab-ci.yml` template from your CI/CD configuration.
+
+If you wish to continue using the legacy license compliance feature, you can do so by setting the `LICENSE_MANAGEMENT_VERSION CI` variable to `4`. This variable can be set at the project, group, or instance level. This configuration change will allow you to continue using an existing version of license compliance without having to adopt the new approach.
+
+Bugs and vulnerabilities in this legacy analyzer will no longer be fixed.
+
+| CI Pipeline Includes | GitLab <= 15.8 | 15.9 <= GitLab < 16.3 | GitLab >= 16.3 |
+| ------------- | ------------- | ------------- | ------------- |
+| Both DS and LS templates | License data from LS job is used | License data from LS job is used | License data from DS job is used |
+| DS template is included but LS template is not | No license data | License data from DS job is used | License data from DS job is used |
+| LS template is included but DS template is not | License data from LS job is used | License data from LS job is used | No license data |
 
 </div>
 </div>
@@ -4444,7 +4444,7 @@ Update any scripts or bookmarks that reference the legacy URLs. GitLab APIs are 
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### License-Check and the Policies tab on the License Compliance page
+### License-Check and the Policies tab on the license compliance page
 
 <div class="deprecation-notes">
 
@@ -4454,7 +4454,7 @@ Update any scripts or bookmarks that reference the legacy URLs. GitLab APIs are 
 
 </div>
 
-The **License-Check feature** is now deprecated and is scheduled for removal in GitLab 16.0. Additionally, the Policies tab on the License Compliance page and all APIs related to the License-Check feature are deprecated and planned for removal in GitLab 16.0. Users who wish to continue to enforce approvals based on detected licenses are encouraged to create a new [License Approval policy](https://docs.gitlab.com/user/compliance/license_approval_policies/) instead.
+The **License-Check feature** is now deprecated and is scheduled for removal in GitLab 16.0. Additionally, the policies tab on the license compliance page and all APIs related to the License-Check feature are deprecated and planned for removal in GitLab 16.0. Users who wish to continue to enforce approvals based on detected licenses are encouraged to create a new [license approval policy](https://docs.gitlab.com/user/compliance/license_approval_policies/) instead.
 
 </div>
 
@@ -5992,7 +5992,7 @@ We decided to remove the GitLab Serverless features as they never really resonat
 
 <div class="deprecation " data-milestone="15.0">
 
-### Godep support in License Compliance
+### Godep support in license compliance
 
 <div class="deprecation-notes">
 
@@ -6004,7 +6004,7 @@ We decided to remove the GitLab Serverless features as they never really resonat
 
 The Godep dependency manager for Go was deprecated in 2020 by Go and
 has been replaced with Go modules.
-To reduce our maintenance cost we are deprecating License Compliance for Godep projects as of 14.7
+To reduce our maintenance cost we are deprecating license compliance for Godep projects as of 14.7
 and will remove it in GitLab 15.0
 
 </div>
@@ -6117,7 +6117,7 @@ In GitLab 15.0 and later, the default value for this configuration option will c
 
 <div class="deprecation breaking-change" data-milestone="15.0">
 
-### Legacy approval status names from License Compliance API
+### Legacy approval status names from license compliance API
 
 <div class="deprecation-notes">
 
@@ -6129,7 +6129,7 @@ In GitLab 15.0 and later, the default value for this configuration option will c
 
 We deprecated legacy names for approval status of license policy (`blacklisted`, `approved`) in the `managed_licenses` API but they are still used in our API queries and responses. They will be removed in 15.0.
 
-If you are using our License Compliance API you should stop using the `approved` and `blacklisted` query parameters, they are now `allowed` and `denied`. In 15.0 the responses will also stop using `approved` and `blacklisted` so you need to adjust any of your custom tools to use the old and new values so they do not break with the 15.0 release.
+If you are using our license compliance API you should stop using the `approved` and `blacklisted` query parameters, they are now `allowed` and `denied`. In 15.0 the responses will also stop using `approved` and `blacklisted` so you need to adjust any of your custom tools to use the old and new values so they do not break with the 15.0 release.
 
 </div>
 
