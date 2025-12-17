@@ -38,6 +38,7 @@ module SidebarsHelper
       context_switcher_links: context_switcher_links,
       current_menu_items: panel.super_sidebar_menu_items,
       current_context_header: panel.super_sidebar_context_header,
+      university_path: university_url,
       support_path: support_url,
       docs_path: help_docs_path,
       display_whats_new: display_whats_new?,

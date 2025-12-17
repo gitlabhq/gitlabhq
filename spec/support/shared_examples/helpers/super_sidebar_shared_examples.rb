@@ -6,6 +6,7 @@ RSpec.shared_examples 'shared super sidebar context' do
       current_menu_items: nil,
       current_context_header: nil,
       support_path: helper.support_url,
+      university_path: helper.university_url,
       display_whats_new: helper.display_whats_new?,
       show_version_check: helper.show_version_check?,
       search: {

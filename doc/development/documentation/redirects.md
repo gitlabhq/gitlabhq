@@ -21,14 +21,10 @@ Add a redirect to ensure:
 Be sure to assign a technical writer to any merge request that moves, renames, or deletes a page.
 Technical Writers can help with any questions and can review your change.
 
-{{< alert type="note" >}}
-
-When you change the filename of a page, the Google Analytics are removed
-from the content audit and the page views start from scratch.
-If you want to change the filename, edit the page first,
-so you can ensure the new page name is as accurate as possible.
-
-{{< /alert >}}
+> [!note]
+> When you change the filename of a page, the Google Analytics are removed from the content audit
+> and the page views start from scratch. If you want to change the filename, edit the page first,
+> so you can ensure the new page name is as accurate as possible.
 
 ## Types of redirects
 

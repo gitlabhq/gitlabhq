@@ -23,6 +23,7 @@
   = render 'projects/invite_members_modal', project: @project
   = dispensable_render_if_exists 'shared/hand_raise_lead_modal', root_namespace: @project.root_ancestor
   = render_if_exists "shared/saml_reload_modal", group_or_project: @project
+  = render_if_exists 'shared/end_of_trial_modal', group_or_project: @project
 
 = dispensable_render_if_exists "projects/importing_alert", project: @project
 = dispensable_render_if_exists "shared/web_hooks/web_hook_disabled_alert"

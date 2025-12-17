@@ -48639,10 +48639,9 @@ definitions:
         description: Only allow to merge if all threads are resolved
       enabled_foundational_flows:
         type: array
-        description: IDs of enabled foundational flows
+        description: References of enabled foundational flows
         items:
-          type: integer
-          format: int32
+          type: string
     description: Update a group. Available only for users who can administrate groups.
   API_Entities_GroupDetail:
     type: object

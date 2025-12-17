@@ -234,6 +234,10 @@ module ApplicationHelper
     'https://forum.gitlab.com'
   end
 
+  def university_url
+    'https://university.gitlab.com'
+  end
+
   # Convenient method for Rails helper
   def community_forum
     ApplicationHelper.community_forum

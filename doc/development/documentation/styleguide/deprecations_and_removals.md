@@ -11,15 +11,12 @@ This process requires temporarily changing content to be "deprecated" or "remove
 
 If a feature is not generally available, you can delete the content outright instead of following these instructions.
 
-{{< alert type="note" >}}
-
-In the following cases, a separate process applies:
-
-- [Documentation redirects](../redirects.md) to move, rename, or delete pages not related to feature deprecation.
-- [REST API deprecations](../restful_api_styleguide.md#deprecations).
-- [GraphQL API deprecation process](../../../api/graphql/_index.md#deprecation-and-removal-process) and [deprecation reasons](../../api_graphql_styleguide.md#deprecation-reason-style-guide).
-
-{{< /alert >}}
+> [!note]
+> In the following cases, a separate process applies:
+>
+> - [Documentation redirects](../redirects.md) to move, rename, or delete pages not related to feature deprecation.
+> - [REST API deprecations](../restful_api_styleguide.md#deprecations).
+> - [GraphQL API deprecation process](../../../api/graphql/_index.md#deprecation-and-removal-process) and [deprecation reasons](../../api_graphql_styleguide.md#deprecation-reason-style-guide).
 
 ## Features not actively being developed
 
@@ -27,12 +24,9 @@ When a feature is no longer actively developed, but not deprecated, add the foll
 the topic title and version history:
 
 ```markdown
-{{</* alert type="note" */>}}
-
-This feature is not under active development, but
-[community contributions](https://about.gitlab.com/community/contribute/) are welcome.
-
-{{</* /alert */>}}
+> [!note]
+> This feature is not under active development, but
+> [community contributions](https://about.gitlab.com/community/contribute/) are welcome.
 ```
 
 ## Deprecate a page or topic
@@ -53,12 +47,9 @@ To deprecate a page or topic:
 
    {{</* /details */>}}
 
-   {{</* alert type="warning" */>}}
-
-   This feature was [deprecated](https://issue-link) in GitLab 14.8
-   and is planned for removal in 15.4. Use [feature X](link-to-docs.md) instead.
-
-   {{</* /alert */>}}
+   > [!warning]
+   > This feature was [deprecated](https://issue-link) in GitLab 14.8
+   > and is planned for removal in 15.4. Use [feature X](link-to-docs.md) instead.
    ```
 
    If you're not sure when the feature will be removed or no
@@ -88,12 +79,9 @@ To deprecate a page or topic:
 
    {{</* /details */>}}
 
-   {{</* alert type="warning" */>}}
-
-   This feature was [deprecated](https://issue-link) in GitLab 14.8
-   and is planned for removal in 15.4. Use [feature X](link-to-docs.md) instead.
-
-   {{</* /alert */>}}
+   > [!warning]
+   > This feature was [deprecated](https://issue-link) in GitLab 14.8
+   > and is planned for removal in 15.4. Use [feature X](link-to-docs.md) instead.
 
    <!--- end_remove -->
    ```
