@@ -4480,7 +4480,9 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#mergeable?' do
-    subject { build_stubbed(:merge_request) }
+    let_it_be_with_refind(:mr) { create(:merge_request) }
+
+    subject { mr }
 
     it 'returns false if #mergeable_state? is false' do
       expect(subject).to receive(:mergeable_state?) { false }

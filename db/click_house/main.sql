@@ -70,6 +70,7 @@ CREATE TABLE ci_finished_builds
     `date` Date32 MATERIALIZED toStartOfMonth(finished_at),
     `runner_owner_namespace_id` UInt64 DEFAULT 0,
     `stage_id` UInt64 DEFAULT 0,
+    `stage_name` String DEFAULT '',
     PROJECTION build_stats_by_project_pipeline_name_stage
     (
         SELECT

@@ -325,11 +325,8 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-The `last_used_at` field for a token is only returned when getting a single agent token.
-
-{{< /alert >}}
+> [!note]
+> The `last_used_at` field for a token is only returned when getting a single agent token.
 
 ## Get a single agent token
 
@@ -440,11 +437,8 @@ The response is the new token with the following fields:
 | `last_used_at`       | string or null | ISO8601 datetime when the token was last used.                    |
 | `token`              | string         | The secret token value.                                           |
 
-{{< alert type="note" >}}
-
-The `token` is only returned in the response of the `POST` endpoint and cannot be retrieved afterwards.
-
-{{< /alert >}}
+> [!note]
+> The `token` is only returned in the response of the `POST` endpoint and cannot be retrieved afterwards.
 
 Example request:
 
@@ -574,11 +568,8 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-Either `public_key` or `client_cert` is set, but never both.
-
-{{< /alert >}}
+> [!note]
+> Either `public_key` or `client_cert` is set, but never both.
 
 ### Get a single agent URL configuration
 
@@ -631,11 +622,8 @@ Example response:
 }
 ```
 
-{{< alert type="note" >}}
-
-Either `public_key` or `client_cert` is set, but never both.
-
-{{< /alert >}}
+> [!note]
+> Either `public_key` or `client_cert` is set, but never both.
 
 ### Create an agent URL configuration
 
@@ -719,11 +707,8 @@ Example response for mTLS:
 }
 ```
 
-{{< alert type="note" >}}
-
-If the `client_cert` and `client_key` are not provided, a private-public key pair is generated and JWT authentication is used instead of mTLS.
-
-{{< /alert >}}
+> [!note]
+> If the `client_cert` and `client_key` are not provided, a private-public key pair is generated and JWT authentication is used instead of mTLS.
 
 ### Delete an agent URL configuration
 

@@ -20,8 +20,10 @@ using [`jq`](https://stedolan.github.io/jq/).
 {{< alert type="note" >}}
 
 Specifically for summarizing error events and basic usage statistics,
-the GitLab Support Team provides the specialised
+the GitLab Support Team offers the specialized
 [`fast-stats` tool](https://gitlab.com/gitlab-com/support/toolbox/fast-stats/#when-to-use-it).
+It can usually process larger logs much faster than `jq` and
+outputs a larger selection of statistical information.
 
 {{< /alert >}}
 
@@ -163,6 +165,12 @@ CT: 2435   METHOD: MetricsController#index DURS: 299.29,  284.01,  158.57
 CT: 1328   METHOD: Projects::NotesController#index DURS: 403.99,  386.29,  384.39
 ```
 
+Alternatively, use [`fast-stats`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats):
+
+```shell
+fast-stats --verbose --limit=3 production_json.log
+```
+
 ### Parsing `gitlab-rails/api_json.log`
 
 #### Print top three routes with request count and their three longest durations
@@ -177,6 +185,12 @@ jq -s -r 'group_by(.route) | sort_by(-length) | limit(3; .[]) | sort_by(-.durati
 CT: 2472 ROUTE: /api/:version/internal/allowed   DURS: 56402.65,  38411.43,  19500.41
 CT: 297  ROUTE: /api/:version/projects/:id/repository/tags       DURS: 731.39,  685.57,  480.86
 CT: 190  ROUTE: /api/:version/projects/:id/repository/commits    DURS: 1079.02,  979.68,  958.21
+```
+
+Alternatively, use [`fast-stats`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats):
+
+```shell
+fast-stats --verbose --limit=3 api_json.log
 ```
 
 #### Print top API user agents
@@ -207,7 +221,14 @@ The hourly aggregation helps to:
 - Correlate spikes of bot or user activity to data from monitoring tools such as [Prometheus](../monitoring/prometheus/_index.md).
 - Evaluate [rate limit settings](../settings/user_and_ip_rate_limits.md).
 
-You can also use `fast-stats top` (see top of page) to extract performance statistics for those users or bots.
+In tandem to `jq`, use [`fast-stats top`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats/-/blob/main/README.md#top)
+to review the performance impact of those users and bots:
+
+```shell
+fast-stats top --display=percentage --sort-by=cpu-s api_json.log
+```
+
+A high request frequency alone is not automatically a problem, but using a large percentage of any resource is.
 
 ### Parsing `gitlab-rails/importer.log`
 
@@ -319,6 +340,12 @@ jq --raw-output --slurp '
   ...
 ```
 
+Alternatively, use [`fast-stats`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats):
+
+```shell
+fast-stats top --sort-by=duration current
+```
+
 #### Types of user and project activity overview
 
 ```shell
@@ -343,7 +370,14 @@ The hourly aggregation helps to:
 - Correlate spikes of bot or user activity to data from monitoring tools such as [Prometheus](../monitoring/prometheus/_index.md).
 - Evaluate [rate limit settings](../settings/user_and_ip_rate_limits.md).
 
-You can also use `fast-stats top` (see top of page) to extract performance statistics for those users or bots.
+In tandem to `jq`, use [`fast-stats top`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats/-/blob/main/README.md#top)
+to review the performance impact of those users and bots:
+
+```shell
+fast-stats top --display=percentage --sort-by=cpu-s current
+```
+
+A high request frequency alone is not automatically a problem, but using a large percentage of any resource is.
 
 #### Find all projects affected by a fatal Git problem
 

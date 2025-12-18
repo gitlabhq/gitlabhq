@@ -16,111 +16,179 @@ RSpec.describe Ci::Workloads::WorkloadBranchService, feature_category: :continuo
       allow(SecureRandom).to receive(:hex).and_return('abcdef12345')
     end
 
-    context 'when user does not have access to push code to the project' do
-      let(:user) { create(:user) }
-
-      it 'returns an error response' do
-        result = execute
-        expect(result).to be_error
-        expect(result.message).to eq('You are not allowed to create branches in this project')
-      end
-    end
-
     context 'when source branch exists' do
       before do
         project.repository.create_branch(source_branch, project.default_branch)
       end
 
-      it 'creates a new workload branch from the source branch' do
-        expected_branch_name = 'workloads/abcdef12345'
+      it 'creates a new workload ref from the source branch' do
+        workload_ref = 'refs/workloads/abcdef12345'
+        source_sha = project.repository.commit(source_branch).sha
 
-        expect(project.repository).to receive(:add_branch)
-                                        .with(user, expected_branch_name, source_branch, skip_ci: true)
-                                        .and_return(double)
+        expect(project.repository).to receive(:create_ref)
+                                        .with(source_sha, workload_ref)
+                                        .and_return(true)
 
         result = execute
 
         expect(result).to be_success
-        expect(result.payload[:branch_name]).to eq(expected_branch_name)
+        expect(result.payload[:ref]).to eq(workload_ref)
       end
     end
 
     context 'when source branch does not exist' do
       let(:source_branch) { 'non-existent-branch' }
 
-      it 'creates a new workload branch from the default branch' do
-        expected_branch_name = 'workloads/abcdef12345'
+      it 'creates a new workload ref from the default branch' do
+        workload_ref = 'refs/workloads/abcdef12345'
+        default_sha = project.repository.commit(project.default_branch_or_main).sha
 
-        expect(project.repository).to receive(:add_branch)
-                                        .with(user, expected_branch_name, project.default_branch_or_main, skip_ci: true)
-                                        .and_return(double)
+        expect(project.repository).to receive(:create_ref)
+                                        .with(default_sha, workload_ref)
+                                        .and_return(true)
 
         result = execute
 
         expect(result).to be_success
-        expect(result.payload[:branch_name]).to eq(expected_branch_name)
+        expect(result.payload[:ref]).to eq(workload_ref)
       end
     end
 
     context 'when source branch is nil' do
       let(:source_branch) { nil }
 
-      it 'creates a new workload branch from the default branch' do
-        expected_branch_name = 'workloads/abcdef12345'
+      it 'creates a new workload ref from the default branch' do
+        workload_ref = 'refs/workloads/abcdef12345'
+        default_sha = project.repository.commit(project.default_branch_or_main).sha
 
-        expect(project.repository).to receive(:add_branch)
-                                        .with(user, expected_branch_name, project.default_branch_or_main, skip_ci: true)
-                                        .and_return(double)
+        expect(project.repository).to receive(:create_ref)
+                                        .with(default_sha, workload_ref)
+                                        .and_return(true)
 
         result = execute
 
         expect(result).to be_success
-        expect(result.payload[:branch_name]).to eq(expected_branch_name)
+        expect(result.payload[:ref]).to eq(workload_ref)
       end
     end
 
-    context 'when git branch creation fails' do
+    context 'when git ref creation fails' do
       before do
-        allow(project.repository).to receive(:add_branch).and_return(nil)
+        allow(project.repository).to receive(:create_ref).and_return(nil)
       end
 
       it 'returns an error response' do
         result = execute
 
         expect(result).to be_error
-        expect(result.message).to eq('Error in git branch creation')
+        expect(result.message).to eq('Error in git ref creation')
       end
     end
 
-    context 'when branch name already exists' do
+    context 'when ref already exists' do
       before do
-        allow(project.repository).to receive(:branch_exists?)
-                                       .with(match(%r{^workloads/\w+}))
-                                       .and_return(true)
+        allow(project.repository).to receive(:ref_exists?)
+                                      .with(match(%r{^refs/workloads/\w+}))
+                                      .and_return(true)
       end
 
       it 'returns an error response' do
         result = execute
 
         expect(result).to be_error
-        expect(result.message).to eq('Branch already exists')
+        expect(result.message).to eq('Ref already exists')
+      end
+    end
+
+    context 'when source ref is not found' do
+      before do
+        allow(project.repository).to receive(:commit).and_return(nil)
+      end
+
+      it 'returns an error response' do
+        result = execute
+
+        expect(result).to be_error
+        expect(result.message).to eq('Source ref not found')
       end
     end
 
     context 'when git command raises an error' do
       before do
-        allow(project.repository).to receive(:add_branch)
-                                       .and_raise(Gitlab::Git::CommandError.new('git error'))
+        allow(project.repository).to receive(:create_ref)
+                                      .and_raise(Gitlab::Git::CommandError.new('git error'))
       end
 
       it 'tracks the exception and returns an error response' do
         expect(Gitlab::ErrorTracking).to receive(:track_exception)
-                                           .with(instance_of(Gitlab::Git::CommandError))
+                                          .with(instance_of(Gitlab::Git::CommandError))
 
         result = execute
 
         expect(result).to be_error
-        expect(result.message).to eq('Failed to create branch')
+        expect(result.message).to eq('Failed to create workload ref')
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(use_internal_refs_for_workload_pipelines: false)
+      end
+
+      context 'when user does not have access to push code to the project' do
+        let(:user) { create(:user) }
+
+        it 'returns an error response' do
+          result = execute
+          expect(result).to be_error
+          expect(result.message).to eq('You are not allowed to create branches in this project')
+        end
+      end
+
+      context 'when git branch creation fails' do
+        before do
+          allow(project.repository).to receive(:add_branch).and_return(nil)
+        end
+
+        it 'returns an error response' do
+          result = execute
+
+          expect(result).to be_error
+          expect(result.message).to eq('Failed to create branch')
+        end
+      end
+
+      context 'when branch name already exists' do
+        before do
+          allow(project.repository).to receive(:branch_exists?).with("feature-branch").and_return(true)
+          allow(project.repository).to receive(:branch_exists?)
+                                        .with(match(%r{^workloads/\w+}))
+                                        .and_return(true)
+        end
+
+        it 'returns an error response' do
+          result = execute
+
+          expect(result).to be_error
+          expect(result.message).to eq('Branch already exists')
+        end
+      end
+
+      context 'when git command raises an error' do
+        before do
+          allow(project.repository).to receive(:add_branch)
+                                        .and_raise(Gitlab::Git::CommandError.new('git error'))
+        end
+
+        it 'tracks the exception and returns an error response' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
+                                            .with(instance_of(Gitlab::Git::CommandError))
+
+          result = execute
+
+          expect(result).to be_error
+          expect(result.message).to eq('Failed to create workload ref')
+        end
       end
     end
   end

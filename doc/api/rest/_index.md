@@ -321,11 +321,8 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/namespaces?per_page=50"
 ```
 
-{{< alert type="note" >}}
-
-There is a [max offset allowed limit](../../administration/instance_limits.md#max-offset-allowed-by-the-rest-api-for-offset-based-pagination) for offset pagination. You can change the limit in GitLab Self-Managed instances.
-
-{{< /alert >}}
+> [!note]
+> There is a [max offset allowed limit](../../administration/instance_limits.md#max-offset-allowed-by-the-rest-api-for-offset-based-pagination) for offset pagination. You can change the limit in GitLab Self-Managed instances.
 
 #### Pagination `Link` header
 

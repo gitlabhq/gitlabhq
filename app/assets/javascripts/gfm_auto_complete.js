@@ -149,6 +149,7 @@ export function membersBeforeSave(members) {
       icon: avatarIcon,
       availability: member?.availability,
       compositeIdentityEnforced: member?.composite_identity_enforced,
+      disabled: member?.disabled,
     };
   });
 }
@@ -505,7 +506,15 @@ class GfmAutoComplete {
       maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
-        const { avatarTag, username, title, icon, availability, compositeIdentityEnforced } = value;
+        const {
+          avatarTag,
+          username,
+          title,
+          icon,
+          availability,
+          compositeIdentityEnforced,
+          disabled,
+        } = value;
         if (username != null) {
           tmpl = GfmAutoComplete.Members.templateFunction({
             avatarTag,
@@ -514,6 +523,7 @@ class GfmAutoComplete {
             icon,
             availabilityStatus: availability && isUserBusy(availability) ? busyBadge() : '',
             compositeIdentityEnforced,
+            disabled,
           });
         }
         return tmpl;
@@ -561,27 +571,32 @@ class GfmAutoComplete {
             instance.previousQuery = query;
 
             fetchData(this.$inputor, this.at, query);
-            return data;
+            // Even while loading, we don't want to show any disabled items
+            return data.filter((member) => !member.disabled);
           }
+
+          const enabledMembers = data.filter((member) => {
+            return !member.disabled;
+          });
 
           if (command === MEMBER_COMMAND.ASSIGN) {
             // Only include members which are not assigned to Issuable currently
-            return data.filter((member) => !assignees.includes(member.search));
+            return enabledMembers.filter((member) => !assignees.includes(member.search));
           }
           if (command === MEMBER_COMMAND.UNASSIGN) {
             // Only include members which are assigned to Issuable currently
-            return data.filter((member) => assignees.includes(member.search));
+            return enabledMembers.filter((member) => assignees.includes(member.search));
           }
           if (command === MEMBER_COMMAND.ASSIGN_REVIEWER) {
             // Only include members which are not assigned as a reviewer to Issuable currently
-            return data.filter((member) => !reviewers.includes(member.search));
+            return enabledMembers.filter((member) => !reviewers.includes(member.search));
           }
           if (command === MEMBER_COMMAND.UNASSIGN_REVIEWER) {
             // Only include members which are not assigned as a reviewer to Issuable currently
-            return data.filter((member) => reviewers.includes(member.search));
+            return enabledMembers.filter((member) => reviewers.includes(member.search));
           }
 
-          return data;
+          return enabledMembers;
         },
         sorter(query, items) {
           // Disable auto-selecting the loading icon

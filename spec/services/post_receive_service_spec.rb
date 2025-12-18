@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PostReceiveService, feature_category: :team_planning do
+RSpec.describe PostReceiveService, feature_category: :source_code_management do
   include GitlabShellHelpers
   include Gitlab::Routing
 

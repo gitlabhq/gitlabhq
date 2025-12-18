@@ -26,11 +26,8 @@ GitLab supports asset links with the following protocols:
 - `https`
 - `ftp`
 
-{{< alert type="note" >}}
-
-To interact with project releases directly, see the [project release API](_index.md).
-
-{{< /alert >}}
+> [!note]
+> To interact with project releases directly, see the [project release API](_index.md).
 
 ## List links of a release
 
@@ -159,11 +156,8 @@ PUT /projects/:id/releases/:tag_name/assets/links/:link_id
 | `direct_asset_path`  | string         | no       | Optional path for a [direct asset link](../../user/project/releases/release_fields.md#permanent-links-to-release-assets). |
 | `link_type`          | string         | no       | The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`. |
 
-{{< alert type="note" >}}
-
-You have to specify at least one of `name` or `url`
-
-{{< /alert >}}
+> [!note]
+> You have to specify at least one of `name` or `url`
 
 Example request:
 

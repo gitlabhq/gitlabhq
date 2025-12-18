@@ -101,6 +101,40 @@ RSpec.describe GitlabSchema do
     end
   end
 
+  describe '.get_type (class method)' do
+    it 'applies GlobalId deprecations to type name' do
+      deprecated_name = 'DeprecatedTypeName'
+      transformed_name = 'NewTypeName'
+
+      allow(Gitlab::GlobalId::Deprecations).to receive(:apply_to_graphql_name)
+        .with(deprecated_name)
+        .and_return(transformed_name)
+      allow(Gitlab::Graphql::TypeNameDeprecations).to receive(:apply_to_graphql_name)
+        .with(transformed_name)
+        .and_return(transformed_name)
+
+      described_class.get_type(deprecated_name)
+
+      expect(Gitlab::GlobalId::Deprecations).to have_received(:apply_to_graphql_name).with(deprecated_name)
+      expect(Gitlab::Graphql::TypeNameDeprecations).to have_received(:apply_to_graphql_name).with(transformed_name)
+    end
+
+    it 'applies TypeName deprecations to type name' do
+      type_name = 'SomeType'
+
+      allow(Gitlab::GlobalId::Deprecations).to receive(:apply_to_graphql_name)
+        .with(type_name)
+        .and_return(type_name)
+      allow(Gitlab::Graphql::TypeNameDeprecations).to receive(:apply_to_graphql_name)
+        .with(type_name)
+        .and_return('TransformedType')
+
+      described_class.get_type(type_name)
+
+      expect(Gitlab::Graphql::TypeNameDeprecations).to have_received(:apply_to_graphql_name).with(type_name)
+    end
+  end
+
   describe '.id_from_object' do
     it 'returns a global id' do
       expect(described_class.id_from_object(build(:project, id: 1))).to be_a(GlobalID)

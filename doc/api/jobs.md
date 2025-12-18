@@ -898,11 +898,8 @@ Example of response:
 }
 ```
 
-{{< alert type="note" >}}
-
-Prior to GitLab 17.0, this endpoint does not support trigger jobs.
-
-{{< /alert >}}
+> [!note]
+> Prior to GitLab 17.0, this endpoint does not support trigger jobs.
 
 ## Erase a job
 

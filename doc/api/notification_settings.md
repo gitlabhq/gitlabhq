@@ -222,11 +222,8 @@ In this response:
 - `false` indicates the notification is turned off.
 - `null` indicates the notification uses the default setting.
 
-{{< alert type="note" >}}
-
-The `new_epic` attribute is available only in the Premium and Ultimate tiers.
-
-{{< /alert >}}
+> [!note]
+> The `new_epic` attribute is available only in the Premium and Ultimate tiers.
 
 ## Update group or project notification settings
 
@@ -323,8 +320,5 @@ In this response:
 - `false` indicates the notification is turned off.
 - `null` indicates the notification uses the default setting.
 
-{{< alert type="note" >}}
-
-The `new_epic` attribute is available only in the Premium and Ultimate tiers.
-
-{{< /alert >}}
+> [!note]
+> The `new_epic` attribute is available only in the Premium and Ultimate tiers.

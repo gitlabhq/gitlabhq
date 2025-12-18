@@ -10518,6 +10518,9 @@ msgstr ""
 msgid "Auto-cancel redundant pipelines"
 msgstr ""
 
+msgid "Auto-dismiss action"
+msgstr ""
+
 msgid "Auto-dismissed by the vulnerability management policy named '%{policy_name}' as the vulnerability matched the policy criteria in pipeline %{pipeline_link}."
 msgstr ""
 
@@ -38510,10 +38513,16 @@ msgstr[1] ""
 msgid "Job|An error occurred while fetching the job header data."
 msgstr ""
 
+msgid "Job|An error occurred while generating an attestation for build artifacts in this job. Please check the configuration, and try again."
+msgstr ""
+
 msgid "Job|Are you sure you want to erase this job log and artifacts?"
 msgstr ""
 
 msgid "Job|Are you sure you want to force cancel this job? This will immediately mark the job as canceled, even if the job is still running."
+msgstr ""
+
+msgid "Job|Attestation Generation Error"
 msgstr ""
 
 msgid "Job|Browse"
@@ -60741,6 +60750,9 @@ msgid "SecurityOrchestration|%{boldStart}Add branches%{boldEnd} first before sel
 msgstr ""
 
 msgid "SecurityOrchestration|%{boldStart}Experiment:%{boldEnd} Try our new advanced policy editor for a more intuitive experience."
+msgstr ""
+
+msgid "SecurityOrchestration|%{boldStart}Experimental feature:%{boldEnd} Try out auto-dismissed actions for vulnerability policy. This feature will be fully available in %{boldStart}18.8.%{boldEnd}"
 msgstr ""
 
 msgid "SecurityOrchestration|%{boldStart}Send a bot message%{boldEnd} as comment to merge request creator."

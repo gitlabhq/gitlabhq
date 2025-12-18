@@ -103,6 +103,30 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
       end
     end
 
+    context 'with internal refs for workloads' do
+      let(:ref) { 'refs/workloads/123' }
+
+      before do
+        source_ref = project.default_branch_or_main
+        source_sha = project.repository.commit(source_ref)&.sha
+        project.repository.create_ref(source_sha, ref)
+      end
+
+      it 'starts a pipeline to execute workload' do
+        expect_next_instance_of(Ci::CreatePipelineService, project, user,
+          hash_including(ref: ref)) do |pipeline_service|
+          expect(pipeline_service).to receive(:execute)
+                                        .and_call_original
+        end
+        result = execute
+        expect(result).to be_success
+
+        workload = result.payload
+        expect(workload).to be_a(Ci::Workloads::Workload)
+        expect(workload.pipeline).to be_present
+      end
+    end
+
     context 'with unsupported source' do
       let(:source) { :foo }
 

@@ -589,11 +589,8 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-To distinguish between a project in the group and a project shared to the group, the `namespace` attribute can be used. When a project has been shared to the group, its `namespace` differs from the group the request is being made for.
-
-{{< /alert >}}
+> [!note]
+> To distinguish between a project in the group and a project shared to the group, the `namespace` attribute can be used. When a project has been shared to the group, its `namespace` differs from the group the request is being made for.
 
 ### List shared projects
 
@@ -1416,11 +1413,8 @@ Parameters:
 
 The response is `202 Accepted` if the user has authorization.
 
-{{< alert type="note" >}}
-
-You cannot delete a GitLab.com group that is linked to a subscription. You must first [link the subscription](../subscriptions/manage_subscription.md#link-subscription-to-a-group) with a different group.
-
-{{< /alert >}}
+> [!note]
+> You cannot delete a GitLab.com group that is linked to a subscription. You must first [link the subscription](../subscriptions/manage_subscription.md#link-subscription-to-a-group) with a different group.
 
 #### Restore a group marked for deletion
 
@@ -1716,11 +1710,8 @@ Example response:
 
 Transfers a project to another group namespace. Alternatively, use the [transfer a project to a new namespace](projects.md#transfer-a-project-to-a-new-namespace) endpoint instead.
 
-{{< alert type="note" >}}
-
-The transfer process may fail if tagged packages exist in the project's repository.
-
-{{< /alert >}}
+> [!note]
+> The transfer process may fail if tagged packages exist in the project's repository.
 
 Prerequisites:
 

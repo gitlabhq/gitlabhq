@@ -245,11 +245,8 @@ Hello World snippet
 
 Create a new snippet.
 
-{{< alert type="note" >}}
-
-User must have permission to create new snippets.
-
-{{< /alert >}}
+> [!note]
+> User must have permission to create new snippets.
 
 ```plaintext
 POST /snippets
@@ -356,11 +353,8 @@ Example response:
 
 Update an existing snippet.
 
-{{< alert type="note" >}}
-
-User must have permission to change an existing snippet.
-
-{{< /alert >}}
+> [!note]
+> User must have permission to change an existing snippet.
 
 ```plaintext
 PUT /snippets/:id
@@ -714,11 +708,8 @@ Example response:
 
 ## Get user agent details
 
-{{< alert type="note" >}}
-
-Available only for administrators.
-
-{{< /alert >}}
+> [!note]
+> Available only for administrators.
 
 ```plaintext
 GET /snippets/:id/user_agent_detail

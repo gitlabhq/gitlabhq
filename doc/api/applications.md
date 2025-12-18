@@ -17,11 +17,8 @@ Use this API to manage instance-wide OAuth applications that:
 - [Use GitLab as an authentication provider](../integration/oauth_provider.md).
 - [Allow access to GitLab resources on a user's behalf](oauth2.md).
 
-{{< alert type="note" >}}
-
-You cannot use this API to manage group applications or individual user applications.
-
-{{< /alert >}}
+> [!note]
+> You cannot use this API to manage group applications or individual user applications.
 
 Prerequisites:
 
@@ -98,11 +95,8 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-The `secret` value is not exposed by this API.
-
-{{< /alert >}}
+> [!note]
+> The `secret` value is not exposed by this API.
 
 ## Delete an application
 

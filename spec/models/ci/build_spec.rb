@@ -54,6 +54,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to have_one(:trace_metadata).with_foreign_key(:build_id) }
   it { is_expected.to have_one(:runtime_metadata).with_foreign_key(:build_id) }
   it { is_expected.to have_one(:pending_state).with_foreign_key(:build_id).inverse_of(:build) }
+  it { is_expected.to have_one(:supply_chain_attestation).with_foreign_key(:build_id).inverse_of(:build) }
 
   it do
     is_expected.to have_one(:queuing_entry).class_name('Ci::PendingBuild').with_foreign_key(:build_id).inverse_of(:build)

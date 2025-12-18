@@ -525,6 +525,7 @@ builds:
 - job_artifacts_annotations
 - project_mirror
 - job_source
+- supply_chain_attestation
 bridges:
 - user
 - pipeline
@@ -991,6 +992,7 @@ project:
 - security_scan_profiles_projects
 - enabled_foundational_flows
 - enabled_foundational_flow_records
+- supply_chain_attestations
 award_emoji:
 - awardable
 - user

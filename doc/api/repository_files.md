@@ -272,11 +272,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb/raw?ref=main"
 ```
 
-{{< alert type="note" >}}
-
-Like [Get file from repository](repository_files.md#get-file-from-repository), you can use `HEAD` to get just file metadata.
-
-{{< /alert >}}
+> [!note]
+> Like [Get file from repository](repository_files.md#get-file-from-repository), you can use `HEAD` to get just file metadata.
 
 ## Create new file in repository
 
@@ -293,11 +290,8 @@ see the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions
 POST /projects/:id/repository/files/:file_path
 ```
 
-{{< alert type="note" >}}
-
-This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
-
-{{< /alert >}}
+> [!note]
+> This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
 
 Supported attributes:
 
@@ -355,11 +349,8 @@ refer to the [commits API](commits.md#create-a-commit-with-multiple-files-and-ac
 PUT /projects/:id/repository/files/:file_path
 ```
 
-{{< alert type="note" >}}
-
-This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
-
-{{< /alert >}}
+> [!note]
+> This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
 
 Supported attributes:
 

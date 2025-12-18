@@ -28,8 +28,16 @@ module MergeRequests
         approved_by: [:approved_by_users],
         merge_after: [:merge_schedule],
         mergeable: [:merge_schedule],
-        detailed_merge_status: [:merge_schedule],
-        mergeability_checks: [:merge_schedule, :unresolved_notes, { target_project: [:lfs_file_locks] }],
+        detailed_merge_status: [:merge_schedule, :latest_merge_request_diff],
+        mergeability_checks: [
+          :merge_schedule,
+          :unresolved_notes,
+          {
+            target_project: [:lfs_file_locks],
+            source_project: [:route, { namespace: :route }],
+            latest_merge_request_diff: [:merge_request_diff_commits]
+          }
+        ],
         milestone: [:milestone, { milestone: [:project, :group] }],
         security_auto_fix: [:author],
         head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request, :project] }],

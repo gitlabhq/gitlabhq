@@ -184,11 +184,8 @@ If successful, returns a [`200 OK`](rest/troubleshooting.md#status-codes) status
 
 ### Delete a virtual registry
 
-{{< alert type="warning" >}}
-
-Deleting a virtual registry also deletes all associated upstream registries that are not shared with other virtual registries, along with their cache entries.
-
-{{< /alert >}}
+> [!warning]
+> Deleting a virtual registry also deletes all associated upstream registries that are not shared with other virtual registries, along with their cache entries.
 
 Deletes a specific Maven virtual registry.
 
@@ -315,11 +312,8 @@ Supported attributes:
 | `password` | string | No | The password of the upstream registry. |
 | `username` | string | No | The username of the upstream registry. |
 
-{{< alert type="note" >}}
-
-You must include both the `username` and `password` in the request, or neither. If not set, a public (anonymous) request is used to test the connection.
-
-{{< /alert >}}
+> [!note]
+> You must include both the `username` and `password` in the request, or neither. If not set, a public (anonymous) request is used to test the connection.
 
 #### Test workflow
 
@@ -727,11 +721,8 @@ The endpoint performs a HEAD request to the upstream URL using the test path to 
 | 5XX | Upstream server error | `{ "success": false, "result": "Error: 5XX - Server Error" }` |
 | Network errors | Connection/timeout issues | `{ "success": false, "result": "Error: Connection timeout" }` |
 
-{{< alert type="note" >}}
-
-Both `2XX` (found) and `404` (not found) responses indicate successful connectivity and authentication to the upstream registry. The test validates that GitLab can reach and authenticate with the upstream, not whether a specific artifact exists.
-
-{{< /alert >}}
+> [!note]
+> Both `2XX` (found) and `404` (not found) responses indicate successful connectivity and authentication to the upstream registry. The test validates that GitLab can reach and authenticate with the upstream, not whether a specific artifact exists.
 
 Example request:
 
@@ -798,11 +789,8 @@ The response received from the HEAD request is interpreted as follows:
 | 5XX | Upstream server error | `{ "success": false, "result": "Error: 5XX - Server Error" }` |
 | Network errors | Connection or timeout issues | `{ "success": false, "result": "Error: Connection timeout" }` |
 
-{{< alert type="note" >}}
-
-Both `2XX` (found) and `404` (not found) responses indicate successful connectivity and authentication to the upstream registry. The test does not validate whether a specific artifact exists.
-
-{{< /alert >}}
+> [!note]
+> Both `2XX` (found) and `404` (not found) responses indicate successful connectivity and authentication to the upstream registry. The test does not validate whether a specific artifact exists.
 
 Example request (test existing configuration):
 
@@ -929,11 +917,8 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 
 Use the following endpoints to manage package operations for a Maven virtual registry.
 
-{{< alert type="warning" >}}
-
-These endpoints are intended for internal use by GitLab, and generally not meant for manual consumption.
-
-{{< /alert >}}
+> [!warning]
+> These endpoints are intended for internal use by GitLab, and generally not meant for manual consumption.
 
 {{< alert type="note" >}}
 

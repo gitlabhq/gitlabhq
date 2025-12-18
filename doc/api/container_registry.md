@@ -244,11 +244,8 @@ Get a list of tags for given registry repository.
 
 Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
-{{< alert type="note" >}}
-
-Offset pagination is deprecated and keyset pagination is now the preferred pagination method.
-
-{{< /alert >}}
+> [!note]
+> Offset pagination is deprecated and keyset pagination is now the preferred pagination method.
 
 ```plaintext
 GET /projects/:id/registry/repositories/:repository_id/tags
@@ -457,11 +454,8 @@ the container registry has its own endpoints.
 To query those, follow the Registry's built-in mechanism to obtain and use an
 [authentication token](https://distribution.github.io/distribution/spec/auth/token/).
 
-{{< alert type="note" >}}
-
-These are different from project or personal access tokens in the GitLab application.
-
-{{< /alert >}}
+> [!note]
+> These are different from project or personal access tokens in the GitLab application.
 
 ### Obtain token from GitLab
 

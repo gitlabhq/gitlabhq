@@ -138,6 +138,8 @@ module Ci
 
     has_many :terraform_state_versions, class_name: 'Terraform::StateVersion', foreign_key: :ci_build_id, inverse_of: :build
 
+    has_one :supply_chain_attestation, class_name: 'SupplyChain::Attestation', foreign_key: :build_id, inverse_of: :build
+
     accepts_nested_attributes_for :runner_session, update_only: true
     accepts_nested_attributes_for :job_variables
     accepts_nested_attributes_for :inputs

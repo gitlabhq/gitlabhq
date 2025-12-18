@@ -21,11 +21,8 @@ title: Debian group distributions API
 Use this API to manage [Debian group distributions](../../user/packages/debian_repository/_index.md). This API is behind a
 feature flag that is disabled by default. To use this API, you must [enable it](#enable-the-debian-group-api).
 
-{{< alert type="warning" >}}
-
-This API is under development and is not meant for production use.
-
-{{< /alert >}}
+> [!warning]
+> This API is under development and is not meant for production use.
 
 ## Enable the Debian group API
 

@@ -242,11 +242,8 @@ Example response:
 
 Creates a service account in a specified top-level group.
 
-{{< alert type="note" >}}
-
-This endpoint only works on top-level groups.
-
-{{< /alert >}}
+> [!note]
+> This endpoint only works on top-level groups.
 
 ```plaintext
 POST /groups/:id/service_accounts
@@ -289,11 +286,8 @@ Example response:
 
 Updates a service account in a specified top-level group.
 
-{{< alert type="note" >}}
-
-This endpoint only works on top-level groups.
-
-{{< /alert >}}
+> [!note]
+> This endpoint only works on top-level groups.
 
 ```plaintext
 PATCH /groups/:id/service_accounts/:user_id
@@ -337,11 +331,8 @@ Example response:
 
 Deletes a service account from a specified top-level group.
 
-{{< alert type="note" >}}
-
-This endpoint only works on top-level groups.
-
-{{< /alert >}}
+> [!note]
+> This endpoint only works on top-level groups.
 
 ```plaintext
 DELETE /groups/:id/service_accounts/:user_id
@@ -484,11 +475,8 @@ Example response:
 
 Revokes a personal access token for an existing service account in a specified top-level group.
 
-{{< alert type="note" >}}
-
-This endpoint only works on top-level groups.
-
-{{< /alert >}}
+> [!note]
+> This endpoint only works on top-level groups.
 
 ```plaintext
 DELETE /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id
@@ -527,11 +515,8 @@ Other possible responses:
 
 Rotates a personal access token for an existing service account in a specified top-level group. This creates a new token valid for one week and revokes any existing tokens.
 
-{{< alert type="note" >}}
-
-This endpoint only works on top-level groups.
-
-{{< /alert >}}
+> [!note]
+> This endpoint only works on top-level groups.
 
 ```plaintext
 POST /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate

@@ -657,11 +657,8 @@ Prerequisites:
 
 - To view [certain attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/520776fa8e5a11b8275b7c597d75246fcfc74c89/lib/api/entities/project.rb#L109-130), you must be an administrator or have the Owner role for the project.
 
-{{< alert type="note" >}}
-
-Only the projects in the user's (specified in `user_id`) namespace are returned. Projects owned by the user in any group or subgroups are not returned. An empty list is returned if a profile is set to private.
-
-{{< /alert >}}
+> [!note]
+> Only the projects in the user's (specified in `user_id`) namespace are returned. Projects owned by the user in any group or subgroups are not returned. An empty list is returned if a profile is set to private.
 
 This endpoint supports [keyset pagination](rest/_index.md#keyset-based-pagination)
 for selected `order_by` options.

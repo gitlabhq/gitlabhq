@@ -12620,7 +12620,7 @@ Input type: `SecurityTrainingUpdateInput`
 
 ### `Mutation.setContainerScanningForRegistry`
 
-Enable/disable Container Scanning for Registry for the given project.
+Enable/disable container scanning for registry for the given project.
 
 Input type: `SetContainerScanningForRegistryInput`
 
@@ -12629,7 +12629,7 @@ Input type: `SetContainerScanningForRegistryInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationsetcontainerscanningforregistryclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationsetcontainerscanningforregistryenable"></a>`enable` | [`Boolean!`](#boolean) | Desired status for Container Scanning for Registry feature. |
+| <a id="mutationsetcontainerscanningforregistryenable"></a>`enable` | [`Boolean!`](#boolean) | Desired status for container scanning for registry feature. |
 | <a id="mutationsetcontainerscanningforregistrynamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace (project). |
 
 #### Fields
@@ -42129,7 +42129,7 @@ Project-level settings for product analytics provider.
 | <a id="projectcontainerprotectiontagrules"></a>`containerProtectionTagRules` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleConnection`](#containerprotectiontagruleconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Container repository tag protection rules for the project. |
 | <a id="projectcontainerregistryenabled"></a>`containerRegistryEnabled` | [`Boolean`](#boolean) | Indicates if Container registry is enabled for the current user. |
 | <a id="projectcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the project. |
-| <a id="projectcontainerscanningforregistryenabled"></a>`containerScanningForRegistryEnabled` | [`Boolean`](#boolean) | Indicates whether Container Scanning for Registry is enabled or not for the project. Returns `null` if unauthorized. |
+| <a id="projectcontainerscanningforregistryenabled"></a>`containerScanningForRegistryEnabled` | [`Boolean`](#boolean) | Indicates whether container scanning for registry is enabled or not for the project. Returns `null` if unauthorized. |
 | <a id="projectcontainertagsexpirationpolicy"></a>`containerTagsExpirationPolicy` | [`ContainerTagsExpirationPolicy`](#containertagsexpirationpolicy) | Container tags expiration policy of the project. |
 | <a id="projectcorpuses"></a>`corpuses` | [`CoverageFuzzingCorpusConnection`](#coveragefuzzingcorpusconnection) | Find corpuses of the project. (see [Connections](#connections)) |
 | <a id="projectcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the project creation. |

@@ -99,11 +99,8 @@ For example:
 GET /users?username=jack_smith
 ```
 
-{{< alert type="note" >}}
-
-Username search is case-insensitive.
-
-{{< /alert >}}
+> [!note]
+> Username search is case-insensitive.
 
 In addition, you can filter users based on the states `blocked` and `active`.
 It does not support `active=false` or `blocked=false`.
@@ -509,11 +506,8 @@ Example response:
 }
 ```
 
-{{< alert type="note" >}}
-
-The `plan` and `trial` parameters are only available on GitLab Enterprise Edition.
-
-{{< /alert >}}
+> [!note]
+> The `plan` and `trial` parameters are only available on GitLab Enterprise Edition.
 
 Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
 the `shared_runners_minutes_limit`, `is_auditor`, and `extra_shared_runners_minutes_limit` parameters.

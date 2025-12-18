@@ -126,11 +126,8 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-The `assignee` column is deprecated. It is now a single-sized `assignees` array.
-
-{{< /alert >}}
+> [!note]
+> The `assignee` column is deprecated. It is now a single-sized `assignees` array.
 
 ## Assign an issue to the epic
 
@@ -238,11 +235,8 @@ Example response:
 }
 ```
 
-{{< alert type="note" >}}
-
-The `assignee` column is deprecated. It is now a single-sized `assignees` array.
-
-{{< /alert >}}
+> [!note]
+> The `assignee` column is deprecated. It is now a single-sized `assignees` array.
 
 ## Remove an issue from the epic
 
@@ -351,11 +345,8 @@ Example response:
 }
 ```
 
-{{< alert type="note" >}}
-
-The `assignee` column is deprecated. It is now a single-sized `assignees` array.
-
-{{< /alert >}}
+> [!note]
+> The `assignee` column is deprecated. It is now a single-sized `assignees` array.
 
 ## Update epic - issue association
 

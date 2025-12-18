@@ -1,0 +1,10 @@
+---
+name: validate_diff_sha_mr_head_sha
+description: Validate diff head sha is equal to MR head sha
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/429516
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215908
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583972
+milestone: '18.7'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

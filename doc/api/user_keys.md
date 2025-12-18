@@ -210,11 +210,8 @@ Example response:
 
 Adds an SSH key for a given user account.
 
-{{< alert type="note" >}}
-
-This also adds an audit event.
-
-{{< /alert >}}
+> [!note]
+> This also adds an audit event.
 
 Prerequisites:
 

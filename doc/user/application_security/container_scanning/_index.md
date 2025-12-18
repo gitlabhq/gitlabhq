@@ -959,7 +959,7 @@ Container scanning for registry populates the vulnerability report only when a n
 
 {{< alert type="warning" >}}
 
-Vulnerabilities detected by Container Scanning for Registry cannot be automatically marked as
+Vulnerabilities detected by container scanning for registry cannot be automatically marked as
 resolved when you update or remove vulnerable components. These vulnerabilities remain visible
 indefinitely because this feature only generates SBOMs, not the security reports required for
 vulnerability resolution.

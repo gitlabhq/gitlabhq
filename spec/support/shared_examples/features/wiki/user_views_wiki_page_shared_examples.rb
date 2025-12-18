@@ -264,7 +264,10 @@ RSpec.shared_examples 'User views a wiki page' do
       wiki_page.update(content: "# Heading 1\n\n## Heading 1.1\n\n### Heading 1.1.1\n\n# Heading 2") # rubocop:disable Rails/SaveBang -- not an ActiveRecord
     end
 
-    it 'displays the table of contents for the page' do
+    it 'displays the table of contents for the page', quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/584363',
+      type: :flaky
+    } do
       visit(wiki_page_path(wiki, wiki_page))
       click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
 

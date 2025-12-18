@@ -565,6 +565,30 @@ describe('GfmAutoComplete', () => {
       mentionsDisabled: false,
     };
 
+    const defaultUser = {
+      username: 'my-user',
+      name: 'My User',
+      avatar_url: './users.jpg',
+      type: 'User',
+    };
+
+    const defaultExpectedOutput = {
+      username: 'my-group',
+      avatarTag:
+        '<img src="./group.jpg" alt="my-group" class="avatar rect-avatar avatar-inline s24 gl-mr-2"/>',
+      title: 'My Group (2)',
+      search: 'MyGroup my-group',
+      icon: '',
+    };
+
+    const userDefaultOutput = {
+      username: 'my-user',
+      avatarTag: '<img src="./users.jpg" alt="my-user" class="avatar  avatar-inline s24 gl-mr-2"/>',
+      title: 'My User',
+      search: 'MyUser my-user',
+      icon: '',
+    };
+
     it('should return the original object when username is null', () => {
       expect(membersBeforeSave([{ ...mockGroup, username: null }])).toEqual([
         { ...mockGroup, username: null },
@@ -574,80 +598,66 @@ describe('GfmAutoComplete', () => {
     it('should set the text avatar if avatar_url is null', () => {
       expect(membersBeforeSave([{ ...mockGroup, avatar_url: null }])).toEqual([
         {
-          username: 'my-group',
+          ...defaultExpectedOutput,
           avatarTag: '<div class="avatar rect-avatar avatar-inline s24 gl-mr-2">M</div>',
-          title: 'My Group (2)',
-          search: 'MyGroup my-group',
-          icon: '',
         },
       ]);
     });
 
     it('should set the image avatar if avatar_url is given', () => {
-      expect(membersBeforeSave([mockGroup])).toEqual([
-        {
-          username: 'my-group',
-          avatarTag:
-            '<img src="./group.jpg" alt="my-group" class="avatar rect-avatar avatar-inline s24 gl-mr-2"/>',
-          title: 'My Group (2)',
-          search: 'MyGroup my-group',
-          icon: '',
-        },
-      ]);
+      expect(membersBeforeSave([mockGroup])).toEqual([defaultExpectedOutput]);
     });
 
     it('should set mentions disabled icon if mentionsDisabled is set', () => {
       expect(membersBeforeSave([{ ...mockGroup, mentionsDisabled: true }])).toEqual([
         {
-          username: 'my-group',
-          avatarTag:
-            '<img src="./group.jpg" alt="my-group" class="avatar rect-avatar avatar-inline s24 gl-mr-2"/>',
+          ...defaultExpectedOutput,
           title: 'My Group',
-          search: 'MyGroup my-group',
           icon: '<svg class="s16 vertical-align-middle gl-ml-2"><use xlink:href="/icons.svg#notifications-off" /></svg>',
         },
       ]);
     });
 
     it('should set the right image classes for User type members', () => {
-      expect(
-        membersBeforeSave([
-          { username: 'my-user', name: 'My User', avatar_url: './users.jpg', type: 'User' },
-        ]),
-      ).toEqual([
-        {
-          username: 'my-user',
-          avatarTag:
-            '<img src="./users.jpg" alt="my-user" class="avatar  avatar-inline s24 gl-mr-2"/>',
-          title: 'My User',
-          search: 'MyUser my-user',
-          icon: '',
-        },
-      ]);
+      expect(membersBeforeSave([defaultUser])).toEqual([userDefaultOutput]);
     });
 
     it('should include composite_identity_enforced field', () => {
       expect(
         membersBeforeSave([
           {
-            username: 'my-user',
-            name: 'My User',
-            avatar_url: './users.jpg',
-            type: 'User',
+            ...defaultUser,
             composite_identity_enforced: true,
           },
         ]),
       ).toEqual([
         {
-          username: 'my-user',
-          avatarTag:
-            '<img src="./users.jpg" alt="my-user" class="avatar  avatar-inline s24 gl-mr-2"/>',
-          title: 'My User',
-          search: 'MyUser my-user',
-          icon: '',
+          ...userDefaultOutput,
           compositeIdentityEnforced: true,
         },
       ]);
+    });
+
+    describe('when disabled field is present', () => {
+      it.each`
+        disabled | description
+        ${true}  | ${'disabled is true'}
+        ${false} | ${'disabled is false'}
+      `('should include disabled field when $description', ({ disabled }) => {
+        expect(
+          membersBeforeSave([
+            {
+              ...defaultUser,
+              disabled,
+            },
+          ]),
+        ).toEqual([
+          {
+            ...userDefaultOutput,
+            disabled,
+          },
+        ]);
+      });
     });
   });
 
@@ -1482,6 +1492,50 @@ describe('GfmAutoComplete', () => {
           expect(getDropdownItems()).toHaveLength(1);
           expect(getDropdownItems()).toEqual([mockAssignees[1]].map(assigneeMatcher));
           expect(currentAssignees).toHaveBeenCalled();
+        });
+      });
+
+      describe('with disabled members', () => {
+        const disabledMember = {
+          ...mockAssignees[0],
+          disabled: true,
+        };
+        const enabledMembers = mockAssignees.slice(1);
+
+        beforeEach(() => {
+          currentAssignees.mockImplementation(() => ({
+            [`${mockWorkItemId}`]: [],
+          }));
+
+          // This looks odd but that's how GFMAutoComplete
+          // caches issues data internally.
+          autocomplete.cachedData['@'] = {
+            '': [disabledMember, ...enabledMembers],
+          };
+        });
+
+        describe('typing @', () => {
+          beforeEach(() => {
+            triggerDropdown($textarea, '@');
+          });
+
+          it('filters out disabled users', () => {
+            expect(getDropdownItems()).toHaveLength(enabledMembers.length);
+            expect(getDropdownItems()[0]).not.toContain(disabledMember.name);
+            expect(getDropdownItems()[1]).not.toContain(disabledMember.name);
+          });
+
+          it('renders non-disabled users', () => {
+            expect(getDropdownItems()).toHaveLength(enabledMembers.length);
+            expect(getDropdownItems()[0]).toContain(enabledMembers[0].name);
+            expect(getDropdownItems()[1]).toContain(enabledMembers[1].name);
+          });
+        });
+
+        it('using "/assign @" filters out disabled members', () => {
+          triggerDropdown($textarea, '/assign @');
+
+          expect(getDropdownItems()).toHaveLength(enabledMembers.length);
         });
       });
     });

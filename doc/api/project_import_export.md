@@ -510,11 +510,8 @@ be populated with any occurrences of relations that failed to import due to eith
 - Unrecoverable errors.
 - Retries were exhausted. A typical example: query timeouts.
 
-{{< alert type="note" >}}
-
-An element's `id` field in `failed_relations` references the failure record, not the relation.
-
-{{< /alert >}}
+> [!note]
+> An element's `id` field in `failed_relations` references the failure record, not the relation.
 
 {{< alert type="note" >}}
 

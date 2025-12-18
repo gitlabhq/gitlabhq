@@ -14,11 +14,8 @@ title: Protected environments API
 
 Use this API to interact with [protected environments](../ci/environments/protected_environments.md).
 
-{{< alert type="note" >}}
-
-For group-level protected environments, see [group-level protected environments API](group_protected_environments.md)
-
-{{< /alert >}}
+> [!note]
+> For group-level protected environments, see [group-level protected environments API](group_protected_environments.md)
 
 ## Valid access levels
 

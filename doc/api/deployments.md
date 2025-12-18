@@ -46,11 +46,8 @@ curl --request "GET" \
   --url "https://gitlab.example.com/api/v4/projects/1/deployments"
 ```
 
-{{< alert type="note" >}}
-
-When using `finished_before` or `finished_after`, you should specify the `order_by` to be `finished_at` and `status` should be `success`.
-
-{{< /alert >}}
+> [!note]
+> When using `finished_before` or `finished_after`, you should specify the `order_by` to be `finished_at` and `status` should be `success`.
 
 Example response:
 

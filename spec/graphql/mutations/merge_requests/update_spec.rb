@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::MergeRequests::Update, feature_category: :team_planning do
+RSpec.describe Mutations::MergeRequests::Update, feature_category: :code_review_workflow do
   include GraphqlHelpers
 
   let(:merge_request) { create(:merge_request) }

@@ -117,11 +117,8 @@ Set a feature's gate value. If a feature with the given name doesn't exist yet,
 it's created. The value can be a boolean, or an integer to indicate
 percentage of time.
 
-{{< alert type="warning" >}}
-
-Before you enable a feature still in development, you should understand the [security and stability risks](../administration/feature_flags/_index.md#risks-when-enabling-features-still-in-development).
-
-{{< /alert >}}
+> [!warning]
+> Before you enable a feature still in development, you should understand the [security and stability risks](../administration/feature_flags/_index.md#risks-when-enabling-features-still-in-development).
 
 ```plaintext
 POST /features/:name

@@ -171,11 +171,8 @@ PATCH /groups/:id/-/virtual_registries/cleanup/policy
 | `notify_on_success` | boolean | No | Notify group owners on successful cleanup runs. |
 | `notify_on_failure` | boolean | No | Notify group owners on failed cleanup runs. |
 
-{{< alert type="note" >}}
-
-You must provide at least one of the optional parameters in your request.
-
-{{< /alert >}}
+> [!note]
+> You must provide at least one of the optional parameters in your request.
 
 Example request:
 

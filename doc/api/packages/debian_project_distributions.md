@@ -21,11 +21,8 @@ title: Debian project distributions API
 Use this API to manage [Debian project distributions](../../user/packages/debian_repository/_index.md). This API is behind a
 feature flag that is disabled by default. To use this API, you must [enable the Debian API](#enable-the-debian-api).
 
-{{< alert type="warning" >}}
-
-This API is under development and is not meant for production use.
-
-{{< /alert >}}
+> [!warning]
+> This API is under development and is not meant for production use.
 
 ## Enable the Debian API
 

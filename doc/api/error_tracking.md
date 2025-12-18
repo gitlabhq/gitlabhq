@@ -57,11 +57,8 @@ Example response:
 
 Creates Error Tracking settings for a specified project.
 
-{{< alert type="note" >}}
-
-This API is only available when used with [integrated error tracking](../operations/integrated_error_tracking.md).
-
-{{< /alert >}}
+> [!note]
+> This API is only available when used with [integrated error tracking](../operations/integrated_error_tracking.md).
 
 ```plaintext
 PUT /projects/:id/error_tracking/settings

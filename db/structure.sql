@@ -11052,6 +11052,24 @@ CREATE SEQUENCE ai_flow_triggers_id_seq
 
 ALTER SEQUENCE ai_flow_triggers_id_seq OWNED BY ai_flow_triggers.id;
 
+CREATE TABLE ai_instance_accessible_entity_rules (
+    id bigint NOT NULL,
+    through_namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    accessible_entity text NOT NULL,
+    CONSTRAINT check_e8f4eb707f CHECK ((char_length(accessible_entity) <= 255))
+);
+
+CREATE SEQUENCE ai_instance_accessible_entity_rules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_instance_accessible_entity_rules_id_seq OWNED BY ai_instance_accessible_entity_rules.id;
+
 CREATE TABLE ai_namespace_feature_settings (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -31848,6 +31866,8 @@ ALTER TABLE ONLY ai_feature_settings ALTER COLUMN id SET DEFAULT nextval('ai_fea
 
 ALTER TABLE ONLY ai_flow_triggers ALTER COLUMN id SET DEFAULT nextval('ai_flow_triggers_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_instance_accessible_entity_rules ALTER COLUMN id SET DEFAULT nextval('ai_instance_accessible_entity_rules_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_namespace_feature_settings ALTER COLUMN id SET DEFAULT nextval('ai_namespace_feature_settings_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_self_hosted_models ALTER COLUMN id SET DEFAULT nextval('ai_self_hosted_models_id_seq'::regclass);
@@ -34428,6 +34448,9 @@ ALTER TABLE ONLY ai_feature_settings
 
 ALTER TABLE ONLY ai_flow_triggers
     ADD CONSTRAINT ai_flow_triggers_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_instance_accessible_entity_rules
+    ADD CONSTRAINT ai_instance_accessible_entity_rules_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_namespace_feature_settings
     ADD CONSTRAINT ai_namespace_feature_settings_pkey PRIMARY KEY (id);
@@ -40272,6 +40295,8 @@ CREATE INDEX index_ai_flow_triggers_on_ai_catalog_item_consumer_id ON ai_flow_tr
 CREATE INDEX index_ai_flow_triggers_on_project_id ON ai_flow_triggers USING btree (project_id);
 
 CREATE INDEX index_ai_flow_triggers_on_user_id ON ai_flow_triggers USING btree (user_id);
+
+CREATE UNIQUE INDEX index_ai_iaer_on_through_namespace_on_accessible_entity ON ai_instance_accessible_entity_rules USING btree (through_namespace_id, accessible_entity);
 
 CREATE UNIQUE INDEX index_ai_self_hosted_models_on_name ON ai_self_hosted_models USING btree (name);
 
@@ -52726,6 +52751,9 @@ ALTER TABLE ONLY analytics_cycle_analytics_value_stream_settings
 
 ALTER TABLE ONLY merge_request_assignment_events
     ADD CONSTRAINT fk_rails_4378a2e8d7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY ai_instance_accessible_entity_rules
+    ADD CONSTRAINT fk_rails_43a6361a35 FOREIGN KEY (through_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY remote_mirrors
     ADD CONSTRAINT fk_rails_43a9aa4ca8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -50,6 +50,7 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
     end
 
     let_it_be(:internal_job_variable) { create(:ci_job_variable, job: job) }
+    let_it_be(:supply_chain_attestation) { create(:supply_chain_attestation, build: job) }
 
     let(:clone_accessors) do
       %i[pipeline project ref tag options name allow_failure stage_idx yaml_variables
@@ -76,7 +77,7 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         job_artifacts_requirements_v2 job_artifacts_repository_xray
         job_artifacts_api_fuzzing terraform_state_versions job_artifacts_cyclonedx
         scoped_user_id exit_code job_annotations job_artifacts_annotations
-        job_artifacts_jacoco].freeze
+        job_artifacts_jacoco supply_chain_attestation].freeze
     end
 
     let(:ignore_accessors) do

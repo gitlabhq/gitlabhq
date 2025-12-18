@@ -115,7 +115,10 @@ RSpec.shared_examples 'User creates wiki page' do
       expect(page).to have_current_path(wiki_page_path(wiki, "raketasks"), ignore_query: true)
     end
 
-    it "creates ASCII wiki with LaTeX blocks", :js do
+    it "creates ASCII wiki with LaTeX blocks", :js, quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/584363',
+      type: :flaky
+    } do
       stub_application_setting(plantuml_url: "http://localhost", plantuml_enabled: true)
 
       ascii_content = <<~MD

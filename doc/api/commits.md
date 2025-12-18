@@ -145,11 +145,8 @@ Create a commit by posting a JSON payload
 POST /projects/:id/repository/commits
 ```
 
-{{< alert type="note" >}}
-
-This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
-
-{{< /alert >}}
+> [!note]
+> This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
 
 | Attribute        | Type           | Required | Description |
 |------------------|----------------|----------|-------------|
@@ -165,11 +162,8 @@ This endpoint is subject to [request size and rate limits](../administration/ins
 | `start_sha`      | string         | No       | SHA of the commit to start the new branch from. |
 | `stats`          | boolean        | No       | Include commit stats. Default is `true`. |
 
-{{< alert type="note" >}}
-
-Large requests with many actions may be subject to size limits. For more information, see [Commits API limits](../administration/instance_limits.md#commits-and-files-api-limits).
-
-{{< /alert >}}
+> [!note]
+> Large requests with many actions may be subject to size limits. For more information, see [Commits API limits](../administration/instance_limits.md#commits-and-files-api-limits).
 
 | `actions[]` Attribute | Type    | Required | Description |
 |-----------------------|---------|----------|-------------|

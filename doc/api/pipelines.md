@@ -288,11 +288,8 @@ Example of response
 
 ## Get a test report for a pipeline
 
-{{< alert type="note" >}}
-
-This API route is part of the [Unit test report](../ci/testing/unit_test_reports.md) feature.
-
-{{< /alert >}}
+> [!note]
+> This API route is part of the [Unit test report](../ci/testing/unit_test_reports.md) feature.
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/test_report
@@ -350,11 +347,8 @@ Sample response:
 
 ## Get a test report summary for a pipeline
 
-{{< alert type="note" >}}
-
-This API route is part of the [Unit test report](../ci/testing/unit_test_reports.md) feature.
-
-{{< /alert >}}
+> [!note]
+> This API route is part of the [Unit test report](../ci/testing/unit_test_reports.md) feature.
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/test_report_summary

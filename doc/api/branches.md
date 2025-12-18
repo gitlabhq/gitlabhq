@@ -23,11 +23,8 @@ Get a list of repository branches from a project, sorted by name alphabetically.
 use regular expressions to find specific branch patterns. Returns detailed information about the branch,
 including its protection status, merge status, and commit details.
 
-{{< alert type="note" >}}
-
-This endpoint can be accessed without authentication if the repository is publicly accessible.
-
-{{< /alert >}}
+> [!note]
+> This endpoint can be accessed without authentication if the repository is publicly accessible.
 
 ```plaintext
 GET /projects/:id/repository/branches
@@ -119,11 +116,8 @@ Example response:
 
 Get a single project repository branch.
 
-{{< alert type="note" >}}
-
-This endpoint can be accessed without authentication if the repository is publicly accessible.
-
-{{< /alert >}}
+> [!note]
+> This endpoint can be accessed without authentication if the repository is publicly accessible.
 
 ```plaintext
 GET /projects/:id/repository/branches/:branch
@@ -309,11 +303,8 @@ Example response:
 
 Delete a branch from the repository.
 
-{{< alert type="note" >}}
-
-In the case of an error, an explanation message is provided.
-
-{{< /alert >}}
+> [!note]
+> In the case of an error, an explanation message is provided.
 
 ```plaintext
 DELETE /projects/:id/repository/branches/:branch
@@ -348,11 +339,8 @@ For more information, see [Handle sensitive information](../topics/git/undo.md#h
 
 Deletes all branches that are merged into the project's default branch.
 
-{{< alert type="note" >}}
-
-[Protected branches](../user/project/repository/branches/protected.md) are not deleted as part of this operation.
-
-{{< /alert >}}
+> [!note]
+> [Protected branches](../user/project/repository/branches/protected.md) are not deleted as part of this operation.
 
 ```plaintext
 DELETE /projects/:id/repository/merged_branches
