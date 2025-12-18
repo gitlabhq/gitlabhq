@@ -23,6 +23,8 @@ A trial license for Ultimate and GitLab Duo Enterprise is valid for:
 - 30 days if you're on the Free tier.
 - 60 days if you're on the Premium tier.
 
+The trial starts when you receive the confirmation email including the activation code, not when you activate it.
+
 When the trial period is over, you lose access to paid features. To maintain access, you can [buy a subscription](manage_subscription.md#buy-a-subscription).
 
 ## Start a trial on GitLab.com
@@ -69,24 +71,22 @@ Prerequisites:
 - Your instance must be able to [synchronize your subscription data](manage_subscription.md#subscription-data-synchronization) with GitLab.
 - You must be an administrator.
 
-To start a trial on GitLab Self-Managed:
+To start an Ultimate trial with GitLab Duo Core or native Duo features:
 
-1. Go to [https://about.gitlab.com/free-trial/?hosted=self-managed](https://about.gitlab.com/free-trial/?hosted=self-managed).
+1. Go to the [GitLab Ultimate with Duo Core](https://about.gitlab.com/free-trial/?hosted=self-managed) trial page.
 1. Complete the fields.
 1. Select **Get Started**.
-
-### Add your trial license to your instance
-
-To activate your trial, you must manually apply the license file you received by email to your GitLab instance.
-
+1. Check your email for the trial activation code.
+   The email with the activation code is sent shortly after the trial request submission, to the email address provided in the trial request form.
+   The activation code is valid for only one use.
 1. Sign in to GitLab as an administrator.
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
-1. In the **Add License** area, add a license by either uploading the file or entering the key.
-1. Select the **Terms of Service** checkbox.
-1. Select **Add license**.
+1. Select **Subscription**.
+1. Paste the activation code in **Activation code**.
+1. Read and accept the terms of service.
+1. Select **Activate**.
 
-The trial automatically synchronizes to your instance in 24 hours.
+The subscription is activated.
 
 ## View remaining trial period days
 

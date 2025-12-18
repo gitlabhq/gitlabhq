@@ -466,6 +466,9 @@ GEM
       safe_yaml (~> 1.0.0)
     crass (1.0.6)
     creole (0.5.0)
+    cronex (0.15.0)
+      tzinfo
+      unicode (>= 0.4.4.5)
     css_parser (1.14.0)
       addressable
     cssbundling-rails (1.4.3)
@@ -1822,10 +1825,11 @@ GEM
     shellany (0.0.1)
     shoulda-matchers (6.4.0)
       activesupport (>= 5.2.0)
-    sidekiq-cron (1.12.0)
-      fugit (~> 1.8)
+    sidekiq-cron (2.3.1)
+      cronex (>= 0.13.0)
+      fugit (~> 1.8, >= 1.11.1)
       globalid (>= 1.0.1)
-      sidekiq (>= 6)
+      sidekiq (>= 6.5.0)
     sigdump (0.2.5)
     signet (0.19.0)
       addressable (~> 2.8)
@@ -2000,6 +2004,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
+    unicode (0.4.4.5)
     unicode-display_width (2.4.2)
     unicode-emoji (4.0.4)
     unicode_utils (1.4.0)
@@ -2408,7 +2413,7 @@ DEPENDENCIES
   sentry-sidekiq (~> 5.23.0)
   shoulda-matchers (~> 6.4.0)
   sidekiq!
-  sidekiq-cron (~> 1.12.0)
+  sidekiq-cron (~> 2.3.0)
   sigdump (~> 0.2.4)
   simple_po_parser (~> 1.1.6)
   simplecov (~> 0.22)

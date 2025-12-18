@@ -698,7 +698,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
       it "returns one of user1's groups", :aggregate_failures do
         # TODO remove this in https://gitlab.com/gitlab-org/gitlab/-/issues/545723.
-        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(108)
+        # Additional queries due to cascading settings checks for duo_foundational_flows_enabled
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/442164
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(117)
 
         project = create(:project, namespace: group2, path: 'Foo')
         project2 = create(:project, namespace: group2, path: 'Foo2')
@@ -817,9 +819,11 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
         create(:project, namespace: group1)
 
+        # Additional queries due to cascading settings checks for duo_foundational_flows_enabled
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/442164
         expect do
           get api("/groups/#{group1.id}", user1)
-        end.not_to exceed_query_limit(control)
+        end.not_to exceed_query_limit(control).with_threshold(2)
       end
 
       it 'avoids N+1 queries with shared group links' do
@@ -1835,9 +1839,11 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           # threshold number 2 is the additional number of queries which are getting executed.
           # with this we are allowing some N+1 that may already exist but is not obvious.
           # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132246#note_1581106553
+          # Additional queries due to cascading settings checks for duo_foundational_flows_enabled
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/442164
           expect do
             get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true }
-          end.to issue_same_number_of_queries_as(control).with_threshold(2)
+          end.to issue_same_number_of_queries_as(control).with_threshold(5)
         end
       end
 
@@ -1908,9 +1914,11 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
         create(:project, namespace: group1)
 
+        # Additional queries due to cascading settings checks for duo_foundational_flows_enabled
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/442164
         expect do
           get api("/groups/#{group1.id}/projects", user1)
-        end.not_to exceed_query_limit(control)
+        end.not_to exceed_query_limit(control).with_threshold(2)
       end
     end
 

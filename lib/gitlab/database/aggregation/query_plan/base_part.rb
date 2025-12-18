@@ -5,9 +5,14 @@ module Gitlab
     module Aggregation
       class QueryPlan
         class BasePart
+          include ActiveModel::Validations
+
           attr_reader :definition, :configuration
 
           delegate :name, :type, to: :definition
+
+          validate :validate_definition_presence
+          validate -> { definition&.validate_part(self) }
 
           def initialize(definition, configuration)
             @definition = definition
@@ -15,7 +20,16 @@ module Gitlab
           end
 
           def instance_key
-            definition.instance_key(**configuration)
+            definition.instance_key(configuration)
+          end
+
+          private
+
+          def validate_definition_presence
+            return if definition
+
+            errors.add(:base, format(s_("AggregationEngine|the specified identifier is not available: '%{identifier}'"),
+              identifier: configuration[:identifier]))
           end
         end
       end

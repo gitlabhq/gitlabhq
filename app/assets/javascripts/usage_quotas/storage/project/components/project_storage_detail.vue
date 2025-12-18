@@ -1,33 +1,81 @@
 <script>
-import { GlIcon, GlLink, GlSprintf, GlTableLite, GlPopover } from '@gitlab/ui';
+import { GlIcon, GlButton, GlLink, GlSprintf, GlTableLite, GlPopover } from '@gitlab/ui';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
-import { sprintf, s__ } from '~/locale';
-import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
+import { s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import StorageTypeIcon from './storage_type_icon.vue';
+
+export const STATISTICS_DETAILS_COMPONENTS = {
+  repository: true, // TODO: Replace with real Vue component in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216337
+};
 
 export default {
   name: 'ProjectStorageDetail',
   components: {
     GlLink,
     GlIcon,
+    GlButton,
     GlTableLite,
     GlSprintf,
     StorageTypeIcon,
     GlPopover,
     NumberToHumanSize,
-    HelpIcon,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     storageTypes: {
       type: Array,
       required: true,
     },
+    project: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+  },
+  computed: {
+    storageTypesWithDetails() {
+      return this.storageTypes.map((type) => {
+        if (
+          this.glFeatures?.projectRepositoriesHealthUi &&
+          STATISTICS_DETAILS_COMPONENTS[type.id]
+        ) {
+          return {
+            ...type,
+            detailsComponent: STATISTICS_DETAILS_COMPONENTS[type.id],
+            project: this.project,
+            _showDetails: false, // GlTableLite uses _showDetails attribute to show #row-details slot
+          };
+        }
+
+        return type;
+      });
+    },
+    projectTableFields() {
+      return [
+        {
+          key: 'storageType',
+          label: s__('UsageQuota|Storage type'),
+          thClass: 'gl-w-9/10',
+          tdClass: this.tableDataClass,
+        },
+        {
+          key: 'value',
+          label: s__('UsageQuota|Usage'),
+          thClass: 'gl-w-1/10',
+          tdClass: this.tableDataClass,
+        },
+      ];
+    },
   },
   methods: {
-    helpLinkAriaLabel(linkTitle) {
-      return sprintf(s__('UsageQuota|%{linkTitle} help link'), {
-        linkTitle,
-      });
+    expandDetailsIcon(show) {
+      return show ? 'chevron-down' : 'chevron-right';
+    },
+    tableDataClass(_, __, item) {
+      // GlTableLite uses _showDetails attribute to show #row-details slot
+      // eslint-disable-next-line no-underscore-dangle
+      return item._showDetails ? '!gl-border-b-0' : '';
     },
   },
   projectTableFields: [
@@ -45,7 +93,11 @@ export default {
 };
 </script>
 <template>
-  <gl-table-lite :items="storageTypes" :fields="$options.projectTableFields">
+  <gl-table-lite
+    :items="storageTypesWithDetails"
+    :fields="projectTableFields"
+    :tbody-tr-attr="{ 'data-testid': 'storage-type-row' }"
+  >
     <template #cell(storageType)="{ item }">
       <div class="gl-flex gl-flex-row">
         <storage-type-icon :name="item.id" :data-testid="`${item.id}-icon`" />
@@ -63,19 +115,26 @@ export default {
             <template v-else>
               {{ item.name }}
             </template>
+            <gl-button
+              v-if="item.detailsComponent"
+              class="gl-self-start"
+              size="small"
+              :icon="expandDetailsIcon(item._showDetails)"
+              category="tertiary"
+              :data-testid="`${item.id}-show-details-button`"
+              @click="item._showDetails = !item._showDetails"
+            />
+          </h3>
+          <p class="gl-mb-0 gl-text-subtle" :data-testid="`${item.id}-description`">
+            {{ item.description }}
             <gl-link
               v-if="item.helpPath"
               :href="item.helpPath"
               target="_blank"
-              class="gl-inline-flex"
-              :aria-label="helpLinkAriaLabel(item.name)"
               :data-testid="`${item.id}-help-link`"
             >
-              <help-icon />
+              {{ s__('UsageQuota|Learn more.') }}
             </gl-link>
-          </h3>
-          <p class="gl-mb-0 gl-text-subtle" :data-testid="`${item.id}-description`">
-            {{ item.description }}
           </p>
           <p v-if="item.warningMessage" class="gl-mb-0 gl-text-sm">
             <gl-icon name="warning" :size="12" />
@@ -109,6 +168,10 @@ export default {
           :data-testid="item.id + '-popover'"
         />
       </template>
+    </template>
+
+    <template #row-details="{ item }">
+      <div :data-testid="`${item.id}-row-details`">{{ item }}</div>
     </template>
   </gl-table-lite>
 </template>

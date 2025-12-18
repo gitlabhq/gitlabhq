@@ -245,7 +245,21 @@ Because of LLM context window limits, conversations are truncated to 200,000 tok
 
 Individual conversations expire and are automatically deleted after 30 days of inactivity.
 
-## Create custom rules
+## Customize GitLab Duo Chat in your IDE
+
+Customize how GitLab Duo Chat behaves in your IDE by providing instructions that reflect your coding
+style, team practices, and project requirements.
+
+GitLab Duo Chat supports two approaches:
+
+- Custom rules in `chat-rules.md`: For GitLab only. Best for personal preferences and team
+  standards.
+- Shared rules in `AGENTS.md`: For GitLab and other AI tools that support the specification. Best
+  for project context, monorepo organization, and directory-specific conventions.
+
+You can use both files simultaneously. GitLab Duo Chat applies instructions from all available rule files.
+
+### Create custom rules
 
 {{< history >}}
 
@@ -276,7 +290,7 @@ Conversations that existed before you created any custom rules do not follow tho
 
 {{< /alert >}}
 
-### Create user-level custom rules
+#### Create user-level custom rules
 
 User-level custom rules apply to all of your projects and workspaces.
 
@@ -300,7 +314,7 @@ User-level custom rules apply to all of your projects and workspaces.
 
    You must do this every time you change the custom rules.
 
-### Create workspace-level custom rules
+#### Create workspace-level custom rules
 
 Workspace-level custom rules apply only to a specific project or workspace.
 
@@ -320,7 +334,7 @@ Workspace-level custom rules apply only to a specific project or workspace.
 
 For more information, see the [Custom rules in GitLab Duo Agentic Chat blog](https://about.gitlab.com/blog/custom-rules-duo-agentic-chat-deep-dive/).
 
-### Update custom rules
+#### Update custom rules
 
 To update your custom rules, edit and save the custom rules file. Then, start a new GitLab Duo
 conversation to apply the updated rules.
@@ -353,8 +367,8 @@ GitLab Duo Chat combines available instructions from user-level and workspace-le
 
 Prerequisites:
 
-- For VS Code, [install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version v6.60 or later.
-- For a JetBrains IDE, [install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.26.0 or later.
+- For VS Code, [install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) 6.60 or later.
+- For a JetBrains IDE, [install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) 3.26.0 or later.
 
 {{< alert type="note" >}}
 
@@ -366,7 +380,7 @@ Conversations that existed before you created any `AGENTS.md` files do not follo
 
 User-level `AGENTS.md` files apply to all of your projects and workspaces.
 
-1. Create the file in your user configuration directory:
+1. In your user configuration directory, create an `AGENTS.md` file:
    - If you have set the `GLAB_CONFIG_DIR` environment variable, create the file at: `$GLAB_CONFIG_DIR/AGENTS.md`
    - Otherwise, create the file in your platform's default configuration directory:
      - macOS or Linux:
@@ -375,37 +389,89 @@ User-level `AGENTS.md` files apply to all of your projects and workspaces.
      - Windows: `%APPDATA%\GitLab\duo\AGENTS.md`
 1. Add instructions to the file. For example:
 
+   {{< tabs >}}
+
+   {{< tab title="Personal preferences" >}}
+
    ```markdown
-   - I am still learning Rust, explain all Rust code at a beginner level
-   - Be brief in your explanations
+   # My personal coding preferences
+
+   - Always explain code changes in simple terms for beginners
+   - Use descriptive variable names
+   - Add comments for complex logic
+   - Prefer functional programming patterns when appropriate
    ```
+
+   {{< /tab >}}
+
+   {{< tab title="Team standards" >}}
+
+   ```markdown
+   # Team coding standards
+
+   - Follow our company's style guide for all code
+   - Use TypeScript strict mode
+   - Write unit tests for all new functions
+   - Document all public APIs with JSDoc
+   ```
+
+   {{< /tab >}}
+
+   {{< tab title="Monorepo context" >}}
+
+   ```markdown
+   # Monorepo context
+
+   - This is a monorepo with multiple services
+   - Frontend code is in /apps/web
+   - Backend services are in /services
+   - Shared libraries are in /packages
+   - Follow the architecture decision records in /docs/adr
+   ```
+
+   {{< /tab >}}
+
+   {{< tab title="Security guidelines" >}}
+
+   ```markdown
+   # Security review guidelines
+
+   - Always validate user input
+   - Use parameterized queries for database operations
+   - Implement proper authentication and authorization
+   - Follow OWASP security best practices
+   - Never log sensitive information
+   ```
+
+   {{< /tab >}}
+
+   {{< /tabs >}}
 
 1. Save the file.
 1. To apply the instructions, start a new GitLab Duo conversation.
 
-   You must do this every time you change the file.
+   You must do this every time you change the `AGENTS.md` file.
 
 #### Create workspace-level `AGENTS.md` files
 
 Workspace-level `AGENTS.md` files apply only to a specific project or workspace.
 
-1. In your project root, create a file named `AGENTS.md`.
+1. In the root of your project workspace, create an `AGENTS.md` file.
 1. Add instructions to the file. For example:
 
    ```markdown
-   # Project Guidelines
+   # Project-specific guidelines
 
-   This is a Ruby on Rails application using PostgreSQL.
-
-   - Follow Rails conventions for file organization
-   - Use RSpec for testing
-   - All API endpoints should be documented with OpenAPI
+   - This project uses React with TypeScript
+   - Follow the component structure in /src/components
+   - Use our custom hooks from /src/hooks
+   - State management uses Redux Toolkit
    ```
 
 1. Save the file.
 1. To apply the instructions, start a new GitLab Duo conversation.
 
-   You must do this every time you change the file.
+   You must do this every time you change the `AGENTS.md` file.
 
 #### Use `AGENTS.md` in monorepos and subdirectories
 
@@ -431,17 +497,24 @@ In this example:
 
 This approach helps ensure GitLab Duo follows the appropriate conventions for each part of your project.
 
-#### The difference between `AGENTS.md` and `chat-rules.md`
+To use `AGENTS.md` in a subdirectory:
 
-You can use both `AGENTS.md` and `chat-rules.md` to provide instructions for GitLab Duo Chat. Choose which one to use based on your needs:
+1. In a subdirectory of your project, create an `AGENTS.md` file.
+1. Add instructions specific to that directory. For example, for a backend service:
 
-- Use `chat-rules.md` to define instructions for GitLab only.
-- Use `AGENTS.md` to define instructions for GitLab and other AI coding tools
-  that support the `AGENTS.md` specification.
-- Use `AGENTS.md` to define context-specific instructions for projects in nested directories within your workspace.
+   ```markdown
+   # Backend service guidelines
 
-You can use both simultaneously. GitLab Duo Chat applies instructions from all available
-rule files.
+   - This service uses Node.js with Express
+   - Follow RESTful API conventions
+   - Use async/await for asynchronous operations
+   - Validate all inputs with Joi schemas
+   ```
+
+1. Save the file.
+1. To apply the instructions, start a new GitLab Duo conversation that involves files in that directory.
+
+   You must do this every time you change the `AGENTS.md` file.
 
 ## Select a model
 

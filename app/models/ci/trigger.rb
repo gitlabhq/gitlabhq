@@ -29,8 +29,6 @@ module Ci
     before_validation :ensure_token
 
     ignore_column :token, remove_with: '18.9', remove_after: '2026-01-31'
-    ignore_column :encrypted_token, remove_with: '18.8', remove_after: '2025-12-31'
-    ignore_column :encrypted_token_iv, remove_with: '18.8', remove_after: '2025-12-31'
 
     add_authentication_token_field(:token, encrypted: :required, format_with_prefix: :token_prefix)
 

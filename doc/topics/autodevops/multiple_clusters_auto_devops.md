@@ -26,7 +26,7 @@ These environments are tied to jobs using [Auto Deploy](stages.md#auto-deploy), 
 
 To deploy your environments to different Kubernetes clusters:
 
-1. [Create Kubernetes clusters](../../user/infrastructure/clusters/connect/new_gke_cluster.md).
+1. [Create Kubernetes clusters with OpenTofu and GitLab](../../user/infrastructure/iac/_index.md).
 1. Associate the clusters to your project:
    1. [Install a GitLab agent for Kubernetes on each cluster](../../user/clusters/agent/_index.md).
    1. [Configure each agent to access your project](../../user/clusters/agent/work_with_agent.md#configure-your-agent).

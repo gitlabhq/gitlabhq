@@ -48271,6 +48271,14 @@ definitions:
           foundational_agents_default_enabled:
             type: boolean
             description: Whether new foundational agents are enabled by default
+          prompt_injection_protection_level:
+            type: string
+            description: Prompt injection protection level. One of `no_checks`, `log_only`
+              or `interrupt`
+            enum:
+            - no_checks
+            - log_only
+            - interrupt
           minimum_access_level_execute:
             type: integer
             format: int32
@@ -48537,6 +48545,14 @@ definitions:
           foundational_agents_default_enabled:
             type: boolean
             description: Whether new foundational agents are enabled by default
+          prompt_injection_protection_level:
+            type: string
+            description: Prompt injection protection level. One of `no_checks`, `log_only`
+              or `interrupt`
+            enum:
+            - no_checks
+            - log_only
+            - interrupt
           minimum_access_level_execute:
             type: integer
             format: int32

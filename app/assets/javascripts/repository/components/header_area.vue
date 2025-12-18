@@ -20,9 +20,6 @@ import RefSelector from '~/ref/components/ref_selector.vue';
 import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
 import BlobControls from '~/repository/components/header_area/blob_controls.vue';
 import RepositoryOverflowMenu from '~/repository/components/header_area/repository_overflow_menu.vue';
-import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
-import SourceCodeDownloadDropdown from '~/vue_shared/components/download_dropdown/download_dropdown.vue';
-import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
 import AddToTree from '~/repository/components/header_area/add_to_tree.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
@@ -47,11 +44,8 @@ export default {
     Breadcrumbs,
     RepositoryOverflowMenu,
     BlobControls,
-    CodeDropdown,
     CompactCodeDropdown: () =>
       import('ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue'),
-    SourceCodeDownloadDropdown,
-    CloneCodeDropdown,
     AddToTree,
     WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
     LockDirectoryButton: () =>
@@ -202,9 +196,6 @@ export default {
     findFileShortcutKey() {
       return keysFor(START_SEARCH_PROJECT_FILE)[0];
     },
-    showCompactCodeDropdown() {
-      return this.glFeatures.directoryCodeDropdownUpdates;
-    },
     showBlobControls() {
       return (
         this.$route.params.path && ['blobPathDecoded', 'blobPathEncoded'].includes(this.$route.name)
@@ -315,20 +306,6 @@ export default {
         class="js-repo-breadcrumbs"
         :current-path="currentPath"
         :ref-type="getRefType"
-        :can-collaborate="canCollaborate"
-        :can-edit-tree="canEditTree"
-        :can-push-code="canPushCode"
-        :can-push-to-branch="canPushToBranch"
-        :original-branch="originalBranch"
-        :selected-branch="selectedBranch"
-        :new-branch-path="newBranchPath"
-        :new-tag-path="newTagPath"
-        :new-blob-path="newBlobPath"
-        :fork-new-blob-path="forkNewBlobPath"
-        :fork-new-directory-path="forkNewDirectoryPath"
-        :fork-upload-blob-path="forkUploadBlobPath"
-        :upload-path="uploadPath"
-        :new-dir-path="newDirPath"
       />
     </div>
 
@@ -374,7 +351,7 @@ export default {
         data-testid="tree-controls-container"
       >
         <add-to-tree
-          v-if="!isReadmeView && showCompactCodeDropdown"
+          v-if="!isReadmeView"
           :class="[
             'gl-hidden',
             glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-block' : '@sm/panel:gl-block',
@@ -448,7 +425,7 @@ export default {
             glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-w-auto' : '@sm/panel:gl-w-auto',
           ]"
         >
-          <div v-if="showCompactCodeDropdown" class="gl-flex gl-justify-end gl-gap-3">
+          <div class="gl-flex gl-justify-end gl-gap-3">
             <add-to-tree
               v-if="!isReadmeView"
               :class="
@@ -493,55 +470,6 @@ export default {
               :current-ref="currentRef"
             />
           </div>
-          <template v-else-if="!isReadmeView">
-            <code-dropdown
-              :class="[
-                'git-clone-holder js-git-clone-holder gl-hidden',
-                glFeatures.repositoryFileTreeBrowser
-                  ? '@md/panel:gl-inline-block'
-                  : '@sm/panel:gl-inline-block',
-              ]"
-              :ssh-url="sshUrl"
-              :http-url="httpUrl"
-              :kerberos-url="kerberosUrl"
-              :xcode-url="xcodeUrl"
-              :current-path="currentPath"
-              :directory-download-links="downloadLinks"
-            />
-            <div
-              :class="[
-                'gl-flex gl-w-full gl-gap-3',
-                glFeatures.repositoryFileTreeBrowser
-                  ? '@md/panel:gl-inline-block @md/panel:gl-w-auto'
-                  : '@sm/panel:gl-inline-block @sm/panel:gl-w-auto',
-              ]"
-            >
-              <div
-                :class="[
-                  'gl-flex gl-w-full gl-items-stretch gl-gap-3',
-                  glFeatures.repositoryFileTreeBrowser
-                    ? '@md/panel:gl-hidden'
-                    : '@sm/panel:gl-hidden',
-                ]"
-              >
-                <source-code-download-dropdown
-                  :download-links="downloadLinks"
-                  :download-artifacts="downloadArtifacts"
-                />
-                <clone-code-dropdown
-                  class="mobile-git-clone js-git-clone-holder !gl-w-full"
-                  :ssh-url="sshUrl"
-                  :http-url="httpUrl"
-                  :kerberos-url="kerberosUrl"
-                />
-              </div>
-              <repository-overflow-menu
-                :full-path="projectPath"
-                :path="currentPath"
-                :current-ref="currentRef"
-              />
-            </div>
-          </template>
         </div>
       </div>
       <!-- Blob controls -->

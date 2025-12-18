@@ -146,7 +146,8 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
               pipeline.set_status('success')
             end
 
-            it 'the MR gets merged' do
+            it 'the MR gets merged',
+              quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/10720' do
               expect(page).to have_content("Pipeline ##{pipeline.id} passed")
 
               wait_for_requests

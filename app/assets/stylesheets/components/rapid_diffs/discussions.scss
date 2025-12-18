@@ -32,6 +32,10 @@
   border-radius: 0 0 var(--rd-row-bottom-right-radius) var(--rd-row-bottom-left-radius);
 }
 
+.rd-discussion-row > td:empty {
+  border-right-color: transparent;
+}
+
 .rd-discussion-row > td:only-child {
   @container discussion-row (min-width: theme('maxWidth.limited')) {
     border-bottom-right-radius: 0;
@@ -46,7 +50,10 @@
   margin-right: -1px;
 }
 
-.rd-discussion-row > td:first-child:not(:only-child),
+.rd-discussion-row > td:first-child:not(:only-child) {
+  margin-right: -1px;
+}
+
 .rd-discussion-row > td:first-child:empty {
   border-right-color: transparent;
 }

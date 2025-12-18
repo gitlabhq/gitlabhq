@@ -33,6 +33,7 @@ module API
       resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "Get a list of #{notable_name} discussions" do
           success Entities::Discussion
+          tags ['discussions']
         end
         params do
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
@@ -50,6 +51,7 @@ module API
 
         desc "Get a single #{notable_name} discussion" do
           success Entities::Discussion
+          tags ['discussions']
         end
         params do
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
@@ -70,6 +72,7 @@ module API
 
         desc "Create a new #{notable_name} discussion" do
           success Entities::Discussion
+          tags ['discussions']
         end
         params do
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
@@ -133,6 +136,7 @@ module API
         end
         desc "Get comments in a single #{notable_name} discussion" do
           success Entities::Discussion
+          tags ['discussions']
         end
         params do
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
@@ -151,6 +155,7 @@ module API
 
         desc "Add a comment to a #{notable_name} discussion" do
           success Entities::Note
+          tags ['discussions']
         end
         params do
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
@@ -184,6 +189,7 @@ module API
 
         desc "Get a comment in a #{notable_name} discussion" do
           success Entities::Note
+          tags ['discussions']
         end
         params do
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
@@ -198,6 +204,7 @@ module API
 
         desc "Edit a comment in a #{notable_name} discussion" do
           success Entities::Note
+          tags ['discussions']
         end
         params do
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
@@ -219,6 +226,7 @@ module API
 
         desc "Delete a comment in a #{notable_name} discussion" do
           success Entities::Note
+          tags ['discussions']
         end
         params do
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
@@ -234,6 +242,7 @@ module API
         if Noteable.resolvable_types.include?(noteable_type.to_s)
           desc "Resolve/unresolve an existing #{notable_name} discussion" do
             success Entities::Discussion
+            tags ['discussions']
           end
           params do
             requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"

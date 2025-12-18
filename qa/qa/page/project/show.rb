@@ -48,8 +48,8 @@ module QA
           element 'quick-actions-container'
         end
 
-        view 'app/assets/javascripts/repository/components/header_area/breadcrumbs.vue' do
-          element 'add-to-tree'
+        view 'app/assets/javascripts/repository/components/header_area/add_to_tree.vue' do
+          element 'add-to-tree', visible: true
           element 'new-file-menu-item'
         end
 

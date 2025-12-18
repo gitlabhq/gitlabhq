@@ -28,25 +28,17 @@ RSpec.describe 'IDE', :js, :with_current_organization, feature_category: :web_id
     end
   end
 
-  where(:directory_code_dropdown_updates) do
-    [true, false]
-  end
+  describe 'with sub-groups' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:subgroup_project) { create(:project, :repository, namespace: subgroup) }
 
-  with_them do
-    describe 'with sub-groups' do
-      let_it_be(:group) { create(:group) }
-      let_it_be(:subgroup) { create(:group, parent: group) }
-      let_it_be(:subgroup_project) { create(:project, :repository, namespace: subgroup) }
+    let(:project) { subgroup_project }
 
-      let(:project) { subgroup_project }
-
-      before do
-        stub_feature_flags(directory_code_dropdown_updates: directory_code_dropdown_updates)
-
-        ide_visit(project)
-      end
-
-      it_behaves_like 'Web IDE'
+    before do
+      ide_visit(project)
     end
+
+    it_behaves_like 'Web IDE'
   end
 end

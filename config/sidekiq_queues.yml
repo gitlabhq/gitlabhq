@@ -755,6 +755,8 @@
   - 1
 - - pages_deactivate_mr_deployments
   - 1
+- - pages_delete_group_pages_deployments
+  - 1
 - - pages_delete_pages_deployment
   - 1
 - - pages_domain_ssl_renewal
@@ -1064,6 +1066,12 @@
 - - security_scan_execution_policies_create_pipeline
   - 1
 - - security_scan_execution_policies_rule_schedule
+  - 1
+- - security_scan_profiles_clean_old_namespace_connections
+  - 1
+- - security_scan_profiles_delete_scan_profiles
+  - 1
+- - security_scan_profiles_process_group_transfer_events
   - 1
 - - security_scan_profiles_process_project_transfer_events
   - 1

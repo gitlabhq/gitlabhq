@@ -17,6 +17,10 @@ module Gitlab
 
         private
 
+        def sql(...)
+          Arel.sql(...)
+        end
+
         def method_missing(method_name, ...)
           return super unless @mapping[method_name]
 

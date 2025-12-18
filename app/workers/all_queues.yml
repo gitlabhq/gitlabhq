@@ -4784,6 +4784,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: pages_delete_group_pages_deployments
+  :worker_name: Pages::DeleteGroupPagesDeploymentsWorker
+  :feature_category: :pages
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: pages_delete_pages_deployment
   :worker_name: Pages::DeletePagesDeploymentWorker
   :feature_category: :pages

@@ -412,27 +412,6 @@ describe('GitlabDuoSettings', () => {
         });
       });
     });
-
-    describe('when duoFoundationalFlows feature flag is disabled', () => {
-      beforeEach(() => {
-        wrapper = createWrapper(
-          {
-            duoFeaturesEnabled: true,
-            amazonQAvailable: false,
-            initialDuoRemoteFlowsAvailability: true,
-          },
-          {
-            duoWorkflowInCi: true,
-            duoFoundationalFlows: false,
-          },
-        );
-      });
-
-      it('does not render the foundational flows toggle', () => {
-        expect(findDuoRemoteFlowsToggle().exists()).toBe(true);
-        expect(findDuoFoundationalFlowsToggle().exists()).toBe(false);
-      });
-    });
   });
 
   describe('when areDuoSettingsLocked is false', () => {

@@ -786,6 +786,22 @@ production: &base
   # 3. Auth settings
   # ==========================
 
+  ## Authentication settings
+  authn:
+    ## IAM Service settings
+    # The IAM Service handles OAuth flows with external providers and forwards
+    # authenticated user data to GitLab Rails.
+    iam_service:
+      # Enable OAuth access token authentication from IAM Service
+      # enabled: false
+
+      # IAM Service URL
+      # url: http://localhost:8084
+
+      # Expected JWT audience (must match 'aud' claim in tokens)
+      # Set to 'gitlab-rails' or your GitLab instance identifier
+      # audience: gitlab-rails
+
   ## LDAP settings
   # You can test connections and inspect a sample of the LDAP users with login
   # access by running:

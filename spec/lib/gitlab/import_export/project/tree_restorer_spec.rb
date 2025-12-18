@@ -614,7 +614,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
         context 'tokens are regenerated' do
           it 'has new CI trigger tokens' do
-            expect(Ci::Trigger.where(token: %w[cdbfasdf44a5958c83654733449e585 33a66349b5ad01fc00174af87804e40]))
+            expect(Ci::Trigger.with_token(%w[cdbfasdf44a5958c83654733449e585 33a66349b5ad01fc00174af87804e40]))
               .to be_empty
           end
 

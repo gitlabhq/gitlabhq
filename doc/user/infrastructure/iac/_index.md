@@ -78,6 +78,5 @@ project.
   [GitLab Terraform provider](https://gitlab.com/gitlab-org/terraform-provider-gitlab).
   The GitLab Terraform provider documentation is available on [the Terraform docs site](https://registry.terraform.io/providers/gitlabhq/gitlab/latest/docs).
 - [Create a new cluster on Amazon Elastic Kubernetes Service (EKS)](../clusters/connect/new_eks_cluster.md).
-- [Create a new cluster on Google Kubernetes Engine (GKE)](../clusters/connect/new_gke_cluster.md).
 - [Troubleshoot](troubleshooting.md) issues with GitLab and Terraform.
 - View [the images that contain the `gitlab-terraform` shell script](https://gitlab.com/gitlab-org/terraform-images).

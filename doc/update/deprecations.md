@@ -313,6 +313,43 @@ These changes affect you if your pipelines use the [`auto-build-image`](https://
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### Trending tab in Explore > Projects is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.8</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/583607).
+
+</div>
+
+The **Trending** tab in **Explore** > **Projects** and its associated GraphQL arguments are deprecated in GitLab 18.8 and will be removed in GitLab 19.0.
+Starting in 18.8, the **Trending** tab will redirect to the **Most starred** tab.
+
+**What's being removed**
+
+- The **Trending** tab on the **Explore** > **Projects** page
+- The trending argument in the following GraphQL types:
+  - `Query.adminProjects`
+  - `Query.projects`
+  - `Organization.projects`
+
+**Why we're making this change**
+
+The trending algorithm only considers public projects, making it ineffective for GitLab Self-Managed instances that primarily use internal or private visibility. The algorithm's limitations and lack of search capability have led to explicit removal requests from Self-Managed users. Rather than investing in significant improvements, we're focusing resources on enhancing existing discovery mechanisms.
+
+**Action required**
+
+UI users: The **Trending** tab will redirect to **Most starred** in 18.8 before full removal in 19.0. We recommend using:
+
+- The **Active** tab for recently updated projects
+- The **All** tab for comprehensive browsing with search
+- The **Most starred** tab for popular projects
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### `ciJobTokenScopeAddProject` GraphQL mutation is deprecated
 
 <div class="deprecation-notes">

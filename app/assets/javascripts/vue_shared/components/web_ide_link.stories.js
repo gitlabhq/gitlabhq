@@ -42,19 +42,17 @@ const defaultArgs = {
   editUrl: '/edit',
   webIdeUrl: '/ide',
   pipelineEditorUrl: '/pipeline-editor',
+  isBlob: true,
 };
 
 export const Default = {
   render: createTemplate(),
-  args: defaultArgs,
+  args: { ...defaultArgs, isBlob: false },
 };
 
 export const Blob = {
   render: createTemplate(),
-  args: {
-    ...defaultArgs,
-    isBlob: true,
-  },
+  args: defaultArgs,
 };
 
 export const WithButtonVariant = {

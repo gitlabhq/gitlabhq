@@ -6939,13 +6939,16 @@ msgstr ""
 msgid "Agent not found for provided id."
 msgstr ""
 
+msgid "AggregationEngine|Unknown granularity \"%{granularity}\""
+msgstr ""
+
 msgid "AggregationEngine|at least one metric is required"
 msgstr ""
 
-msgid "AggregationEngine|duplicated identifier found: %{identifier}"
+msgid "AggregationEngine|duplicated identifiers found: %{identifiers}"
 msgstr ""
 
-msgid "AggregationEngine|maximum two dimensions are supported"
+msgid "AggregationEngine|maximum size of %{max_size} exceeded for filter `%{key}`"
 msgstr ""
 
 msgid "AggregationEngine|the specified identifier is not available: '%{identifier}'"
@@ -44155,9 +44158,6 @@ msgstr ""
 msgid "New deploy key"
 msgstr ""
 
-msgid "New directory"
-msgstr ""
-
 msgid "New email address added"
 msgstr ""
 
@@ -44269,9 +44269,6 @@ msgid "New snippet"
 msgstr ""
 
 msgid "New subgroup"
-msgstr ""
-
-msgid "New tag"
 msgstr ""
 
 msgid "New test case"
@@ -60752,7 +60749,7 @@ msgstr ""
 msgid "SecurityOrchestration|%{boldStart}Experiment:%{boldEnd} Try our new advanced policy editor for a more intuitive experience."
 msgstr ""
 
-msgid "SecurityOrchestration|%{boldStart}Experimental feature:%{boldEnd} Try out auto-dismissed actions for vulnerability policy. This feature will be fully available in %{boldStart}18.8.%{boldEnd}"
+msgid "SecurityOrchestration|%{boldStart}Experimental feature:%{boldEnd} Try out auto-dismissed actions for vulnerability policy. This feature is expected to be fully available in %{boldStart}18.8.%{boldEnd}"
 msgstr ""
 
 msgid "SecurityOrchestration|%{boldStart}Send a bot message%{boldEnd} as comment to merge request creator."
@@ -68990,9 +68987,6 @@ msgstr ""
 msgid "This diff is collapsed."
 msgstr ""
 
-msgid "This directory"
-msgstr ""
-
 msgid "This directory cannot be locked while %{locker} has a lock on \"%{path}\". %{additionalPhrase}"
 msgstr ""
 
@@ -69470,9 +69464,6 @@ msgid "This project will be restored from scheduled deletion."
 msgstr ""
 
 msgid "This release was created with a date in the past. Evidence collection at the moment of the release is unavailable."
-msgstr ""
-
-msgid "This repository"
 msgstr ""
 
 msgid "This repository has never been checked."
@@ -72420,6 +72411,9 @@ msgid "UsageQuota|Job artifacts created by CI/CD."
 msgstr ""
 
 msgid "UsageQuota|Learn more about usage quotas."
+msgstr ""
+
+msgid "UsageQuota|Learn more."
 msgstr ""
 
 msgid "UsageQuota|Loading Usage quotas tabs"

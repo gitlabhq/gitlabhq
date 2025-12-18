@@ -10,6 +10,11 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Engine, :click_house, 
       self.table_name = 'agent_platform_sessions'
       self.table_primary_key = %w[namespace_path user_id session_id flow_type]
 
+      filters do
+        exact_match :user_id, :integer
+        range :created_event_at, :datetime, -> { Arel.sql('anyIfMerge(created_event_at)') }, merge_column: true
+      end
+
       dimensions do
         column :user_id, :integer
         column :flow_type, :string
@@ -83,6 +88,35 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Engine, :click_house, 
 
   let(:all_data_rows) do
     [session1, session2, session3, session4, session5]
+  end
+
+  describe "filtering" do
+    it 'applies merge column filtering' do
+      filter_range = session1[:created_event_at].to_date..session4[:created_event_at].to_date
+
+      request = Gitlab::Database::Aggregation::Request.new(
+        filters: [{ identifier: :created_event_at, values: filter_range }],
+        dimensions: [{ identifier: :user_id }],
+        metrics: [{ identifier: :total_count }]
+      )
+
+      expect(engine).to execute_aggregation(request).and_return([
+        { user_id: 2, total_count: 1 },
+        { user_id: 1, total_count: 3 }
+      ])
+    end
+
+    it 'applies regular filtering' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        filters: [{ identifier: :user_id, values: [1] }],
+        dimensions: [{ identifier: :user_id }],
+        metrics: [{ identifier: :total_count }]
+      )
+
+      expect(engine).to execute_aggregation(request).and_return([
+        { user_id: 1, total_count: 4 }
+      ])
+    end
   end
 
   describe "dimensions" do

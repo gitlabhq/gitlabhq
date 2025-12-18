@@ -284,7 +284,6 @@ export default {
           </template>
         </project-setting-row>
         <project-setting-row
-          v-if="glFeatures.duoFoundationalFlows"
           :label="s__('DuoAgentPlatform|Allow foundational flows')"
           :help-text="
             s__(

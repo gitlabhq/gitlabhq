@@ -168,7 +168,7 @@ Use this information to:
 - Set up tools that need the specific S3 bucket name to retrieve logs.
 - Meet compliance and auditing requirements.
 
-To request access and access application logs, see [monitor your GitLab Dedicated instance](monitor.md).
+To manage access to and view application logs, see [access application logs for GitLab Dedicated](monitor.md).
 
 ### NAT gateway IP addresses
 

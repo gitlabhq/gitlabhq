@@ -202,6 +202,37 @@ RSpec.describe '1_settings', feature_category: :settings do
     end
   end
 
+  describe 'IAM Service configuration' do
+    let(:config) do
+      {
+        url: 'http://iam-service-host:9000',
+        audience: 'custom-audience'
+      }
+    end
+
+    context 'with default configuration' do
+      before do
+        stub_config(authn: { iam_service: {} })
+        load_settings
+      end
+
+      it { expect(Settings.authn.iam_service.enabled).to be(false) }
+      it { expect(Settings.authn.iam_service.url).to eq('http://localhost:8084') }
+      it { expect(Settings.authn.iam_service.audience).to eq('gitlab-rails') }
+    end
+
+    context 'with custom configuration' do
+      before do
+        stub_config(authn: { iam_service: { enabled: true }.merge(config) })
+        load_settings
+      end
+
+      it { expect(Settings.authn.iam_service.enabled).to be(true) }
+      it { expect(Settings.authn.iam_service.url).to eq(config[:url]) }
+      it { expect(Settings.authn.iam_service.audience).to eq(config[:audience]) }
+    end
+  end
+
   describe 'cron jobs', unless: Gitlab.ee? do
     let(:expected_jobs) do
       %w[

@@ -6,11 +6,8 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import HeaderArea from '~/repository/components/header_area.vue';
 import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
-import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
-import SourceCodeDownloadDropdown from '~/vue_shared/components/download_dropdown/download_dropdown.vue';
 import AddToTree from '~/repository/components/header_area/add_to_tree.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
 import RepositoryOverflowMenu from '~/repository/components/header_area/repository_overflow_menu.vue';
 import BlobControls from '~/repository/components/header_area/blob_controls.vue';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
@@ -57,9 +54,6 @@ describe('HeaderArea', () => {
   const findRefSelector = () => wrapper.findComponent(RefSelector);
   const findFindFileButton = () => wrapper.findByTestId('tree-find-file-control');
   const findWebIdeButton = () => wrapper.findByTestId('js-tree-web-ide-link');
-  const findCodeDropdown = () => wrapper.findComponent(CodeDropdown);
-  const findSourceCodeDownloadDropdown = () => wrapper.findComponent(SourceCodeDownloadDropdown);
-  const findCloneCodeDropdown = () => wrapper.findComponent(CloneCodeDropdown);
   const findCompactCodeDropdown = () => wrapper.findComponent(CompactCodeDropdown);
   const findAddToTreeDropdown = () => wrapper.findComponent(AddToTree);
   const findPageHeading = () => wrapper.findByTestId('repository-heading');
@@ -329,52 +323,6 @@ describe('HeaderArea', () => {
       });
     });
 
-    describe('when `directory_code_dropdown_updates` flag is `false`', () => {
-      describe('CodeDropdown', () => {
-        it('renders CodeDropdown component with correct props for desktop layout', () => {
-          expect(findCodeDropdown().exists()).toBe(true);
-          expect(findCodeDropdown().props('sshUrl')).toBe(headerAppInjected.sshUrl);
-          expect(findCodeDropdown().props('httpUrl')).toBe(headerAppInjected.httpUrl);
-        });
-
-        describe('SourceCodeDownloadDropdown', () => {
-          it('renders SourceCodeDownloadDropdown and CloneCodeDropdown component with correct props for mobile layout', () => {
-            expect(findSourceCodeDownloadDropdown().exists()).toBe(true);
-            expect(findSourceCodeDownloadDropdown().props('downloadLinks')).toEqual(
-              headerAppInjected.downloadLinks,
-            );
-            expect(findSourceCodeDownloadDropdown().props('downloadArtifacts')).toEqual(
-              headerAppInjected.downloadArtifacts,
-            );
-            expect(findCloneCodeDropdown().exists()).toBe(true);
-            expect(findCloneCodeDropdown().props('sshUrl')).toBe(headerAppInjected.sshUrl);
-            expect(findCloneCodeDropdown().props('httpUrl')).toBe(headerAppInjected.httpUrl);
-          });
-        });
-
-        describe('Add to tree dropdown', () => {
-          it('does not render AddToTree component', () => {
-            expect(findAddToTreeDropdown().exists()).toBe(false);
-          });
-        });
-      });
-    });
-  });
-
-  describe('when rendered for tree view and directory_code_dropdown_updates flag is true', () => {
-    beforeEach(() => {
-      wrapper = createComponent({
-        route: { name: 'treePathDecoded' },
-        provided: {
-          glFeatures: {
-            directoryCodeDropdownUpdates: true,
-          },
-          newWorkspacePath: '/workspaces/new',
-          organizationId: '1',
-        },
-      });
-    });
-
     describe('Add to tree dropdown', () => {
       it('renders AddToTree component', () => {
         expect(findAddToTreeDropdown().exists()).toBe(true);
@@ -382,6 +330,14 @@ describe('HeaderArea', () => {
     });
 
     it('renders CompactCodeDropdown with correct props', () => {
+      wrapper = createComponent({
+        route: { name: 'treePathDecoded' },
+        provided: {
+          newWorkspacePath: '/workspaces/new',
+          organizationId: '1',
+        },
+      });
+
       expect(findCompactCodeDropdown().exists()).toBe(true);
       expect(findCompactCodeDropdown().props()).toMatchObject({
         sshUrl: headerAppInjected.sshUrl,
@@ -446,11 +402,6 @@ describe('HeaderArea', () => {
       expect(findBlobControls().props('refType')).toBe('');
     });
 
-    it('does not render CodeDropdown and SourceCodeDownloadDropdown', () => {
-      expect(findCodeDropdown().exists()).toBe(false);
-      expect(findSourceCodeDownloadDropdown().exists()).toBe(false);
-    });
-
     it('does not render AddToTree component', () => {
       expect(findAddToTreeDropdown().exists()).toBe(false);
     });
@@ -464,75 +415,33 @@ describe('HeaderArea', () => {
   });
 
   describe('when rendered for readme project overview', () => {
-    describe('when directory_code_dropdown_updates flag is false', () => {
-      beforeEach(() => {
-        wrapper = createComponent({
-          route: { name: 'treePathDecoded' },
-          provided: { isReadmeView: true },
-        });
-      });
-
-      it('does not render directory name and icon', () => {
-        expect(findPageHeading().exists()).toBe(false);
-        expect(findFileIcon().exists()).toBe(false);
-      });
-
-      it('does not render RefSelector or Breadcrumbs', () => {
-        expect(findRefSelector().exists()).toBe(false);
-        expect(findBreadcrumbs().exists()).toBe(false);
-      });
-
-      it('does not render AddToTree component', () => {
-        expect(findAddToTreeDropdown().exists()).toBe(false);
-      });
-
-      it('does not render CodeDropdown and SourceCodeDownloadDropdown', () => {
-        expect(findCodeDropdown().exists()).toBe(false);
-        expect(findSourceCodeDownloadDropdown().exists()).toBe(false);
-      });
-
-      it('does not render CompactCodeDropdown', () => {
-        expect(findCompactCodeDropdown().exists()).toBe(false);
+    beforeEach(() => {
+      wrapper = createComponent({
+        route: { name: 'treePathDecoded' },
+        provided: {
+          newWorkspacePath: '/workspaces/new',
+          organizationId: '1',
+          isReadmeView: true,
+        },
       });
     });
 
-    describe('when directory_code_dropdown_updates flag is true', () => {
-      beforeEach(() => {
-        wrapper = createComponent({
-          route: { name: 'treePathDecoded' },
-          provided: {
-            glFeatures: {
-              directoryCodeDropdownUpdates: true,
-            },
-            newWorkspacePath: '/workspaces/new',
-            organizationId: '1',
-            isReadmeView: true,
-          },
-        });
-      });
+    it('does render CompactCodeDropdown', () => {
+      expect(findCompactCodeDropdown().exists()).toBe(true);
+    });
 
-      it('does render CompactCodeDropdown', () => {
-        expect(findCompactCodeDropdown().exists()).toBe(true);
-      });
+    it('does not render directory name and icon', () => {
+      expect(findPageHeading().exists()).toBe(false);
+      expect(findFileIcon().exists()).toBe(false);
+    });
 
-      it('does not render directory name and icon', () => {
-        expect(findPageHeading().exists()).toBe(false);
-        expect(findFileIcon().exists()).toBe(false);
-      });
+    it('does not render RefSelector or Breadcrumbs', () => {
+      expect(findRefSelector().exists()).toBe(false);
+      expect(findBreadcrumbs().exists()).toBe(false);
+    });
 
-      it('does not render RefSelector or Breadcrumbs', () => {
-        expect(findRefSelector().exists()).toBe(false);
-        expect(findBreadcrumbs().exists()).toBe(false);
-      });
-
-      it('does not render AddToTree component', () => {
-        expect(findAddToTreeDropdown().exists()).toBe(false);
-      });
-
-      it('does not render CodeDropdown and SourceCodeDownloadDropdown', () => {
-        expect(findCodeDropdown().exists()).toBe(false);
-        expect(findSourceCodeDownloadDropdown().exists()).toBe(false);
-      });
+    it('does not render AddToTree component', () => {
+      expect(findAddToTreeDropdown().exists()).toBe(false);
     });
   });
 

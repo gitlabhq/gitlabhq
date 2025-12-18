@@ -192,24 +192,15 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     let(:path)    { project_path(project) }
 
     before do
-      stub_feature_flags(directory_code_dropdown_updates: false)
       sign_in(project.first_owner)
       visit path
     end
 
-    context 'desktop component' do
-      it 'shows on md and larger breakpoints' do
-        expect(find('.git-clone-holder')).to be_visible
-        expect(find('.mobile-git-clone', visible: false)).not_to be_visible
+    it 'shows in the Code dropdown' do
+      within_testid('code-dropdown') do
+        click_button 'Code'
       end
-    end
-
-    context 'mobile component' do
-      it 'shows mobile component on sm and smaller breakpoints' do
-        resize_screen_xs
-        expect(find('.mobile-git-clone')).to be_visible
-        expect(find('.git-clone-holder', visible: false)).not_to be_visible
-      end
+      expect(page).to have_button('Copy URL')
     end
   end
 

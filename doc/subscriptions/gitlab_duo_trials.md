@@ -8,7 +8,7 @@ title: GitLab Duo trials
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
+- Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -18,7 +18,39 @@ To try GitLab Duo, you can get access for a limited time with a free trial.
 During the trial period, you'll have access to the full feature set for whichever add-on you chose.
 When the trial period is over, to maintain your access, you can purchase the add-on.
 
-Trials of the GitLab Duo add-ons last 30 days.
+Trials of the GitLab Duo add-ons last:
+
+- 30 days if you're on the Free tier on GitLab.com.
+- 60 days if you're on the Premium or Ultimate tier.
+
+The trial starts when you receive the confirmation email including the activation code, not when you activate it.
+
+## Start Ultimate trial with GitLab Duo Core
+
+### On GitLab Self-Managed
+
+Prerequisites:
+
+- You must have an active [GitLab Enterprise Edition (EE)](../administration/license.md).
+- You must have GitLab 18.0 or later.
+- Your instance must be set up to access [GitLab Duo Core](subscription-add-ons.md#gitlab-duo-self-hosted).
+
+To start an Ultimate trial with GitLab Duo Core and get access to AI-native features:
+
+1. Go to the [GitLab Ultimate with Duo Core](https://about.gitlab.com/free-trial/?hosted=self-managed) trial page.
+1. Complete the fields.
+1. Select **Get Started**.
+1. Check your email for the trial activation code.
+   The email with the activation code is sent shortly after the trial request submission, to the email address provided in the trial request form.
+   The activation code is valid for only one use.
+1. Sign in to GitLab as an administrator.
+1. In the upper-right corner, select **Admin**.
+1. Select **Subscription**.
+1. Paste the activation code in **Activation code**.
+1. Read and accept the terms of service.
+1. Select **Activate**.
+
+The trial is activated.
 
 ## Start GitLab Duo Pro trial
 

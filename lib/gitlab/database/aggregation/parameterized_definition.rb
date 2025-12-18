@@ -22,10 +22,6 @@ module Gitlab
           @parameters = parameters || {}
         end
 
-        def to_hash
-          super.merge(parameters: parameters)
-        end
-
         def instance_key(configuration)
           return super unless parameterized? && configuration[:parameters].present?
 
@@ -35,7 +31,7 @@ module Gitlab
             parameters_postfix = OpenSSL::Digest::SHA256.hexdigest(parameters_postfix)[0...5]
           end
 
-          "#{identifier}_#{parameters_postfix}"
+          "#{super}_#{parameters_postfix}"
         end
 
         private

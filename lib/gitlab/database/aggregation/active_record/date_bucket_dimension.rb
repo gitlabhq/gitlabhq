@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module Aggregation
       module ActiveRecord
-        class TimestampColumn < Column
+        class DateBucketDimension < Column
           include ParameterizedDefinition
 
           self.supported_parameters = %i[granularity]
@@ -18,19 +18,31 @@ module Gitlab
 
           DEFAULT_GRANULARITY = :monthly
 
-          def to_hash
-            super.merge(kind: :timestamp_column)
+          def validate_part(part)
+            super
+            validate_granularity(part)
           end
 
           def to_arel(context)
             granularity = instance_parameter(:granularity, context[name]) || DEFAULT_GRANULARITY
 
-            # TODO: Validate granularity in query plan!
-
             quoted_string = context[:scope].model.connection.quote(GRANULARITIES_MAP[granularity])
 
             expr = expression ? expression.call : context[:scope].arel_table[name]
             Arel::Nodes::NamedFunction.new('date_trunc', [Arel.sql(quoted_string), expr])
+          end
+
+          private
+
+          def validate_granularity(part)
+            granularity = instance_parameter(:granularity, part.configuration)
+            return unless granularity
+            return if granularity.in?(parameters.dig(:granularity, :in) || [])
+
+            part.errors.add(:granularity,
+              format(s_("AggregationEngine|Unknown granularity \"%{granularity}\""),
+                granularity: granularity)
+            )
           end
         end
       end

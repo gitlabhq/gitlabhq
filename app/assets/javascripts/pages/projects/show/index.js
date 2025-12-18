@@ -8,7 +8,6 @@ import initTerraformNotification from '~/projects/terraform_notification';
 import { initUploadFileTrigger } from '~/projects/upload_file';
 import initReadMore from '~/read_more';
 import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
-import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
 import initSourceCodeDropdowns from '~/vue_shared/components/download_dropdown/init_download_dropdowns';
 import EmptyProject from '~/pages/projects/show/empty_project';
 import initHeaderApp from '~/repository/init_header_app';
@@ -89,16 +88,12 @@ const initCodeDropdown = () => {
   const { gitpodEnabled, showWebIdeButton, showGitpodButton, webIdeUrl, gitpodUrl } =
     convertObjectPropsToCamelCase(ideData ? JSON.parse(ideData) : {});
 
-  const CodeDropdownComponent = gon.features.directoryCodeDropdownUpdates
-    ? CompactCodeDropdown
-    : CodeDropdown;
-
   return new Vue({
     el: codeDropdownEl,
     provide: { newWorkspacePath, organizationId },
     apolloProvider,
     render(createElement) {
-      return createElement(CodeDropdownComponent, {
+      return createElement(CompactCodeDropdown, {
         props: {
           sshUrl,
           httpUrl,

@@ -15288,7 +15288,6 @@ ALTER SEQUENCE ci_subscriptions_projects_id_seq OWNED BY ci_subscriptions_projec
 
 CREATE TABLE ci_triggers (
     id bigint NOT NULL,
-    token character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     project_id bigint,
@@ -21253,6 +21252,7 @@ CREATE TABLE namespace_ai_settings (
     minimum_access_level_enable_on_projects smallint,
     minimum_access_level_execute_async smallint,
     feature_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    prompt_injection_protection_level smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_namespace_ai_settings_feature_settings_is_hash CHECK ((jsonb_typeof(feature_settings) = 'object'::text))
 );
 
@@ -39718,6 +39718,8 @@ CREATE INDEX idx_mr_metrics_on_project_closed_at_with_mr_id ON merge_request_met
 
 CREATE INDEX idx_mrs_on_target_id_and_created_at_and_state_id ON merge_requests USING btree (target_project_id, state_id, created_at, id);
 
+CREATE INDEX idx_namespace_ai_settings_on_prompt_injection_protection_level ON namespace_ai_settings USING btree (prompt_injection_protection_level);
+
 CREATE UNIQUE INDEX idx_namespace_feature_settings_on_namespace_id_and_feature ON ai_namespace_feature_settings USING btree (namespace_id, feature);
 
 CREATE INDEX idx_namespace_hostname_import_type_id_source_name_and_username ON import_source_users USING btree (namespace_id, source_hostname, import_type, id) WHERE ((source_name IS NULL) OR (source_username IS NULL));
@@ -41059,8 +41061,6 @@ CREATE INDEX index_ci_triggers_on_expires_at ON ci_triggers USING btree (expires
 CREATE INDEX index_ci_triggers_on_owner_id ON ci_triggers USING btree (owner_id);
 
 CREATE INDEX index_ci_triggers_on_project_id_and_id ON ci_triggers USING btree (project_id, id);
-
-CREATE UNIQUE INDEX index_ci_triggers_on_token ON ci_triggers USING btree (token);
 
 CREATE UNIQUE INDEX index_ci_triggers_on_token_encrypted ON ci_triggers USING btree (token_encrypted);
 
