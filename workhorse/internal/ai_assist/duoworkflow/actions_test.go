@@ -1,8 +1,8 @@
 package duoworkflow
 
 import (
+	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -20,28 +20,31 @@ import (
 
 const testRemoteAddr = "192.0.2.1:1234"
 
-// errorReader is a mock reader that always returns an error
-type errorReader struct{}
+// createBackendHandler creates a backend handler that makes HTTP requests using the provided client
+func createBackendHandler(client *http.Client) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp, err := client.Do(r)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			fmt.Fprint(w, err.Error())
+			return
+		}
+		defer resp.Body.Close()
 
-func (e *errorReader) Read(_ []byte) (n int, err error) {
-	return 0, errors.New("simulated read error")
-}
+		// Copy response headers
+		for k, v := range resp.Header {
+			w.Header()[k] = v
+		}
+		w.WriteHeader(resp.StatusCode)
 
-func (e *errorReader) Close() error {
-	return nil
-}
-
-// mockTransport is a mock HTTP transport for testing
-type mockTransport struct {
-	response *http.Response
-	err      error
-}
-
-func (m *mockTransport) RoundTrip(_ *http.Request) (*http.Response, error) {
-	if m.err != nil {
-		return nil, m.err
-	}
-	return m.response, nil
+		// Copy response body
+		buf := bytes.NewBuffer(nil)
+		if _, err := buf.ReadFrom(resp.Body); err != nil {
+			fmt.Fprint(w, err.Error())
+			return
+		}
+		fmt.Fprint(w, buf.String())
+	})
 }
 
 func TestRunHttpActionHandler_Execute(t *testing.T) {
@@ -82,6 +85,7 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 				Client: server.Client(),
 				URL:    serverURL,
 			},
+			backend:     http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { server.Config.Handler.ServeHTTP(w, r) }),
 			action:      action,
 			token:       "test-token",
 			originalReq: originalReq,
@@ -129,6 +133,7 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 				Client: server.Client(),
 				URL:    serverURL,
 			},
+			backend:     createBackendHandler(server.Client()),
 			action:      action,
 			token:       "test-token",
 			originalReq: originalReq,
@@ -173,6 +178,7 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 				Client: server.Client(),
 				URL:    serverURL,
 			},
+			backend:     createBackendHandler(server.Client()),
 			action:      action,
 			token:       "test-token",
 			originalReq: &http.Request{},
@@ -212,6 +218,7 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 				Client: server.Client(),
 				URL:    serverURL,
 			},
+			backend:     createBackendHandler(server.Client()),
 			action:      action,
 			token:       "test-token",
 			originalReq: &http.Request{},
@@ -244,6 +251,7 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 				Client: &http.Client{},
 				URL:    serverURL,
 			},
+			backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
 			action:      action,
 			token:       "test-token",
 			originalReq: &http.Request{},
@@ -256,96 +264,6 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		// which are not covered by our HTTP error handling changes
 		require.Error(t, err)
 		require.Nil(t, result)
-	})
-
-	t.Run("HTTP connection error returns HttpResponse.Error", func(t *testing.T) {
-		// Use a mock transport that returns an error
-		transport := &mockTransport{
-			err: errors.New("connection refused"),
-		}
-
-		action := &pb.Action{
-			RequestID: "req-connection-error",
-			Action: &pb.Action_RunHTTPRequest{
-				RunHTTPRequest: &pb.RunHTTPRequest{
-					Method: "GET",
-					Path:   "/api/projects",
-				},
-			},
-		}
-
-		serverURL, err := url.Parse("http://localhost:3000")
-		require.NoError(t, err)
-
-		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: &http.Client{Transport: transport},
-				URL:    serverURL,
-			},
-			action:      action,
-			token:       "test-token",
-			originalReq: &http.Request{},
-		}
-
-		result, err := handler.Execute(context.Background())
-
-		require.NoError(t, err)
-		require.NotNil(t, result)
-		require.Equal(t, "req-connection-error", result.GetActionResponse().RequestID)
-
-		httpResponse := result.GetActionResponse().GetHttpResponse()
-		require.NotNil(t, httpResponse)
-		require.NotEmpty(t, httpResponse.Error)
-		require.Contains(t, httpResponse.Error, "connection refused")
-		require.Empty(t, httpResponse.Body)
-		require.Equal(t, int32(0), httpResponse.StatusCode)
-	})
-
-	t.Run("body read error returns HttpResponse.Error", func(t *testing.T) {
-		// Create a custom roundtripper that returns a response with an error reader
-		transport := &mockTransport{
-			response: &http.Response{
-				StatusCode: 200,
-				Body:       &errorReader{},
-				Header:     make(http.Header),
-			},
-		}
-
-		action := &pb.Action{
-			RequestID: "req-read-error",
-			Action: &pb.Action_RunHTTPRequest{
-				RunHTTPRequest: &pb.RunHTTPRequest{
-					Method: "GET",
-					Path:   "/api/projects",
-				},
-			},
-		}
-
-		serverURL, err := url.Parse("http://localhost:3000")
-		require.NoError(t, err)
-
-		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: &http.Client{Transport: transport},
-				URL:    serverURL,
-			},
-			action:      action,
-			token:       "test-token",
-			originalReq: &http.Request{},
-		}
-
-		result, err := handler.Execute(context.Background())
-
-		require.NoError(t, err)
-		require.NotNil(t, result)
-		require.Equal(t, "req-read-error", result.GetActionResponse().RequestID)
-
-		httpResponse := result.GetActionResponse().GetHttpResponse()
-		require.NotNil(t, httpResponse)
-		require.NotEmpty(t, httpResponse.Error)
-		require.Contains(t, httpResponse.Error, "simulated read error")
-		require.Empty(t, httpResponse.Body)
-		require.Equal(t, int32(200), httpResponse.StatusCode)
 	})
 
 	t.Run("request with query parameters", func(t *testing.T) {
@@ -376,6 +294,7 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 				Client: server.Client(),
 				URL:    serverURL,
 			},
+			backend:     createBackendHandler(server.Client()),
 			action:      action,
 			token:       "test-token",
 			originalReq: &http.Request{},
