@@ -14,7 +14,7 @@ import (
 var upgrader = websocket.Upgrader{}
 
 // Handler creates an HTTP handler for Duo Workflow WebSocket connections.
-func Handler(rails *api.API) http.Handler {
+func Handler(rails *api.API, backend http.Handler) http.Handler {
 	return rails.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
@@ -22,7 +22,7 @@ func Handler(rails *api.API) http.Handler {
 			return
 		}
 
-		runner, err := newRunner(conn, rails, r, a.DuoWorkflow)
+		runner, err := newRunner(conn, rails, backend, r, a.DuoWorkflow)
 		if err != nil {
 			fail.Request(w, r, fmt.Errorf("failed to initialize agent platform client: %v", err))
 			if closeErr := conn.Close(); closeErr != nil {
