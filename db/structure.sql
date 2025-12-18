@@ -26648,7 +26648,8 @@ CREATE TABLE scim_oauth_access_tokens (
     updated_at timestamp with time zone NOT NULL,
     group_id bigint,
     token_encrypted character varying NOT NULL,
-    organization_id bigint
+    organization_id bigint,
+    CONSTRAINT check_77e6840638 CHECK ((organization_id IS NOT NULL))
 );
 
 CREATE SEQUENCE scim_oauth_access_tokens_id_seq

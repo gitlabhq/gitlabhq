@@ -2634,6 +2634,9 @@ msgstr ""
 msgid "AICatalog|Choose what events in this project trigger the %{itemType}. You can change this later."
 msgstr ""
 
+msgid "AICatalog|Choose whether to delete or hide this %{itemType}."
+msgstr ""
+
 msgid "AICatalog|Choose who can view and interact with this agent."
 msgstr ""
 
@@ -2722,6 +2725,9 @@ msgid "AICatalog|Define the agent's personality, expertise, and behavior. This c
 msgstr ""
 
 msgid "AICatalog|Delete %{itemType}"
+msgstr ""
+
+msgid "AICatalog|Delete permanently"
 msgstr ""
 
 msgid "AICatalog|Deletion method"
@@ -2907,7 +2913,7 @@ msgstr ""
 msgid "AICatalog|Group is required."
 msgstr ""
 
-msgid "AICatalog|Hard delete (Recommended)"
+msgid "AICatalog|Hide from the AI Catalog"
 msgstr ""
 
 msgid "AICatalog|Hypothetical or low risk security flaws that could be exploited."
@@ -2980,9 +2986,6 @@ msgid "AICatalog|Open source projects."
 msgstr ""
 
 msgid "AICatalog|Other"
-msgstr ""
-
-msgid "AICatalog|Permanently deletes the item from the catalog. This action cannot be undone. You must be in %{linkStart}Admin Mode%{linkEnd}."
 msgstr ""
 
 msgid "AICatalog|Please describe below."
@@ -3060,10 +3063,10 @@ msgstr ""
 msgid "AICatalog|Selected %{itemType}"
 msgstr ""
 
-msgid "AICatalog|Shared resources."
+msgid "AICatalog|Service account"
 msgstr ""
 
-msgid "AICatalog|Soft delete"
+msgid "AICatalog|Shared resources."
 msgstr ""
 
 msgid "AICatalog|Spam or low quality"
@@ -3082,9 +3085,6 @@ msgid "AICatalog|That the user who runs it has access to."
 msgstr ""
 
 msgid "AICatalog|The item consumer must belong to only one organization, group, or project"
-msgstr ""
-
-msgid "AICatalog|The item will be hidden from the catalog but remain functional for projects and groups already using it."
 msgstr ""
 
 msgid "AICatalog|The service account is part of a composite identity that runs the agent. This identity combines the user's role with the service account's role and uses the more restrictive of the two."
@@ -3112,6 +3112,9 @@ msgid "AICatalog|This YAML configuration file determines the prompts, tools, and
 msgstr ""
 
 msgid "AICatalog|This YAML configuration file determines the prompts, tools, and capabilities of your flow. Required properties: version, environment, components, prompts, routers, flow."
+msgstr ""
+
+msgid "AICatalog|This action cannot be undone."
 msgstr ""
 
 msgid "AICatalog|This agent can be viewed only by members of this project, or by users with the Owner role for the top-level group. This agent can't be shared with other projects."
@@ -3189,6 +3192,9 @@ msgstr ""
 msgid "AICatalog|Use flows to automate complex, multi-step tasks."
 msgstr ""
 
+msgid "AICatalog|Users can continue to use the %{itemType} in the groups and projects it is enabled in."
+msgstr ""
+
 msgid "AICatalog|View enabled version"
 msgstr ""
 
@@ -3229,9 +3235,6 @@ msgid "AICatalog|Working with sensitive data."
 msgstr ""
 
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
-msgstr ""
-
-msgid "AICatalog|You can also use the GraphQL API to delete items."
 msgstr ""
 
 msgid "AICatalog|You must have the Owner role to add a flow to a group. Only top-level groups are shown."
@@ -16210,10 +16213,10 @@ msgstr ""
 msgid "CodeSuggestions|GitLab Duo Pro"
 msgstr ""
 
-msgid "CodeSuggestions|GitLab Duo Self-Hosted"
+msgid "CodeSuggestions|GitLab Duo should be operational."
 msgstr ""
 
-msgid "CodeSuggestions|GitLab Duo should be operational."
+msgid "CodeSuggestions|GitLab Self-Hosted Duo Agent Platform"
 msgstr ""
 
 msgid "CodeSuggestions|Helps you get up to speed quickly by explaining source code"
@@ -48527,6 +48530,9 @@ msgid "Passkey deleted"
 msgstr ""
 
 msgid "Passkey has been deleted!"
+msgstr ""
+
+msgid "Passkey is now your default 2FA method. If you lose access to your 2FA method, use your %{doc_start}recovery codes%{doc_end}."
 msgstr ""
 
 msgid "Passkey may have been cloned. Contact your administrator."

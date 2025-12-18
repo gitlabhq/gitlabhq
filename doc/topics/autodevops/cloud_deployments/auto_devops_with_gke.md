@@ -190,7 +190,7 @@ The jobs are separated into stages:
     vulnerabilities and is allowed to fail ([auto container scanning](../stages.md#auto-container-scanning))
   - The `dependency_scanning` job checks if the application has any dependencies
     susceptible to vulnerabilities and is allowed to fail
-    ([Auto Dependency Scanning](../stages.md#auto-dependency-scanning))
+    ([Auto dependency scanning](../stages.md#auto-dependency-scanning))
   - Jobs suffixed with `-sast` run static analysis on the current code to check for potential
     security issues, and are allowed to fail ([Auto SAST](../stages.md#auto-sast))
   - The `secret-detection` job checks for leaked secrets and is allowed to fail ([Auto Secret Detection](../stages.md#auto-secret-detection))

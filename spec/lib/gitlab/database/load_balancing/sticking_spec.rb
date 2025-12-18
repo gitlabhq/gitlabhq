@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, feature_category: :database do
+RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_redis_db_load_balancing, feature_category: :database do
   let(:load_balancer) { ActiveRecord::Base.load_balancer }
   let(:primary_write_location) { 'the-primary-lsn' }
   let(:last_write_location) { 'the-last-write-lsn' }

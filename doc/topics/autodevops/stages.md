@@ -209,7 +209,7 @@ warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
 For more information, see [Secret Detection](../../user/application_security/secret_detection/_index.md).
 
-## Auto Dependency Scanning
+## Auto dependency scanning
 
 {{< details >}}
 
@@ -218,15 +218,15 @@ For more information, see [Secret Detection](../../user/application_security/sec
 
 {{< /details >}}
 
-Dependency Scanning runs analysis on the project's dependencies and checks for potential security issues.
-The Auto Dependency Scanning stage is skipped on licenses other than
+Dependency scanning analyzes the project's dependencies and checks for potential security issues.
+The Auto dependency scanning stage is skipped on licenses other than
 [Ultimate](https://about.gitlab.com/pricing/).
 
 After creating the report, it's uploaded as an artifact which you can later download and
 check out. The merge request widget displays any security warnings detected,
 
 For more information, see
-[Dependency Scanning](../../user/application_security/dependency_scanning/_index.md).
+[dependency scanning](../../user/application_security/dependency_scanning/_index.md).
 
 ## Auto container scanning
 

@@ -32,17 +32,13 @@ RSpec.describe Banzai::Filter::VideoLinkFilter, feature_category: :markdown do
       expect(container.name).to eq 'span'
       expect(container['class']).to eq 'media-container video-container'
 
-      link, video = container.children
+      video = container.children.first
 
       expect(video.name).to eq 'video'
       expect(video['src']).to eq src
       expect(video['height']).to eq height if height
       expect(video['width']).to eq width if width
       expect(video['preload']).to eq 'metadata'
-
-      expect(link.name).to eq 'a'
-      expect(link['href']).to eq src
-      expect(link['target']).to eq '_blank'
     end
   end
 
@@ -134,12 +130,10 @@ RSpec.describe Banzai::Filter::VideoLinkFilter, feature_category: :markdown do
 
       expect(container['class']).to eq 'media-container video-container'
 
-      link, video = container.children
+      video = container.children.first
 
       expect(video['src']).to eq proxy_src
       expect(video['data-canonical-src']).to eq canonical_src
-
-      expect(link['href']).to eq proxy_src
     end
   end
 

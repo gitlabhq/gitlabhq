@@ -45,8 +45,8 @@ No contextual information (for example, a list of project dependencies) is sent 
 
 To enable License scanning of CycloneDX files:
 
-- Using the Dependency Scanning template
-  - Enable [Dependency Scanning](../../application_security/dependency_scanning/_index.md#getting-started)
+- Using the dependency scanning template
+  - Enable [dependency scanning](../../application_security/dependency_scanning/_index.md#getting-started)
       and ensure that its prerequisites are met.
   - On GitLab Self-Managed, you can [choose package registry metadata to synchronize](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the **Admin** area for the GitLab instance. For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domain `storage.googleapis.com`. If you have limited or no network connectivity then refer to the documentation section [running in an offline environment](#running-in-an-offline-environment) for further guidance.
 - Or use the [CI/CD component](../../../ci/components/_index.md) for applicable package registries.
@@ -60,8 +60,8 @@ License scanning is supported for the following languages and package managers:
   <thead>
     <tr>
       <th>Language</th>
-      <th>Package Manager</th>
-      <th>Dependency Scanning Template</th>
+      <th>Package manager</th>
+      <th>Dependency scanning template</th>
       <th>CI/CD Component</th>
     </tr>
   </thead>
@@ -186,7 +186,7 @@ License scanning is supported for the following languages and package managers:
 1. Go standard libraries such as `stdlib` are not supported and will appear with an `unknown` license. Support for these is tracked in [issue 480305](https://gitlab.com/gitlab-org/gitlab/-/issues/480305).
 
 The supported files and versions are the ones supported by
-[Dependency Scanning](../../application_security/dependency_scanning/_index.md#supported-languages-and-package-managers).
+[dependency scanning](../../application_security/dependency_scanning/_index.md#supported-languages-and-package-managers).
 
 ## Data sources
 

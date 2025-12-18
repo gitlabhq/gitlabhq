@@ -38,7 +38,7 @@ The OSS Library License Check provides:
 
 - GitLab Ultimate tier
 - Administrator access to your GitLab instance or group
-- [Dependency scanning](../../user/application_security/dependency_scanning/_index.md) enabled for your projects (this can optionally be enabled and enforced for all projects of a specified scope by following the [Dependency Scanning Setup](#setting-up-dependency-scanning-from-scratch) instructions)
+- [Dependency scanning](../../user/application_security/dependency_scanning/_index.md) enabled for your projects (this can optionally be enabled and enforced for all projects of a specified scope by following the [dependency scanning setup](#setting-up-dependency-scanning-from-scratch) instructions)
 
 ## Implementation Guide
 
@@ -53,13 +53,13 @@ This guide covers two main scenarios:
 
 If you don't have a security policy project yet, you'll need to create one and then set up both dependency scanning and license compliance policies.
 
-#### Setting up Dependency Scanning from scratch
+#### Setting up dependency scanning from scratch
 
 1. First, identify which group you want to apply this policy to. This will be the highest group level where the policy can be applied (you can include or exclude projects within this group).
 1. Navigate to that group's **Secure** > **Policies** page.
 1. Click on **New policy**.
 1. Select **Scan execution policy**.
-1. Enter a name for your policy (for example, "Dependency Scanning Policy").
+1. Enter a name for your policy (for example, "Dependency scanning policy").
 1. Enter a description (for example, "Enforces dependency scanning to get a list of OSS licenses used").
 1. Set the **Policy scope** by selecting either "All projects in this group" (and optionally set exceptions) or "Specific projects" (and select the projects from the dropdown).
 1. Under the **Actions** section, select "Dependency scanning" instead of "Secret Detection" (default).
@@ -406,7 +406,7 @@ Ensure the security policy project you modified is correctly linked to your grou
 
 ### Dependency scan not running
 
-Check that dependency scanning is enabled in your CI/CD configuration, and there is a dependency file present. See [Troubleshooting Dependency Scanning](../../user/application_security/dependency_scanning/troubleshooting_dependency_scanning.md) for more.
+Check that dependency scanning is enabled in your CI/CD configuration, and there is a dependency file present. See [Troubleshooting dependency scanning](../../user/application_security/dependency_scanning/troubleshooting_dependency_scanning.md) for more.
 
 ## Additional Resources
 

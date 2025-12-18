@@ -853,7 +853,7 @@ instructions:
       2. Always use rules instead of only/except for job conditions
       3. Define appropriate caching strategies for dependencies
       4. Use stages to organize pipeline workflow logically
-      5. Include security scanning templates (SAST, Dependency Scanning, Secret Detection)
+      5. Include security scanning templates (SAST, dependency scanning, secret detection)
       6. Document job purpose, required variables, and dependencies in comments
 
   - name: Helm Chart Style Guide

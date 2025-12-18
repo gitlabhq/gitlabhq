@@ -576,5 +576,65 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         end.to raise_error(Gitlab::Database::LoadBalancing::ConnectionProxy::WriteInsideReadOnlyTransactionError)
       end
     end
+
+    context 'incident 6271', :request_store do
+      before(:all) do
+        ActiveRecord::Schema.define do
+          create_table :_test_load_balancing_test_ci, force: true do |t|
+            t.string :name, null: true
+          end
+        end
+      end
+
+      after(:all) do
+        ActiveRecord::Schema.define do
+          drop_table :_test_load_balancing_test_ci, force: true
+        end
+      end
+
+      let(:ci_model) do
+        Class.new(Ci::ApplicationRecord) do
+          self.table_name = "_test_load_balancing_test_ci"
+        end
+      end
+
+      it 'does not release a replica host during a web request with no queries when sticking' do
+        expect(model.load_balancer).not_to receive(:release_host)
+        # This sticks a host to the current request store
+        model.load_balancer.host
+
+        model.with_connection { |_conn| } # rubocop:disable Lint/EmptyBlock -- This is testing the block side effects
+      end
+
+      it 'does not release a replica host during a web request with a nested bare connection lease' do
+        expect(model.load_balancer).not_to receive(:release_host)
+
+        model.with_connection do |_conn|
+          model.lease_connection.select_all("select 1")
+        end
+      end
+
+      it 'does not release a replica host with a nested with_connection block' do
+        expect(model.load_balancer).not_to receive(:release_host)
+
+        model.with_connection do |_conn|
+          model.with_connection do |conn|
+            conn.select_all("select 1")
+          end
+        end
+      end
+
+      it 'does not release when mixing requests across load balancers' do
+        expect(model.load_balancer).not_to receive(:release_host)
+        expect(ci_model.load_balancer).not_to receive(:release_host)
+
+        model.with_connection do |main_conn|
+          ci_model.with_connection do |ci_conn|
+            ci_conn.select_all("select 1")
+          end
+          main_conn.select_all("select 1")
+        end
+      end
+    end
   end
 end

@@ -82,7 +82,7 @@ Dependency scanning does not support runtime installation of compilers and inter
 {{< /alert >}}
 
 - <i class="fa-youtube-play" aria-hidden="true"></i>
-  For an overview, see [Dependency Scanning - Advanced Security Testing](https://www.youtube.com/watch?v=TBnfbGk4c4o)
+  For an overview, see [Dependency scanning - Advanced Security Testing](https://www.youtube.com/watch?v=TBnfbGk4c4o)
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   For an interactive reading and how-to demo of this dependency scanning documentation, see [How to use dependency scanning tutorial hands-on GitLab Application Security part 3](https://youtu.be/ii05cMbJ4xQ?feature=shared)
 - <i class="fa-youtube-play" aria-hidden="true"></i>

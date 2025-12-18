@@ -155,7 +155,6 @@ export default {
     'app/assets/javascripts/notes/store/legacy_notes/mutations.js',
     'app/assets/javascripts/organizations/index/components/app.vue',
     'app/assets/javascripts/organizations/new/components/app.vue',
-    'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/details_page/delete_alert.vue',
     'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/details_page/details_header.vue',
     'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/details_page/partial_cleanup_alert.vue',
     'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/details_page/signature_details_modal.vue',

@@ -247,7 +247,7 @@ Note the following in relation to use of the Package Metadata Database:
 Package metadata is stored in the following Google Cloud Provider (GCP) buckets which are maintained and owned by GitLab:
 
 - License Scanning - `prod-export-license-bucket-1a6c642fc4de57d4`
-- Dependency Scanning - `prod-export-advisory-bucket-1a6c642fc4de57d4`
+- Dependency scanning - `prod-export-advisory-bucket-1a6c642fc4de57d4`
 
 ### Using the gsutil tool to download the package metadata exports
 
@@ -266,7 +266,7 @@ Package metadata is stored in the following Google Cloud Provider (GCP) buckets 
    export PKG_METADATA_BUCKET=prod-export-license-bucket-1a6c642fc4de57d4
    export DATA_DIR="licenses"
 
-   # For Dependency Scanning
+   # For dependency scanning
    export PKG_METADATA_BUCKET=prod-export-advisory-bucket-1a6c642fc4de57d4
    export DATA_DIR="advisories"
    ```
@@ -371,7 +371,7 @@ For License Scanning:
 */30 * * * * gsutil -m rsync -r -d -y "^v1\/" gs://prod-export-license-bucket-1a6c642fc4de57d4 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses
 ```
 
-For Dependency Scanning:
+For dependency scanning:
 
 ```plaintext
 */30 * * * * gsutil -m rsync -r -d gs://prod-export-advisory-bucket-1a6c642fc4de57d4 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/advisories
@@ -379,7 +379,7 @@ For Dependency Scanning:
 
 ### Change note
 
-The directory for package metadata changed with the release of 16.2 from `vendor/package_metadata_db` to `vendor/package_metadata/licenses`. If this directory already exists on the instance and Dependency Scanning needs to be added then you need to take the following steps.
+The directory for package metadata changed with the release of 16.2 from `vendor/package_metadata_db` to `vendor/package_metadata/licenses`. If this directory already exists on the instance and dependency scanning needs to be added then you need to take the following steps.
 
 1. Rename the licenses directory: `mv vendor/package_metadata_db vendor/package_metadata/licenses`.
 1. Update any automation scripts or commands saved to change `vendor/package_metadata_db` to `vendor/package_metadata/licenses`.

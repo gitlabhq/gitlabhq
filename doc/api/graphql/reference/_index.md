@@ -10391,7 +10391,32 @@ Input type: `PersonalAccessTokenCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationpersonalaccesstokencreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpersonalaccesstokencreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationpersonalaccesstokencreatetoken"></a>`token` | [`PersonalAccessToken`](#personalaccesstoken) | Created personal access token. |
+| <a id="mutationpersonalaccesstokencreatetoken"></a>`token` | [`String`](#string) | Created personal access token. |
+
+### `Mutation.personalAccessTokenRevoke`
+
+{{< details >}}
+**Introduced** in GitLab 18.8.
+**Status**: Experiment.
+{{< /details >}}
+
+Revokes a specified personal access token.
+
+Input type: `PersonalAccessTokenRevokeInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationpersonalaccesstokenrevokeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationpersonalaccesstokenrevokeid"></a>`id` | [`PersonalAccessTokenID!`](#personalaccesstokenid) | Global ID of the personal access token that will be revoked. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationpersonalaccesstokenrevokeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationpersonalaccesstokenrevokeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.personalAccessTokenRotate`
 

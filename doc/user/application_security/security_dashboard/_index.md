@@ -233,7 +233,7 @@ To view details:
 1. Drag the range handles ({{< icon name="scroll-handle" >}}) to zoom in on a specific period.
 1. Use the dropdowns to filter the chart by:
    - **Severity** (for example: Critical, High, Medium)
-   - **Report type** (SAST, DAST, Dependency Scanning, and others)
+   - **Report type** (SAST, DAST, dependency scanning, and others)
 1. To explore data beyond 90 days, but within the last 365 days, use the [`SecurityMetrics.vulnerabilitiesOverTime` GraphQL API](../../../api/graphql/reference/_index.md#securitymetricsvulnerabilitiesovertime)
 1. Vulnerabilities that are no longer detected are not automatically counted as closed. Use [vulnerability management policies](../policies/_index.md) to automatically close them if needed.
 
@@ -267,7 +267,7 @@ You can filter results at two levels:
 
 Available dashboard filters include:
 
-- **Report type:** Filter by scanner, including SAST, DAST, Dependency Scanning, and others.
+- **Report type:** Filter by scanner, including SAST, DAST, dependency scanning, and others.
 - **Project:** Limit results to specific projects. Available only for group security dashboards.
 
 Dashboard filter behavior:

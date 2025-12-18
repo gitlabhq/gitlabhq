@@ -272,8 +272,8 @@ GitLab can display the results of one or more reports in:
 
 {{< /details >}}
 
-The `dependency_scanning` report collects [Dependency Scanning vulnerabilities](../../user/application_security/dependency_scanning/_index.md).
-The collected Dependency Scanning report uploads to GitLab as an artifact.
+The `dependency_scanning` report collects [dependency scanning vulnerabilities](../../user/application_security/dependency_scanning/_index.md).
+The collected dependency scanning report uploads to GitLab as an artifact.
 
 GitLab can display the results of one or more reports in:
 

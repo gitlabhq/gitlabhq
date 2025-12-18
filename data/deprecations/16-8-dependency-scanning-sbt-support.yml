@@ -1,4 +1,4 @@
-- title: "Dependency Scanning support for sbt 1.0.X"
+- title: "Dependency scanning support for sbt 1.0.X"
   removal_milestone: "17.0"
   announcement_milestone: "16.8"
   breaking_change: true
@@ -8,4 +8,4 @@
   body: |  # (required) Don't change this line.
     Supporting very old versions of sbt is preventing us from improving our support for additional use cases with this package manager without increasing our maintenance cost.
 
-    Version 1.1.0 of sbt was released 6 years ago, and users are advised to upgrade from 1.0.x as Dependency Scanning will no longer work.
+    Version 1.1.0 of sbt was released 6 years ago, and users are advised to upgrade from 1.0.x as dependency scanning will no longer work.

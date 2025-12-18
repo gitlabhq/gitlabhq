@@ -545,7 +545,7 @@ a vulnerability's page includes a **Resolve with merge request** option.
 
 The following scanners are supported by this feature:
 
-- [Dependency Scanning](../dependency_scanning/_index.md).
+- [Dependency scanning](../dependency_scanning/_index.md).
   Automatic patch creation is only available for Node.js projects managed with
   `yarn`. Automatic patch creation is only supported when [FIPS mode](../../../development/fips_gitlab.md#enable-fips-mode) is disabled.
 

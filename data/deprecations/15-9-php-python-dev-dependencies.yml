@@ -6,4 +6,4 @@
   stage: secure
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/375505
   body: |
-    In GitLab 16.0 the GitLab Dependency Scanning analyzer will begin reporting development dependencies for both Python/pipenv and PHP/composer projects. Users who do not wish to have these development dependencies reported should set `DS_INCLUDE_DEV_DEPENDENCIES: false` in their CI/CD file.
+    In GitLab 16.0 the GitLab dependency scanning analyzer will begin reporting development dependencies for both Python/pipenv and PHP/composer projects. Users who do not wish to have these development dependencies reported should set `DS_INCLUDE_DEV_DEPENDENCIES: false` in their CI/CD file.

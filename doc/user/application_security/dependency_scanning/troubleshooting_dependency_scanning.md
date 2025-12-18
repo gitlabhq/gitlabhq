@@ -138,7 +138,7 @@ and now must update your configuration to again get the latest patched versions 
 analyzers, edit your `.gitlab-ci.yml` file and either:
 
 - Set the `DS_MAJOR_VERSION` to match the version referenced in the
-  [Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml#L17).
+  [dependency scanning template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml#L17).
 - If you hardcoded the `DS_ANALYZER_IMAGE` variable directly, change it to match the latest
   line as found in the [dependency scanning template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml).
   The line number varies depending on which scanning job you edited.

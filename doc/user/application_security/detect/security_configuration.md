@@ -54,7 +54,7 @@ To enable the following security scanning tools, with default settings, enable
 - [Auto SAST](../../../topics/autodevops/stages.md#auto-sast)
 - [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection)
 - [Auto DAST](../../../topics/autodevops/stages.md#auto-dast)
-- [Auto Dependency Scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning)
+- [Auto dependency scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning)
 - [Auto container scanning](../../../topics/autodevops/stages.md#auto-container-scanning)
 
 While you cannot directly customize Auto DevOps, you can
@@ -176,7 +176,7 @@ either:
 - Set the CI/CD variable `AST_ENABLE_MR_PIPELINES` to `"true"` ([introduced in 18.0](https://gitlab.com/gitlab-org/gitlab/-/issues/410880)) (Recommended)
 - Use the [`latest` edition template](#template-editions) which enables merge request pipelines by default.
 
-For example, to run both SAST and Dependency Scanning with merge request pipelines enabled, the following configuration is used:
+For example, to run both SAST and dependency scanning with merge request pipelines enabled, the following configuration is used:
 
 ```yaml
 include:
@@ -196,7 +196,7 @@ file.
 For more information about overriding security jobs, see:
 
 - [Overriding SAST jobs](../sast/_index.md#overriding-sast-jobs).
-- [Overriding Dependency Scanning jobs](../dependency_scanning/_index.md#overriding-dependency-scanning-jobs).
+- [Overriding dependency scanning jobs](../dependency_scanning/_index.md#overriding-dependency-scanning-jobs).
 - [Overriding container scanning jobs](../container_scanning/_index.md#overriding-the-container-scanning-template).
 - [Overriding Secret Detection jobs](../secret_detection/pipeline/configure.md).
 - [Overriding DAST jobs](../dast/browser/_index.md).

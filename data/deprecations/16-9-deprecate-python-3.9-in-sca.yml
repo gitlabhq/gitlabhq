@@ -1,4 +1,4 @@
-- title: "Deprecate Python 3.9 in Dependency Scanning and License Scanning"
+- title: "Deprecate Python 3.9 in dependency scanning and license scanning"
   removal_milestone: "17.0"
   announcement_milestone: "16.9"
   breaking_change: true
@@ -6,7 +6,7 @@
   stage: secure
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/441201
   body: |  # (required) Don't change this line.
-    From GitLab 16.9, Dependency Scanning and License Scanning support for Python 3.9 is deprecated. In GitLab 17.0, Python 3.10 is the default version for the Dependency Scanning CI/CD job.
+    From GitLab 16.9, dependency scanning and license scanning support for Python 3.9 is deprecated. In GitLab 17.0, Python 3.10 is the default version for the dependency scanning CI/CD job.
 
-    From GitLab 17.0, Dependency Scanning and License Scanning features won't support projects that require Python 3.9 without a
+    From GitLab 17.0, dependency scanning and license scanning features won't support projects that require Python 3.9 without a
     [compatible lockfile](https://docs.gitlab.com/user/application_security/dependency_scanning/#obtaining-dependency-information-by-parsing-lockfiles).

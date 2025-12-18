@@ -35,19 +35,22 @@ RSpec.describe 'Create personal access token with granular scopes', feature_cate
   let(:mutation_request) { post_graphql_mutation(mutation, current_user:, token:) }
 
   shared_examples 'creates a personal access token and granular scopes with correct attributes' do
-    specify do
+    specify :aggregate_failures do
       expect { mutation_request }.to change { current_user.personal_access_tokens.count }.by(1)
 
       expect(graphql_errors).to be_nil
 
-      expect(graphql_data_at(:personalAccessTokenCreate, :token)).to include(
+      created_token = current_user.personal_access_tokens.last
+
+      expect(graphql_data_at(:personalAccessTokenCreate, :token)).to be_present
+
+      created_token_attributes = created_token.attributes
+      expect(created_token_attributes).to include(
         'name' => input['name'],
         'description' => input['description'],
-        'expiresAt' => input['expiresAt'],
         'granular' => true
       )
-
-      created_token = current_user.personal_access_tokens.last
+      expect(created_token_attributes['expires_at'].to_s).to eq input['expiresAt']
       expect(created_token.granular_scopes.count).to eq(expected_granular_scope_attrs.size)
       expect(created_token.granular_scopes.map(&:attributes)).to include(
         *expected_granular_scope_attrs.map { |attrs| a_hash_including(attrs.stringify_keys) }

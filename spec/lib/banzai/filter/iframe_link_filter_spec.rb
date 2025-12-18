@@ -36,16 +36,12 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
       expect(container.name).to eq 'span'
       expect(container['class']).to eq 'media-container img-container'
 
-      link, iframe = container.children
+      iframe = container.children.first
 
       expect(iframe.name).to eq 'img'
       expect(iframe['src']).to eq src
       expect(iframe['height']).to eq height if height
       expect(iframe['width']).to eq width if width
-
-      expect(link.name).to eq 'a'
-      expect(link['href']).to eq src
-      expect(link['target']).to eq '_blank'
     end
   end
 
@@ -125,12 +121,10 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
 
       expect(container['class']).to eq 'media-container img-container'
 
-      link, iframe = container.children
+      iframe = container.children.first
 
       expect(iframe['src']).to eq proxy_src
       expect(iframe['data-canonical-src']).to eq canonical_src
-
-      expect(link['href']).to eq proxy_src
     end
   end
 

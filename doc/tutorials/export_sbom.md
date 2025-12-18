@@ -13,13 +13,13 @@ title: 'Tutorial: Export dependency list in SBOM format'
 
 {{< /details >}}
 
-Dependency Scanning output can be exported to the CycloneDX JSON format.
+Dependency scanning output can be exported to the CycloneDX JSON format.
 
 This tutorial shows you how to generate a CycloneDX JSON SBOM for a pipeline, and then to upload it as a CI job artifact.
 
 ## Before you begin
 
-Set up Dependency Scanning. For detailed instructions, follow [the Dependency Scanning tutorial](dependency_scanning.md).
+Set up dependency scanning. For detailed instructions, follow [the dependency scanning tutorial](dependency_scanning.md).
 
 ## Create configuration files
 

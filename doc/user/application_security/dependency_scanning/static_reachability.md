@@ -17,8 +17,8 @@ title: Static reachability analysis
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14177) as an [experiment](../../../policy/development_stages_support.md) in GitLab 17.5.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/15781) from experiment to beta in GitLab 17.11.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/502334) support for JavaScript and TypeScript in GitLab 18.2 and Dependency Scanning Analyzer v0.32.0.
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17607) support for Java in GitLab 18.5 and Dependency Scanning Analyzer v0.39.0.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/502334) support for JavaScript and TypeScript in GitLab 18.2 and dependency scanning analyzer v0.32.0.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17607) support for Java in GitLab 18.5 and dependency scanning analyzer v0.39.0.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/15780) from beta to Limited Availability (LA) in GitLab 18.5.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/19692) Java support from experiment to beta in GitLab 18.8.
 
@@ -30,7 +30,7 @@ by determining which vulnerable packages are reachable, meaning they are importe
 application. By focusing on reachable vulnerabilities, SRA enables you to prioritize remediation
 based on actual threat exposure rather than theoretical risk.
 
-Static reachability analysis is production-ready but marked as Limited Availability because it is bundled with [Dependency Scanning](dependency_scanning_sbom/_index.md), which is in Limited Availability maturity level.
+Static reachability analysis is production-ready but marked as Limited Availability because it is bundled with [dependency scanning](dependency_scanning_sbom/_index.md), which is in Limited Availability maturity level.
 
 ## Getting started
 

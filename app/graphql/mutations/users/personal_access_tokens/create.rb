@@ -7,7 +7,7 @@ module Mutations
         graphql_name 'PersonalAccessTokenCreate'
         description 'Creates a personal access token for the current user.'
 
-        field :token, Types::Authz::PersonalAccessTokens::PersonalAccessTokenType,
+        field :token, GraphQL::Types::String,
           null: true,
           description: 'Created personal access token.'
 
@@ -52,7 +52,7 @@ module Mutations
 
           return { errors: Array(response.message) } if response.error?
 
-          { token: token, errors: [] }
+          { token: token.token, errors: [] }
         end
 
         private

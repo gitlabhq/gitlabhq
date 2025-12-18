@@ -54,30 +54,10 @@ module Banzai
         doc.document.create_element(media_type, media_element_attrs)
       end
 
-      def download_link(doc, element)
-        link_text = element['title'] || element['alt']
-
-        link_element_attrs = {
-          class: 'gl-text-sm gl-text-subtle gl-mb-1',
-          href: element['src'],
-          target: '_blank',
-          rel: 'noopener noreferrer',
-          title: "Download '#{link_text}'"
-        }
-
-        # make sure the original non-proxied src carries over
-        if element['data-canonical-src']
-          link_element_attrs['data-canonical-src'] = element['data-canonical-src']
-        end
-
-        doc.document.create_element('a', link_text, link_element_attrs)
-      end
-
       def media_node(doc, element)
         container_element_attrs = { class: "media-container #{media_type}-container" }
 
         doc.document.create_element('span', container_element_attrs).tap do |container|
-          container.add_child(download_link(doc, element))
           container.add_child(media_element(doc, element))
         end
       end

@@ -176,7 +176,7 @@ describe('content_editor/extensions/attachment', () => {
             p(
               mediaType({
                 canonicalSrc: file.name,
-                src: blobUrl,
+                src: `/${group}/${project}/-/wikis/${file.name}`,
                 alt: expect.stringContaining('test-file'),
                 uploading: false,
               }),
@@ -263,7 +263,7 @@ describe('content_editor/extensions/attachment', () => {
             p(
               image({
                 uploading: false,
-                src: blobUrl,
+                src: `/${group}/${project}/-/wikis/${imageFileRetina.name}`,
                 alt: imageFileRetina.name,
                 canonicalSrc: imageFileRetina.name,
                 ...retinaImageSize,
@@ -687,7 +687,7 @@ describe('content_editor/extensions/attachment', () => {
               p(
                 image({
                   alt: 'test-file.png',
-                  src: blobUrl,
+                  src: `/${group}/${project}/-/wikis/test-file.png`,
                   canonicalSrc: 'test-file.png',
                   uploading: false,
                 }),
@@ -744,7 +744,7 @@ describe('content_editor/extensions/attachment', () => {
               p(
                 image({
                   alt: 'test-file.png',
-                  src: blobUrl,
+                  src: `/${group}/${project}/-/wikis/test-file.png`,
                   canonicalSrc: 'test-file.png',
                   uploading: false,
                 }),
@@ -752,7 +752,7 @@ describe('content_editor/extensions/attachment', () => {
               p(
                 video({
                   alt: 'test-file.mp4',
-                  src: blobUrl,
+                  src: `/${group}/${project}/-/wikis/test-file.mp4`,
                   canonicalSrc: 'test-file.mp4',
                   uploading: false,
                 }),
@@ -802,7 +802,7 @@ describe('content_editor/extensions/attachment', () => {
               p(
                 image({
                   alt: 'test-file.png',
-                  src: blobUrl,
+                  src: `/${group}/${project}/-/wikis/test-file.png`,
                   canonicalSrc: 'test-file.png',
                   uploading: false,
                 }),
@@ -810,7 +810,7 @@ describe('content_editor/extensions/attachment', () => {
               p(
                 video({
                   alt: 'test-file.mp4',
-                  src: blobUrl,
+                  src: `/${group}/${project}/-/wikis/test-file.mp4`,
                   canonicalSrc: 'test-file.mp4',
                   uploading: false,
                 }),
@@ -864,7 +864,7 @@ describe('content_editor/extensions/attachment', () => {
               p(
                 image({
                   alt: 'test-file.png',
-                  src: blobUrl,
+                  src: `/${group}/${project}/-/wikis/test-file.png`,
                   canonicalSrc: 'test-file.png',
                   uploading: false,
                 }),
@@ -872,7 +872,7 @@ describe('content_editor/extensions/attachment', () => {
               p(
                 video({
                   alt: 'test-file.mp4',
-                  src: blobUrl,
+                  src: `/${group}/${project}/-/wikis/test-file.mp4`,
                   canonicalSrc: 'test-file.mp4',
                   uploading: false,
                 }),
@@ -930,7 +930,7 @@ describe('content_editor/extensions/attachment', () => {
               p(
                 image({
                   alt: 'test-file.png',
-                  src: blobUrl,
+                  src: `/${group}/${project}/-/wikis/test-file.png`,
                   canonicalSrc: 'test-file.png',
                   uploading: false,
                 }),
@@ -938,7 +938,7 @@ describe('content_editor/extensions/attachment', () => {
               p(
                 video({
                   alt: 'test-file.mp4',
-                  src: blobUrl,
+                  src: `/${group}/${project}/-/wikis/test-file.mp4`,
                   canonicalSrc: 'test-file.mp4',
                   uploading: false,
                 }),
@@ -966,7 +966,7 @@ describe('content_editor/extensions/attachment', () => {
               p(
                 video({
                   alt: 'test-file1.mp4',
-                  src: blobUrl,
+                  src: `/${group}/${project}/-/wikis/test-file1.mp4`,
                   canonicalSrc: 'test-file1.mp4',
                   uploading: false,
                 }),
@@ -997,7 +997,7 @@ describe('content_editor/extensions/attachment', () => {
               p(
                 image({
                   alt: 'test-file.png',
-                  src: blobUrl,
+                  src: `/${group}/${project}/-/wikis/test-file.png`,
                   canonicalSrc: 'test-file.png',
                   uploading: false,
                 }),
@@ -1005,7 +1005,7 @@ describe('content_editor/extensions/attachment', () => {
               p(
                 video({
                   alt: 'test-file.mp4',
-                  src: blobUrl,
+                  src: `/${group}/${project}/-/wikis/test-file.mp4`,
                   canonicalSrc: 'test-file.mp4',
                   uploading: false,
                 }),
@@ -1033,7 +1033,7 @@ describe('content_editor/extensions/attachment', () => {
               p(
                 video({
                   alt: 'test-file1.mp4',
-                  src: blobUrl,
+                  src: `/${group}/${project}/-/wikis/test-file1.mp4`,
                   canonicalSrc: 'test-file1.mp4',
                   uploading: false,
                 }),
@@ -1041,7 +1041,7 @@ describe('content_editor/extensions/attachment', () => {
               p(
                 audio({
                   alt: 'test-file.mp3',
-                  src: blobUrl,
+                  src: `/${group}/${project}/-/wikis/test-file.mp3`,
                   canonicalSrc: 'test-file.mp3',
                   uploading: false,
                 }),

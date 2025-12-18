@@ -14,7 +14,7 @@ description: Configure security and compliance administration settings, includin
 
 {{< /details >}}
 
-## Dependency Scanning
+## Dependency scanning
 
 ### SBOM Scan API limits
 

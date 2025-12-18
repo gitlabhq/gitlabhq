@@ -13,8 +13,6 @@ module Gitlab
         NONE_CAUGHT_UP = :none
 
         CACHE_KEY = :gitlab_load_balancer_host
-        READ_HOST_CONN_CHECKOUT_KEY = :gitlab_load_balancer_read_host_conn_checkout
-        READ_WRITE_HOST_CONN_CHECKOUT_KEY = :gitlab_load_balancer_read_write_host_conn_checkout
 
         REPLICA_SUFFIX = '_replica'
 
@@ -64,7 +62,6 @@ module Gitlab
 
             begin
               connection = host.connection
-              Thread.current[READ_HOST_CONN_CHECKOUT_KEY] = true
 
               return yield connection
             rescue StandardError => error
@@ -125,7 +122,6 @@ module Gitlab
           # Retry only once when in a transaction (see https://gitlab.com/gitlab-org/gitlab/-/issues/220242)
           connection = pool.lease_connection
 
-          Thread.current[READ_WRITE_HOST_CONN_CHECKOUT_KEY] = true
           attempts = connection.transaction_open? ? 1 : 3
 
           # In the event of a failover the primary may be briefly unavailable.
@@ -165,15 +161,6 @@ module Gitlab
           request_cache[CACHE_KEY] ||= @host_list.next
         end
 
-        def connection_checked_out?
-          !!(Thread.current[READ_HOST_CONN_CHECKOUT_KEY] || Thread.current[READ_WRITE_HOST_CONN_CHECKOUT_KEY])
-        end
-
-        def release_connections
-          release_host
-          release_primary_connection
-        end
-
         # Releases the host and connection for the current thread.
         def release_host
           if host = request_cache[CACHE_KEY]
@@ -181,13 +168,11 @@ module Gitlab
             host.release_connection
           end
 
-          Thread.current[READ_HOST_CONN_CHECKOUT_KEY] = nil
           request_cache.delete(CACHE_KEY)
         end
 
         def release_primary_connection
           pool.release_connection
-          Thread.current[READ_WRITE_HOST_CONN_CHECKOUT_KEY] = nil
         end
 
         # Returns the transaction write location of the primary.

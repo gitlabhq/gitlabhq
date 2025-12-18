@@ -1,5 +1,4 @@
 <script>
-import { GlLink } from '@gitlab/ui';
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/vue-2';
 import { uploadingStates } from '../../services/upload_helpers';
 
@@ -8,7 +7,6 @@ export default {
   components: {
     NodeViewWrapper,
     NodeViewContent,
-    GlLink,
   },
   props: {
     node: {
@@ -30,15 +28,6 @@ export default {
     as="span"
     :class="`media-container ${node.type.name}-container`"
   >
-    <gl-link
-      :href="node.attrs.src"
-      target="_blank"
-      :draggable="true"
-      data-drag-handle=""
-      class="with-attachment-icon gl-mb-1 gl-text-sm gl-text-subtle"
-    >
-      {{ node.attrs.title || node.attrs.alt }}
-    </gl-link>
     <node-view-content
       :class="{ 'gl-rounded-lg': node.type.name == 'video' }"
       :as="node.type.name"

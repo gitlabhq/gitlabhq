@@ -88,7 +88,7 @@ The secure stage is responsible for maintaining the following CI/CD Templates an
     - [`Container-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.gitlab-ci.yml)
     - [`Container-Scanning.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.latest.gitlab-ci.yml)
   - CI/CD Components
-    - [Dependency Scanning](https://gitlab.com/components/dependency-scanning/-/blob/main/templates/main/template.yml)
+    - [Dependency scanning](https://gitlab.com/components/dependency-scanning/-/blob/main/templates/main/template.yml)
     - [Container scanning](https://gitlab.com/components/container-scanning/-/blob/main/templates/container-scanning.yml)
 - [Static Analysis (SAST)](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/static-analysis)
   - CI/CD Templates
@@ -123,7 +123,7 @@ Step 1 helps prevent wastage of compute quota that would be spent running analyz
 
 ## How to test the analyzers
 
-Video walkthrough of how Dependency Scanning analyzers are using [downstream pipeline](../../ci/pipelines/downstream_pipelines.md) feature to test analyzers using test projects:
+Video walkthrough of how dependency scanning analyzers are using [downstream pipeline](../../ci/pipelines/downstream_pipelines.md) feature to test analyzers using test projects:
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 [How Sec leverages the downstream pipeline feature of GitLab to test analyzers end to end](https://www.youtube.com/watch?v=KauRBlfUbDE)
@@ -505,7 +505,7 @@ The [security-report-schema](https://gitlab.com/gitlab-org/security-products/sec
 
 - [Container scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json)
 - [DAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dast-report-format.json)
-- [Dependency Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json)
+- [Dependency scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json)
 - [SAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json)
 - [Secret Detection](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/secret-detection-report-format.json)
 
@@ -817,7 +817,7 @@ This issue will guide you through the whole release process. In general, you hav
 - Check that CI **_job definitions are still accurate_** in vendored CI/CD templates and **_all of the ENV vars are propagated_** to the Docker containers upon `docker run` per tool.
 
   - [SAST vendored CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
-  - [Dependency Scanning vendored CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
+  - [Dependency scanning vendored CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
   - [Container scanning CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
 
   If needed, go to the pipeline corresponding to the last Git tag,

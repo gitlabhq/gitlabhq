@@ -5,5 +5,9 @@
     - c.with_body do
       - doc_link = link_to '', help_page_path('user/profile/account/two_factor_authentication_troubleshooting.md', anchor: 'recovery-options-and-2fa-reset'),
         target: '_blank', rel: 'noopener noreferrer'
-      = safe_format(_('If you lose access to your 2FA method, use your %{doc_start}recovery codes%{doc_end}.'),
-        tag_pair(doc_link, :doc_start, :doc_end))
+      - if passkey_via_2fa_enabled?(current_user)
+        = safe_format(_('Passkey is now your default 2FA method. If you lose access to your 2FA method, use your %{doc_start}recovery codes%{doc_end}.'),
+          tag_pair(doc_link, :doc_start, :doc_end))
+      - else
+        = safe_format(_('If you lose access to your 2FA method, use your %{doc_start}recovery codes%{doc_end}.'),
+          tag_pair(doc_link, :doc_start, :doc_end))

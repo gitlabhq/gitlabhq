@@ -1794,7 +1794,7 @@ These three variables will be removed in GitLab 17.0.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Dependency Scanning incorrect SBOM metadata properties
+### Dependency scanning incorrect SBOM metadata properties
 
 <div class="deprecation-notes">
 
@@ -1809,7 +1809,7 @@ GitLab 17.0 removes support for the following metadata properties in CycloneDX S
 - `gitlab:dependency_scanning:input_file`
 - `gitlab:dependency_scanning:package_manager`
 
-These properties were added in GitLab 15.7 to the SBOM produced by Dependency Scanning. However, these properties were incorrect and didn't align with the [GitLab CycloneDX property taxonomy](https://docs.gitlab.com/development/sec/cyclonedx_property_taxonomy/).
+These properties were added in GitLab 15.7 to the SBOM produced by dependency scanning. However, these properties were incorrect and didn't align with the [GitLab CycloneDX property taxonomy](https://docs.gitlab.com/development/sec/cyclonedx_property_taxonomy/).
 The following correct properties were added in GitLab 15.11 to address this:
 
 - `gitlab:dependency_scanning:input_file:path`
@@ -1821,7 +1821,7 @@ The incorrect properties were kept for backward compatibility. They are now depr
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Dependency Scanning support for sbt 1.0.X
+### Dependency scanning support for sbt 1.0.X
 
 <div class="deprecation-notes">
 
@@ -1833,7 +1833,7 @@ The incorrect properties were kept for backward compatibility. They are now depr
 
 Supporting very old versions of sbt is preventing us from improving our support for additional use cases with this package manager without increasing our maintenance cost.
 
-Version 1.1.0 of sbt was released 6 years ago, and users are advised to upgrade from 1.0.x as Dependency Scanning will no longer work.
+Version 1.1.0 of sbt was released 6 years ago, and users are advised to upgrade from 1.0.x as dependency scanning will no longer work.
 
 </div>
 
@@ -1909,7 +1909,7 @@ Users are advised to use [License scanning of CycloneDX files](https://docs.gitl
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Deprecate Python 3.9 in Dependency Scanning and License Scanning
+### Deprecate Python 3.9 in dependency scanning and license scanning
 
 <div class="deprecation-notes">
 
@@ -1919,9 +1919,9 @@ Users are advised to use [License scanning of CycloneDX files](https://docs.gitl
 
 </div>
 
-From GitLab 16.9, Dependency Scanning and License Scanning support for Python 3.9 is deprecated. In GitLab 17.0, Python 3.10 is the default version for the Dependency Scanning CI/CD job.
+From GitLab 16.9, dependency scanning and license scanning support for Python 3.9 is deprecated. In GitLab 17.0, Python 3.10 is the default version for the dependency scanning CI/CD job.
 
-From GitLab 17.0, Dependency Scanning and License Scanning features won't support projects that require Python 3.9 without a
+From GitLab 17.0, dependency scanning and license scanning features won't support projects that require Python 3.9 without a
 [compatible lockfile](https://docs.gitlab.com/user/application_security/dependency_scanning/#obtaining-dependency-information-by-parsing-lockfiles).
 
 </div>
@@ -2643,7 +2643,7 @@ settings for the group using either the GitLab UI or GraphQL API.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Maven versions below 3.8.8 support in Dependency Scanning and License Scanning
+### Maven versions below 3.8.8 support in dependency scanning and license scanning
 
 <div class="deprecation-notes">
 
@@ -2653,7 +2653,7 @@ settings for the group using either the GitLab UI or GraphQL API.
 
 </div>
 
-GitLab 17.0 drops Dependency Scanning and License Scanning support for Maven versions below 3.8.8.
+GitLab 17.0 drops dependency scanning and license scanning support for Maven versions below 3.8.8.
 
 Users are advised to upgrade to 3.8.8 or greater.
 
@@ -4019,7 +4019,7 @@ These three variables will be removed in GitLab 16.0.
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### Dependency Scanning support for Java 13, 14, 15, and 16
+### Dependency scanning support for Java 13, 14, 15, and 16
 
 <div class="deprecation-notes">
 
@@ -4029,7 +4029,7 @@ These three variables will be removed in GitLab 16.0.
 
 </div>
 
-GitLab has deprecated Dependency Scanning support for Java versions 13, 14, 15, and 16 and plans to remove that support in the upcoming GitLab 16.0 release. This is consistent with [Oracle support policy](https://www.oracle.com/java/technologies/java-se-support-roadmap.html) as Oracle Premier and Extended Support for these versions has ended. This also allows GitLab to focus Dependency Scanning Java support on LTS versions moving forward.
+GitLab has deprecated dependency scanning support for Java versions 13, 14, 15, and 16 and plans to remove that support in the upcoming GitLab 16.0 release. This is consistent with [Oracle support policy](https://www.oracle.com/java/technologies/java-se-support-roadmap.html) as Oracle Premier and Extended Support for these versions has ended. This also allows GitLab to focus dependency scanning Java support on LTS versions moving forward.
 
 </div>
 
@@ -4137,7 +4137,7 @@ will be able to import projects to that group.
 
 </div>
 
-In GitLab 16.0 the GitLab Dependency Scanning analyzer will begin reporting development dependencies for both Python/pipenv and PHP/composer projects. Users who do not wish to have these development dependencies reported should set `DS_INCLUDE_DEV_DEPENDENCIES: false` in their CI/CD file.
+In GitLab 16.0 the GitLab dependency scanning analyzer will begin reporting development dependencies for both Python/pipenv and PHP/composer projects. Users who do not wish to have these development dependencies reported should set `DS_INCLUDE_DEV_DEPENDENCIES: false` in their CI/CD file.
 
 </div>
 
@@ -5731,7 +5731,7 @@ in the Vulnerability Report.
 
 <div class="deprecation breaking-change" data-milestone="15.0">
 
-### Dependency Scanning Python 3.9 and 3.6 image deprecation
+### Dependency scanning Python 3.9 and 3.6 image deprecation
 
 <div class="deprecation-notes">
 
@@ -5741,7 +5741,7 @@ in the Vulnerability Report.
 
 </div>
 
-For those using Dependency Scanning for Python projects, we are deprecating the default `gemnasium-python:2` image which uses Python 3.6 as well as the custom `gemnasium-python:2-python-3.9` image which uses Python 3.9. The new default image as of GitLab 15.0 will be for Python 3.9 as it is a [supported version](https://endoflife.date/python) and 3.6 [is no longer supported](https://endoflife.date/python).
+For those using dependency scanning for Python projects, we are deprecating the default `gemnasium-python:2` image which uses Python 3.6 as well as the custom `gemnasium-python:2-python-3.9` image which uses Python 3.9. The new default image as of GitLab 15.0 will be for Python 3.9 as it is a [supported version](https://endoflife.date/python) and 3.6 [is no longer supported](https://endoflife.date/python).
 
 For users using Python 3.9 or 3.9-compatible projects, you should not need to take action and dependency scanning should begin to work in GitLab 15.0. If you wish to test the new container now please run a test pipeline in your project with this container (which will be removed in 15.0). Use the Python 3.9 image:
 
@@ -5765,7 +5765,7 @@ gemnasium-python-dependency_scanning:
 
 <div class="deprecation breaking-change" data-milestone="15.0">
 
-### Dependency Scanning default Java version changed to 17
+### Dependency scanning default Java version changed to 17
 
 <div class="deprecation-notes">
 
@@ -5774,7 +5774,7 @@ gemnasium-python-dependency_scanning:
 
 </div>
 
-In GitLab 15.0, for Dependency Scanning, the default version of Java that the scanner expects will be updated from 11 to 17. Java 17 is [the most up-to-date Long Term Support (LTS) version](https://en.wikipedia.org/wiki/Java_version_history). Dependency scanning continues to support the same [range of versions (8, 11, 13, 14, 15, 16, 17)](https://docs.gitlab.com/user/application_security/dependency_scanning/#supported-languages-and-package-managers), only the default version is changing. If your project uses the previous default of Java 11, be sure to [set the `DS_Java_Version` variable to match](https://docs.gitlab.com/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning).
+In GitLab 15.0, for dependency scanning, the default version of Java that the scanner expects will be updated from 11 to 17. Java 17 is [the most up-to-date Long Term Support (LTS) version](https://en.wikipedia.org/wiki/Java_version_history). Dependency scanning continues to support the same [range of versions (8, 11, 13, 14, 15, 16, 17)](https://docs.gitlab.com/user/application_security/dependency_scanning/#supported-languages-and-package-managers), only the default version is changing. If your project uses the previous default of Java 11, be sure to [set the `DS_Java_Version` variable to match](https://docs.gitlab.com/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning).
 
 </div>
 
@@ -5793,15 +5793,15 @@ In GitLab 15.0, for Dependency Scanning, the default version of Java that the sc
 versions earlier than 14.0.0 will no longer be supported in GitLab 15.0. Reports that do not pass validation
 against the schema version declared in the report will also no longer be supported as of GitLab 15.0.
 
-Third-party tools that [integrate with GitLab by outputting a Dependency scanning security report](https://docs.gitlab.com/development/integrations/secure/#report)
+Third-party tools that [integrate with GitLab by outputting a dependency scanning security report](https://docs.gitlab.com/development/integrations/secure/#report)
 as a pipeline job artifact are affected. You must ensure that all output reports adhere to the correct
 schema with a minimum version of 14.0.0. Reports with a lower version or that fail to validate
 against the declared schema version will not be processed, and vulnerability
-findings will not display in MRs, pipelines, or Vulnerability Reports.
+findings will not display in MRs, pipelines, or vulnerability reports.
 
 To help with the transition, from GitLab 14.10, non-compliant reports will cause a
 [warning to be displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_672853791)
-in the Vulnerability Report.
+in the vulnerability report.
 
 </div>
 
@@ -6395,7 +6395,7 @@ This change will also help GitLab remain consistent in its tiering strategy with
 
 <div class="deprecation breaking-change" data-milestone="15.0">
 
-### Retire-JS Dependency Scanning tool
+### Retire-JS dependency scanning tool
 
 <div class="deprecation-notes">
 
@@ -6405,9 +6405,9 @@ This change will also help GitLab remain consistent in its tiering strategy with
 
 </div>
 
-As of 14.8 the retire.js job is being deprecated from Dependency Scanning. It will continue to be included in our CI/CD template while deprecated. We are removing retire.js from Dependency Scanning on May 22, 2022 in GitLab 15.0. JavaScript scanning functionality will not be affected as it is still being covered by Gemnasium.
+As of 14.8 the retire.js job is being deprecated from dependency scanning. It will continue to be included in our CI/CD template while deprecated. We are removing retire.js from dependency scanning on May 22, 2022 in GitLab 15.0. JavaScript scanning functionality will not be affected as it is still being covered by Gemnasium.
 
-If you have explicitly excluded retire.js using DS_EXCLUDED_ANALYZERS you will need to clean up (remove the reference) in 15.0. If you have customized your pipeline's Dependency Scanning configuration related to the `retire-js-dependency_scanning` job you will want to switch to gemnasium-dependency_scanning before the removal in 15.0, to prevent your pipeline from failing. If you have not used the DS_EXCLUDED_ANALYZERS to reference retire.js, or customized your template specifically for retire.js, you will not need to take action.
+If you have explicitly excluded retire.js using DS_EXCLUDED_ANALYZERS you will need to clean up (remove the reference) in 15.0. If you have customized your pipeline's dependency scanning configuration related to the `retire-js-dependency_scanning` job you will want to switch to gemnasium-dependency_scanning before the removal in 15.0, to prevent your pipeline from failing. If you have not used the DS_EXCLUDED_ANALYZERS to reference retire.js, or customized your template specifically for retire.js, you will not need to take action.
 
 </div>
 
@@ -6987,7 +6987,7 @@ The `type` and `types` CI/CD keywords will be removed in GitLab 15.0. Pipelines 
 
 <div class="deprecation breaking-change" data-milestone="15.0">
 
-### bundler-audit Dependency Scanning tool
+### bundler-audit dependency scanning tool
 
 <div class="deprecation-notes">
 
@@ -6997,9 +6997,9 @@ The `type` and `types` CI/CD keywords will be removed in GitLab 15.0. Pipelines 
 
 </div>
 
-As of 14.6 bundler-audit is being deprecated from Dependency Scanning. It will continue to be in our CI/CD template while deprecated. We are removing bundler-audit from Dependency Scanning on May 22, 2022 in 15.0. After this removal Ruby scanning functionality will not be affected as it is still being covered by Gemnasium.
+As of 14.6 bundler-audit is being deprecated from dependency scanning. It will continue to be in our CI/CD template while deprecated. We are removing bundler-audit from dependency scanning on May 22, 2022 in 15.0. After this removal Ruby scanning functionality will not be affected as it is still being covered by Gemnasium.
 
-If you have explicitly excluded bundler-audit using DS_EXCLUDED_ANALYZERS you will need to clean up (remove the reference) in 15.0. If you have customized your pipeline's Dependency Scanning configuration, for example to edit the `bundler-audit-dependency_scanning` job, you will want to switch to gemnasium-dependency_scanning before removal in 15.0, to prevent your pipeline from failing. If you have not used the DS_EXCLUDED_ANALYZERS to reference bundler-audit, or customized your template specifically for bundler-audit, you will not need to take action.
+If you have explicitly excluded bundler-audit using DS_EXCLUDED_ANALYZERS you will need to clean up (remove the reference) in 15.0. If you have customized your pipeline's dependency scanning configuration, for example to edit the `bundler-audit-dependency_scanning` job, you will want to switch to gemnasium-dependency_scanning before removal in 15.0, to prevent your pipeline from failing. If you have not used the DS_EXCLUDED_ANALYZERS to reference bundler-audit, or customized your template specifically for bundler-audit, you will not need to take action.
 
 </div>
 </div>
@@ -7225,7 +7225,7 @@ or migrate to another security feature like [GitLab Advanced SAST](https://docs.
 
 <div class="deprecation breaking-change">
 
-### Dependency Scanning for JavaScript vendored libraries
+### Dependency scanning for JavaScript vendored libraries
 
 <div class="deprecation-notes">
 
@@ -7237,13 +7237,13 @@ or migrate to another security feature like [GitLab Advanced SAST](https://docs.
 > [!note]
 > This change has been removed from its original milestone and is being reassessed.
 
-The [Dependency Scanning for JavaScript vendored libraries](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript) feature
-provided by the Gemnasium analyzer for Dependency Scanning is deprecated in GitLab 17.9.
+The [dependency scanning for JavaScript vendored libraries](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript) feature
+provided by the Gemnasium analyzer for dependency scanning is deprecated in GitLab 17.9.
 
-While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
+While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new dependency scanning analyzer.
 See details in [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/)
 
-A replacement feature will be developed with [Dependency Scanning on vendored libraries](https://gitlab.com/groups/gitlab-org/-/epics/7186) but no timeline has been set for its delivery.
+A replacement feature will be developed with [dependency scanning on vendored libraries](https://gitlab.com/groups/gitlab-org/-/epics/7186) but no timeline has been set for its delivery.
 
 </div>
 
@@ -7607,7 +7607,7 @@ determine if a user can take ownership of a pipeline schedule, use the
 
 <div class="deprecation breaking-change">
 
-### Resolve a vulnerability for Dependency Scanning on Yarn projects
+### Resolve a vulnerability for dependency scanning on Yarn projects
 
 <div class="deprecation-notes">
 
@@ -7620,9 +7620,9 @@ determine if a user can take ownership of a pipeline schedule, use the
 > This change has been removed from its original milestone and is being reassessed.
 
 The [Resolve a vulnerability](https://docs.gitlab.com/user/application_security/vulnerabilities/#resolve-a-vulnerability) feature for Yarn projects
-provided by the Gemnasium analyzer for Dependency Scanning is deprecated in GitLab 17.9.
+provided by the Gemnasium analyzer for dependency scanning is deprecated in GitLab 17.9.
 
-While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
+While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new dependency scanning analyzer.
 See details in [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/)
 
 A replacement feature is planned as part of the [Auto Remediation vision](https://gitlab.com/groups/gitlab-org/-/epics/7186) but no timeline has been set for its delivery.

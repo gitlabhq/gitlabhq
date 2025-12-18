@@ -1,4 +1,3 @@
-import { GlLink } from '@gitlab/ui';
 import { NodeViewWrapper } from '@tiptap/vue-2';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PlayableWrapper from '~/content_editor/components/wrappers/playable.vue';
@@ -44,21 +43,6 @@ describe('content/components/wrappers/playable_spec', () => {
 
     it(`marks the ${type} element as draggable`, () => {
       expect(findMedia(type).attributes()).toMatchObject({
-        draggable: 'true',
-        'data-drag-handle': '',
-      });
-    });
-
-    it(`renders a gl-link with the link to the ${type}`, () => {
-      expect(wrapper.findComponent(GlLink).attributes()).toMatchObject({
-        class: 'with-attachment-icon gl-mb-1 gl-text-sm gl-text-subtle',
-        href: src,
-        target: '_blank',
-      });
-    });
-
-    it('marks the gl-link as draggable', () => {
-      expect(wrapper.findComponent(GlLink).attributes()).toMatchObject({
         draggable: 'true',
         'data-drag-handle': '',
       });

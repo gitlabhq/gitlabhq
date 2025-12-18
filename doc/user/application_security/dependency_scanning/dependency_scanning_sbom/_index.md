@@ -15,11 +15,10 @@ title: Dependency scanning by using SBOM
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395692) in GitLab 17.1 and officially released in GitLab 17.3 with a flag named `dependency_scanning_using_sbom_reports`.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/395692) in GitLab 17.5.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395692) in GitLab 17.1 and officially released as an [Experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.3 with a flag named `dependency_scanning_using_sbom_reports`.
 - Released [lock file-based dependency scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer as an [Experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.4.
-- Released [dependency scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) version [`0.4.0`](https://gitlab.com/components/dependency-scanning/-/tags/0.4.0) in GitLab 17.5 with support for the [lock file-based dependency scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer.
-- [Enabled by default with the latest dependency scanning CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/issues/519597) for Cargo, Conda, Cocoapods, and Swift in GitLab 17.9.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/395692) for default branch only in GitLab 17.5.
+- Released as Beta with support for all branches and [Enabled by default with the latest dependency scanning CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/issues/519597) for Cargo, Conda, Cocoapods, and Swift in GitLab 17.9.
 - Feature flag `dependency_scanning_using_sbom_reports` removed in GitLab 17.10.
 - Released as Limited Availability on GitLab.com only with a new [V2 CI/CD dependency scanning template](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201175/) in GitLab 18.5. Using the dependency scanning SBOM API behind feature flag `dependency_scanning_sbom_scan_api` disabled by default.
 
@@ -457,7 +456,7 @@ stages:
   - merge-cyclonedx-sboms
 
 include:
-  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@1
 
 merge cyclonedx sboms:
   stage: merge-cyclonedx-sboms
@@ -804,7 +803,7 @@ To use the dependency scanning analyzer:
    your [local Docker container registry](../../../packages/container_registry/_index.md):
 
    ```plaintext
-   registry.gitlab.com/security-products/dependency-scanning:v1
+   registry.gitlab.com/security-products/dependency-scanning:1
    ```
 
    The process for importing Docker images into a local offline Docker registry depends on
@@ -967,22 +966,23 @@ Your project can be supported if you use a trigger file to [create a lock file o
 | Python          | `requirements.pip`, `Pipfile`, `requires.txt`, `setup.py` |
 | Scala           | `build.sbt`                                               |
 
-### Using the Dependency Scanning CI/CD component
+### Using the dependency scanning CI/CD component
 
-{{< alert type="warning" >}}
+{{< history >}}
 
-The [dependency scanning CI/CD component] is in Beta and subject to change.
+- Introduced as a [beta](../../../../policy/development_stages_support.md#beta) in GitLab 17.5. [Dependency scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) version [`0.4.0`](https://gitlab.com/components/dependency-scanning/-/tags/0.4.0).
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/578686) in GitLab 18.8. [Dependency scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) version [`1.0.0`](https://gitlab.com/components/dependency-scanning/-/tags/1.0.0).
 
-{{< /alert >}}
+{{< /history >}}
 
 Use the
 [dependency scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning)
 to enable the new dependency scanning analyzer. Before choosing this approach, review the current
-[limitations](../../../../ci/components/_index.md) for GitLab Self-Managed.
+[limitations](../../../../ci/components/_index.md#use-a-gitlabcom-component-on-gitlab-self-managed) for GitLab Self-Managed.
 
   ```yaml
   include:
-    - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+    - component: $CI_SERVER_FQDN/components/dependency-scanning/main@1
   ```
 
 You must also [create a lock file or dependency graph](#create-lock-file-or-dependency-graph).

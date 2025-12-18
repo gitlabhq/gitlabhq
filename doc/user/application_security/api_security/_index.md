@@ -20,7 +20,7 @@ This section discusses GitLab features that can be used to ensure the security o
 Some of the features discussed are specific to web APIs and others are more general solutions that are also used with web API applications.
 
 - [SAST](../sast/_index.md) identified vulnerabilities by analyzing the application's codebase.
-- [Dependency Scanning](../dependency_scanning/_index.md) reviews a project 3rd party dependencies for known vulnerabilities (for example CVEs).
+- [Dependency scanning](../dependency_scanning/_index.md) reviews a project 3rd party dependencies for known vulnerabilities (for example CVEs).
 - [Container scanning](../container_scanning/_index.md) analyzes container images to identify known OS package vulnerabilities and installed language dependencies.
 - [API Discovery](api_discovery/_index.md) examines an application containing a REST API and intuits an OpenAPI specification for that API. OpenAPI specification documents are used by other GitLab security tools.
 - [API security testing analyzer](../api_security_testing/_index.md) performs dynamic analysis security testing of web APIs. It can identify various security vulnerabilities in your application, including the OWASP Top 10.

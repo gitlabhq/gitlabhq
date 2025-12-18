@@ -15,6 +15,7 @@ module Gitlab
         NOTE_CREATE = 'work_item_note_create'
         NOTE_DESTROY = 'work_item_note_destroy'
         NOTE_UPDATE = 'work_item_note_update'
+        REFERENCE_ADD = 'work_item_reference_add'
         REOPEN = 'work_item_reopen'
 
         ALL_EVENTS = [
@@ -29,6 +30,7 @@ module Gitlab
           NOTE_CREATE,
           NOTE_DESTROY,
           NOTE_UPDATE,
+          REFERENCE_ADD,
           REOPEN
         ].freeze
 
