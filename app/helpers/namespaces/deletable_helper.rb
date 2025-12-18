@@ -118,7 +118,8 @@ module Namespaces
       remove_form_id: nil,
       permanently_remove: false,
       button_text: nil,
-      has_security_policy_project: false)
+      has_security_policy_project: false
+    )
       {
         remove_form_id: remove_form_id,
         button_text: button_text.nil? ? _('Delete') : button_text,
@@ -126,7 +127,14 @@ module Namespaces
         disabled: (group.linked_to_subscription? || has_security_policy_project).to_s,
         confirm_danger_message: confirm_remove_group_message(group, permanently_remove),
         phrase: group.full_path,
-        html_confirmation_message: 'true'
+        html_confirmation_message: 'true',
+        form_path: group_path(group),
+        confirm_phrase: group.full_path,
+        full_name: group.full_name,
+        subgroups_count: group.subgroup_count,
+        projects_count: group.project_count,
+        marked_for_deletion: group.scheduled_for_deletion_in_hierarchy_chain?.to_s,
+        permanent_deletion_date: permanent_deletion_date_formatted
       }
     end
 

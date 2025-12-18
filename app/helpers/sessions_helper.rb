@@ -73,4 +73,14 @@ module SessionsHelper
 
     data
   end
+
+  def sign_in_form_app_data
+    {
+      sign_in_path: new_user_session_path,
+      is_unconfirmed_email: unconfirmed_email?,
+      new_user_confirmation_path: new_user_confirmation_path,
+      new_password_path: new_user_password_path,
+      show_captcha: captcha_enabled? || captcha_on_login_required?
+    }.to_json
+  end
 end

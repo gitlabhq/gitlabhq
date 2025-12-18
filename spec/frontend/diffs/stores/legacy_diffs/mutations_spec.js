@@ -990,22 +990,6 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
-  describe('SET_DIFF_FILE_VIEWED', () => {
-    beforeEach(() => {
-      store.viewedDiffFileIds = { 123: true };
-    });
-
-    it.each`
-      id       | bool     | outcome
-      ${'abc'} | ${true}  | ${{ 123: true, abc: true }}
-      ${'123'} | ${false} | ${{ 123: false }}
-    `('sets the viewed files list to $bool for the id $id', ({ id, bool, outcome }) => {
-      store[types.SET_DIFF_FILE_VIEWED]({ id, seen: bool });
-
-      expect(store.viewedDiffFileIds).toEqual(outcome);
-    });
-  });
-
   describe('Set highlighted row', () => {
     it('sets highlighted row', () => {
       store[types.SET_HIGHLIGHTED_ROW]('ABC_123');
@@ -1267,21 +1251,6 @@ describe('DiffsStoreMutations', () => {
       store[types.SET_FILE_BY_FILE](value);
 
       expect(store.viewDiffsFileByFile).toBe(value);
-    });
-  });
-
-  describe('SET_MR_FILE_REVIEWS', () => {
-    it.each`
-      newReviews          | oldReviews
-      ${{ abc: ['123'] }} | ${{}}
-      ${{ abc: [] }}      | ${{ abc: ['123'] }}
-      ${{}}               | ${{ abc: ['123'] }}
-    `('sets mrReviews to $newReviews', ({ newReviews, oldReviews }) => {
-      store.$patch({ mrReviews: oldReviews });
-
-      store[types.SET_MR_FILE_REVIEWS](newReviews);
-
-      expect(store.mrReviews).toStrictEqual(newReviews);
     });
   });
 

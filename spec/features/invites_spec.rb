@@ -27,6 +27,10 @@ RSpec.describe 'Group or Project invitations', :with_current_organization, :aggr
     context 'when signed out' do
       context 'when analyzing the redirects and forms from invite link click' do
         before do
+          # Feature specs for when sign_in_form_vue is enabled will be added in
+          # https://gitlab.com/gitlab-org/gitlab/-/work_items/574984
+          stub_feature_flags(sign_in_form_vue: false)
+
           visit invite_path(group_invite.raw_invite_token)
         end
 
@@ -51,6 +55,10 @@ RSpec.describe 'Group or Project invitations', :with_current_organization, :aggr
 
         context 'when invite clicked and not signed in' do
           before do
+            # Feature specs for when sign_in_form_vue is enabled will be added in
+            # https://gitlab.com/gitlab-org/gitlab/-/work_items/574984
+            stub_feature_flags(sign_in_form_vue: false)
+
             visit invite_path(group_invite.raw_invite_token, invite_type: ::Members::InviteMailer::INITIAL_INVITE)
           end
 

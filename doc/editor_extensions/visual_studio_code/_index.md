@@ -56,9 +56,9 @@ What the extension shows in the status bar depends on your account setup:
 
 - If only one GitLab account exists, the status bar shows no information.
 - If multiple GitLab accounts exist, and the extension can determine which account to use,
-  the status bar shows the account name next to the tanuki ({{< icon name="tanuki">}}) icon.
+  the status bar shows the account name next to the tanuki ({{< icon name="tanuki" >}}) icon.
 - If multiple GitLab accounts exist, and the extension can't determine which account to use,
-  the status bar shows **Multiple GitLab Accounts** ({{< icon name="question-o">}}).
+  the status bar shows **Multiple GitLab Accounts** ({{< icon name="question-o" >}}).
 
 To select a GitLab account for the active VS Code window, select the status bar item, or:
 
@@ -320,7 +320,7 @@ To perform SAST scanning of a file in VS Code:
         <kbd>Enter</kbd>.
 1. View the results of the SAST scan.
    1. View the **Primary Side Bar**.
-   1. Select GitLab Workflow ({{< icon name="tanuki">}}) to display the extension sidebar.
+   1. Select GitLab Workflow ({{< icon name="tanuki" >}}) to display the extension sidebar.
    1. Expand the **GITLAB REMOTE SCAN (SAST)** section.
 
    The results of the SAST scan are listed in descending order by severity. To see details of a
@@ -413,7 +413,7 @@ To update your extension to the latest version:
 
 ## Check status
 
-1. In Visual Studio Code, on the bottom status bar, select the GitLab icon ({{< icon name="tanuki">}}).
+1. In Visual Studio Code, on the bottom status bar, select the GitLab icon ({{< icon name="tanuki" >}}).
 1. A menu opens under the VS Code search box, and the GitLab Workflow extension shows the status
    of the extension. Any errors are displayed next to **Status:**.
 

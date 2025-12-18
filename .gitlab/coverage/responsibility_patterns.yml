@@ -1,0 +1,32 @@
+# Responsibility patterns for test coverage classification
+#
+# Tests matching "responsible" patterns are considered unit tests that directly
+# test a component in isolation. Tests matching "dependent" patterns are
+# integration/E2E tests that exercise components through other layers.
+#
+# Pattern matching rules:
+# 1. Dependent patterns are checked first (higher priority)
+# 2. If no pattern matches, the test defaults to "dependent"
+# 3. Patterns are Ruby regexes
+
+responsible:
+  # Backend unit test directories
+  - "^spec/(models|controllers|services|workers|helpers|mailers|policies|presenters|uploaders|validators|lib|graphql|serializers|components)/"
+  - "^ee/spec/(models|controllers|services|workers|helpers|mailers|policies|presenters|uploaders|validators|lib|graphql|serializers|components)/"
+  # Frontend unit tests
+  - "^spec/frontend/"
+  - "^ee/spec/frontend/"
+  # Go unit tests
+  - "_test\\.go$"
+
+dependent:
+  # Backend integration tests
+  - "^spec/(requests|features|system|integration)/"
+  - "^ee/spec/(requests|features|system|integration)/"
+  # Frontend integration tests
+  - "^spec/frontend_integration/"
+  - "^ee/spec/frontend_integration/"
+  # E2E tests
+  - "^qa/"
+  # Go integration tests
+  - "_integration_test\\.go$"

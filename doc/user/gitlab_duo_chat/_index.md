@@ -19,7 +19,7 @@ title: GitLab Duo Chat (Classic)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
-{{< /collapsible>}}
+{{< /collapsible >}}
 
 {{< history >}}
 

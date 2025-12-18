@@ -35,14 +35,14 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-items-center gl-pb-3 gl-pr-1" :class="headerClasses">
+  <div class="gl-flex gl-items-center gl-pb-3 gl-pt-5" :class="headerClasses">
     <gl-button
       category="tertiary"
       icon="chevron-double-lg-left"
       class="toggle-close block gutter-toggle js-sidebar-wiki-toggle-close gl-mr-3 gl-block gl-flex-none !gl-pt-0"
     />
     <div
-      class="gl-flex gl-items-center gl-overflow-hidden"
+      class="gl-flex gl-items-center gl-overflow-hidden gl-p-2"
       data-testid="wiki-sidebar-title"
       @click="onWikiSidebarButtonClick"
     >

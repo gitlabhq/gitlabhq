@@ -147,7 +147,7 @@ To delete the user, or delete the user and their contributions, from the **Admin
 1. In the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
 1. Find the user you want to delete. In the row, select **User administration**
-   ({{< icon name="ellipsis_v">}}), then select the desired option.
+   ({{< icon name="ellipsis_v" >}}), then select the desired option.
 
 ### User impersonation
 
@@ -161,7 +161,7 @@ To impersonate a user:
   1. On the left sidebar, select **Overview** > **Users**.
   1. From the list of users, select a user.
   1. In the upper right, select **Impersonate**.
-  1. To stop impersonating, on the left sidebar at the top, select **Stop impersonating** ({{< icon name="incognito">}}).
+  1. To stop impersonating, on the left sidebar at the top, select **Stop impersonating** ({{< icon name="incognito" >}}).
 - With the API, using [impersonation tokens](../api/rest/authentication.md#impersonation-tokens).
 
 All impersonation activities are [captured with audit events](compliance/audit_event_reports.md#user-impersonation).

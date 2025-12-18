@@ -211,17 +211,6 @@ RSpec.describe Security::CiConfiguration::SecretDetectionBuildAction, feature_ca
     end
   end
 
-  describe 'when sast_also_enabled is true' do
-    let(:auto_devops_enabled) { false }
-    let(:gitlab_ci_content) { nil }
-    let(:params) { { sast_also_enabled: true } }
-
-    it 'maintains the same behavior for secret detection' do
-      expect(result[:action]).to eq('create')
-      expect(result[:content]).to include('Security/Secret-Detection.gitlab-ci.yml')
-    end
-  end
-
   # stubbing this method allows this spec file to use fast_spec_helper
   def fast_auto_devops_stages
     auto_devops_template = YAML.safe_load(File.read('lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml'))
@@ -244,6 +233,87 @@ RSpec.describe Security::CiConfiguration::SecretDetectionBuildAction, feature_ca
         .with("Failed to process Auto-DevOps template: Template processing error")
 
       expect(build_action.send(:auto_devops_stages)).to eq(%w[build test deploy])
+    end
+  end
+
+  describe 'key normalization' do
+    let(:auto_devops_enabled) { false }
+
+    context 'when existing config has symbol keys (as returned by Yaml.load!)' do
+      let(:gitlab_ci_content) do
+        {
+          stages: %w[build test deploy],
+          variables: { EXISTING_VAR: 'value' },
+          include: [{ template: 'Security/SAST.gitlab-ci.yml' }],
+          sast: { stage: 'test' }
+        }
+      end
+
+      let(:expected_yml) do
+        <<-CI_YML.strip_heredoc
+          # You can override the included template(s) by including variable overrides
+          # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
+          # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+          # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+          # Note that environment variables can be set in several places
+          # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+          stages:
+          - build
+          - test
+          - deploy
+          - secret-detection
+          variables:
+            EXISTING_VAR: value
+          include:
+          - template: Security/SAST.gitlab-ci.yml
+          - template: Security/Secret-Detection.gitlab-ci.yml
+          sast:
+            stage: test
+          secret_detection:
+            stage: secret-detection
+        CI_YML
+      end
+
+      it 'preserves existing config and adds secret detection correctly' do
+        expect(result[:action]).to eq('update')
+        expect(result[:content]).to eq(expected_yml)
+      end
+
+      it 'preserves existing stages' do
+        expect(result[:content]).to include("- build\n- test\n- deploy")
+      end
+
+      it 'preserves existing variables' do
+        expect(result[:content]).to include('EXISTING_VAR: value')
+      end
+
+      it 'preserves existing includes' do
+        expect(result[:content]).to include('Security/SAST.gitlab-ci.yml')
+        expect(result[:content]).to include('Security/Secret-Detection.gitlab-ci.yml')
+      end
+
+      it 'preserves existing sast configuration' do
+        expect(result[:content]).to include("sast:\n  stage: test")
+      end
+    end
+
+    context 'when existing config has deeply nested symbol keys' do
+      let(:gitlab_ci_content) do
+        {
+          stages: %w[test],
+          variables: {
+            NESTED: { deep: 'value' }
+          },
+          include: [{ template: 'existing.yml' }]
+        }
+      end
+
+      it 'normalizes all keys to strings and generates valid YAML' do
+        expect(result[:action]).to eq('update')
+        expect(result[:content]).to include('NESTED:')
+        expect(result[:content]).to include('deep: value')
+      end
     end
   end
 end

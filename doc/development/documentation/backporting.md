@@ -7,17 +7,23 @@ title: Backport documentation changes
 
 There are two types of backports:
 
-- **Current stable release**: Any maintainer can backport
+- Current stable release: Any maintainer can backport
   changes, usually bug fixes but also important documentation changes, into the
-  current stable release.
-- **Older stable releases**: To guarantee the
+  current stable release. If the milestone in development
+  is 18.7, for example, the most recent stable branch is `18-6-stable-ee`.
+- Older stable releases: To guarantee the
   [maintenance policy](../../policy/maintenance.md) is respected, merging to
   older stable releases is restricted to release managers.
 
 ## Backport documentation changes to current stable release
 
-To backport documentation changes to the current stable release,
-follow the [standard process to contribute to documentation](_index.md).
+To backport documentation changes to the current stable release:
+
+1. Pull the stable branch, for example `18-6-stable-ee`.
+1. Make your changes and open an MR. Use the [stable branch template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Stable%20Branch.md).
+1. [Deploy the changes to the docs site](#deploy-the-backport-changes).
+
+You do not need to involve a release manager.
 
 ## Backport documentation changes to older releases
 
@@ -29,9 +35,9 @@ follow the [standard process to contribute to documentation](_index.md).
 To backport documentation changes in documentation releases older than the
 current stable branch:
 
-1. [Create an issue for the backport.](#create-an-issue)
-1. [Create the merge request (MR) to backport the change.](#create-the-merge-request-to-backport-the-change)
-1. [Deploy the backport change.](#deploy-the-backport-changes)
+1. [Create an issue for the backport](#create-an-issue).
+1. [Create the merge request (MR) to backport the change](#create-the-merge-request-to-backport-the-change).
+1. [Deploy the backport change](#deploy-the-backport-changes).
 
 ### Create an issue
 
@@ -88,7 +94,7 @@ For the change to appear in:
 - `gitlab.com/help`, the change needs to be part of a GitLab release. The release
   manager can include the change in the next release they create. This step is optional.
 
-### Deploy the backport changes
+## Deploy the backport changes
 
 Prerequisites:
 
@@ -98,7 +104,7 @@ Prerequisites:
 After the changes are merged to the appropriate stable branch,
 you must deploy the backported changes.
 
-#### Backport changes made in GitLab 17.9 and later
+### Deploy changes made in GitLab 17.9 and later
 
 Run a [new pipeline](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/pipelines/new)
 in `docs-gitlab-com`. Choose the branch name that matches the stable version, for example `17.9`.
@@ -107,7 +113,7 @@ in `docs-gitlab-com`. Choose the branch name that matches the stable version, fo
 - A Docker image is created that contains the versioned documentation and can
   be used offline.
 
-#### Backport changes made in GitLab 17.8 and earlier
+### Deploy changes made in GitLab 17.8 and earlier
 
 Run a [new pipeline](https://gitlab.com/gitlab-org/gitlab-docs/-/pipelines/new)
 in `gitlab-docs`. Choose the branch name that matches the stable version, for example `17.8` or `16.0`.
@@ -115,7 +121,7 @@ in `gitlab-docs`. Choose the branch name that matches the stable version, for ex
 - A Docker image is created that contains the versioned documentation and can
   be used offline.
 
-#### Backport changes made to a version other than the last three stable branches
+### Deploy changes made to a version other than the last three stable branches
 
 If the backport change was made to a version other than the last three stable
 branches, update the docs archives site:

@@ -298,7 +298,7 @@ After the above steps have been completed, the automatic release process execute
 Any changes to the service account's access token scopes or the `GITLAB_TOKEN`
 variable permissions should be announced in the section's Slack channel.
 
-{{< /alert>}}
+{{< /alert >}}
 
 ### Token rotation for service account
 

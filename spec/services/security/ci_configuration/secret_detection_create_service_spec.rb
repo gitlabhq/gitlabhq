@@ -56,30 +56,6 @@ RSpec.describe Security::CiConfiguration::SecretDetectionCreateService, :snowplo
         end
       end
 
-      context 'with sast_also_enabled parameter' do
-        let(:params) { { sast_also_enabled: true } }
-        let(:build_action_instance) { instance_double(Security::CiConfiguration::SecretDetectionBuildAction) }
-
-        before do
-          allow(Security::CiConfiguration::SecretDetectionBuildAction).to receive(:new)
-            .and_return(build_action_instance)
-          allow(build_action_instance).to receive(:generate).and_return({
-            action: 'create',
-            file_path: '.gitlab-ci.yml',
-            content: 'content',
-            default_values_overwritten: true
-          })
-        end
-
-        it 'creates appropriate commit message' do
-          service = described_class.new(project, user, params)
-
-          expect(service.send(:message)).to eq(
-            'Configure SAST and Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist'
-          )
-        end
-      end
-
       context 'with commit_on_default parameter' do
         let(:params) { { initialize_with_secret_detection: true } }
         let(:commit_on_default) { true }

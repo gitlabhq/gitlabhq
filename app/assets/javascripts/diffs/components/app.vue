@@ -31,6 +31,7 @@ import { useNotes } from '~/notes/store/legacy_notes';
 import { useFindingsDrawer } from '~/mr_notes/store/findings_drawer';
 import { useBatchComments } from '~/batch_comments/store';
 import { querySelectionClosest } from '~/lib/utils/selection';
+import { useCodeReview } from '~/diffs/stores/code_review';
 import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
   ALERT_OVERFLOW_HIDDEN,
@@ -51,7 +52,6 @@ import {
 } from '../constants';
 import { isCollapsed } from '../utils/diff_file';
 import diffsEventHub from '../event_hub';
-import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
 import { updateChangesTabCount, extractFileHash } from '../utils/merge_request';
 import { queueRedisHllEvents } from '../utils/queue_events';
@@ -238,7 +238,6 @@ export default {
       'isTreeLoaded',
       'hasConflicts',
       'viewDiffsFileByFile',
-      'mrReviews',
       'renderTreeList',
       'showWhitespace',
       'addedLines',
@@ -254,6 +253,7 @@ export default {
     ...mapState(useNotes, ['discussions', 'isNotesFetched', 'getNoteableData']),
     ...mapState(useFileBrowser, ['fileBrowserVisible']),
     ...mapState(useFindingsDrawer, ['activeDrawer']),
+    ...mapState(useCodeReview, ['reviewedIds']),
     diffs() {
       if (!this.viewDiffsFileByFile) {
         return this.diffFiles;
@@ -306,9 +306,6 @@ export default {
       }
 
       return visible;
-    },
-    fileReviews() {
-      return reviewStatuses(this.diffFiles, this.mrReviews);
     },
     renderFileTree() {
       return this.renderDiffFiles && this.fileBrowserVisible;
@@ -469,7 +466,6 @@ export default {
       'setDiffViewType',
       'setShowWhitespace',
       'goToFile',
-      'reviewFile',
       'setFileCollapsedByUser',
       'toggleTreeOpen',
     ]),
@@ -488,9 +484,12 @@ export default {
       const activeFile = this.diffFiles.find((file) => file.file_hash === this.currentDiffFileId);
 
       if (activeFile) {
-        const reviewed = !this.fileReviews[activeFile.id];
-        this.reviewFile({ file: activeFile, reviewed });
-
+        const reviewed = !(
+          useCodeReview().reviewedIds[activeFile.code_review_id] ||
+          useCodeReview().reviewedIds[activeFile.id]
+        );
+        useCodeReview().removeId(activeFile.id);
+        useCodeReview().setReviewed(activeFile.code_review_id, reviewed);
         this.setFileCollapsedByUser({ filePath: activeFile.file_path, collapsed: reviewed });
       }
     },
@@ -886,7 +885,7 @@ export default {
                     :file="item"
                     :codequality-data="codequalityData"
                     :sast-data="sastData"
-                    :reviewed="fileReviews[item.id]"
+                    :reviewed="reviewedIds[item.code_review_id] || reviewedIds[item.id]"
                     :is-first-file="index === 0"
                     :is-last-file="index === diffFilesLength - 1"
                     :help-page-path="helpPagePath"
@@ -908,7 +907,7 @@ export default {
                 :file="file"
                 :codequality-data="codequalityData"
                 :sast-data="sastData"
-                :reviewed="fileReviews[file.id]"
+                :reviewed="reviewedIds[file.code_review_id] || reviewedIds[file.id]"
                 :is-first-file="index === 0"
                 :is-last-file="index === diffFilesLength - 1"
                 :help-page-path="helpPagePath"

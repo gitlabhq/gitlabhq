@@ -2556,6 +2556,9 @@ msgstr ""
 msgid "AICatalog|Agent enabled in %{name}."
 msgstr ""
 
+msgid "AICatalog|Agent enabled in %{targetType}."
+msgstr ""
+
 msgid "AICatalog|Agent is now at version %{newVersion}."
 msgstr ""
 
@@ -2857,6 +2860,9 @@ msgid "AICatalog|Flow does not exist"
 msgstr ""
 
 msgid "AICatalog|Flow enabled in %{name}."
+msgstr ""
+
+msgid "AICatalog|Flow enabled in %{targetType}."
 msgstr ""
 
 msgid "AICatalog|Flow is now at version %{newVersion}."
@@ -18848,9 +18854,6 @@ msgid "Configure SAST IaC in `.gitlab-ci.yml` using the GitLab managed template.
 msgstr ""
 
 msgid "Configure SAST IaC in `.gitlab-ci.yml`, creating this file if it does not already exist"
-msgstr ""
-
-msgid "Configure SAST and Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr ""
 
 msgid "Configure SAST in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST settings."

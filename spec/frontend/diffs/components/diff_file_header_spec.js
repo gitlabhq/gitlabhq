@@ -15,6 +15,7 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useNotes } from '~/notes/store/legacy_notes';
 import diffsEventHub from '~/diffs/event_hub';
+import { useCodeReview } from '~/diffs/stores/code_review';
 import diffDiscussionsMockData from '../mock_data/diff_discussions';
 
 jest.mock('~/lib/utils/common_utils', () => ({
@@ -45,6 +46,7 @@ const createDiffFile = () => ({
     readable_text: true,
     icon: 'doc-text',
   },
+  code_review_id: '123',
 });
 
 Vue.use(PiniaVuePlugin);
@@ -88,6 +90,7 @@ describe('DiffFileHeader component', () => {
 
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useCodeReview();
     useLegacyDiffs().diffFiles = [createDiffFile()];
     useNotes();
   });
@@ -541,28 +544,27 @@ describe('DiffFileHeader component', () => {
   describe('file reviews', () => {
     it('calls the action to set the new review', () => {
       jest.spyOn(document.activeElement, 'blur');
+      const diffFile = {
+        ...createDiffFile(),
+        viewer: {
+          ...createDiffFile().viewer,
+          automaticallyCollapsed: false,
+          manuallyCollapsed: null,
+        },
+      };
       createComponent({
         props: {
-          diffFile: {
-            ...createDiffFile(),
-            viewer: {
-              ...createDiffFile().viewer,
-              automaticallyCollapsed: false,
-              manuallyCollapsed: null,
-            },
-          },
+          diffFile,
           showLocalFileReviews: true,
           addMergeRequestButtons: true,
         },
       });
 
-      const file = wrapper.vm.diffFile;
-
       findReviewFileCheckbox().vm.$emit('change', true);
 
       expect(document.activeElement.blur).toHaveBeenCalled();
 
-      expect(useLegacyDiffs().reviewFile).toHaveBeenCalledWith({ file, reviewed: true });
+      expect(useCodeReview().setReviewed).toHaveBeenCalledWith(diffFile.code_review_id, true);
     });
 
     it.each`

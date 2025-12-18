@@ -1275,6 +1275,30 @@ This log is located:
 - In the `/home/git/gitlab/log/active_context.log` file on self-compiled installations.
 - On the Sidekiq pods under the `subcomponent="activecontext"` key on Helm chart installations.
 
+## `ai_catalog.log`
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/576627) in GitLab 18.8.
+
+{{< /history >}}
+
+The `ai_catalog.log` file logs information related to the
+[AI Catalog](../../user/duo_agent_platform/ai_catalog.md), including when AI Catalog flows and agents are executed.
+
+This log is located:
+
+- In the `/var/log/gitlab/gitlab-rails/ai_catalog.log` file on Linux package installations.
+- In the `/home/git/gitlab/log/ai_catalog.log` file on self-compiled installations.
+- On the Sidekiq pods under the `subcomponent="ai_catalog"` key on Helm chart installations.
+
 ## `user_experience_slis.log`
 
 This log is located:

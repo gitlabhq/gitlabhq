@@ -219,8 +219,8 @@ function main() {
   const e2eTestToSources = loadE2EMappings();
 
   if (Object.keys(e2eTestToSources).length === 0) {
-    console.log('No E2E mappings to merge, skipping...');
-    return;
+    console.error('ERROR: No E2E mappings found');
+    return false;
   }
 
   const e2eSourceToTests = invertMapping(e2eTestToSources);
@@ -233,7 +233,7 @@ function main() {
     console.log('No Jest mapping found, saving E2E mapping only');
     saveMergedMapping(e2eCrystalballFormat);
     console.log('=== Merge complete ===');
-    return;
+    return true;
   }
 
   const mergedMapping = mergeMappings(jestMapping, e2eCrystalballFormat);
@@ -241,6 +241,7 @@ function main() {
 
   saveMergedMapping(mergedMapping);
   console.log('=== Merge complete ===');
+  return true;
 }
 
 module.exports = {
@@ -259,5 +260,6 @@ module.exports = {
 };
 
 if (require.main === module) {
-  main();
+  const success = main();
+  process.exit(success ? 0 : 1);
 }

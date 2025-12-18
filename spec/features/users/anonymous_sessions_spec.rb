@@ -10,6 +10,10 @@ RSpec.describe 'Session TTLs', :clean_gitlab_redis_shared_state, feature_categor
   end
 
   it 'creates a session with a short TTL when login fails' do
+    # Feature specs for when sign_in_form_vue is enabled will be added in
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/574984
+    stub_feature_flags(sign_in_form_vue: false)
+
     visit new_user_session_path
     # The session key only gets created after a post
     fill_in 'user_login', with: 'non-existant@gitlab.org'

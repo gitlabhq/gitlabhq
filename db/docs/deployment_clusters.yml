@@ -13,24 +13,9 @@ desired_sharding_key:
     references: projects
     backfill_via:
       parent:
-        foreign_key: cluster_id
-        table: clusters
+        foreign_key: deployment_id
+        table: deployments
         sharding_key: project_id
-        belongs_to: cluster
-  group_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: cluster_id
-        table: clusters
-        sharding_key: group_id
-        belongs_to: cluster
-  organization_id:
-    references: organizations
-    backfill_via:
-      parent:
-        foreign_key: cluster_id
-        table: clusters
-        sharding_key: organization_id
-        belongs_to: cluster
+        belongs_to: deployment
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583002
 table_size: small

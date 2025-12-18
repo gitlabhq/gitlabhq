@@ -51,6 +51,7 @@ import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
 import { useFindingsDrawer } from '~/mr_notes/store/findings_drawer';
 import { querySelectionClosest } from '~/lib/utils/selection';
+import { useCodeReview } from '~/diffs/stores/code_review';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
 const TEST_ENDPOINT = `${TEST_HOST}/diff/endpoint`;
@@ -102,6 +103,7 @@ describe('diffs/components/app', () => {
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
 
+    useCodeReview();
     store = useLegacyDiffs();
     store.isLoading = false;
     store.isTreeLoaded = true;
@@ -332,24 +334,18 @@ describe('diffs/components/app', () => {
 
       beforeEach(() => {
         store.diffFiles = [
-          { id: 1, file_hash: '111', file_path: '111.js' },
-          { id: 2, file_hash: '222', file_path: '222.js' },
+          { id: 1, file_hash: '111', file_path: '111.js', code_review_id: '111' },
+          { id: 2, file_hash: '222', file_path: '222.js', code_review_id: '222' },
         ];
         createComponent();
       });
 
       it('marks active file as reviewed when triggering review toggle shortcut', () => {
         store.currentDiffFileId = '111';
-        store.fileReviews = { 1: false };
 
         toggleReview();
 
-        expect(store.reviewFile).toHaveBeenCalledWith({
-          file: store.diffFiles[0],
-          reviewed: true,
-        });
-        expect(store.reviewFile).toHaveBeenCalledTimes(1);
-
+        expect(useCodeReview().setReviewed).toHaveBeenCalledWith('111', true);
         expect(store.setFileCollapsedByUser).toHaveBeenCalledWith({
           filePath: '111.js',
           collapsed: true,
@@ -359,16 +355,11 @@ describe('diffs/components/app', () => {
 
       it('marks active file as unreviewed when triggering review toggle shortcut again', () => {
         store.currentDiffFileId = '222';
-        jest.spyOn(wrapper.vm, 'fileReviews', 'get').mockReturnValue({ 2: true });
+        useCodeReview().reviewedIds = { 222: true };
 
         toggleReview();
 
-        expect(store.reviewFile).toHaveBeenCalledWith({
-          file: store.diffFiles[1],
-          reviewed: false,
-        });
-        expect(store.reviewFile).toHaveBeenCalledTimes(1);
-
+        expect(useCodeReview().setReviewed).toHaveBeenCalledWith('222', false);
         expect(store.setFileCollapsedByUser).toHaveBeenCalledWith({
           filePath: '222.js',
           collapsed: false,
@@ -381,7 +372,7 @@ describe('diffs/components/app', () => {
 
         toggleReview();
 
-        expect(store.reviewFile).not.toHaveBeenCalled();
+        expect(useCodeReview().setReviewed).not.toHaveBeenCalled();
         expect(store.setFileCollapsedByUser).not.toHaveBeenCalled();
       });
     });

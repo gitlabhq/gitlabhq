@@ -5717,26 +5717,6 @@ CREATE TABLE p_ci_builds_execution_configs (
 )
 PARTITION BY LIST (partition_id);
 
-CREATE TABLE p_ci_builds_metadata (
-    project_id bigint NOT NULL,
-    timeout integer,
-    timeout_source integer DEFAULT 1 NOT NULL,
-    interruptible boolean,
-    config_options jsonb,
-    config_variables jsonb,
-    has_exposed_artifacts boolean,
-    environment_auto_stop_in character varying(255),
-    expanded_environment_name character varying(255),
-    secrets jsonb DEFAULT '{}'::jsonb NOT NULL,
-    build_id bigint NOT NULL,
-    id bigint NOT NULL,
-    id_tokens jsonb DEFAULT '{}'::jsonb NOT NULL,
-    partition_id bigint NOT NULL,
-    debug_trace_enabled boolean DEFAULT false NOT NULL,
-    exit_code smallint
-)
-PARTITION BY LIST (partition_id);
-
 CREATE TABLE p_ci_job_annotations (
     id bigint NOT NULL,
     partition_id bigint NOT NULL,
@@ -14268,6 +14248,26 @@ CREATE SEQUENCE ci_builds_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ci_builds_id_seq OWNED BY p_ci_builds.id;
+
+CREATE TABLE p_ci_builds_metadata (
+    project_id bigint NOT NULL,
+    timeout integer,
+    timeout_source integer DEFAULT 1 NOT NULL,
+    interruptible boolean,
+    config_options jsonb,
+    config_variables jsonb,
+    has_exposed_artifacts boolean,
+    environment_auto_stop_in character varying(255),
+    expanded_environment_name character varying(255),
+    secrets jsonb DEFAULT '{}'::jsonb NOT NULL,
+    build_id bigint NOT NULL,
+    id bigint NOT NULL,
+    id_tokens jsonb DEFAULT '{}'::jsonb NOT NULL,
+    partition_id bigint NOT NULL,
+    debug_trace_enabled boolean DEFAULT false NOT NULL,
+    exit_code smallint
+)
+PARTITION BY LIST (partition_id);
 
 CREATE SEQUENCE ci_builds_metadata_id_seq
     START WITH 1
@@ -40215,6 +40215,8 @@ CREATE INDEX index_ai_catalog_item_version_dependencies_on_organization_id ON ai
 CREATE INDEX index_ai_catalog_item_versions_on_created_by_id ON ai_catalog_item_versions USING btree (created_by_id);
 
 CREATE INDEX index_ai_catalog_item_versions_on_organization_id ON ai_catalog_item_versions USING btree (organization_id);
+
+CREATE INDEX index_ai_catalog_items_on_foundational_flow_reference ON ai_catalog_items USING btree (foundational_flow_reference);
 
 CREATE INDEX index_ai_catalog_items_on_item_type ON ai_catalog_items USING btree (item_type);
 

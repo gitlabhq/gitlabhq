@@ -220,7 +220,6 @@ module Projects
 
     def create_secret_detection_commit
       params = { initialize_with_secret_detection: true }
-      params[:sast_also_enabled] = true if @initialize_with_sast
 
       ::Security::CiConfiguration::SecretDetectionCreateService.new(@project, current_user, params, commit_on_default: true).execute
     end

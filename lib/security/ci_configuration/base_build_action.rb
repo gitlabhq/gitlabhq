@@ -7,7 +7,9 @@ module Security
     class BaseBuildAction
       def initialize(auto_devops_enabled, existing_gitlab_ci_content, ci_config_path = ::Ci::Pipeline::DEFAULT_CONFIG_PATH)
         @auto_devops_enabled = auto_devops_enabled
-        @existing_gitlab_ci_content = existing_gitlab_ci_content || {}
+        # Normalize keys to strings because Yaml.load! returns symbol keys,
+        # but this class uses string keys to access and modify the config
+        @existing_gitlab_ci_content = (existing_gitlab_ci_content || {}).deep_stringify_keys
         @ci_config_path = ci_config_path.presence || ::Ci::Pipeline::DEFAULT_CONFIG_PATH
       end
 
@@ -39,7 +41,7 @@ module Security
       end
 
       def prepare_existing_content
-        content = @existing_gitlab_ci_content.deep_stringify_keys.to_yaml
+        content = @existing_gitlab_ci_content.to_yaml
         content = remove_document_delimiter(content)
 
         content.prepend(comment)

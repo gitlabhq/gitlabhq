@@ -392,12 +392,13 @@ describe('merge_e2e_frontend_test_mapping', () => {
       fs.writeFileSync.mockImplementation();
     });
 
-    it('skips when no E2E mappings exist', () => {
+    it('fails when no E2E mappings exist', () => {
       glob.sync.mockReturnValue([]);
 
-      main();
+      const result = main();
 
-      expect(console.log).toHaveBeenCalledWith('No E2E mappings to merge, skipping...');
+      expect(result).toBe(false);
+      expect(console.error).toHaveBeenCalledWith('ERROR: No E2E mappings found');
       expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
 

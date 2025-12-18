@@ -355,4 +355,50 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
       end
     end
   end
+
+  describe '#sign_in_form_app_data' do
+    subject(:json) { Gitlab::Json.parse(helper.sign_in_form_app_data) }
+
+    it 'returns expected json' do
+      allow(helper).to receive_messages(
+        unconfirmed_email?: false,
+        captcha_enabled?: false,
+        captcha_on_login_required?: false
+      )
+
+      expect(json).to match(
+        {
+          'sign_in_path' => new_user_session_path,
+          'is_unconfirmed_email' => false,
+          'new_user_confirmation_path' => new_user_confirmation_path,
+          'new_password_path' => new_user_password_path,
+          'show_captcha' => false
+        }
+      )
+    end
+
+    context 'when captcha_enabled? is true' do
+      it 'returns expected json' do
+        allow(helper).to receive_messages(
+          unconfirmed_email?: false,
+          captcha_enabled?: true,
+          captcha_on_login_required?: false
+        )
+
+        expect(json['show_captcha']).to be(true)
+      end
+    end
+
+    context 'when captcha_on_login_required? is true' do
+      it 'returns expected json' do
+        allow(helper).to receive_messages(
+          unconfirmed_email?: false,
+          captcha_enabled?: false,
+          captcha_on_login_required?: true
+        )
+
+        expect(json['show_captcha']).to be(true)
+      end
+    end
+  end
 end

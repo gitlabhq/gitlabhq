@@ -13,6 +13,7 @@ import { RecycleScroller } from 'vendor/vue-virtual-scroller';
 import { isElementClipped } from '~/lib/utils/common_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { MR_FOCUS_FILE_BROWSER } from '~/behaviors/shortcuts/keybindings';
+import { useCodeReview } from '~/diffs/stores/code_review';
 import DiffFileRow from './diff_file_row.vue';
 
 export default {
@@ -61,12 +62,12 @@ export default {
     ...mapState(useLegacyDiffs, [
       'renderTreeList',
       'currentDiffFileId',
-      'viewedDiffFileIds',
       'fileTree',
       'allBlobs',
       'linkedFile',
       'flatBlobsList',
     ]),
+    ...mapState(useCodeReview, ['reviewedIds']),
     flatUngroupedList() {
       return this.flatBlobsList.reduce((acc, blob, index) => {
         const loading = this.isLoading(blob.fileHash);
@@ -296,7 +297,7 @@ export default {
           <diff-file-row
             :file="item"
             :level="item.level"
-            :viewed-files="viewedDiffFileIds"
+            :viewed-files="reviewedIds"
             :hide-file-stats="hideFileStats"
             :current-diff-file-id="currentDiffFileId"
             :style="{ '--level': item.level }"

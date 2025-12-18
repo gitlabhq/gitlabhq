@@ -53,7 +53,6 @@
   }
 
   .wiki-sidebar .sidebar-container {
-    @apply gl-pt-3;
     position: sticky;
   }
 }
@@ -101,7 +100,6 @@
   }
 
   .sidebar-container {
-    @apply gl-pt-5;
     top: $calc-application-header-height;
     bottom: $calc-application-footer-height;
     z-index: 3;
@@ -209,6 +207,7 @@
 .wiki-page-details {
   @apply gl-w-full;
   @apply gl-mx-auto;
+  @apply gl-px-2;
   max-width: $wiki-content-default-width;
   overflow-x: auto;
 }

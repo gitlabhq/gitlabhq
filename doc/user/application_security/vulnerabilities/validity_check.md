@@ -133,7 +133,7 @@ After validity checks runs, the status of a token is not automatically updated, 
 To update a token, you can manually refresh the status:
 
 1. On the vulnerability report, select the vulnerability you want to refresh.
-1. Next to the token status, select **Retry** ({{< icon name="retry">}}).
+1. Next to the token status, select **Retry** ({{< icon name="retry" >}}).
 
 Validity checks is re-run, and the token status is updated.
 

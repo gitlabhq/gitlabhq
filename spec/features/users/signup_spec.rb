@@ -189,6 +189,12 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
       end
 
       context 'when email confirmation setting is not `soft`' do
+        before do
+          # Feature specs for when sign_in_form_vue is enabled will be added in
+          # https://gitlab.com/gitlab-org/gitlab/-/work_items/574984
+          stub_feature_flags(sign_in_form_vue: false)
+        end
+
         it 'creates the user account and sends a confirmation email, and pre-fills email address after confirming' do
           perform_enqueued_jobs do
             visit new_user_registration_path

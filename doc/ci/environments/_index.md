@@ -933,7 +933,7 @@ In the UI, to view the Web terminal, either:
 
   ![Terminal button on environment index](img/environments_terminal_button_on_index_v14_3.png)
 
-- On the page for a specific environment, on the right, select **Terminal** ({{< icon name="terminal">}}).
+- On the page for a specific environment, on the right, select **Terminal** ({{< icon name="terminal" >}}).
 
 Select the button to establish the terminal session.
 It works like any other terminal. You're in the container created

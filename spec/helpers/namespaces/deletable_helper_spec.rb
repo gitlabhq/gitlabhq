@@ -214,9 +214,11 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
     it_behaves_like 'raise error with unsupported namespace type'
   end
 
-  describe '#group_confirm_modal_data' do
+  describe '#group_confirm_modal_data', time_travel_to: '2025-12-10' do
     using RSpec::Parameterized::TableSyntax
-    let_it_be(:group) { build_stubbed(:group, path: "foo") }
+    let_it_be(:group) { create(:group, path: "foo") } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needed for projects and subgroups count
+    let_it_be(:subgroup) { create(:group, parent: group) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needed for projects and subgroups count
+    let_it_be(:project) { create(:project, group: group) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needed for projects and subgroups count
 
     fake_form_id = "fake_form_id"
     where(:prevent_delete_response, :is_button_disabled, :form_value_id,
@@ -239,7 +241,14 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
           phrase: group.full_path,
           button_testid: "remove-group-button",
           disabled: is_button_disabled,
-          html_confirmation_message: 'true'
+          html_confirmation_message: 'true',
+          form_path: "/#{group.full_path}",
+          confirm_phrase: group.full_path,
+          full_name: group.full_name,
+          subgroups_count: 1,
+          projects_count: 1,
+          marked_for_deletion: 'false',
+          permanent_deletion_date: '2026-01-09'
         })
       end
     end

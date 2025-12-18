@@ -67,7 +67,6 @@ import {
   ENCODED_FILE_PATHS_MESSAGE,
 } from '../../i18n';
 import eventHub from '../../event_hub';
-import { markFileReview, setReviewsForMergeRequest } from '../../utils/file_reviews';
 import { getDerivedMergeRequestInformation } from '../../utils/merge_request';
 import { queueRedisHllEvents } from '../../utils/queue_events';
 import * as types from '../../store/mutation_types';
@@ -95,7 +94,6 @@ export function setBaseConfig(options) {
     showSuggestPopover,
     defaultSuggestionCommitMessage,
     viewDiffsFileByFile,
-    mrReviews,
     diffViewType,
     perPage,
   } = options;
@@ -111,15 +109,8 @@ export function setBaseConfig(options) {
     showSuggestPopover,
     defaultSuggestionCommitMessage,
     viewDiffsFileByFile,
-    mrReviews,
     diffViewType,
     perPage,
-  });
-
-  Array.from(new Set(Object.values(mrReviews).flat())).forEach((id) => {
-    const viewedId = id.replace(/^hash:/, '');
-
-    this[types.SET_DIFF_FILE_VIEWED]({ id: viewedId, seen: true });
   });
 }
 
@@ -1083,16 +1074,6 @@ export function setFileByFile({ fileByFile }) {
       // eventually handle errors appropriately.
       // console.warn('Saving the file-by-fil user preference failed.');
     });
-}
-
-export function reviewFile({ file, reviewed = true }) {
-  const { mrPath } = getDerivedMergeRequestInformation({ endpoint: file.load_collapsed_diff_url });
-  const reviews = markFileReview(this.mrReviews, file, reviewed);
-
-  setReviewsForMergeRequest(mrPath, reviews);
-
-  this[types.SET_DIFF_FILE_VIEWED]({ id: file.id, seen: reviewed });
-  this[types.SET_MR_FILE_REVIEWS](reviews);
 }
 
 export function disableVirtualScroller() {

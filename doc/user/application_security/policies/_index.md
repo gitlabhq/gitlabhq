@@ -270,7 +270,7 @@ After you enable the option, any change to the security policies made with the G
 
 To apply the annotations, you must use the policy editor. If you edit the `policy.yml` file manually (for example, with a Git commit), the annotations are not applied.
 
-{{< /alert>}}
+{{< /alert >}}
 
 For example:
 

@@ -32,7 +32,6 @@ export default {
       showSuggestPopover,
       defaultSuggestionCommitMessage,
       viewDiffsFileByFile,
-      mrReviews,
       diffViewType,
       perPage,
     } = options;
@@ -48,7 +47,6 @@ export default {
       showSuggestPopover,
       defaultSuggestionCommitMessage,
       viewDiffsFileByFile,
-      mrReviews,
       diffViewType,
       perPage,
     });
@@ -296,12 +294,6 @@ export default {
   [types.SET_CURRENT_DIFF_FILE](fileId) {
     this.currentDiffFileId = fileId;
   },
-  [types.SET_DIFF_FILE_VIEWED]({ id, seen }) {
-    this.viewedDiffFileIds = {
-      ...this.viewedDiffFileIds,
-      [id]: seen,
-    };
-  },
   [types.OPEN_DIFF_FILE_COMMENT_FORM](formData) {
     this.commentForms.push({
       ...formData,
@@ -399,9 +391,6 @@ export default {
   },
   [types.SET_FILE_BY_FILE](fileByFile) {
     this.viewDiffsFileByFile = fileByFile;
-  },
-  [types.SET_MR_FILE_REVIEWS](newReviews) {
-    this.mrReviews = newReviews;
   },
   [types.DISABLE_VIRTUAL_SCROLLING]() {
     this.virtualScrollerDisabled = true;

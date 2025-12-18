@@ -6,29 +6,39 @@
     = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'admin-sign-in-button' }}) do
       = _('Enter admin mode')
 - else
-  = gitlab_ui_form_for(:user, url: session_path(:user), html: { class: 'gl-show-field-errors js-arkose-labs-form', aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
-    .form-group
-      = f.label :login, _('Username or primary email')
-      = f.text_field :login, value: @invite_email, class: 'form-control gl-form-input js-username-field', autocomplete: 'username', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', required: true, title: _('Username or primary email is required.'), data: { testid: 'username-field' }
-    .form-group
-      = f.label :password, _('Password')
-      = f.password_field :password, class: 'form-control gl-form-input js-password', data: { id: 'user_password', required: true, title: _('Password is required.'), name: 'user[password]', testid: 'password-field' }
-      .form-text.gl-text-right
-        - if unconfirmed_email?
-          = link_to _('Resend confirmation email'), new_user_confirmation_path
-        - else
-          = link_to _('Forgot your password?'), new_password_path(:user)
+  - if Feature.enabled?(:sign_in_form_vue, Feature.current_request)
+    #js-sign-in-form{ data: { app_data: sign_in_form_app_data } }
+      = gl_loading_icon(css_class: 'gl-my-5', size: 'md')
+      -# The below form allows us to generate input names with Rails
+      -# and pass them to the frontend so they never get out of sync
+      = gitlab_ui_form_for(:user, url: session_path(:user)) do |f|
+        = f.hidden_field :login, data: { js_name: 'login' }
+        = f.hidden_field :password, data: { js_name: 'password' }
+        = f.hidden_field :remember_me, data: { js_name: 'rememberMe' }
+  - else
+    = gitlab_ui_form_for(:user, url: session_path(:user), html: { class: 'gl-show-field-errors js-arkose-labs-form', aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
+      .form-group
+        = f.label :login, _('Username or primary email')
+        = f.text_field :login, value: @invite_email, class: 'form-control gl-form-input js-username-field', autocomplete: 'username', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', required: true, title: _('Username or primary email is required.'), data: { testid: 'username-field' }
+      .form-group
+        = f.label :password, _('Password')
+        = f.password_field :password, class: 'form-control gl-form-input js-password', data: { id: 'user_password', required: true, title: _('Password is required.'), name: 'user[password]', testid: 'password-field' }
+        .form-text.gl-text-right
+          - if unconfirmed_email?
+            = link_to _('Resend confirmation email'), new_user_confirmation_path
+          - else
+            = link_to _('Forgot your password?'), new_password_path(:user)
 
-    .form-group
-      - if captcha_enabled? || captcha_on_login_required?
-        = recaptcha_tags nonce: content_security_policy_nonce
+      .form-group
+        - if captcha_enabled? || captcha_on_login_required?
+          = recaptcha_tags nonce: content_security_policy_nonce
 
-    - if remember_me_enabled?
-      .gl-mb-3
-        = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { autocomplete: 'off', class: 'js-remember-me-passkey' }
+      - if remember_me_enabled?
+        .gl-mb-3
+          = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { autocomplete: 'off', class: 'js-remember-me-passkey' }
 
-    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { class: 'js-sign-in-button', data: { testid: 'sign-in-button' } }) do
-      = _('Sign in')
+      = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { class: 'js-sign-in-button', data: { testid: 'sign-in-button' } }) do
+        = _('Sign in')
 
   - if Feature.enabled?(:passkeys, :instance)
     = render Pajamas::ButtonComponent.new(href: users_passkeys_sign_in_path, method: :post, form: true, block: true, icon: 'passkey', button_options: { class: 'gl-mt-3', data: {testid: 'passkey-login-button' }}) do

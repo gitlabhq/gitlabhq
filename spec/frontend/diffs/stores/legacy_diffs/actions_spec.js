@@ -113,10 +113,6 @@ describe('legacyDiffs actions', () => {
       const projectPath = '/root/project';
       const dismissEndpoint = '/-/user_callouts';
       const showSuggestPopover = false;
-      const mrReviews = {
-        a: ['z', 'hash:a'],
-        b: ['y', 'hash:a'],
-      };
       const diffViewType = 'inline';
 
       return testAction(
@@ -130,7 +126,6 @@ describe('legacyDiffs actions', () => {
           projectPath,
           dismissEndpoint,
           showSuggestPopover,
-          mrReviews,
           diffViewType,
         },
         {
@@ -155,21 +150,8 @@ describe('legacyDiffs actions', () => {
               projectPath,
               dismissEndpoint,
               showSuggestPopover,
-              mrReviews,
               diffViewType,
             },
-          },
-          {
-            type: store[types.SET_DIFF_FILE_VIEWED],
-            payload: { id: 'z', seen: true },
-          },
-          {
-            type: store[types.SET_DIFF_FILE_VIEWED],
-            payload: { id: 'a', seen: true },
-          },
-          {
-            type: store[types.SET_DIFF_FILE_VIEWED],
-            payload: { id: 'y', seen: true },
           },
         ],
         [],
@@ -2201,37 +2183,6 @@ describe('legacyDiffs actions', () => {
         );
 
         expect(putSpy).toHaveBeenCalledWith(updateUserEndpoint, { view_diffs_file_by_file: value });
-      },
-    );
-  });
-
-  describe('reviewFile', () => {
-    const file = {
-      id: '123',
-      file_hash: 'xyz',
-      file_identifier_hash: 'abc',
-      load_collapsed_diff_url: 'gitlab-org/gitlab-test/-/merge_requests/1/diffs',
-    };
-    it.each`
-      reviews                         | diffFile | reviewed
-      ${{ abc: ['123', 'hash:xyz'] }} | ${file}  | ${true}
-      ${{}}                           | ${file}  | ${false}
-    `(
-      'sets reviews ($reviews) to localStorage and state for file $file if it is marked reviewed=$reviewed',
-      ({ reviews, diffFile, reviewed }) => {
-        store.$patch({ mrReviews: { abc: ['123'] } });
-
-        store.reviewFile({
-          file: diffFile,
-          reviewed,
-        });
-
-        expect(localStorage.setItem).toHaveBeenCalledTimes(1);
-        expect(localStorage.setItem).toHaveBeenCalledWith(
-          'gitlab-org/gitlab-test/-/merge_requests/1-file-reviews',
-          JSON.stringify(reviews),
-        );
-        expect(store[types.SET_MR_FILE_REVIEWS]).toHaveBeenCalledWith(reviews);
       },
     );
   });

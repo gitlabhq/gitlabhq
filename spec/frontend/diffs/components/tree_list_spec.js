@@ -12,6 +12,7 @@ import { isElementClipped } from '~/lib/utils/common_utils';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
+import { useCodeReview } from '~/diffs/stores/code_review';
 
 jest.mock('~/lib/utils/common_utils');
 
@@ -48,6 +49,7 @@ describe('Diffs tree list component', () => {
 
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin], stubActions: false });
+    useCodeReview();
     useLegacyDiffs().isTreeLoaded = true;
     useLegacyDiffs().diffFiles = [getDiffFileMock()];
     useLegacyDiffs().addedLines = 10;
@@ -304,18 +306,18 @@ describe('Diffs tree list component', () => {
   });
 
   describe('with viewedDiffFileIds', () => {
-    const viewedDiffFileIds = { fileId: '#12345' };
+    const reviewedIds = { 12345: true };
 
     beforeEach(() => {
       setupFilesInState();
-      useLegacyDiffs().viewedDiffFileIds = viewedDiffFileIds;
+      useCodeReview().reviewedIds = reviewedIds;
     });
 
-    it('passes the viewedDiffFileIds to the FileTree', async () => {
+    it('passes the reviewedIds to the FileTree', async () => {
       createComponent();
 
       await nextTick();
-      expect(getFileRow().props('viewedFiles')).toBe(viewedDiffFileIds);
+      expect(getFileRow().props('viewedFiles')).toBe(reviewedIds);
     });
   });
 

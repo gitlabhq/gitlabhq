@@ -81,7 +81,7 @@ Your merge request homepage shows more information about these merge requests. T
 use any of these methods:
 
 - Use the <kbd>Shift</kbd>+<kbd>m</kbd> [keyboard shortcut](../../shortcuts.md).
-- On the left sidebar, select **Merge requests** ({{< icon name="merge-request-open">}}).
+- On the left sidebar, select **Merge requests** ({{< icon name="merge-request-open" >}}).
 - On the top bar, select **Search or go to**, then, from the dropdown list, select **Merge requests**.
 
 To help you focus on what needs your attention right now, GitLab organizes your merge request homepage
@@ -104,7 +104,7 @@ into three tabs:
 - **Author**: The author's avatar.
 - **Reviewers**: The reviewers' avatars. Reviewers with a green check mark have approved the merge request.
 - **Checks**: A compact assessment of mergeability.
-  - A warning ({{< icon name="warning-solid">}}) if merge conflicts exist.
+  - A warning ({{< icon name="warning-solid" >}}) if merge conflicts exist.
   - Number of unresolved threads, like `0 of 3`.
   - Current required [approval status](approvals/_index.md#in-the-list-of-merge-requests).
   - Most recent pipeline status.
@@ -118,7 +118,7 @@ into three tabs:
 
 {{< /history >}}
 
-In the upper right of your merge request homepage, select **Display preferences** ({{< icon name="preferences">}}):
+In the upper right of your merge request homepage, select **Display preferences** ({{< icon name="preferences" >}}):
 
 - Toggle **Show labels** to show or hide labels for each merge request.
 - Sorting preferences: **Workflow** or **Role**.

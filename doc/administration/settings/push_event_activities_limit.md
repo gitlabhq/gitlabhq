@@ -19,7 +19,7 @@ By default, GitLab sets this limit to `3`. When you push changes that affect mor
 GitLab creates a bulk push event instead of individual push events.
 
 For example, if you push to four branches simultaneously, the activity feed displays a single
-{{< icon name="commit">}} `Pushed to 4 branches at (project name)` event instead of four separate
+{{< icon name="commit" >}} `Pushed to 4 branches at (project name)` event instead of four separate
 push events.
 
 To set a different **Push event activities limit**, either:

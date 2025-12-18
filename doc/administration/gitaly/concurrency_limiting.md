@@ -92,7 +92,7 @@ information, see the [relevant documentation](monitoring.md#monitor-gitaly-concu
 
 {{< /history >}}
 
-{{< alert type="note">}}
+{{< alert type="note" >}}
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 

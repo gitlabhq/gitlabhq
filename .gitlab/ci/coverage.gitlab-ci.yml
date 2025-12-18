@@ -54,6 +54,7 @@ test-coverage:export-rspec-and-e2e:
         --test-reports 'rspec/rspec-*.json,e2e-test-reports/rspec-*.json' \
         --coverage-report 'coverage-backend/coverage.lcov' \
         --test-map 'crystalball/merged-mapping.json.gz' \
+        --responsibility-patterns '.gitlab/coverage/responsibility_patterns.yml' \
         --clickhouse-url "${CLICKHOUSE_URL}" \
         --clickhouse-database "${CLICKHOUSE_DATABASE}" \
         --clickhouse-username "${CLICKHOUSE_USERNAME}"
@@ -113,6 +114,7 @@ test-coverage:export-jest-and-e2e:
         --test-reports 'jest-reports/**/*.json,e2e-test-reports/rspec-*.json' \
         --coverage-report 'coverage-frontend/lcov.info' \
         --test-map 'jest-test-mapping/merged-source-to-test.json' \
+        --responsibility-patterns '.gitlab/coverage/responsibility_patterns.yml' \
         --clickhouse-url "${CLICKHOUSE_URL}" \
         --clickhouse-database "${CLICKHOUSE_DATABASE}" \
         --clickhouse-username "${CLICKHOUSE_USERNAME}"
@@ -153,6 +155,7 @@ test-coverage:export-workhorse:
         --test-reports 'workhorse-test-reports/workhorse-tests.json'
         --coverage-report 'workhorse/coverage.lcov'
         --test-map 'workhorse-test-mapping/workhorse-source-to-test.json'
+        --responsibility-patterns '.gitlab/coverage/responsibility_patterns.yml'
         --clickhouse-url "${CLICKHOUSE_URL}"
         --clickhouse-database "${CLICKHOUSE_DATABASE}"
         --clickhouse-username "${CLICKHOUSE_USERNAME}"

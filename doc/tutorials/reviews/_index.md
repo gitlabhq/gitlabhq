@@ -368,7 +368,7 @@ your review. It's time to think broadly, one last time.
      addresses your feedback.
 
 1. Optional. Write a summary of your review. GitLab Premium and Ultimate users can select
-   **Add summary** ({{< icon name="tanuki-ai">}}) to create a summary for you. Include any
+   **Add summary** ({{< icon name="tanuki-ai" >}}) to create a summary for you. Include any
    quick actions you want performed.
 
 You can also use the [`/submit_review` quick action](../../user/project/quick_actions.md#submit_review) in the text of a non-review comment.

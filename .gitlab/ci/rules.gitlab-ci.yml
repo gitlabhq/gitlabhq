@@ -485,6 +485,7 @@
 # Spec files only (for Rspec predictive pipeline)
 .spec-only-patterns: &spec-only-patterns
   - "{,ee/,jh/}spec/**/*_spec.rb"
+  - "{,ee/,jh/}spec/frontend/**/*"
 
 # Backend patterns + .ci-patterns
 .backend-patterns: &backend-patterns
