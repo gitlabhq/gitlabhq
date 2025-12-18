@@ -127,11 +127,8 @@ Group administrators and owners can:
 - Create policies and frameworks for specific groups or projects, in addition to centrally-managed policies and frameworks.
 - Understand policy sources with clear indicators that show whether policies come from your team or central administration.
 
-{{< alert type="note" >}}
-
-The **Policies** page displays only the policies from the compliance and security policy group that are currently applied to your group.
-
-{{< /alert >}}
+> [!note]
+> The **Policies** page displays only the policies from the compliance and security policy group that are currently applied to your group.
 
 ### Project administrators and owners
 
@@ -142,11 +139,8 @@ Project administrators and owners can:
 - Create project-specific policies in addition to centrally-managed ones.
 - Understand policy sources with clear indicators that show whether policies come from your project, group, or central administration.
 
-{{< alert type="note" >}}
-
-The **Policies** page displays only the policies from the compliance and security policy that are currently applied to your group.
-
-{{< /alert >}}
+> [!note]
+> The **Policies** page displays only the policies from the compliance and security policy that are currently applied to your group.
 
 ### Developers
 

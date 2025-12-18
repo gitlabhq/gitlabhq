@@ -500,11 +500,8 @@ for more details.
 
 ## Upgrades to 17.5.0
 
-{{< alert type="note" >}}
-
-The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
-
-{{< /alert >}}
+> [!note]
+> The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
 
 - S3 object storage access for the GitLab Runner distributed cache is now handled by the
   [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4987) instead of the MinIO client.

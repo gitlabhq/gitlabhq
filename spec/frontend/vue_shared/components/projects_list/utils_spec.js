@@ -7,8 +7,8 @@ import {
   renderUnarchiveSuccessToast,
 } from '~/vue_shared/components/projects_list/utils';
 import {
-  ACTION_COPY_ID,
   ACTION_ARCHIVE,
+  ACTION_COPY_ID,
   ACTION_DELETE,
   ACTION_DELETE_IMMEDIATELY,
   ACTION_EDIT,
@@ -55,6 +55,7 @@ describe('availableGraphQLProjectActions', () => {
     ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${true}                 | ${false} | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
     ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${true}                  | ${false}                | ${false} | ${[]}
     ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${true}                  | ${true}                 | ${false} | ${[]}
+    ${{ archiveProject: true }}                      | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID]}
     ${{ archiveProject: true }}                      | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID, ACTION_ARCHIVE]}
     ${{ archiveProject: true }}                      | ${false}          | ${false}                 | ${false}                | ${true}  | ${[ACTION_COPY_ID, ACTION_UNARCHIVE]}
     ${{ archiveProject: false }}                     | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID]}

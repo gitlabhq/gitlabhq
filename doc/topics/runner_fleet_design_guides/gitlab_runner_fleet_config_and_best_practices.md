@@ -530,11 +530,8 @@ tests:
     - my-custom-tag
 ```
 
-{{< alert type="note" >}}
-
-For an easier configuration, use one GitLab Runner per cluster for job profile. This approach is recommended until GitLab supports either multiple GitLab Runner installations on the same cluster or multiple `[[runners]]` section in the `config.toml` template.
-
-{{< /alert >}}
+> [!note]
+> For an easier configuration, use one GitLab Runner per cluster for job profile. This approach is recommended until GitLab supports either multiple GitLab Runner installations on the same cluster or multiple `[[runners]]` section in the `config.toml` template.
 
 ### Set up monitoring and observability
 

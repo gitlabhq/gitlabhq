@@ -12,11 +12,8 @@ title: GitLab for Jira Cloud app
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-This page contains user documentation for the GitLab for Jira Cloud app. For administrator documentation, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app.md).
-
-{{< /alert >}}
+> [!note]
+> This page contains user documentation for the GitLab for Jira Cloud app. For administrator documentation, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app.md).
 
 With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud) app, you can connect GitLab and Jira Cloud to sync development information in real time. You can view this information in the [Jira development panel](development_panel.md).
 
@@ -163,11 +160,8 @@ After you link to a GitLab group:
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-This feature was added as a community contribution and is developed and maintained by the GitLab community only.
-
-{{< /alert >}}
+> [!note]
+> This feature was added as a community contribution and is developed and maintained by the GitLab community only.
 
 Prerequisites:
 
@@ -215,11 +209,8 @@ For more information about deployment tracking in Jira, see [Set up deployment t
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-This feature was added as a community contribution and is developed and maintained by the GitLab community only.
-
-{{< /alert >}}
+> [!note]
+> This feature was added as a community contribution and is developed and maintained by the GitLab community only.
 
 You can set up deployment gating to bring change requests from GitLab to Jira Service Management for approval.
 With deployment gating, any GitLab deployments to your selected environments are automatically sent

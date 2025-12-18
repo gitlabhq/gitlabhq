@@ -21,6 +21,8 @@ export default {
     PipelinesStats,
     PipelineDurationChart,
     PipelineStatusChart,
+    JobAnalyticsTable: () =>
+      import('ee_component/projects/pipelines/charts/components/job_analytics_table.vue'),
   },
   inject: {
     defaultBranch: {
@@ -45,6 +47,7 @@ export default {
       source: null,
       branch: this.defaultBranch,
       dateRange: DATE_RANGE_DEFAULT,
+      jobName: '',
     };
 
     return {
@@ -102,6 +105,7 @@ export default {
         branch: this.branchVariable,
         fromTime: getDateInPast(today, DATE_RANGES_AS_DAYS[this.params.dateRange] || 7),
         toTime: today,
+        jobName: this.params.jobName || null,
       };
     },
     failedPipelinesPath() {
@@ -122,7 +126,7 @@ export default {
       this.params = paramsFromQuery(window.location.search, this.defaultParams);
     },
     onFiltersInput(params) {
-      this.params = params;
+      this.params = { ...this.params, ...params };
 
       updateQueryHistory(this.params, this.defaultParams);
     },
@@ -149,6 +153,7 @@ export default {
       />
       <pipeline-duration-chart :loading="loading" :time-series="pipelineAnalytics.timeSeries" />
       <pipeline-status-chart :loading="loading" :time-series="pipelineAnalytics.timeSeries" />
+      <job-analytics-table :variables="variables" @filters-input="onFiltersInput($event)" />
     </div>
   </div>
 </template>

@@ -62,11 +62,8 @@ If your GitLab version is `vX.Y.*-ee`, use the AI gateway Docker image with the 
 
 Newer features are available from nightly builds, but backwards compatibility is not guaranteed.
 
-{{< alert type="note" >}}
-
-Using the nightly version is **not recommended** because it can cause incompatibility if your GitLab version is behind or ahead of the AI gateway release. Always use an explicit version tag.
-
-{{< /alert >}}
+> [!note]
+> Using the nightly version is **not recommended** because it can cause incompatibility if your GitLab version is behind or ahead of the AI gateway release. Always use an explicit version tag.
 
 ### Start a container from the image
 
@@ -400,7 +397,7 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
 
 You can find the list of AI gateway versions that can be used as `image.tag` in the [container registry](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/3809284?orderBy=PUBLISHED_AT&search%5B%5D=self-hosted).
 
-This step can take will take a few seconds in order for all resources to be allocated
+This step can take a few seconds in order for all resources to be allocated
 and the AI gateway to start.
 
 You might need to set up your own **Ingress Controller** for the AI gateway if your existing `nginx` Ingress controller does not serve services in a different namespace. Make sure Ingress is set up correctly for multi-namespace deployments.

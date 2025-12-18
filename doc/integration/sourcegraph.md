@@ -12,11 +12,8 @@ title: Sourcegraph
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-On GitLab.com, this feature is available for public projects only.
-
-{{< /alert >}}
+> [!note]
+> On GitLab.com, this feature is available for public projects only.
 
 [Sourcegraph](https://sourcegraph.com) provides code intelligence features in the GitLab UI.
 When enabled, participating projects display a code intelligence popover in

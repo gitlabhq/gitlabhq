@@ -409,11 +409,8 @@ The following table outlines Mattermost version changes for GitLab 15.0 and late
 | 15.1           | 6.7                |
 | 15.0           | 6.6                |
 
-{{< alert type="note" >}}
-
-The Mattermost upgrade notes refer to different impacts when used with a PostgreSQL versus a MySQL database. The GitLab Mattermost included with the Linux package uses a PostgreSQL database.
-
-{{< /alert >}}
+> [!note]
+> The Mattermost upgrade notes refer to different impacts when used with a PostgreSQL versus a MySQL database. The GitLab Mattermost included with the Linux package uses a PostgreSQL database.
 
 The Linux package bundles the [Mattermost Team Edition](https://docs.mattermost.com/about/editions-and-offerings.html#mattermost-team-edition), which is a free and open source edition and does not include its commercial features.
 To upgrade to the [Mattermost Enterprise Edition](https://docs.mattermost.com/about/editions-and-offerings.html#mattermost-enterprise-edition) see the Mattermost [documentation on upgrading](https://docs.mattermost.com/install/enterprise-install-upgrade.html#upgrading-to-enterprise-edition-in-gitlab-omnibus).

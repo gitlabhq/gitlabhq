@@ -227,11 +227,8 @@ To configure Jira verification:
 
 When a user attempts to push changes that don't meet the verification criteria, GitLab displays an error message indicating why the push was rejected.
 
-{{< alert type="note" >}}
-
-If a commit message contains multiple Jira issue keys, only the first one is used for verification checks.
-
-{{< /alert >}}
+> [!note]
+> If a commit message contains multiple Jira issue keys, only the first one is used for verification checks.
 
 ### Example error messages
 

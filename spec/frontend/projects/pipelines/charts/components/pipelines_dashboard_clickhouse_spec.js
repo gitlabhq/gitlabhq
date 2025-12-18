@@ -97,6 +97,7 @@ describe('PipelinesDashboardClickhouse', () => {
             source: null,
             branch: defaultBranch,
             dateRange: DATE_RANGE_DEFAULT,
+            jobName: '',
           },
         });
       });
@@ -111,6 +112,7 @@ describe('PipelinesDashboardClickhouse', () => {
           branch: defaultBranch,
           fromTime: new Date('2022-02-08'),
           toTime: new Date('2022-02-15'),
+          jobName: null,
         });
       });
     });
@@ -123,6 +125,7 @@ describe('PipelinesDashboardClickhouse', () => {
             source: null,
             dateRange: DATE_RANGE_DEFAULT,
             branch: defaultBranch,
+            jobName: '',
           },
           variables: {
             source: null,
@@ -130,6 +133,7 @@ describe('PipelinesDashboardClickhouse', () => {
             branch: defaultBranch,
             fromTime: new Date('2022-02-08'),
             toTime: new Date('2022-02-15'),
+            jobName: null,
           },
           query: '',
         },
@@ -139,6 +143,7 @@ describe('PipelinesDashboardClickhouse', () => {
             source: null,
             dateRange: DATE_RANGE_30_DAYS,
             branch: BRANCH_ANY,
+            jobName: '',
           },
           variables: {
             source: null,
@@ -146,6 +151,7 @@ describe('PipelinesDashboardClickhouse', () => {
             branch: null,
             fromTime: new Date('2022-01-16'),
             toTime: new Date('2022-02-15'),
+            jobName: null,
           },
           query: '?branch=~any&time=30d',
         },
@@ -155,6 +161,7 @@ describe('PipelinesDashboardClickhouse', () => {
             source: SOURCE_PUSH,
             dateRange: DATE_RANGE_180_DAYS,
             branch: 'feature-branch',
+            jobName: '',
           },
           variables: {
             source: SOURCE_PUSH,
@@ -162,8 +169,27 @@ describe('PipelinesDashboardClickhouse', () => {
             branch: 'feature-branch',
             fromTime: new Date('2021-08-19'),
             toTime: new Date('2022-02-15'),
+            jobName: null,
           },
           query: '?branch=feature-branch&source=PUSH&time=180d',
+        },
+        {
+          name: 'feature branch pushes in the last 180 days filtering by "test" job',
+          input: {
+            source: SOURCE_PUSH,
+            dateRange: DATE_RANGE_180_DAYS,
+            branch: 'feature-branch',
+            jobName: 'test',
+          },
+          variables: {
+            source: SOURCE_PUSH,
+            fullPath: projectPath,
+            branch: 'feature-branch',
+            fromTime: new Date('2021-08-19'),
+            toTime: new Date('2022-02-15'),
+            jobName: 'test',
+          },
+          query: '?branch=feature-branch&job=test&source=PUSH&time=180d',
         },
       ];
 

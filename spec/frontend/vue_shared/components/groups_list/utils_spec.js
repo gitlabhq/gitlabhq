@@ -58,6 +58,7 @@ describe('availableGraphQLGroupActions', () => {
     ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${true}           | ${false}                 | ${true}                 | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE_IMMEDIATELY]}
     ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${true}                  | ${false}                | ${false} | ${{}}                      | ${[]}
     ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${true}                  | ${true}                 | ${false} | ${{}}                      | ${[]}
+    ${{ archiveGroup: true }}                                    | ${true}           | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: true }}  | ${[ACTION_COPY_ID]}
     ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: true }}  | ${[ACTION_COPY_ID, ACTION_ARCHIVE]}
     ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${true}  | ${{ archiveGroup: true }}  | ${[ACTION_COPY_ID, ACTION_UNARCHIVE]}
     ${{ archiveGroup: false }}                                   | ${false}          | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: true }}  | ${[ACTION_COPY_ID]}

@@ -42,11 +42,8 @@ For deprecated, [certificate-based clusters](../../user/infrastructure/clusters/
 1. [Set the environment scope of each cluster](../../user/project/clusters/multiple_kubernetes_clusters.md#setting-the-environment-scope).
 1. For each cluster, [add a domain based on its Ingress IP address](../../user/project/clusters/gitlab_managed_clusters.md#base-domain).
 
-{{< alert type="note" >}}
-
-[Cluster environment scope is not respected when checking for active Kubernetes clusters](https://gitlab.com/gitlab-org/gitlab/-/issues/20351). For a multi-cluster setup to work with Auto DevOps, you must create a fallback cluster with **Cluster environment scope** set to `*`. You can set any of the clusters you've already added as a fallback cluster.
-
-{{< /alert >}}
+> [!note]
+> [Cluster environment scope is not respected when checking for active Kubernetes clusters](https://gitlab.com/gitlab-org/gitlab/-/issues/20351). For a multi-cluster setup to work with Auto DevOps, you must create a fallback cluster with **Cluster environment scope** set to `*`. You can set any of the clusters you've already added as a fallback cluster.
 
 ### Example configurations
 

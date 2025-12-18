@@ -80,8 +80,10 @@ RSpec.describe AccessTokensHelper, feature_category: :system_access do
   describe '#personal_access_token_data' do
     before do
       allow(helper).to receive_messages(
-        expires_at_field_data: { max_date: '2022-03-02',
-                                 min_date: '2022-03-02' }
+        expires_at_field_data: {
+          max_date: '2022-03-02',
+          min_date: '2022-03-02'
+        }
       )
     end
 
@@ -97,7 +99,7 @@ RSpec.describe AccessTokensHelper, feature_category: :system_access do
             description: 'My description',
             scopes: '["api","sudo"]',
             create: 'http://test.host/-/user_settings/personal_access_tokens',
-            new: '/-/user_settings/personal_access_tokens/new',
+            granular_new: 'http://test.host/-/user_settings/personal_access_tokens/granular/new',
             revoke: 'http://localhost/api/v4/personal_access_tokens',
             rotate: 'http://localhost/api/v4/personal_access_tokens',
             show: 'http://localhost/api/v4/personal_access_tokens?user_id=:id'

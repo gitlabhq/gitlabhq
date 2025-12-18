@@ -12,11 +12,8 @@ title: Use Shibboleth as an authentication provider
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-Use the [GitLab SAML integration](saml.md) to integrate specific Shibboleth identity providers (IdPs). For Shibboleth federation support (Discovery Service), use this document.
-
-{{< /alert >}}
+> [!note]
+> Use the [GitLab SAML integration](saml.md) to integrate specific Shibboleth identity providers (IdPs). For Shibboleth federation support (Discovery Service), use this document.
 
 To enable Shibboleth support in GitLab, use Apache instead of NGINX. Apache uses the `mod_shib2` module for Shibboleth authentication, and can pass attributes as headers to the OmniAuth Shibboleth provider.
 

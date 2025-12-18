@@ -41,6 +41,30 @@ RSpec.describe Projects::ArchiveService, feature_category: :groups_and_projects 
         end
       end
 
+      context 'when group is scheduled for deletion' do
+        let_it_be(:deletion_schedule) { create(:group_deletion_schedule, group: group) }
+
+        it 'returns scheduled deletion error' do
+          result = service.execute
+
+          expect(result).to be_error
+          expect(result.message).to eq('Cannot archive project since it is scheduled for deletion.')
+        end
+      end
+
+      context 'when project is scheduled for deletion' do
+        before do
+          project.update!(marked_for_deletion_at: Date.current)
+        end
+
+        it 'returns scheduled deletion error' do
+          result = service.execute
+
+          expect(result).to be_error
+          expect(result.message).to eq('Cannot archive project since it is scheduled for deletion.')
+        end
+      end
+
       context 'when project ancestors are not archived' do
         context 'when archiving project fails' do
           before do

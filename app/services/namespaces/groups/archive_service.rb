@@ -14,6 +14,9 @@ module Namespaces
       AncestorAlreadyArchivedError = ServiceResponse.error(
         message: 'Cannot archive group since one of the ancestor groups is already archived!'
       )
+      ScheduledDeletionError = ServiceResponse.error(
+        message: 'Cannot archive group since it is scheduled for deletion.'
+      )
       ArchivingFailedError = ServiceResponse.error(
         message: 'Failed to archive group!'
       )
@@ -28,6 +31,7 @@ module Namespaces
 
         return AlreadyArchivedError if group.archived
         return AncestorAlreadyArchivedError if group.ancestors_archived?
+        return ScheduledDeletionError if group.scheduled_for_deletion_in_hierarchy_chain?
         return ArchivingFailedError unless group.namespace_settings.update(archived: true)
 
         after_archive

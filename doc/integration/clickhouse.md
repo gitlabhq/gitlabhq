@@ -49,11 +49,8 @@ After you configure ClickHouse, you can use the following analytics features:
 | 18.1.0               | 23.x, 24.x, 25.x    |         |
 | 18.5.0               | 23.x, 24.x, 25.x    | Experimental support for `Replicated` database engine. |
 
-{{< alert type="note" >}}
-
-[ClickHouse Cloud](https://clickhouse.com/cloud) is supported. Compatibility is generally ensured with the latest major GitLab release and newer versions.
-
-{{< /alert >}}
+> [!note]
+> [ClickHouse Cloud](https://clickhouse.com/cloud) is supported. Compatibility is generally ensured with the latest major GitLab release and newer versions.
 
 ## Set up ClickHouse
 

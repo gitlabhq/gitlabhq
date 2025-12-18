@@ -30,7 +30,7 @@ export default {
       :value="token"
       :form-input-group-props="formInputGroupProps"
       readonly
-      size="lg"
+      size="xl"
       class="gl-mb-0"
     >
       <template #description>

@@ -24,7 +24,7 @@ export const availableGraphQLProjectActions = ({
 
   // Rules
   const canEdit = userPermissions.viewEditPage;
-  const canArchive = userPermissions.archiveProject && !archived;
+  const canArchive = userPermissions.archiveProject && !archived && !markedForDeletion;
   const canUnarchive = userPermissions.archiveProject && archived;
   const canRestore = userPermissions.removeProject && isSelfDeletionScheduled;
   // Projects that are not marked for deletion can be deleted (delayed)

@@ -34,11 +34,8 @@ To use reCAPTCHA, first create a site and private key.
    1. Open `app/services/spam/spam_verdict_service.rb`.
    1. Change the first line of the `#execute` method to `return CONDITIONAL_ALLOW`.
 
-{{< alert type="note" >}}
-
-Make sure you are viewing an issuable in a project that is public. If you're working with an issue, the issue is public.
-
-{{< /alert >}}
+> [!note]
+> Make sure you are viewing an issuable in a project that is public. If you're working with an issue, the issue is public.
 
 ## Enable reCAPTCHA for user logins using the HTTP header
 

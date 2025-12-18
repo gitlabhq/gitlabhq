@@ -163,14 +163,14 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
     end
   end
 
-  describe '#new' do
+  describe '#granular_new' do
     context 'when granular_personal_access_tokens feature flag is disabled' do
       before do
         stub_feature_flags(granular_personal_access_tokens: false)
       end
 
       it 'returns 404' do
-        get :new
+        get :granular_new
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -181,10 +181,10 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
         stub_feature_flags(granular_personal_access_tokens: true)
       end
 
-      it 'renders the new template' do
-        get :new
+      it 'renders the granular_new template' do
+        get :granular_new
 
-        expect(response).to render_template(:new)
+        expect(response).to render_template(:granular_new)
       end
     end
   end

@@ -199,11 +199,8 @@ features, integrations, documentation, and behind the scenes stories from our de
 For critical security updates related to bugs and system performance, sign up
 for our dedicated security newsletter.
 
-{{< alert type="note" >}}
-
-If you do not opt-in to the security newsletter, you will not receive security alerts.
-
-{{< /alert >}}
+> [!note]
+> If you do not opt-in to the security newsletter, you will not receive security alerts.
 
 ## Recommended next steps
 

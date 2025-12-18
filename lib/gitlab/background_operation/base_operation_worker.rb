@@ -99,7 +99,9 @@ module Gitlab
       end
 
       def base_relation
-        model_class = define_batchable_model(batch_table, primary_key: fetch_primary_key, connection: connection)
+        base_class = Gitlab::Database.application_record_for_connection(connection)
+        model_class = define_batchable_model(batch_table, primary_key: fetch_primary_key, connection: connection,
+          base_class: base_class)
         cursor_expression = Arel::Nodes::Grouping.new(cursor_columns.map { |column| model_class.arel_table[column] })
         cursor_gteq_start = cursor_expression.gteq(arel_for_cursor(min_cursor, model_class.arel_table))
         cursor_lteq_end = cursor_expression.lteq(arel_for_cursor(max_cursor, model_class.arel_table))

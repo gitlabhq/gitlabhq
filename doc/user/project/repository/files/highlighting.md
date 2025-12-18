@@ -3,7 +3,7 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Syntax highlighting helps you read files in your GitLab project and identify what files contain.
-title: Syntax Highlighting
+title: Syntax highlighting
 ---
 
 {{< details >}}
@@ -13,9 +13,17 @@ title: Syntax Highlighting
 
 {{< /details >}}
 
-GitLab provides syntax highlighting on all files through [Highlight.js](https://github.com/highlightjs/highlight.js/) and the
-[Rouge](https://rubygems.org/gems/rouge) Ruby gem. It attempts to guess what language
-to use based on the file extension, which most of the time is sufficient.
+GitLab provides syntax highlighting for files through two complementary systems:
+
+- [Rouge](https://rubygems.org/gems/rouge) (Ruby gem): Server-side highlighting that processes files
+  on GitLab servers. It is used for:
+  - Repository file viewing
+  - Merge request diffs
+  - Commit diffs
+  - Compare view
+  - Blame view
+- [Highlight.js](https://github.com/highlightjs/highlight.js/): Client-side highlighting that runs
+  in your browser. It is used to view repository files in the browser for supported languages.
 
 The paths here use the [`.gitattributes` interface](https://git-scm.com/docs/gitattributes) in Git.
 
@@ -75,14 +83,14 @@ the highlighting for a file type, and use `gitlab-language=text`:
 
 ## Configure maximum file size for highlighting
 
-GitLab uses two syntax highlighters with different file size limits:
+The following file size limits apply to the syntax highlighters:
 
-- Rouge (server-side): 512 KB by default. You can configure this limit.
-- Highlight.js (client-side): 2 MB. This limit is not configurable.
+- Rouge (server-side): 512 KB by default (configurable)
+  - Files larger than this limit render in plain text without syntax highlighting.
 
-Files larger than the Rouge limit render in plain text.
-Files larger than the Highlight.js limit cannot be highlighted when viewed in GitLab
-and must be viewed as raw content.
+- Highlight.js (client-side): 2 MB (not configurable)
+  - Falls back to Rouge highlighting if a language is not supported.
+  - Files larger than this limit cannot be highlighted in the frontend and must be viewed as raw content.
 
 To change the Rouge highlighting limit:
 

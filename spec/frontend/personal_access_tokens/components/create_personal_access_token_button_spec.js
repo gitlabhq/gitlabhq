@@ -1,4 +1,4 @@
-import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlBadge } from '@gitlab/ui';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CreatePersonalAccessTokenButton from '~/personal_access_tokens/components/create_personal_access_token_button.vue';
 
@@ -6,14 +6,16 @@ describe('CreatePersonalAccessTokenButton', () => {
   let wrapper;
 
   const createComponent = () => {
-    wrapper = shallowMountExtended(CreatePersonalAccessTokenButton);
+    wrapper = shallowMountExtended(CreatePersonalAccessTokenButton, {
+      provide: {
+        accessTokenGranularNew: '/granular/new',
+      },
+    });
   };
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
-  const findFineGrainedTokenOption = () => findDropdownItems().at(0);
-  const findLegacyTokenOption = () => findDropdownItems().at(1);
-  const findBadge = () => findFineGrainedTokenOption().findComponent(GlBadge);
+  const findFineGrainedTokenOption = () => findDropdown().props('items').at(0);
+  const findLegacyTokenOption = () => findDropdown().props('items').at(1);
 
   beforeEach(() => {
     createComponent();
@@ -32,34 +34,36 @@ describe('CreatePersonalAccessTokenButton', () => {
   });
 
   it('renders two dropdown items', () => {
-    expect(findDropdownItems()).toHaveLength(2);
+    expect(findDropdown().props('items')).toHaveLength(2);
   });
 
   describe('fine-grained token option', () => {
     it('displays the correct title', () => {
-      expect(findFineGrainedTokenOption().text()).toContain('Fine-grained token');
+      expect(findFineGrainedTokenOption().text).toBe('Fine-grained token');
     });
 
     it('displays the beta badge', () => {
-      expect(findBadge().exists()).toBe(true);
-      expect(findBadge().props('variant')).toBe('info');
-      expect(findBadge().text()).toBe('Beta');
+      expect(findFineGrainedTokenOption().badge).toBe('Beta');
     });
 
     it('displays the correct description', () => {
-      expect(findFineGrainedTokenOption().text()).toContain(
+      expect(findFineGrainedTokenOption().description).toBe(
         'Limit scope to specific groups and projects and fine-grained permissions to resources.',
       );
+    });
+
+    it('displays the correct link', () => {
+      expect(findFineGrainedTokenOption().href).toBe('/granular/new');
     });
   });
 
   describe('legacy token option', () => {
     it('displays the correct title', () => {
-      expect(findLegacyTokenOption().text()).toContain('Broad-access token');
+      expect(findLegacyTokenOption().text).toContain('Broad-access token');
     });
 
     it('displays the correct description', () => {
-      expect(findLegacyTokenOption().text()).toContain(
+      expect(findLegacyTokenOption().description).toContain(
         'Scoped to all groups and projects with broad permissions to resources.',
       );
     });

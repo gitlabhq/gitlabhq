@@ -3975,6 +3975,15 @@ msgstr ""
 msgid "AccessTokens|Add new token"
 msgstr ""
 
+msgid "AccessTokens|Adding a group includes its subgroups and projects"
+msgstr ""
+
+msgid "AccessTokens|All groups and projects that I'm a member of"
+msgstr ""
+
+msgid "AccessTokens|An administrator has set the maximum expiration date to %{days} days (%{maxDate}). %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "AccessTokens|An error occurred while creating the token."
 msgstr ""
 
@@ -4033,6 +4042,9 @@ msgid "AccessTokens|Create token"
 msgstr ""
 
 msgid "AccessTokens|Created"
+msgstr ""
+
+msgid "AccessTokens|Define scope"
 msgstr ""
 
 msgid "AccessTokens|Description"
@@ -4125,6 +4137,9 @@ msgstr ""
 msgid "AccessTokens|Generate token"
 msgstr ""
 
+msgid "AccessTokens|Group and project access"
+msgstr ""
+
 msgid "AccessTokens|How do I use DPoP?"
 msgstr ""
 
@@ -4193,6 +4208,12 @@ msgstr ""
 msgid "AccessTokens|Not eligible to rotate tokens with permissions not held by the user"
 msgstr ""
 
+msgid "AccessTokens|Only personal projects"
+msgstr ""
+
+msgid "AccessTokens|Only specific groups or projects that I'm a member of"
+msgstr ""
+
 msgid "AccessTokens|Personal access tokens"
 msgstr ""
 
@@ -4233,6 +4254,9 @@ msgid "AccessTokens|Scopes set the permission levels granted to the token."
 msgstr ""
 
 msgid "AccessTokens|Scopes set the permission levels granted to the token. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "AccessTokens|Scopes set the permissions granted to your token. Add only the minimum permissions needed for your token. %{linkStart}Learn more here%{linkEnd}."
 msgstr ""
 
 msgid "AccessTokens|Search or filter access tokens…"
@@ -4278,6 +4302,9 @@ msgid "AccessTokens|Token already revoked"
 msgstr ""
 
 msgid "AccessTokens|Token description"
+msgstr ""
+
+msgid "AccessTokens|Token description is required."
 msgstr ""
 
 msgid "AccessTokens|Token expires in less than two weeks."
@@ -13304,6 +13331,12 @@ msgstr ""
 msgid "CICD|No authentication events to display."
 msgstr ""
 
+msgid "CICD|No job data found for the current filter."
+msgstr ""
+
+msgid "CICD|No job data found."
+msgstr ""
+
 msgid "CICD|No resources selected (minimal access only)"
 msgstr ""
 
@@ -13331,6 +13364,9 @@ msgstr ""
 msgid "CICD|Run pipelines triggered by AI agents automatically"
 msgstr ""
 
+msgid "CICD|Search by job name"
+msgstr ""
+
 msgid "CICD|Select the groups and projects authorized to use a CI/CD job token to authenticate requests to this project. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
@@ -13356,6 +13392,9 @@ msgid "CICD|There was a problem fetching authentication logs."
 msgstr ""
 
 msgid "CICD|Turn on incremental logging"
+msgstr ""
+
+msgid "CICD|Unable to load job data. Please try again."
 msgstr ""
 
 msgid "CICD|Unprotected branches will not have access to the cache from protected branches."
@@ -32799,6 +32838,9 @@ msgstr ""
 msgid "Group access tokens"
 msgstr ""
 
+msgid "Group and project"
+msgstr ""
+
 msgid "Group application: %{name}"
 msgstr ""
 
@@ -38528,6 +38570,9 @@ msgstr ""
 msgid "Job|Failed"
 msgstr ""
 
+msgid "Job|Failure rate (%{percentSymbol})"
+msgstr ""
+
 msgid "Job|Finished at"
 msgstr ""
 
@@ -38567,10 +38612,16 @@ msgstr ""
 msgid "Job|Manual"
 msgstr ""
 
+msgid "Job|Mean duration (s)"
+msgstr ""
+
 msgid "Job|No job log"
 msgstr ""
 
 msgid "Job|No search results found"
+msgstr ""
+
+msgid "Job|P95 duration (s)"
 msgstr ""
 
 msgid "Job|Passed"
@@ -38634,6 +38685,9 @@ msgid "Job|Source"
 msgstr ""
 
 msgid "Job|Status"
+msgstr ""
+
+msgid "Job|Success rate (%{percentSymbol})"
 msgstr ""
 
 msgid "Job|The artifacts were removed"

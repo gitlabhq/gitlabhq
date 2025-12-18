@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:group) { create(:group) }
 
   before_all do
     group.add_owner(user)
@@ -99,6 +99,28 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
         response = service_response
         expect(response).to be_error
         expect(response.message).to eq("Failed to archive group!")
+      end
+    end
+  end
+
+  context 'when the group is scheduled for deletion' do
+    let_it_be(:deletion_schedule) { create(:group_deletion_schedule, group: group) }
+
+    it 'returns an error response' do
+      response = service_response
+
+      expect(response).to be_error
+      expect(response.message).to eq("Cannot archive group since it is scheduled for deletion.")
+    end
+
+    context 'when archiving subgroup' do
+      let_it_be(:subgroup) { create(:group, parent: group) }
+
+      it 'returns an error response' do
+        response = described_class.new(subgroup, user).execute
+
+        expect(response).to be_error
+        expect(response.message).to eq("Cannot archive group since it is scheduled for deletion.")
       end
     end
   end

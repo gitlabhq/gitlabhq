@@ -22,11 +22,8 @@ to prove their identity:
 2FA makes it harder for an unauthorized person to access an account because
 they would need both factors.
 
-{{< alert type="note" >}}
-
-If you are [using and enforcing SSO](../user/group/saml_sso/_index.md#sso-enforcement), you might already be enforcing 2FA on the identity provider (IdP) side. Enforcing 2FA on GitLab as well might be unnecessary.
-
-{{< /alert >}}
+> [!note]
+> If you are [using and enforcing SSO](../user/group/saml_sso/_index.md#sso-enforcement), you might already be enforcing 2FA on the identity provider (IdP) side. Enforcing 2FA on GitLab as well might be unnecessary.
 
 ## Enforce 2FA for all users
 
@@ -94,11 +91,8 @@ Administrators can enforce 2FA for both:
      enforce 2FA on the next sign-in attempt, enter `0`.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-If you are using an external provider to sign in into GitLab, this setting will **not** enforce 2FA for users. 2FA should be enabled on that external provider.
-
-{{< /alert >}}
+> [!note]
+> If you are using an external provider to sign in into GitLab, this setting will **not** enforce 2FA for users. 2FA should be enabled on that external provider.
 
 ## Enforce 2FA for all users in a group
 
@@ -290,11 +284,8 @@ You can also [use the API](../api/group_enterprise_users.md#disable-two-factor-a
 
 {{< /details >}}
 
-{{< alert type="flag" >}}
-
-By default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags/_index.md) named `two_factor_for_cli`. This feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
-
-{{< /alert >}}
+> [!flag]
+> By default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags/_index.md) named `two_factor_for_cli`. This feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
 
 You can enforce 2FA for Git over SSH operations. However, you should use `ED25519_SK` or `ECDSA_SK`
 SSH keys instead. For more information, see [supported SSH key types](../user/ssh.md#supported-ssh-key-types).

@@ -71,11 +71,8 @@ The item is displayed in the **Pinned** section:
 
 ![An item in the Pinned section.](img/pinned_v18_3.png)
 
-{{< alert type="note" >}}
-
-The items you pin while you're viewing a project are different than the items you pin while viewing a group.
-
-{{< /alert >}}
+> [!note]
+> The items you pin while you're viewing a project are different than the items you pin while viewing a group.
 
 ## Use a more focused view
 

@@ -194,11 +194,8 @@ In the future this functionality may be changed, [refer to this Epic](https://gi
 
 {{< /alert >}}
 
-{{< alert type="note" >}}
-
-This section focuses exclusively on the Praefect component, not its [required PostgreSQL database](../administration/gitaly/praefect/configure.md#postgresql). The [GitLab Linux package does not offer HA](https://gitlab.com/groups/gitlab-org/-/epics/7814) and subsequently Zero Downtime support for the Praefect database. A third party database solution is required to avoid downtime.
-
-{{< /alert >}}
+> [!note]
+> This section focuses exclusively on the Praefect component, not its [required PostgreSQL database](../administration/gitaly/praefect/configure.md#postgresql). The [GitLab Linux package does not offer HA](https://gitlab.com/groups/gitlab-org/-/epics/7814) and subsequently Zero Downtime support for the Praefect database. A third party database solution is required to avoid downtime.
 
 Praefect must also perform database migrations to upgrade any existing data. To avoid clashes,
 migrations should run on only one Praefect node. To do this, designate a **Praefect deploy node** that runs the migrations:

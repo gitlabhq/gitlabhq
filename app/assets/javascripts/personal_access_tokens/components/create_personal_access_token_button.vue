@@ -1,16 +1,32 @@
 <script>
-import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlBadge } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlBadge } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 
 export default {
   name: 'PersonalAccessTokenCreateDropdown',
   components: {
     GlDisclosureDropdown,
-    GlDisclosureDropdownItem,
     GlBadge,
   },
+  inject: ['accessTokenGranularNew'],
   props: {},
-  computed: {},
+  computed: {
+    dropdownItems() {
+      return [
+        {
+          text: this.$options.i18n.fineGrainedToken,
+          href: this.accessTokenGranularNew,
+          description: this.$options.i18n.fineGrainedTokenDescription,
+          badge: this.$options.i18n.beta,
+        },
+        {
+          text: this.$options.i18n.legacyToken,
+          href: '',
+          description: this.$options.i18n.legacyTokenDescription,
+        },
+      ];
+    },
+  },
   i18n: {
     buttonTitle: s__('AccessTokens|Generate token'),
     fineGrainedToken: s__('AccessTokens|Fine-grained token'),
@@ -28,33 +44,21 @@ export default {
 
 <template>
   <gl-disclosure-dropdown
+    :items="dropdownItems"
     :toggle-text="$options.i18n.buttonTitle"
     placement="bottom-end"
     fluid-width
   >
-    <gl-disclosure-dropdown-item>
-      <div class="gl-w-34 gl-p-4">
+    <template #list-item="{ item }">
+      <div class="gl-mx-3 gl-w-34">
         <div class="gl-font-bold">
-          {{ $options.i18n.fineGrainedToken }}
-          <gl-badge class="gl-ml-2" variant="info">
-            {{ $options.i18n.beta }}
+          {{ item.text }}
+          <gl-badge v-if="item.badge" class="gl-ml-2" variant="info">
+            {{ item.badge }}
           </gl-badge>
         </div>
-        <div class="gl-mt-2 gl-text-subtle">
-          {{ $options.i18n.fineGrainedTokenDescription }}
-        </div>
+        <div class="gl-mt-2 gl-text-subtle">{{ item.description }}</div>
       </div>
-    </gl-disclosure-dropdown-item>
-
-    <gl-disclosure-dropdown-item>
-      <div class="gl-w-34 gl-px-4 gl-pb-4">
-        <div class="gl-font-bold">
-          {{ $options.i18n.legacyToken }}
-        </div>
-        <div class="gl-mt-2 gl-text-subtle">
-          {{ $options.i18n.legacyTokenDescription }}
-        </div>
-      </div>
-    </gl-disclosure-dropdown-item>
+    </template>
   </gl-disclosure-dropdown>
 </template>

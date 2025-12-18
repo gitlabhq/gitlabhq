@@ -10,6 +10,9 @@ module Projects
     AncestorAlreadyArchivedError = ServiceResponse.error(
       message: 'Cannot archive project since one of the ancestors is already archived.'
     )
+    ScheduledDeletionError = ServiceResponse.error(
+      message: 'Cannot archive project since it is scheduled for deletion.'
+    )
     ArchivingFailedError = ServiceResponse.error(
       message: 'Failed to archive project.'
     )
@@ -17,6 +20,7 @@ module Projects
     def execute
       return NotAuthorizedError unless can?(current_user, :archive_project, project)
       return AncestorAlreadyArchivedError if project.ancestors_archived?
+      return ScheduledDeletionError if project.scheduled_for_deletion_in_hierarchy_chain?
 
       if project.update(archived: true)
         after_archive

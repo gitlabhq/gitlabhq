@@ -21,11 +21,8 @@ GitLab generates direct URLs for these uploaded files with a random 32-character
 
 Files uploaded by users to GitLab issues, merge requests, and epics contain `/uploads/<32-character-id>` in the URL path.
 
-{{< alert type="warning" >}}
-
-Exercise caution in downloading files uploaded by unknown or untrusted sources, especially if the file is an executable or script.
-
-{{< /alert >}}
+> [!warning]
+> Exercise caution in downloading files uploaded by unknown or untrusted sources, especially if the file is an executable or script.
 
 ## Access control for uploaded files
 
@@ -68,11 +65,8 @@ To configure authentication settings for all media files:
 1. Expand **Visibility, project features, permissions**.
 1. Scroll to **Project visibility** and select **Require authentication to view media files**.
 
-{{< alert type="note" >}}
-
-You cannot select this option for public projects.
-
-{{< /alert >}}
+> [!note]
+> You cannot select this option for public projects.
 
 ## Delete uploaded files
 

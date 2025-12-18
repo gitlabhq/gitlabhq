@@ -44,11 +44,8 @@ If you prefer, you can also create a cluster manually using `eksctl`.
 Use a GitLab project template to get started. As the name suggests,
 those projects provide a bare-bones application built on some well-known frameworks.
 
-{{< alert type="warning" >}}
-
-Create the application project in the group hierarchy at the same level or below the project for cluster management. Otherwise, it fails to [authorize the agent](../../../user/clusters/agent/ci_cd_workflow.md#authorize-agent-access).
-
-{{< /alert >}}
+> [!warning]
+> Create the application project in the group hierarchy at the same level or below the project for cluster management. Otherwise, it fails to [authorize the agent](../../../user/clusters/agent/ci_cd_workflow.md#authorize-agent-access).
 
 1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.

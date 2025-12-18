@@ -1334,11 +1334,8 @@ To protect against configuration mistakes, temporarily disable repository verifi
 
 The new structure is documented in the following script with the old keys described in a comment above the new keys.
 
-{{< alert type="warning" >}}
-
-Double check your update to `storage`. You must append `/repositories` to the value of `path`.
-
-{{< /alert >}}
+> [!warning]
+> Double check your update to `storage`. You must append `/repositories` to the value of `path`.
 
 ```ruby
 gitaly['configuration'] = {

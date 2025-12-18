@@ -128,3 +128,11 @@ export const TABLE_FIELDS = [
     tdClass: 'gl-text-center',
   },
 ];
+
+export const ACCESS_PERSONAL_PROJECTS_ENUM = 'PERSONAL_PROJECTS';
+export const ACCESS_SELECTED_MEMBERSHIPS_ENUM = 'SELECTED_MEMBERSHIPS';
+export const ACCESS_ALL_MEMBERSHIPS_ENUM = 'ALL_MEMBERSHIPS';
+export const ACCESS_USER_ENUM = 'USER';
+export const ACCESS_INSTANCE_ENUM = 'INSTANCE';
+
+export const MAX_DESCRIPTION_LENGTH = 255;

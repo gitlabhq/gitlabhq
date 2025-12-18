@@ -62,11 +62,8 @@ have to [reindex](../../advanced_search/elasticsearch.md#zero-downtime-reindexin
 
 ## No search results after indexing all repositories
 
-{{< alert type="note" >}}
-
-Don't use these instructions for scenarios that only index a [subset of namespaces](../../advanced_search/elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index).
-
-{{< /alert >}}
+> [!note]
+> Don't use these instructions for scenarios that only index a [subset of namespaces](../../advanced_search/elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index).
 
 Make sure you [indexed all the database data](../../advanced_search/elasticsearch.md#enable-advanced-search).
 

@@ -538,11 +538,8 @@ Make sure to replace `<X-Y-stable>` with the stable branch that matches the
 version you want to install. For example, if you want to install 11.8 you would
 use the branch name `11-8-stable`.
 
-{{< alert type="warning" >}}
-
-You can change `<X-Y-stable>` to `master` if you want the "bleeding edge" version, but never install `master` on a production server!
-
-{{< /alert >}}
+> [!warning]
+> You can change `<X-Y-stable>` to `master` if you want the "bleeding edge" version, but never install `master` on a production server!
 
 ### Configure It
 
@@ -654,11 +651,8 @@ connection [must be to the same database](../../administration/postgresql/_index
 
 ### Install Gems
 
-{{< alert type="note" >}}
-
-As of Bundler 1.5.2, you can invoke `bundle install -jN` (where `N` is the number of your processor cores) and enjoy parallel gems installation with measurable difference in completion time (~60% faster). Check the number of your cores with `nproc`. For more information, see this [post](https://thoughtbot.com/blog/parallel-gem-installing-using-bundler).
-
-{{< /alert >}}
+> [!note]
+> As of Bundler 1.5.2, you can invoke `bundle install -jN` (where `N` is the number of your processor cores) and enjoy parallel gems installation with measurable difference in completion time (~60% faster). Check the number of your cores with `nproc`. For more information, see this [post](https://thoughtbot.com/blog/parallel-gem-installing-using-bundler).
 
 Make sure you have `bundle` (run `bundle -v`):
 
@@ -1042,11 +1036,8 @@ sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 If all items are green, congratulations on successfully installing GitLab!
 
-{{< alert type="note" >}}
-
-Supply the `SANITIZE=true` environment variable to `gitlab:check` to omit project names from the output of the check command.
-
-{{< /alert >}}
+> [!note]
+> Supply the `SANITIZE=true` environment variable to `gitlab:check` to omit project names from the output of the check command.
 
 ### Initial Login
 

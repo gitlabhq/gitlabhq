@@ -182,11 +182,8 @@ To request proxied downloads:
 1. Include information about your network security requirements.
 1. Specify which object types need proxied access.
 
-{{< alert type="note" >}}
-
-Proxied downloads impact performance compared to direct S3 access.
-
-{{< /alert >}}
+> [!note]
+> Proxied downloads impact performance compared to direct S3 access.
 
 For more information, see [proxy download](../../administration/object_storage.md#proxy-download).
 

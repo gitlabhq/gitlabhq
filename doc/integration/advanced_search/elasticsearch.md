@@ -371,11 +371,8 @@ sudo yum install libicu-devel
 
 ##### macOS
 
-{{< alert type="note" >}}
-
-You must first [install Homebrew](https://brew.sh/).
-
-{{< /alert >}}
+> [!note]
+> You must first [install Homebrew](https://brew.sh/).
 
 To install on macOS, run:
 
@@ -1404,11 +1401,8 @@ For the following steps, consider the entry of `sidekiq['routing_rules']`:
 
 At least one process in `sidekiq['queue_groups']` has to include the `mailers` queue, otherwise mailers jobs are not processed at all.
 
-{{< alert type="note" >}}
-
-Routing rules (`sidekiq['routing_rules']`) must be the same across all GitLab nodes (especially GitLab Rails and Sidekiq nodes).
-
-{{< /alert >}}
+> [!note]
+> Routing rules (`sidekiq['routing_rules']`) must be the same across all GitLab nodes (especially GitLab Rails and Sidekiq nodes).
 
 {{< alert type="warning" >}}
 
