@@ -1,0 +1,8 @@
+---
+name: delete_protected_tag
+description: Grants the ability to delete protected tags
+feature_category: source_code_management
+permissions:
+  - delete_protected_tag
+boundaries:
+  - project

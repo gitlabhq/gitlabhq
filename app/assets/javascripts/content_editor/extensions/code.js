@@ -1,7 +1,9 @@
-import { Mark } from '@tiptap/core';
+import { Mark, markInputRule } from '@tiptap/core';
 import { Fragment } from '@tiptap/pm/model';
 import Code from '@tiptap/extension-code';
 import { EXTENSION_PRIORITY_LOWER } from '../constants';
+
+export const inputRegex = /(^|[^`])`([^`]+)`(?!`)$/;
 
 export default Code.extend({
   excludes: null,
@@ -22,6 +24,15 @@ export default Code.extend({
           return Fragment.from(schema.text(element.textContent));
         },
       },
+    ];
+  },
+
+  addInputRules() {
+    return [
+      markInputRule({
+        find: inputRegex,
+        type: this.type,
+      }),
     ];
   },
 

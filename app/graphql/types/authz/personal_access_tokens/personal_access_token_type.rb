@@ -8,6 +8,8 @@ module Types
         graphql_name 'PersonalAccessToken'
         description 'Personal access token.'
 
+        connection_type_class Types::CountableConnectionType
+
         field :id,
           GraphQL::Types::ID,
           null: false,

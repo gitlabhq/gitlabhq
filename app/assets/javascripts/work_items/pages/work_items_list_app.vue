@@ -346,7 +346,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data?.namespace.workItems.nodes ?? [];
+        return data?.namespace?.workItems.nodes ?? [];
       },
       skip() {
         return isEmpty(this.pageParams) || this.metadataLoading;
@@ -373,7 +373,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data?.namespace.workItems.nodes ?? [];
+        return data?.namespace?.workItems.nodes ?? [];
       },
       skip() {
         return isEmpty(this.pageParams) || this.metadataLoading;
@@ -396,7 +396,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data?.namespace.workItems.count || 0;
+        return data?.namespace?.workItems.count || 0;
       },
       skip() {
         return isEmpty(this.pageParams) || this.metadataLoading || !this.isPlanningViewsEnabled;
@@ -412,7 +412,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data?.[this.namespace].workItemStateCounts ?? {};
+        return data?.[this.namespace]?.workItemStateCounts ?? {};
       },
       skip() {
         return this.isPlanningViewsEnabled || isEmpty(this.pageParams) || this.metadataLoading;
@@ -431,14 +431,14 @@ export default {
         };
       },
       update(data) {
-        return data?.namespace.workItems.nodes.length > 0 || false;
+        return data?.namespace?.workItems.nodes.length > 0 || false;
       },
       error(error) {
         this.error = s__('WorkItem|An error occurred while getting work item counts.');
         Sentry.captureException(error);
       },
       result({ data }) {
-        const count = data?.namespace.workItems.nodes.length || 0;
+        const count = data?.namespace?.workItems.nodes.length || 0;
         if (!this.isInitialLoadComplete) {
           this.hasAnyIssues = Boolean(count);
           this.isInitialLoadComplete = true;
@@ -1011,7 +1011,7 @@ export default {
       });
     },
     handleListDataResults(listData) {
-      this.pageInfo = listData?.namespace.workItems.pageInfo ?? {};
+      this.pageInfo = listData?.namespace?.workItems.pageInfo ?? {};
 
       if (listData?.namespace) {
         document.title = this.calculateDocumentTitle(listData);

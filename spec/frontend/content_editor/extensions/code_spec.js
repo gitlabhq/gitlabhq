@@ -4,7 +4,7 @@ import Code from '~/content_editor/extensions/code';
 import Reference from '~/content_editor/extensions/reference';
 import ReferenceLabel from '~/content_editor/extensions/reference_label';
 import MarkdownSerializer from '~/content_editor/services/markdown_serializer';
-import { createTestEditor } from '../test_utils';
+import { createTestEditor, triggerNodeInputRule } from '../test_utils';
 
 const CODE_HTML = `<p dir="auto" data-sourcepos="1:1-1:31"><code data-sourcepos="1:2-1:30">     code with leading spaces</code></p>`;
 
@@ -158,6 +158,17 @@ describe('content_editor/extensions/code', () => {
       tiptapEditor.commands.setCode();
 
       expect(tiptapEditor.getJSON()).toEqual(expectedDoc.toJSON());
+    });
+  });
+
+  describe('Input rules with inline code', () => {
+    it('does not trigger the input rule after closing backticks', () => {
+      tiptapEditor.commands.setContent('`code`');
+      tiptapEditor.commands.setTextSelection(tiptapEditor.state.doc.content.size);
+
+      triggerNodeInputRule({ tiptapEditor, inputRuleText: ' ' });
+
+      expect(tiptapEditor.getJSON()).toEqual(doc(p('`code`')).toJSON());
     });
   });
 });

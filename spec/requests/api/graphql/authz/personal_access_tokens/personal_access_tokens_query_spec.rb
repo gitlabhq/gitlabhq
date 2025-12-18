@@ -15,6 +15,7 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
 
   let_it_be(:legacy_token_revoked) { create(:personal_access_token, :revoked, user: user, name: 'Revoked token') }
   let_it_be(:legacy_token_expired) { create(:personal_access_token, :expired, :with_last_used_ips, user:) }
+  let_it_be(:legacy_token_expiring_soon) { create(:personal_access_token, user: user, expires_at: 1.week.from_now) }
   let_it_be(:granular_token) do
     create(:granular_pat, name: 'Special token', last_used_at: 1.day.ago, permissions: ['read_member_role'],
       user: user, namespace: group)
@@ -110,11 +111,25 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
           'active' => false
         }),
         a_hash_including({
+          'name' => legacy_token_expiring_soon.name,
+          'active' => true
+        }),
+        a_hash_including({
           'name' => legacy_token_expired.name,
           'active' => false,
           'lastUsedIps' => legacy_token_expired.last_used_ips.map(&:ip_address)
         })
       )
+    end
+
+    describe 'count field' do
+      let(:fields) { 'count' }
+
+      it 'returns the count of PersonalAccessTokens' do
+        send_query
+
+        expect(graphql_data_at(*%i[user personalAccessTokens count])).to eq 5
+      end
     end
 
     it 'avoids N+1 queries' do
@@ -192,6 +207,15 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
 
         it 'returns only non-revoked personal access tokens' do
           expect(personal_access_tokens_data).to all(include('revoked' => false))
+        end
+      end
+
+      context 'with { expires_before: <date> }' do
+        let(:args) { { expires_before: 2.weeks.from_now.to_date } }
+
+        it 'returns only personal access tokens that expire before the given date' do
+          expires_at_dates = personal_access_tokens_data.pluck('expiresAt').map(&:to_date)
+          expect(expires_at_dates).to all(be <= args[:expires_before])
         end
       end
 
