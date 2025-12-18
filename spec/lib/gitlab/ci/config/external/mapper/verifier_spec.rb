@@ -144,7 +144,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
         # We could not reduce the number of projects queries because we need to call project for
         # the `can_access_local_content?` and `sha` BatchLoaders.
         expect(projects_queries.values.sum).to eq(2)
-        expect(access_check_queries.values.sum).to eq(2)
+        expect(access_check_queries.values.sum).to eq(0)
       end
 
       context 'when a project is missing' do

@@ -1,5 +1,6 @@
 #import "../fragments/user.fragment.graphql"
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
+#import "ee_else_ce/graphql_shared/fragments/user_autocomplete_status.fragment.graphql"
 
 query workspaceAutocompleteUsersSearch(
   $search: String!
@@ -12,6 +13,7 @@ query workspaceAutocompleteUsersSearch(
       compositeIdentityEnforced @gl_introduced(version: "18.7.0")
       ...User
       ...UserAvailability
+      ...AutocompleteUserStatus
     }
   }
   workspace: project(fullPath: $fullPath) {
@@ -20,6 +22,7 @@ query workspaceAutocompleteUsersSearch(
       compositeIdentityEnforced @gl_introduced(version: "18.7.0")
       ...User
       ...UserAvailability
+      ...AutocompleteUserStatus
     }
   }
 }

@@ -320,7 +320,7 @@ export default {
         </project-setting-row>
         <project-setting-row
           v-if="glFeatures.aiExperimentSastFpDetection"
-          :label="s__('DuoSAST|Turn on GitLab Duo SAST False Positive Detection')"
+          :label="s__('DuoSAST|Turn on SAST false positive detection')"
           class="gl-mt-5"
           :help-text="
             s__('DuoSAST|Use false positive detection for vulnerabilities on the default branch')
@@ -342,7 +342,7 @@ export default {
             v-model="duoSastFpDetectionEnabled"
             class="gl-mt-2"
             :disabled="duoFeaturesLocked || !duoEnabled || showSastFpDetectionCascadingLock"
-            :label="s__('DuoSAST|Turn on GitLab Duo SAST False Positive Detection')"
+            :label="s__('DuoSAST|Turn on SAST false positive detection')"
             label-position="hidden"
             name="project[project_setting_attributes][duo_sast_fp_detection_enabled]"
             data-testid="duo-sast-fp-detection-enabled"

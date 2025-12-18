@@ -406,11 +406,8 @@ site **Geo Sites** dashboard in your browser.
 
 ## Configure the tracking database
 
-{{< alert type="note" >}}
-
-This step is optional in case you also want to have your tracking database set up externally on another server.
-
-{{< /alert >}}
+> [!note]
+> This step is optional in case you also want to have your tracking database set up externally on another server.
 
 **Secondary** sites use a separate PostgreSQL installation as a tracking
 database to keep track of replication status and automatically recover from

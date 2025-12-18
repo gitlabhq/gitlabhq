@@ -17,6 +17,9 @@ export const mockUser1 = createMockUser({
   username: 'root',
   webUrl: '/root',
   webPath: '/root',
+  status: {
+    availability: 'NOT_SET',
+  },
   compositeIdentityEnforced: false,
 });
 
@@ -32,6 +35,9 @@ export const mockUser2 = createMockUser({
   username: 'rookie',
   webUrl: 'rookie',
   webPath: '/rookie',
+  status: {
+    availability: 'NOT_SET',
+  },
   compositeIdentityEnforced: false,
 });
 
@@ -711,9 +717,28 @@ export const projectMembersResponse = {
           webPath: '/franc',
           status: {
             availability: 'BUSY',
+            disabledForDuoUsage: false,
+            disabledForDuoUsageReason: null,
           },
         },
       ],
+    },
+  },
+};
+
+export const projectAutocompleteCustomResponse = {
+  data: {
+    project: {
+      id: '1',
+      projectMembers: {
+        nodes: [
+          { id: 0, user: { ...mockUser1 } },
+          {
+            id: 2,
+            user: { ...mockUser2 },
+          },
+        ],
+      },
     },
   },
 };
@@ -728,9 +753,36 @@ export const projectAutocompleteMembersResponse = {
         null,
         null,
         // Remove duplicated entry https://gitlab.com/gitlab-org/gitlab/-/issues/327822
-        { ...mockUser1, compositeIdentityEnforced: false },
-        { ...mockUser1, compositeIdentityEnforced: false },
-        { ...mockUser2, compositeIdentityEnforced: false },
+        {
+          ...mockUser1,
+          compositeIdentityEnforced: false,
+
+          status: {
+            availability: 'NOT_SET',
+            disabledForDuoUsage: false,
+            disabledForDuoUsageReason: null,
+          },
+        },
+        {
+          ...mockUser1,
+          compositeIdentityEnforced: false,
+
+          status: {
+            availability: 'NOT_SET',
+            disabledForDuoUsage: false,
+            disabledForDuoUsageReason: null,
+          },
+        },
+        {
+          ...mockUser2,
+          compositeIdentityEnforced: false,
+
+          status: {
+            availability: 'NOT_SET',
+            disabledForDuoUsage: false,
+            disabledForDuoUsageReason: null,
+          },
+        },
         {
           __typename: 'UserCore',
           id: 'gid://gitlab/User/2',
@@ -742,6 +794,8 @@ export const projectAutocompleteMembersResponse = {
           webPath: '/franc',
           status: {
             availability: 'BUSY',
+            disabledForDuoUsage: false,
+            disabledForDuoUsageReason: null,
           },
           compositeIdentityEnforced: false,
         },
@@ -768,6 +822,8 @@ export const groupMembersResponse = {
           webPath: '/franc',
           status: {
             availability: 'BUSY',
+            disabledForDuoUsage: false,
+            disabledForDuoUsageReason: null,
           },
         },
       ],
@@ -801,6 +857,8 @@ export const participantsQueryResponse = {
               webPath: '/franc',
               status: {
                 availability: 'BUSY',
+                disabledForDuoUsage: false,
+                disabledForDuoUsageReason: null,
               },
             },
             {

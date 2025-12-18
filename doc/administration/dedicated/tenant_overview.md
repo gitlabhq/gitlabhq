@@ -132,11 +132,8 @@ The **Maintenance windows** section displays the:
 - Most recent emergency maintenance window (if applicable)
 - Upcoming GitLab version upgrade
 
-{{< alert type="note" >}}
-
-Every Sunday night in UTC, Switchboard updates to display the planned GitLab version upgrades for the upcoming week's maintenance windows. For more information, see [Maintenance windows](maintenance.md#maintenance-windows).
-
-{{< /alert >}}
+> [!note]
+> Every Sunday night in UTC, Switchboard updates to display the planned GitLab version upgrades for the upcoming week's maintenance windows. For more information, see [Maintenance windows](maintenance.md#maintenance-windows).
 
 ## Hosted runners
 

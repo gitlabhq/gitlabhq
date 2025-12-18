@@ -34,11 +34,8 @@ For information about Switchboard user management, see [manage users and notific
 Enable single sign-on (SSO) for Switchboard to integrate with your organization's identity provider.
 Switchboard supports both SAML and OIDC protocols.
 
-{{< alert type="note" >}}
-
-This configures SSO for Switchboard administrators who manage your GitLab Dedicated instance.
-
-{{< /alert >}}
+> [!note]
+> This configures SSO for Switchboard administrators who manage your GitLab Dedicated instance.
 
 To configure SSO for Switchboard:
 
@@ -75,11 +72,8 @@ For Entra ID (Azure AD), see:
 - [Configure Microsoft Entra SAML token encryption](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/howto-saml-token-encryption?tabs=azure-portal)
 - [Enforce signed SAML authentication requests](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/howto-enforce-signed-saml-authentication)
 
-{{< alert type="note" >}}
-
-GitLab Dedicated does not support IdP-initiated SAML.
-
-{{< /alert >}}
+> [!note]
+> GitLab Dedicated does not support IdP-initiated SAML.
 
 #### OIDC parameters for Switchboard
 

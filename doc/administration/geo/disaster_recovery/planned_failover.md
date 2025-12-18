@@ -68,11 +68,8 @@ due to unresolved sync errors.
 
 ### Test backup timing in Geo environments
 
-{{< alert type="warning" >}}
-
-Backups from Geo replica databases might be canceled during active database transactions.
-
-{{< /alert >}}
+> [!warning]
+> Backups from Geo replica databases might be canceled during active database transactions.
 
 Test backup procedures ahead of time and consider these strategies:
 
@@ -82,11 +79,8 @@ Test backup procedures ahead of time and consider these strategies:
 
 ### Prepare comprehensive fallback procedures
 
-{{< alert type="warning" >}}
-
-Plan the rollback decision points before promotion completes, as falling back afterwards might result in data loss.
-
-{{< /alert >}}
+> [!warning]
+> Plan the rollback decision points before promotion completes, as falling back afterwards might result in data loss.
 
 Document specific steps to revert to the original primary, including:
 

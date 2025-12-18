@@ -460,8 +460,6 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:create_issue) }.enable :create_task
 
-  # These abilities are not allowed to admins that are not members of the project,
-  # that's why they are defined separately.
   rule { guest & can?(:download_code) }.enable :build_download_code
   rule { guest & can?(:read_container_image) }.enable :build_read_container_image
 
@@ -1345,8 +1343,8 @@ class ProjectPolicy < BasePolicy
     return ::Gitlab::Access::REPORTER if alert_bot?
     return ::Gitlab::Access::REPORTER if support_bot? && service_desk_enabled?
 
-    # NOTE: max_member_access has its own cache
-    project.team.max_member_access(@user.id)
+    # NOTE: max_member_access_for_user is cached
+    project.max_member_access_for_user(@user)
   end
 
   def access_allowed_to?(feature)

@@ -1,0 +1,3 @@
+fragment AutocompleteUserStatus on AutocompletedUser {
+  id
+}

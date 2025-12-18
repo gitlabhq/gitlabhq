@@ -22,7 +22,7 @@ To access environment variables, use the syntax for your [runner executor's shel
 ## With Bash, `sh` and similar
 
 To access environment variables in Bash, `sh`, and similar shells, prefix the
-CI/CD variable with (`$`):
+CI/CD variable with `$`:
 
 ```yaml
 job_name:
@@ -87,6 +87,36 @@ variables:
 ```
 
 The re-assigned variable cannot have the same name as the original variable. Otherwise it does not get expanded.
+
+## Prevent parsing errors
+
+Quote script commands and variable values to prevent YAML and shell parsing errors:
+
+- Quote entire commands when they contain colons (`:`) to prevent YAML from interpreting them as key-value pairs:
+
+  ```yaml
+  job_name:
+    script:
+      - 'echo "Status: Complete"'  # Single quotes prevent YAML colon parsing
+  ```
+
+- Quote variables when their values might contain spaces or special characters:
+
+  ```yaml
+  job_name:
+    script:
+      - echo "$FILE_PATH"          # Quote if FILE_PATH might have spaces
+  ```
+
+- Avoid quoting when you want variables to expand into separate shell arguments:
+
+  ```yaml
+  job_name:
+    variables:
+      COMPILE_FLAGS: "-Wall -Werror -O2"
+    script:
+      - gcc $COMPILE_FLAGS main.c  # Expands to: gcc -Wall -Werror -O2 main.c
+  ```
 
 ## Pass an environment variable to another job
 

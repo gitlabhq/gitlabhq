@@ -26266,10 +26266,10 @@ msgstr ""
 msgid "DuoProTrial|You have successfully started a Duo Pro trial that will expire on %{exp_date}. To give members access to new GitLab Duo Pro features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Pro seats."
 msgstr ""
 
-msgid "DuoSAST|SAST False Positive Detection"
+msgid "DuoSAST|SAST false positive detection"
 msgstr ""
 
-msgid "DuoSAST|Turn on GitLab Duo SAST False Positive Detection"
+msgid "DuoSAST|Turn on SAST false positive detection"
 msgstr ""
 
 msgid "DuoSAST|Use false positive detection for vulnerabilities on the default branch"
@@ -26287,10 +26287,10 @@ msgstr ""
 msgid "DuoWorkflowSettings|Model Context Protocol"
 msgstr ""
 
-msgid "DuoWorkflowSettings|Turn on MCP support for GitLab Duo Agentic Chat and GitLab Duo Agent Platform"
+msgid "DuoWorkflowSettings|Turn on MCP support for GitLab Duo Chat (Agentic) and GitLab Duo Agent Platform."
 msgstr ""
 
-msgid "DuoWorkflowSettings|Turn on Model Context Protocol (MCP) support"
+msgid "DuoWorkflowSettings|Turn on support for Model Context Protocol (MCP)"
 msgstr ""
 
 msgid "Duplicate entries found for compliance controls for the requirement."
@@ -38516,16 +38516,10 @@ msgstr[1] ""
 msgid "Job|An error occurred while fetching the job header data."
 msgstr ""
 
-msgid "Job|An error occurred while generating an attestation for build artifacts in this job. Please check the configuration, and try again."
-msgstr ""
-
 msgid "Job|Are you sure you want to erase this job log and artifacts?"
 msgstr ""
 
 msgid "Job|Are you sure you want to force cancel this job? This will immediately mark the job as canceled, even if the job is still running."
-msgstr ""
-
-msgid "Job|Attestation Generation Error"
 msgstr ""
 
 msgid "Job|Browse"
@@ -76945,6 +76939,9 @@ msgid "WorkItem|Cancel"
 msgstr ""
 
 msgid "WorkItem|Canceled"
+msgstr ""
+
+msgid "WorkItem|Cannot be assigned"
 msgstr ""
 
 msgid "WorkItem|Cannot remove status"

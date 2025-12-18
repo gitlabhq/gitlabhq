@@ -24,6 +24,7 @@ Pipeline execution policies enforce custom CI/CD jobs in your projects' pipeline
 ## Scheduling your pipeline execution policies
 
 Unlike regular pipeline execution policies that inject or override jobs in existing pipelines, scheduled policies create new pipelines that run independently on the schedule you define.
+Scheduled pipelines are separate from your project's `.gitlab-ci.yml` and do not execute any of the project's CI/CD jobs.
 
 Common use cases include:
 
@@ -151,6 +152,8 @@ To prevent overwhelming your CI/CD infrastructure when applying policies to mult
 - The minimum time window is 10 minutes (600 seconds), and the maximum is approximately 1 month (2,629,746 seconds).
 - For monthly schedules, if you specify dates that don't exist in certain months (like 31 for February), those runs are skipped.
 - A scheduled policy can only have one schedule configuration at a time.
+- When you apply a policy to multiple projects, ensure your time window is large enough to accommodate the number of projects, based on your available runner capacity. For example, a policy applied to 1000 projects with a one hour time window distributes pipeline creation evenly throughout that hour (approximately 16 pipelines per minute). Verify that your runners can handle this pipeline creation rate or choose a larger time window to avoid queuing or delays.
+- For monthly schedules, the interval between consecutive runs may vary due to random distribution during the time window. For example, a monthly schedule might run 20 days after the previous run, then 30 days later. This distribution is the expected behavior because it helps distribute load across your infrastructure.
 
 ## Snooze scheduled pipeline execution policies
 
@@ -248,11 +251,20 @@ In this example, if all of the specified branches exist in the project, the poli
 
 To use scheduled pipeline execution policies:
 
-1. Store your CI/CD configuration in your security policy project.
+1. Store all CI/CD configuration in your security policy project. Scheduled pipelines are executed by the Security Policy Bot User, which has limited privileges and cannot access files from other private projects. Including CI/CD configuration files from other projects causes access errors.
 1. In your security policy project's **Settings** > **General** > **Visibility, project features, permissions** section, enable the **Grant security policy project access to CI/CD configuration** setting.
 1. Ensure your CI/CD configuration includes appropriate workflow rules for scheduled pipelines.
 
-The security policy bot is a system account that GitLab automatically creates to handle the execution of security policies. When you enable the appropriate settings, this bot is granted the necessary permissions to access CI/CD configurations and run scheduled pipelines. The permissions are only necessary if the CI/CD configurations is not in a public project.
+### Security Policy Bot User
+
+Scheduled pipelines are executed by the Security Policy Bot User, a system account that GitLab automatically creates to handle the execution of security policies. This bot user has limited privileges and can access only the following files:
+
+- Files in the security policy project
+- Files in public projects
+
+The Security Policy Bot User cannot access files from private projects, even if those projects are in the same group. This security restriction ensures that policy execution remains isolated and secure.
+[!important]
+> Because of these privilege limitations, you must store all pipeline configuration files (including any files referenced with an `include:` statement) directly in your security policy project. Do not reference CI/CD configuration files from other private projects, as this results in access errors during pipeline execution.
 
 Note these limitations:
 

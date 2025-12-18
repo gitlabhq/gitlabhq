@@ -21,11 +21,8 @@ As a GitLab-managed solution, you cannot change any GitLab functionality control
 
 GitLab Dedicated engineers do not have direct access to your environment, except for [break glass situations](../../../subscriptions/gitlab_dedicated/_index.md#access-controls).
 
-{{< alert type="note" >}}
-
-An instance refers to a GitLab Dedicated deployment, whereas a tenant refers to a customer.
-
-{{< /alert >}}
+> [!note]
+> An instance refers to a GitLab Dedicated deployment, whereas a tenant refers to a customer.
 
 ## Configure your instance using Switchboard
 
@@ -112,8 +109,5 @@ Configuration changes requested with a [support ticket](https://support.gitlab.c
 - May be postponed to the following week if GitLab needs to perform high-priority maintenance tasks.
 - Can't be applied outside the weekly maintenance window unless they qualify for [emergency support](https://about.gitlab.com/support/#how-to-engage-emergency-support).
 
-{{< alert type="note" >}}
-
-Even if a change request meets the minimum lead time, it might not be applied during the upcoming maintenance window.
-
-{{< /alert >}}
+> [!note]
+> Even if a change request meets the minimum lead time, it might not be applied during the upcoming maintenance window.

@@ -286,11 +286,8 @@ This new architecture allows GitLab to be resilient to connectivity issues betwe
 
 ## Known issues
 
-{{< alert type="warning" >}}
-
-These known issues reflect only the latest version of GitLab. If you are using an older version, additional issues might exist.
-
-{{< /alert >}}
+> [!warning]
+> These known issues reflect only the latest version of GitLab. If you are using an older version, additional issues might exist.
 
 - Pushing directly to a **secondary** site redirects (for HTTP) or proxies (for SSH) the request to the **primary** site instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381). You cannot use Git over HTTP with credentials embedded in the URI, for example, `https://user:personal-access-token@secondary.tld`. For more information, see how to [use a Geo Site](replication/usage.md).
 - The **primary** site has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the **secondary** site to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/-/issues/208465).

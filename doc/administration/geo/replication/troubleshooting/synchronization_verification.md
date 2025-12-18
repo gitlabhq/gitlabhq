@@ -321,11 +321,8 @@ When you trigger a resync or reverification action, the system marks matching re
 reverification background workers pick up these records and process them according to normal queue priority.
 This mechanism allows you to expedite the processing of failed resources without immediately blocking on the operation.
 
-{{< alert type="note" >}}
-
-It is not possible to reverify a record which is not successfully synced. Only a synced record can be verified.
-
-{{< /alert >}}
+> [!note]
+> It is not possible to reverify a record which is not successfully synced. Only a synced record can be verified.
 
 It is possible to trigger bulk actions from the UI or from the Rails console.
 
@@ -484,11 +481,8 @@ The same errors are also reflected in the UI under **Admin** > **Geo** > **Sites
 
 #### Clean up inconsistencies
 
-{{< alert type="warning" >}}
-
-Ensure you have a recent and working backup at hand before issuing any deletion commands.
-
-{{< /alert >}}
+> [!warning]
+> Ensure you have a recent and working backup at hand before issuing any deletion commands.
 
 To remove those errors, first identify which particular resources are affected. Then, run the appropriate `destroy` commands to ensure the deletion is propagated across all Geo sites and their databases. Based on the previous scenario, an **upload** is causing those errors which is used as an example below.
 
@@ -1020,11 +1014,8 @@ end
 
 **Resolution:**
 
-{{< alert type="warning" >}}
-
-Ensure you have a recent and working backup before deleting any upload records. Coordinate with your team to confirm these uploads are safe to remove.
-
-{{< /alert >}}
+> [!warning]
+> Ensure you have a recent and working backup before deleting any upload records. Coordinate with your team to confirm these uploads are safe to remove.
 
 Remove problematic uploads after confirmation:
 
@@ -1100,11 +1091,8 @@ end
 
 **Resolution:**
 
-{{< alert type="warning" >}}
-
-Removing LFS objects affects all projects that reference them. Ensure you have backups and coordinate with project maintainers before deletion.
-
-{{< /alert >}}
+> [!warning]
+> Removing LFS objects affects all projects that reference them. Ensure you have backups and coordinate with project maintainers before deletion.
 
 Remove LFS objects with missing files:
 
@@ -1441,11 +1429,8 @@ to transfer each affected repository from the primary to the secondary site.
 
 ## Find repository check failures in a Geo secondary site
 
-{{< alert type="note" >}}
-
-All repositories data types have been migrated to the Geo Self-Service Framework in GitLab 16.3. There is an [issue to implement this functionality back in the Geo Self-Service Framework](https://gitlab.com/gitlab-org/gitlab/-/issues/426659).
-
-{{< /alert >}}
+> [!note]
+> All repositories data types have been migrated to the Geo Self-Service Framework in GitLab 16.3. There is an [issue to implement this functionality back in the Geo Self-Service Framework](https://gitlab.com/gitlab-org/gitlab/-/issues/426659).
 
 For GitLab 16.2 and earlier:
 
@@ -1463,11 +1448,8 @@ Repository check failures on a Geo secondary site do not necessarily imply a rep
 [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session)
 to enact the following, basic troubleshooting steps.
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ### Get the number of repositories that failed the repository check
 
@@ -1599,11 +1581,8 @@ Reduce concurrency settings on the **primary** site via [UI](../tuning.md#changi
 
 In some cases, you may need to manually mark an object type as synced after resolving underlying issues. This scenario occurs when the issue can only be fixed via a manual upload of the file to the object bucket in the secondary site. Normally that operation should not be needed, but can happen due to version bugs. The following shows a way to mark those manually uploaded object types (in this case uploads) as synced.
 
-{{< alert type="warning" >}}
-
-Only mark objects as synced if you have verified that the files are actually present and accessible on the secondary site.
-
-{{< /alert >}}
+> [!warning]
+> Only mark objects as synced if you have verified that the files are actually present and accessible on the secondary site.
 
 ```ruby
 def mark_upload_synced(upload_id)

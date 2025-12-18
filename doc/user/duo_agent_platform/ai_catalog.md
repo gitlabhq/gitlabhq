@@ -76,7 +76,8 @@ GitLab uses semantic versioning to indicate the scope of changes.
 For example, an agent can have a version number like `1.0.0` or `1.1.0`.
 GitLab manages semantic versioning automatically. Updates to agents or flows always increment the minor version.
 
-Versioning ensures that your projects and groups continue to use a stable, tested configuration of an agent or flow, even as the catalog item evolves. This prevents unexpected changes from affecting your workflows.
+Versioning ensures that your projects and groups continue to use a stable, tested configuration of an agent or flow.
+This prevents unexpected changes from affecting your workflows.
 
 ### Creating versions
 
@@ -135,7 +136,7 @@ To make your group or project use the latest version of an agent or flow:
    - **Automate** > **Agents**
    - **Automate** > **Flows**
 1. Select the agent or flow you want to update.
-1. Review the latest version carefully. To update, select **View latest version** > **Update to `<x.y.z>`**
+1. Review the latest version carefully. To update, select **View latest version** > **Update to `<x.y.z>`**.
 
 ## Related topics
 

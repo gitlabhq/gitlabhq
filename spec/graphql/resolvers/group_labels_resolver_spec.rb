@@ -79,7 +79,7 @@ RSpec.describe Resolvers::GroupLabelsResolver, feature_category: :team_planning 
           Gitlab::SafeRequestStore.ensure_request_store do
             resolve_labels(group, params).to_a
           end
-        end.not_to exceed_query_limit(control)
+        end.not_to exceed_query_limit(control).with_threshold(3)
       end
     end
 

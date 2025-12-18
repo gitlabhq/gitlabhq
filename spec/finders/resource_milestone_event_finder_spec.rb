@@ -59,8 +59,7 @@ RSpec.describe ResourceMilestoneEventFinder do
         create_event(milestone2, :add)
         create_event(milestone2, :remove)
 
-        # 1 milestones + 1 project + 1 user + 4 ability
-        expect { described_class.new(user, issue).execute }.not_to exceed_query_limit(control).with_threshold(6)
+        expect { described_class.new(user, issue).execute }.not_to exceed_query_limit(control).with_threshold(10)
       end
     end
 

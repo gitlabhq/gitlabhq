@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
@@ -91,7 +91,6 @@ describe('Job App', () => {
   const findJobContent = () => wrapper.findByTestId('job-content');
   const findArchivedJob = () => wrapper.findByTestId('archived-job');
   const findStickyFooter = () => wrapper.findByTestId('rca-bar-component');
-  const findJobContentAlert = () => findJobContent().findComponent(GlAlert);
 
   beforeEach(() => {
     PanelBreakpointInstance.addResizeListener.mockImplementation((callback) => {
@@ -223,36 +222,19 @@ describe('Job App', () => {
   describe('with successful request', () => {
     describe('Header section', () => {
       describe('job callout message', () => {
-        it('should not render the reason when reason is absent', async () => {
-          await setupAndMount();
+        it('should not render the reason when reason is absent', () =>
+          setupAndMount().then(() => {
+            expect(wrapper.vm.shouldRenderCalloutMessage).toBe(false);
+          }));
 
-          expect(findJobContentAlert().exists()).toBe(false);
-        });
-
-        it('should render the reason when reason is present', async () => {
-          const calloutMessage = 'There is an unkown failure, please try again';
-          await setupAndMount({ jobData: { callout_message: calloutMessage } });
-
-          expect(findJobContentAlert().text()).toBe(calloutMessage);
-        });
-      });
-
-      describe('attestation warning message', () => {
-        it('should not render the warning when the warning is absent', async () => {
-          await setupAndMount();
-
-          expect(findJobContentAlert().exists()).toBe(false);
-        });
-
-        it('should render the warning when the warning is present', async () => {
-          await setupAndMount({
+        it('should render the reason when reason is present', () =>
+          setupAndMount({
             jobData: {
-              supply_chain_attestation_status: 'error',
+              callout_message: 'There is an unkown failure, please try again',
             },
-          });
-
-          expect(findJobContentAlert().exists()).toBe(true);
-        });
+          }).then(() => {
+            expect(wrapper.vm.shouldRenderCalloutMessage).toBe(true);
+          }));
       });
     });
 

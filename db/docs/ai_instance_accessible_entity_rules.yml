@@ -1,7 +1,7 @@
 ---
 table_name: ai_instance_accessible_entity_rules
 classes:
-- Ai::InstanceAccessibleEntityRule
+- Ai::FeatureAccessRule
 feature_categories:
 - ai_abstraction_layer
 description: Stores instance-level AI accessible entity rules that define which AI

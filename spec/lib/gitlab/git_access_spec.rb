@@ -731,7 +731,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
 
           context 'when is not member of the project' do
             context 'pull code' do
-              it { expect { pull_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:download]) }
+              it { expect { pull_access_check }.not_to raise_error }
             end
           end
         end

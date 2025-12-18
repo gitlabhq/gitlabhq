@@ -19,11 +19,8 @@ former is ideal for reducing transfer and storage costs by replicating data
 belonging to only a subset of users. The latter is more suited to progressively
 rolling out Geo to a large GitLab instance.
 
-{{< alert type="note" >}}
-
-Geo's synchronization logic is outlined in the [documentation](../_index.md). Both the solution and the documentation is subject to change from time to time. You must independently determine your legal obligations in regard to privacy and cybersecurity laws, and applicable trade control law on an ongoing basis.
-
-{{< /alert >}}
+> [!note]
+> Geo's synchronization logic is outlined in the [documentation](../_index.md). Both the solution and the documentation is subject to change from time to time. You must independently determine your legal obligations in regard to privacy and cybersecurity laws, and applicable trade control law on an ongoing basis.
 
 Selective synchronization:
 

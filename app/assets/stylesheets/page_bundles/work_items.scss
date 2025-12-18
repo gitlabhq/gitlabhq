@@ -487,3 +487,16 @@ ul.content-list {
 .work-item-drawer [data-testid="work-item-detail"]:has(.issue-sticky-header) .flash-container.sticky {
   top: calc(var(--work-item-sticky-header-height, 3rem) + $gl-spacing-scale-3);
 }
+
+/* stylelint-disable-next-line gitlab/no-gl-class */
+.gl-new-dropdown-item:has(.sidebar-participant-disabled) {
+  cursor: not-allowed;
+}
+
+.sidebar-participant-disabled {
+  /* stylelint-disable-next-line gitlab/no-gl-class */
+  .gl-avatar-labeled-label,
+  .gl-avatar-labeled-sublabel {
+    color: var(--gl-text-color-disabled);
+  }
+}

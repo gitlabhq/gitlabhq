@@ -258,11 +258,8 @@ When you register a Microsoft Azure application, you must grant API permissions 
 retrieve required details. You must provide at least the `openid`, `profile`, and `email` permissions.
 For more information, see the [Microsoft documentation for configuring app permissions for a web API](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-configure-app-access-web-apis#add-permissions-to-access-microsoft-graph).
 
-{{< alert type="note" >}}
-
-All accounts provisioned by Azure must have an email address defined. If an email address is not defined, Azure assigns a randomly generated address. If you've configured [domain sign-up restrictions](../settings/sign_up_restrictions.md#allow-or-deny-sign-ups-using-specific-email-domains), this random address might prevent the account from being created.
-
-{{< /alert >}}
+> [!note]
+> All accounts provisioned by Azure must have an email address defined. If an email address is not defined, Azure assigns a randomly generated address. If you've configured [domain sign-up restrictions](../settings/sign_up_restrictions.md#allow-or-deny-sign-ups-using-specific-email-domains), this random address might prevent the account from being created.
 
 Example configuration block for Linux package installations:
 
@@ -504,11 +501,8 @@ As you migrate from `azure_oauth2` to `omniauth_openid_connect` as part of upgra
   - Update `extern_uid` manually. To do this, use the [API or Rails console](../../integration/omniauth.md#change-apps-or-configuration) to update the `extern_uid` for each user.
     This method may be required if the instance has already been upgraded to 17.0 or later, and users have attempted to sign in.
 
-{{< alert type="note" >}}
-
-`azure_oauth2` might have used Entra ID's `upn` claim as the email address, if the `email` claim was missing or blank when provisioning GitLab accounts.
-
-{{< /alert >}}
+> [!note]
+> `azure_oauth2` might have used Entra ID's `upn` claim as the email address, if the `email` claim was missing or blank when provisioning GitLab accounts.
 
 ### Configure Microsoft Azure Active Directory B2C
 

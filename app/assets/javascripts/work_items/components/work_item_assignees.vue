@@ -121,37 +121,43 @@ export default {
     },
   },
   computed: {
+    allUsers() {
+      const currentUser = this.alphabetizedUsers.find(({ id }) => id === this.currentUser?.id);
+
+      return unionBy([currentUser], this.alphabetizedUsers, 'id').map((user) => ({
+        ...user,
+        value: user?.id,
+        text: user?.name,
+      }));
+    },
+    alphabetizedUsers() {
+      return unionBy(this.users, this.participants, 'id').sort(sortNameAlphabetically);
+    },
+    disabledUsers() {
+      const selectedUsersId = this.selectedUsers.map((u) => u.id);
+      return (this.users || [])
+        .filter((u) => u?.status?.disabledForDuoUsage === true && !selectedUsersId.includes(u.id))
+        .map((u) => u.id);
+    },
+    selectedUsers() {
+      return this.allUsers.filter(({ id }) => this.assigneeIdsToShowAtTopOfTheListbox.includes(id));
+    },
+    unselectedUsers() {
+      return this.allUsers.filter(
+        ({ id }) => !this.assigneeIdsToShowAtTopOfTheListbox.includes(id),
+      );
+    },
     searchUsers() {
       // when there is no search text, then we show selected users first
       // followed by participants, then all other users
       if (this.searchKey === '') {
-        const alphabetizedUsers = unionBy(this.users, this.participants, 'id').sort(
-          sortNameAlphabetically,
-        );
-
-        if (alphabetizedUsers.length === 0) {
+        if (this.alphabetizedUsers.length === 0) {
           return [];
         }
 
-        const currentUser = alphabetizedUsers.find(({ id }) => id === this.currentUser?.id);
-
-        const allUsers = unionBy([currentUser], alphabetizedUsers, 'id').map((user) => ({
-          ...user,
-          value: user?.id,
-          text: user?.name,
-        }));
-
-        const selectedUsers = allUsers.filter(({ id }) =>
-          this.assigneeIdsToShowAtTopOfTheListbox.includes(id),
-        );
-
-        const unselectedUsers = allUsers.filter(
-          ({ id }) => !this.assigneeIdsToShowAtTopOfTheListbox.includes(id),
-        );
-
         // don't show the selected section if it's empty
-        if (selectedUsers.length === 0) {
-          return allUsers.map((user) => ({
+        if (this.selectedUsers.length === 0) {
+          return this.allUsers.map((user) => ({
             ...user,
             value: user?.id,
             text: user?.name,
@@ -159,8 +165,8 @@ export default {
         }
 
         return [
-          { options: selectedUsers, text: __('Selected') },
-          { options: unselectedUsers, text: __('All users'), textSrOnly: true },
+          { options: this.selectedUsers, text: __('Selected') },
+          { options: this.unselectedUsers, text: __('All users'), textSrOnly: true },
         ];
       }
       const filteredParticipants = fuzzaldrinPlus.filter(
@@ -341,6 +347,7 @@ export default {
     :show-footer="canInviteMembers"
     :loading="isLoadingUsers"
     :list-items="searchUsers"
+    :disabled-items="disabledUsers"
     :item-value="selectedAssigneeIds"
     :toggle-dropdown-text="dropdownText"
     :header-text="headerText"

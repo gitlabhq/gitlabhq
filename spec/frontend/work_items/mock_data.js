@@ -42,6 +42,10 @@ export const mockParticipants = [
     webPath: '/l_zadeh',
     name: 'Lotfi Zadeh',
     username: 'l_zadeh',
+    compositeIdentityEnforced: false,
+    status: {
+      availability: 'NOT_SET',
+    },
   },
   {
     __typename: 'UserCore',
@@ -51,6 +55,10 @@ export const mockParticipants = [
     webPath: '/fbar',
     name: 'Foo Bar',
     username: 'fbar',
+    compositeIdentityEnforced: false,
+    status: {
+      availability: 'NOT_SET',
+    },
   },
 ];
 
@@ -768,6 +776,9 @@ export const mockParticipantWidget = {
         username: 'rookie',
         webUrl: 'rookie',
         webPath: '/rookie',
+        status: {
+          availability: 'NOT_SET',
+        },
       },
     ],
   },
@@ -3776,8 +3787,10 @@ export const projectMembersAutocompleteResponseWithCurrentUser = {
           username: 'rookie',
           webUrl: 'rookie',
           webPath: '/rookie',
-          status: null,
           compositeIdentityEnforced: false,
+          status: {
+            availability: 'NOT_SET',
+          },
         },
         {
           __typename: 'AutocompletedUser',
@@ -3788,8 +3801,10 @@ export const projectMembersAutocompleteResponseWithCurrentUser = {
           username: 'root',
           webUrl: '/root',
           webPath: '/root',
-          status: null,
           compositeIdentityEnforced: false,
+          status: {
+            availability: 'NOT_SET',
+          },
         },
       ],
     },

@@ -760,6 +760,20 @@ PRIMARY KEY id
 ORDER BY id
 SETTINGS index_granularity = 8192;
 
+CREATE TABLE siphon_knowledge_graph_enabled_namespaces
+(
+    `id` Int64,
+    `root_namespace_id` Int64,
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (root_namespace_id, id)
+ORDER BY (root_namespace_id, id)
+SETTINGS index_granularity = 8192;
+
 CREATE TABLE siphon_label_links
 (
     `id` Int64,

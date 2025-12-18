@@ -2,7 +2,7 @@
 stage: Security Risk Management
 group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: SAST False Positive Detection
+title: SAST false positive detection
 description: Automatic detection and filtering of false positives in SAST findings.
 ---
 
@@ -74,8 +74,8 @@ To enable false positive detection for all projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
-1. Select **Change configuration** 
-1. Select the **SAST False Positive Detection** checkbox.
+1. Select **Change configuration**.
+1. Select the **Turn on SAST false positive detection** checkbox.
 1. Select **Save changes**.
 
 This setting applies to all descendant projects in the group. Individual projects can override this setting if they need to disable it.
@@ -87,7 +87,7 @@ To enable false positive detection for a specific project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
-1. Turn on the **Turn on GitLab Duo SAST False Positive Detection** toggle.
+1. Turn on the **Turn on SAST false positive detection** toggle.
 1. Select **Save changes**.
 
 #### Enable for an instance
@@ -97,7 +97,7 @@ GitLab administrators can enable false positive detection for the entire instanc
 1. On the left sidebar, select **Admin Area**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
-1. Select the **Use Duo SAST False Positive Detection** checkbox.
+1. Select the **Turn on SAST false positive detection** checkbox.
 1. Select **Save changes**.
 
 False positive detection works automatically with your existing SAST scanners when enabled for an instance, group, or project.

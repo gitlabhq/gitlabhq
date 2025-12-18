@@ -1,7 +1,7 @@
 <script>
 import { GlAvatarLabeled, GlBadge, GlIcon } from '@gitlab/ui';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 const AVAILABILITY_STATUS = {
   NOT_SET: 'NOT_SET',
@@ -37,8 +37,17 @@ export default {
     isAgent() {
       return this.user?.compositeIdentityEnforced;
     },
+    isDisabled() {
+      return this.user?.status?.disabledForDuoUsage === true;
+    },
+    disabledReason() {
+      return this.user?.status?.disabledForDuoUsageReason || s__('WorkItem|Cannot be assigned');
+    },
     hasCannotMergeIcon() {
       return this.issuableType === TYPE_MERGE_REQUEST && !this.user.canMerge;
+    },
+    subLabel() {
+      return this.isDisabled ? this.disabledReason : `@${this.user.username}`;
     },
   },
   i18n: {
@@ -52,9 +61,11 @@ export default {
   <gl-avatar-labeled
     :size="32"
     :label="user.name"
-    :sub-label="`@${user.username}`"
+    :sub-label="subLabel"
+    :is-disabled="isDisabled"
     :src="user.avatarUrl || user.avatar || user.avatar_url"
     class="sidebar-participant gl-relative gl-items-center"
+    :class="{ 'sidebar-participant-disabled': isDisabled }"
   >
     <template #meta>
       <gl-icon

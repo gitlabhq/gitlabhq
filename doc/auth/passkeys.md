@@ -4,8 +4,6 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Passkeys
 description: Passwordless authentication and 2FA using passkeys
-ignore_in_report: true
-noindex: true
 ---
 
 {{< details >}}

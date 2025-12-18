@@ -157,11 +157,8 @@ after copying over the GitLab secrets file from the original installation.
 Next, restore the backup, specifying the ID of the backup you wish to
 restore:
 
-{{< alert type="warning" >}}
-
-The following command overwrites the contents of your GitLab database!
-
-{{< /alert >}}
+> [!warning]
+> The following command overwrites the contents of your GitLab database!
 
 ```shell
 # NOTE: "_gitlab_backup.tar" is omitted from the name

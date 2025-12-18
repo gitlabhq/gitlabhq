@@ -167,11 +167,8 @@ In Kubernetes, you can [use the same domain under `global.hosts.domain` as for t
 
 You can use different external URLs per site. You can use this to offer a specific site to a specific set of users. Alternatively, you can give users control over which site they use, though they must understand the implications of their choice.
 
-{{< alert type="note" >}}
-
-GitLab does not support multiple external URLs, see [issue 21319](https://gitlab.com/gitlab-org/gitlab/-/issues/21319). An inherent problem is there are many cases where a site needs to produce an absolute URL outside of the context of an HTTP request, such as when sending emails that were not triggered by a request.
-
-{{< /alert >}}
+> [!note]
+> GitLab does not support multiple external URLs, see [issue 21319](https://gitlab.com/gitlab-org/gitlab/-/issues/21319). An inherent problem is there are many cases where a site needs to produce an absolute URL outside of the context of an HTTP request, such as when sending emails that were not triggered by a request.
 
 ### Configure a secondary Geo site to a different external URL than the primary site
 

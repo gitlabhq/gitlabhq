@@ -73,6 +73,32 @@ describe('Sidebar participant component', () => {
       expect(findAgentBadge().exists()).toBe(true);
       expect(findBusyBadge().exists()).toBe(false);
     });
+
+    describe('and not disabled', () => {
+      beforeEach(() => {
+        createComponent({
+          compositeIdentityEnforced: true,
+          status: { ...user.status, disabledForDuoUsage: false },
+        });
+      });
+
+      it('does not render the disabled class', () => {
+        expect(findAvatar().classes()).not.toContain('sidebar-participant-disabled');
+      });
+    });
+
+    describe('and disabled', () => {
+      beforeEach(() => {
+        createComponent({
+          compositeIdentityEnforced: true,
+          status: { ...user.status, disabledForDuoUsage: true },
+        });
+      });
+
+      it('adds the sidebar-participant-disabled class', () => {
+        expect(findAvatar().classes()).toContain('sidebar-participant-disabled');
+      });
+    });
   });
 
   it('does not render a warning icon', () => {

@@ -427,11 +427,8 @@ Found data inside the gitlabhq_production database! If you are sure you are in t
 
 After you have confirmed that you are on the appropriate secondary site, initiate the replication with `--force`.
 
-{{< alert type="warning" >}}
-
-Using `--force` causes **all existing data in the database on that secondary server to be deleted**.
-
-{{< /alert >}}
+> [!warning]
+> Using `--force` causes **all existing data in the database on that secondary server to be deleted**.
 
 ## Promoting a secondary Geo cluster in the GitLab Helm chart
 

@@ -42,7 +42,7 @@ RSpec.describe StubMemberAccessLevel, feature_category: :system_access do
 
       it_behaves_like 'access level stubs' do
         def access_level_for(user)
-          object.team.max_member_access(user.id)
+          object.max_member_access_for_user(user)
         end
       end
     end
@@ -54,15 +54,6 @@ RSpec.describe StubMemberAccessLevel, feature_category: :system_access do
         def access_level_for(user)
           object.max_member_access_for_user(user)
         end
-      end
-    end
-
-    context 'with unsupported object' do
-      let(:object) { :a_symbol }
-
-      it 'raises an error' do
-        expect { stub_member_access_level(object) }
-          .to raise_error(ArgumentError, "Stubbing member access level unsupported for :a_symbol (Symbol)")
       end
     end
   end

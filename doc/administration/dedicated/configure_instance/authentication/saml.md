@@ -124,11 +124,8 @@ If you are unable to use Switchboard to add or update SAML for your GitLab Dedic
 
 If [SAML request signing](../../../../integration/saml.md#sign-saml-authentication-requests-optional) is desired, a certificate must be obtained. This certificate can be self-signed which has the advantage of not having to prove ownership of an arbitrary Common Name (CN) to a public Certificate Authority (CA).
 
-{{< alert type="note" >}}
-
-Because SAML request signing requires certificate signing, you must complete these steps to use SAML with this feature enabled.
-
-{{< /alert >}}
+> [!note]
+> Because SAML request signing requires certificate signing, you must complete these steps to use SAML with this feature enabled.
 
 To enable SAML request signing:
 

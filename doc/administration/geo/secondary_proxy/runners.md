@@ -22,11 +22,8 @@ title: Secondary runners
 
 With [Geo proxying for secondary sites](_index.md), it is possible to register a `gitlab-runner` with a secondary site. This offloads load from the primary instance.
 
-{{< alert type="note" >}}
-
-The jobs that start during the first stage of a pipeline almost always have their Git clone requests forwarded to the primary site. This is because those clones usually occur before the Git data is replicated and verified by the secondary site. Later stages are not guaranteed to be served by the secondary site either, for example if the Git change is large, bandwidth is small, or pipeline stages are short. In most cases, the subsequent stages of the pipeline serve Git data from the secondary site. [Issue 446176](https://gitlab.com/gitlab-org/gitlab/-/issues/446176) proposes an enhancement to increase the chance of the first stage clone request is served from the secondary site.
-
-{{< /alert >}}
+> [!note]
+> The jobs that start during the first stage of a pipeline almost always have their Git clone requests forwarded to the primary site. This is because those clones usually occur before the Git data is replicated and verified by the secondary site. Later stages are not guaranteed to be served by the secondary site either, for example if the Git change is large, bandwidth is small, or pipeline stages are short. In most cases, the subsequent stages of the pipeline serve Git data from the secondary site. [Issue 446176](https://gitlab.com/gitlab-org/gitlab/-/issues/446176) proposes an enhancement to increase the chance of the first stage clone request is served from the secondary site.
 
 ## Use secondary runners with a Location Aware public URL (Unified URL)
 

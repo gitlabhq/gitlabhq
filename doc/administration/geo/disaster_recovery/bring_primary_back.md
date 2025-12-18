@@ -18,11 +18,8 @@ restore your original configuration. This process consists of two steps:
 1. Making the old **primary** site a **secondary** site.
 1. Promoting a **secondary** site to a **primary** site.
 
-{{< alert type="warning" >}}
-
-If you have any doubts about the consistency of the data on this site, we recommend setting it up from scratch.
-
-{{< /alert >}}
+> [!warning]
+> If you have any doubts about the consistency of the data on this site, we recommend setting it up from scratch.
 
 ## Configure the former **primary** site to be a **secondary** site
 

@@ -774,11 +774,8 @@ You can solve this error in two ways.
 This solution is suitable when the LDAP servers are replicas of each other, and the affected users should be able to sign in using a configured LDAP server.
 For example, if a load balancer is now used to manage LDAP high availability and a separate secondary sign-in option is no longer needed.
 
-{{< alert type="note" >}}
-
-If the LDAP servers aren't replicas of each other, this solution stops affected users from being able to sign in.
-
-{{< /alert >}}
+> [!note]
+> If the LDAP servers aren't replicas of each other, this solution stops affected users from being able to sign in.
 
 To [rename references to the LDAP server](../../raketasks/ldap.md#other-options) that is no longer configured, run:
 

@@ -603,11 +603,8 @@ data before running `pg_basebackup`.
 
 The replication process is now complete.
 
-{{< alert type="note" >}}
-
-The replication process only copies the data from the primary site's database to the secondary site's database. To complete your secondary site configuration, [add the secondary site on your primary site](../replication/configuration.md#step-3-add-the-secondary-site).
-
-{{< /alert >}}
+> [!note]
+> The replication process only copies the data from the primary site's database to the secondary site's database. To complete your secondary site configuration, [add the secondary site on your primary site](../replication/configuration.md#step-3-add-the-secondary-site).
 
 ### PgBouncer support (optional)
 

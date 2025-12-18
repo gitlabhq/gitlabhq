@@ -3144,10 +3144,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   describe 'container_image policies' do
     using RSpec::Parameterized::TableSyntax
 
-    # These are permissions that admins should not have when the project is private
-    # or the container registry is private.
-    let(:admin_excluded_permissions) { [:build_read_container_image] }
-
     let(:anonymous_operations_permissions) { [:read_container_image] }
     let(:guest_operations_permissions) { anonymous_operations_permissions + [:build_read_container_image] }
 
@@ -3318,13 +3314,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     # Overrides `permissions_abilities` defined below to be suitable for container_image policies
     def permissions_abilities(role)
       case role
-      when :admin
-        if project_visibility == :private || access_level == ProjectFeature::PRIVATE
-          maintainer_operations_permissions - admin_excluded_permissions
-        else
-          maintainer_operations_permissions
-        end
-      when :maintainer, :owner
+      when :admin, :maintainer, :owner
         maintainer_operations_permissions
       when :developer
         developer_operations_permissions
