@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Explore::ProjectsController, :with_current_organization, feature_category: :groups_and_projects do
+RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projects do
   shared_examples 'explore projects' do
     let(:expected_default_sort) { 'latest_activity_desc' }
 

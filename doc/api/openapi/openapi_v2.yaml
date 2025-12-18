@@ -49,8 +49,14 @@ tags:
   description: Operations about alert_managements
 - name: branches
   description: Operations about branches
+- name: job_artifacts
+  description: Operations about job_artifacts
+- name: ci_jobs
+  description: Operations about ci_jobs
 - name: secure_files
   description: Operations about secure_files
+- name: pipelines
+  description: Operations about pipelines
 - name: pipeline_schedules
   description: Operations about pipeline_schedules
 - name: cargo_packages
@@ -95,8 +101,10 @@ tags:
   description: Operations about avatars
 - name: bulk_imports
   description: Operations about bulk_imports
-- name: job
-  description: Operations about jobs
+- name: agents
+  description: Operations about agents
+- name: ci_runners
+  description: Operations about ci_runners
 - name: jobs
   description: Operations about jobs
 - name: events
@@ -11073,7 +11081,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - job_artifacts
       operationId: getApiV4ProjectsIdJobsArtifactsRefNameDownload
   "/api/v4/projects/{id}/jobs/artifacts/{ref_name}/raw/*artifact_path":
     get:
@@ -11121,7 +11129,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - job_artifacts
       operationId: getApiV4ProjectsIdJobsArtifactsRefNameRaw*artifactPath
   "/api/v4/projects/{id}/jobs/{job_id}/artifacts":
     get:
@@ -11157,7 +11165,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - job_artifacts
       operationId: getApiV4ProjectsIdJobsJobIdArtifacts
     delete:
       summary: Delete the artifacts files from a job
@@ -11186,7 +11194,7 @@ paths:
         '409':
           description: Conflict
       tags:
-      - projects
+      - job_artifacts
       operationId: deleteApiV4ProjectsIdJobsJobIdArtifacts
   "/api/v4/projects/{id}/jobs/{job_id}/artifacts/*artifact_path":
     get:
@@ -11229,7 +11237,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - job_artifacts
       operationId: getApiV4ProjectsIdJobsJobIdArtifacts*artifactPath
   "/api/v4/projects/{id}/jobs/{job_id}/artifacts/keep":
     post:
@@ -11262,7 +11270,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - job_artifacts
       operationId: postApiV4ProjectsIdJobsJobIdArtifactsKeep
   "/api/v4/projects/{id}/artifacts":
     delete:
@@ -11285,7 +11293,7 @@ paths:
         '409':
           description: Conflict
       tags:
-      - projects
+      - job_artifacts
       operationId: deleteApiV4ProjectsIdArtifacts
   "/api/v4/projects/{id}/jobs":
     get:
@@ -11352,7 +11360,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - ci_jobs
       operationId: getApiV4ProjectsIdJobs
   "/api/v4/projects/{id}/jobs/{job_id}":
     get:
@@ -11384,7 +11392,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - ci_jobs
       operationId: getApiV4ProjectsIdJobsJobId
   "/api/v4/projects/{id}/jobs/{job_id}/trace":
     get:
@@ -11416,7 +11424,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - ci_jobs
       operationId: getApiV4ProjectsIdJobsJobIdTrace
   "/api/v4/projects/{id}/jobs/{job_id}/cancel":
     post:
@@ -11455,7 +11463,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - ci_jobs
       operationId: postApiV4ProjectsIdJobsJobIdCancel
   "/api/v4/projects/{id}/jobs/{job_id}/retry":
     post:
@@ -11494,7 +11502,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - ci_jobs
       operationId: postApiV4ProjectsIdJobsJobIdRetry
   "/api/v4/projects/{id}/jobs/{job_id}/erase":
     post:
@@ -11530,7 +11538,7 @@ paths:
         '409':
           description: Conflict
       tags:
-      - projects
+      - ci_jobs
       operationId: postApiV4ProjectsIdJobsJobIdErase
   "/api/v4/projects/{id}/jobs/{job_id}/play":
     post:
@@ -11572,7 +11580,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - ci_jobs
       operationId: postApiV4ProjectsIdJobsJobIdPlay
   "/api/v4/projects/{id}/resource_groups":
     get:
@@ -12292,7 +12300,7 @@ paths:
         '403':
           description: Forbidden
       tags:
-      - projects
+      - pipelines
       operationId: getApiV4ProjectsIdPipelines
   "/api/v4/projects/{id}/pipeline":
     post:
@@ -12328,7 +12336,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipelines
       operationId: postApiV4ProjectsIdPipeline
   "/api/v4/projects/{id}/pipelines/latest":
     get:
@@ -12361,7 +12369,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipelines
       operationId: getApiV4ProjectsIdPipelinesLatest
   "/api/v4/projects/{id}/pipelines/{pipeline_id}":
     get:
@@ -12395,7 +12403,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipelines
       operationId: getApiV4ProjectsIdPipelinesPipelineId
     delete:
       summary: Deletes a pipeline
@@ -12422,7 +12430,7 @@ paths:
         '403':
           description: Forbidden
       tags:
-      - projects
+      - pipelines
       operationId: deleteApiV4ProjectsIdPipelinesPipelineId
   "/api/v4/projects/{id}/pipelines/{pipeline_id}/jobs":
     get:
@@ -12501,7 +12509,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipelines
       operationId: getApiV4ProjectsIdPipelinesPipelineIdJobs
   "/api/v4/projects/{id}/pipelines/{pipeline_id}/bridges":
     get:
@@ -12574,7 +12582,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipelines
       operationId: getApiV4ProjectsIdPipelinesPipelineIdBridges
   "/api/v4/projects/{id}/pipelines/{pipeline_id}/variables":
     get:
@@ -12610,7 +12618,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipelines
       operationId: getApiV4ProjectsIdPipelinesPipelineIdVariables
   "/api/v4/projects/{id}/pipelines/{pipeline_id}/test_report":
     get:
@@ -12644,7 +12652,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipelines
       operationId: getApiV4ProjectsIdPipelinesPipelineIdTestReport
   "/api/v4/projects/{id}/pipelines/{pipeline_id}/test_report_summary":
     get:
@@ -12678,7 +12686,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipelines
       operationId: getApiV4ProjectsIdPipelinesPipelineIdTestReportSummary
   "/api/v4/projects/{id}/pipelines/{pipeline_id}/metadata":
     put:
@@ -12721,7 +12729,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipelines
       operationId: putApiV4ProjectsIdPipelinesPipelineIdMetadata
   "/api/v4/projects/{id}/pipelines/{pipeline_id}/retry":
     post:
@@ -12757,7 +12765,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipelines
       operationId: postApiV4ProjectsIdPipelinesPipelineIdRetry
   "/api/v4/projects/{id}/pipelines/{pipeline_id}/cancel":
     post:
@@ -12793,7 +12801,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - pipelines
       operationId: postApiV4ProjectsIdPipelinesPipelineIdCancel
   "/api/v4/projects/{id}/pipeline_schedules":
     get:
@@ -40476,7 +40484,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - job
+      - ci_jobs
       operationId: getApiV4Job
   "/api/v4/job/allowed_agents":
     get:
@@ -40496,7 +40504,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - job
+      - agents
       operationId: getApiV4JobAllowedAgents
   "/api/v4/runners":
     post:
@@ -40524,7 +40532,7 @@ paths:
         '410':
           description: Gone
       tags:
-      - runners
+      - ci_runners
       operationId: postApiV4Runners
     delete:
       summary: Delete a runner by authentication token
@@ -40543,7 +40551,7 @@ paths:
         '403':
           description: Forbidden
       tags:
-      - runners
+      - ci_runners
       operationId: deleteApiV4Runners
     get:
       summary: List available runners
@@ -40666,7 +40674,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - runners
+      - ci_runners
       operationId: deleteApiV4RunnersManagers
   "/api/v4/runners/verify":
     post:
@@ -40690,7 +40698,7 @@ paths:
         '422':
           description: Runner is orphaned
       tags:
-      - runners
+      - ci_runners
       operationId: postApiV4RunnersVerify
   "/api/v4/runners/reset_authentication_token":
     post:
@@ -40713,7 +40721,7 @@ paths:
         '403':
           description: Forbidden
       tags:
-      - runners
+      - ci_runners
       operationId: postApiV4RunnersResetAuthenticationToken
   "/api/v4/runners/router/discovery":
     get:
@@ -40732,7 +40740,7 @@ paths:
         '501':
           description: 501 Not Implemented
       tags:
-      - runners
+      - ci_runners
       operationId: getApiV4RunnersRouterDiscovery
   "/api/v4/runners/all":
     get:
@@ -45153,6 +45161,24 @@ paths:
       - namespaces
       operationId: getApiV4NamespacesIdExists
   "/api/v4/offline_exports":
+    post:
+      description: Start a new offline transfer export
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: postApiV4OfflineExports
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4OfflineExports"
+      responses:
+        '201':
+          description: Start a new offline transfer export
+      tags:
+      - offline_exports
+      operationId: postApiV4OfflineExports
     get:
       description: List all offline transfer exports
       produces:
@@ -63367,7 +63393,7 @@ definitions:
         format: int32
         example: 1
       alert_status:
-        type: symbol
+        type: string
         example: executable
       disabled_until:
         type: string
@@ -70371,6 +70397,78 @@ definitions:
           type: string
         example: my-group1
     description: API_Entities_NamespaceExistence model
+  postApiV4OfflineExports:
+    type: object
+    properties:
+      bucket:
+        type: string
+        description: Name of the object storage bucket where export data is stored
+      source_hostname:
+        type: string
+        description: Hostname or alias of the instance exposed on import
+      aws_s3_configuration:
+        type: object
+        description: AWS S3 object storage configuration
+        properties:
+          aws_access_key_id:
+            type: string
+            description: AWS S3 access key ID
+          aws_secret_access_key:
+            type: string
+            description: AWS S3 secret access key
+          region:
+            type: string
+            description: AWS S3 object storage region
+          path_style:
+            type: boolean
+            description: Use path-style URLs instead of virtual hosted-style URLs
+            default: false
+        required:
+        - aws_access_key_id
+        - aws_secret_access_key
+        - region
+      minio_configuration:
+        type: object
+        description: MinIO or other S3-compatible object storage configuration
+        properties:
+          aws_access_key_id:
+            type: string
+            description: S3-compatible access key ID
+          aws_secret_access_key:
+            type: string
+            description: S3-compatible secret access key
+          region:
+            type: string
+            description: S3-compatible object storage region
+          endpoint:
+            type: string
+            description: Object storage location endpoint
+          path_style:
+            type: boolean
+            description: Use path-style URLs instead of virtual hosted-style URLs
+            default: true
+        required:
+        - aws_access_key_id
+        - aws_secret_access_key
+        - region
+        - endpoint
+      entities:
+        type: array
+        description: List of entities to export
+        items:
+          type: object
+          properties:
+            full_path:
+              type: string
+              description: Relative path of the entity to export
+              example: "'source/full/path' not 'https://example.com/source/full/path'"
+          required:
+          - full_path
+    required:
+    - bucket
+    - source_hostname
+    - entities
+    description: Start a new offline transfer export
   postApiV4Organizations:
     type: object
     properties:
@@ -70871,7 +70969,7 @@ definitions:
         format: int32
         example: 1
       alert_status:
-        type: symbol
+        type: string
         example: executable
       disabled_until:
         type: string

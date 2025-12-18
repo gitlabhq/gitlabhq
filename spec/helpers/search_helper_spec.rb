@@ -1413,23 +1413,6 @@ RSpec.describe SearchHelper, feature_category: :global_search do
           link: "/search?scope=projects"
         )
       end
-
-      it 'recursively includes sub_items with positive conditions' do
-        expect(parse[:issues][:sub_items].keys)
-          .to include(:issue, :incident, :test_case, :requirement, :task, :objective, :key_result, :epic, :ticket)
-      end
-    end
-
-    context 'with negative conditions' do
-      let(:parse) { parse_navigation(navigation) }
-
-      before do
-        navigation[:issues][:sub_items][:issue][:condition] = false
-      end
-
-      it 'excludes sub_items where condition is false' do
-        expect(parse[:issues][:sub_items].keys).not_to include(:issue)
-      end
     end
   end
 

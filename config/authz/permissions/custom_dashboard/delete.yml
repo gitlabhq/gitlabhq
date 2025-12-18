@@ -1,0 +1,4 @@
+---
+name: delete_custom_dashboard
+description: Allows users to delete custom dashboards
+feature_category: custom_dashboards_foundation

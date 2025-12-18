@@ -61,6 +61,7 @@ module Gitlab
           notes_create: { threshold: -> { application_settings.notes_create_limit }, interval: 1.minute },
           notification_emails: { threshold: 1000, interval: 1.day },
           oauth_dynamic_registration: { threshold: 5, interval: 1.hour },
+          offline_export: { threshold: 6, interval: 1.minute },
           permanent_email_failure: { threshold: 5, interval: 1.day },
           phone_verification_send_code: { threshold: 5, interval: 1.day },
           phone_verification_verify_code: { threshold: 5, interval: 1.day },

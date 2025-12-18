@@ -39,7 +39,7 @@ RSpec.describe 'User searches for issues', :js, :clean_gitlab_redis_rate_limitin
       end
 
       it 'sets tab count to 0' do
-        expect(find_by_testid('search-filter').find('[aria-current="page"]')).to have_text('Issue')
+        expect(find_by_testid('search-filter')).to have_text('Issue')
       end
     end
 

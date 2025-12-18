@@ -251,9 +251,6 @@ export const INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION = Symbol(
   'injection:prevent-router-navigation',
 );
 
-export const WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE = 'source';
-export const WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH = 'branch';
-
 export const BASE_ALLOWED_CREATE_TYPES = [
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,

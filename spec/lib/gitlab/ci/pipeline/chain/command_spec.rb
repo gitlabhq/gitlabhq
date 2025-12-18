@@ -474,21 +474,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
         observe_jobs_count
       end
     end
-
-    context 'when ci_refactor_jobs_count_in_alive_pipelines feature flag is disabled' do
-      let(:legacy_jobs_count) { 100 }
-
-      before do
-        stub_feature_flags(ci_refactor_jobs_count_in_alive_pipelines: false)
-        allow(project.all_pipelines).to receive(:legacy_jobs_count_in_alive_pipelines).and_return(legacy_jobs_count)
-      end
-
-      it 'observes legacy_jobs_count_in_alive_pipelines' do
-        expect(histogram).to receive(:observe).with({ plan: project.actual_plan_name }, legacy_jobs_count)
-
-        observe_jobs_count
-      end
-    end
   end
 
   describe '#observe_creation_duration' do

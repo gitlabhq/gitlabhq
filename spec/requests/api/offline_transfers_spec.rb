@@ -18,6 +18,196 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
     it_behaves_like '404 response'
   end
 
+  describe 'POST /offline_exports', :with_current_organization do
+    let(:bucket) { 'exports' }
+    let(:source_hostname) { 'https://offline-environment-gitlab.example.com' }
+    let(:entity_params) { [{ 'full_path' => 'group/subgroup' }, { 'full_path' => 'group/project' }] }
+    let(:aws_s3_credentials) do
+      {
+        'aws_access_key_id' => 'AwsUserAccessKey',
+        'aws_secret_access_key' => 'aws/secret+access/key',
+        'region' => 'us-east-1'
+      }
+    end
+
+    let(:minio_credentials) do
+      {
+        'aws_access_key_id' => 'minio-user-access-key',
+        'aws_secret_access_key' => 'minio-secret-access-key',
+        'region' => 'gdk',
+        'endpoint' => 'https://minio.example.com'
+      }
+    end
+
+    let(:params) do
+      {
+        bucket: bucket,
+        source_hostname: source_hostname,
+        aws_s3_configuration: aws_s3_credentials,
+        entities: entity_params
+      }
+    end
+
+    subject(:request) { post api('/offline_exports', user), params: params }
+
+    before do
+      # Prevents unintentional rate limit errors because the limit for this endpoint is low
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+    end
+
+    shared_examples 'starting a new export' do |provider|
+      let(:service_response) { instance_double(ServiceResponse, success?: true, payload: export_1) }
+      let(:service_double) { instance_double(Import::Offline::Exports::CreateService, execute: service_response) }
+      let(:params) do
+        {
+          bucket: bucket,
+          source_hostname: source_hostname,
+          entities: entity_params
+        }.merge(configuration_key => credentials)
+      end
+
+      before do
+        allow(Import::Offline::Exports::CreateService).to receive(:new).and_return(service_double)
+      end
+
+      it "starts a new offline export using #{provider} object storage default params" do
+        expect(Import::Offline::Exports::CreateService).to receive(:new).with(
+          user,
+          source_hostname,
+          entity_params,
+          {
+            bucket: bucket,
+            provider: provider,
+            credentials: credentials.merge('path_style' => path_style_default)
+          },
+          current_organization.id
+        )
+
+        request
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['id']).to eq(export_1.id)
+      end
+
+      context 'when path_style is true' do
+        it 'sets true' do
+          credentials['path_style'] = true
+
+          expect(Import::Offline::Exports::CreateService).to receive(:new).with(
+            user,
+            source_hostname,
+            entity_params,
+            {
+              bucket: bucket,
+              provider: provider,
+              credentials: credentials
+            },
+            current_organization.id
+          )
+
+          request
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['id']).to eq(export_1.id)
+        end
+      end
+
+      context 'when path_style is false' do
+        it 'sets_false' do
+          credentials['path_style'] = false
+
+          expect(Import::Offline::Exports::CreateService).to receive(:new).with(
+            user,
+            source_hostname,
+            entity_params,
+            {
+              bucket: bucket,
+              provider: provider,
+              credentials: credentials
+            },
+            current_organization.id
+          )
+
+          request
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['id']).to eq(export_1.id)
+        end
+      end
+    end
+
+    it_behaves_like 'starting a new export', :aws do
+      let(:configuration_key) { :aws_s3_configuration }
+      let(:credentials) { aws_s3_credentials }
+      let(:path_style_default) { false }
+    end
+
+    it_behaves_like 'starting a new export', :minio do
+      let(:configuration_key) { :minio_configuration }
+      let(:credentials) { minio_credentials }
+      let(:path_style_default) { true }
+    end
+
+    context 'when no configuration params are provided' do
+      let(:params) do
+        {
+          bucket: bucket,
+          source_hostname: source_hostname,
+          entities: entity_params
+        }
+      end
+
+      it_behaves_like '400 response'
+    end
+
+    context 'when more than one provider configuration params are provided' do
+      let(:params) do
+        {
+          bucket: bucket,
+          source_hostname: source_hostname,
+          aws_s3_configuration: aws_s3_credentials,
+          minio_configuration: minio_credentials,
+          entities: entity_params
+        }
+      end
+
+      it_behaves_like '400 response'
+    end
+
+    context 'when request exceeds rate limits' do
+      it 'prevents user from starting a new migration' do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+
+        request
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(response.headers).to include('Retry-After' => Gitlab::ApplicationRateLimiter.interval(:offline_export))
+        expect(json_response['message']['error']).to eq(
+          'This endpoint has been requested too many times. Try again later.'
+        )
+      end
+    end
+
+    context 'when service returns an error' do
+      before do
+        allow_next_instance_of(Import::Offline::Exports::CreateService) do |service|
+          allow(service).to receive(:execute).and_return(
+            ServiceResponse.error(message: 'Export failed', reason: :unprocessable_entity)
+          )
+        end
+      end
+
+      it 'renders the error' do
+        request
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq('Export failed')
+      end
+    end
+
+    it_behaves_like 'not found when offline_transfer_exports is disabled'
+  end
+
   describe 'GET /offline_exports' do
     let(:request) { get api('/offline_exports', user), params: params }
     let(:params) { {} }

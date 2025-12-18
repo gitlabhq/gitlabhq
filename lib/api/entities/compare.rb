@@ -15,11 +15,11 @@ module API
         compare.diffs.diffs.to_a
       end
 
-      expose :compare_timeout, documentation: { type: 'boolean' } do |compare, _|
+      expose :compare_timeout, documentation: { type: 'Boolean' } do |compare, _|
         compare.diffs.diffs.overflow?
       end
 
-      expose :same, as: :compare_same_ref, documentation: { type: 'boolean' }
+      expose :same, as: :compare_same_ref, documentation: { type: 'Boolean' }
 
       expose :web_url,
         documentation: {

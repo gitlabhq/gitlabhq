@@ -39,7 +39,7 @@ module TwCodeowners
     # CodeOwnerRule.new('Database Operations', ''),
     # CodeOwnerRule.new('DataOps', ''),
     # CodeOwnerRule.new('Delivery', ''),
-    CodeOwnerRule.new('Durability', '@axil'),
+    CodeOwnerRule.new('Tenant Services', '@axil'),
     CodeOwnerRule.new('Duo Chat', '@jglassman1'),
     CodeOwnerRule.new('Dynamic Analysis', '@rsarangadharan'),
     CodeOwnerRule.new('Editor Extensions', '@uchandran'),

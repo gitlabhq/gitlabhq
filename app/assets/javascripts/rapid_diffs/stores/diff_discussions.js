@@ -76,7 +76,7 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
       this.setEditingMode(editableNote, true);
       return true;
     },
-    addNewLineDiscussionForm({ oldPath, newPath, oldLine, newLine }) {
+    replyToLineDiscussion({ oldPath, newPath, oldLine, newLine }) {
       const [existingDiscussion] = this.findDiscussionsForPosition({
         oldPath,
         newPath,
@@ -87,6 +87,9 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
         this.startReplying(existingDiscussion);
         return existingDiscussion.id;
       }
+      return this.addNewLineDiscussionForm({ oldPath, newPath, oldLine, newLine });
+    },
+    addNewLineDiscussionForm({ oldPath, newPath, oldLine, newLine }) {
       const id = [oldPath, newPath, oldLine, newLine].join('-');
       if (this.discussions.some((discussion) => discussion.id === id)) return id;
       this.discussions.push({

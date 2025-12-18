@@ -45,6 +45,7 @@ module API
             { code: 404, message: 'Not found' }
           ]
           is_array true
+          tags ['ci_jobs']
         end
         params do
           use :optional_scope
@@ -73,6 +74,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['ci_jobs']
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
@@ -96,6 +98,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['ci_jobs']
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
@@ -125,6 +128,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['ci_jobs']
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
@@ -155,6 +159,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['ci_jobs']
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
@@ -193,6 +198,7 @@ module API
             { code: 404, message: 'Not found' },
             { code: 409, message: 'Conflict' }
           ]
+          tags ['ci_jobs']
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a build', documentation: { example: 88 }
@@ -219,6 +225,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['ci_jobs']
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a Job', documentation: { example: 88 }
@@ -268,6 +275,7 @@ module API
             { code: 401, message: 'Unauthorized' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['ci_jobs']
         end
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, skip_job_token_policies: true
@@ -285,6 +293,7 @@ module API
             { code: 401, message: 'Unauthorized' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['agents']
         end
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, skip_job_token_policies: true

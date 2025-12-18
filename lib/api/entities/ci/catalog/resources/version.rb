@@ -8,7 +8,7 @@ module API
           class Version < Grape::Entity
             expose :catalog_url,
               documentation: {
-                type: 'string',
+                type: 'String',
                 example: 'https://gitlab.example.com/explore/catalog/my-namespace/my-component-project'
               } do |version|
               Gitlab::Routing.url_helpers.explore_catalog_url(version.catalog_resource)

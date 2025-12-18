@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::GroupsController, :with_current_organization, feature_category: :groups_and_projects do
+RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects do
   let_it_be_with_reload(:group) { create(:group, :allow_runner_registration_token) }
   let_it_be(:project) { create(:project, namespace: group) }
   let_it_be(:admin) { create(:admin) }

@@ -647,19 +647,30 @@ module MergeRequestsHelper
           title: s_('MergeRequestsTab|Merged'),
           key: 'merged',
           lists: [
-            [{
-              id: 'merged_recently',
-              title: _('Merged recently'),
-              helpContent: _('These merge requests merged after %{date}. You were an assignee or a reviewer.') % {
-                date: l(2.weeks.ago.to_date, format: :long)
+            [
+              {
+                id: 'merged_recently_reviews',
+                title: _('Reviews'),
+                helpContent: _('Your review requests that have been merged.'),
+                query: 'reviewRequestedMergeRequests',
+                variables: {
+                  state: 'merged',
+                  mergedAfter: 2.weeks.ago.to_time.iso8601,
+                  sort: 'MERGED_AT_DESC'
+                }
               },
-              query: 'assigneeOrReviewerMergeRequests',
-              variables: {
-                state: 'merged',
-                mergedAfter: 2.weeks.ago.to_time.iso8601,
-                sort: 'MERGED_AT_DESC'
+              {
+                id: 'merged_recently_assigned',
+                title: _('Your merge requests'),
+                helpContent: _('Your merge requests that have been merged.'),
+                query: 'authorOrAssigneeMergeRequests',
+                variables: {
+                  state: 'merged',
+                  mergedAfter: 2.weeks.ago.to_time.iso8601,
+                  sort: 'MERGED_AT_DESC'
+                }
               }
-            }]
+            ]
           ]
         }
       ]

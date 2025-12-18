@@ -3,8 +3,8 @@
 module API
   module Entities
     class Feature < Grape::Entity
-      expose :name, documentation: { type: 'string', example: 'experimental_feature' }
-      expose :state, documentation: { type: 'string', example: 'off' }
+      expose :name, documentation: { type: 'String', example: 'experimental_feature' }
+      expose :state, documentation: { type: 'String', example: 'off' }
       expose :gates, using: Entities::FeatureGate do |model|
         model.gates.map do |gate|
           # in Flipper 0.26.1, they removed two GateValues#[] method calls for performance reasons

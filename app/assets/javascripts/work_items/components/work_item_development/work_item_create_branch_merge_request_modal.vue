@@ -1,13 +1,10 @@
 <script>
-import { GlForm, GlFormInput, GlFormInputGroup, GlFormGroup, GlModal } from '@gitlab/ui';
+import { GlForm, GlFormInputGroup, GlFormGroup, GlModal } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
-import {
-  NAME_TO_TEXT_LOWERCASE_MAP,
-  WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE,
-  WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH,
-} from '~/work_items/constants';
+import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
+import { NAME_TO_TEXT_LOWERCASE_MAP } from '~/work_items/constants';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createBranchMRApiPathHelper } from '~/work_items/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -16,7 +13,7 @@ import {
   humanizeBranchValidationErrors,
 } from '~/lib/utils/text_utility';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
-
+import RefSelector from '~/ref/components/ref_selector.vue';
 import getProjectRootRef from '~/work_items/graphql/get_project_root_ref.query.graphql';
 import { s__, __, sprintf } from '~/locale';
 import confidentialMergeRequestState from '~/confidential_merge_request/state';
@@ -25,26 +22,24 @@ import ProjectFormGroup from '~/confidential_merge_request/components/project_fo
 export default {
   components: {
     GlForm,
-    GlFormInput,
     GlFormInputGroup,
     GlFormGroup,
     GlModal,
     ProjectFormGroup,
     SimpleCopyButton,
+    RefSelector,
   },
   i18n: {
-    sourceLabel: __('Source (branch or tag)'),
-    branchLabel: __('Branch name'),
+    sourceBranchOrTagLabel: __('Source (branch or tag)'),
+    targetBranchLabel: __('Target branch'),
+    newBranchLabel: __('Branch name'),
+    sourceBranchLabel: __('Source branch name'),
     createBranch: __('Create branch'),
     cancelLabel: __('Cancel'),
     createMergeRequest: __('Create merge request'),
     branchNameExists: __('Branch is already taken'),
-    sourceNotAvailable: __('Source is not available'),
     branchNameAvailable: __('Branch name is available'),
-    sourceIsAvailable: __('Source is available'),
     branchNameIsRequired: __('Branch name is required'),
-    sourceNameIsRequired: __('Source name is required'),
-    checkingSourceValidity: __('Checking source validity'),
     checkingBranchValidity: __('Checking branch validity'),
   },
   createMRModalId: 'create-merge-request-modal',
@@ -88,13 +83,9 @@ export default {
       isLoading: false,
       canCreateBranch: false,
       branchName: '',
-      sourceName: '',
-      invalidSource: false,
+      refName: '',
       invalidBranch: false,
-      invalidForm: false,
-      sourceDescription: '',
       branchDescription: '',
-      checkingSourceValidity: false,
       checkingBranchValidity: false,
       creatingBranch: false,
       defaultBranch: '',
@@ -121,15 +112,26 @@ export default {
     },
   },
   computed: {
+    enabledRefTypes() {
+      return this.showBranchFlow ? [REF_TYPE_BRANCHES, REF_TYPE_TAGS] : [REF_TYPE_BRANCHES];
+    },
+    numericProjectId() {
+      return this.projectId.split('/').at(-1);
+    },
+    refSelectorFieldLabel() {
+      return this.showBranchFlow
+        ? this.$options.i18n.sourceBranchOrTagLabel
+        : this.$options.i18n.targetBranchLabel;
+    },
+    branchNameFieldLabel() {
+      return this.showBranchFlow
+        ? this.$options.i18n.newBranchLabel
+        : this.$options.i18n.sourceBranchLabel;
+    },
     createButtonText() {
       return this.showBranchFlow
         ? this.$options.i18n.createBranch
         : this.$options.i18n.createMergeRequest;
-    },
-    sourceFeedback() {
-      return this.sourceName?.length
-        ? this.$options.i18n.sourceNotAvailable
-        : this.$options.i18n.sourceNameIsRequired;
     },
     branchFeedback() {
       const branchErrors = findInvalidBranchNameCharacters(this.branchName);
@@ -146,7 +148,8 @@ export default {
     },
     isSaveButtonDisabled() {
       return (
-        this.invalidForm || (this.isConfidentialWorkItem && !this.canCreateConfidentialMergeRequest)
+        this.invalidBranch ||
+        (this.isConfidentialWorkItem && !this.canCreateConfidentialMergeRequest)
       );
     },
     saveButtonAction() {
@@ -155,8 +158,7 @@ export default {
         attributes: {
           variant: 'confirm',
           disabled: this.isSaveButtonDisabled,
-          loading:
-            this.checkingSourceValidity || this.checkingBranchValidity || this.creatingBranch,
+          loading: this.checkingBranchValidity || this.creatingBranch,
         },
       };
     },
@@ -206,7 +208,7 @@ export default {
       if (this.canCreateBranch) {
         this.branchName = suggested_branch_name;
         /* eslint-enable camelcase */
-        this.sourceName = this.defaultBranch;
+        this.refName = this.defaultBranch;
       }
     },
     async createBranch() {
@@ -226,7 +228,7 @@ export default {
             : null,
           format: 'json',
           issue_iid: this.workItemIid,
-          ref: this.sourceName,
+          ref: this.refName,
         });
 
         this.$toast.show(__('Branch created.'), {
@@ -257,7 +259,7 @@ export default {
           : this.workItemFullPath,
         workItemIid: this.workItemIid,
         sourceBranch: this.branchName,
-        targetBranch: this.sourceName,
+        targetBranch: this.refName,
       });
 
       /** open the merge request once we have it created */
@@ -270,21 +272,14 @@ export default {
         this.createMergeRequest();
       }
     },
-    fetchRefs(refValue, target) {
+    fetchRefs(refValue) {
       if (!refValue || !refValue.trim().length) {
-        this.invalidSource = target === WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE;
-        this.invalidBranch = target === WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH;
-        this.invalidForm = true;
+        this.invalidBranch = true;
         return;
       }
 
-      if (target === WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE) {
-        this.checkingSourceValidity = true;
-        this.sourceDescription = __('Checking source validity…');
-      } else {
-        this.checkingBranchValidity = true;
-        this.branchDescription = __('Checking branch validity…');
-      }
+      this.checkingBranchValidity = true;
+      this.branchDescription = __('Checking branch validity…');
 
       this.refCancelToken = axios.CancelToken.source();
 
@@ -300,19 +295,9 @@ export default {
         })
         .then(({ data }) => {
           const branches = data?.Branches || [];
-          const tags = data?.Tags || [];
 
-          if (target === WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE) {
-            this.invalidSource = !(
-              branches.indexOf(refValue) !== -1 || tags.indexOf(refValue) !== -1
-            );
-          } else {
-            this.invalidBranch = Boolean(
-              branches.indexOf(refValue) !== -1 || findInvalidBranchNameCharacters(refValue).length,
-            );
-          }
-
-          this.invalidForm = this.invalidSource || this.invalidBranch;
+          this.invalidBranch =
+            branches.includes(refValue) || findInvalidBranchNameCharacters(refValue).length > 0;
         })
         .catch((thrown) => {
           if (axios.isCancel(thrown)) {
@@ -324,24 +309,19 @@ export default {
           return false;
         })
         .finally(() => {
-          this.checkingSourceValidity = false;
           this.checkingBranchValidity = false;
         });
     },
-    checkValidity: debounce(function debouncedCheckValidity(refValue, target) {
-      return this.fetchRefs(refValue, target);
+    checkBranchValidity: debounce(function debouncedCheckBranchValidity(refValue) {
+      return this.fetchRefs(refValue);
     }, 250),
     hideModal() {
       this.$emit('hideModal');
       this.$nextTick(() => {
         this.invalidBranch = false;
-        this.invalidSource = false;
-        this.invalidForm = false;
       });
     },
   },
-  WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE,
-  WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH,
 };
 </script>
 
@@ -366,33 +346,18 @@ export default {
           :help-page-path="$options.mergeRequestHelpPagePath"
           :new-fork-path="newForkPath"
         />
-        <gl-form-group
-          required
-          label-for="source-name-id"
-          :label="$options.i18n.sourceLabel"
-          :description="checkingSourceValidity ? sourceDescription : ''"
-          :invalid-feedback="checkingSourceValidity || isLoading ? '' : sourceFeedback"
-          :valid-feedback="
-            checkingSourceValidity || isLoading ? '' : $options.i18n.sourceIsAvailable
-          "
-          :state="sourceName ? !invalidSource : false"
-        >
-          <gl-form-input
-            id="source-name-id"
-            v-model.trim="sourceName"
-            data-testid="source-name"
-            :state="!invalidSource"
-            required
-            name="source-name"
-            type="text"
-            :disabled="isLoading || creatingBranch"
-            @input="checkValidity($event, $options.WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE)"
+        <gl-form-group label-for="ref-name-id" :label="refSelectorFieldLabel">
+          <ref-selector
+            id="ref-name-id"
+            v-model="refName"
+            :project-id="numericProjectId"
+            :enabled-ref-types="enabledRefTypes"
           />
         </gl-form-group>
         <gl-form-group
           required
           label-for="branch-name-id"
-          :label="$options.i18n.branchLabel"
+          :label="branchNameFieldLabel"
           :description="checkingBranchValidity ? branchDescription : ''"
           :invalid-feedback="checkingBranchValidity || isLoading ? '' : branchFeedback"
           :valid-feedback="
@@ -409,7 +374,7 @@ export default {
             required
             name="branch-name"
             type="text"
-            @input="checkValidity($event, $options.WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH)"
+            @input="checkBranchValidity($event)"
           >
             <template #append>
               <simple-copy-button :text="branchName" :title="__('Copy to clipboard')" />

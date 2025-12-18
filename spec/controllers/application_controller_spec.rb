@@ -56,7 +56,7 @@ RSpec.describe ApplicationController, feature_category: :shared do
     end
   end
 
-  describe '#set_current_organization' do
+  describe '#set_current_organization', :without_current_organization do
     let_it_be(:user) { create(:user) }
     let_it_be(:current_organization) { user.organization }
 

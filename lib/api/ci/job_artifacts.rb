@@ -29,6 +29,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['job_artifacts']
         end
         params do
           requires :ref_name, type: String,
@@ -78,6 +79,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['job_artifacts']
         end
         params do
           requires :ref_name, type: String,
@@ -116,6 +118,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['job_artifacts']
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
@@ -143,6 +146,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['job_artifacts']
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
@@ -181,6 +185,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['job_artifacts']
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
@@ -205,6 +210,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 409, message: 'Conflict' }
           ]
+          tags ['job_artifacts']
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
@@ -229,6 +235,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 409, message: 'Conflict' }
           ]
+          tags ['job_artifacts']
         end
         route_setting :authorization, permissions: :delete_artifact, boundary_type: :project
         delete ':id/artifacts' do

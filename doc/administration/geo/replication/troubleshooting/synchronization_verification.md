@@ -1577,22 +1577,6 @@ To do this:
 The Git repository should now be resynced from the primary site to the secondary site. Monitor the sync
 process through the Geo admin interface, or by checking the repository's sync status in the Rails console.
 
-## Stuck sync or verification counts due to worker errors
-
-If `BulkMarkPendingBatchWorker` or `BulkMarkVerificationPendingBatchWorker` is throwing errors like "Cannot obtain exclusive lease" and repeatedly throwing errors, and sync/verification counts are stuck, you can simply drop the Sidekiq jobs, which will recover. This happens after "resync all" or "reverify all" operations at times. For more information, see [issue 573613](https://gitlab.com/gitlab-org/gitlab/-/issues/573613) for details.
-
-To drop the jobs for synchronization issues:
-
-```ruby
-Feature.enable(:"drop_sidekiq_jobs_Geo::BulkMarkPendingBatchWorker")
-```
-
-For verification issues, use:
-
-```ruby
-Feature.enable(:"drop_sidekiq_jobs_Geo::BulkMarkVerificationPendingBatchWorker")
-```
-
 ## Infrastructure and performance considerations
 
 Some synchronization issues are caused by infrastructure-level problems or performance constraints.

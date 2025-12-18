@@ -83,7 +83,7 @@ RSpec.describe Admin::ApplicationsController do
       expect(application).to have_attributes(create_params.except(:uid, :owner_type))
     end
 
-    it 'sets organization_id from Current.organization', :with_current_organization do
+    it 'sets organization_id from Current.organization' do
       create_params = attributes_for(:application, trusted: true, confidential: false, scopes: ['api'])
 
       post :create, params: { authn_oauth_application: create_params }

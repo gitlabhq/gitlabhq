@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::EventsController, :with_current_organization, feature_category: :integrations do
+RSpec.describe JiraConnect::EventsController, feature_category: :integrations do
   shared_examples 'verifies asymmetric JWT token' do
     context 'when token is valid' do
       include_context 'valid JWT token'

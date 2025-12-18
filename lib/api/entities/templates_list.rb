@@ -3,8 +3,8 @@
 module API
   module Entities
     class TemplatesList < Grape::Entity
-      expose :key, documentation: { type: 'string', example: 'mit' }
-      expose :name, documentation: { type: 'string', example: 'MIT License' }
+      expose :key, documentation: { type: 'String', example: 'mit' }
+      expose :name, documentation: { type: 'String', example: 'MIT License' }
     end
   end
 end

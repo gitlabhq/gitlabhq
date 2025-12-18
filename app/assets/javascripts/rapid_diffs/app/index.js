@@ -35,6 +35,7 @@ export class RapidDiffsFacade {
 
   init() {
     this.appData = camelizeKeys(JSON.parse(this.root.dataset.appData));
+    this.#populateLegacyFileFragment();
     if (this.#lazy) {
       this.#reloadDiffs(true);
     } else {
@@ -149,6 +150,14 @@ export class RapidDiffsFacade {
       },
       { immediate: true },
     );
+  }
+
+  #populateLegacyFileFragment() {
+    if (!window.location.hash) return;
+    const [, fileHash, oldLine, newLine] =
+      window.location.hash.substring(1).match(/^([0-9a-f]{40})(?:_([0-9]+)_([0-9]+))?$/) || [];
+    if (!fileHash) return;
+    this.appData.legacyFileFragment = { fileHash, oldLine, newLine };
   }
 
   get #lazy() {

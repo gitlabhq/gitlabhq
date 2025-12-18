@@ -4,7 +4,7 @@ module API
   module Entities
     class Snippet < BasicSnippet
       expose :author, using: Entities::UserBasic, documentation: { type: 'Entities::UserBasic' }
-      expose :file_name, documentation: { type: 'string', example: 'add.rb' } do |snippet|
+      expose :file_name, documentation: { type: 'String', example: 'add.rb' } do |snippet|
         snippet_files.first || snippet.file_name
       end
       expose :files, documentation: {
@@ -17,8 +17,8 @@ module API
           }
         end
       end
-      expose :imported?, as: :imported, documentation: { type: 'boolean', example: false }
-      expose :imported_from, documentation: { type: 'string', example: 'none' }
+      expose :imported?, as: :imported, documentation: { type: 'Boolean', example: false }
+      expose :imported_from, documentation: { type: 'String', example: 'none' }
 
       private
 

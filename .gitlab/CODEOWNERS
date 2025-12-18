@@ -639,7 +639,8 @@ lib/gitlab/checks/
 /doc/administration/get_started.md @gl-docsteam
 /doc/administration/git_protocol.md @brendan777
 /doc/administration/gitaly/ @eread
-/doc/administration/gitlab_duo/ @ashrafkhamis
+/doc/administration/gitlab_duo/configure/ @ashrafkhamis
+/doc/administration/gitlab_duo/gateway.md @ashrafkhamis
 /doc/administration/gitlab_duo/model_selection.md @fneill
 /doc/administration/gitlab_duo_self_hosted/ @fneill
 /doc/administration/guest_users.md @idurham
@@ -994,6 +995,7 @@ lib/gitlab/checks/
 /doc/development/ai_architecture.md @gitlab-org/ai-powered
 /doc/development/ai_features/ @gitlab-org/ai-powered
 /doc/development/ai_features/embeddings.md @gitlab-org/search-team/migration-maintainers
+/doc/development/ai_features/semantic_search.md @gitlab-org/search-team/migration-maintainers
 /doc/development/application_limits.md @gitlab-org/distribution
 /doc/development/audit_event_guide/ @gitlab-org/govern/security-policies-frontend @gitlab-org/govern/threat-insights-frontend-team @gitlab-org/govern/threat-insights-backend-team
 /doc/development/avoiding_required_stops.md @gitlab-org/distribution
@@ -1037,6 +1039,7 @@ lib/gitlab/checks/
 /doc/development/software_design.md @gl-dx/pipeline-maintainers
 /doc/development/spam_protection_and_captcha/ @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/stage_group_observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/doc/development/testing_guide/ @abdwdd @alexpooley
 /doc/development/tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/drawers/ @ashrafkhamis
 /doc/editor_extensions/ @uchandran
@@ -1123,6 +1126,7 @@ lib/gitlab/checks/
 /doc/user/application_security/dependency_list/ @rlehmann1
 /doc/user/application_security/detect/security_configuration.md @rlehmann1
 /doc/user/application_security/detect/security_scanning_results.md @rlehmann1
+/doc/user/application_security/detect/vulnerability_deduplication.md @rlehmann1
 /doc/user/application_security/get-started-security.md @rsarangadharan
 /doc/user/application_security/policies/ @rlehmann1
 /doc/user/application_security/secret_detection/ @rsarangadharan

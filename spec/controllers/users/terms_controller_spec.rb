@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::TermsController, :with_current_organization do
+RSpec.describe Users::TermsController, feature_category: :system_access do
   include TermsHelper
 
   let_it_be(:user) { create(:user) }

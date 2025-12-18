@@ -12,12 +12,12 @@ module API
         expose :runner, with: ::API::Entities::Ci::Runner
         expose :runner_manager, with: ::API::Entities::Ci::RunnerManager, if: ->(job) { job.is_a?(::Ci::Build) }
         expose :artifacts_expire_at,
-          documentation: { type: 'dateTime', example: '2016-01-19T09:05:50.355Z' }
-        expose :archived?, as: :archived, documentation: { type: 'boolean', example: false }
+          documentation: { type: 'DateTime', example: '2016-01-19T09:05:50.355Z' }
+        expose :archived?, as: :archived, documentation: { type: 'Boolean', example: false }
 
         expose(
           :tag_list,
-          documentation: { type: 'string', is_array: true, example: ['ubuntu18', 'docker runner'] }
+          documentation: { type: 'String', is_array: true, example: ['ubuntu18', 'docker runner'] }
         ) do |job|
           job.tags.map(&:name).sort
         end

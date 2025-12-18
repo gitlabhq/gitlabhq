@@ -132,38 +132,16 @@ export const MOCK_NAVIGATION = {
     count_link: '/search/count?scope=blobs&search=et',
   },
   issues: {
-    label: 'Work items',
+    label: 'Issues',
     scope: 'issues',
     link: '/search?scope=issues&search=et',
     active: true,
     count: '2,430',
-    sub_items: {
-      issue: {
-        label: 'Issues',
-        scope: 'issues',
-        link: '/search?scope=issues&search=et',
-      },
-      task: {
-        label: 'Task',
-        scope: 'issues',
-        link: '/search?scope=issues&search=et',
-      },
-      objective: {
-        label: 'Objective',
-        scope: 'issues',
-        link: '/search?scope=issues&search=et',
-      },
-      key_result: {
-        label: 'Key results',
-        scope: 'issues',
-        link: '/search?scope=issues&search=et',
-      },
-      epic: {
-        label: 'Epics',
-        scope: 'epics',
-        link: '/search?scope=epics&search=et',
-      },
-    },
+  },
+  epics: {
+    label: 'Epics',
+    scope: 'epics',
+    link: '/search?scope=epics&search=et',
   },
   merge_requests: {
     label: 'Merge requests',
@@ -529,50 +507,27 @@ export const MOCK_NAVIGATION_ITEMS = [
     scope: 'blobs',
   },
   {
-    title: 'Work items',
+    title: 'Issues',
     icon: 'issues',
     id: 'menu-issues-3',
     link: '/search?scope=issues&search=et',
     is_active: true,
     pill_count: '2.4K',
     scope: 'issues',
-    items: [
-      {
-        id: 'menu-issue-0',
-        is_active: false,
-        link: '/search?scope=issues&search=et',
-        title: 'Issues',
-      },
-      {
-        id: 'menu-epic-1',
-        is_active: false,
-        link: '/search?scope=epics&search=et',
-        title: 'Epics',
-      },
-      {
-        id: 'menu-task-2',
-        is_active: false,
-        link: '/search?scope=issues&search=et',
-        title: 'Tasks',
-      },
-      {
-        id: 'menu-objective-3',
-        is_active: false,
-        link: '/search?scope=issues&search=et',
-        title: 'Objectives',
-      },
-      {
-        id: 'menu-key_result-4',
-        is_active: false,
-        link: '/search?scope=issues&search=et',
-        title: 'Key results',
-      },
-    ],
+  },
+  {
+    title: 'Epics',
+    icon: 'epic',
+    id: 'menu-epics-4',
+    link: '/search?scope=epics&search=et',
+    is_active: false,
+    pill_count: '0',
+    scope: 'epics',
   },
   {
     title: 'Merge requests',
     icon: 'merge-request',
-    id: 'menu-merge_requests-4',
+    id: 'menu-merge_requests-5',
     link: '/search?scope=merge_requests&search=et',
     is_active: false,
     pill_count: '0',
@@ -581,7 +536,7 @@ export const MOCK_NAVIGATION_ITEMS = [
   {
     title: 'Wiki',
     icon: 'book',
-    id: 'menu-wiki_blobs-5',
+    id: 'menu-wiki_blobs-6',
     link: '/search?scope=wiki_blobs&search=et',
     is_active: false,
     pill_count: '0',
@@ -590,7 +545,7 @@ export const MOCK_NAVIGATION_ITEMS = [
   {
     title: 'Commits',
     icon: 'commit',
-    id: 'menu-commits-6',
+    id: 'menu-commits-7',
     link: '/search?scope=commits&search=et',
     is_active: false,
     pill_count: '0',
@@ -599,7 +554,7 @@ export const MOCK_NAVIGATION_ITEMS = [
   {
     title: 'Comments',
     icon: 'comments',
-    id: 'menu-notes-7',
+    id: 'menu-notes-8',
     link: '/search?scope=notes&search=et',
     is_active: false,
     pill_count: '0',
@@ -608,7 +563,7 @@ export const MOCK_NAVIGATION_ITEMS = [
   {
     title: 'Milestones',
     icon: 'milestone',
-    id: 'menu-milestones-8',
+    id: 'menu-milestones-9',
     link: '/search?scope=milestones&search=et',
     is_active: false,
     pill_count: '0',
@@ -617,7 +572,7 @@ export const MOCK_NAVIGATION_ITEMS = [
   {
     title: 'Users',
     icon: 'users',
-    id: 'menu-users-9',
+    id: 'menu-users-10',
     link: '/search?scope=users&search=et',
     is_active: false,
     pill_count: '0',

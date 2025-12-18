@@ -4,9 +4,9 @@ module API
   module Entities
     # Serializes a Gitlab::Git::DeclaredLicense
     class LicenseBasic < Grape::Entity
-      expose :key, documentation: { type: 'string', example: 'gpl-3.0' }
-      expose :name, documentation: { type: 'string', example: 'GNU General Public License v3.0' }
-      expose :nickname, documentation: { type: 'string', example: 'GNU GPLv3' }
+      expose :key, documentation: { type: 'String', example: 'gpl-3.0' }
+      expose :name, documentation: { type: 'String', example: 'GNU General Public License v3.0' }
+      expose :nickname, documentation: { type: 'String', example: 'GNU GPLv3' }
       expose :url, as: :html_url, documentation: { example: 'http://choosealicense.com/licenses/gpl-3.0' }
 
       # This was dropped:

@@ -14096,12 +14096,6 @@ msgstr ""
 msgid "Checking if merge request can be merged…"
 msgstr ""
 
-msgid "Checking source validity"
-msgstr ""
-
-msgid "Checking source validity…"
-msgstr ""
-
 msgid "Checking username availability…"
 msgstr ""
 
@@ -31962,9 +31956,6 @@ msgstr ""
 msgid "GlobalSearch|Issues assigned to me"
 msgstr ""
 
-msgid "GlobalSearch|Key results"
-msgstr ""
-
 msgid "GlobalSearch|Labels"
 msgstr ""
 
@@ -32008,9 +31999,6 @@ msgid "GlobalSearch|No results found. Edit your search and try again."
 msgstr ""
 
 msgid "GlobalSearch|Nothing found…"
-msgstr ""
-
-msgid "GlobalSearch|Objectives"
 msgstr ""
 
 msgid "GlobalSearch|Only first %{max_shown} of not indexed projects is shown"
@@ -32143,9 +32131,6 @@ msgstr ""
 msgid "GlobalSearch|Target branch"
 msgstr ""
 
-msgid "GlobalSearch|Tasks"
-msgstr ""
-
 msgid "GlobalSearch|The search term must be at least 3 characters long."
 msgstr ""
 
@@ -32195,9 +32180,6 @@ msgid "GlobalSearch|What are you searching for?"
 msgstr ""
 
 msgid "GlobalSearch|Wiki"
-msgstr ""
-
-msgid "GlobalSearch|Work items"
 msgstr ""
 
 msgid "GlobalSearch|Your work"
@@ -42325,9 +42307,6 @@ msgstr ""
 msgid "Merged by"
 msgstr ""
 
-msgid "Merged recently"
-msgstr ""
-
 msgid "Merged this merge request."
 msgstr ""
 
@@ -46481,7 +46460,7 @@ msgstr ""
 msgid "Offline nodes automatically deleted after"
 msgstr ""
 
-msgid "OfflineTransfer|Export failed. Entity types and full paths must be provided."
+msgid "OfflineTransfer|Export failed. Entity full paths must be provided."
 msgstr ""
 
 msgid "OfflineTransfer|Export failed. You do not have permission to export the following resources or they do not exist: %{paths}"
@@ -63001,6 +62980,9 @@ msgstr ""
 msgid "SecurityReports|Select a project to add by using the project search field above."
 msgstr ""
 
+msgid "SecurityReports|Select a ref"
+msgstr ""
+
 msgid "SecurityReports|Select action"
 msgstr ""
 
@@ -65621,6 +65603,9 @@ msgstr ""
 msgid "Source branch is protected from force push"
 msgstr ""
 
+msgid "Source branch name"
+msgstr ""
+
 msgid "Source branch will be deleted."
 msgstr ""
 
@@ -65630,16 +65615,10 @@ msgstr ""
 msgid "Source code (%{fileExtension})"
 msgstr ""
 
-msgid "Source is available"
-msgstr ""
-
 msgid "Source is not available"
 msgstr ""
 
 msgid "Source name"
-msgstr ""
-
-msgid "Source name is required"
 msgstr ""
 
 msgid "Source project"
@@ -68826,9 +68805,6 @@ msgid "These guidelines are displayed on the group's or project's members page, 
 msgstr ""
 
 msgid "These guidelines for public avatars are displayed on the user settings page."
-msgstr ""
-
-msgid "These merge requests merged after %{date}. You were an assignee or a reviewer."
 msgstr ""
 
 msgid "These merge requests need a review from you."
@@ -74323,6 +74299,9 @@ msgid "VirtualRegistry|Cache revalidation is disabled. Upstream URL is known to 
 msgstr ""
 
 msgid "VirtualRegistry|Cache: %{size}"
+msgstr ""
+
+msgid "VirtualRegistry|Changing the URL will clear the username and password."
 msgstr ""
 
 msgid "VirtualRegistry|Clear all caches"

@@ -6,16 +6,16 @@ describe('DiffFile Web Component', () => {
   const fileData = JSON.stringify({ viewer: 'current', custom: 'bar' });
   const html = `
     <diff-file data-file-data='${fileData}' id="fileHash">
-      <div id="foo">
+      <article>
         <button data-click="foo"></button>
-      </div>
+      </article>
     </diff-file>
   `;
   let app;
   let adapter;
   let adapterMountedCleanup;
 
-  const getDiffElement = () => document.querySelector('[id=foo]');
+  const getDiffElement = () => document.querySelector('article');
   const getWebComponentElement = () => document.querySelector('diff-file');
 
   const triggerVisibility = (isIntersecting) => {
@@ -74,6 +74,8 @@ describe('DiffFile Web Component', () => {
       viewer: 'current',
     },
     sink: {},
+    id: 'fileHash',
+    selectFile: expect.any(Function),
     trigger: expect.any(Function),
     replaceWith: expect.any(Function),
   });

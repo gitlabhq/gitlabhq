@@ -11,8 +11,8 @@ module API
       expose :title, documentation: { type: 'String', example: 'Impedit et ut et dolores vero provident ullam est' }
       expose :description, documentation: { type: 'String', example: 'Repellendus impedit et vel velit dignissimos.' }
       expose :state, documentation: { type: 'String', example: 'closed' }
-      expose :created_at, documentation: { type: 'dateTime', example: '2022-08-17T12:46:35.053Z' }
-      expose :updated_at, documentation: { type: 'dateTime', example: '2022-11-14T17:22:01.470Z' }
+      expose :created_at, documentation: { type: 'DateTime', example: '2022-08-17T12:46:35.053Z' }
+      expose :updated_at, documentation: { type: 'DateTime', example: '2022-11-14T17:22:01.470Z' }
 
       def presented
         lazy_issuable_metadata

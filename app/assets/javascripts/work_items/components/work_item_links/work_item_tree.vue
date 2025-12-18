@@ -208,8 +208,7 @@ export default {
     },
     addItemsActions() {
       let childTypes = this.allowedChildTypes;
-      // To remove EPICS actions when subepics are not available
-      if (this.workItemType === WORK_ITEM_TYPE_NAME_EPIC && !this.hasSubepicsFeature) {
+      if (!this.hasSubepicsFeature) {
         childTypes = childTypes.filter((type) => type.name !== WORK_ITEM_TYPE_NAME_EPIC);
       }
 

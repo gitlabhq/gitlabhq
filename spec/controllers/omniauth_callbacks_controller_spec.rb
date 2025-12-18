@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :controller, feature_category: :system_access do
+RSpec.describe OmniauthCallbacksController, type: :controller, feature_category: :system_access do
   include LoginHelpers
 
   shared_examples 'stores value for provider_2FA to session according to saml response' do
@@ -149,7 +149,7 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
     end
   end
 
-  describe 'omniauth', :with_current_organization do
+  describe 'omniauth' do
     let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider) }
     let(:omniauth_email) { user.email }
     let(:additional_info) { {} }
@@ -1122,7 +1122,7 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
       let(:post_action) { post :saml, params: { SAMLResponse: mock_saml_response } }
     end
 
-    context 'for sign up', :with_current_organization do
+    context 'for sign up' do
       before do
         user.destroy!
       end

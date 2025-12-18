@@ -171,7 +171,7 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
     end
   end
 
-  describe "POST create", :with_current_organization do
+  describe "POST create" do
     let(:bitbucket_username) { user.username }
 
     let(:bitbucket_user) do

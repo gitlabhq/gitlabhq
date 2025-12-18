@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Gfm::ReferenceRewriter, feature_category: :team_planning do
+RSpec.describe Gitlab::Gfm::ReferenceRewriter, feature_category: :markdown do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
 

@@ -43,12 +43,8 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
         end
 
         within_modal do
-          expect(page).to have_field('Source (branch or tag)', with: project.default_branch)
+          expect(page).to have_selector('.ref-selector', text: project.default_branch)
           expect(page).to have_field('Branch name', with: issue.to_branch_name)
-
-          fill_in 'Source (branch or tag)', with: 'mas'
-
-          expect(page).to have_text('Source is not available')
 
           fill_in 'Branch name', with: 'new-branch-name'
 
@@ -98,7 +94,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
           perform_enqueued_jobs do
             click_button 'Create merge request'
             within_modal do
-              fill_in 'Branch name', with: branch_name
+              fill_in 'Source branch name', with: branch_name
               click_button 'Create merge request'
             end
 
@@ -124,15 +120,14 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
         end
 
         context 'when source branch is non-default' do
-          let(:source_branch) { 'feature' }
-
           it 'creates a branch' do
             within_testid('create-options-dropdown') do
               click_button "More options"
             end
             click_button 'Create branch'
             within_modal do
-              fill_in 'Source (branch or tag)', with: source_branch
+              find('.ref-selector .gl-new-dropdown-toggle').click
+              find('.ref-selector [role="option"]', match: :first).click
               fill_in 'Branch name', with: branch_name
               click_button 'Create branch'
             end
@@ -147,7 +142,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
           it 'has error message' do
             click_button 'Create merge request'
             within_modal do
-              fill_in 'Branch name', with: 'custom-branch-name w~th ^bad chars?'
+              fill_in 'Source branch name', with: 'custom-branch-name w~th ^bad chars?'
             end
 
             expect(page).to have_text("Can't contain spaces, ~, ^, ?")

@@ -95,7 +95,7 @@ In the Roadmap view, you can also filter by the epics':
 - Your Reaction
 - Groups
 
-![roadmap date range in weeks](img/roadmap_filters_v13_11.png)
+![Filtering a GitLab epics roadmap by 'Documentation Update' label, showing additional filter options in the dropdown .](img/roadmap_filters_v13_11.png)
 
 From an epic, you can also [view the roadmap filtered to this epic's descendants](../epics/_index.md#roadmap-in-epics).
 

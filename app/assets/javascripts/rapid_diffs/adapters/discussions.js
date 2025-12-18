@@ -171,7 +171,7 @@ export const parallelDiscussionsAdapter = {
     newDiscussion(event, button) {
       const [oldLine, newLine] = getParallelPosition(button);
       const { oldPath, newPath } = this.data;
-      const existingDiscussionId = useDiffDiscussions(pinia).addNewLineDiscussionForm({
+      const existingDiscussionId = useDiffDiscussions(pinia).replyToLineDiscussion({
         oldPath,
         newPath,
         oldLine,
@@ -195,7 +195,7 @@ export const inlineDiscussionsAdapter = {
     newDiscussion(event, button) {
       const [oldLine, newLine] = getInlinePosition(button);
       const { oldPath, newPath } = this.data;
-      const existingDiscussionId = useDiffDiscussions(pinia).addNewLineDiscussionForm({
+      const existingDiscussionId = useDiffDiscussions(pinia).replyToLineDiscussion({
         oldPath,
         newPath,
         oldLine,

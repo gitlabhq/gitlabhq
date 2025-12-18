@@ -115,6 +115,7 @@ export default {
         custom-class="file-browser-toggle-tooltip"
         :target="() => $refs.toggle.$el"
         placement="left"
+        triggers="hover"
       >
         {{ toggleFileBrowserTitle }}
         <shortcut

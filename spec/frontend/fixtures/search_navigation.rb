@@ -41,28 +41,7 @@ RSpec.describe SearchHelper, 'search navigation (JavaScript fixtures)', type: :h
     expect(response).to be_successful
   end
 
-  it 'search_navigation/sub_item_active.json' do
-    allow(helper).to receive_messages(scope: issues_scope, params: mock_params)
-    instance_variable_set(:@scope, issues_scope)
-
-    expect(response).to be_successful
-  end
-
   it 'search_navigation/no_active_items.json' do
     expect(response).to be_successful
-  end
-
-  context 'with partial navigation' do
-    let(:navigation) do
-      full_navigation = Gitlab::Json.parse(helper.search_navigation_json)
-      full_navigation['issues']['sub_items']
-    end
-
-    it 'search_navigation/partial_navigation_active.json' do
-      allow(helper).to receive_messages(scope: issues_scope, params: mock_params)
-      instance_variable_set(:@scope, issues_scope)
-
-      expect(response).to be_successful
-    end
   end
 end

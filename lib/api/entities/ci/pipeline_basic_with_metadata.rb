@@ -5,7 +5,7 @@ module API
     module Ci
       class PipelineBasicWithMetadata < PipelineBasic
         expose :name,
-          documentation: { type: 'string', example: 'Build pipeline' }
+          documentation: { type: 'String', example: 'Build pipeline' }
       end
     end
   end

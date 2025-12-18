@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::LabelsController, :with_current_organization, feature_category: :team_planning do
+RSpec.describe Admin::LabelsController, feature_category: :team_planning do
   let_it_be(:admin) { create(:admin) }
 
   before do

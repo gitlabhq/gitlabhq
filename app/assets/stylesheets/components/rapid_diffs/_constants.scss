@@ -1,4 +1,6 @@
 @use 'functions';
+@use 'sass:list';
+@use 'sass:map';
 @import 'page_bundles/mixins_and_variables_and_functions';
 
 $base-font-size: 16px;
@@ -15,9 +17,25 @@ $app-vertical-breakpoint: md;
 $diff-file-border-width: 1px;
 $diff-file-header-padding-y: $gl-spacing-scale-3;
 
-$diff-file-hunk-header-z-index: 1;
-$diff-file-cell-focused-z-index: functions.more-than($diff-file-hunk-header-z-index);
-$diff-file-header-z-index: functions.more-than($diff-file-cell-focused-z-index);
-$diff-file-highlighted-line-number-z-index: functions.more-than($diff-file-header-z-index);
-$diff-file-header-active-z-index: functions.more-than($diff-file-highlighted-line-number-z-index);
-$diff-file-new-discussion-toggle-z-index: functions.more-than($diff-file-header-active-z-index);
+$diff-file-element-order: (
+  diff-file-hunk-header-z-index,
+  diff-file-cell-focused-z-index,
+  diff-file-highlighted-line-number-z-index,
+  diff-file-header-z-index,
+  diff-file-header-active-z-index,
+  diff-file-new-discussion-toggle-z-index
+);
+$diff-file-z-index-map: ();
+$counter: 0;
+
+@each $variable-name in $diff-file-element-order {
+  $counter: $counter + 1;
+  $diff-file-z-index-map: map.set($diff-file-z-index-map, $variable-name, $counter);
+}
+
+$diff-file-hunk-header-z-index: map.get($diff-file-z-index-map, diff-file-hunk-header-z-index);
+$diff-file-cell-focused-z-index: map.get($diff-file-z-index-map, diff-file-cell-focused-z-index);
+$diff-file-header-z-index: map.get($diff-file-z-index-map, diff-file-header-z-index);
+$diff-file-highlighted-line-number-z-index: map.get($diff-file-z-index-map, diff-file-highlighted-line-number-z-index);
+$diff-file-header-active-z-index: map.get($diff-file-z-index-map, diff-file-header-active-z-index);
+$diff-file-new-discussion-toggle-z-index: map.get($diff-file-z-index-map, diff-file-new-discussion-toggle-z-index);

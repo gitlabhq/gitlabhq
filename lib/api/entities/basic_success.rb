@@ -4,7 +4,7 @@ module API
   module Entities
     # Simple representation for endpoints that returns a trivial success response.
     class BasicSuccess < Grape::Entity
-      expose :success, documentation: { type: 'boolean' } do
+      expose :success, documentation: { type: 'Boolean' } do
         true
       end
     end

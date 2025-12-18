@@ -115,17 +115,8 @@ module Gitlab
                   type: pipeline.source
                 },
                 builds: builds_validation_payload,
-                total_builds_count: total_builds_count
+                total_builds_count: current_user.pipelines.jobs_count_in_alive_pipelines
               }
-            end
-
-            # Remove when `ci_refactor_jobs_count_in_alive_pipelines` is removed.
-            def total_builds_count
-              if command.ci_refactor_jobs_count_in_alive_pipelines_enabled?
-                current_user.pipelines.jobs_count_in_alive_pipelines
-              else
-                current_user.pipelines.legacy_builds_count_in_alive_pipelines
-              end
             end
 
             def builds_validation_payload

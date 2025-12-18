@@ -1,4 +1,4 @@
-import { INVISIBLE, VISIBLE } from '~/rapid_diffs/adapter_events';
+import { INVISIBLE, MOUNTED, VISIBLE } from '~/rapid_diffs/adapter_events';
 import { getScrollingElement, scrollTo } from '~/lib/utils/scroll_utils';
 import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/common_utils';
 
@@ -24,6 +24,21 @@ function disableScrollToLink(e) {
   }
 }
 
+function scrollToLegacyFileFragment() {
+  const { legacyFileFragment } = this.appData;
+  if (!legacyFileFragment) return;
+  const { fileHash, oldLine, newLine } = legacyFileFragment;
+  if (fileHash !== this.id) return;
+  if (!oldLine && !newLine) {
+    this.selectFile();
+    return;
+  }
+  const lineLink = this.diffElement.querySelector(
+    `[data-position="old"] [data-line-number="${oldLine}"], [data-position="new"] [data-line-number="${newLine}"]`,
+  );
+  if (lineLink) lineLink.click();
+}
+
 const getBody = (diffElement) => diffElement.querySelector('[data-file-body]');
 
 export const lineLinkAdapter = {
@@ -35,5 +50,8 @@ export const lineLinkAdapter = {
     if (this.sink.disableScrollToLink) {
       getBody(this.diffElement).removeEventListener('click', this.sink.disableScrollToLink);
     }
+  },
+  [MOUNTED]() {
+    scrollToLegacyFileFragment.call(this);
   },
 };

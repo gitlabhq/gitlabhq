@@ -42,7 +42,7 @@ describe('ScopeSidebarNavigation', () => {
 
   const createComponent = (
     initialState,
-    provide = { glFeatures: { workItemScopeFrontend: true } },
+    provide = { glFeatures: {} },
     gqlHandler = blobCountHandler,
   ) => {
     const requestHandlers = [[getBlobSearchCountQuery, gqlHandler]];
@@ -91,7 +91,7 @@ describe('ScopeSidebarNavigation', () => {
     });
 
     it('renders all nav item components', () => {
-      expect(findNavItems()).toHaveLength(14);
+      expect(findNavItems()).toHaveLength(11);
     });
 
     it('has all proper links', () => {
@@ -106,8 +106,7 @@ describe('ScopeSidebarNavigation', () => {
     describe('when sets proper state with url scope set', () => {
       beforeEach(() => {
         const navigationItemsClone = [...MOCK_NAVIGATION_ITEMS];
-        navigationItemsClone[3].is_active = false;
-        navigationItemsClone[3].items[1].is_active = true;
+        navigationItemsClone[3].is_active = true;
         getterSpies.navigationItems = jest.fn(() => navigationItemsClone);
 
         createComponent();
@@ -115,23 +114,23 @@ describe('ScopeSidebarNavigation', () => {
 
       it('has correct active item', () => {
         expect(findNavItemActive().exists()).toBe(true);
-        expect(findNavItemActiveLabel().text()).toBe('Epics');
+        expect(findNavItemActiveLabel().text()).toBe('Issues');
       });
     });
 
-    describe('when sets proper state with Feature Flag off', () => {
+    describe('when sets proper state', () => {
       beforeEach(() => {
         const navigationItemsClone = [...MOCK_NAVIGATION_ITEMS];
         navigationItemsClone[3].is_active = true;
 
         getterSpies.navigationItems = jest.fn(() => navigationItemsClone);
-        createComponent({}, { glFeatures: { workItemScopeFrontend: false } });
+        createComponent({});
       });
 
-      it('does not render work items subitems', () => {
+      it('renders all navigation items', () => {
         expect(findNavItemActive().exists()).toBe(true);
-        expect(findNavItemActiveLabel().text()).toBe('Work items');
-        expect(findNavItems()).toHaveLength(10);
+        expect(findNavItemActiveLabel().text()).toBe('Issues');
+        expect(findNavItems()).toHaveLength(11);
       });
     });
   });
@@ -221,7 +220,7 @@ describe('ScopeSidebarNavigation', () => {
               regex: 'false',
             },
           },
-          { glFeatures: { workItemScopeFrontend: true } },
+          {},
           mockQueryError,
         );
         jest.runOnlyPendingTimers();
@@ -372,7 +371,7 @@ describe('ScopeSidebarNavigation', () => {
         it(`test ${name}`, () => {
           getterSpies.currentScope.mockReturnValue(currentScope);
           createComponent(initialState, {
-            glFeatures: { ...features, workItemScopeFrontend: true },
+            glFeatures: { ...features },
           });
 
           expect(wrapper.vm.legacyBlobsCount).toBe(expected);

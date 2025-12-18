@@ -39,7 +39,7 @@ For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v
    with GitLab Pages, depending on your project's visibility:
 
    - If your project is private:
-     - **Only project members**: Only project members can browse the website.
+     - **Only project members**: Only [project members](../members/_index.md) can browse the website.
      - **Everyone**: Everyone, both logged into and logged out of GitLab, can browse the website, no matter their project membership.
    - If your project is internal:
      - **Only project members**: Only project members can browse the website.

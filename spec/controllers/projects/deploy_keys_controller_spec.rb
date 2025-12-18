@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::DeployKeysController, :with_current_organization, feature_category: :continuous_delivery do
+RSpec.describe Projects::DeployKeysController, feature_category: :continuous_delivery do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }

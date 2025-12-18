@@ -5,19 +5,11 @@ require 'spec_helper'
 RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, feature_category: :importers do
   describe '#execute' do
     let_it_be(:current_user) { create(:user) }
+    let_it_be(:organization) { create(:organization) }
     let_it_be(:groups) { create_list(:group, 2, owners: current_user) }
     let_it_be(:projects) { create_list(:project, 2, maintainers: current_user) }
-
     let(:source_hostname) { 'https://offline-environment-gitlab.example.com' }
-    let(:portable_params) do
-      [
-        { type: 'group', full_path: groups[0].full_path },
-        { type: 'group', full_path: groups[1].full_path },
-        { type: 'project', full_path: projects[0].full_path },
-        { type: 'project', full_path: projects[1].full_path }
-      ]
-    end
-
+    let(:portable_params) { (groups + projects).map { |portable| { full_path: portable.full_path } } }
     let(:storage_config) do
       {
         provider: :aws,
@@ -32,7 +24,7 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
     end
 
     subject(:result) do
-      described_class.new(current_user, source_hostname, portable_params, storage_config).execute
+      described_class.new(current_user, source_hostname, portable_params, storage_config, organization.id).execute
     end
 
     before do
@@ -84,12 +76,12 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
     context 'when portables contain duplicate paths' do
       let(:portable_params) do
         [
-          { type: 'group', full_path: groups[0].full_path },
-          { type: 'group', full_path: groups[0].full_path },
-          { type: 'group', full_path: groups[1].full_path },
-          { type: 'project', full_path: projects[0].full_path },
-          { type: 'project', full_path: projects[1].full_path },
-          { type: 'project', full_path: projects[1].full_path }
+          { full_path: groups[0].full_path },
+          { full_path: groups[0].full_path },
+          { full_path: groups[1].full_path },
+          { full_path: projects[0].full_path },
+          { full_path: projects[1].full_path },
+          { full_path: projects[1].full_path }
         ]
       end
 
@@ -108,14 +100,14 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
 
       let(:portable_params) do
         [
-          { type: 'group', full_path: groups[0].full_path },
-          { type: 'group', full_path: unauthorized_group.full_path },
-          { type: 'group', full_path: low_access_group.full_path },
-          { type: 'group', full_path: 'nonexistent/group' },
-          { type: 'project', full_path: projects[0].full_path },
-          { type: 'project', full_path: unauthorized_project.full_path },
-          { type: 'project', full_path: low_access_project.full_path },
-          { type: 'project', full_path: 'nonexistent/project' }
+          { full_path: groups[0].full_path },
+          { full_path: unauthorized_group.full_path },
+          { full_path: low_access_group.full_path },
+          { full_path: 'nonexistent/group' },
+          { full_path: projects[0].full_path },
+          { full_path: unauthorized_project.full_path },
+          { full_path: low_access_project.full_path },
+          { full_path: 'nonexistent/project' }
         ]
       end
 
@@ -131,15 +123,10 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
       end
     end
 
-    context 'when a portable type is not provided' do
-      let(:portable_params) do
-        [
-          { type: '', full_path: groups[0].full_path },
-          { type: 'project', full_path: projects[0].full_path }
-        ]
-      end
+    context 'when portable params are not provided' do
+      let(:portable_params) { [] }
 
-      it_behaves_like 'an error response', error: 'Entity types and full paths must be provided'
+      it_behaves_like 'an error response', error: 'Entity full paths must be provided'
     end
 
     context 'when a portable full path is not provided' do
@@ -150,19 +137,47 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
         ]
       end
 
-      it_behaves_like 'an error response', error: 'Entity types and full paths must be provided'
+      it_behaves_like 'an error response', error: 'Entity full paths must be provided'
     end
 
     context 'when bucket cannot be reached' do
       before do
         allow_next_instance_of(Fog::Storage) do |storage|
-          allow(storage).to receive(:head_bucket).and_raise(
-            Excon::Error::BadRequest.new(message: 'Bad request')
-          )
+          allow(storage).to receive(:head_bucket).and_raise(Excon::Error::BadRequest, 'Bad request')
         end
       end
 
       it_behaves_like 'an error response', error: 'Unable to access object storage bucket.'
+    end
+
+    context 'when an unexpected error is raised' do
+      let(:raise_error_with_cause_proc) do
+        proc do
+          raise original_error
+        rescue StandardError
+          raise NoMethodError, 'undefined method caused by a connection error'
+        end
+      end
+
+      before do
+        allow_next_instance_of(Fog::Storage) do |storage|
+          allow(storage).to receive(:head_bucket).and_invoke(raise_error_with_cause_proc)
+        end
+      end
+
+      context 'and the error was caused by an expected error when testing connection to the bucket' do
+        let(:original_error) { Excon::Error::BadRequest.new('Bad request') }
+
+        it_behaves_like 'an error response', error: 'Unable to access object storage bucket.'
+      end
+
+      context 'and the error is not caused by an expected error' do
+        let(:original_error) { StandardError.new('unexpected') }
+
+        it 'does not catch the error' do
+          expect { result }.to raise_error(NoMethodError)
+        end
+      end
     end
 
     context 'when the offline export fails validations' do

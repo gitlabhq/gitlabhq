@@ -324,146 +324,45 @@ RSpec.describe UserDetail, feature_category: :system_access do
     end
 
     describe '#discord' do
+      let(:error_message) { _('must contain only a discord user ID.') }
+
       it { is_expected.to validate_length_of(:discord).is_at_most(500) }
 
-      context 'when discord is set' do
-        let_it_be(:user_detail) { create(:user).user_detail }
-
-        it 'accepts a valid discord user id' do
-          user_detail.discord = '1234567890123456789'
-
-          expect(user_detail).to be_valid
-        end
-
-        it 'throws an error when other url format is wrong' do
-          user_detail.discord = '123456789'
-
-          expect(user_detail).not_to be_valid
-          expect(user_detail.errors.full_messages).to match_array([_('Discord must contain only a discord user ID.')])
-        end
-      end
+      it { is_expected.to allow_value('1234567890123456789').for(:discord) }
+      it { is_expected.not_to allow_value('123456789').for(:discord).with_message(error_message) }
     end
 
     describe '#bluesky' do
-      context 'when bluesky is set' do
-        let_it_be(:user_detail) { build(:user_detail) }
+      let(:error_message) { _('must contain only a bluesky did:plc identifier.') }
 
-        let(:value) { 'did:plc:ewvi7nxzyoun6zhxrhs64oiz' }
+      it { is_expected.to allow_value('did:plc:ewvi7nxzyoun6zhxrhs64oiz').for(:bluesky) }
+      it { is_expected.not_to allow_value('a' * 33).for(:bluesky).with_message(error_message) }
 
-        before do
-          user_detail.bluesky = value
-        end
-
-        it 'accepts a valid bluesky did id' do
-          expect(user_detail).to be_valid
-        end
-
-        shared_examples 'throws an error' do
-          it do
-            expect(user_detail).not_to be_valid
-            expect(user_detail.errors.full_messages)
-              .to match_array([_('Bluesky must contain only a bluesky did:plc identifier.')])
-          end
-        end
-
-        context 'when bluesky is set to a wrong format' do
-          context 'when bluesky did:plc is too long' do
-            let(:value) { 'a' * 33 }
-
-            it_behaves_like 'throws an error'
-          end
-
-          context 'when bluesky did:plc is wrong' do
-            let(:value) { 'did:plc:ewvi7nxzyoun6zhxrhs64OIZ' }
-
-            it_behaves_like 'throws an error'
-          end
-
-          context 'when bluesky other bluesky did: formats are used' do
-            let(:value) { 'did:web:example.com' }
-
-            it_behaves_like 'throws an error'
-          end
-        end
+      it do
+        is_expected.not_to allow_value('did:plc:ewvi7nxzyoun6zhxrhs64OIZ').for(:bluesky).with_message(error_message)
       end
+
+      it { is_expected.not_to allow_value('did:web:example.com').for(:bluesky).with_message(error_message) }
     end
 
     describe '#mastodon' do
+      let(:error_message) { _('must contain only a mastodon handle.') }
+
       it { is_expected.to validate_length_of(:mastodon).is_at_most(500) }
-
-      context 'when mastodon is set' do
-        let_it_be(:user_detail) { create(:user).user_detail }
-
-        it 'accepts a valid mastodon username' do
-          user_detail.mastodon = '@robin@example.com'
-
-          expect(user_detail).to be_valid
-        end
-
-        it 'throws an error when mastodon username format is wrong' do
-          user_detail.mastodon = '@robin'
-
-          expect(user_detail).not_to be_valid
-          expect(user_detail.errors.full_messages)
-            .to match_array([_('Mastodon must contain only a mastodon handle.')])
-        end
-      end
+      it { is_expected.to allow_value('@robin@example.com').for(:mastodon) }
+      it { is_expected.not_to allow_value('@robin').for(:mastodon).with_message(error_message) }
     end
 
     describe '#orcid' do
-      context 'when orcid is set' do
-        let_it_be(:user_detail) { create(:user).user_detail }
+      let(:error_message) { _('must contain only a valid ORCID.') }
 
-        it 'accepts a valid orcid username' do
-          user_detail.orcid = '1234-1234-1234-1234'
+      it { is_expected.to allow_value('1234-1234-1234-1234').for(:orcid) }
+      it { is_expected.to allow_value('1234-1234-1234-123X').for(:orcid) }
 
-          expect(user_detail).to be_valid
-        end
-
-        it 'accepts a valid orcid username' do
-          user_detail.orcid = '1234-1234-1234-123X'
-
-          expect(user_detail).to be_valid
-        end
-
-        context 'when orcid is wrong' do
-          shared_examples 'throws an error' do
-            before do
-              user_detail.orcid = orcid
-            end
-
-            it 'throws an error' do
-              expect(user_detail).not_to be_valid
-              expect(user_detail.errors.full_messages)
-                .to match_array([_('Orcid must contain only a valid ORCID.')])
-            end
-          end
-
-          context 'when the format is too long' do
-            let(:orcid) { '1234-1234-1234-1234-1234' }
-
-            it_behaves_like 'throws an error'
-          end
-
-          context 'when the format is too short' do
-            let(:orcid) { '1234-1234' }
-
-            it_behaves_like 'throws an error'
-          end
-
-          context 'when the format is letters' do
-            let(:orcid) { 'abcd-abcd-abcd-abcd' }
-
-            it_behaves_like 'throws an error'
-          end
-
-          context 'when the format end with another letter than X' do
-            let(:orcid) { '1234-1234-1234-123Y' }
-
-            it_behaves_like 'throws an error'
-          end
-        end
-      end
+      it { is_expected.not_to allow_value('1234-1234-1234-1234-1234').for(:orcid).with_message(error_message) }
+      it { is_expected.not_to allow_value('1234-1234').for(:orcid).with_message(error_message) }
+      it { is_expected.not_to allow_value('abcd-abcd-abcd-abcd').for(:orcid).with_message(error_message) }
+      it { is_expected.not_to allow_value('1234-1234-1234-123Y').for(:orcid).with_message(error_message) }
     end
 
     describe '#location' do

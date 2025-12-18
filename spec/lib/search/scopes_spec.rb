@@ -144,46 +144,4 @@ RSpec.describe Search::Scopes, feature_category: :global_search do
       end
     end
   end
-
-  describe '.hidden_by_work_item_scope?' do
-    let(:user) { build(:user) }
-
-    context 'when user is nil' do
-      it 'returns false' do
-        expect(described_class.hidden_by_work_item_scope?(:issues, nil)).to be false
-      end
-    end
-
-    context 'when work_item_scope_frontend feature flag is disabled' do
-      before do
-        stub_feature_flags(work_item_scope_frontend: false)
-      end
-
-      it 'returns false for issues scope' do
-        expect(described_class.hidden_by_work_item_scope?(:issues, user)).to be false
-      end
-
-      it 'returns false for epics scope' do
-        expect(described_class.hidden_by_work_item_scope?(:epics, user)).to be false
-      end
-
-      it 'returns false for other scopes' do
-        expect(described_class.hidden_by_work_item_scope?(:projects, user)).to be false
-      end
-    end
-
-    it 'returns true for issues scope' do
-      expect(described_class.hidden_by_work_item_scope?(:issues, user)).to be true
-    end
-
-    it 'returns true for epics scope' do
-      expect(described_class.hidden_by_work_item_scope?(:epics, user)).to be true
-    end
-
-    it 'returns false for other scopes' do
-      expect(described_class.hidden_by_work_item_scope?(:projects, user)).to be false
-      expect(described_class.hidden_by_work_item_scope?(:merge_requests, user)).to be false
-      expect(described_class.hidden_by_work_item_scope?(:blobs, user)).to be false
-    end
-  end
 end

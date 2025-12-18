@@ -423,12 +423,6 @@ flowchart TB
     P_Reg -- "Notifications" --> P_Rails
     P_Rails -- "Events" --> S_Rails
     S_Rails --> S_Reg
-
-    classDef primary fill:#d1f7c4
-    classDef secondary fill:#b8d4ff
-
-    class P_Rails,P_Reg,P_MainDB,P_RegDB,P_Obj primary
-    class S_Rails,S_Reg,S_MainDB,S_RegDB,S_Obj secondary
 ```
 
 Use separate database instances on each site because:
