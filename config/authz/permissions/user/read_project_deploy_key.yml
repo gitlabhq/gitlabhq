@@ -1,0 +1,6 @@
+---
+name: read_project_deploy_key_user
+description: Grants the ability to read user project deploy keys
+feature_category: user_management
+boundaries:
+  - user

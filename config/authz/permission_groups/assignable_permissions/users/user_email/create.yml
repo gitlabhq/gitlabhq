@@ -1,0 +1,8 @@
+---
+name: create_user_email
+description: Grants the ability to create user email addresses
+feature_category: user_management
+boundaries:
+  - user
+permissions:
+  - create_user_email

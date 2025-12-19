@@ -886,7 +886,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
 
       it_behaves_like 'authorizing granular token permissions', :read_project do
-        let(:boundary_object) { nil }
+        let(:boundary_object) { :user }
         let(:request) do
           get api(path, personal_access_token: pat)
         end
@@ -1855,7 +1855,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
 
     it_behaves_like 'authorizing granular token permissions', :create_project do
-      let(:boundary_object) { nil }
+      let(:boundary_object) { :user }
       let(:request) do
         post api(path, personal_access_token: pat), params: { name: 'Test Project' }
       end
@@ -2017,7 +2017,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
 
     it_behaves_like 'authorizing granular token permissions', :read_project do
-      let(:boundary_object) { nil }
+      let(:boundary_object) { :user }
       let(:request) do
         get api("/users/#{user4.id}/projects/", personal_access_token: pat)
       end
@@ -2071,7 +2071,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
 
       it_behaves_like 'authorizing granular token permissions', :read_starred_project do
-        let(:boundary_object) { nil }
+        let(:boundary_object) { :user }
         let(:request) do
           get api(path, personal_access_token: pat)
         end
@@ -2148,7 +2148,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
 
     it_behaves_like 'authorizing granular token permissions', :read_contributed_project do
-      let(:boundary_object) { nil }
+      let(:boundary_object) { :user }
       let(:request) do
         get api(path, personal_access_token: pat)
       end
@@ -2439,7 +2439,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
     context 'with granular token permissions', :enable_admin_mode do
       it_behaves_like 'authorizing granular token permissions', :create_project do
-        let(:boundary_object) { nil }
+        let(:boundary_object) { :user }
         let(:user) { admin }
         let(:request) do
           post api(path, personal_access_token: pat), params: { name: 'Test Project' }

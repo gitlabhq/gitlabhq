@@ -33,7 +33,7 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions|
     end
 
     let(:boundary) { ::Authz::Boundary.for(boundary_object) }
-    let(:pat) { create(:granular_pat, user: user, namespace: boundary.namespace, permissions: assignables) }
+    let(:pat) { create(:granular_pat, user: user, boundary: boundary, permissions: assignables) }
 
     it_behaves_like 'granting access'
 
@@ -54,7 +54,7 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions|
 
       let(:message) do
         'Access denied: Your Personal Access Token lacks the required permissions: ' \
-          "[#{Array(permissions).join(', ')}]" + (boundary_object.nil? ? '.' : " for \"#{boundary.path}\".")
+          "[#{Array(permissions).join(', ')}]" + (boundary.path ? " for \"#{boundary.path}\"." : '.')
       end
 
       it_behaves_like 'denying access'

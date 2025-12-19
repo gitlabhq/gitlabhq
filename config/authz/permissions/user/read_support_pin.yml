@@ -1,0 +1,6 @@
+---
+name: read_support_pin_user
+description: Grants the ability to read user support PIN
+feature_category: user_management
+boundaries:
+  - user

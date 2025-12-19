@@ -1,0 +1,8 @@
+---
+name: block_user
+description: Grants the ability to block users
+feature_category: user_management
+boundaries:
+  - user
+permissions:
+  - block_user

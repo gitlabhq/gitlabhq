@@ -1,0 +1,6 @@
+---
+name: create_user_gpg_key
+description: Grants the ability to create user GPG keys
+feature_category: user_management
+boundaries:
+  - user

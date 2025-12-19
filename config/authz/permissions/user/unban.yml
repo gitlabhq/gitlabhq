@@ -1,0 +1,6 @@
+---
+name: unban_user
+description: Grants the ability to unban users
+feature_category: user_management
+boundaries:
+  - user

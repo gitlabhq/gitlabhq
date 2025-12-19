@@ -1839,11 +1839,11 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           # threshold number 2 is the additional number of queries which are getting executed.
           # with this we are allowing some N+1 that may already exist but is not obvious.
           # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132246#note_1581106553
-          # Additional queries due to cascading settings checks for duo_foundational_flows_enabled
+          # Additional queries due to cascading settings checks for duo_features_enabled and duo_foundational_flows_enabled
           # See https://gitlab.com/gitlab-org/gitlab/-/issues/442164
           expect do
             get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true }
-          end.to issue_same_number_of_queries_as(control).with_threshold(5)
+          end.to issue_same_number_of_queries_as(control).with_threshold(6)
         end
       end
 

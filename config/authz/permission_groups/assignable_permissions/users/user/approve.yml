@@ -1,0 +1,8 @@
+---
+name: approve_user
+description: Grants the ability to approve users
+feature_category: user_management
+boundaries:
+  - user
+permissions:
+  - approve_user

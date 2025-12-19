@@ -14,14 +14,31 @@ module Authz
     validate :organization_match, if: -> { namespace.present? }
 
     scope :with_namespace, ->(namespace_id) { where(namespace_id: namespace_id) }
+    scope :for_standalone, ->(access) do
+      where(namespace_id: nil, access: access).where.not(access: Access::ALL_MEMBERSHIPS)
+    end
+    scope :for_namespaces, ->(namespaces) do
+      where(namespace_id: namespaces, access: [Access::PERSONAL_PROJECTS, Access::SELECTED_MEMBERSHIPS])
+        .or(where(namespace_id: nil, access: Access::ALL_MEMBERSHIPS))
+    end
 
-    enum :access, {
-      personal_projects: 0,
-      all_memberships: 1,
-      selected_memberships: 2,
-      user: 3,
-      instance: 4
-    }
+    module Access
+      PERSONAL_PROJECTS = :personal_projects
+      ALL_MEMBERSHIPS = :all_memberships
+      SELECTED_MEMBERSHIPS = :selected_memberships
+      USER = :user
+      INSTANCE = :instance
+
+      LEVELS = {
+        PERSONAL_PROJECTS => 0,
+        ALL_MEMBERSHIPS => 1,
+        SELECTED_MEMBERSHIPS => 2,
+        USER => 3,
+        INSTANCE => 4
+      }.freeze
+    end
+
+    enum :access, Access::LEVELS
 
     ignore_column :all_membership_namespaces, remove_with: '18.8', remove_after: '2026-01-15'
 
@@ -32,11 +49,15 @@ module Authz
     end
 
     def self.token_permissions(boundary)
+      scope = case boundary.access
+              when Access::USER, Access::INSTANCE
+                for_standalone(boundary.access)
+              when Access::SELECTED_MEMBERSHIPS
+                for_namespaces(boundary.namespace.self_and_ancestor_ids)
+              end
+
       # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- limited permissions, and not used with IN clause
-      namespace_ids = boundary.namespace&.self_and_ancestor_ids
-      where.not(access: :all_memberships)
-        .where(namespace_id: namespace_ids)
-        .or(where(access: :all_memberships))
+      scope
         .pluck(Arel.sql('DISTINCT jsonb_array_elements_text(permissions)'))
         .flat_map { |p| ::Authz::PermissionGroups::Assignable.get(p)&.permissions }
         .compact.map(&:to_sym)

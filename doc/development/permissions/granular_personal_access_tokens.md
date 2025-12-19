@@ -32,7 +32,7 @@ Before starting, ensure you:
    lib/api/<resource_name>.rb
 ```
 
-   Example: For jobs, open `lib/api/jobs.rb`
+   Example: For jobs resource, open `lib/api/ci/jobs.rb`
 
 1. Review all endpoints defined in the file. Look for HTTP methods and routes:
 
@@ -175,8 +175,8 @@ The `boundary_object` must match the `boundary_type`:
 |---------------|-----------------|
 | `:project` | `project` |
 | `:group` | `group` |
-| `:user` | `user` |
-| `:instance` | `nil` or not specified |
+| `:user` | `:user` |
+| `:instance` | `:instance` |
 
 ### Step 7: Create Merge Request
 
@@ -221,9 +221,9 @@ This MR enables granular Personal Access Token (PAT) permissions for [Resource N
 
 ```ruby
 # Enable feature flag
-Feature.enable(:authorize_granular_pats)
+Feature.enable(:granular_personal_access_tokens)
 
-user = User.first
+user = User.human.first
 
 # Create granular token
 token = PersonalAccessTokens::CreateService.new(
@@ -233,12 +233,13 @@ token = PersonalAccessTokens::CreateService.new(
   params: { expires_at: 1.month.from_now, scopes: ['granular'], granular: true, name: 'gPAT' }
 ).execute[:personal_access_token]
 
-# Get the appropriate boundary object (project, group, or user)
-project = user.projects.first
+# Get the appropriate boundary object (project, group, :user, or :instance)
+boundary = Authz::Boundary.for(user.projects.first)
 
 # Create scope with the permission being tested (replace :read_job with your permission)
-scope = Authz::GranularScope.new(namespace: project.project_namespace, permissions: [:read_job])
+scope = Authz::GranularScope.new(namespace: boundary.namespace, access: boundary.access, permissions: [:read_job])
 
+# Add the scope to the token
 Authz::GranularScopeService.new(token).add_granular_scopes(scope)
 
 # Copy the API endpoint URL with the token (replace with your endpoint)
@@ -262,7 +263,7 @@ Closes #[issue_number]
 
 ### Reviewers
 
-Tag the authorization team _@GitLab-org/software-supply-chain-security/authorization/approvers_ for review.
+Tag someone from the authorization team `_@GitLab-org/software-supply-chain-security/authorization/approvers_` for review.
 ````
 
 ## Edge Cases and Special Considerations

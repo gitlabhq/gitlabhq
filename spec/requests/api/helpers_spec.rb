@@ -340,33 +340,30 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
       context 'when authorization permissions are defined for an endpoint' do
         before do
           env['PATH_INFO'] = "/api/v4/#{boundary_segment}/endpoint"
-          allow(self).to receive(:route_setting).with(:authorization)
-            .and_return(permissions: permission, boundary_type: boundary_type)
+          allow(self).to receive(:route_setting).with(:authorization).and_return(permissions:, boundary_type:)
 
-          if boundary_resource != standalone_resource
-            allow(self).to receive(:params).and_return(boundary_parameter => boundary_resource.id)
-          end
+          allow(self).to receive(:params).and_return(boundary_parameter => boundary_object.id) if boundary_parameter
         end
 
-        let_it_be(:permission) { :create_issue }
+        let_it_be(:permissions) { :create_issue }
         let_it_be(:group_resource) { create(:group, organization: user.organization, developers: user) }
         let_it_be(:project_resource) { create(:project, organization: user.organization, namespace: group_resource) }
-        let_it_be(:standalone_resource) { nil }
-        let(:boundary) { ::Authz::Boundary.for(boundary_resource) }
+        let(:boundary) { ::Authz::Boundary.for(boundary_object) }
 
-        where(:boundary_type, :boundary_resource, :boundary_segment, :boundary_parameter) do
-          :project    | ref(:project_resource)    | 'projects' | :project_id
-          :project    | ref(:project_resource)    | 'projects' | :id
-          :group      | ref(:group_resource)      | 'groups'   | :group_id
-          :group      | ref(:group_resource)      | 'groups'   | :id
-          :standalone | ref(:standalone_resource) | ''         | nil
+        where(:boundary_type, :boundary_object, :boundary_segment, :boundary_parameter) do
+          :project    | ref(:project_resource) | 'projects' | :project_id
+          :project    | ref(:project_resource) | 'projects' | :id
+          :group      | ref(:group_resource)   | 'groups'   | :group_id
+          :group      | ref(:group_resource)   | 'groups'   | :id
+          :user       | :user                  | ''         | nil
+          :instance   | :instance              | ''         | nil
         end
 
         with_them do
           context 'when the granular token scopes are insufficient' do
             let(:message) do
-              msg = "Access denied: Your Personal Access Token lacks the required permissions: [#{permission}]"
-              msg << " for \"#{boundary.path}\"" if boundary_resource != standalone_resource
+              msg = "Access denied: Your Personal Access Token lacks the required permissions: [#{permissions}]"
+              msg << " for \"#{boundary.path}\"" if boundary.path
               msg << "."
             end
 
@@ -376,9 +373,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
           end
 
           context 'when the granular token scopes are sufficient' do
-            let(:granular_pat) do
-              create(:granular_pat, user: user, permissions: permission, namespace: boundary.namespace)
-            end
+            let(:granular_pat) { create(:granular_pat, user:, permissions:, boundary:) }
 
             it 'does not raise an error and returns the token user' do
               expect(current_user).to eq(user)

@@ -1,0 +1,8 @@
+---
+name: read_follower_user
+description: Grants the ability to read user follower information
+feature_category: user_management
+boundaries:
+  - user
+permissions:
+  - read_follower_user

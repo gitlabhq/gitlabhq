@@ -16,9 +16,10 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
   let_it_be(:legacy_token_revoked) { create(:personal_access_token, :revoked, user: user, name: 'Revoked token') }
   let_it_be(:legacy_token_expired) { create(:personal_access_token, :expired, :with_last_used_ips, user:) }
   let_it_be(:legacy_token_expiring_soon) { create(:personal_access_token, user: user, expires_at: 1.week.from_now) }
+  let_it_be(:boundary) { ::Authz::Boundary.for(group) }
   let_it_be(:granular_token) do
     create(:granular_pat, name: 'Special token', last_used_at: 1.day.ago, permissions: ['read_member_role'],
-      user: user, namespace: group)
+      user: user, boundary: boundary)
   end
 
   let(:fields) do
@@ -95,7 +96,7 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
           'granular' => true,
           'revoked' => false,
           'scopes' => [{
-            'access' => 'PERSONAL_PROJECTS',
+            'access' => 'SELECTED_MEMBERSHIPS',
             'namespace' => { 'id' => group.to_gid.to_s },
             'permissions' => [{ 'name' => 'read_member_role' }]
           }],
@@ -137,7 +138,8 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
         post_graphql(query, current_user: current_user)
       end
 
-      create_list(:granular_pat, 10, permissions: ['read_member_role'], user: user, namespace: create(:group))
+      boundary = ::Authz::Boundary.for(create(:group))
+      create_list(:granular_pat, 10, permissions: ['read_member_role'], user: user, boundary: boundary)
 
       expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
     end

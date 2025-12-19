@@ -66,15 +66,32 @@ The way you generate a CDB depends on your build system. Below are common exampl
 
 #### Example: CMake
 
-[CMake](https://cmake.org/) can generate a CDB directly with `-DCMAKE_EXPORT_COMPILE_COMMANDS=ON`:
+[CMake](https://cmake.org/) can generate a CDB directly with the `-DCMAKE_EXPORT_COMPILE_COMMANDS=ON` parameter added to a `cmake` call:
 
 ```shell
 cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 ```
 
-This option does not build the project.
-It produces a `compile_commands.json` file in the `build` folder, which records the compiler commands for each source file.
+This option configures the project and produces a `compile_commands.json` file in the `build` folder, which records the compiler commands for each source file.
+
 The GitLab Advanced SAST CPP analyzer relies on this file to reproduce the build environment accurately.
+
+Export the generated `compile_commands.json` file as a [job artifact](../../../ci/jobs/job_artifacts.md)
+in the following build job example:
+
+```yaml
+<YOUR-BUILD-JOB-NAME>:
+  image: ubuntu:24.04
+  before_script:
+    - apt update -qq && apt install -y -qq cmake build-essential
+  script:
+    - mkdir -p build
+    - cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+    - make -j$(nproc)
+  artifacts:
+    paths:
+      - build/compile_commands.json # Pass the CDB file to the gitlab-advanced-sast-cpp job
+```
 
 #### Examples for various build systems
 
@@ -97,7 +114,30 @@ variables:
   SAST_COMPILATION_DATABASE: YOUR_COMPILATION_DATABASE.json
 ```
 
-If SAST_COMPILATION_DATABASE is not specified, the GitLab Advanced SAST CPP analyzer defaults to using a file named `compile_commands.json located` in the project root.
+If `SAST_COMPILATION_DATABASE` is not specified, the GitLab Advanced SAST CPP analyzer defaults to using a file named `compile_commands.json` located in the project root directory.
+
+The build job which generates the `compile_commands.json` file must export
+it as [job artifact](../../../ci/jobs/job_artifacts.md) for the `gitlab-advanced-sast-cpp`
+job to consume:
+
+```yaml
+variables:
+  SAST_COMPILATION_DATABASE: build/compile_commands.json
+
+<YOUR-BUILD-JOB-NAME>:
+  image: ubuntu:24.04
+  before_script:
+    - apt update -qq && apt install -y -qq cmake build-essential
+  script:
+    - mkdir -p build
+    - cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+    - make -j$(nproc)
+  artifacts:
+    paths:
+      - build/compile_commands.json # Pass the CDB file to the gitlab-advanced-sast-cpp job
+```
+
+Alternatively, review [caching the CDB](#caching-a-cdb).
 
 ### Optimization: Parallel execution for efficiency
 
@@ -209,7 +249,7 @@ analyzer:
 
 ### Rebasing paths with `cdb-rebase`
 
-If the paths inside the CDB do not match the container paths in your CI job, adjust them with [cdb-rebase](https://gitlab.com/gitlab-org/security-products/analyzers/clangsa/-/tree/main/cmd/cdb-rebase).
+If the paths inside the CDB do not match the container paths in your CI/CD job, adjust them with [cdb-rebase](https://gitlab.com/gitlab-org/security-products/analyzers/clangsa/-/tree/main/cmd/cdb-rebase).
 
 Install:
 
@@ -237,7 +277,7 @@ It accepts:
 - First argument: the folder containing `compile_commands.json`
 - Subsequent arguments: additional compiler options to append
 
-Example in CI:
+Example in CI/CD:
 
 ```yaml
 include:

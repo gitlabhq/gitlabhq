@@ -1,0 +1,6 @@
+---
+name: ban_user
+description: Grants the ability to ban users
+feature_category: user_management
+boundaries:
+  - user

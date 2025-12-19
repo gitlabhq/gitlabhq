@@ -5,6 +5,42 @@ require 'spec_helper'
 RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
   using RSpec::Parameterized::TableSyntax
 
+  let_it_be(:rootgroup) { create(:group) }
+  let_it_be(:subgroup) { create(:group, parent: rootgroup) }
+  let_it_be(:project) { create(:project, namespace: subgroup) }
+  let_it_be(:user) { create(:user, :with_namespace) }
+  let_it_be(:user_project) { create(:project, namespace: user.namespace) }
+  let_it_be(:other_project) { create(:project) }
+
+  let_it_be(:instance_boundary) { Authz::Boundary.for(:instance) }
+  let_it_be(:standalone_user_boundary) { Authz::Boundary.for(:user) }
+  let_it_be(:all_memberships_boundary) { Authz::Boundary.for(:all_memberships) }
+  let_it_be(:rootgroup_boundary) { Authz::Boundary.for(rootgroup) }
+  let_it_be(:subgroup_boundary) { Authz::Boundary.for(subgroup) }
+  let_it_be(:project_boundary) { Authz::Boundary.for(project) }
+  let_it_be(:personal_projects_boundary) { Authz::Boundary.for(user) }
+  let_it_be(:user_project_boundary) { Authz::Boundary.for(user_project) }
+  let_it_be(:other_project_boundary) { Authz::Boundary.for(other_project) }
+
+  let_it_be(:scopes) do
+    {
+      instance: build(:granular_scope, boundary: instance_boundary, permissions: [:instance_perm]),
+      standalone_user: build(:granular_scope, boundary: standalone_user_boundary, permissions: [:standalone_user_perm]),
+      all_memberships: build(:granular_scope, boundary: all_memberships_boundary, permissions: [:all_memberships_perm]),
+      rootgroup: build(:granular_scope, boundary: rootgroup_boundary, permissions: [:rootgroup_perm]),
+      subgroup: build(:granular_scope, boundary: subgroup_boundary, permissions: [:subgroup_perm]),
+      project: build(:granular_scope, boundary: project_boundary, permissions: [:project_perm]),
+      personal_projects:
+        build(:granular_scope, boundary: personal_projects_boundary, permissions: [:personal_projects_perm]),
+      user_project: build(:granular_scope, boundary: user_project_boundary, permissions: [:user_project_perm]),
+      other_project: build(:granular_scope, boundary: other_project_boundary, permissions: [:other_project_perm])
+    }.each_value { |scope| scope.save!(validate: false) }
+  end
+
+  def scopes_for(*types)
+    scopes.slice(*types).values
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:organization).required }
     it { is_expected.to belong_to(:namespace) }
@@ -12,34 +48,49 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
 
   describe 'scopes' do
     describe '.with_namespace' do
-      let_it_be(:organization) { create(:organization) }
-      let_it_be(:namespace1) { create(:namespace, organization: organization) }
-      let_it_be(:namespace2) { create(:namespace, organization: organization) }
-      let_it_be(:scope_with_namespace1) do
-        create(:granular_scope, :selected_memberships, namespace: namespace1, organization: organization)
-      end
-
-      let_it_be(:scope_with_namespace2) do
-        create(:granular_scope, :selected_memberships, namespace: namespace2, organization: organization)
-      end
-
-      let_it_be(:scope_without_namespace) { create(:granular_scope, :user, organization: organization) }
-
       it 'returns scopes for the given namespace' do
-        expect(described_class.with_namespace(namespace1.id)).to contain_exactly(scope_with_namespace1)
+        expect(described_class.with_namespace(subgroup)).to match_array(scopes_for(:subgroup))
       end
 
       it 'returns empty when namespace_id is nil' do
-        expect(described_class.with_namespace(nil)).to contain_exactly(scope_without_namespace)
+        expect(described_class.with_namespace(nil))
+          .to match_array(scopes_for(:instance, :standalone_user, :all_memberships))
       end
 
       it 'returns empty when namespace does not exist' do
         expect(described_class.with_namespace(-1)).to be_empty
       end
+    end
 
-      it 'does not return scopes for other namespaces' do
-        result = described_class.with_namespace(namespace1.id)
-        expect(result).not_to include(scope_with_namespace2, scope_without_namespace)
+    describe '.for_standalone' do
+      it 'returns standalone instance and user scopes', :aggregate_failures do
+        expect(described_class.for_standalone(:personal_projects)).to be_empty
+        expect(described_class.for_standalone(:all_memberships)).to be_empty
+        expect(described_class.for_standalone(:selected_memberships)).to be_empty
+        expect(described_class.for_standalone(:user)).to match_array(scopes_for(:standalone_user))
+        expect(described_class.for_standalone(:instance)).to match_array(scopes_for(:instance))
+      end
+    end
+
+    describe '.for_namespaces' do
+      it 'returns personal_projects, selected_memberships and all_memberships scopes', :aggregate_failures do
+        expect(described_class.for_namespaces(rootgroup))
+          .to match_array(scopes_for(:all_memberships, :rootgroup))
+
+        expect(described_class.for_namespaces(subgroup.self_and_ancestor_ids))
+          .to match_array(scopes_for(:all_memberships, :rootgroup, :subgroup))
+
+        expect(described_class.for_namespaces(project.project_namespace.self_and_ancestor_ids))
+          .to match_array(scopes_for(:all_memberships, :rootgroup, :subgroup, :project))
+
+        expect(described_class.for_namespaces(user.namespace))
+          .to match_array(scopes_for(:all_memberships, :personal_projects))
+
+        expect(described_class.for_namespaces(user_project.project_namespace.self_and_ancestor_ids))
+          .to match_array(scopes_for(:all_memberships, :personal_projects, :user_project))
+
+        expect(described_class.for_namespaces(other_project.project_namespace.self_and_ancestor_ids))
+          .to match_array(scopes_for(:all_memberships, :other_project))
       end
     end
   end
@@ -83,8 +134,7 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
       end
 
       context "when the scope's namespace is from a different organization" do
-        let(:other_organization) { create(:organization) }
-        let(:namespace) { build(:namespace, organization: other_organization) }
+        let(:namespace) { build(:namespace) }
 
         it 'is invalid and adds an error message to namespace' do
           expect(scope).to be_invalid
@@ -103,8 +153,7 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
     shared_examples 'checks for permission on boundary' do
       context 'when a scope exists for a boundary' do
         before do
-          create(:granular_scope, :selected_memberships, namespace: boundary.namespace,
-            permissions: token_permissions)
+          create(:granular_scope, boundary: boundary, permissions: token_permissions)
         end
 
         it { is_expected.to be true }
@@ -140,43 +189,25 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
   end
 
   describe '.token_permissions' do
-    let_it_be(:rootgroup) { create(:group) }
-    let_it_be(:subgroup) { create(:group, parent: rootgroup) }
-    let_it_be(:project) { create(:project, namespace: subgroup) }
-    let_it_be(:user) { create(:user, :with_namespace) }
-    let_it_be(:personal_project) { create(:project, namespace: user.namespace) }
-
-    let_it_be(:nil_boundary) { Authz::Boundary.for(nil) }
-    let_it_be(:rootgroup_boundary) { Authz::Boundary.for(rootgroup) }
-    let_it_be(:subgroup_boundary) { Authz::Boundary.for(subgroup) }
-    let_it_be(:project_boundary) { Authz::Boundary.for(project) }
-    let_it_be(:user_boundary) { Authz::Boundary.for(user) }
-    let_it_be(:personal_project_boundary) { Authz::Boundary.for(personal_project) }
-    let_it_be(:other_namespace_boundary) { Authz::Boundary.for(create(:project)) }
-
-    before do
-      allow(::Authz::PermissionGroups::Assignable).to receive(:all).and_return((:a..:i).index_with { |p|
-        instance_double(::Authz::PermissionGroups::Assignable, permissions: [p])
-      })
-
-      create(:granular_scope, :instance, permissions: [:a])
-      create(:granular_scope, :selected_memberships, namespace: rootgroup_boundary.namespace, permissions: [:b, :c])
-      create(:granular_scope, :selected_memberships, namespace: subgroup_boundary.namespace, permissions: [:c, :d])
-      create(:granular_scope, :selected_memberships, namespace: project_boundary.namespace, permissions: [:d, :e])
-      create(:granular_scope, :personal_projects, namespace: user_boundary.namespace, permissions: [:f, :g])
-      create(:granular_scope, :selected_memberships, namespace: personal_project_boundary.namespace,
-        permissions: [:g, :h])
-      create(:granular_scope, :all_memberships, permissions: [:i])
+    where(:boundary, :expected_result) do
+      ref(:instance_boundary)        | [:instance_perm]
+      ref(:standalone_user_boundary) | [:standalone_user_perm]
+      ref(:rootgroup_boundary)       | [:all_memberships_perm, :rootgroup_perm]
+      ref(:subgroup_boundary)        | [:all_memberships_perm, :rootgroup_perm, :subgroup_perm]
+      ref(:project_boundary)         | [:all_memberships_perm, :rootgroup_perm, :subgroup_perm, :project_perm]
+      ref(:user_project_boundary)    | [:all_memberships_perm, :personal_projects_perm, :user_project_perm]
+      ref(:other_project_boundary)   | [:all_memberships_perm, :other_project_perm]
     end
 
-    where(:boundary, :expected_result) do
-      ref(:nil_boundary)              | [:a, :i]
-      ref(:rootgroup_boundary)        | [:b, :c, :i]
-      ref(:subgroup_boundary)         | [:b, :c, :d, :i]
-      ref(:project_boundary)          | [:b, :c, :d, :e, :i]
-      ref(:user_boundary)             | [:f, :g, :i]
-      ref(:personal_project_boundary) | [:f, :g, :h, :i]
-      ref(:other_namespace_boundary)  | [:i]
+    let_it_be(:assignable_permissions) do
+      %i[instance_perm standalone_user_perm all_memberships_perm rootgroup_perm subgroup_perm project_perm
+        personal_projects_perm user_project_perm other_project_perm]
+    end
+
+    before do
+      allow(::Authz::PermissionGroups::Assignable).to receive(:all).and_return(assignable_permissions.index_with { |p|
+        instance_double(::Authz::PermissionGroups::Assignable, permissions: [p])
+      })
     end
 
     subject(:permissions) { described_class.token_permissions(boundary) }
@@ -186,14 +217,30 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
     end
 
     describe 'persisted but undefined assignable permission group' do
-      let(:boundary) { nil_boundary }
+      let(:boundary) { instance_boundary }
 
       before do
-        build(:granular_scope, :instance, permissions: [:non_existing]).save!(validate: false)
+        build(:granular_scope, boundary: boundary, permissions: [:non_existing]).save!(validate: false)
       end
 
       it 'is ignored' do
-        expect(permissions).to match_array([:a, :i])
+        expect(permissions).to match_array([:instance_perm])
+      end
+    end
+
+    describe 'when the passed boundary is `nil` or has the incorrect access' do
+      where(:boundary) do
+        [
+          ref(:all_memberships_boundary),
+          ref(:personal_projects_boundary),
+          nil
+        ]
+      end
+
+      with_them do
+        it 'is expected to raise an error' do
+          expect { permissions }.to raise_error { NoMethodError }
+        end
       end
     end
   end

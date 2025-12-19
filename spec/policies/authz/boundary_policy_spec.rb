@@ -9,12 +9,11 @@ RSpec.describe Authz::BoundaryPolicy, feature_category: :permissions do
   let_it_be(:group) { create(:group, parent: root_group) }
   let_it_be(:user) { create(:user, :with_namespace, developer_of: root_group) }
   let_it_be(:project) { create(:project, namespace: group) }
-  let_it_be(:instance) { nil }
   let_it_be(:permissions) { :update_wiki }
 
   let(:boundary_object) { project }
   let(:boundary) { Authz::Boundary.for(boundary_object) }
-  let(:token) { create(:granular_pat, user: user, namespace: boundary.namespace, permissions: permissions) }
+  let(:token) { create(:granular_pat, user:, boundary:, permissions:) }
 
   subject(:policy) { described_class.new(token, boundary) }
 
@@ -47,8 +46,8 @@ RSpec.describe Authz::BoundaryPolicy, feature_category: :permissions do
       [
         ref(:group),
         ref(:project),
-        ref(:user),
-        ref(:instance)
+        :instance,
+        :user
       ]
     end
 

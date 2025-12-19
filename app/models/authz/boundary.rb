@@ -9,12 +9,14 @@ module Authz
                        when ::Project
                          ProjectBoundary
                        when ::User
-                         UserBoundary
-                       when nil
+                         PersonalProjectsBoundary
+                       when GranularScope::Access::ALL_MEMBERSHIPS,
+                          GranularScope::Access::USER,
+                          GranularScope::Access::INSTANCE
                          NilBoundary
                        end
 
-      strategy_class.new(boundary)
+      strategy_class&.new(boundary)
     end
 
     class Base
@@ -26,16 +28,8 @@ module Authz
         @boundary = boundary
       end
 
-      def namespace
-        boundary
-      end
-
       def path
         namespace&.full_path
-      end
-
-      def member?(user)
-        boundary.member?(user)
       end
 
       private
@@ -44,15 +38,38 @@ module Authz
     end
 
     class GroupBoundary < Base
-    end
+      def access
+        GranularScope::Access::SELECTED_MEMBERSHIPS
+      end
 
-    class ProjectBoundary < Base
       def namespace
-        boundary.project_namespace
+        boundary
+      end
+
+      def member?(user)
+        boundary.member?(user)
       end
     end
 
-    class UserBoundary < Base
+    class ProjectBoundary < Base
+      def access
+        GranularScope::Access::SELECTED_MEMBERSHIPS
+      end
+
+      def namespace
+        boundary.project_namespace
+      end
+
+      def member?(user)
+        boundary.member?(user)
+      end
+    end
+
+    class PersonalProjectsBoundary < Base
+      def access
+        GranularScope::Access::PERSONAL_PROJECTS
+      end
+
       def namespace
         boundary.namespace
       end
@@ -63,16 +80,20 @@ module Authz
     end
 
     class NilBoundary < Base
-      def namespace
-        nil
+      def access
+        boundary
       end
 
-      def path
+      def namespace
         nil
       end
 
       def member?(_)
         true
+      end
+
+      def path
+        nil
       end
     end
   end

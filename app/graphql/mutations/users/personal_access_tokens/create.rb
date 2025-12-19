@@ -70,8 +70,8 @@ module Mutations
         def prepare_granular_scope_attrs(input)
           base_attrs = input.to_h.except(:resource_ids)
 
-          case input.access
-          when 'selected_memberships'
+          case input.access.to_sym
+          when ::Authz::GranularScope::Access::SELECTED_MEMBERSHIPS
             input.resource_ids.map do |gid|
               resource = ::Gitlab::Graphql::Lazy.force(GitlabSchema.object_from_id(gid))
 
@@ -79,7 +79,7 @@ module Mutations
 
               base_attrs.merge(namespace: boundary!(resource).namespace)
             end
-          when 'personal_projects'
+          when ::Authz::GranularScope::Access::PERSONAL_PROJECTS
             base_attrs.merge(namespace: boundary!(current_user).namespace)
           else
             # namespace_id is nil for all_memberships, user, and instance access

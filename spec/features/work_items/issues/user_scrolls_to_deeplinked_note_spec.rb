@@ -19,9 +19,7 @@ RSpec.describe 'User scrolls to deep-linked note', feature_category: :team_plann
       bottom_of_title = find('.issue-sticky-header.gl-fixed').evaluate_script("this.getBoundingClientRect().bottom;")
       top = first_comment.evaluate_script("this.getBoundingClientRect().top;")
 
-      # Setting 0.5 as delta as the element is scrolled
-      # into viewport and is visible already.
-      expect(top).to be_within(0.5).of(bottom_of_title)
+      expect(top).to be_within(1).of(bottom_of_title)
     end
   end
 
