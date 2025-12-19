@@ -14,11 +14,17 @@ GitLab editor extensions can execute agents locally on your developer workstatio
 
 ### File system access
 
-Agents can perform file operations (read, write, edit, search, and list) on files that are:
+Agents have different file access levels depending on the operation type.
 
-- Located within a Git repository in your workspace.
-- Not excluded by `.gitignore` rules.
-- Valid or resolvable symlinks, including those that point outside the Git repository.
+#### File operations
+
+Agents can perform file operations (read, write, edit, search, and list) on:
+
+- Files located in the Git repository of your GitLab project.
+- Files not excluded by `.gitignore` rules.
+- Valid or resolvable symlinks that point to files inside the Git repository.
+
+#### Shell operations on files 
 
 Shell commands executed by agents can access all files, including those outside of Git repositories and those that match `.gitignore` patterns.
 

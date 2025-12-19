@@ -2,6 +2,7 @@
 import { GlBadge, GlLoadingIcon, GlTooltipDirective, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
+import { preventScrollToFragment } from '~/lib/utils/scroll_utils';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import NoteAuthor from './note_author.vue';
@@ -78,6 +79,13 @@ export default {
       return s__('Notes|This internal note will always remain confidential');
     },
   },
+  methods: {
+    preventScrolling(event) {
+      // user clicks should not scroll but programmatic clicks should scroll to properly handle #note_... fragments
+      if (!event.isTrusted) return;
+      preventScrollToFragment(event);
+    },
+  },
 };
 </script>
 
@@ -112,6 +120,7 @@ export default {
           class="gl-text-subtle hover:gl-text-link"
           :time="createdAt"
           tooltip-placement="bottom"
+          @click="preventScrolling"
         />
         <time-ago-tooltip v-else :time="createdAt" tooltip-placement="bottom" />
       </template>

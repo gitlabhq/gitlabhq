@@ -25,15 +25,9 @@ title: Post-migration contribution and membership mapping
 - Reassigning contributions to service accounts, project bots, and group bots [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573124) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `user_mapping_service_account_and_bots`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512211) in GitLab 18.6 for Gitea. Feature flag `gitea_user_mapping` removed.
 - Reassigning contributions to a personal namespace owner when importing to a personal namespace [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211626) in GitLab 18.6. Feature flag `user_mapping_to_personal_namespace_owner` removed.
+- `github_user_mapping` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216778) in GitLab 18.8.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by feature flags.
-For more information, see the history.
-
-{{< /alert >}}
 
 {{< alert type="note" >}}
 

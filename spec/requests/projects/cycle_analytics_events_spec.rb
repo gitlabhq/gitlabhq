@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'value stream analytics events', feature_category: :team_planning do
+RSpec.describe 'value stream analytics events', feature_category: :value_stream_management do
   include CycleAnalyticsHelpers
 
   let(:user) { create(:user) }

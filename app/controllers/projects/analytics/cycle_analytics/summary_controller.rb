@@ -6,7 +6,7 @@ class Projects::Analytics::CycleAnalytics::SummaryController < Projects::Applica
 
   respond_to :json
 
-  feature_category :team_planning
+  feature_category :value_stream_management
 
   before_action :authorize_read_cycle_analytics!
 

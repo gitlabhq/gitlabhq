@@ -174,7 +174,7 @@ export default {
 <template>
   <li
     :id="`note_${note.id}`"
-    class="gl-p-3 gl-pl-5"
+    class="gl-p-3 gl-pl-5 target:gl-bg-[var(--timeline-entry-target-background-color)]"
     :class="{ 'gl-pointer-events-none gl-opacity-5': isSaving || isDeleting }"
     data-testid="noteable-note-container"
   >

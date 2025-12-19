@@ -2,7 +2,7 @@
 
 module Gitlab
   module BackgroundMigration
-    class BackfillPartitionedUploads < BatchedMigrationJob
+    class BackfillPartitionedUploads < BatchedMigrationJob # rubocop:disable Metrics/ClassLength -- contains table mapping
       feature_category :database
       operation_name :backfill
 
@@ -12,30 +12,36 @@ module Gitlab
 
       def perform
         each_sub_batch do |sub_batch|
-          tables_and_models.each do |model_table, model_name, sources, targets, join_key, db_name|
-            process_upload_type(sub_batch, model_table, model_name, sources, targets, join_key, db_name)
+          tables_and_models.each do |model_table, model_name, sources, targets, join_key, db_name, db_schema|
+            process_upload_type(sub_batch, model_table, model_name, sources, targets, join_key, db_name, db_schema)
           end
         end
       end
 
       private
 
-      def sharding_key_columns
-        %w[organization_id namespace_id project_id]
+      def sharding_key_columns(db_schema)
+        # NOTE: `uploaded_by_user_id` is also a sharding key column for tables that have the
+        #       gitlab_main_user schema. We want to copy over the column (instead of nullifying it)
+        #       since `uploaded_by_user_id` is an integral part of uploads (to know who an upload was made by).
+        if db_schema == :gitlab_main_user
+          %w[uploaded_by_user_id]
+        else
+          %w[organization_id namespace_id project_id]
+        end
       end
 
-      def columns
-        Upload.column_names - sharding_key_columns
+      def columns(db_schema)
+        Upload.column_names - sharding_key_columns(db_schema)
       end
 
       def tables_and_models
-        # model_table, model_name, sources, targets, join_key, db_name
-        [
-          ['abuse_reports', 'AbuseReport', %w[]],
+        [ # model_table, model_name, sources, targets, join_key, db_name, db_schema
+          ['abuse_reports', 'AbuseReport', %w[organization_id]],
           ['achievements', 'Achievements::Achievement', %w[namespace_id]],
           ['ai_vectorizable_files', 'Ai::VectorizableFile', %w[project_id]],
           ['alert_management_alert_metric_images', 'AlertManagement::MetricImage', %w[project_id]],
-          ['appearances', 'Appearance', %w[]],
+          ['appearances', 'Appearance', %w[]], # cell-local table
           ['bulk_import_export_uploads', 'BulkImports::ExportUpload', %w[group_id project_id],
             %w[namespace_id project_id]],
           ['design_management_designs_versions', 'DesignManagement::Action', %w[namespace_id]],
@@ -47,8 +53,9 @@ module Gitlab
           ['topics', 'Projects::Topic', %w[organization_id]],
           ['projects', 'Project', %w[id], %w[project_id]],
           ['snippets', 'Snippet', %w[organization_id]],
-          ['user_permission_export_uploads', 'UserPermissionExportUpload', %w[]],
-          ['users', 'User', %w[]],
+          ['user_permission_export_uploads', 'UserPermissionExportUpload', %w[user_id], %w[uploaded_by_user_id], nil,
+            nil, :gitlab_main_user],
+          ['users', 'User', %w[organization_id]],
           # Sec tables
           ['dependency_list_exports', 'Dependencies::DependencyListExport', %w[organization_id group_id project_id],
             %w[organization_id namespace_id project_id], nil, :sec],
@@ -73,19 +80,20 @@ module Gitlab
       #   targets - sharding key columns to back-fill
       #   join_key - column to join with the model table, defaults to id
       #   db_name - database the model table belongs to
-      def process_upload_type(sub_batch, model_table, model_name, sources, targets, join_key, db_name)
+      #   db_schema - database schema the table belongs to
+      def process_upload_type(sub_batch, model_table, model_name, sources, targets, join_key, db_name, db_schema)
         relation = sub_batch.select(:id, :model_type).limit(sub_batch_size)
         targets ||= sources
         join_key ||= 'id'
         # Columns that will be reset (nullified) as they are not used for sharding keys
-        reset_columns = sharding_key_columns - targets
+        reset_columns = sharding_key_columns(db_schema) - targets
         # All columns to back-fill
-        target_columns = (columns + targets + reset_columns).join(', ')
+        target_columns = (columns(db_schema) + targets + reset_columns).join(', ')
         # All columns to source from
-        source_columns = source_columns_sql(sources, reset_columns)
+        source_columns = source_columns_sql(sources, reset_columns, db_schema)
         # For existing records update only sharding key columns (if any)
         on_conflict = if targets.any?
-                        "UPDATE SET #{sharding_key_columns.map { |c| "#{c} = EXCLUDED.#{c}" }.join(', ')}"
+                        "UPDATE SET #{sharding_key_columns(db_schema).map { |c| "#{c} = EXCLUDED.#{c}" }.join(', ')}"
                       else
                         "NOTHING"
                       end
@@ -97,7 +105,7 @@ module Gitlab
           sec_cte = sec_model_values_cte(sub_batch, model_name, join_key, sources, model_table)
           return unless sec_cte
 
-          source_columns = source_columns_sql(sources, reset_columns, nullif: true)
+          source_columns = source_columns_sql(sources, reset_columns, db_schema, nullif: true)
           model_values_cte = sec_cte
         end
 
@@ -117,9 +125,9 @@ module Gitlab
         connection.execute(upsert)
       end
 
-      def source_columns_sql(sources, reset_columns, nullif: false)
+      def source_columns_sql(sources, reset_columns, db_schema, nullif: false)
         (
-          columns.map { |c| "uploads.#{c}" } +
+          columns(db_schema).map { |c| "uploads.#{c}" } +
           # Convert -1 back to NULL using NULLIF
           sources.map { |c| nullif ? "NULLIF(model.#{c}, -1)" : "model.#{c}" } +
           reset_columns.map { 'NULL' }
@@ -142,6 +150,6 @@ module Gitlab
 
         ", #{model_table}(#{columns.join(', ')}) AS (VALUES #{values})"
       end
-    end
+    end # rubocop:enable Metrics/ClassLength
   end
 end

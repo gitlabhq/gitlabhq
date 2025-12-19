@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Analytics::CycleAnalytics::ValueStreamActions, type: :controller,
-  feature_category: :team_planning do
+  feature_category: :value_stream_management do
   subject(:controller) do
     Class.new(ApplicationController) do
       include Analytics::CycleAnalytics::ValueStreamActions

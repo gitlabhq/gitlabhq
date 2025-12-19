@@ -15,6 +15,7 @@ export const STATUSES = {
 
 export const PROVIDERS = {
   GITHUB: 'github',
+  BITBUCKET: 'bitbucket',
   BITBUCKET_SERVER: 'bitbucket_server',
 };
 

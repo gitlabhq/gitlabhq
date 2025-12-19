@@ -11,6 +11,8 @@ class Import::BitbucketController < Import::BaseController
   rescue_from OAuth2::Error, with: :bitbucket_unauthorized
   rescue_from Bitbucket::Error::Unauthorized, with: :bitbucket_unauthorized
 
+  PAGE_LENGTH = 25
+
   def callback
     auth_state = session[:bitbucket_auth_state]
     session[:bitbucket_auth_state] = nil
@@ -32,12 +34,24 @@ class Import::BitbucketController < Import::BaseController
     end
   end
 
-  # We need to re-expose controller's internal method 'status' as action.
-  # rubocop:disable Lint/UselessMethodDefinition
   def status
-    super
+    respond_to do |format|
+      format.json do
+        render json: { imported_projects: serialized_imported_projects,
+                       provider_repos: serialized_provider_repos,
+                       incompatible_repos: serialized_incompatible_repos,
+                       page_info: page_info }
+      end
+
+      format.html do
+        if params[:namespace_id].present?
+          @namespace = Namespace.find_by_id(params[:namespace_id])
+
+          render_404 unless current_user.can?(:import_projects, @namespace)
+        end
+      end
+    end
   end
-  # rubocop:enable Lint/UselessMethodDefinition
 
   def create
     bitbucket_client = Bitbucket::Client.new(credentials)
@@ -107,6 +121,10 @@ class Import::BitbucketController < Import::BaseController
 
   private
 
+  def page_info
+    bitbucket_repos.page_info
+  end
+
   def user_role(user, namespace)
     if current_user.id == namespace&.owner_id
       Gitlab::Access.options_with_owner.key(Gitlab::Access::OWNER)
@@ -135,7 +153,11 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def bitbucket_repos
-    @bitbucket_repos ||= client.repos(filter: sanitized_filter_param).to_a
+    @bitbucket_repos ||= client.repos(
+      filter: sanitized_filter_param,
+      limit: PAGE_LENGTH,
+      after_cursor: params[:after].presence
+    )
   end
 
   def options

@@ -1,6 +1,7 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import DiffLineDiscussions from '~/rapid_diffs/app/discussions/diff_line_discussions.vue';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
@@ -20,6 +21,17 @@ describe('DiffLineDiscussions', () => {
     wrapper = shallowMount(DiffLineDiscussions, {
       propsData,
       provide,
+    });
+  };
+
+  const mountComponent = (
+    propsData = {},
+    provide = { userPermissions: { can_create_note: true }, endpoints: {} },
+  ) => {
+    wrapper = mount(DiffLineDiscussions, {
+      propsData,
+      provide,
+      attachTo: document.body,
     });
   };
 
@@ -67,6 +79,24 @@ describe('DiffLineDiscussions', () => {
     expect(wrapper.findComponent(NewLineDiscussionForm).props('discussion')).toStrictEqual(
       useDiffDiscussions().discussions[0],
     );
+  });
+
+  it('scrolls to note fragment once', () => {
+    setWindowLocation('#note_abc');
+    const mock = jest.fn();
+    jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(mock);
+    useDiffDiscussions().setInitialDiscussions([
+      {
+        id: '1',
+        diff_discussion: true,
+        position: { old_path: 'old', new_path: 'old', new_line: '1', old_line: '1' },
+        notes: [{ id: 'abc', author: { id: 1 }, created_at: new Date().toDateString() }],
+      },
+    ]);
+    mountComponent({ position: { oldPath: 'old', newPath: 'old', oldLine: '1', newLine: '1' } });
+    mountComponent({ position: { oldPath: 'old', newPath: 'old', oldLine: '1', newLine: '1' } });
+    expect(mock).toHaveBeenCalledTimes(1);
+    expect(mock.mock.contexts[0]).toBe(document.querySelector('a[href="#note_abc"]'));
   });
 
   describe('start another thread', () => {

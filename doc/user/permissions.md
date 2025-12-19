@@ -890,10 +890,9 @@ For more information, see
 Users with the Minimal Access role do not:
 
 - Automatically have access to projects and subgroups in that top-level group.
+  Owners must explicitly add these users to the specific subgroups and
+  projects.
 - Count as licensed seats on GitLab Self-Managed Ultimate subscriptions or any GitLab.com subscriptions, provided the user has no other role anywhere in the instance or in the GitLab.com namespace.
-
-Owners must explicitly add these users to the specific subgroups and
-projects.
 
 You can use the Minimal Access role with [SAML SSO for GitLab.com groups](group/saml_sso/_index.md)
 to control access to groups and projects in the group hierarchy. You can set the default role to

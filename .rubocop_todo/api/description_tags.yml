@@ -58,7 +58,6 @@ API/DescriptionTags:
     - 'ee/lib/gitlab_subscriptions/api/internal/namespaces/provision.rb'
     - 'ee/lib/gitlab_subscriptions/api/internal/subscriptions.rb'
     - 'ee/lib/gitlab_subscriptions/api/internal/users.rb'
-    - 'lib/api/admin/broadcast_messages.rb'
     - 'lib/api/admin/dictionary.rb'
     - 'lib/api/appearance.rb'
     - 'lib/api/applications.rb'

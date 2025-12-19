@@ -11,17 +11,12 @@ class QueueBackfillPartitionedUploads < Gitlab::Database::Migration[2.3]
   SUB_BATCH_SIZE = 300
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :uploads,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op:
+    #   This migration is a no-op because the original migration was re-enqueued with a new version.
+    #   The new migration is 20251201121648_queue_re_enqueue_backfill_partitioned_uploads.rb
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :uploads, :id, [])
+    # no-op
   end
 end

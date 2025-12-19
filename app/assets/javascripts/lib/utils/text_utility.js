@@ -384,9 +384,14 @@ export function insertFinalNewline(content, endOfLine = '\n') {
   return content.slice(-endOfLine.length) !== endOfLine ? `${content}${endOfLine}` : content;
 }
 
+/**
+ * Base Markdown config. Use only when paired with sanitized/GFM
+ * server side validated markdown. When using client-only markdown,
+ * use `strictMarkdownConfig` instead.
+ *
+ * AllowedTags from GitLab's inline HTML guidelines https://docs.gitlab.com/ee/user/markdown.html#inline-html
+ */
 export const markdownConfig = {
-  // allowedTags from GitLab's inline HTML guidelines
-  // https://docs.gitlab.com/ee/user/markdown.html#inline-html
   ALLOWED_TAGS: [
     'a',
     'abbr',
@@ -440,6 +445,15 @@ export const markdownConfig = {
   ],
   ALLOWED_ATTR: ['class', 'style', 'href', 'src', 'dir'],
   ALLOW_DATA_ATTR: false,
+};
+
+/**
+ * Markdown configuration that does not allow images. Preferred
+ * when using client-side/non-gfm markdown.
+ */
+export const strictMarkdownConfig = {
+  ...markdownConfig,
+  ALLOWED_TAGS: markdownConfig.ALLOWED_TAGS.filter((tag) => tag !== 'img'),
 };
 
 /**

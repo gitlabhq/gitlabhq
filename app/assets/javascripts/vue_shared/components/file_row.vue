@@ -168,7 +168,7 @@ export default {
     v-else-if="file.isShowMore"
     category="tertiary"
     :loading="file.loading"
-    class="!gl-border-none !gl-pl-6"
+    class="gl-w-full !gl-justify-start !gl-border-none !gl-pl-6 hover:!gl-bg-transparent"
     button-text-classes="gl-text-blue-700"
     :tabindex="buttonTabindex"
     @click="$emit('showMore', $event)"

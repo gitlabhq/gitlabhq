@@ -595,5 +595,47 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
       end
     end
   end
+
+  describe '#target_branch_sha' do
+    context 'when pull request is merged and has merge_base' do
+      let(:merge_base_sha) { 'abc123def456' }
+      let(:merge_commit_sha) { 'merge789commit' }
+      let(:raw_data) do
+        base_data.merge(
+          state: 'closed',
+          merged: true,
+          merged_at: DateTime.now,
+          merge_base: merge_base_sha,
+          base: target_branch.merge(sha: merge_commit_sha)
+        )
+      end
+
+      it 'returns merge_base SHA instead of base SHA' do
+        expect(pull_request.target_branch_sha).to eq(merge_base_sha)
+      end
+    end
+
+    context 'when pull request is not merged' do
+      let(:raw_data) { base_data.merge(state: 'open', merged: false) }
+
+      it 'returns base SHA from target branch' do
+        expect(pull_request.target_branch_sha).to eq(target_sha)
+      end
+    end
+
+    context 'when pull request is merged but has no merge_base' do
+      let(:raw_data) do
+        base_data.merge(
+          state: 'closed',
+          merged: true,
+          merged_at: DateTime.now
+        )
+      end
+
+      it 'returns base SHA from target branch' do
+        expect(pull_request.target_branch_sha).to eq(target_sha)
+      end
+    end
+  end
 end
 # rubocop:enable RSpec/MultipleMemoizedHelpers

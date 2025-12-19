@@ -18,6 +18,7 @@ module API
         desc 'Get all broadcast messages' do
           detail 'This feature was introduced in GitLab 8.12.'
           success Entities::System::BroadcastMessage
+          tags ['broadcast_messages']
         end
         params do
           use :pagination
@@ -31,6 +32,7 @@ module API
         desc 'Create a broadcast message' do
           detail 'This feature was introduced in GitLab 8.12.'
           success Entities::System::BroadcastMessage
+          tags ['broadcast_messages']
         end
         params do
           requires :message, type: String, desc: 'Message to display'
@@ -65,6 +67,7 @@ module API
         desc 'Get a specific broadcast message' do
           detail 'This feature was introduced in GitLab 8.12.'
           success Entities::System::BroadcastMessage
+          tags ['broadcast_messages']
         end
         params do
           requires :id, type: Integer, desc: 'Broadcast message ID'
@@ -78,6 +81,7 @@ module API
         desc 'Update a broadcast message' do
           detail 'This feature was introduced in GitLab 8.12.'
           success Entities::System::BroadcastMessage
+          tags ['broadcast_messages']
         end
         params do
           requires :id, type: Integer, desc: 'Broadcast message ID'
@@ -112,6 +116,7 @@ module API
         desc 'Delete a broadcast message' do
           detail 'This feature was introduced in GitLab 8.12.'
           success Entities::System::BroadcastMessage
+          tags ['broadcast_messages']
         end
         params do
           requires :id, type: Integer, desc: 'Broadcast message ID'

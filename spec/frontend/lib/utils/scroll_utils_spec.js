@@ -8,8 +8,10 @@ import {
   scrollToElement,
   smoothScrollTop,
   getPanelElement,
+  preventScrollToFragment,
 } from '~/lib/utils/scroll_utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/common_utils';
 
 describe('scroll utils', () => {
   const findElem = () => document.querySelector('#element');
@@ -358,6 +360,31 @@ describe('scroll utils', () => {
 
     it('returns null without context', () => {
       expect(getPanelElement()).toBeNull();
+    });
+  });
+
+  describe('preventScrollToFragment', () => {
+    it('prevents scroll', () => {
+      setHTMLFixture(`
+        <div id="target"></div>
+        <div id="container"><a href="#target">Click me</a></div>
+      `);
+      Object.defineProperty(getScrollingElement(), 'scrollTop', {
+        writable: true,
+        value: 40,
+      });
+      Object.defineProperty(getScrollingElement(), 'scrollLeft', {
+        writable: true,
+        value: 50,
+      });
+      const scrollSpy = jest.spyOn(getScrollingElement(), 'scrollTo');
+      document.querySelector('#container').addEventListener('click', preventScrollToFragment);
+      document.querySelector('a').click();
+      expect(document.querySelector('#target').classList.contains(NO_SCROLL_TO_HASH_CLASS)).toBe(
+        true,
+      );
+      expect(window.location.hash).toBe('#target');
+      expect(scrollSpy).toHaveBeenCalledWith({ top: 40, left: 50 });
     });
   });
 });

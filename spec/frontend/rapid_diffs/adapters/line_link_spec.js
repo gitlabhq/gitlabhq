@@ -1,19 +1,13 @@
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { INVISIBLE, VISIBLE } from '~/rapid_diffs/adapter_events';
 import { lineLinkAdapter } from '~/rapid_diffs/adapters/line_link';
-import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/common_utils';
-import { scrollTo } from '~/lib/utils/scroll_utils';
+import { preventScrollToFragment } from '~/lib/utils/scroll_utils';
 
-jest.mock('~/lib/utils/scroll_utils', () => ({
-  ...jest.requireActual('~/lib/utils/scroll_utils'),
-  scrollTo: jest.fn(),
-  scrollToElement: jest.fn(),
-}));
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('lineLinkAdapter', () => {
   const getComponent = () => document.querySelector('diff-file');
   const getLink = () => document.querySelector(`[data-line-number]`);
-  const getTarget = () => document.querySelector('#line_abc_20');
 
   const mount = ({ appData = {} } = {}) => {
     const viewer = 'any';
@@ -61,18 +55,15 @@ describe('lineLinkAdapter', () => {
     mount();
     show();
     getLink().click();
-    expect(getTarget().classList.contains(NO_SCROLL_TO_HASH_CLASS)).toBe(true);
-    expect(window.location.hash).toBe('#line_abc_20');
-    expect(scrollTo).toHaveBeenCalledWith({ left: 0, top: 0 });
+    expect(preventScrollToFragment).toHaveBeenCalled();
   });
 
   it('does nothing when file becomes invisible', () => {
     mount();
     show();
     hide();
-    expect(getTarget().classList.contains(NO_SCROLL_TO_HASH_CLASS)).toBe(false);
-    expect(window.location.hash).toBe('');
-    expect(scrollTo).not.toHaveBeenCalled();
+    getLink().click();
+    expect(preventScrollToFragment).not.toHaveBeenCalled();
   });
 
   it('scrolls to legacy line link', () => {

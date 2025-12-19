@@ -11,7 +11,6 @@ import {
 } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PreviewItem from '~/batch_comments/components/preview_item.vue';
 import { useBatchComments } from '~/batch_comments/store';
 import { setUrlParams, visitUrl } from '~/lib/utils/url_utility';
@@ -66,7 +65,6 @@ export default {
     SummarizeMyReview: () =>
       import('ee_component/batch_comments/components/summarize_my_review.vue'),
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     canSummarize: { default: false },
     diffsPath: { default: '' },
@@ -183,7 +181,7 @@ export default {
       try {
         const { note, reviewer_state: reviewerState } = this.noteData;
 
-        if (this.draftsCount > 0 && this.glFeatures.mrReviewBatchSubmit) {
+        if (this.draftsCount > 0) {
           await this.publishReviewInBatches(this.noteData);
         } else {
           await this.publishReview({ ...this.noteData });

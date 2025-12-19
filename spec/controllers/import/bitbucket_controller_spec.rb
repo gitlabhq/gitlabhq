@@ -132,6 +132,13 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
     context "when token is valid" do
       before do
         assign_session_tokens
+
+        allow(controller).to receive(:page_info).and_return({
+          has_next_page: false,
+          has_previous_page: false,
+          start_cursor: nil,
+          end_cursor: nil
+        })
       end
 
       it_behaves_like 'import controller status' do
@@ -162,10 +169,69 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
 
         it 'passes sanitized filter param to bitbucket client' do
           expect_next_instance_of(Bitbucket::Client) do |client|
-            expect(client).to receive(:repos).with(filter: expected_filter).and_return([@repo])
+            expect(client).to receive(:repos).with(
+              filter: expected_filter,
+              limit: Import::BitbucketController::PAGE_LENGTH,
+              after_cursor: nil
+            ).and_return([@repo])
           end
 
           subject
+        end
+      end
+
+      context 'when paginating' do
+        let(:after_cursor) { '2025-12-10T12:13:37.393445+00:00' }
+
+        subject { get :status, params: { after: after_cursor }, as: :json }
+
+        it 'passes after cursor parameter to bitbucket client' do
+          allow(controller).to receive(:page_info).and_return({
+            has_next_page: false,
+            has_previous_page: false,
+            start_cursor: nil,
+            end_cursor: nil
+          })
+
+          expect_next_instance_of(Bitbucket::Client) do |client|
+            expect(client).to receive(:repos).with(
+              filter: nil,
+              limit: Import::BitbucketController::PAGE_LENGTH,
+              after_cursor: after_cursor
+            ).and_return([@repo])
+          end
+
+          subject
+        end
+      end
+
+      context 'with namespace_id param' do
+        context 'when user is allowed to create projects in this namespace' do
+          let(:namespace) { create(:namespace, owner: user) }
+
+          it 'renders successfully' do
+            get :status, params: { namespace_id: namespace.id }, format: :html
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'when user is not allowed to create projects in this namespace' do
+          let(:namespace) { create(:namespace) }
+
+          it 'renders 404' do
+            get :status, params: { namespace_id: namespace.id }, format: :html
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when namespace_id is not provided' do
+          it 'renders successfully' do
+            get :status, format: :html
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
         end
       end
     end

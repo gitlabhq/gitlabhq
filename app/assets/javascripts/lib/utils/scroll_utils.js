@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { defer, memoize } from 'lodash';
-import { contentTop } from './common_utils';
+import { contentTop, NO_SCROLL_TO_HASH_CLASS } from './common_utils';
 
 const DEFAULT_PANEL_SCROLL_CONTAINER_SELECTOR = '.js-static-panel-inner';
 const DYNAMIC_PANEL_SCROLL_CONTAINER_SELECTOR = '.js-dynamic-panel-inner';
@@ -39,7 +39,7 @@ const getApplicationScrollingElement = (contextElement) => {
  *
  * It is memoized for results with the same element.
  *
- * @param {Element} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is used.
+ * @param {HTMLElement} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is used.
  */
 export const getScrollingElement = memoize(getApplicationScrollingElement);
 
@@ -56,7 +56,7 @@ const getScrollBehavior = (behavior = 'smooth') => {
  * Checks if container (or document if container is not found) is scrolled
  * down all the way to the bottom.
  *
- * @param {Element} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is used.
+ * @param {HTMLElement} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is used.
  * @returns {Boolean}
  */
 export const isScrolledToBottom = (contextElement) => {
@@ -70,7 +70,7 @@ export const isScrolledToBottom = (contextElement) => {
 /**
  * Checks if container (or document if container is not found) is scrolled to the top
  *
- * @param {Element} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is used.
+ * @param {HTMLElement} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is used.
  * @returns {Boolean}
  */
 export const isScrolledToTop = (contextElement) => {
@@ -82,7 +82,7 @@ export const isScrolledToTop = (contextElement) => {
 /**
  * Scroll to the bottom of the scrolling element.
  *
- * @param {Element} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is scrolled.
+ * @param {HTMLElement} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is scrolled.
  */
 export const scrollDown = (contextElement) => {
   const scrollingElement = getScrollingElement(contextElement);
@@ -94,7 +94,7 @@ export const scrollDown = (contextElement) => {
 /**
  * Scroll to the bottom of the scrolling element.
  *
- * @param {Element} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is scrolled.
+ * @param {HTMLElement} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is scrolled.
  */
 export const scrollUp = (contextElement) => {
   getScrollingElement(contextElement).scrollTo({ top: 0 });
@@ -103,7 +103,7 @@ export const scrollUp = (contextElement) => {
 /**
  * Scrolls to the top  of the scrolling element with smooth behavior, respecting user's motion preferences.
  *
- * @param {Element} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is scrolled.
+ * @param {HTMLElement} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is scrolled.
  */
 export const smoothScrollTop = (contextElement) => {
   getScrollingElement(contextElement).scrollTo({ top: 0, behavior: getScrollBehavior() });
@@ -113,7 +113,7 @@ export const smoothScrollTop = (contextElement) => {
  * Scrolls to the provided location.
  *
  * @param {ScrollToOptions} options The options to pass to Element.scrollTo
- * @param {Element} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is scrolled.
+ * @param {HTMLElement} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is scrolled.
  */
 export const scrollTo = (options, contextElement) => {
   getScrollingElement(contextElement).scrollTo(options);
@@ -155,4 +155,23 @@ export const scrollToElement = (element, options = {}) => {
       scrollContainer.scrollTo({ top: y, behavior });
     });
   }
+};
+
+/**
+ * Prevents scrolling to an element when clicking links with the URL fragment (a[href="#foo"])
+ *
+ * @param {PointerEvent} event Link click event
+ */
+export const preventScrollToFragment = (event) => {
+  const link = event.target.closest('a[href]');
+  if (!link) return;
+  event.preventDefault();
+  const hash = link.href.split('#')[1];
+  const target = document.getElementById(hash);
+  if (!target) return;
+  target.classList.add(NO_SCROLL_TO_HASH_CLASS);
+  const { scrollLeft, scrollTop } = getScrollingElement(link);
+  // replaceHistory won't highlight the element
+  window.location.hash = hash;
+  scrollTo({ top: scrollTop, left: scrollLeft }, target);
 };

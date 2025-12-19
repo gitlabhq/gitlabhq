@@ -11,7 +11,7 @@ import { marked } from 'marked';
 import CodeBlockHighlighted from '~/vue_shared/components/code_block_highlighted.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { sanitize } from '~/lib/dompurify';
-import { markdownConfig } from '~/lib/utils/text_utility';
+import { strictMarkdownConfig } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 
@@ -27,12 +27,6 @@ export default {
     markdown: {
       type: String,
       required: true,
-    },
-    /* Including images expose potential security risks. Always use this with controlled and or API sanitized data */
-    withImages: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   data() {
@@ -70,14 +64,7 @@ export default {
   },
   methods: {
     getSafeHtml(markdown) {
-      const markdownConfigWithoutImg = this.withImages
-        ? markdownConfig
-        : {
-            ...markdownConfig,
-            ALLOWED_TAGS: markdownConfig.ALLOWED_TAGS.filter((tag) => tag !== 'img'),
-          };
-
-      return sanitize(marked.parse(markdown), markdownConfigWithoutImg);
+      return sanitize(marked.parse(markdown), strictMarkdownConfig);
     },
     setHoverOn(key) {
       this.hoverMap = { ...this.hoverMap, [key]: true };

@@ -115,11 +115,11 @@ module Bitbucket
       Representation::Repo.new(parsed_response)
     end
 
-    def repos(filter: nil)
+    def repos(filter: nil, limit: nil, after_cursor: nil)
       path = "/repositories?role=member&sort=created_on"
       path += "&q=name~\"#{filter}\"" if filter
 
-      get_collection(path, :repo)
+      get_collection(path, :repo, page_number: nil, limit: limit, after_cursor: after_cursor)
     end
 
     def user
@@ -145,8 +145,16 @@ module Bitbucket
       end
     end
 
-    def get_collection(path, type, page_number: nil, limit: nil)
-      paginator = Paginator.new(connection, path, type, page_number: page_number, limit: limit)
+    def get_collection(path, type, page_number: nil, limit: nil, after_cursor: nil)
+      paginator = Paginator.new(
+        connection,
+        path,
+        type,
+        page_number: page_number,
+        limit: limit,
+        after_cursor: after_cursor
+      )
+
       Collection.new(paginator)
     end
 

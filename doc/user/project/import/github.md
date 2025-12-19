@@ -71,19 +71,6 @@ on the GitLab instance you import to.
 
 {{< /history >}}
 
-Before using [the alternative method of user contribution mapping](#alternative-method-of-mapping) for imports to GitLab
-Self-Managed and GitLab Dedicated, you must meet certain requirements. Imports to GitLab.com use a
-[post-migration method](../../import/mapping.md) that doesn't require preparation.
-
-These requirements are:
-
-- Each GitHub author and assignee in the repository must have a
-  [public-facing email address](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address).
-- The GitHub user's email address must match their GitLab email address.
-- If a user's email address in GitHub is set as their secondary email address in GitLab, they must confirm it.
-
-GitHub Enterprise does not require a public email address, so you might have to add it to existing accounts.
-
 ## Known issues
 
 - GitHub pull request comments (known as diff notes in GitLab) created before 2017 are imported in separate threads.
@@ -288,23 +275,36 @@ of mapping user contributions for GitLab.com, GitLab Self-Managed, and GitLab De
 
 ### Alternative method of mapping
 
-You can disable the `github_user_mapping` feature flag to use the alternative user contribution mapping method for
-imports.
+In GitLab 18.7 and earlier, you can disable the `github_user_mapping` feature flag to use the alternative user
+contribution mapping method for imports.
 
 {{< alert type="flag" >}}
 
-The availability of this feature is controlled by a feature flag. This feature is not recommended and is unavailable for
-migrations to GitLab.com. Problems that are found in this mapping method are unlikely to be fixed. Use the
+The availability of this feature is controlled by a feature flag. This feature is not recommended and is unavailable
+for:
+
+- Migrations to GitLab.com.
+- Migrations to GitLab Self-Managed and GitLab Dedicated 18.8 and later.
+
+Problems that are found in this mapping method are unlikely to be fixed. Use the
 [post-migration method](../../import/mapping.md) instead that doesn't have these limitations.
 
 For more information, see [issue 510963](https://gitlab.com/gitlab-org/gitlab/-/work_items/510963).
 
 {{< /alert >}}
 
+Requirements:
+
+- Each GitHub author and assignee in the repository must have a
+  [public-facing email address](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address).
+  GitHub Enterprise does not require a public email address, so you might have to add it to existing accounts.
+- The GitHub user's email address must match their GitLab email address.
+- If a user's email address in GitHub is set as their secondary email address in GitLab, they must confirm it.
+
 Using this method, when [user accounts are provisioned correctly](#accounts-for-user-contribution-mapping), users are
 mapped during the import.
 
-If the requirements are not met, the importer can't map the particular user's contributions. In that case:
+If the requirements are not met, the importer can't map the particular user's contributions. In this case:
 
 - The project creator is set as the author and assignee of issues and merge requests. The project creator is usually the
   user that initiated the import process. For some contributions that have a description or note such as pull requests,

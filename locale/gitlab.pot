@@ -14536,6 +14536,9 @@ msgstr ""
 msgid "CiVariables|Environments"
 msgstr ""
 
+msgid "CiVariables|Exit full screen"
+msgstr ""
+
 msgid "CiVariables|Expand variable reference"
 msgstr ""
 
@@ -14546,6 +14549,9 @@ msgid "CiVariables|Export variable to pipelines running on protected branches an
 msgstr ""
 
 msgid "CiVariables|File"
+msgstr ""
+
+msgid "CiVariables|Go full screen"
 msgstr ""
 
 msgid "CiVariables|Group"
@@ -38624,7 +38630,7 @@ msgstr ""
 msgid "Job|Manual"
 msgstr ""
 
-msgid "Job|Mean duration (s)"
+msgid "Job|Mean duration"
 msgstr ""
 
 msgid "Job|No job log"
@@ -38633,7 +38639,7 @@ msgstr ""
 msgid "Job|No search results found"
 msgstr ""
 
-msgid "Job|P95 duration (s)"
+msgid "Job|P95 duration"
 msgstr ""
 
 msgid "Job|Passed"

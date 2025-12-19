@@ -6,6 +6,10 @@ import NoteSignedOutWidget from '~/rapid_diffs/app/discussions/note_signed_out_w
 import NewLineDiscussionForm from './new_line_discussion_form.vue';
 import DiffDiscussions from './diff_discussions.vue';
 
+// we only need to scroll to the note once, this value would be shared across all instances of the component
+// we don't need it to be reactive so we can just use the module closure to store it
+let scrolledToNote = false;
+
 export default {
   name: 'DiffLineDiscussions',
   components: {
@@ -40,9 +44,20 @@ export default {
       return this.discussions.some((discussion) => discussion.isForm);
     },
   },
+  mounted() {
+    this.scrollToNoteFragment();
+  },
   methods: {
     startAnotherThread() {
       useDiffDiscussions().addNewLineDiscussionForm(this.position);
+    },
+    scrollToNoteFragment() {
+      if (!window.location.hash.startsWith('#note_') || scrolledToNote) return;
+      const target = document.querySelector(`a[href="${window.location.hash}"]`);
+      if (!target) return;
+      // :target pseudo class applies to the note only if we click the link since the note is rendered client-side
+      target.click();
+      scrolledToNote = true;
     },
   },
 };

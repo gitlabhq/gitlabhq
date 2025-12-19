@@ -54,7 +54,7 @@ module Gitlab
           data: {
             optional_stages: optional_stages,
             timeout_strategy: user_settings[:timeout_strategy],
-            user_contribution_mapping_enabled: user_contribution_mapping_enabled?,
+            user_contribution_mapping_enabled: true,
             pagination_limit: user_settings[:pagination_limit]
           },
           credentials: project.import_data&.credentials
@@ -90,19 +90,6 @@ module Gitlab
           enabled = Gitlab::Utils.to_boolean(user_settings[stage_name], default: false)
           [stage_name, enabled]
         end
-      end
-
-      def user_contribution_mapping_enabled?
-        creator_user_actor = User.actor_from_id(project.creator_id)
-
-        flag_by_type = case project.import_type&.to_sym
-                       when ::Import::SOURCE_GITHUB
-                         Feature.enabled?(:github_user_mapping, creator_user_actor)
-                       when ::Import::SOURCE_GITEA
-                         true
-                       end
-
-        !!flag_by_type
       end
     end
   end

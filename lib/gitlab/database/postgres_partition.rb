@@ -3,6 +3,8 @@
 module Gitlab
   module Database
     class PostgresPartition < SharedModel
+      LIST_PARTITION_PATTERN = /FOR VALUES IN \(([^)]+)\)/
+
       self.primary_key = :identifier
 
       belongs_to :postgres_partitioned_table, foreign_key: 'parent_identifier', primary_key: 'identifier'
@@ -59,6 +61,15 @@ module Gitlab
 
       def to_s
         name
+      end
+
+      def list_partition_ids
+        return [] if condition.blank?
+
+        match = condition.match(LIST_PARTITION_PATTERN)
+        return [] unless match
+
+        match[1].scan(/\d+/).map(&:to_i)
       end
     end
   end
