@@ -46,7 +46,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       ], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213933
       'security_scans.project_id', # NOT NULL constraint NOT VALID
       'keys.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/577246
-      'oauth_applications.organization_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/579291
+      'oauth_applications.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/579291
+      'group_secrets_managers.group_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
+      'project_secrets_managers.project_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
     ]
   end
 

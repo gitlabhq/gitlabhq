@@ -18522,8 +18522,10 @@ CREATE TABLE group_secrets_managers (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    group_id bigint NOT NULL,
-    status smallint DEFAULT 0 NOT NULL
+    group_id bigint,
+    status smallint DEFAULT 0 NOT NULL,
+    group_path text,
+    CONSTRAINT check_f88f28737e CHECK ((char_length(group_path) <= 64))
 );
 
 CREATE SEQUENCE group_secrets_managers_id_seq
@@ -25156,8 +25158,12 @@ CREATE TABLE project_secrets_managers (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    project_id bigint NOT NULL,
-    status smallint DEFAULT 0 NOT NULL
+    project_id bigint,
+    status smallint DEFAULT 0 NOT NULL,
+    namespace_path text,
+    project_path text,
+    CONSTRAINT check_36f529abba CHECK ((char_length(project_path) <= 64)),
+    CONSTRAINT check_bbdf5d083f CHECK ((char_length(namespace_path) <= 64))
 );
 
 CREATE SEQUENCE project_secrets_managers_id_seq
@@ -49691,6 +49697,9 @@ ALTER TABLE ONLY protected_environment_deploy_access_levels
 ALTER TABLE ONLY cluster_agent_migrations
     ADD CONSTRAINT fk_1211a345fb FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY group_secrets_managers
+    ADD CONSTRAINT fk_12159a4355 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY job_environments
     ADD CONSTRAINT fk_12235a5803 FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;
 
@@ -50998,6 +51007,9 @@ ALTER TABLE ONLY audit_events_streaming_group_namespace_filters
 
 ALTER TABLE ONLY compliance_requirements
     ADD CONSTRAINT fk_8f5fb77fc7 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_secrets_managers
+    ADD CONSTRAINT fk_8f88850d11 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY incident_management_oncall_shifts
     ADD CONSTRAINT fk_8f8f23decb FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -52307,9 +52319,6 @@ ALTER TABLE ONLY gpg_signatures
 ALTER TABLE ONLY virtual_registries_container_registry_upstreams
     ADD CONSTRAINT fk_rails_11d127aa33 FOREIGN KEY (registry_id) REFERENCES virtual_registries_container_registries(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY group_secrets_managers
-    ADD CONSTRAINT fk_rails_12159a4355 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY pm_affected_packages
     ADD CONSTRAINT fk_rails_1279c1b9a1 FOREIGN KEY (pm_advisory_id) REFERENCES pm_advisories(id) ON DELETE CASCADE;
 
@@ -53434,9 +53443,6 @@ ALTER TABLE ONLY alert_management_alert_user_mentions
 
 ALTER TABLE ONLY project_daily_statistics_archived
     ADD CONSTRAINT fk_rails_8e549b272d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY project_secrets_managers
-    ADD CONSTRAINT fk_rails_8f88850d11 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY organization_details
     ADD CONSTRAINT fk_rails_8facb04bef FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

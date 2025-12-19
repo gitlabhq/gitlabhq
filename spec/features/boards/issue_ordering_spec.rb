@@ -102,7 +102,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
       expect(all('.board-card').last).to have_content(issue3.title)
     end
 
-    it 'moves from bottom to top', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/546388' do
+    it 'moves from bottom to top' do
       drag(from_index: 2, to_index: 0)
 
       wait_for_requests
@@ -118,7 +118,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
       expect(first('.board-card')).to have_content(issue2.title)
     end
 
-    it 'moves from bottom to middle', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/546390' do
+    it 'moves from bottom to middle' do
       drag(from_index: 2, to_index: 1)
 
       wait_for_requests
@@ -135,7 +135,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
       wait_for_requests
     end
 
-    it 'moves to end of list', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410100' do
+    it 'moves to end of list' do
       expect(all('.board-card').first).to have_content(issue3.title)
 
       page.within(find('[data-testid="board-list"]:nth-child(2)')) do
@@ -148,7 +148,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
       expect(all('.board-card').last).to have_content(issue3.title)
     end
 
-    it 'moves to start of list', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410100' do
+    it 'moves to start of list' do
       expect(all('.board-card').last).to have_content(issue1.title)
 
       page.within(find('[data-testid="board-list"]:nth-child(2)')) do
@@ -176,7 +176,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
       expect(page).to have_selector('.board', count: 4)
     end
 
-    it 'moves to top of another list', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/546391' do
+    it 'moves to top of another list' do
       drag(list_from_index: 1, list_to_index: 2)
 
       wait_for_requests

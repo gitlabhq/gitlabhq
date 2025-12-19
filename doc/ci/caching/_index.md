@@ -416,11 +416,8 @@ You can clear the cache in the GitLab UI:
 
 On the next commit, your CI/CD jobs use a new cache.
 
-{{< alert type="note" >}}
-
-Each time you clear the cache manually, the [internal cache name](#where-the-caches-are-stored) is updated. The name uses the format `cache-<index>`, and the index increments by one. The old cache is not deleted. You can manually delete these files from the runner storage.
-
-{{< /alert >}}
+> [!note]
+> Each time you clear the cache manually, the [internal cache name](#where-the-caches-are-stored) is updated. The name uses the format `cache-<index>`, and the index increments by one. The old cache is not deleted. You can manually delete these files from the runner storage.
 
 ## Troubleshooting
 

@@ -5,11 +5,8 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: GitLab Early Access Program
 ---
 
-{{< alert type="note" >}}
-
-Last status update 2024-10-02.
-
-{{< /alert >}}
+> [!note]
+> Last status update 2024-10-02.
 
 These features may not be ready for production use and follow the [Experimental or Beta policy](../development_stages_support.md) of GitLab.
 

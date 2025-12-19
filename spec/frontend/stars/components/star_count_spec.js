@@ -1,5 +1,5 @@
 import VueApollo from 'vue-apollo';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import StarCount from '~/stars/components/star_count.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -149,6 +149,34 @@ describe('StarCount', () => {
       createComponent({ isLoggedIn: false });
 
       expect(findStarButton().attributes('href')).toBe('sign/in/path');
+    });
+  });
+
+  describe('star button state', () => {
+    it('is disabled when query is running and enabled when query is succesful', async () => {
+      createComponent();
+      const starButton = findStarButton();
+
+      starButton.vm.$emit('click');
+      await nextTick();
+      expect(starButton.props('disabled')).toBe(true);
+
+      await waitForPromises();
+      expect(starButton.props('disabled')).toBe(false);
+    });
+
+    it('is disabled when query is running and enabled when query fails', async () => {
+      createComponent({
+        setStarStatusHandler: jest.fn().mockRejectedValue('Internal server error'),
+      });
+      const starButton = findStarButton();
+
+      starButton.vm.$emit('click');
+      await nextTick();
+      expect(starButton.props('disabled')).toBe(true);
+
+      await waitForPromises();
+      expect(starButton.props('disabled')).toBe(false);
     });
   });
 });

@@ -695,11 +695,8 @@ A string with single ' and double " quotes and   blanks
 
 The escaped input preserves special characters and spacing as provided.
 
-{{< alert type="warning" >}}
-
-Do not rely on `posix_escape` for security purposes with untrusted input values.
-
-{{< /alert >}}
+> [!warning]
+> Do not rely on `posix_escape` for security purposes with untrusted input values.
 
 `posix_escape` makes a best-effort attempt to preserve the input value exactly, but some
 character combinations could still cause undesired results. Even when using `posix_escape`, it is possible that:

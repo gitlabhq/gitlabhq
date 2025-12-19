@@ -64,11 +64,8 @@ The `a11y` job in your CI/CD pipeline generates these files:
 
 You can [view job artifacts in your browser](../jobs/job_artifacts.md#download-job-artifacts).
 
-{{< alert type="note" >}}
-
-The job definition provided by the template does not support Kubernetes.
-
-{{< /alert >}}
+> [!note]
+> The job definition provided by the template does not support Kubernetes.
 
 You cannot pass configurations into Pa11y via CI configuration.
 To change the configuration, edit a copy of the template in your CI file.

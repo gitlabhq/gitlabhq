@@ -80474,6 +80474,9 @@ msgstr ""
 msgid "ciReport|View vulnerabilities"
 msgstr ""
 
+msgid "ciReport|Vulnerability was matched by a policy and will be auto-dismissed."
+msgstr ""
+
 msgid "ciReport|in"
 msgstr ""
 

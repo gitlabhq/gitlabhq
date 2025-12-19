@@ -362,13 +362,13 @@ or [webhooks](../../user/project/integrations/webhooks.md) to trigger external a
 
 ## Service level availability
 
-GitLab Dedicated maintains a monthly service level objective of 99.5% availability.
+GitLab Dedicated maintains a monthly service level objective of 99.9% availability.
 
 Service level availability measures the percentage of time that GitLab Dedicated is available for use during a calendar month. GitLab calculates availability based on the following core services:
 
 | Service area       | Included features                                                                 |
 | ------------------ | --------------------------------------------------------------------------------- |
-| Web interface      | GitLab issues, merge requests, CI job logs, GitLab API, Git operations over HTTPS |
+| Web interface      | GitLab issues, merge requests, GitLab API, Git operations over HTTPS |
 | Container Registry | Registry HTTPS requests                                                           |
 | Git operations     | Git push, pull, and clone operations over SSH                                     |
 
@@ -381,6 +381,11 @@ The following are not included in service level availability calculations:
 - Scheduled maintenance windows
 - Emergency maintenance for critical security or data issues
 - Service disruptions caused by natural disasters, widespread internet outages, datacenter failures, or other events outside of GitLab control.
+
+### Disaster recovery
+
+For more information about disaster recovery, including recovery objectives, see
+[disaster recovery for GitLab Dedicated](../../administration/dedicated/disaster_recovery.md).
 
 ## Migrate to GitLab Dedicated
 

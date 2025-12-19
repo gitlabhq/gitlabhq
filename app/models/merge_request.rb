@@ -173,9 +173,9 @@ class MergeRequest < ApplicationRecord
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
   after_save :keep_around_commit, unless: :importing?
+  after_save :save_merge_data_changes
   after_commit :ensure_metrics!, on: [:create, :update], unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
-  after_commit :save_merge_data_changes
 
   after_find :preload_branches
 
@@ -2755,7 +2755,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def update_merge_ref_sha(sha)
-    with_merge_data_sync(
+    with_single_transaction_merge_data_sync(
       -> { update_column(:merge_ref_sha, sha) },
       -> do
         # update_column only works if the record is already saved.
@@ -2769,7 +2769,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def update_merge_jid(jid)
-    with_merge_data_sync(
+    with_single_transaction_merge_data_sync(
       -> { update_column(:merge_jid, jid) },
       -> do
         # update_column only works if the record is already saved.
@@ -2790,6 +2790,7 @@ class MergeRequest < ApplicationRecord
     # id may not have been set if the merge_request got saved after the initial
     #   ensure_merge_data so we need to set merge_request_id here if it is not already set.
     record.merge_request_id ||= id
+    record.project_id ||= target_project_id
     record
   end
 
@@ -2836,6 +2837,22 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  def with_single_transaction_merge_data_sync(merge_request_block, merge_data_block)
+    if dual_write_to_merge_data_ff_enabled?
+      result = nil
+      ensure_merge_data
+
+      ApplicationRecord.transaction do
+        result = merge_request_block.call
+        merge_data_block.call
+      end
+
+      result
+    else
+      merge_request_block.call
+    end
+  end
+
   def save_merge_data_changes
     return unless dual_write_to_merge_data_ff_enabled?
     return unless merge_data&.changed?
@@ -2843,13 +2860,8 @@ class MergeRequest < ApplicationRecord
     # id is set when merge_request gets saved so we need to manually
     #   set merge_request_id here if it is not already set.
     merge_data.merge_request_id ||= id
+    merge_data.project_id ||= target_project_id
     merge_data.save!
-
-  rescue StandardError => e
-    Gitlab::ErrorTracking.track_exception(e,
-      message: "Failed to save MergeData",
-      merge_request_id: id
-    )
   end
 
   def dual_write_to_merge_data_ff_enabled?

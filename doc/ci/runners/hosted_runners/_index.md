@@ -43,11 +43,8 @@ When you use hosted runners:
   This means that the available free disk space for your jobs to use is reduced.
 - [Untagged](../../yaml/_index.md#tags) jobs run on the `small` Linux x86-64 runner.
 
-{{< alert type="note" >}}
-
-Jobs handled by hosted runners on GitLab.com time out after 3 hours, regardless of the timeout configured in a project.
-
-{{< /alert >}}
+> [!note]
+> Jobs handled by hosted runners on GitLab.com time out after 3 hours, regardless of the timeout configured in a project.
 
 ### Security of hosted runners for GitLab.com
 

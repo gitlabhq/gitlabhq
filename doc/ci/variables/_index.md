@@ -548,11 +548,8 @@ You can specify a pipeline variable when you:
 These variables have higher precedence and can override other defined variables,
 including predefined variables.
 
-{{< alert type="warning" >}}
-
-You should avoid overriding predefined variables in most cases, as it can cause the pipeline to behave unexpectedly.
-
-{{< /alert >}}
+> [!warning]
+> You should avoid overriding predefined variables in most cases, as it can cause the pipeline to behave unexpectedly.
 
 ### Restrict pipeline variables
 

@@ -96,8 +96,5 @@ setting in VS Code for authenticating the language server with an HTTP proxy. Su
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}
-
-Bearer authentication is proposed in [issue 548](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/548).
-
-{{< /alert >}}
+> [!note]
+> Bearer authentication is proposed in [issue 548](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/548).

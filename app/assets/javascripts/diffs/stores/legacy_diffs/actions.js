@@ -634,7 +634,7 @@ export async function saveDiffDiscussion({ note, formData }) {
 
   const confirmSubmit = await detectAndConfirmSensitiveTokens({ content: note });
   if (!confirmSubmit) {
-    return null;
+    return { cancelled: true };
   }
 
   return useNotes()

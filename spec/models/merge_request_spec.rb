@@ -3785,7 +3785,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
   describe '#find_codequality_mr_diff_reports' do
     let(:project) { create(:project, :repository) }
-    let(:merge_request) { create(:merge_request, :with_codequality_mr_diff_reports, source_project: project, id: 123456789) }
+    let(:merge_request) { create(:merge_request, :with_codequality_mr_diff_reports, source_project: project, id: 12345678) }
     let(:pipeline) { merge_request.head_pipeline }
 
     subject(:mr_diff_report) { merge_request.find_codequality_mr_diff_reports }
@@ -8051,17 +8051,13 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
             allow(merge_data).to receive(:save!).and_raise(StandardError)
           end
 
-          it 'saves merge_status on merge_requests and logs the error' do
-            expect(Gitlab::ErrorTracking)
-              .to receive(:track_exception)
-              .with(
-                instance_of(StandardError),
-                message: "Failed to save MergeData",
-                merge_request_id: merge_request.id
-              )
+          it 'raises exception and does not save merge_status on both merge_requests and merge_data' do
+            expect do
+              merge_request.mark_as_preparing!
+            end.to raise_error(StandardError)
 
-            merge_request.mark_as_preparing!
-            expect(merge_request.reload.merge_status).to eq('preparing')
+            expect(merge_request.reload.merge_status).to eq(merge_status)
+            expect(merge_data.merge_status).to eq(merge_status)
           end
         end
       end
@@ -8180,27 +8176,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
 
         shared_examples 'handles merge_data save failure' do
-          it 'saves merge_request and logs errors if merge_data save fails' do
+          it 'raises exception and does not save merge_request if merge_data save fails' do
             allow_any_instance_of(MergeRequests::MergeData).to receive(:save!).and_raise(StandardError)
-
-            expect(Gitlab::ErrorTracking)
-              .to receive(:track_exception)
-              .with(
-                instance_of(StandardError),
-                hash_including(
-                  message: "Failed to save MergeData",
-                  merge_request_id: be_present
-                )
-              )
 
             expect do
               perform_action
-            end.to change { MergeRequest.count }.by(1)
+            end.to raise_error(StandardError)
+              .and not_change { MergeRequest.count }
               .and not_change { MergeRequests::MergeData.count }
-
-            merge_request.reload
-            expect(merge_request.persisted?).to be_truthy
-            expect(merge_request.merge_data).to be_nil
           end
         end
 
@@ -8258,7 +8241,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
 
         context 'via update' do
-          let(:merge_request) do
+          let!(:merge_request) do
             described_class.create!(
               title: 'Test MR',
               source_project: project,
@@ -8424,8 +8407,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
             merge_request.public_send(method_name, value)
 
             expect(merge_request.read_attribute(attribute)).to eq(value)
-            expect(merge_data.read_attribute(attribute)).to eq(value)
             expect(merge_data.persisted?).to be_truthy
+            expect(merge_data.read_attribute(attribute)).to eq(value)
           end
         end
 
@@ -8443,22 +8426,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
 
         context 'when an exception occurs during merge_data update' do
-          it 'logs the error and still saves merge_request' do
+          it 'raises the error and does not save merge_request' do
             allow(merge_data).to receive(:update_column).and_raise(StandardError)
 
-            expect(Gitlab::ErrorTracking)
-              .to receive(:track_exception)
-              .with(
-                instance_of(StandardError),
-                hash_including(
-                  message: "Failed to sync MergeData",
-                  merge_request_id: be_present
-                )
-              )
+            expect { merge_request.public_send(method_name, value) }.to raise_error(StandardError)
 
-            merge_request.public_send(method_name, value)
-
-            expect(merge_request.reload.read_attribute(attribute)).to eq(value)
+            expect(merge_request.reload.read_attribute(attribute)).not_to eq(value)
             expect(merge_data.reload.read_attribute(attribute)).to be_nil
           end
         end

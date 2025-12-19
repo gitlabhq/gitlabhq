@@ -733,11 +733,8 @@ a few different methods, based on where the variable is created or defined.
 
 ### Pass YAML-defined CI/CD variables
 
-{{< alert type="note" >}}
-
-Inputs are recommended for pipeline configuration instead of variables as they offer improved security and flexibility.
-
-{{< /alert >}}
+> [!note]
+> Inputs are recommended for pipeline configuration instead of variables as they offer improved security and flexibility.
 
 You can use the `variables` keyword to pass CI/CD variables to a downstream pipeline.
 These variables are pipeline variables for [variable precedence](../variables/_index.md#cicd-variable-precedence).

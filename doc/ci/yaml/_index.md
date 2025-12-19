@@ -5634,11 +5634,8 @@ job:
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!note]
+> This feature is available for testing, but not ready for production use.
 
 Use `run` to define a series of [steps](../steps/_index.md) to be executed in a job. Each step can be either a script or a predefined step.
 

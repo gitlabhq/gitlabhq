@@ -326,8 +326,9 @@ To reassign contributions and memberships to administrators, see
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17871) in GitLab 18.3 [with a flag](../../administration/feature_flags/list.md) named `group_owner_placeholder_confirmation_bypass`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/548946) in GitLab 18.4. Feature flag `group_owner_placeholder_confirmation_bypass` removed.
+- [Introduced on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/544024) in GitLab 18.1 with a feature flag named `group_owner_placeholder_confirmation_bypass`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/548946) in GitLab 18.4.
+- [Generally available on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/569771) in GitLab 18.7. Feature flag `group_owner_placeholder_confirmation_bypass` removed.
 
 {{< /history >}}
 

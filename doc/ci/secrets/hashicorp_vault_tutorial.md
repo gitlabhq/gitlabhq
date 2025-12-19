@@ -33,11 +33,8 @@ and `gitlab.example.com` with the URL of your GitLab instance.
 
 ## Configure the vault
 
-{{< alert type="warning" >}}
-
-JWTs are credentials, which can grant access to resources. Be careful where you paste them!
-
-{{< /alert >}}
+> [!warning]
+> JWTs are credentials, which can grant access to resources. Be careful where you paste them!
 
 Consider a scenario where you store passwords for your staging and production databases in a Vault server.
 This scenario assumes you use the [KV v2](https://developer.hashicorp.com/vault/docs/secrets/kv#kv-version-2) secret engine.

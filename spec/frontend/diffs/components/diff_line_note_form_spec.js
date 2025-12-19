@@ -270,4 +270,28 @@ describe('DiffLineNoteForm', () => {
       });
     });
   });
+
+  describe('when user clicks "Edit comment" in secret detection modal', () => {
+    beforeEach(() => {
+      useLegacyDiffs().saveDiffDiscussion.mockResolvedValue({ cancelled: true });
+    });
+
+    it('should not cancel the form', async () => {
+      const noteBody = 'glpat-00000000000000000000';
+
+      await findNoteForm().vm.$emit('handleFormUpdate', noteBody);
+      await waitForPromises();
+
+      expect(useLegacyDiffs().saveDiffDiscussion).toHaveBeenCalledWith({
+        note: noteBody,
+        formData: expect.any(Object),
+      });
+
+      // Verify the form was NOT cancelled
+      expect(useLegacyDiffs().cancelCommentForm).not.toHaveBeenCalled();
+
+      // Verify no error alert was shown
+      expect(createAlert).not.toHaveBeenCalled();
+    });
+  });
 });

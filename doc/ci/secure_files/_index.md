@@ -100,11 +100,8 @@ and use it in your CI/CD job.
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This method is deprecated.
-
-{{< /alert >}}
+> [!warning]
+> This method is deprecated.
 
 To use your secure files in a CI/CD job, you can use the [`download-secure-files`](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files)
 tool to download the files in the job. After they are downloaded, you can use them

@@ -18,11 +18,8 @@ is limited. This limit is tracked with an instance runner compute quota on the G
 
 Admin-managed instance runners are those [managed by the GitLab instance administrator](../../administration/cicd/compute_minutes.md).
 
-{{< alert type="note" >}}
-
-On GitLab.com instance runners are both admin-managed and GitLab-hosted because the instance is managed by GitLab.
-
-{{< /alert >}}
+> [!note]
+> On GitLab.com instance runners are both admin-managed and GitLab-hosted because the instance is managed by GitLab.
 
 ## Compute quota enforcement
 

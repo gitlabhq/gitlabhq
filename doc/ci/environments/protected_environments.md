@@ -22,11 +22,8 @@ unauthorized users.
 By default, a protected environment ensures that only people with the
 appropriate privileges can deploy to it, keeping the environment safe.
 
-{{< alert type="note" >}}
-
-GitLab administrators can use all environments, including protected environments.
-
-{{< /alert >}}
+> [!note]
+> GitLab administrators can use all environments, including protected environments.
 
 To protect, update, or unprotect an environment, you need to have at least the
 Maintainer role.

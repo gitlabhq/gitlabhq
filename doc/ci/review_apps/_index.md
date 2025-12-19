@@ -28,11 +28,8 @@ These environments help streamline the development workflow by:
 - Enabling stakeholders to preview changes with a URL.
 - Facilitating faster feedback cycles before changes reach production.
 
-{{< alert type="note" >}}
-
-If you have a Kubernetes cluster, you can set up review apps automatically using [Auto DevOps](../../topics/autodevops/_index.md).
-
-{{< /alert >}}
+> [!note]
+> If you have a Kubernetes cluster, you can set up review apps automatically using [Auto DevOps](../../topics/autodevops/_index.md).
 
 ## Review app workflow
 

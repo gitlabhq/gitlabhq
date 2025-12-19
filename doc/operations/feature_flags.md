@@ -116,11 +116,8 @@ The rollout percentage can be from 0% to 100%.
 
 Selecting a consistency based on User IDs functions the same as the [percent of Users](#percent-of-users) rollout.
 
-{{< alert type="warning" >}}
-
-Selecting **Random** provides inconsistent application behavior for individual users.
-
-{{< /alert >}}
+> [!warning]
+> Selecting **Random** provides inconsistent application behavior for individual users.
 
 ### Percent of Users
 

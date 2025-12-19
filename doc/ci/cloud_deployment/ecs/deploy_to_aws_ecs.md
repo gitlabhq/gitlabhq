@@ -204,11 +204,8 @@ create a deployer user on AWS:
 1. Select **Create user**.
 1. Take note of the **Access key ID** and **Secret access key** of the created user.
 
-{{< alert type="note" >}}
-
-Do not share the secret access key in a public place. You must save it in a secure place.
-
-{{< /alert >}}
+> [!note]
+> Do not share the secret access key in a public place. You must save it in a secure place.
 
 ### Setup credentials in GitLab to let pipeline jobs access to ECS
 

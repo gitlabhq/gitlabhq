@@ -234,11 +234,8 @@ test:
 You can then go to the **Jobs** tab of a new pipeline build and see your RSpec
 job split into three separate jobs.
 
-{{< alert type="warning" >}}
-
-Test Boosters reports usage statistics to the author.
-
-{{< /alert >}}
+> [!warning]
+> Test Boosters reports usage statistics to the author.
 
 ### Run a one-dimensional matrix of parallel jobs
 

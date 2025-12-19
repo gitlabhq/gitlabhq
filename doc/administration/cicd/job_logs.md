@@ -180,21 +180,15 @@ job output in the UI is empty.
 For details on how to delete job logs by using GitLab CLI,
 see [Delete job logs](../../user/storage_management_automation.md#delete-job-logs).
 
-Alternatively, you can delete job logs with shell commands. For example, to delete all job logs older than 60 days, run the following
-command from a shell in your GitLab instance.
-
-{{< alert type="note" >}}
-
 For the Helm chart, use the storage management tools provided with your object
 storage.
 
-{{< /alert >}}
+Alternatively, you can delete job logs with shell commands.
+For example, to delete all job logs older than 60 days, run the following
+command from a shell in your GitLab instance.
 
-{{< alert type="warning" >}}
-
-The following command permanently deletes the log files and is irreversible.
-
-{{< /alert >}}
+> [!warning]
+> The following command permanently deletes the log files and is irreversible.
 
 {{< tabs >}}
 
