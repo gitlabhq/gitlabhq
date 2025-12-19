@@ -835,11 +835,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let_it_be(:marked_after) { create(:project, marked_for_deletion_at: cutoff_date + 2.days) }
       let_it_be(:marked_before) { create(:project, marked_for_deletion_at: cutoff_date - 2.days) }
       let_it_be(:marked_on_date) { create(:project, marked_for_deletion_at: cutoff_date) }
+      let_it_be(:marked_before_deletion_in_progress) do
+        create(:project, pending_delete: true, marked_for_deletion_at: cutoff_date - 2.days)
+      end
 
       it 'returns projects marked for deletion on or before the specified date' do
         result = described_class.marked_for_deletion_before(cutoff_date)
 
-        expect(result).to include(marked_before, marked_on_date)
+        expect(result).to include(marked_before, marked_on_date, marked_before_deletion_in_progress)
         expect(result).not_to include(marked_after, active_project)
       end
     end

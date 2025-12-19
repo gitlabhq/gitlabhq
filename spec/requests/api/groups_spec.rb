@@ -696,11 +696,19 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       let_it_be(:project4) { create(:project, namespace: group1, path: 'test1', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
       let_it_be(:project5) { create(:project, namespace: group1, path: 'test2', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
 
+      before do
+        # Stub to prevent cascading settings queries from auto_duo_code_review_settings_available?
+        # These queries are unrelated to what this N+1 spec is testing.
+        # Added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216006
+        # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
+        # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all project instances for N+1 spec
+        allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+        # rubocop:enable RSpec/AnyInstanceOf
+      end
+
       it "returns one of user1's groups", :aggregate_failures do
         # TODO remove this in https://gitlab.com/gitlab-org/gitlab/-/issues/545723.
-        # Additional queries due to cascading settings checks for duo_foundational_flows_enabled
-        # See https://gitlab.com/gitlab-org/gitlab/-/issues/442164
-        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(117)
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(108)
 
         project = create(:project, namespace: group2, path: 'Foo')
         project2 = create(:project, namespace: group2, path: 'Foo2')
@@ -819,11 +827,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
         create(:project, namespace: group1)
 
-        # Additional queries due to cascading settings checks for duo_foundational_flows_enabled
-        # See https://gitlab.com/gitlab-org/gitlab/-/issues/442164
         expect do
           get api("/groups/#{group1.id}", user1)
-        end.not_to exceed_query_limit(control).with_threshold(2)
+        end.not_to exceed_query_limit(control)
       end
 
       it 'avoids N+1 queries with shared group links' do
@@ -1814,6 +1820,14 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           create(:project, group: subgroup2)
 
           group1.reload
+
+          # Stub to prevent cascading settings queries from auto_duo_code_review_settings_available?
+          # These queries are unrelated to what this N+1 spec is testing.
+          # Added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216006
+          # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
+          # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all project instances for N+1 spec
+          allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+          # rubocop:enable RSpec/AnyInstanceOf
         end
 
         it "returns projects including those in subgroups", :aggregate_failures do
@@ -1839,11 +1853,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           # threshold number 2 is the additional number of queries which are getting executed.
           # with this we are allowing some N+1 that may already exist but is not obvious.
           # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132246#note_1581106553
-          # Additional queries due to cascading settings checks for duo_features_enabled and duo_foundational_flows_enabled
-          # See https://gitlab.com/gitlab-org/gitlab/-/issues/442164
           expect do
             get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true }
-          end.to issue_same_number_of_queries_as(control).with_threshold(6)
+          end.to issue_same_number_of_queries_as(control).with_threshold(2)
         end
       end
 
@@ -1905,6 +1917,14 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       it 'avoids N+1 queries', :aggregate_failures do
+        # Stub to prevent cascading settings queries from auto_duo_code_review_settings_available?
+        # These queries are unrelated to what this N+1 spec is testing.
+        # Added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216006
+        # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
+        # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all project instances for N+1 spec
+        allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+        # rubocop:enable RSpec/AnyInstanceOf
+
         get api("/groups/#{group1.id}/projects", user1)
         expect(response).to have_gitlab_http_status(:ok)
 
@@ -1914,11 +1934,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
         create(:project, namespace: group1)
 
-        # Additional queries due to cascading settings checks for duo_foundational_flows_enabled
-        # See https://gitlab.com/gitlab-org/gitlab/-/issues/442164
         expect do
           get api("/groups/#{group1.id}/projects", user1)
-        end.not_to exceed_query_limit(control).with_threshold(2)
+        end.not_to exceed_query_limit(control)
       end
     end
 

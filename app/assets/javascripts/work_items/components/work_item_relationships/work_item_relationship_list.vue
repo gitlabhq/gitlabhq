@@ -1,10 +1,9 @@
 <script>
-import DraggableList from 'vuedraggable';
-
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import { visitUrl } from '~/lib/utils/url_utility';
+import DraggableList from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
@@ -20,6 +19,7 @@ export default {
   RELATIONSHIP_TYPE_ENUM,
   components: {
     WorkItemLinkChildContents,
+    DraggableList,
   },
   props: {
     parentWorkItemId: {
@@ -231,6 +231,7 @@ export default {
       :is="listRootComponent"
       v-bind="listOptions"
       ref="list"
+      :item-key="(linkedItem) => linkedItem.workItem.id"
       class="work-items-list content-list"
       :class="{
         'sortable-container gl-cursor-grab': canReorder,

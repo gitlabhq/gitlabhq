@@ -1,5 +1,4 @@
 <script>
-import Draggable from 'vuedraggable';
 import { cloneDeep } from 'lodash';
 import { produce } from 'immer';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -11,6 +10,7 @@ import { ESC_KEY } from '~/lib/utils/keys';
 import { s__ } from '~/locale';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
+import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 
 import {
   optimisticUserPermissions,
@@ -575,6 +575,7 @@ export default {
       'sortable-container gl-cursor-grab': canReorder,
       'disabled-content': disableList,
     }"
+    item-key="id"
     :move="onMove"
     @start="handleDragOnStart"
     @end="handleDragOnEnd"

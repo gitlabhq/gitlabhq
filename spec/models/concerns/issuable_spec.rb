@@ -105,26 +105,9 @@ RSpec.describe Issuable, feature_category: :team_planning do
       let_it_be(:mr_in_archived_project) { create(:merge_request, source_project: archived_project, target_project: archived_project) }
       let_it_be(:mr_in_non_archived_project) { create(:merge_request, source_project: non_archived_project, target_project: non_archived_project) }
 
-      context 'when optimize_issuable_non_archived_scope feature flag is enabled' do
-        before do
-          stub_feature_flags(optimize_issuable_non_archived_scope: true)
-        end
-
-        it 'excludes merge requests from archived projects' do
-          expect(MergeRequest.non_archived).to include(mr_in_non_archived_project)
-          expect(MergeRequest.non_archived).not_to include(mr_in_archived_project)
-        end
-      end
-
-      context 'when optimize_issuable_non_archived_scope feature flag is disabled' do
-        before do
-          stub_feature_flags(optimize_issuable_non_archived_scope: false)
-        end
-
-        it 'excludes merge requests from archived projects' do
-          expect(MergeRequest.non_archived).to include(mr_in_non_archived_project)
-          expect(MergeRequest.non_archived).not_to include(mr_in_archived_project)
-        end
+      it 'excludes merge requests from archived projects' do
+        expect(MergeRequest.non_archived).to include(mr_in_non_archived_project)
+        expect(MergeRequest.non_archived).not_to include(mr_in_archived_project)
       end
     end
 

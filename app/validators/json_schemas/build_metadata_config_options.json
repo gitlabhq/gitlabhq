@@ -355,6 +355,9 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "pipeline_execution_policy_job": {
+          "type": "boolean"
+        },
         "name": {
           "type": "string"
         },

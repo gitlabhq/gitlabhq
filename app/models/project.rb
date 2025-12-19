@@ -694,7 +694,7 @@ class Project < ApplicationRecord
       .without_deleted
   end
 
-  scope :marked_for_deletion_before, ->(date) { where('marked_for_deletion_at <= ?', date).without_deleted }
+  scope :marked_for_deletion_before, ->(date) { where('marked_for_deletion_at <= ?', date) }
   scope :marked_for_deletion_on, ->(marked_for_deletion_on) do
     where(marked_for_deletion_at: marked_for_deletion_on)
   end

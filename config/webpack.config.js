@@ -260,7 +260,10 @@ if (USE_VUE3) {
     // ensure we always use the same type of module for Vue
     '@vue/compat': '@vue/compat/dist/vue.runtime.esm-bundler.js',
     vue: path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue.js'),
-
+    vuedraggable: path.join(
+      ROOT_PATH,
+      'node_modules/@gitlab/vuedraggable-vue3/src/vuedraggable.js',
+    ),
     vuex: path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vuex.js'),
     'vue-apollo': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js'),
     'vue-router': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_router.js'),

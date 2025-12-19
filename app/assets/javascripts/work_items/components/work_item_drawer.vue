@@ -9,7 +9,6 @@ import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
   DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME,
-  INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
 } from '~/work_items/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl, setUrlParams, updateHistory, removeParams } from '~/lib/utils/url_utility';
@@ -35,7 +34,6 @@ export default {
   mixins: [glFeatureFlagMixin()],
   inject: {
     preventRouterNav: {
-      from: INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
       default: false,
     },
     isGroup: {},

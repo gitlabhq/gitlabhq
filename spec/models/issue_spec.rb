@@ -621,46 +621,6 @@ RSpec.describe Issue, feature_category: :team_planning do
     it 'does not return group-level issues from archived groups' do
       is_expected.not_to include(group_level_issue_in_archived_group)
     end
-
-    context 'when optimize_issuable_non_archived_scope feature flag is disabled' do
-      before do
-        stub_feature_flags(optimize_issuable_non_archived_scope: false)
-      end
-
-      it 'returns issues from non-archived projects' do
-        is_expected.to include(issue_in_non_archived_project)
-      end
-
-      it 'does not return issues from archived projects' do
-        is_expected.not_to include(issue_in_archived_project)
-      end
-
-      it 'returns issues from projects in archived groups' do
-        is_expected.to include(issue_in_archived_group)
-      end
-
-      it 'returns issues from projects in subgroups of archived groups' do
-        is_expected.to include(issue_in_subgroup_of_archived_group)
-      end
-
-      it 'returns group-level issues from non-archived groups' do
-        is_expected.to include(group_level_issue)
-      end
-
-      it 'returns group-level issues from archived groups' do
-        is_expected.to include(group_level_issue_in_archived_group)
-      end
-
-      context 'with use_existing_join parameter' do
-        it 'reuses the existing join when use_existing_join is true' do
-          relation = described_class.joins(:project)
-          result = relation.non_archived(use_existing_join: true)
-
-          expect(result).to include(issue_in_non_archived_project)
-          expect(result).not_to include(issue_in_archived_project)
-        end
-      end
-    end
   end
 
   describe '#sort' do

@@ -126,6 +126,11 @@ To create a user through the Rails console:
   ).execute
   ```
 
+> [!note]
+> If you have [disabled new sign-ups](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups),
+> you must run this command as an administrator. In the previous command, replace `Users::CreateService.new(nil,`
+> with `Users::CreateService.new(User.find_by(admin: true),`
+
   {{< /tab >}}
 
   {{< /tabs >}}

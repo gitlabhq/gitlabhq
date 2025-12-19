@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
-import VueDraggable from 'vuedraggable';
+import VueDraggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { hasTouchCapability } from '~/lib/utils/touch_detection';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
@@ -591,6 +591,7 @@ export default {
             v-bind="$options.dragOptions"
             class="list-unstyled row work-item-design-grid -gl-my-1 gl-gap-y-5"
             :class="{ 'gl-px-3 gl-py-2': hasDesigns, 'gl-hidden': !hasDesigns }"
+            item-key="id"
             @end="onDragEnd"
             @change="onDesignsReorder"
             @input="onDesignMove"

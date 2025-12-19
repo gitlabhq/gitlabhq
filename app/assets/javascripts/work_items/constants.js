@@ -247,10 +247,6 @@ export const WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY = 'workItemTree.showClosed
 export const WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY = 'workItemRelationships.showLabels';
 export const WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY = 'workItemRelationships.showClosed';
 
-export const INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION = Symbol(
-  'injection:prevent-router-navigation',
-);
-
 export const BASE_ALLOWED_CREATE_TYPES = [
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,

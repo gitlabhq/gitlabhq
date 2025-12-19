@@ -2,14 +2,6 @@
 
 = render ::Layouts::PageHeadingComponent.new(_('Import repository'))
 
-- if @project.import_failed?
-  = render Pajamas::AlertComponent.new(title: s_('Import|The repository could not be imported.'),
-    dismissible: false,
-    variant: :danger,
-    alert_options: { class: 'gl-mb-5' }) do |c|
-    - c.with_body do
-      = @project.import_state.last_error
-
 = gitlab_ui_form_for @project, url: project_import_path(@project), method: :post, html: { class: 'js-project-import' } do |f|
   = render 'shared/import_form', f: f
 

@@ -13,7 +13,6 @@ import {
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
   WORK_ITEM_TYPE_NAME_EPIC,
   WIDGET_TYPE_HIERARCHY,
-  INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
   DETAIL_VIEW_QUERY_PARAM_NAME,
   NAME_TO_TEXT_LOWERCASE_MAP,
   NAME_TO_TEXT_MAP,
@@ -56,7 +55,7 @@ export default {
   inject: ['hasSubepicsFeature'],
   provide() {
     return {
-      [INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION]: !this.isDrawer,
+      preventRouterNav: !this.isDrawer,
     };
   },
   props: {

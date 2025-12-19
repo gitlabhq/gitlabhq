@@ -1,12 +1,12 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import Draggable from 'vuedraggable';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { ESC_KEY } from '~/lib/utils/keys';
+import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -335,7 +335,7 @@ describe('WorkItemChildrenWrapper', () => {
         },
       };
 
-      wrapper.findComponent(Draggable).vm.move(mockEvt, mockOriginalEvt);
+      wrapper.findComponent(Draggable).vm.$attrs.move(mockEvt, mockOriginalEvt);
 
       jest.runAllTimers();
       await nextTick();

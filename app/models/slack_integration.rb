@@ -39,6 +39,7 @@ class SlackIntegration < ApplicationRecord
     through: :slack_integrations_scopes
 
   scope :preloaded_integration, -> { preload(:integration) }
+  scope :preload_integration_organization, -> { preloaded_integration.preload(integration: [:group, :project]) }
   scope :with_bot, -> { where.not(bot_user_id: nil) }
   scope :by_team, ->(team_id) { where(team_id: team_id) }
   scope :by_integration, ->(integration_ids) { where(integration_id: integration_ids) }

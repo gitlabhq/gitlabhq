@@ -10,12 +10,18 @@ module Integrations
         missing_names = names - found.pluck(:name)
 
         if missing_names.any?
-          insert_all(missing_names.map { |name| { name: name, organization_id: organization_id } })
+          upsert_all(missing_names.map { |name| { name: name, organization_id: organization_id } }, on_duplicate: :skip)
           missing = where(name: missing_names, organization_id: organization_id)
           found += missing
         end
 
         found
+      end
+
+      def self.find_or_initialize_by_names_and_organizations(names, organization_ids)
+        organization_ids.index_with do |organization_id|
+          find_or_initialize_by_names(names, organization_id: organization_id)
+        end
       end
     end
   end

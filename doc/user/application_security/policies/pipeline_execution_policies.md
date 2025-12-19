@@ -733,6 +733,15 @@ like preventing the use of branch pipelines.
 
 {{< /alert >}}
 
+#### Pipeline name
+
+Pipeline execution policies that use the `override_project_ci` strategy override the [pipeline name](../../../ci/yaml/_index.md#workflowname) that is defined in the project's original CI/CD configuration.
+
+You can define the pipeline name in the pipeline execution policy configuration.
+
+If there are multiple pipeline execution policies with the `override_project_ci` strategy, the lowest one in the group hierarchy is applied.
+For example, a policy for the project overrides a policy for the group the project belongs to. A policy for a subgroup takes precedence over a policy for the group the subgroup belongs to.
+
 ### Include a project's CI/CD configuration in the pipeline execution policy configuration
 
 When you use the `override_project_ci` strategy, the project configuration can be included into the pipeline execution policy configuration:

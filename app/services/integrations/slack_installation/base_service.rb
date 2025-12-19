@@ -127,7 +127,6 @@ module Integrations
 
         SlackIntegration.by_team(installation.team_id)
                         .id_not_in(installation.id)
-                        .preloaded_integration
                         .each_batch do |batch|
           batch.update_all(updatable_attributes)
 

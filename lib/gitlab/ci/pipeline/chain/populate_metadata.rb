@@ -76,3 +76,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::Pipeline::Chain::PopulateMetadata.prepend_mod

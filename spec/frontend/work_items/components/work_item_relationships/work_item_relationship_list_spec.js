@@ -1,8 +1,7 @@
-import DraggableList from 'vuedraggable';
-
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { visitUrl } from '~/lib/utils/url_utility';
+import DraggableList from '~/lib/utils/vue3compat/draggable_compat.vue';
 import WorkItemRelationshipList from '~/work_items/components/work_item_relationships/work_item_relationship_list.vue';
 import WorkItemLinkChildContents from 'ee_else_ce/work_items/components/shared/work_item_link_child_contents.vue';
 
@@ -52,7 +51,6 @@ describe('WorkItemRelationshipList', () => {
     });
   };
 
-  const findHeading = () => wrapper.findByTestId('work-items-list-heading');
   const findDraggableWorkItemsList = () => wrapper.findComponent(DraggableList);
   const findWorkItemLinkChildContents = () => wrapper.findComponent(WorkItemLinkChildContents);
 
@@ -69,12 +67,6 @@ describe('WorkItemRelationshipList', () => {
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
   };
-
-  it('renders linked item list', () => {
-    createComponent({ linkedItems: mockLinkedItems });
-    expect(findHeading().text()).toBe('Blocking');
-    expect(wrapper.html()).toMatchSnapshot();
-  });
 
   it('renders work item list with drag and drop ability when canUpdate is true', () => {
     createComponent({ linkedItems: mockLinkedItems });
@@ -166,7 +158,7 @@ describe('WorkItemRelationshipList', () => {
       createComponent({ linkedItems: mockLinkedItems });
       // We're manually calling `move` function here as VueDraggable doesn't expose it as an event
       // even when Sortable.js has already defined it https://github.com/SortableJS/Sortable?tab=readme-ov-file#options
-      findDraggableWorkItemsList().vm.move({
+      findDraggableWorkItemsList().vm.$attrs.move({
         from: mockFrom,
         to: mockTo,
         dragged: document.createElement('ul'),
@@ -179,7 +171,7 @@ describe('WorkItemRelationshipList', () => {
 
     it('prevents insertion if relationship type did not change', () => {
       expect(
-        findDraggableWorkItemsList().vm.move({
+        findDraggableWorkItemsList().vm.$attrs.move({
           from: mockFrom,
           to: mockFrom,
           dragged: findDraggableWorkItemsList().vm.element,

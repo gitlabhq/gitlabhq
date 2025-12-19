@@ -22,12 +22,7 @@ import {
   findStatusWidget,
   getDisplayReference,
 } from '../../utils';
-import {
-  STATE_OPEN,
-  WIDGET_TYPE_ASSIGNEES,
-  WIDGET_TYPE_LABELS,
-  INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
-} from '../../constants';
+import { STATE_OPEN, WIDGET_TYPE_ASSIGNEES, WIDGET_TYPE_LABELS } from '../../constants';
 import WorkItemRelationshipIcons from './work_item_relationship_icons.vue';
 
 export default {
@@ -57,7 +52,6 @@ export default {
   },
   inject: {
     preventRouterNav: {
-      from: INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
       default: false,
     },
     fullPath: {
