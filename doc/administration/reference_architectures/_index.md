@@ -15,46 +15,9 @@ title: Reference architectures
 
 The GitLab reference architectures are validated, production-ready environment designs for deploying GitLab at scale. Each architecture provides detailed specifications that you can use or adapt based on your requirements.
 
-## Available reference architectures
-
-The following reference architectures are available as recommended starting points for your environment.
-
-The architectures are named in terms of peak load, based on user count or requests per second (RPS). RPS is calculated based on average real data.
-
-{{< alert type="note" >}}
-
-Each architecture is designed to be [scalable and elastic](#scaling-an-environment). They can be adjusted accordingly based on your workload, upwards or downwards. For example, some known heavy scenarios such as using [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads).
-
-{{< /alert >}}
-
-For details about what each reference architecture is tested against, see the **Testing Methodology** section of each page.
-
-### GitLab package (Omnibus)
-
-The following is the list of Linux package based reference architectures:
-
-- [Up to 20 RPS or 1,000 users](1k_users.md) <span style="color: #74717A;">_API: 20 RPS, Web: 2 RPS, Git (Pull): 2 RPS, Git (Push): 1 RPS_</span>
-- [Up to 40 RPS or 2,000 users](2k_users.md) <span style="color: #74717A;">_API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS_</span>
-- [Up to 60 RPS or 3,000 users](3k_users.md) <span style="color: #74717A;">_API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS_</span>
-- [Up to 100 RPS or 5,000 users](5k_users.md) <span style="color: #74717A;">_API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS_</span>
-- [Up to 200 RPS or 10,000 users](10k_users.md) <span style="color: #74717A;">_API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS_</span>
-- [Up to 500 RPS or 25,000 users](25k_users.md) <span style="color: #74717A;">_API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS_</span>
-- [Up to 1000 RPS or 50,000 users](50k_users.md) <span style="color: #74717A;">_API: 1000 RPS, Web: 100 RPS, Git (Pull): 100 RPS, Git (Push): 20 RPS_</span>
-
-### Cloud native hybrid
-
-The following is a list of Cloud Native Hybrid reference architectures, where select recommended components can be run in Kubernetes:
-
-- [Up to 40 RPS or 2,000 users](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: #74717A;">_API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS_</span>
-- [Up to 60 RPS or 3,000 users](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: #74717A;">_API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS_</span>
-- [Up to 100 RPS or 5,000 users](5k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: #74717A;">_API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS_</span>
-- [Up to 200 RPS or 10,000 users](10k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: #74717A;">_API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS_</span>
-- [Up to 500 RPS or 25,000 users](25k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: #74717A;">_API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS_</span>
-- [Up to 1000 RPS or 50,000 users](50k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: #74717A;">_API: 1000 RPS, Web: 100 RPS, Git (Pull): 100 RPS, Git (Push): 20 RPS_</span>
-
 ## Before you start
 
-First, consider whether a self-managed approach is the right choice for you and your requirements.
+First, consider whether GitLab Self-Managed is the right choice for you and your requirements.
 
 Running any application in production is complex, and the same applies for GitLab. While we aim to make this as smooth as possible, there are still the general complexities based on your design. Typically you have to manage all aspects such as hardware, operating systems, networking, storage, security, GitLab itself, and more. This includes both the initial setup of the environment and the longer term maintenance.
 
@@ -70,7 +33,7 @@ If you are considering using the GitLab Self-Managed approach, we encourage you 
 
 The reference architectures are designed to strike a balance between three important factors: performance, resilience, and cost. They are designed to make it easier to set up GitLab at scale. However, it can still be a challenge to know which one meets your requirements and where to start accordingly.
 
-As a general guide, **the more performant and/or resilient you want your environment to be, the more complex it is**.
+As a general guide, the more performant or resilient you want your environment to be, the more complex it is.
 
 This section explains the things to consider when picking a reference architecture.
 
@@ -78,7 +41,7 @@ This section explains the things to consider when picking a reference architectu
 
 The right architecture size depends primarily on your environment's expected peak load. The most objective measure of this load is through peak Requests per Second (RPS) coming into the environment.
 
-Each architecture is designed to handle specific RPS targets for different types of requests (API, Web, Git). These details are described in the **Testing Methodology** section on each page.
+Each architecture is designed to handle specific RPS targets for different types of requests (API, Web, Git). These details are described in the "Testing Methodology" section on each page.
 
 For comprehensive RPS analysis and data-driven sizing decisions, see [reference architecture sizing](sizing.md), which
 provides:
@@ -102,94 +65,56 @@ For quick RPS estimation, some potential options include:
 
 If you can't determine your RPS, we provide an alternative sizing method based on equivalent User Count by Load Category. This count is mapped to typical RPS values, considering both manual and automated usage.
 
-#### Initial sizing guide
+## Available reference architectures
 
-To determine which architecture to pick for the expected load, see the following initial sizing guide table:
+The following reference architectures are available as recommended starting points for your environment.
 
-<table class="ra-table">
-  <col>
-  <tr>
-    <th style="text-align: center" rowspan="2"><br/>Load Category</th>
-    <th style="text-align: center" colspan="4" scope="colgroup">Requests per Second (RPS)</th>
-    <th rowspan="2" style="text-align: center"><br/>Typical User Count</th>
-    <th rowspan="2" style="text-align: center"><br/>Reference Architecture</th>
-  </tr>
-  <tr>
-    <th scope="col" style="text-align: center">API</th>
-    <th scope="col" style="text-align: center">Web</th>
-    <th scope="col" style="text-align: center">Git Pull</th>
-    <th scope="col" style="text-align: center">Git Push</th>
-  </tr>
-  <tr>
-    <td>X Small</td>
-    <td>20</td>
-    <td>2</td>
-    <td>2</td>
-    <td>1</td>
-    <td>1,000</td>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/1k_users.html">Up to 20 RPS or 1,000 users</a></th>
-  </tr>
-  <tr>
-    <td>Small</td>
-    <td>40</td>
-    <td>4</td>
-    <td>4</td>
-    <td>1</td>
-    <td>2,000</td>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/2k_users.html">Up to 40 RPS or 2,000 users</a></th>
-  </tr>
-  <tr>
-    <td>Medium</td>
-    <td>60</td>
-    <td>6</td>
-    <td>6</td>
-    <td>1</td>
-    <td>3,000</td>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/3k_users.html">Up to 60 RPS or 3,000 users</a></th>
-  </tr>
-  <tr>
-    <td>Large</td>
-    <td>100</td>
-    <td>10</td>
-    <td>10</td>
-    <td>2</td>
-    <td>5,000</td>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/5k_users.html">Up to 100 RPS or 5,000 users</a></th>
-  </tr>
-  <tr>
-    <td>X Large</td>
-    <td>200</td>
-    <td>20</td>
-    <td>20</td>
-    <td>4</td>
-    <td>10,000</td>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/10k_users.html">Up to 200 RPS or 10,000 users</a></th>
-  </tr>
-  <tr>
-    <td>2X Large</td>
-    <td>500</td>
-    <td>50</td>
-    <td>50</td>
-    <td>10</td>
-    <td>25,000</td>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/25k_users.html">Up to 500 RPS or 25,000 users</a></th>
-  </tr>
-  <tr>
-    <td>3X Large</td>
-    <td>1000</td>
-    <td>100</td>
-    <td>100</td>
-    <td>20</td>
-    <td>50,000</td>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/50k_users.html">Up to 1000 RPS or 50,000 users</a></th>
-  </tr>
-</table>
+The architectures are named in terms of peak load, based on user count or requests per second (RPS). RPS is calculated based on average real data.
+
+{{< alert type="note" >}}
+
+Each architecture is designed to be [scalable and elastic](#scaling-an-environment). They can be adjusted accordingly based on your workload, upwards or downwards. For example, some known heavy scenarios such as using [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads).
+
+{{< /alert >}}
+
+For details about what each reference architecture is tested against, see the "Testing Methodology" section of each page.
+
+### Initial sizing guide
+
+To determine which architecture to pick for the expected load, see the following initial sizing guide tables.
 
 {{< alert type="note" >}}
 
 Before you select an initial architecture, review this section thoroughly. Consider other factors such as High Availability (HA) or use of large monorepos because they may impact the choice beyond just RPS or user count.
 
 {{< /alert >}}
+
+#### GitLab package (Omnibus)
+
+The following is the list of Linux package based reference architectures:
+
+| Size                     | Users  | API RPS | Web RPS | Git (Pull) RPS | Git (Push) RPS |
+|--------------------------|--------|---------|---------|----------------|----------------|
+| [X Small](1k_users.md)   | 1,000  | 20      | 2       | 2              | 1              |
+| [Small](2k_users.md)     | 2,000  | 40      | 4       | 4              | 1              |
+| [Medium](3k_users.md)    | 3,000  | 60      | 6       | 6              | 1              |
+| [Large](5k_users.md)     | 5,000  | 100     | 10      | 10             | 2              |
+| [X Large](10k_users.md)  | 10,000 | 200     | 20      | 20             | 4              |
+| [2X Large](25k_users.md) | 25,000 | 500     | 50      | 50             | 10             |
+| [3X Large](50k_users.md) | 50,000 | 1000    | 100     | 100            | 20             |
+
+#### Cloud native hybrid
+
+The following is a list of Cloud Native Hybrid reference architectures, where select recommended components can be run in Kubernetes:
+
+| Size                                                                                             | Users  | API RPS | Web RPS | Git (Pull) RPS | Git (Push) RPS |
+|--------------------------------------------------------------------------------------------------|--------|---------|---------|----------------|----------------|
+| [Small](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)     | 2,000  | 40      | 4       | 4              | 1              |
+| [Medium](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)    | 3,000  | 60      | 6       | 6              | 1              |
+| [Large](5k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)     | 5,000  | 100     | 10      | 10             | 2              |
+| [X Large](10k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)  | 10,000 | 200     | 20      | 20             | 4              |
+| [2X Large](25k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) | 25,000 | 500     | 50      | 50             | 10             |
+| [3X Large](50k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) | 50,000 | 1000    | 100     | 100            | 20             |
 
 #### If in doubt, start large, monitor, and then scale down
 
@@ -243,7 +168,12 @@ In most cases, the downtime required for doing an upgrade shouldn't be substanti
 As an additional layer of HA resilience, you can deploy select components in Kubernetes, known as a Cloud Native Hybrid reference architecture. For stability
 reasons, stateful components such as Gitaly [cannot be deployed in Kubernetes](#stateful-components-in-kubernetes).
 
-Cloud Native Hybrid is an alternative and more **advanced** setup compared to a standard reference architecture. Running services in Kubernetes is complex. **Use this setup** only if you have strong working knowledge and experience in Kubernetes.
+{{< alert type="note" >}}
+
+Cloud Native Hybrid is an alternative and more advanced setup compared to a standard reference architecture.
+Running services in Kubernetes is complex. Use this setup only if you have strong working knowledge and experience in Kubernetes.
+
+{{< /alert >}}
 
 ### GitLab Geo (Cross Regional Distribution / Disaster Recovery)
 
@@ -256,10 +186,14 @@ requires at least two separate environments:
 
 If the primary site becomes unavailable, you can fail over to one of the secondary sites.
 
+{{< alert type="note" >}}
+
 Use this **advanced and complex** setup only if DR is
 a key requirement for your environment. You must also make additional decisions
 on how each site is configured. For example, if each secondary site would be the
 same architecture as the primary or if each site is configured for HA.
+
+{{< /alert >}}
 
 ### Large monorepos / Additional workloads
 
@@ -412,7 +346,7 @@ It is not supported to deploy a single [GitLab environment across different regi
 
 The architectures were tested with repositories of varying sizes that follow best practices.
 
-**However, [large monorepos](../../user/project/repository/monorepos/_index.md) (several gigabytes or more) can significantly impact the performance of Git and in turn the environment itself**.
+However, [large monorepos](../../user/project/repository/monorepos/_index.md) (several gigabytes or more) can significantly impact the performance of Git and in turn the environment itself.
 Their presence and how they are used can put a significant strain on the entire system from Gitaly to the underlying infrastructure.
 
 The performance implications are largely software in nature. Additional hardware resources lead to diminishing returns.
@@ -507,75 +441,25 @@ Test thoroughly before using them in production.
 
 The following architectures are recommended for the following cloud providers based on testing and real life usage:
 
-<table>
-<thead>
-  <tr>
-    <th>Reference Architecture</th>
-    <th>GCP</th>
-    <th>AWS</th>
-    <th>Azure</th>
-    <th>Bare Metal</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td>Linux package</td>
-    <td>🟢</td>
-    <td>🟢</td>
-    <td>🟢<sup>1</sup></td>
-    <td>🟢</td>
-  </tr>
-  <tr>
-    <td>Cloud Native Hybrid</td>
-    <td>🟢</td>
-    <td>🟢</td>
-    <td></td>
-    <td></td>
-  </tr>
-</tbody>
-</table>
+| Reference Architecture | GCP         | AWS         | Azure                    | Bare Metal  |
+|------------------------|-------------|-------------|--------------------------|-------------|
+| Linux package          | {{< Yes >}} | {{< Yes >}} | {{< Yes >}} <sup>1</sup> | {{< Yes >}} |
+| Cloud Native Hybrid    | {{< Yes >}} | {{< Yes >}} |                          |             |
 
 Additionally, the following cloud provider services are recommended for use as part of the architectures:
 
-<table>
-<thead>
-  <tr>
-    <th>Cloud Service</th>
-    <th>GCP</th>
-    <th>AWS</th>
-    <th>Azure</th>
-    <th>Bare Metal</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td>Object Storage</td>
-    <td>🟢 &nbsp; <a href="https://cloud.google.com/storage" target="_blank">Cloud Storage</a></td>
-    <td>🟢 &nbsp; <a href="https://aws.amazon.com/s3/" target="_blank">S3</a></td>
-    <td>🟢 &nbsp; <a href="https://azure.microsoft.com/en-gb/products/storage/blobs" target="_blank">Azure Blob Storage</a></td>
-    <td>🟢 &nbsp; <a href="https://min.io/" target="_blank">MinIO</a></td>
-  </tr>
-  <tr>
-    <td>Database</td>
-    <td>🟢 &nbsp; <a href="https://cloud.google.com/sql" target="_blank" rel="noopener noreferrer">Cloud SQL<sup>1</sup></a></td>
-    <td>🟢 &nbsp; <a href="https://aws.amazon.com/rds/" target="_blank" rel="noopener noreferrer">RDS</a></td>
-    <td>🟢 &nbsp; <a href="https://azure.microsoft.com/en-gb/products/postgresql/" target="_blank" rel="noopener noreferrer">Azure Database for PostgreSQL Flexible Server</a></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Redis</td>
-    <td>🟢 &nbsp; <a href="https://cloud.google.com/memorystore" target="_blank" rel="noopener noreferrer">Memorystore</a></td>
-    <td>🟢 &nbsp; <a href="https://aws.amazon.com/elasticache/" target="_blank" rel="noopener noreferrer">ElastiCache</a></td>
-      <td>🟢 &nbsp; <a href="https://azure.microsoft.com/en-gb/products/cache" target="_blank" rel="noopener noreferrer">Azure Cache for Redis (Premium)</a></td>
-    <td></td>
-  </tr>
-</tbody>
-</table>
+| Cloud Service  | GCP                                                    | AWS                                                | Azure                                                                                                   | Bare Metal               |
+|----------------|--------------------------------------------------------|----------------------------------------------------|---------------------------------------------------------------------------------------------------------|--------------------------|
+| Object Storage | [Cloud Storage](https://cloud.google.com/storage)      | [S3](https://aws.amazon.com/s3/)                   | [Azure Blob Storage](https://azure.microsoft.com/en-gb/products/storage/blobs)                          | [MinIO](https://min.io/) |
+| Database       | [Cloud SQL](https://cloud.google.com/sql) <sup>2</sup> | [RDS](https://aws.amazon.com/rds/)                 | [Azure Database for PostgreSQL Flexible Server](https://azure.microsoft.com/en-gb/products/postgresql/) |                          |
+| Redis          | [Memorystore](https://cloud.google.com/memorystore)    | [ElastiCache](https://aws.amazon.com/elasticache/) | [Azure Cache for Redis (Premium)](https://azure.microsoft.com/en-gb/products/cache)                     |                          |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
-1. For optimal performance, especially in larger environments (500 RPS / 25k users or higher), use the [Enterprise Plus edition](https://cloud.google.com/sql/docs/editions-intro) for GCP Cloud SQL. You might have to adjust the maximum connections higher than the service's defaults, depending on your workload.
-2. To ensure good performance, deploy the [Premium tier of Azure Cache for Redis](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview#service-tiers).
+1. To ensure good performance, deploy the [Premium tier of Azure Cache for Redis](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview#service-tiers).
+2. For optimal performance, especially in larger environments (500 RPS / 25k users or higher),
+   use the [Enterprise Plus edition](https://cloud.google.com/sql/docs/editions-intro) for GCP Cloud SQL.
+   You might have to adjust the maximum connections higher than the service's defaults, depending on your workload.
 <!-- markdownlint-enable MD029 -->
 
 ### Best practices for the database services
@@ -640,7 +524,7 @@ issues.
 These architectures use the official Linux packages or [Helm Charts](https://docs.gitlab.com/charts/) to
 install and configure the various components. The components are
 installed on separate machines (virtualized or Bare Metal). Machine hardware
-requirements listed in the **Configuration** column. Equivalent VM standard sizes are listed
+requirements listed in the "Configuration" columns on specific reference architecture pages. Equivalent VM standard sizes are listed
 in the GCP/AWS/Azure columns of each [available architecture](#available-reference-architectures).
 
 You can run GitLab components on Docker, including Docker Compose. Docker is well supported and provides consistent specifications across environments.
@@ -935,19 +819,3 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 - [2021-02-12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51928): Added documentation for setting up Gitaly Cluster for the 10k Reference Architecture.
 - [2021-02-09](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52249): Added the first iteration of the 10k Cloud Native Hybrid reference architecture.
 - [2021-01-07](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50573): Added documentation for using Patroni as PostgreSQL replication manager.
-
-<style>
-table.ra-table td {
-  border-top: 1px solid #dbdbdb;
-  border-left: 1px solid #dbdbdb;
-  border-right: 1px solid #dbdbdb;
-  border-bottom: 1px solid #dbdbdb;
-}
-
-table.ra-table th {
-  border-top: 1px solid #dbdbdb;
-  border-left: 1px solid #dbdbdb;
-  border-right: 1px solid #dbdbdb;
-  border-bottom: 1px solid #dbdbdb;
-}
-</style>

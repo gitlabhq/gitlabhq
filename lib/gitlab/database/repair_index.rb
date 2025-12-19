@@ -332,13 +332,29 @@ module Gitlab
         connection.execute(sql) # rubocop:disable Database/AvoidUsingConnectionExecute -- Required for TimeoutHelpers
       end
 
-      def execute_local(sql, read_only: false)
+      def execute_local(sql, read_only: false, disable_index_scans: false)
         logger.info("SQL: #{sql}")
 
         return if dry_run && !read_only
 
         disable_statement_timeout do
-          yield
+          with_index_scans_disabled(disable_index_scans) do
+            yield
+          end
+        end
+      end
+
+      def with_index_scans_disabled(disable)
+        if disable
+          execute('SET enable_indexscan = OFF')
+          execute('SET enable_bitmapscan = OFF')
+        end
+
+        yield
+      ensure
+        if disable
+          execute('RESET enable_indexscan')
+          execute('RESET enable_bitmapscan')
         end
       end
 
@@ -353,7 +369,7 @@ module Gitlab
           index_name: connection.quote(index_name)
         )
 
-        execute_local(sql, read_only: true) do
+        execute_local(sql, read_only: true, disable_index_scans: true) do
           connection.select_value(sql)
         end.present?
       end
@@ -434,7 +450,7 @@ module Gitlab
             bad_ids: bad_ids_quoted
           )
 
-          records = execute_local(sql, read_only: true) do
+          records = execute_local(sql, read_only: true, disable_index_scans: true) do
             connection.select_all(sql)
           end
 
@@ -479,7 +495,7 @@ module Gitlab
             bad_id: connection.quote(bad_id)
           )
 
-          records_with_both = execute_local(sql, read_only: true) do
+          records_with_both = execute_local(sql, read_only: true, disable_index_scans: true) do
             connection.select_values(sql)
           end
 
@@ -540,7 +556,7 @@ module Gitlab
           not_null_conditions: not_null_conditions
         )
 
-        execute_local(sql, read_only: true) do
+        execute_local(sql, read_only: true, disable_index_scans: true) do
           connection.select_all(sql)
         end
       end

@@ -57,7 +57,19 @@ Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org
 
 Data usage: The diff of changes between the source branch's head and the target branch is sent to the large language model.
 
-## Have GitLab Duo review your code
+## Use GitLab Duo to review your code
+
+GitLab Duo can review your merge request for potential errors and provide feedback on alignment to standards.
+
+Add GitLab Duo as a reviewer using one of:
+
+- GitLab Duo Code Review: The classic code review functionality.
+- Code Review Flow: The new flow available through the GitLab Duo Agent Platform. Offers improved context awareness and agentic capabilities.
+
+The two options have different requirements and prerequisites. However, you request a review and interact with GitLab Duo the same way. Both options also support automatic reviews, custom
+instructions, and custom comments.
+
+### GitLab Duo Code Review
 
 {{< details >}}
 
@@ -96,8 +108,6 @@ When your merge request is ready to be reviewed, use GitLab Duo Code Review to p
 
 <i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=SG3bhD1YjeY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW&index=2)
 
-Learn about the new [GitLab Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md).
-
 Provide feedback on this feature in issue [517386](https://gitlab.com/gitlab-org/gitlab/-/issues/517386).
 
 Data usage: When you use this feature, the following data is sent to the large language model:
@@ -107,7 +117,15 @@ Data usage: When you use this feature, the following data is sent to the large l
 - File contents before changes applied (for context)
 - Merge request diffs
 - Filenames
-- [Custom instructions](#customize-instructions-for-gitlab-duo-code-review)
+- [Custom instructions](#customize-review-instructions-for-gitlab-duo)
+
+### Code Review Flow
+
+The Code Review Flow is available through the GitLab Duo Agent Platform and uses agentic AI for enhanced review capabilities.
+
+After you enable the flow, you can mention or assign `@GitLabDuo` on your MR for a review.
+
+For setup and requirements, see [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md).
 
 ### Interact with GitLab Duo in reviews
 
@@ -176,7 +194,7 @@ To enable automatic reviews for all projects:
 
 Settings cascade from application to group to project. More specific settings override broader ones.
 
-### Customize instructions for GitLab Duo Code Review
+### Customize review instructions for GitLab Duo
 
 {{< history >}}
 
@@ -186,7 +204,7 @@ Settings cascade from application to group to project. More specific settings ov
 
 {{< /history >}}
 
-GitLab Duo Code Review can help ensure consistent code review standards in your project.
+GitLab Duo can help ensure consistent code review standards in your project.
 Define a glob pattern for files, and create custom instructions for files matching that
 pattern. For example, enforce Ruby style conventions only on Ruby files, and Go style
 conventions on Go files. GitLab Duo appends your custom instructions to its standard review
@@ -312,7 +330,7 @@ You can find practical examples for many programming languages in the [use case 
 
 ### Customized code review comments
 
-When GitLab Duo Code Review generates code review comments based on your custom instructions, they follow this format:
+When GitLab Duo generates code review comments based on your custom instructions, the comments follow this format:
 
 ```plaintext
 According to custom instructions in '[instruction_name]': [specific feedback]
@@ -418,7 +436,7 @@ Data usage: When you use this feature, the following data is sent to the large l
 
 ## File pattern reference for custom MR reviews
 
-Use glob patterns in `fileFilters` to target specific files for [customized MR review rules](#customize-instructions-for-gitlab-duo-code-review).
+Use glob patterns in `fileFilters` to target specific files for [customized MR review rules](#customize-review-instructions-for-gitlab-duo).
 
 | Pattern | Match |
 | --- | --- |
@@ -453,7 +471,7 @@ For the `mr-review-instructions.yaml` file, `**/*.rb` ensures that review instru
 Inspired by the reference in https://gitlab.com/gitlab-da/use-cases/ai/gitlab-duo-agent-platform/demo-environments/tanuki-iot-platform/-/blob/main/.gitlab/duo/mr-review-instructions.yaml?ref_type=heads
 -->
 
-Use the following practical examples for [customized MR review rules](#customize-instructions-for-gitlab-duo-code-review) to get started faster:
+Use the following practical examples for [customized MR review rules](#customize-review-instructions-for-gitlab-duo) to get started faster:
 
 Example for Assembly style guide:
 

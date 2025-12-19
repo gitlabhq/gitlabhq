@@ -176,6 +176,7 @@ class User < ApplicationRecord
   has_many :expiring_soon_and_unnotified_keys, -> { expiring_soon_and_not_notified }, class_name: 'Key'
   has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify
   has_many :gpg_keys, dependent: :destroy
+  has_many :gpg_key_subkeys, dependent: :destroy
 
   has_many :emails, dependent: :destroy
   has_many :personal_access_tokens, dependent: :destroy

@@ -23,7 +23,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # DO NOT ADD new tables to this list. New tables must have a `sharding_key_issue_url`.
   let(:allowed_to_be_missing_sharding_key_issue_url) do
     %w[
-      gpg_key_subkeys
       merge_request_context_commit_diff_files
       merge_request_diff_commits
       merge_request_diff_files
@@ -254,6 +253,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "fork_networks" => "https://gitlab.com/gitlab-org/gitlab/-/issues/522958",
       "bulk_import_configurations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/536521",
       "pool_repositories" => "https://gitlab.com/gitlab-org/gitlab/-/issues/490484",
+      "web_hook_logs_daily" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/524820",
       # All the tables below related to uploads are part of the same work to
       # add sharding key to the table
       "admin_roles" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553437",

@@ -76,7 +76,7 @@ when GitLab hosts and connects to those models through the cloud-based [AI Gatew
 | [Test Generation](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                                       | GitLab 17.9 and later   | Generally available |
 | [Refactor Code](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                                       | GitLab 17.9 and later   | Generally available |
 | [Fix Code](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)                                                                 | GitLab 17.9 and later   | Generally available |
-| [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code)                             | GitLab 18.3 and later   | Generally available |
+| [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code)                             | GitLab 18.3 and later   | Generally available |
 | [Root Cause Analysis](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)                   | GitLab 17.10 and later  | Beta                |
 | [Vulnerability Explanation](../../user/application_security/vulnerabilities/_index.md#vulnerability-explanation)                       | GitLab 18.1.2 and later | Beta                |
 | [Merge Commit Message Generation](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message)          | GitLab 18.1.2 and later | Beta                |

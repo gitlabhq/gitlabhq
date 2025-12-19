@@ -8,7 +8,7 @@ module Gitlab
           def perform!
             command.pipeline_seed.stages.each do |stage|
               stage.statuses.each do |job|
-                job_source = if pipeline_execution_policy_build?(job)
+                job_source = if pipeline_execution_policy_build?
                                'pipeline_execution_policy'
                              elsif scan_execution_policy_build?(job)
                                'scan_execution_policy'
@@ -28,7 +28,7 @@ module Gitlab
           private
 
           # Overridden in EE
-          def pipeline_execution_policy_build?(_build)
+          def pipeline_execution_policy_build?
             false
           end
 

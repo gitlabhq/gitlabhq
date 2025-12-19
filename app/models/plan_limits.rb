@@ -17,9 +17,6 @@ class PlanLimits < ApplicationRecord
 
   belongs_to :plan
 
-  before_validation :set_plan_name_uid
-
-  validates :plan_name_uid, presence: true
   validates :notification_limit, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :enforcement_limit, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :web_hook_calls, numericality: { only_integer: true, greater_than_or_equal_to: 0 },
@@ -80,12 +77,6 @@ class PlanLimits < ApplicationRecord
     end
 
     limits_history
-  end
-
-  def set_plan_name_uid
-    return if plan_name_uid.present? && !plan_id_changed?
-
-    self.plan_name_uid = plan.plan_name_uid_before_type_cast
   end
 end
 

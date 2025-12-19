@@ -55,7 +55,7 @@ Status indicators communicate incidents affecting your instance. Switchboard dis
 Switchboard does not display:
 
 - Severity 3 or Severity 4 incidents: These incidents have minimal impact on your instance.
-- Severity 1 or Severity 2 incidents in non-impacting lifecycle stages: Incidents being monitored, reviewed, documented, or canceled do not display.
+- Severity 1 or Severity 2 incidents in non-impacting lifecycle stages: Incidents being reviewed, documented, or canceled do not display.
 - Merged incidents: If multiple alerts are consolidated into a single incident, only the primary incident displays.
 
 > [!note]
@@ -165,7 +165,7 @@ Use this information to:
 - Set up tools that need the specific S3 bucket name to retrieve logs.
 - Meet compliance and auditing requirements.
 
-To manage access to and view application logs, see [access application logs for GitLab Dedicated](monitor.md).
+To request access and access application logs, see [monitor your GitLab Dedicated instance](monitor.md).
 
 ### NAT gateway IP addresses
 

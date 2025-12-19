@@ -19,7 +19,7 @@ shell.
 
 To access environment variables, use the syntax for your [runner executor's shell](https://docs.gitlab.com/runner/executors/).
 
-## With Bash, `sh` and similar
+## With Bash and `sh`
 
 To access environment variables in Bash, `sh`, and similar shells, prefix the
 CI/CD variable with `$`:
@@ -41,15 +41,6 @@ job_name:
     - echo $env:CI_JOB_ID
     - echo $CI_JOB_ID
     - echo $env:PATH
-```
-
-In [some cases](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4115#note_157692820)
-environment variables must be surrounded by quotes to expand properly:
-
-```yaml
-job_name:
-  script:
-    - D:\\qislsf\\apache-ant-1.10.5\\bin\\ant.bat "-DsosposDailyUsr=$env:SOSPOS_DAILY_USR" portal_test
 ```
 
 ## With Windows Batch

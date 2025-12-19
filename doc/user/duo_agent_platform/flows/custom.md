@@ -181,7 +181,7 @@ To use a flow:
 1. In your project, open an issue, merge request, or epic.
 1. To trigger the flow, mention, assign, or request a review from the flow service account user. By default, the user has the name `ai-<flow>-<group>`.
 
-   For example, if you enable a flow called `Code review flow` in the `GitLab Duo` group, the service account user is `ai-code-review-flow-gitlab-duo`.
+   For example, if you enable a flow called `Security scanner` in the `GitLab Duo` group, the service account user is `ai-security-scanner-gitlab-duo`.
 1. After the flow has completed the task, you see a confirmation, and either a ready-to-merge change or an inline comment.
 
 {{< alert type="warning" >}}

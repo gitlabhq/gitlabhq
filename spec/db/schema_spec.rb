@@ -246,7 +246,7 @@ RSpec.describe 'Database schema',
       # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
       # Fixes performance issues with the deletion of web-hooks with many log entries
       web_hook_logs: %w[web_hook_id],
-      web_hook_logs_daily: %w[web_hook_id],
+      web_hook_logs_daily: %w[web_hook_id organization_id group_id project_id],
       ml_candidates: %w[internal_id],
       value_stream_dashboard_counts: %w[namespace_id],
       vulnerability_export_parts: %w[start_id end_id],

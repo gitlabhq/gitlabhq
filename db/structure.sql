@@ -1361,6 +1361,23 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION sync_user_id_from_gpg_keys_table() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF NEW."gpg_key_id" IS NULL OR NEW."user_id" IS NOT NULL THEN
+    RETURN NEW;
+  END IF;
+
+  SELECT "user_id"
+  INTO NEW."user_id"
+  FROM "gpg_keys"
+  WHERE "id" = NEW."gpg_key_id";
+
+  RETURN NEW;
+END
+$$;
+
 CREATE FUNCTION sync_work_item_transitions_from_issues() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -6346,6 +6363,9 @@ CREATE TABLE web_hook_logs_daily (
     updated_at timestamp without time zone NOT NULL,
     created_at timestamp without time zone NOT NULL,
     url_hash text,
+    organization_id bigint,
+    group_id bigint,
+    project_id bigint,
     CONSTRAINT check_df72cb58f5 CHECK ((char_length(url_hash) <= 44))
 )
 PARTITION BY RANGE (created_at);
@@ -18185,7 +18205,8 @@ CREATE TABLE gpg_key_subkeys (
     id bigint NOT NULL,
     gpg_key_id bigint NOT NULL,
     keyid bytea,
-    fingerprint bytea
+    fingerprint bytea,
+    user_id bigint
 );
 
 CREATE SEQUENCE gpg_key_subkeys_id_seq
@@ -34940,6 +34961,9 @@ ALTER TABLE suggestions
 ALTER TABLE note_diff_files
     ADD CONSTRAINT check_ebb23d73d7 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE gpg_key_subkeys
+    ADD CONSTRAINT check_f6590fe2c1 CHECK ((user_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE vulnerability_statistics
     ADD CONSTRAINT check_vulnerability_statistics_traversal_ids_not_empty CHECK ((cardinality(traversal_ids) > 0)) NOT VALID;
 
@@ -41791,6 +41815,8 @@ CREATE UNIQUE INDEX index_gpg_key_subkeys_on_fingerprint ON gpg_key_subkeys USIN
 CREATE INDEX index_gpg_key_subkeys_on_gpg_key_id ON gpg_key_subkeys USING btree (gpg_key_id);
 
 CREATE UNIQUE INDEX index_gpg_key_subkeys_on_keyid ON gpg_key_subkeys USING btree (keyid);
+
+CREATE INDEX index_gpg_key_subkeys_on_user_id ON gpg_key_subkeys USING btree (user_id);
 
 CREATE UNIQUE INDEX index_gpg_keys_on_fingerprint ON gpg_keys USING btree (fingerprint);
 
@@ -48922,6 +48948,8 @@ CREATE TRIGGER set_sharding_key_for_note_metadata_on_insert_and_update BEFORE IN
 
 CREATE TRIGGER set_sharding_key_for_suggestions_on_insert_and_update BEFORE INSERT OR UPDATE ON suggestions FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
 
+CREATE TRIGGER set_user_id_for_gpg_key_subkeys_on_insert_and_update BEFORE INSERT OR UPDATE ON gpg_key_subkeys FOR EACH ROW EXECUTE FUNCTION sync_user_id_from_gpg_keys_table();
+
 CREATE TRIGGER shards_loose_fk_trigger AFTER DELETE ON shards REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER slsa_attestations_loose_fk_trigger AFTER DELETE ON slsa_attestations REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
@@ -51506,6 +51534,9 @@ ALTER TABLE ONLY oauth_device_grants
 
 ALTER TABLE ONLY zoekt_indices
     ADD CONSTRAINT fk_bf205d4773 FOREIGN KEY (zoekt_enabled_namespace_id) REFERENCES zoekt_enabled_namespaces(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY gpg_key_subkeys
+    ADD CONSTRAINT fk_c0b9a5787c FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY packages_build_infos
     ADD CONSTRAINT fk_c0bc6b19ff FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

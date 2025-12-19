@@ -245,7 +245,7 @@
 {"name":"gitlab-styles","version":"13.1.0","platform":"ruby","checksum":"46c7c5729616355868b7b40a4ffcd052b36346076042abe8cafaee1688cbf2c1"},
 {"name":"gitlab_chronic_duration","version":"0.12.0","platform":"ruby","checksum":"0d766944d415b5c831f176871ee8625783fc0c5bfbef2d79a3a616f207ffc16d"},
 {"name":"gitlab_omniauth-ldap","version":"2.3.0","platform":"ruby","checksum":"167036fe37c2711f2e1d2047260766e4c9b31ac37dfc873b101bcd4ea2a3a3b4"},
-{"name":"gitlab_quality-test_tooling","version":"3.2.1","platform":"ruby","checksum":"32ad2d7e441afc63562e103fcb8a2485e1022830fcc393704700df7daef50247"},
+{"name":"gitlab_quality-test_tooling","version":"3.3.0","platform":"ruby","checksum":"fdb89527a7aa7142968b8ceae0c5245c1d46a3bf1bf075a7f94679b64df1d515"},
 {"name":"gitlab_query_language","version":"0.20.11","platform":"aarch64-linux-gnu","checksum":"c75e9944e0edceb56078bec627458a31ddbe3cb6f69cde9f1cb7c0fb1c7ffb92"},
 {"name":"gitlab_query_language","version":"0.20.11","platform":"aarch64-linux-musl","checksum":"ad09ec1f86643ead038c213e7864ae69adb50ecc47486c81d8f812929f17758a"},
 {"name":"gitlab_query_language","version":"0.20.11","platform":"arm64-darwin","checksum":"fcf08ce327f1e81df25a24b7b454cc3607f1f784d6e7325b09ccc1f80c946fee"},

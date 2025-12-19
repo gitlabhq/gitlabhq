@@ -28739,7 +28739,7 @@ Represents the metrics of the last run virtual registry cleanup policy of an ups
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cleanuppolicylastrunupstreammetricsdeletedentriescount"></a>`deletedEntriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Number of entries deleted. |
-| <a id="cleanuppolicylastrunupstreammetricsdeletedsize"></a>`deletedSize` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Size in bytes of data deleted. |
+| <a id="cleanuppolicylastrunupstreammetricsdeletedsize"></a>`deletedSize` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | **Introduced** in GitLab 18.7. **Status**: Experiment. Size in bytes of data deleted. |
 
 ### `CloudConnectorProbeResult`
 
@@ -48543,7 +48543,7 @@ Represents a virtual registry cleanup policy.
 | <a id="virtualregistrycleanuppolicykeepndaysafterdownload"></a>`keepNDaysAfterDownload` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Number of days to keep cached entries after their last download. |
 | <a id="virtualregistrycleanuppolicylastrunat"></a>`lastRunAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Last time that the virtual registry cleanup policy executed. |
 | <a id="virtualregistrycleanuppolicylastrundeletedentriescount"></a>`lastRunDeletedEntriesCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Number of entries deleted during the last cleanup run. |
-| <a id="virtualregistrycleanuppolicylastrundeletedsize"></a>`lastRunDeletedSize` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Size in bytes of data deleted during the last cleanup run. |
+| <a id="virtualregistrycleanuppolicylastrundeletedsize"></a>`lastRunDeletedSize` {{< icon name="warning-solid" >}} | [`BigInt`](#bigint) | **Introduced** in GitLab 18.7. **Status**: Experiment. Size in bytes of data deleted during the last cleanup run. |
 | <a id="virtualregistrycleanuppolicylastrundetailedmetrics"></a>`lastRunDetailedMetrics` {{< icon name="warning-solid" >}} | [`CleanupPolicyLastRunDetailedMetrics`](#cleanuppolicylastrundetailedmetrics) | **Introduced** in GitLab 18.7. **Status**: Experiment. Detailed metrics from the last cleanup run. |
 | <a id="virtualregistrycleanuppolicynextrunat"></a>`nextRunAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Next time the virtual registry cleanup policy runs. |
 | <a id="virtualregistrycleanuppolicynotifyonfailure"></a>`notifyOnFailure` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.7. **Status**: Experiment. Boolean to notify group owners on failed cleanup runs. |

@@ -263,7 +263,8 @@ Scheduled pipelines are executed by the Security Policy Bot User, a system accou
 - Files in public projects
 
 The Security Policy Bot User cannot access files from private projects, even if those projects are in the same group. This security restriction ensures that policy execution remains isolated and secure.
-[!important]
+
+> [!important]
 > Because of these privilege limitations, you must store all pipeline configuration files (including any files referenced with an `include:` statement) directly in your security policy project. Do not reference CI/CD configuration files from other private projects, as this results in access errors during pipeline execution.
 
 Note these limitations:

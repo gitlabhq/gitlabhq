@@ -280,6 +280,23 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
         expect(is_unique).to be true
       end
 
+      it 'completes repair and restores index and bitmap scan defaults' do
+        connection.execute('SET enable_indexscan = OFF')
+        connection.execute('SET enable_bitmapscan = OFF')
+
+        initial_indexscan = connection.select_value('SHOW enable_indexscan')
+        initial_bitmapscan = connection.select_value('SHOW enable_bitmapscan')
+        expect(initial_indexscan).to eq('off')
+        expect(initial_bitmapscan).to eq('off')
+
+        repairer.run
+
+        final_indexscan = connection.select_value('SHOW enable_indexscan')
+        final_bitmapscan = connection.select_value('SHOW enable_bitmapscan')
+        expect(final_indexscan).to eq('on')
+        expect(final_bitmapscan).to eq('on')
+      end
+
       context 'with unique constraint conflicts in references' do
         let(:test_constraint_table) { '_test_constraint_table' }
         let(:test_constraint_index) { '_test_constraint_unique_idx' }
