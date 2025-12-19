@@ -28,7 +28,7 @@ A migration tool is available for some third-party platforms. Some support
 |:----------------------------------------------------------------------------|:------------------------|:------------|:---------------|:-----------------------|
 | [GitLab (by using direct transfer)](../group/import/_index.md)              | {{< yes >}}             | {{< yes >}} | {{< yes >}}    | {{< yes >}}            |
 | [GitLab (by using file export)](../project/settings/import_export.md)       | {{< yes >}}<sup>1</sup> | {{< yes >}} | {{< yes >}}    | {{< no >}}             |
-| [Bitbucket Server](../project/import/bitbucket_server.md)                   | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}            |
+| [Bitbucket Server](bitbucket_server.md)                                     | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}            |
 | [GitHub](../project/import/github.md)                                       | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}            |
 | [Gitea](../project/import/gitea.md)                                         | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}            |
 | [Bitbucket Cloud](bitbucket_cloud.md)                                       | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< no >}}             |

@@ -206,7 +206,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryadminprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
 | <a id="queryadminprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Defaults to `id_desc`, or `similarity` if search used. |
 | <a id="queryadminprojectstopics"></a>`topics` | [`[String!]`](#string) | Filter projects by topics. |
-| <a id="queryadminprojectstrending"></a>`trending` | [`Boolean`](#boolean) | Return only projects that are trending. |
+| <a id="queryadminprojectstrending"></a>`trending` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 18.8. Scheduled for removal in 19.0 due to low usage. |
 | <a id="queryadminprojectsvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter projects by visibility level. |
 | <a id="queryadminprojectswithduoeligible"></a>`withDuoEligible` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Include only projects that are eligible for GitLab Duo and have Duo features enabled. |
 | <a id="queryadminprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
@@ -1661,7 +1661,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
 | <a id="queryprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Defaults to `id_desc`, or `similarity` if search used. |
 | <a id="queryprojectstopics"></a>`topics` | [`[String!]`](#string) | Filter projects by topics. |
-| <a id="queryprojectstrending"></a>`trending` | [`Boolean`](#boolean) | Return only projects that are trending. |
+| <a id="queryprojectstrending"></a>`trending` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 18.8. Scheduled for removal in 19.0 due to low usage. |
 | <a id="queryprojectsvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter projects by visibility level. |
 | <a id="queryprojectswithduoeligible"></a>`withDuoEligible` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Include only projects that are eligible for GitLab Duo and have Duo features enabled. |
 | <a id="queryprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
@@ -26043,6 +26043,7 @@ Model offered for Model Selection.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="ainamespacesettingsduoworkflowmcpenabled"></a>`duoWorkflowMcpEnabled` | [`Boolean!`](#boolean) | Indicates whether the namespace has MCP enabled. |
+| <a id="ainamespacesettingspromptinjectionprotectionlevel"></a>`promptInjectionProtectionLevel` | [`PromptInjectionProtectionLevel!`](#promptinjectionprotectionlevel) | Level of prompt injection protection for the namespace. |
 
 ### `AiSelfHostedModel`
 
@@ -40760,7 +40761,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="organizationprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
 | <a id="organizationprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Defaults to `id_desc`, or `similarity` if search used. |
 | <a id="organizationprojectstopics"></a>`topics` | [`[String!]`](#string) | Filter projects by topics. |
-| <a id="organizationprojectstrending"></a>`trending` | [`Boolean`](#boolean) | Return only projects that are trending. |
+| <a id="organizationprojectstrending"></a>`trending` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 18.8. Scheduled for removal in 19.0 due to low usage. |
 | <a id="organizationprojectsvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter projects by visibility level. |
 | <a id="organizationprojectswithduoeligible"></a>`withDuoEligible` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Include only projects that are eligible for GitLab Duo and have Duo features enabled. |
 | <a id="organizationprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
@@ -54001,6 +54002,16 @@ The context type of the tracked context.
 | ----- | ----------- |
 | <a id="projecttrackedcontextbranch"></a>`BRANCH` | Branch type. |
 | <a id="projecttrackedcontexttag"></a>`TAG` | Tag type. |
+
+### `PromptInjectionProtectionLevel`
+
+Values for prompt injection protection for a namespace.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="promptinjectionprotectionlevelinterrupt"></a>`INTERRUPT` | Scan and block detected prompt injection attempts. |
+| <a id="promptinjectionprotectionlevellog_only"></a>`LOG_ONLY` | Scan and log results, but do not block requests. |
+| <a id="promptinjectionprotectionlevelno_checks"></a>`NO_CHECKS` | Turn off scanning entirely. No prompt data is sent to third-party services. |
 
 ### `ReachabilityType`
 

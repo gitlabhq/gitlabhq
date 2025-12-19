@@ -265,29 +265,17 @@ Search issues for "flaky test" across GitLab
 
 ## `semantic_code_search`
 
-{{< details >}}
-
-Offering: GitLab.com
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569624) as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `code_snippet_search_graphqlapi`. Disabled by default.
 - Search by project path [added](https://gitlab.com/gitlab-org/gitlab/-/issues/575234) in GitLab 18.6.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/568359) from experiment to [beta](../../../policy/development_stages_support.md#beta) in GitLab 18.7. Feature flag `code_snippet_search_graphqlapi` removed.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/581105) to the GitLab UI in GitLab 18.7 [with a flag](../../../administration/feature_flags/_index.md) named `mcp_client`. Disabled by default.
 
 {{< /history >}}
 
 Searches for relevant code snippets in a GitLab project.
-
-This tool is available only for projects with
-[GitLab Duo turned on](../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).
-Project files must be indexed into vector embeddings.
-
-If this tool is invoked for a project without vector embeddings,
-indexing is triggered ad-hoc and the agent uses a different tool.
-This tool then becomes available after a few minutes.
+For more information, see [semantic code search](../semantic_code_search.md).
 
 | Parameter        | Type    | Required | Description |
 |------------------|---------|----------|-------------|
@@ -296,6 +284,9 @@ This tool then becomes available after a few minutes.
 | `directory_path` | string  | No       | Path of the directory (for example, `app/services/`). |
 | `knn`            | integer | No       | Number of nearest neighbors used to find similar code snippets. Default is `64`. |
 | `limit`          | integer | No       | Maximum number of results to return. Default is `20`. |
+
+For best results, describe the functionality or behavior you're interested in
+rather than using generic keywords or specific function or variable names.
 
 Example:
 

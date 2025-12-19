@@ -62,6 +62,9 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
       discussion.notes.splice(discussion.notes.indexOf(note), 1);
       if (discussion.notes.length === 0) this.deleteDiscussion(discussion);
     },
+    addDiscussion(discussion) {
+      this.discussions.push(addReactiveDiscussionProps(discussion));
+    },
     deleteDiscussion(discussion) {
       this.discussions.splice(this.discussions.indexOf(discussion), 1);
     },

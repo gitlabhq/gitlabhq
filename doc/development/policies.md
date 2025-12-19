@@ -212,32 +212,32 @@ rules for a particular ability are actually considered.
 
 ### Overrides
 
-We allow policies to opt-out of delegated abilities.
+Policies can opt out of delegated abilities when the delegation does not make sense.
 
 Delegated policies may define some abilities in a way that is incorrect for the
-delegating policy. Take for example a child/parent relationship, where some
-abilities can be inferred, and some cannot:
+delegating policy. For example, consider a parent-child relationship where some
+abilities can be inferred and some cannot:
 
 ```ruby
 class ParentPolicy < BasePolicy
   condition(:speaks_spanish) { @subject.spoken_languages.include?(:es) }
   condition(:has_license) { @subject.driving_license.present? }
-  condition(:enjoys_broccoli) { @subject.enjoyment_of(:broccoli) > 0 }
+  condition(:is_employed) { @subject.is_employed? }
 
   rule { speaks_spanish }.enable :read_spanish
   rule { has_license }.enable :drive_car
-  rule { enjoys_broccoli }.enable :eat_broccoli
-  rule { ~enjoys_broccoli }.prevent :eat_broccoli
+  rule { is_employed }.enable :earn_money
+  rule { ~is_employed }.prevent :earn_money
 end
 ```
 
-Here, if we delegated the child policy to the parent policy, some values would be
-incorrect - we might correctly infer that the child can speak their parent's
-language, but it would be incorrect to infer that the child can drive or would
-eat broccoli just because the parent can and does.
+If the child policy delegates to the parent policy, some values would be
+incorrect. You might correctly infer that the child can speak the parent's
+language, but you can't infer that the child can drive or earn money just
+because the parent can.
 
-Some of these things we can deal with - we can forbid driving universally in the
-child policy, for example:
+You can handle some of these cases. For example, you can forbid driving in the
+child policy:
 
 ```ruby
 class ChildPolicy < BasePolicy
@@ -247,35 +247,37 @@ class ChildPolicy < BasePolicy
 end
 ```
 
-But the food preferences one is harder - because of the `prevent` call in the
-parent policy, if the parent dislikes it, even calling `enable` in the child
-does not enable `:eat_broccoli`.
+Earning money is more complex. Because of the `prevent` call in the parent
+policy, if the parent is not employed, neither the parent nor the child can
+earn money. Even explicitly enabling `:earn_money` in the child policy would not
+work.
 
-We could remove the `prevent` call in the parent policy, but that still doesn't
-help us, since the rules are different: parents get to eat what they like, and
-children eat what they are given, provided they are well behaved. Allowing
-delegation would end up with only children whose parents enjoy green vegetables
-eating it. But a parent may well give their child broccoli, even if they dislike
-it themselves, because it is good for their child.
+Removing the `prevent` call in the `ParentPolicy` doesn't help because the rules
+that enable `:earn_money` differ between the parent and child policy.
 
-The solution is to override the `:eat_broccoli` ability in the child policy:
+With delegation, child resources can only enable permissions that the parent policy
+has not explicitly prevented. In this case, only children with parents who earn money
+can earn money themselves. However, a parent who doesn't earn money might still
+want to give a child an allowance.
+
+The solution is to override the `:earn_money` ability in the child policy:
 
 ```ruby
 class ChildPolicy < BasePolicy
   delegate { @subject.parent }
 
-  overrides :eat_broccoli
+  overrides :earn_money
 
-  condition(:good_kid) { @subject.behavior_level >= Child::GOOD }
+  condition(:has_allowance) { @subject.has_allowance? }
 
-  rule { good_kid }.enable :eat_broccoli
+  rule { has_allowance }.enable :earn_money
 end
 ```
 
 With this definition, the `ChildPolicy` never looks in the `ParentPolicy` to
-satisfy `:eat_broccoli`, but it will use it for any other abilities. The child
-policy can then define `:eat_broccoli` in a way that makes sense for `Child` and not
-`Parent`.
+satisfy `:earn_money`, but still uses it for any other abilities. The child
+policy can then define `:earn_money` in a way that makes sense for `Child`
+and not `Parent`.
 
 ### Alternatives to using `overrides`
 
@@ -285,13 +287,12 @@ semantics. Misuse of `override` has the potential to duplicate code, and
 potentially introduce security bugs, allowing things that should be prevented.
 For this reason, it should be used only when other approaches are not feasible.
 
-Other approaches can include for example using different ability names. Choosing
-to eat a food and eating foods you are given are semantically distinct, and they
-could be named differently (perhaps `chooses_to_eat_broccoli` and
-`eats_what_is_given` in this case). It can depend on how polymorphic the call
-site is. If you know that we always check the policy with a `Parent` or a
-`Child`, then we can choose the appropriate ability name. If the call site is
-polymorphic, then we cannot do that.
+Other approaches can include for example using different ability names. Earning
+an income and earning an allowance are semantically distinct, and they
+could be named differently (perhaps `earn_salary` and `earn_allowance` in this case).
+It can depend on how polymorphic the call site is. If you know that we always check
+the policy with a `Parent` or a `Child`, then we can choose the appropriate ability
+name. If the call site is polymorphic, then we cannot do that.
 
 ## Specifying Policy Class
 

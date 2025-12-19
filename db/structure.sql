@@ -14950,6 +14950,7 @@ CREATE TABLE ci_runner_controller_tokens (
     runner_controller_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_84d7d76c86 CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_ec7c3fc764 CHECK ((char_length(token_digest) <= 255))
 );
@@ -26329,6 +26330,7 @@ CREATE TABLE saved_views (
     sort smallint,
     filter_data jsonb,
     display_settings jsonb,
+    lock_version integer DEFAULT 0 NOT NULL,
     CONSTRAINT check_61a6c07bf6 CHECK ((char_length(name) <= 140)),
     CONSTRAINT check_d27167623c CHECK ((char_length(description) <= 140))
 );
@@ -40966,8 +40968,6 @@ CREATE UNIQUE INDEX index_ci_project_mirrors_on_project_id ON ci_project_mirrors
 
 CREATE UNIQUE INDEX index_ci_project_monthly_usages_on_project_id_and_date ON ci_project_monthly_usages USING btree (project_id, date);
 
-CREATE INDEX index_ci_rac_tokens_on_rac_id ON ci_runner_controller_tokens USING btree (runner_controller_id);
-
 CREATE UNIQUE INDEX index_ci_refs_on_project_id_and_ref_path ON ci_refs USING btree (project_id, ref_path);
 
 CREATE UNIQUE INDEX index_ci_resource_groups_on_project_id_and_key ON ci_resource_groups USING btree (project_id, key);
@@ -40977,6 +40977,8 @@ CREATE INDEX index_ci_resources_on_build_id ON ci_resources USING btree (build_i
 CREATE INDEX index_ci_resources_on_project_id ON ci_resources USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_resources_on_resource_group_id_and_build_id ON ci_resources USING btree (resource_group_id, build_id);
+
+CREATE INDEX index_ci_runner_controller_tokens_on_rc_id_and_status ON ci_runner_controller_tokens USING btree (runner_controller_id, status);
 
 CREATE UNIQUE INDEX index_ci_runner_controller_tokens_on_token_digest ON ci_runner_controller_tokens USING btree (token_digest);
 

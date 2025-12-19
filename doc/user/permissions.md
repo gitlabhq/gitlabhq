@@ -125,6 +125,7 @@ Group permission for [analytics](analytics/_index.md) features including value s
 
 | Action                                                             | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: |
+| View [GitLab Duo and SDLC trends](analytics/duo_and_sdlc_trends.md)                        |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
 | View [insights](project/insights/_index.md)                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | View [insights](project/insights/_index.md) charts                 |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | View [issue analytics](group/issues_analytics/_index.md)           |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |

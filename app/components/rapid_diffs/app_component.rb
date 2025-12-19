@@ -4,6 +4,7 @@ module RapidDiffs
   class AppComponent < ViewComponent::Base
     renders_one :before_diffs_list
     renders_one :diffs_list
+    renders_one :after_diffs_list
 
     attr_reader :presenter
 

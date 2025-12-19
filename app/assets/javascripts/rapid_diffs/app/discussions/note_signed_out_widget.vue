@@ -32,10 +32,10 @@ export default {
       :placeholders="$options.signedOutPhrase.placeholders"
     >
       <template #register="{ content }">
-        <gl-link :href="endpoints.register">{{ content }}</gl-link>
+        <gl-link class="gl-underline" :href="endpoints.register">{{ content }}</gl-link>
       </template>
       <template #signIn="{ content }">
-        <gl-link :href="endpoints.signIn">{{ content }}</gl-link>
+        <gl-link class="gl-underline" :href="endpoints.signIn">{{ content }}</gl-link>
       </template>
     </gl-sprintf>
   </div>

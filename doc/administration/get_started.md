@@ -70,7 +70,7 @@ You might have to import projects from external sources like GitHub, Bitbucket, 
 ### Popular project imports
 
 - [GitHub Enterprise to GitLab Self-Managed](../integration/github.md)
-- [Bitbucket Server](../user/project/import/bitbucket_server.md)
+- [Bitbucket Server](../user/import/bitbucket_server.md)
 
 For assistance with these data types, contact your GitLab account manager or GitLab Support about our professional migration services.
 

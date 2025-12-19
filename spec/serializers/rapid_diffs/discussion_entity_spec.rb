@@ -25,7 +25,8 @@ RSpec.describe RapidDiffs::DiscussionEntity, feature_category: :code_review_work
         id: discussion.id,
         reply_id: discussion.reply_id,
         confidential: discussion.confidential?,
-        diff_discussion: discussion.diff_discussion?
+        diff_discussion: discussion.diff_discussion?,
+        individual_note: discussion.individual_note?
       )
     end
 

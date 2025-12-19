@@ -26284,7 +26284,31 @@ msgstr ""
 msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."
 msgstr ""
 
+msgid "DuoWorkflowSettings|Control how GitLab Duo handles potential prompt injection attempts."
+msgstr ""
+
+msgid "DuoWorkflowSettings|Interrupt"
+msgstr ""
+
+msgid "DuoWorkflowSettings|Log only"
+msgstr ""
+
 msgid "DuoWorkflowSettings|Model Context Protocol"
+msgstr ""
+
+msgid "DuoWorkflowSettings|No checks"
+msgstr ""
+
+msgid "DuoWorkflowSettings|Prompt injection protection"
+msgstr ""
+
+msgid "DuoWorkflowSettings|Scan and block detected prompt injection attempts."
+msgstr ""
+
+msgid "DuoWorkflowSettings|Scan and log results, but do not block requests."
+msgstr ""
+
+msgid "DuoWorkflowSettings|Turn off scanning entirely. No prompt data is sent to third-party services."
 msgstr ""
 
 msgid "DuoWorkflowSettings|Turn on MCP support for GitLab Duo Chat (Agentic) and GitLab Duo Agent Platform."

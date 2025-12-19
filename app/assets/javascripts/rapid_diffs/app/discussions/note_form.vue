@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { clearDraft } from '~/lib/utils/autosave';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import { COMMENT_FORM } from '~/notes/i18n';
@@ -59,6 +60,11 @@ export default {
       default: '',
     },
     autofocus: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    canCancel: {
       type: Boolean,
       required: false,
       default: true,
@@ -128,6 +134,8 @@ export default {
       );
       try {
         await this.saveNote(this.editedNoteBody, shiftPressed);
+        this.editedNoteBody = '';
+        clearDraft(this.autosaveKey);
       } finally {
         this.isSubmitting = false;
       }
@@ -184,6 +192,7 @@ export default {
           {{ saveButtonTitle }}
         </gl-button>
         <gl-button
+          v-if="canCancel"
           category="secondary"
           variant="default"
           data-testid="cancel"

@@ -54,6 +54,9 @@ export default {
     saveButtonTitle() {
       return this.discussion.internal ? __('Reply internally') : __('Reply');
     },
+    canReply() {
+      return !this.discussion.notes[0]?.system && !this.discussion.individual_note;
+    },
   },
   methods: {
     showReplyForm(text) {
@@ -135,6 +138,7 @@ export default {
     <discussion-notes
       :notes="discussion.notes"
       :expanded="discussion.repliesExpanded"
+      :individual="discussion.individual_note"
       @toggleDiscussionReplies="$emit('toggleDiscussionReplies')"
       @startReplying="showReplyForm"
       @noteUpdated="$emit('noteUpdated', $event)"
@@ -149,6 +153,7 @@ export default {
       </template>
       <template #footer="{ hasReplies }">
         <li
+          v-if="canReply"
           data-testid="reply-wrapper"
           class="gl-list-none gl-rounded-[var(--content-border-radius)] gl-border-t-subtle gl-bg-subtle gl-px-5 gl-py-4"
           :class="{ 'gl-border-t': !hasReplies, 'gl-pt-0': hasReplies }"

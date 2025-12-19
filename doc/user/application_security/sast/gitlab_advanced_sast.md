@@ -155,7 +155,33 @@ The code flow information is shown the **Code flow** tab and includes:
 
 ## Optimization
 
-You can configure GitLab Advanced SAST to reduce scan times and improve performance.
+To optimize GitLab Advanced SAST, use any of the following methods:
+
+- Exclude paths
+- Multi-core scanning
+- Diff-based scanning
+
+If scans still run longer than expected, see [troubleshooting](#troubleshooting).
+
+### Exclude paths
+
+Exclude paths to optimize performance and focus on relevant repository content.
+
+List excluded paths in the [`SAST_EXCLUDED_PATHS`](_index.md#vulnerability-filters) CI/CD variable.
+
+When excluding paths, be selective to avoid hiding vulnerabilities. Common candidates are:
+
+- Database migrations
+- Unit tests
+- Dependency directories, such as `node_modules/`
+- Build directories
+
+### Use multi-core scanning
+
+Multi-core scanning is enabled by default in GitLab Advanced SAST (analyzer version v1.1.10 and later).
+You can increase the runner size to make more resources available for scanning. For self-managed
+runners, you must customize the `--multi-core` flag in the
+[security scanner configuration](_index.md#security-scanner-configuration).
 
 ### Diff-based scanning
 
@@ -235,31 +261,6 @@ Diff-based scanning does not fully support C/C++ header files. Vulnerabilities t
 To avoid misleading results, fixed vulnerabilities are excluded in diff-based scanning. Because only a subset of files is analyzed, the complete call graph is not available, making it impossible to confirm if a vulnerability has been fixed.
 
 A full scan always runs on the default branch after the merge, where fixed vulnerabilities are reported.
-
-### Improve scan performance
-
-For large repositories experiencing slow scans, consider the following approaches to improve performance.
-
-If scans still run longer than expected, see [Troubleshooting](#troubleshooting).
-
-#### Exclude files
-
-Because each file is analyzed against all applicable rules, you can reduce the number of files
-scanned to decrease scan time. To do this, use the
-[SAST_EXCLUDED_PATHS](_index.md#vulnerability-filters) variable to exclude folders that do not need
-to be scanned. Effective exclusions vary, but might include:
-
-- Database migrations
-- Unit tests
-- Dependency directories, such as `node_modules/`
-- Build directories
-
-#### Use multi-core scanning
-
-Multi-core scanning is enabled by default in the Advanced SAST (analyzer version v1.1.10 and later).
-You can increase the runner size to make more resources available for scanning. For self-hosted
-runners, you might need to customize the `--multi-core` flag in the
-[security scanner configuration](_index.md#security-scanner-configuration).
 
 ## Roll out
 

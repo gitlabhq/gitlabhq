@@ -37,7 +37,8 @@ module Resolvers
 
     argument :trending, GraphQL::Types::Boolean,
       required: false,
-      description: "Return only projects that are trending."
+      description: "Return only projects that are trending.",
+      deprecated: { reason: 'Scheduled for removal in 19.0 due to low usage', milestone: '18.8' }
 
     argument :aimed_for_deletion, GraphQL::Types::Boolean,
       required: false,

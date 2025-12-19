@@ -87,6 +87,11 @@ describe('NoteableDiscussion', () => {
     expect(wrapper.findComponent(NoteForm).exists()).toBe(false);
   });
 
+  it('hides reply wrapper for individual notes', () => {
+    createComponent({ props: { discussion: createDiscussion({ individual_note: true }) } });
+    expect(wrapper.find('[data-testid="reply-wrapper"]').exists()).toBe(false);
+  });
+
   it('starts replying', async () => {
     createComponent();
     await wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');

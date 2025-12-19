@@ -97,9 +97,7 @@ function addParallelCells(lineRow) {
 }
 
 function createDiscussionMount(createCell) {
-  return ({ diffElement, id, position, appData }) => {
-    if (document.querySelector(`[data-discussion-id="${id}"]`)) return;
-
+  return ({ diffElement, position, appData }) => {
     const cell = createCell(diffElement, position.old_line, position.new_line);
     if (cell.hasMountedApp) return;
     const mountTarget = document.createElement('div');

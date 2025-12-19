@@ -25,6 +25,11 @@ export default {
       required: false,
       default: true,
     },
+    individual: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     hasReplies() {
@@ -46,7 +51,7 @@ export default {
     <noteable-note
       v-else
       :note="firstNote"
-      :show-reply-button="userPermissions.can_create_note"
+      :show-reply-button="userPermissions.can_create_note && !individual"
       @noteDeleted="$emit('noteDeleted', firstNote)"
       @noteUpdated="$emit('noteUpdated', $event)"
       @noteEdited="$emit('noteEdited', { note: firstNote, value: $event })"

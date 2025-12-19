@@ -34,6 +34,7 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
     allow(RapidDiffs::AppComponent).to receive(:new).and_return(app_component)
     allow(app_component).to receive(:render_in).and_yield(app_component)
     allow(app_component).to receive(:with_before_diffs_list).and_yield
+    allow(app_component).to receive(:with_after_diffs_list).and_yield
   end
 
   it "renders app with correct arguments" do
@@ -73,6 +74,12 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
 
       expect(page).not_to have_selector('[data-new-discussion-toggle]', visible: :all)
     end
+  end
+
+  it "renders commit timeline container in after_diffs_list slot" do
+    render_component
+
+    expect(page).to have_selector('[data-commit-timeline]', visible: :all)
   end
 
   def render_component
