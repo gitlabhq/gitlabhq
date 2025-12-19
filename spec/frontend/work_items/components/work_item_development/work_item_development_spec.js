@@ -36,7 +36,7 @@ describe('WorkItemDevelopment CE', () => {
   const createWorkItemDevelopmentResponse = (config) =>
     workItemDevelopmentResponse({
       widgets: [
-        ...workItemResponse.data.workspace.workItem.widgets,
+        ...workItemResponse.data.namespace.workItem.widgets,
         workItemDevelopmentFragmentResponse(config),
       ],
     });
@@ -76,7 +76,7 @@ describe('WorkItemDevelopment CE', () => {
     .fn()
     .mockResolvedValue({ data: { workItemUpdated: null } });
   const defaultNamespaceMergeRequestsEnabledHandler = jest.fn().mockResolvedValue({
-    data: { workspace: { id: 'gid://gitlab/Group/33', mergeRequestsEnabled: true } },
+    data: { namespace: { id: 'gid://gitlab/Group/33', mergeRequestsEnabled: true } },
   });
 
   const createComponent = ({
@@ -241,7 +241,7 @@ describe('WorkItemDevelopment CE', () => {
         it('renders only "Create branch" in dropdown', async () => {
           createComponent({
             namespaceMergeRequestsEnabledHandler: jest.fn().mockResolvedValue({
-              data: { workspace: { id: 'gid://gitlab/Group/33', mergeRequestsEnabled: false } },
+              data: { namespace: { id: 'gid://gitlab/Group/33', mergeRequestsEnabled: false } },
             }),
           });
           await waitForPromises();

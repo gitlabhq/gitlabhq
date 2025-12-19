@@ -1,5 +1,5 @@
 query workItemLinkedItemsSlim($fullPath: ID!, $iid: String!) {
-  workspace: namespace(fullPath: $fullPath) {
+  namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {
       id

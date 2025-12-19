@@ -150,6 +150,43 @@ RSpec.describe Namespaces::Traversal::Cached, feature_category: :database do
       end
     end
 
+    describe '#descendant_ids' do
+      subject(:ids) { group.descendant_ids.pluck(:id) }
+
+      it 'returns the cached values excluding self' do
+        expect(ids).to eq(namespace_descendants.self_and_descendant_group_ids - [group.id])
+      end
+
+      context 'when the cache is outdated' do
+        it 'returns the values from the uncached descendant_ids query' do
+          namespace_descendants.update!(outdated_at: Time.current)
+
+          expect(ids.sort).to match_array([subgroup.id, subsubgroup.id])
+        end
+      end
+
+      context 'when the scope is specified' do
+        subject(:ids) { group.descendant_ids(skope: Namespace).pluck(:id) }
+
+        it 'returns the cached values excluding self' do
+          expect(ids).to eq(namespace_descendants.self_and_descendant_ids - [group.id])
+        end
+
+        context 'when the cache is outdated' do
+          it 'returns the values from the uncached descendant_ids query' do
+            namespace_descendants.update!(outdated_at: Time.current)
+
+            expect(ids.sort).to eq([
+              subgroup.id, subsubgroup.id,
+              project1.project_namespace_id,
+              project2.project_namespace_id,
+              project3.project_namespace_id
+            ])
+          end
+        end
+      end
+    end
+
     describe '#all_project_ids' do
       subject(:ids) { group.all_project_ids.pluck(:id) }
 

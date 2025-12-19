@@ -185,7 +185,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.workItem || {};
+        return data.namespace?.workItem || {};
       },
       skip() {
         return !this.workItemIid;
@@ -237,7 +237,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.mergeRequestsEnabled ?? false;
+        return data.namespace?.mergeRequestsEnabled ?? false;
       },
       skip() {
         return !this.workItemFullPath;

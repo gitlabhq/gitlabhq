@@ -90,20 +90,8 @@ The **Metric trends** table displays metrics for the last six months, with month
   The baseline for the AI Usage trend is the total number of code contributors, not only users with GitLab Duo seats.
   This baseline gives a more accurate representation of AI usage by team members.
 
-  {{< alert type="note" >}}
-
-  Usage rate for Code Suggestions is calculated with data starting from GitLab 16.11.
-
-  {{< /alert >}}
-
 - **Duo RCA usage**: Monthly user engagement with GitLab Duo Root Cause Analysis.
   Tracks the percentage of GitLab Duo users who use GitLab Duo Chat to troubleshoot a failed CI/CD job from a merge request.
-
-  {{< alert type="note" >}}
-
-  Usage rate for GitLab Duo RCA is calculated with data starting from GitLab 18.0.
-
-  {{< /alert >}}
 
 - **Duo features usage**: Number of contributors who used any GitLab Duo feature.
 
@@ -112,21 +100,9 @@ The **Metric trends** table displays metrics for the last six months, with month
 
 - **Duo Code Review comments**: Number of comments posted by GitLab Duo Code Review on merge request diffs.
 
-  {{< alert type="note" >}}
-
-  Usage data for Duo Code Review requests and comments is calculated with data starting from GitLab 18.3.
-
-  {{< /alert >}}
-
 - **Duo Agent Platform chats**: Number of chat sessions initiated through GitLab Duo Agent Platform.
 
 - **Duo Agent Platform flows**: Number of agent flows (excluding chats) executed through GitLab Duo Agent Platform.
-
-{{< alert type="note" >}}
-
-Usage data for Duo Agent Platform chats and flows is calculated with data starting from GitLab 18.7.
-
-{{< /alert >}}
 
 ### Development metrics
 
@@ -223,12 +199,6 @@ The user metrics tables display usage of different GitLab Duo features by indivi
 - **GitLab Duo Root Cause Analysis usage by user**: Number of troubleshooting requests from GitLab Duo.
 - **GitLab Duo usage by user**: Number of Duo events made by the user.
 
-{{< alert type="note" >}}
-
-Usage data for Code Review requests is calculated with data starting from GitLab 18.3.
-
-{{< /alert >}}
-
 ## View GitLab Duo and SDLC trends
 
 Prerequisites:
@@ -241,3 +211,14 @@ Prerequisites:
 1. Select **GitLab Duo and SDLC trends**.
 
 To retrieve GitLab Duo and SDLC metrics, you can also use the `AiMetrics`, `AiUserMetrics`, and `AiUsageData` [GraphQL APIs](../../api/graphql/duo_and_sdlc_trends.md).
+
+## Metric data availability
+
+The following table displays the GitLab versions when usage data calculation started for GitLab Duo metrics:
+
+| GitLab Duo metric | Data calculation start |
+|--------|------------------------------|
+| Code Suggestions usage rate | GitLab 16.11 |
+| Root Cause Analysis usage | GitLab 18.0 |
+| Code Review requests and comments | GitLab 18.3 |
+| Agent Platform chats and flows | GitLab 18.7 |

@@ -392,7 +392,7 @@ module API
 
         if response.success?
           status 200
-          present_group_details(params, group, with_projects: params[:with_projects])
+          present_group_details(params, group.reset, with_projects: params[:with_projects])
         else
           render_api_error!(response.message, 422)
         end

@@ -119,7 +119,6 @@ Performance/StringIdentifierArgument:
     - 'spec/controllers/import/github_controller_spec.rb'
     - 'spec/controllers/repositories/lfs_storage_controller_spec.rb'
     - 'spec/finders/concerns/packages/finder_helper_spec.rb'
-    - 'spec/finders/packages/group_packages_finder_spec.rb'
     - 'spec/graphql/mutations/container_expiration_policies/update_spec.rb'
     - 'spec/graphql/mutations/container_repositories/destroy_spec.rb'
     - 'spec/graphql/mutations/container_repositories/destroy_tags_spec.rb'

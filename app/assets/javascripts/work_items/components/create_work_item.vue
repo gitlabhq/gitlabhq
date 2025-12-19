@@ -267,7 +267,7 @@ export default {
         return this.skipWorkItemQuery;
       },
       update(data) {
-        return data?.workspace?.workItem ?? {};
+        return data?.namespace?.workItem ?? {};
       },
       result() {
         this.initialLoadingWorkItem = false;
@@ -287,7 +287,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace;
+        return data.namespace;
       },
       async result() {
         this.initialLoadingWorkItemTypes = false;

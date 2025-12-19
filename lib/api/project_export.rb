@@ -100,7 +100,7 @@ module API
               user_project.add_export_job(current_user: current_user,
                 after_export_strategy: export_strategy,
                 params: project_export_params)
-            rescue Project::ExportLimitExceeded => e
+            rescue Project::ExportLimitExceeded, Project::ExportAlreadyInProgress => e
               render_api_error!(e.message, 400)
             end
           end

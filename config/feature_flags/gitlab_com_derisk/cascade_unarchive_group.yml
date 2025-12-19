@@ -1,0 +1,11 @@
+---
+name: cascade_unarchive_group
+description: Unarchive descendant groups and projects of a group when toggling its archive state
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578499
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215688
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583415
+milestone: '18.7'
+observed: true
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

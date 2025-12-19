@@ -98,7 +98,7 @@ describe('WorkItemChildrenWrapper', () => {
         disableContent,
         canUpdate,
         showClosed,
-        parent: workItemByIidResponseFactory().data.workspace.workItem,
+        parent: workItemByIidResponseFactory().data.namespace.workItem,
       },
       mocks: {
         $toast,

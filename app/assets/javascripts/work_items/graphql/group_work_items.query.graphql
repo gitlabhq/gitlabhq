@@ -9,7 +9,7 @@ query groupWorkItems(
   $searchByIid: Boolean = false
   $searchByText: Boolean = true
 ) {
-  workspace: group(fullPath: $fullPath) {
+  namespace: group(fullPath: $fullPath) {
     id
     workItems(
       search: $searchTerm

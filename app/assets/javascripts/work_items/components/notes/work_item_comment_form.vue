@@ -257,7 +257,7 @@ export default {
       },
       update(data) {
         return (
-          findEmailParticipantsWidget(data?.workspace?.workItem)?.emailParticipants?.nodes || []
+          findEmailParticipantsWidget(data?.namespace?.workItem)?.emailParticipants?.nodes || []
         );
       },
     },
@@ -270,7 +270,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.workItem ?? {};
+        return data.namespace?.workItem ?? {};
       },
       skip() {
         return !this.workItemIid;

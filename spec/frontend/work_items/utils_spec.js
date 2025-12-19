@@ -439,7 +439,7 @@ describe('getNewWorkItemWidgetsAutoSaveKey', () => {
 describe('getWorkItemWidgets', () => {
   it('returns the correct widgets for a work item', () => {
     const result = getWorkItemWidgets({
-      workspace: {
+      namespace: {
         workItem: workItemQueryResponse.data.workItem,
       },
     });

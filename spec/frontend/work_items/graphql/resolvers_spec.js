@@ -41,9 +41,9 @@ describe('work items graphql resolvers', () => {
         variables: { fullPath: fullPathWithId, iid },
       });
 
-      if (widgetName == null) return queryResult.data.workspace.workItem;
+      if (widgetName == null) return queryResult.data.namespace.workItem;
 
-      return queryResult.data.workspace.workItem.widgets.find(({ type }) => type === widgetName);
+      return queryResult.data.namespace.workItem.widgets.find(({ type }) => type === widgetName);
     };
 
     beforeEach(() => {
@@ -211,7 +211,7 @@ describe('work items graphql resolvers', () => {
       const queryResult = await query();
 
       const object = {
-        workspace: {
+        namespace: {
           __typename: 'Namespace',
           id: 'full-path-epic-id',
           workItem: {

@@ -78,7 +78,7 @@ describe('Create work item component', () => {
   const mutationErrorHandler = jest.fn().mockResolvedValue(createWorkItemMutationErrorResponse);
   const workItemQuerySuccessHandler = jest.fn().mockResolvedValue(createWorkItemQueryResponse());
   const namespaceWorkItemTypes =
-    namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes;
+    namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes;
   const mockRelatedItem = {
     id: 'gid://gitlab/WorkItem/22',
     type: 'Issue',
@@ -122,7 +122,7 @@ describe('Create work item component', () => {
     fullPath = 'full-path',
   } = {}) => {
     const namespaceResponseCopy = cloneDeep(namespaceQueryResponse);
-    namespaceResponseCopy.data.workspace.id = 'gid://gitlab/Group/33';
+    namespaceResponseCopy.data.namespace.id = 'gid://gitlab/Group/33';
     const namespaceResponse = isGroupWorkItem ? namespaceResponseCopy : namespaceQueryResponse;
 
     namespaceWorkItemTypesHandler = jest.fn().mockResolvedValue(namespaceResponse);
@@ -1106,8 +1106,8 @@ describe('Create work item component', () => {
   it('does not show work item widgets when userPermissions.setNewWorkItemMetadata is false', async () => {
     const namespaceQueryResponse = {
       data: {
-        workspace: {
-          ...namespaceWorkItemTypesQueryResponse.data.workspace,
+        namespace: {
+          ...namespaceWorkItemTypesQueryResponse.data.namespace,
           userPermissions: {
             setNewWorkItemMetadata: false,
           },

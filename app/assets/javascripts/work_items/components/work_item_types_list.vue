@@ -37,7 +37,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.workItemTypes?.nodes || [];
+        return data.namespace?.workItemTypes?.nodes || [];
       },
       error(error) {
         this.errorMessage = s__('WorkItem|Failed to fetch work item types.');

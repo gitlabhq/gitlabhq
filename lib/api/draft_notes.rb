@@ -97,6 +97,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
+        tags ['draft_notes']
       end
       params do
         requires :id,                type: String,  desc: "The ID of a project"
@@ -112,6 +113,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
+        tags ['draft_notes']
       end
       params do
         requires :id,                type: String,  desc: "The ID of a project"
@@ -134,6 +136,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
+        tags ['draft_notes']
       end
       params do
         requires :id,                        type: String,  desc: "The ID of a project."
@@ -165,6 +168,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
+        tags ['draft_notes']
       end
       params do
         requires :id,                type: String,  desc: "The ID of a project."
@@ -194,6 +198,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
+        tags ['draft_notes']
       end
       params do
         requires :id,                type: String,  desc: "The ID of a project"
@@ -220,6 +225,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
+        tags ['draft_notes']
       end
       params do
         requires :id,                type: String,  desc: "The ID of a project"
@@ -245,6 +251,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
+        tags ['draft_notes']
       end
       params do
         requires :id,                type: String,  desc: "The ID of a project"

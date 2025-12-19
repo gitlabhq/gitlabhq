@@ -27,7 +27,6 @@ API/DescriptionTags:
     - 'ee/lib/api/internal/ai/x_ray/scan.rb'
     - 'ee/lib/api/internal/search/zoekt.rb'
     - 'ee/lib/api/iterations.rb'
-    - 'ee/lib/api/manage/groups.rb'
     - 'ee/lib/api/project_google_cloud_integration.rb'
     - 'ee/lib/api/project_mirror.rb'
     - 'ee/lib/api/provider_identity.rb'

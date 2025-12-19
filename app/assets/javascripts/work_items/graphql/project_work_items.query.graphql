@@ -7,7 +7,7 @@ query projectWorkItems(
   $searchByIid: Boolean = false
   $searchByText: Boolean = true
 ) {
-  workspace: project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     id
     workItems(search: $searchTerm, types: $types, state: opened, in: $in)
       @include(if: $searchByText) {

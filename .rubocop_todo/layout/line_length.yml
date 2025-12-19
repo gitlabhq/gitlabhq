@@ -2543,7 +2543,6 @@ Layout/LineLength:
     - 'spec/finders/namespaces/projects_finder_spec.rb'
     - 'spec/finders/notes_finder_spec.rb'
     - 'spec/finders/packages/go/version_finder_spec.rb'
-    - 'spec/finders/packages/group_packages_finder_spec.rb'
     - 'spec/finders/packages/maven/package_finder_spec.rb'
     - 'spec/finders/packages/nuget/package_finder_spec.rb'
     - 'spec/finders/packages/packages_finder_spec.rb'

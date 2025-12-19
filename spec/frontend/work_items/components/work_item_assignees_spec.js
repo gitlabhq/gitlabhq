@@ -101,7 +101,7 @@ describe('WorkItemAssignees component', () => {
         iid: NEW_WORK_ITEM_IID,
       },
       data: {
-        workspace: {
+        namespace: {
           id: newWorkItemPath,
           ...workItemQueryResponse.data,
         },

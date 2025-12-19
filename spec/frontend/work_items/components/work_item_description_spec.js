@@ -70,7 +70,7 @@ describe('WorkItemDescription', () => {
 
   const mockWorkspacePermissionsResponse = {
     data: {
-      workspace: {
+      namespace: {
         id: 'gid://gitlab/Project/1',
         userPermissions: {
           generateDescription: true,
@@ -815,7 +815,7 @@ describe('WorkItemDescription', () => {
       beforeEach(async () => {
         const workspacePermissionsHandlerNoPermission = jest.fn().mockResolvedValue({
           data: {
-            workspace: {
+            namespace: {
               id: 'gid://gitlab/Project/1',
               userPermissions: {
                 generateDescription: false,
@@ -842,7 +842,7 @@ describe('WorkItemDescription', () => {
       beforeEach(async () => {
         const workspacePermissionsHandlerNullWorkspace = jest.fn().mockResolvedValue({
           data: {
-            workspace: null,
+            namespace: null,
           },
         });
 

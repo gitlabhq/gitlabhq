@@ -436,6 +436,32 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
           end
         end
 
+        context 'when export is already in progress' do
+          before do
+            allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
+              allow(strategy).to receive(:increment).and_return(0)
+            end
+          end
+
+          it '400 response if export already queued' do
+            create(:project_export_job, :queued, project: project, user: user)
+
+            request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response["message"]).to include('An export is already running or queued for this project.')
+          end
+
+          it '400 response if export already started' do
+            create(:project_export_job, :started, project: project, user: user)
+
+            request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response["message"]).to include('An export is already running or queued for this project.')
+          end
+        end
+
         context 'when rate limit is exceeded across projects' do
           before do
             allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|

@@ -177,7 +177,7 @@ describe('WorkItemTypeToken', () => {
       it('fetches work item types when fetch-suggestions is triggered', async () => {
         const mockFetch = jest.fn().mockResolvedValue({
           data: {
-            workspace: {
+            namespace: {
               workItemTypes: {
                 nodes: [{ name: 'Epic' }, { name: 'Key result' }],
               },
@@ -203,7 +203,7 @@ describe('WorkItemTypeToken', () => {
       it('transforms fetched work item types correctly', async () => {
         const mockFetch = jest.fn().mockResolvedValue({
           data: {
-            workspace: {
+            namespace: {
               workItemTypes: {
                 nodes: [{ name: 'Epic' }, { name: 'Key result' }, { name: 'Requirements' }],
               },

@@ -1170,7 +1170,6 @@ RSpec/NamedSubject:
     - 'spec/finders/packages/conan/package_file_finder_spec.rb'
     - 'spec/finders/packages/debian/distributions_finder_spec.rb'
     - 'spec/finders/packages/go/package_finder_spec.rb'
-    - 'spec/finders/packages/group_packages_finder_spec.rb'
     - 'spec/finders/packages/maven/package_finder_spec.rb'
     - 'spec/finders/packages/package_file_finder_spec.rb'
     - 'spec/finders/packages/package_finder_spec.rb'

@@ -152,7 +152,7 @@ export default {
         };
       },
       update(data) {
-        return data?.workspace?.workItem || {};
+        return data?.namespace?.workItem || {};
       },
       result() {
         if (this.isEditing) {
@@ -211,7 +211,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace || {};
+        return data.namespace || {};
       },
       skip() {
         return this.isGroup;

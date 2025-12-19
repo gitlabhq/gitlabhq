@@ -221,7 +221,7 @@
 {"name":"gitaly","version":"18.7.0.pre.rc1","platform":"ruby","checksum":"3778b8706c63bc8b90751c9dc7d5119b7c243ed2cc38f5f5acb94df049752728"},
 {"name":"gitlab","version":"4.19.0","platform":"ruby","checksum":"3f645e3e195dbc24f0834fbf83e8ccfb2056d8e9712b01a640aad418a6949679"},
 {"name":"gitlab-chronic","version":"0.10.6","platform":"ruby","checksum":"a244d11a1396d2aac6ae9b2f326adf1605ec1ad20c29f06e8b672047d415a9ac"},
-{"name":"gitlab-cloud-connector","version":"1.36.0","platform":"ruby","checksum":"de7baee0a592590d414bd2b4504775dc3b497e88f5d21c3128934f4d2998b874"},
+{"name":"gitlab-cloud-connector","version":"1.37.0","platform":"ruby","checksum":"9aa0678783bd733edd92709f49265ebaab2384fdd9309a6eb19ce27033fe92b4"},
 {"name":"gitlab-crystalball","version":"1.1.1","platform":"ruby","checksum":"0464a113b0809e0e9fa7c0100bb6634fe38465af95aa04efa49541d64250b8ed"},
 {"name":"gitlab-dangerfiles","version":"4.10.0","platform":"ruby","checksum":"0adb9cfec58ffce42f68b1aef528503bdc89aed3994ba461c67e1d9246513e1c"},
 {"name":"gitlab-experiment","version":"1.2.0","platform":"ruby","checksum":"475d40bf8957f113f7f125ecaeefea0926c862f83193ae72433ddc4b56e66e67"},

@@ -54,7 +54,7 @@ export default {
       this.config
         .fetchWorkItemTypes()
         .then((res) => {
-          const rawTypes = Array.isArray(res) ? res : res.data?.workspace?.workItemTypes?.nodes;
+          const rawTypes = Array.isArray(res) ? res : res.data?.namespace?.workItemTypes?.nodes;
           if (rawTypes) {
             this.workItemTypes = rawTypes.map((type) => ({
               value: type.name.toUpperCase().replace(/\s+/g, '_'), // 'Key Results' -> 'KEY_RESULTS'

@@ -137,7 +137,7 @@ export default {
             cache.writeQuery({
               ...queryArgs,
               data: produce(sourceData, (draftState) => {
-                const linkedItemsWidget = findLinkedItemsWidget(draftState.workspace.workItem);
+                const linkedItemsWidget = findLinkedItemsWidget(draftState.namespace.workItem);
 
                 linkedItemsWidget.linkedItems = findLinkedItemsWidget(workItem)?.linkedItems;
               }),

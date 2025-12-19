@@ -259,7 +259,7 @@ export default {
         if (this.workItemId) {
           return data.workItem ?? {};
         }
-        return data.workspace?.workItem ?? {};
+        return data.namespace?.workItem ?? {};
       },
       error() {
         if (this.workItem?.id === this.workItemId || this.workItem?.iid === this.workItemIid) {
@@ -316,7 +316,7 @@ export default {
         return this.isGroup || this.workItemLoading;
       },
       update(data) {
-        return data.workspace?.userPermissions ?? defaultWorkspacePermissions;
+        return data.namespace?.userPermissions ?? defaultWorkspacePermissions;
       },
     },
   },

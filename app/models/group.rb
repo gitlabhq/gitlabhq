@@ -1293,6 +1293,26 @@ class Group < Namespace
     deletion_schedule.marked_for_deletion_on.future?
   end
 
+  def unarchive_self_and_descendants!
+    NamespaceSetting
+      .where(namespace_id: self_and_descendant_ids, archived: true)
+      .update_all(archived: false)
+  end
+
+  def unarchive_descendants!
+    NamespaceSetting
+      .where(namespace_id: descendant_ids, archived: true)
+      .update_all(archived: false)
+  end
+
+  def unarchive_all_projects!
+    Project
+      .joins(:namespace)
+      .where("namespaces.traversal_ids @> '{?}'", id)
+      .where(archived: true)
+      .update_all(archived: false)
+  end
+
   private
 
   def feature_flag_enabled_for_self_or_ancestor?(feature_flag, type: :development)

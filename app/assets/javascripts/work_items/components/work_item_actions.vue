@@ -255,7 +255,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.workItemTypes?.nodes;
+        return data.namespace?.workItemTypes?.nodes;
       },
       skip() {
         return !this.canUpdateMetadata || this.workItemType !== WORK_ITEM_TYPE_NAME_KEY_RESULT;

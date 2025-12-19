@@ -1127,7 +1127,6 @@ RSpec/ContextWording:
     - 'spec/finders/merge_requests_finder_spec.rb'
     - 'spec/finders/milestones_finder_spec.rb'
     - 'spec/finders/notes_finder_spec.rb'
-    - 'spec/finders/packages/group_packages_finder_spec.rb'
     - 'spec/finders/packages/helm/packages_finder_spec.rb'
     - 'spec/finders/packages/maven/package_finder_spec.rb'
     - 'spec/finders/packages/npm/package_finder_spec.rb'

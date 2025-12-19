@@ -2,7 +2,7 @@
 #import "~/work_items/graphql/award_emoji.fragment.graphql"
 
 query projectWorkItemAwardEmojis($fullPath: ID!, $iid: String!, $after: String, $pageSize: Int) {
-  workspace: namespace(fullPath: $fullPath) {
+  namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {
       id

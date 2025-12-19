@@ -425,7 +425,7 @@ end`;
     it('confidential information on note', async () => {
       createComponent();
       await findNoteActions().vm.$emit('startEditing');
-      const { confidential } = workItemByIidResponseFactory().data.workspace.workItem;
+      const { confidential } = workItemByIidResponseFactory().data.namespace.workItem;
       expect(findCommentForm().props('isWorkItemConfidential')).toBe(confidential);
     });
 

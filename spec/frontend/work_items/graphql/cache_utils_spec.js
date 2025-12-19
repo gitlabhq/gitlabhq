@@ -126,7 +126,7 @@ describe('work items graphql cache utils', () => {
       addHierarchyChildren({
         cache: mockCache,
         id,
-        workItem: workItemHierarchyResponse.data.workspace.workItem,
+        workItem: workItemHierarchyResponse.data.namespace.workItem,
         childrenIds: [childrenWorkItems[1].id, childrenWorkItems[0].id],
       });
 
@@ -177,7 +177,7 @@ describe('work items graphql cache utils', () => {
         addHierarchyChildren({
           cache: mockCache,
           id,
-          workItem: workItemHierarchyResponse.data.workspace.workItem,
+          workItem: workItemHierarchyResponse.data.namespace.workItem,
           childrenIds: [childrenWorkItems[1].id, childrenWorkItems[0].id],
         }),
       ).not.toThrow();
@@ -276,9 +276,9 @@ describe('work items graphql cache utils', () => {
       expect(mockWriteQuery).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({
-            workspace: expect.objectContaining({
+            namespace: expect.objectContaining({
               workItem: expect.objectContaining({
-                title: mockCreateWorkItemDraftData.workspace.workItem.title,
+                title: mockCreateWorkItemDraftData.namespace.workItem.title,
                 widgets: expect.arrayContaining(restoredDraftDataWidgets),
               }),
             }),
@@ -291,7 +291,7 @@ describe('work items graphql cache utils', () => {
       description                         | locationSearchString          | expectedTitle                                           | expectedWidgets
       ${'restores cache with empty form'} | ${'?vulnerability_id=1'}      | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
       ${'restores cache with empty form'} | ${'?discussion_to_resolve=1'} | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
-      ${'restores cache with draft'}      | ${'?type=ISSUE'}              | ${mockCreateWorkItemDraftData.workspace.workItem.title} | ${restoredDraftDataWidgets}
+      ${'restores cache with draft'}      | ${'?type=ISSUE'}              | ${mockCreateWorkItemDraftData.namespace.workItem.title} | ${restoredDraftDataWidgets}
     `(
       '$description when URL params include $locationSearchString',
       async ({ locationSearchString, expectedTitle, expectedWidgets }) => {
@@ -302,7 +302,7 @@ describe('work items graphql cache utils', () => {
         expect(mockWriteQuery).toHaveBeenCalledWith(
           expect.objectContaining({
             data: expect.objectContaining({
-              workspace: expect.objectContaining({
+              namespace: expect.objectContaining({
                 workItem: expect.objectContaining({
                   title: expectedTitle,
                   widgets: expect.arrayContaining(expectedWidgets),
@@ -316,8 +316,8 @@ describe('work items graphql cache utils', () => {
   });
 
   describe('updateCacheAfterCreatingNote', () => {
-    const findDiscussions = ({ workspace }) =>
-      findNotesWidget(workspace.workItem).discussions.nodes;
+    const findDiscussions = ({ namespace }) =>
+      findNotesWidget(namespace.workItem).discussions.nodes;
 
     it('adds a new discussion to the notes widget', () => {
       const currentNotes = mockWorkItemNotesByIidResponse.data;

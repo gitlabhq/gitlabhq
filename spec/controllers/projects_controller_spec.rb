@@ -1893,6 +1893,26 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
             expect(flash[:alert]).to be_nil
           end
         end
+
+        context 'when export is already in progress' do
+          it 'returns 302 with alert if export already queued' do
+            create(:project_export_job, :queued, project: project, user: user)
+
+            post action, params: { namespace_id: project.namespace, id: project }
+
+            expect(response).to redirect_to(edit_project_path(project, anchor: 'js-project-advanced-settings'))
+            expect(flash[:alert]).to include('An export is already running or queued for this project.')
+          end
+
+          it 'returns 302 with alert if export already started' do
+            create(:project_export_job, :started, project: project, user: user)
+
+            post action, params: { namespace_id: project.namespace, id: project }
+
+            expect(response).to redirect_to(edit_project_path(project, anchor: 'js-project-advanced-settings'))
+            expect(flash[:alert]).to include('An export is already running or queued for this project.')
+          end
+        end
       end
 
       context 'when project export is disabled' do

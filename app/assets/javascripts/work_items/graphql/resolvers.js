@@ -38,8 +38,8 @@ const updateWidget = (draftData, widgetType, newData, nodePath) => {
   /** we have to make sure we do not pass values when custom types are introduced */
   if (newData === undefined) return;
 
-  if (draftData.workspace) {
-    const widget = findWidget(widgetType, draftData.workspace.workItem);
+  if (draftData.namespace) {
+    const widget = findWidget(widgetType, draftData.namespace.workItem);
     set(widget, nodePath, newData);
   }
 };
@@ -50,7 +50,7 @@ const updateDatesWidget = (draftData, dates) => {
   const dueDate = dates.dueDate ? toISODateFormat(newDate(dates.dueDate)) : null;
   const startDate = dates.startDate ? toISODateFormat(newDate(dates.startDate)) : null;
 
-  const widget = findStartAndDueDateWidget(draftData.workspace.workItem);
+  const widget = findStartAndDueDateWidget(draftData.namespace.workItem);
   Object.assign(widget, {
     dueDate,
     startDate,
@@ -63,12 +63,12 @@ const updateDatesWidget = (draftData, dates) => {
 const updateCustomFieldsWidget = (sourceData, draftData, customField) => {
   if (!customField) return;
 
-  const widget = findCustomFieldsWidget(draftData.workspace.workItem);
+  const widget = findCustomFieldsWidget(draftData.namespace.workItem);
 
   if (!widget) return;
 
   const currentValues =
-    sourceData?.workspace?.workItem?.widgets?.find((w) => w.type === WIDGET_TYPE_CUSTOM_FIELDS)
+    sourceData?.namespace?.workItem?.widgets?.find((w) => w.type === WIDGET_TYPE_CUSTOM_FIELDS)
       ?.customFieldValues ?? [];
 
   const updatedCustomFieldValues = currentValues.map((field) => {
@@ -192,9 +192,9 @@ export const updateNewWorkItemCache = (input, cache) => {
 
         // We want to allow users to delete a title for an in-progress work item draft
         // as we check for the title being valid when submitting the form
-        if (title !== undefined) draftData.workspace.workItem.title = title;
+        if (title !== undefined) draftData.namespace.workItem.title = title;
 
-        if (confidential !== undefined) draftData.workspace.workItem.confidential = confidential;
+        if (confidential !== undefined) draftData.namespace.workItem.confidential = confidential;
       }),
     );
 
@@ -207,7 +207,7 @@ export const updateNewWorkItemCache = (input, cache) => {
       relatedItemId,
     });
 
-    const isQueryDataValid = !isEmpty(newData) && newData?.workspace?.workItem;
+    const isQueryDataValid = !isEmpty(newData) && newData?.namespace?.workItem;
 
     if (isQueryDataValid && autosaveKey) {
       updateDraft(autosaveKey, JSON.stringify(newData));

@@ -67,24 +67,13 @@ module API
           desc: 'Return packages with specified status'
       end
       get ':id/packages' do
-        packages = if Feature.enabled?(:packages_projects_finder, user_group)
-                     ::Packages::PackagesFinder.new(
-                       projects,
-                       declared(params).slice(
-                         :exclude_subgroups, :order_by, :sort, :package_type, :package_name,
-                         :package_version, :include_versionless, :status
-                       )
-                     ).execute
-                   else
-                     Packages::GroupPackagesFinder.new(
-                       current_user,
-                       user_group,
-                       declared(params).slice(
-                         :exclude_subgroups, :order_by, :sort, :package_type, :package_name,
-                         :package_version, :include_versionless, :status
-                       )
-                     ).execute
-                   end
+        packages = ::Packages::PackagesFinder.new(
+          projects,
+          declared(params).slice(
+            :exclude_subgroups, :order_by, :sort, :package_type, :package_name,
+            :package_version, :include_versionless, :status
+          )
+        ).execute
 
         present paginate(packages), with: ::API::Entities::Package, user: current_user, group: true,
           namespace: user_group

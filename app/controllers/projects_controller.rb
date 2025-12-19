@@ -295,7 +295,7 @@ class ProjectsController < Projects::ApplicationController
       edit_project_path(@project, anchor: 'js-project-advanced-settings'),
       notice: _("Project export started. A download link will be sent by email and made available on this page.")
     )
-  rescue Project::ExportLimitExceeded => e
+  rescue Project::ExportLimitExceeded, Project::ExportAlreadyInProgress => e
     redirect_to(
       edit_project_path(@project, anchor: 'js-project-advanced-settings'),
       alert: e.to_s

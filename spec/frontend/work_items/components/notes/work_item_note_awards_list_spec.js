@@ -24,7 +24,7 @@ Vue.use(VueApollo);
 
 describe('Work Item Note Awards List', () => {
   let wrapper;
-  const { workItem } = mockWorkItemNotesResponseWithComments().data.workspace;
+  const { workItem } = mockWorkItemNotesResponseWithComments().data.namespace;
   const firstNote = workItem.widgets.find((w) => w.type === 'NOTES').discussions.nodes[0].notes
     .nodes[0];
   const fullPath = 'test-project-path';

@@ -98,7 +98,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.workItem ?? {};
+        return data.namespace?.workItem ?? {};
       },
       skip() {
         return !this.workItemIid;
@@ -120,10 +120,10 @@ export default {
       skip() {
         return !this.workItemIid;
       },
-      update({ workspace }) {
-        if (!workspace?.workItem) return [];
+      update({ namespace }) {
+        if (!namespace?.workItem) return [];
 
-        const linkedWorkItems = findLinkedItemsWidget(workspace.workItem)?.linkedItems?.nodes || [];
+        const linkedWorkItems = findLinkedItemsWidget(namespace.workItem)?.linkedItems?.nodes || [];
 
         return linkedWorkItems.filter((item) => {
           return (

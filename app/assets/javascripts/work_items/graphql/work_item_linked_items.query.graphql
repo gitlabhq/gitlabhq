@@ -1,7 +1,7 @@
 #import "./work_item_linked_items.fragment.graphql"
 
 query workItemLinkedItems($fullPath: ID!, $iid: String!) {
-  workspace: namespace(fullPath: $fullPath) {
+  namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {
       id

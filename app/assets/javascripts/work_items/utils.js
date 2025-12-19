@@ -367,16 +367,16 @@ export const getNewWorkItemWidgetsAutoSaveKey = ({ fullPath, context, relatedIte
 };
 
 export const getWorkItemWidgets = (draftData) => {
-  if (!draftData?.workspace?.workItem) return {};
+  if (!draftData?.namespace?.workItem) return {};
 
   const widgets = {};
-  for (const widget of draftData.workspace.workItem.widgets || []) {
+  for (const widget of draftData.namespace.workItem.widgets || []) {
     if (widget.type) {
       widgets[widget.type] = widget;
     }
   }
-  widgets.TITLE = draftData.workspace.workItem.title;
-  widgets.TYPE = draftData.workspace.workItem.workItemType;
+  widgets.TITLE = draftData.namespace.workItem.title;
+  widgets.TYPE = draftData.namespace.workItem.workItemType;
 
   return widgets;
 };

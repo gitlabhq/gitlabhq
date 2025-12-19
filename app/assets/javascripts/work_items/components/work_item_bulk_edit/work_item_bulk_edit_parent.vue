@@ -83,7 +83,7 @@ export default {
         return !this.searchStarted || !this.shouldLoadParents;
       },
       update(data) {
-        return data.workspace?.workItems?.nodes || [];
+        return data.namespace?.workItems?.nodes || [];
       },
       error(error) {
         createAlert({
@@ -124,7 +124,7 @@ export default {
       },
       update(data) {
         const typesParentsMap = {};
-        const types = data.workspace.workItemTypes.nodes || [];
+        const types = data.namespace.workItemTypes.nodes || [];
 
         // Used `for` loop for better readability and performance
         for (const type of types) {

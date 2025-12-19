@@ -19,7 +19,7 @@ describe('WorkItemCreateBranchMergeRequestSplitButton', () => {
   let wrapper;
 
   const defaultNamespaceMergeRequestsEnabledHandler = jest.fn().mockResolvedValue({
-    data: { workspace: { id: 'gid://gitlab/Group/33', mergeRequestsEnabled: true } },
+    data: { namespace: { id: 'gid://gitlab/Group/33', mergeRequestsEnabled: true } },
   });
 
   const createComponent = ({
@@ -120,7 +120,7 @@ describe('WorkItemCreateBranchMergeRequestSplitButton', () => {
     beforeEach(async () => {
       wrapper = createComponent({
         namespaceMergeRequestsEnabledHandler: jest.fn().mockResolvedValue({
-          data: { workspace: { id: 'gid://gitlab/Group/33', mergeRequestsEnabled: false } },
+          data: { namespace: { id: 'gid://gitlab/Group/33', mergeRequestsEnabled: false } },
         }),
       });
       await waitForPromises();

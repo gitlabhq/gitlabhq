@@ -3,7 +3,7 @@ stage: Analytics
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: yes
-title: ClickHouse integration guidelines
+title: ClickHouse
 ---
 
 {{< details >}}
@@ -14,17 +14,9 @@ title: ClickHouse integration guidelines
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-For information about plans for ClickHouse support for GitLab Self-Managed, see [epic 51](https://gitlab.com/groups/gitlab-org/architecture/gitlab-data-analytics/-/epics/51).
-
-For information about ClickHouse support for GitLab Dedicated, see [ClickHouse for GitLab Dedicated](../subscriptions/gitlab_dedicated/_index.md#clickhouse-cloud).
-
-{{< /alert >}}
-
 [ClickHouse](https://clickhouse.com) is an open-source column-oriented database management system. It can efficiently filter, aggregate, and query across large data sets.
 
-ClickHouse is a secondary data store for GitLab. Only specific data is stored in ClickHouse for advanced analytical features such as [GitLab Duo and SDLC trends](../user/analytics/duo_and_sdlc_trends.md) and [CI/CD analytics](../ci/runners/runner_fleet_dashboard.md).
+GitLab uses Clickhouse as a secondary data store to enable advanced analytics features such as GitLab Duo, SDLC trends, and CI Analytics. GitLab only stores data that supports these features in Clickhouse.
 
 You should use [ClickHouse Cloud](https://clickhouse.com/cloud) to connect ClickHouse to GitLab.
 
@@ -43,45 +35,195 @@ After you configure ClickHouse, you can use the following analytics features:
 
 ## Supported ClickHouse versions
 
-| First GitLab version | ClickHouse versions | Comment |
-|----------------------|---------------------|---------|
-| 17.7.0               | 23.x (24.x, 25.x)   | For using ClickHouse 24.x and 25.x see the [workaround section](#database-schema-migrations-on-gitlab-1800-and-earlier). |
-| 18.1.0               | 23.x, 24.x, 25.x    |         |
-| 18.5.0               | 23.x, 24.x, 25.x    | Experimental support for `Replicated` database engine. |
+The supported ClickHouse version differs depending on your GitLab version:
 
-> [!note]
-> [ClickHouse Cloud](https://clickhouse.com/cloud) is supported. Compatibility is generally ensured with the latest major GitLab release and newer versions.
+- GitLab 17.7 and later supports ClickHouse 23.x. To use either ClickHouse 24.x or 25.x, use the [workaround](#database-schema-migrations-on-gitlab-1800-and-earlier).
+- GitLab 18.1 and later supports ClickHouse 23.x, 24.x, and 25.x.
+- GitLab 18.8 and later supports ClickHouse 23.x, 24.x, 25.x, and the Replicated database engine.
+
+ClickHouse Cloud is always compatible with the latest stable GitLab release.
 
 ## Set up ClickHouse
 
-To set up ClickHouse with GitLab:
+Choose your deployment type based on your operational requirements:
 
-1. [Run ClickHouse Cluster and configure database](#run-and-configure-clickhouse).
-1. [Configure GitLab connection to ClickHouse](#configure-the-gitlab-connection-to-clickhouse).
+- **[ClickHouse Cloud](#set-up-clickhouse-cloud)** (Recommended): Fully managed service with automatic upgrades, backups, and scaling.
+- **[ClickHouse for GitLab Self-Managed (BYOC)](#set-up-clickhouse-for-gitlab-self-managed-byoc)**: Complete control over your infrastructure and configuration.
+
+After setting up your ClickHouse instance:
+
+1. [Create the GitLab database and user](#create-database-and-user).
+1. [Configure the GitLab connection](#configure-the-gitlab-connection).
+1. [Verify the connection](#verify-the-connection).
 1. [Run ClickHouse migrations](#run-clickhouse-migrations).
+1. [Enable ClickHouse for Analytics](#enable-clickhouse-for-analytics).
 
-### Run and configure ClickHouse
+### Set up ClickHouse Cloud
 
-When you run ClickHouse on a hosted server, various data points might impact the resource consumption, like the number
-of builds that run on your instance each month, the selected hardware, the data center choice to host ClickHouse, and more.
-Regardless, the cost should not be significant.
+Prerequisites:
+
+- Have a ClickHouse Cloud account.
+- Enable network connectivity from your GitLab instance to ClickHouse Cloud.
+- Be an administrator your GitLab instance.
+
+To set up ClickHouse Cloud:
+
+1. Sign in to [ClickHouse Cloud](https://clickhouse.cloud).
+1. Select **New Service**.
+1. Choose your service tier:
+   - **Development**: For testing and development environments.
+   - **Production**: For production workloads with high availability.
+1. Select your cloud provider and region. Choose a region close to your GitLab instance for optimal performance.
+1. Configure your service name and settings.
+1. Select **Create Service**.
+1. Once provisioned, note your connection details from the service dashboard:
+   - Host
+   - Port (usually `9440` for secure connections)
+   - Username
+   - Password
+
+{{< alert type="note" >}}
+ClickHouse Cloud automatically handles version upgrades and security patches. Enterprise Edition (EE) customers can schedule upgrades to control when they occur, and avoid unexpected service interruptions during business hours. For more information, see [upgrade ClickHouse](#upgrade-clickhouse). 
+{{< /alert >}}
+
+After you create your ClickHouse Cloud service, you then [create the GitLab database and user](#create-database-and-user).
+
+### Set up ClickHouse for GitLab Self-Managed (BYOC)
+
+Prerequisites:
+
+- Have a ClickHouse instance installed and running. If ClickHouse is not installed, see:
+  - [ClickHouse official installation guide](https://clickhouse.com/docs/en/install).
+  - [ClickHouse recommendations for GitLab Self-Managed](https://clickhouse.com/docs/guides/sizing-and-hardware-recommendations).
+- Have a [supported ClickHouse version](#supported-clickhouse-versions).
+- Enable network connectivity from your GitLab instance to ClickHouse.
+- Be an Administrator for both ClickHouse and your GitLab instance.
+
+{{< alert type="warning" >}}
+For ClickHouse for GitLab Self-Managed, you are responsible for planning and executing version upgrades, security patches, and backups. For more information, see [Upgrade ClickHouse](#upgrade-clickhouse).
+{{< /alert >}}
+
+#### Configure High Availability
+
+For a multi-node, high-availability (HA) setup, GitLab supports the Replicated table engine in ClickHouse.
+
+Prerequisites:
+
+- Have a ClickHouse cluster with multiple nodes. A minimum of three nodes is recommended.
+- Define a cluster in the `remote_servers` configuration section.
+- Configure the following macros in your ClickHouse configuration:
+  - `cluster`
+  - `shard`
+  - `replica`
+
+When configuring the database for HA, you must run the statements with the `ON CLUSTER` clause.
+
+For more information, see [ClickHouse Replicated database engine documentation](https://clickhouse.com/docs/en/engines/database-engines/replicated).
+
+#### Configure Load balancer
+
+The GitLab application communicates with the ClickHouse cluster through the HTTP/HTTPS interface. For HA deployments, use an HTTP proxy or load balancer to distribute requests across ClickHouse cluster nodes.
+
+Recommended load balancer options:
+
+- [chproxy](https://www.chproxy.org/) - ClickHouse-specific HTTP proxy with built-in caching and routing.
+- HAProxy - General-purpose TCP/HTTP load balancer.
+- NGINX - Web server with load balancing capabilities.
+- Cloud provider load balancers (AWS Application Load Balancer, GCP Load Balancer, Azure Load Balancer).
+
+Basic chproxy configuration example:
+
+```yaml
+server:
+  http:
+    listen_addr: ":8080"
+
+clusters:
+  - name: "clickhouse_cluster"
+    nodes: [
+      "http://ch-node1:8123",
+      "http://ch-node2:8123",
+      "http://ch-node3:8123"
+    ]
+
+users:
+  - name: "gitlab"
+    password: "your_secure_password"
+    to_cluster: "clickhouse_cluster"
+    to_user: "gitlab"
+```
+
+When using a load balancer, configure GitLab to connect to the load balancer URL instead of individual ClickHouse nodes.
+
+For more information, see [chproxy documentation](https://www.chproxy.org/).
+
+After you configure your ClickHouse for GitLab Self-Managed instance, [create the GitLab database and user](#create-database-and-user).
+
+### Verify ClickHouse installation
+
+Before configuring the database, verify ClickHouse is installed and accessible:
+
+1. Check ClickHouse is running:
+
+   ```shell
+   clickhouse-client --query "SELECT version()"
+   ```
+
+   If ClickHouse is running, you see the version number (for example, `24.3.1.12`).
+
+1. Verify you can connect with credentials:
+
+   ```shell
+   clickhouse-client --host your-clickhouse-host --port 9440 --secure --user default --password 'your-password'
+   ```
+
+   {{< alert type="note" >}}
+   If you have not configured TLS yet, use port `9000` without the `--secure` flag for initial testing.
+   {{< /alert >}}
+
+### Create database and user
 
 To create the necessary user and database objects:
 
 1. Generate a secure password and save it.
-1. Sign in to the ClickHouse SQL console.
-1. Execute the following command. Replace `PASSWORD_HERE` with the generated password.
+1. Sign in to:
+   - For ClickHouse Cloud, the ClickHouse SQL console.
+   - For ClickHouse for GitLab Self-Managed, the `clickhouse-client`.
+1. Run the following commands, replacing `PASSWORD_HERE` with the generated password.
 
-   ```sql
-   CREATE DATABASE gitlab_clickhouse_main_production;
-   CREATE USER gitlab IDENTIFIED WITH sha256_password BY 'PASSWORD_HERE';
-   CREATE ROLE gitlab_app;
-   GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE ON gitlab_clickhouse_main_production.* TO gitlab_app;
-   GRANT SELECT ON information_schema.* TO gitlab_app;
-   GRANT gitlab_app TO gitlab;
-   ```
+{{< tabs >}}
 
-### Configure the GitLab connection to ClickHouse
+{{< tab title="Single-node or ClickHouse Cloud" >}}
+
+```sql
+CREATE DATABASE gitlab_clickhouse_main_production;
+CREATE USER gitlab IDENTIFIED WITH sha256_password BY 'PASSWORD_HERE';
+CREATE ROLE gitlab_app;
+GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE ON gitlab_clickhouse_main_production.* TO gitlab_app;
+GRANT SELECT ON information_schema.* TO gitlab_app;
+GRANT gitlab_app TO gitlab;
+```
+
+{{< /tab >}}
+
+{{< tab title="HA ClickHouse for GitLab Self-Managed" >}}
+
+Replace `CLUSTER_NAME_HERE` with your cluster's name:
+
+```sql
+CREATE DATABASE gitlab_clickhouse_main_production ON CLUSTER CLUSTER_NAME_HERE ENGINE = Replicated('/clickhouse/databases/{cluster}/gitlab_clickhouse_main_production', '{shard}', '{replica}');
+CREATE USER gitlab IDENTIFIED WITH sha256_password BY 'PASSWORD_HERE' ON CLUSTER CLUSTER_NAME_HERE;
+CREATE ROLE gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
+GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE ON gitlab_clickhouse_main_production.* TO gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
+GRANT SELECT ON information_schema.* TO gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
+GRANT gitlab_app TO gitlab ON CLUSTER CLUSTER_NAME_HERE;
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+### Configure the GitLab connection
 
 {{< tabs >}}
 
@@ -93,10 +235,15 @@ To provide GitLab with ClickHouse credentials:
 
    ```ruby
    gitlab_rails['clickhouse_databases']['main']['database'] = 'gitlab_clickhouse_main_production'
-   gitlab_rails['clickhouse_databases']['main']['url'] = 'https://example.com/path'
+   gitlab_rails['clickhouse_databases']['main']['url'] = 'https://your-clickhouse-host:port'
    gitlab_rails['clickhouse_databases']['main']['username'] = 'gitlab'
    gitlab_rails['clickhouse_databases']['main']['password'] = 'PASSWORD_HERE' # replace with the actual password
    ```
+
+   Replace the URL with:
+   - For ClickHouse Cloud: `https://your-service.clickhouse.cloud:9440`
+   - ClickHouse for GitLab Self-Managed: `https://your-clickhouse-host:8443`
+   - For ClickHouse for GitLab Self-Managed HA with load balancer: `https://your-load-balancer:8080` (or your load balancer URL)
 
 1. Save the file and reconfigure GitLab:
 
@@ -127,13 +274,18 @@ To provide GitLab with ClickHouse credentials:
      clickhouse:
        enabled: true
        main:
-         username: default
+         username: gitlab
          password:
            secret: gitlab-clickhouse-password
            key: main_password
          database: gitlab_clickhouse_main_production
-         url: 'http://example.com'
+         url: 'https://your-clickhouse-host:port'
    ```
+
+   Replace the URL with:
+   - For ClickHouse Cloud: `https://your-service.clickhouse.cloud:9440`
+   - For ClickHouse for GitLab Self-Managed single node: `https://your-clickhouse-host:8443`
+   - For ClickHouse for GitLab Self-Managed HA with load balancer: `https://your-load-balancer:8080` (or your load balancer URL)
 
 1. Save the file and apply the new values:
 
@@ -145,16 +297,30 @@ To provide GitLab with ClickHouse credentials:
 
 {{< /tabs >}}
 
+{{< alert type="note" >}}
+For production deployments, configure TLS/SSL on your ClickHouse instance and use `https://` URLs. For GitLab Self-Managed installations, see the [Network Security](#network-security) documentation.
+{{< /alert >}}
+
+### Verify the connection
+
 To verify that your connection is set up successfully:
 
-1. Sign in to [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session)
+1. Sign in to the [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session).
 1. Execute the following command:
 
    ```ruby
    ClickHouse::Client.select('SELECT 1', :main)
    ```
 
-   If successful, the command returns `[{"1"=>1}]`
+   If successful, the command returns `[{"1"=>1}]`.
+
+If the connection fails, verify:
+
+- ClickHouse service is running and accessible.
+- Network connectivity from GitLab to ClickHouse. Check that firewalls and security groups allow connections.
+- Connection URL is correct (host, port, protocol).
+- Credentials are correct.
+- For HA cluster deployments: Load balancer is properly configured and routing requests.
 
 ### Run ClickHouse migrations
 
@@ -162,7 +328,7 @@ To verify that your connection is set up successfully:
 
 {{< tab title="Linux package" >}}
 
-To create the required database objects execute:
+To create the required database objects, execute:
 
 ```shell
 sudo gitlab-rake gitlab:clickhouse:migrate
@@ -172,9 +338,9 @@ sudo gitlab-rake gitlab:clickhouse:migrate
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-Migrations are executed automatically using the [GitLab-Migrations chart](https://docs.gitlab.com/charts/charts/gitlab/migrations/#clickhouse-optional).
+Migrations are executed automatically using the GitLab-Migrations chart.
 
-Alternatively, you can run migrations by executing the following command in the [Toolbox pod](https://docs.gitlab.com/charts/charts/gitlab/toolbox/):
+Alternatively, you can run migrations by executing the following command in the Toolbox pod:
 
 ```shell
 gitlab-rake gitlab:clickhouse:migrate
@@ -186,52 +352,209 @@ gitlab-rake gitlab:clickhouse:migrate
 
 ### Enable ClickHouse for Analytics
 
-Now that your GitLab instance is connected to ClickHouse, you can enable features to use ClickHouse by [enabling ClickHouse for Analytics](../administration/analytics.md).
-
-## `Replicated` database engine
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/560927) as an experiment in GitLab 18.5.
-
-{{< /history >}}
-
-For a multi-node, high-availability setup, GitLab supports the `Replicated` table engine in ClickHouse.
+After your GitLab instance is connected to ClickHouse, you can enable features that use ClickHouse:
 
 Prerequisites:
 
-- A cluster must be defined in the `remote_servers` [configuration section](https://clickhouse.com/docs/architecture/cluster-deployment#configure-clickhouse-servers).
-- The following [macros](https://clickhouse.com/docs/architecture/cluster-deployment#macros-config-explanation) must be configured:
-  - `cluster`
-  - `shard`
-  - `replica`
+- You must have administrator access to the instance.
+- ClickHouse connection is configured and verified.
+- Migrations have been successfully completed.
 
-When configuring the database, you must run the statements with the `ON CLUSTER` clause.
-In the following example, replace `CLUSTER_NAME_HERE` with your cluster's name:
+To enable ClickHouse for Analytics:
 
- ```sql
- CREATE DATABASE gitlab_clickhouse_main_production ON CLUSTER CLUSTER_NAME_HERE ENGINE = Replicated('/clickhouse/databases/{cluster}/gitlab_clickhouse_main_production', '{shard}', '{replica}')
- CREATE USER gitlab IDENTIFIED WITH sha256_password BY 'PASSWORD_HERE' ON CLUSTER CLUSTER_NAME_HERE;
- CREATE ROLE gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
- GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE ON gitlab_clickhouse_main_production.* TO gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
- GRANT SELECT ON information_schema.* TO gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
- GRANT gitlab_app TO gitlab ON CLUSTER CLUSTER_NAME_HERE;
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand **ClickHouse**.
+1. Select **Enable ClickHouse for Analytics**.
+1. Select **Save changes**.
 
- -- Create the schema_migrations table manually
+### Disable ClickHouse for Analytics
 
-CREATE TABLE gitlab_clickhouse_main_production.schema_migrations (
-  version LowCardinality(String),
-  active UInt8 NOT NULL DEFAULT 1,
-  applied_at DateTime64(6, 'UTC') NOT NULL DEFAULT now64()
-)
-ENGINE = ReplicatedReplacingMergeTree(applied_at)
-PRIMARY KEY(version)
-ORDER BY (version)
+To disable ClickHouse for Analytics:
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To disable:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand **ClickHouse**.
+1. Clear the **Enable ClickHouse for Analytics** checkbox.
+1. Select **Save changes**.
+
+{{< alert type="note" >}}
+Disabling ClickHouse for Analytics stops GitLab from querying ClickHouse but does not delete any data from your ClickHouse instance. Analytics features that rely on ClickHouse will fall back to alternative data sources or become unavailable.
+{{< /alert >}}
+
+## Upgrade ClickHouse
+
+### ClickHouse Cloud
+
+ClickHouse Cloud automatically handles version upgrades and security patches. No manual intervention is required.
+
+For information about upgrade scheduling and maintenance windows, see the [ClickHouse Cloud documentation](https://clickhouse.com/docs/cloud/manage/updates).
+
+{{< alert type="note" >}}
+ClickHouse Cloud notifies you in advance of upcoming upgrades. Review the [ClickHouse Cloud changelog](https://clickhouse.com/docs/cloud/changes) to stay informed about new features and changes.
+{{< /alert >}}
+
+### ClickHouse for GitLab Self-Managed (BYOC)
+
+For ClickHouse for GitLab Self-Managed, you are responsible for planning and executing version upgrades.
+
+Prerequisites:
+
+- Have administrator access to the ClickHouse instance.
+- Back up your data before upgrading. See [Disaster recovery](#disaster-recovery).
+
+Before upgrading:
+
+1. Review the [ClickHouse release notes](https://clickhouse.com/docs/category/release-notes) for breaking changes.
+1. Check [compatibility](#supported-clickhouse-versions) with your GitLab version.
+1. Test the upgrade in a non-production environment.
+1. Plan for potential downtime, or use a rolling upgrade strategy for HA clusters.
+
+To upgrade ClickHouse:
+
+1. For single-node deployments, follow the [ClickHouse upgrade documentation](https://clickhouse.com/docs/manage/updates).
+1. For HA cluster deployments, perform a rolling upgrade to minimize downtime:
+   - Upgrade one node at a time.
+   - Wait for the node to rejoin the cluster.
+   - Verify cluster health before proceeding to the next node.
+
+{{< alert type="warning" >}}
+Always ensure the ClickHouse version remains compatible with your GitLab version. Incompatible versions might cause indexing to pause and features to fail. For more information, see [supported ClickHouse versions](#supported-clickhouse-versions)
+{{< /alert >}}
+
+For detailed upgrade procedures, see the [ClickHouse documentation on updates](https://clickhouse.com/docs/manage/updates).
+
+## Operations
+
+### Check migration status
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To check the status of ClickHouse migrations:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand **ClickHouse**.
+1. Review the **Migration status** section if available.
+
+Alternatively, check for pending migrations using the Rails console:
+
+```ruby
+# Sign in to Rails console
+# Run this to check migrations
+ClickHouse::MigrationSupport::Migrator.new(:main).pending_migrations
 ```
 
-### Load balancer considerations
+### Retry failed migrations
 
-The GitLab application communicates with the ClickHouse cluster through the HTTP/HTTPS interface. Consider using an HTTP proxy for load balancing requests to the ClickHouse cluster, such as [`chproxy`](https://www.chproxy.org/).
+If a ClickHouse migration fails:
+
+1. Check the logs for error details. ClickHouse-related errors are logged in the GitLab application logs.
+1. Address the underlying issue (for example, insufficient memory, connectivity problems).
+1. Retry the migration:
+
+   ```shell
+   # For installations that use the Linux package
+   sudo gitlab-rake gitlab:clickhouse:migrate
+
+   # For self-compiled installations
+   bundle exec rake gitlab:clickhouse:migrate RAILS_ENV=production
+   ```
+
+{{< alert type="note" >}}
+Migrations are designed to be idempotent and safe to retry. If a migration fails partway through, running it again resumes from where it left off or skip already-completed steps.
+{{< /alert >}}
+
+## ClickHouse Rake tasks
+
+GitLab provides several Rake tasks for managing your ClickHouse database.
+
+The following Rake tasks are available:
+
+| Task | Description |
+|------|-------------|
+| [`sudo gitlab-rake gitlab:clickhouse:migrate`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/click_house/migration.rake) | Runs all pending ClickHouse migrations to create or update database schema. |
+| [`sudo gitlab-rake gitlab:clickhouse:drop`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/click_house/migration.rake) | Drops all ClickHouse databases. Use with extreme caution as this deletes all data. |
+| [`sudo gitlab-rake gitlab:clickhouse:create`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/click_house/migration.rake) | Creates ClickHouse databases if they do not exist. |
+| [`sudo gitlab-rake gitlab:clickhouse:setup`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/click_house/migration.rake) | Creates databases and runs all migrations. Equivalent to running `create` and `migrate` tasks. |
+| [`sudo gitlab-rake gitlab:clickhouse:schema:dump`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/click_house/migration.rake) | Dumps the current database schema to a file for backup or version control. |
+| [`sudo gitlab-rake gitlab:clickhouse:schema:load`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/click_house/migration.rake) | Loads the database schema from a dump file. |
+
+{{< alert type="note" >}}
+For self-compiled installations, use `bundle exec rake` instead of `sudo gitlab-rake` and add `RAILS_ENV=production` to the end of the command.
+{{< /alert >}}
+
+### Common task examples
+
+#### Verify ClickHouse connection and schema
+
+To verify your ClickHouse connection is working:
+
+```shell
+# For installations that use the Linux package
+sudo gitlab-rake gitlab:clickhouse:info
+
+# For self-compiled installations
+bundle exec rake gitlab:clickhouse:info RAILS_ENV=production
+```
+
+This task outputs debugging information about the ClickHouse connection and configuration.
+
+#### Re-run all migrations
+
+To run all pending migrations:
+
+```shell
+# For installations that use the Linux package
+sudo gitlab-rake gitlab:clickhouse:migrate
+
+# For self-compiled installations
+bundle exec rake gitlab:clickhouse:migrate RAILS_ENV=production
+```
+
+#### Reset the database
+
+{{< alert type="warning" >}}
+This deletes all data in your ClickHouse database. Use only in development or when troubleshooting.
+{{< /alert >}}
+
+To drop and recreate the database:
+
+```shell
+# For installations that use the Linux package
+sudo gitlab-rake gitlab:clickhouse:drop
+sudo gitlab-rake gitlab:clickhouse:setup
+
+# For self-compiled installations
+bundle exec rake gitlab:clickhouse:drop RAILS_ENV=production
+bundle exec rake gitlab:clickhouse:setup RAILS_ENV=production
+```
+
+### Environment variables
+
+You can use environment variables to control Rake task behavior:
+
+| Environment Variable | Data Type | Description |
+|---------------------|-----------|-------------|
+| `VERBOSE` | Boolean | Set to `true` to see detailed output during migrations. Example: `VERBOSE=true sudo gitlab-rake gitlab:clickhouse:migrate` |
+
+## Performance tuning
+
+{{< alert type="note" >}}
+For resource sizing and deployment recommendations based on your user count, see [system requirements](#system-requirements).
+{{< /alert >}}
+
+For information about ClickHouse architecture and performance tuning, see the [ClickHouse documentation on architecture](https://clickhouse.com/docs/architecture/introduction).
+
+## Disaster recovery
 
 ### Backup and Restore
 
@@ -280,13 +603,13 @@ To enable this:
 1. Configure the `prometheus` section in your `config.xml` to expose metrics on a dedicated port (default is `9363`).
 
    ```xml
-    <prometheus>
-        <endpoint>/metrics</endpoint>
-        <port>9363</port>
-        <metrics>true</metrics>
-        <events>true</events>
-        <asynchronous_metrics>true</asynchronous_metrics>
-    </prometheus>
+   <prometheus>
+       <endpoint>/metrics</endpoint>
+       <port>9363</port>
+       <metrics>true</metrics>
+       <events>true</events>
+       <asynchronous_metrics>true</asynchronous_metrics>
+   </prometheus>
    ```
 
 1. Configure Prometheus or a similar compatible server to scrape `http://<clickhouse-host>:9363/metrics`.
@@ -314,7 +637,7 @@ To ensure the security of your data and ensure audit ability, use the following 
 
 ### Network security
 
-- TLS Encryption: Configure ClickHouse servers to [use TLS encryption](https://clickhouse.com/docs/guides/sre/configuring-ssl) to validate connections.
+- TLS Encryption: Configure ClickHouse servers to [use TLS encryption](#network-security) to validate connections.
 
   When configuring the connection URL in GitLab, you should use the `https://` protocol (for example, `https://clickhouse.example.com:8443`) to specify this.
 
@@ -337,13 +660,13 @@ For self-managed instances, ensure the `query_log` configuration parameter is en
 1. Verify that the `query_log` section exists in your `config.xml` or `users.xml`:
 
    ```xml
-    <query_log>
-        <database>system</database>
-        <table>query_log</table>
-        <partition_by>toYYYYMM(event_date)</partition_by>
-        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
-        <ttl>event_date + INTERVAL 30 DAY</ttl>  <!-- Keep only 30 days -->
-    </query_log>
+   <query_log>
+       <database>system</database>
+       <table>query_log</table>
+       <partition_by>toYYYYMM(event_date)</partition_by>
+       <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+       <ttl>event_date + INTERVAL 30 DAY</ttl>  <!-- Keep only 30 days -->
+   </query_log>
    ```
 
 1. Once enabled, all executed queries are recorded in the `system.query_log` table, allowing for audit trail.
@@ -471,13 +794,14 @@ HA setup becomes cost effective only at 10k users or above.
   ClickHouse always has at least one shard for your data.
   If you do not split the data across multiple servers, your data is stored in one shard.
   Sharding data across multiple servers can be used to divide the load if you exceed the capacity of a single server.
-- TTL: Time To Live (TTL) is a ClickHouse feature that automatically moves, deletes, or rolls up columns/rows after a certain time period.
+- TTL (Time To Live): Time To Live (TTL) is a ClickHouse feature that automatically moves, deletes, or rolls up columns/rows after a certain time period.
   This allows you to manage storage more efficiently because you can delete, move, or archive the data that you no longer need to access frequently.
 
 ## Troubleshooting
 
 ### Database schema migrations on GitLab 18.0.0 and earlier
 
+{{< alert type="warning" >}}
 On GitLab 18.0.0 and earlier, running database schema migrations for ClickHouse may fail for ClickHouse 24.x and 25.x with the following error message:
 
 ```plaintext
@@ -485,10 +809,11 @@ Code: 344. DB::Exception: Projection is fully supported in ReplacingMergeTree wi
 ```
 
 Without running all migrations, the ClickHouse integration will not work.
+{{< /alert >}}
 
 To work around this issue and run the migrations:
 
-1. Sign in to [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session)
+1. Sign in to the [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session).
 1. Execute the following command:
 
    ```ruby

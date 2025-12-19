@@ -17,7 +17,7 @@ import {
 } from '../mock_data';
 
 function getWorkItem(data) {
-  return data.workspace.workItem;
+  return data.namespace.workItem;
 }
 function getFirstNote(workItem) {
   return workItem.widgets.find((w) => w.type === 'NOTES').discussions.nodes[0].notes.nodes[0];
@@ -154,7 +154,7 @@ describe('Work item note award utils', () => {
     const cacheData = workItemResponseFactory({ newCustomEmojiPath });
     const mockCache = {
       readQuery: jest.fn().mockReturnValue({
-        workspace: {
+        namespace: {
           workItem: cacheData.data.workItem,
         },
       }),

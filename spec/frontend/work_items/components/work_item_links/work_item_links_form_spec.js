@@ -37,7 +37,7 @@ Vue.use(VueApollo);
 const projectData = namespaceProjectsList.data.namespace.projects.nodes;
 
 const findWorkItemTypeId = (typeName) => {
-  return namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
+  return namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes.find(
     (node) => node.name === typeName,
   ).id;
 };
@@ -136,11 +136,11 @@ describe('WorkItemLinksForm', () => {
   });
 
   it.each`
-    workspace    | isGroup  | queryResolver
+    namespace    | isGroup  | queryResolver
     ${'project'} | ${false} | ${namespaceWorkItemTypesResolver}
     ${'group'}   | ${true}  | ${namespaceWorkItemTypesResolver}
   `(
-    'fetches $workspace work item types when isGroup is $isGroup',
+    'fetches $namespace work item types when isGroup is $isGroup',
     async ({ isGroup, queryResolver }) => {
       await createComponent({ isGroup });
 
@@ -418,7 +418,7 @@ describe('WorkItemLinksForm', () => {
 
   describe('adding an existing work item', () => {
     const selectAvailableWorkItemTokens = (
-      tokens = availableWorkItemsResponse.data.workspace.workItems.nodes,
+      tokens = availableWorkItemsResponse.data.namespace.workItems.nodes,
     ) => {
       findWorkItemTokenInput().vm.$emit('input', tokens);
     };
@@ -452,7 +452,7 @@ describe('WorkItemLinksForm', () => {
       expect(findAddChildButton().text()).toBe('Add tasks');
       expect(findWorkItemTokenInput().props('areWorkItemsToAddValid')).toBe(true);
       expect(findWorkItemTokenInput().props('value')).toBe(
-        availableWorkItemsResponse.data.workspace.workItems.nodes,
+        availableWorkItemsResponse.data.namespace.workItems.nodes,
       );
       findForm().vm.$emit('submit', {
         preventDefault: jest.fn(),
@@ -500,7 +500,7 @@ describe('WorkItemLinksForm', () => {
 
       // Trigger Token input update, causing error to clear
       await selectAvailableWorkItemTokens(
-        availableWorkItemsResponse.data.workspace.workItems.nodes.slice(0, 2),
+        availableWorkItemsResponse.data.namespace.workItems.nodes.slice(0, 2),
       );
 
       // Assert if error was cleared

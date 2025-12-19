@@ -180,10 +180,10 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.workItem || {};
+        return data.namespace?.workItem || {};
       },
       result({ data }) {
-        const labels = findLabelsWidget(data?.workspace?.workItem)?.labels?.nodes || [];
+        const labels = findLabelsWidget(data?.namespace?.workItem)?.labels?.nodes || [];
         this.labelsCache = unionBy(this.labelsCache, labels, 'id');
         this.selectedLabelsIds = labels.map(({ id }) => id);
       },

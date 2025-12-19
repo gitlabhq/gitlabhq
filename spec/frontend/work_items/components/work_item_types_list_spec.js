@@ -18,7 +18,7 @@ describe('WorkItemTypesList', () => {
 
   const mockEmptyResponse = {
     data: {
-      workspace: {
+      namespace: {
         workItemTypes: {
           nodes: [],
           __typename: 'WorkItemTypeConnection',
@@ -29,7 +29,7 @@ describe('WorkItemTypesList', () => {
   };
 
   const getMockWorkItemTypes = () =>
-    namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes;
+    namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes;
   const mockWorkItemTypes = getMockWorkItemTypes();
   const namespaceQueryHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
   const mockEmptyResponseHandler = jest.fn().mockResolvedValue(mockEmptyResponse);

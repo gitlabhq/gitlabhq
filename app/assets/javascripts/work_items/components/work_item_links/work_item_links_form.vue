@@ -108,7 +108,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.workItemTypes?.nodes;
+        return data.namespace?.workItemTypes?.nodes;
       },
     },
   },

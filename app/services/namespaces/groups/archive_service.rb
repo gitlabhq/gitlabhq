@@ -32,10 +32,21 @@ module Namespaces
         return AlreadyArchivedError if group.archived
         return AncestorAlreadyArchivedError if group.ancestors_archived?
         return ScheduledDeletionError if group.scheduled_for_deletion_in_hierarchy_chain?
-        return ArchivingFailedError unless group.namespace_settings.update(archived: true)
+
+        if unarchive_descendants?
+          group.transaction do
+            group.namespace_settings.update!(archived: true)
+            group.unarchive_descendants!
+            group.unarchive_all_projects!
+          end
+        else
+          group.namespace_settings.update!(archived: true)
+        end
 
         after_archive
         ServiceResponse.success
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
+        ArchivingFailedError
       end
 
       private
@@ -52,6 +63,10 @@ module Namespaces
 
       def error_response(message)
         ServiceResponse.error(message: message)
+      end
+
+      def unarchive_descendants?
+        Feature.enabled?(:cascade_unarchive_group, group, type: :gitlab_com_derisk)
       end
     end
   end

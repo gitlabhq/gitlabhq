@@ -40,14 +40,45 @@ RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_categor
   end
 
   context 'when the group is archived' do
+    let_it_be_with_reload(:subgroup) { create(:group, :archived, parent: group) }
+    let_it_be_with_reload(:sub_subgroup) { create(:group, :archived, parent: subgroup) }
+
+    let_it_be_with_reload(:archived_project) { create(:project, :archived, group: group) }
+    let_it_be_with_reload(:archived_subgroup_project) { create(:project, :archived, group: subgroup) }
+
     before do
       group.namespace_settings.update!(archived: true)
     end
 
+    shared_examples 'rolls back all changes on failure' do
+      it 'returns an error response' do
+        response = service_response
+        expect(response).to be_error
+        expect(response.message).to eq("Failed to unarchive group!")
+      end
+
+      it 'does not persist any changes' do
+        expect { service_response }
+          .to not_change { group.namespace_settings.reload.archived }
+            .and not_change { subgroup.namespace_settings.reload.archived }
+              .and not_change { archived_project.reload.archived }
+      end
+    end
+
     context 'when unarchiving succeeds' do
-      it 'updates namespace_settings archived to false' do
-        expect(group.namespace_settings).to receive(:update).with(archived: false).and_return(true)
+      it 'unarchives all descendant groups', :aggregate_failures do
         service_response
+
+        expect(group.namespace_settings.reload.archived).to be(false)
+        expect(subgroup.namespace_settings.reload.archived).to be(false)
+        expect(sub_subgroup.namespace_settings.reload.archived).to be(false)
+      end
+
+      it 'unarchives all projects', :aggregate_failures do
+        service_response
+
+        expect(archived_project.reload.archived).to be(false)
+        expect(archived_subgroup_project.reload.archived).to be(false)
       end
 
       it 'returns a success response with the group' do
@@ -56,23 +87,47 @@ RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_categor
 
       it 'publishes a GroupArchivedEvent' do
         expect { service_response }.to publish_event(Namespaces::Groups::GroupArchivedEvent)
-                                         .with(
-                                           group_id: group.id,
-                                           root_namespace_id: group.root_ancestor.id
-                                         )
+          .with(
+            group_id: group.id,
+            root_namespace_id: group.root_ancestor.id
+          )
+      end
+
+      context 'when `cascade_unarchive_group` flag is disabled' do
+        before do
+          stub_feature_flags(cascade_unarchive_group: false)
+        end
+
+        it 'unarchives the group' do
+          service_response
+
+          expect(group.namespace_settings.reload.archived).to be(false)
+        end
+
+        it 'does not modify descendant and projects archived state' do
+          expect { service_response }
+            .to not_change { subgroup.namespace_settings.reload.archived }
+              .and not_change { sub_subgroup.namespace_settings.reload.archived }
+                .and not_change { archived_project.reload.archived }
+                  .and not_change { archived_subgroup_project.reload.archived }
+        end
       end
     end
 
     context 'when unarchiving fails' do
       before do
-        allow(group.namespace_settings).to receive(:update).with(archived: false).and_return(false)
+        allow(group).to receive(:unarchive_self_and_descendants!).and_raise(ActiveRecord::RecordNotSaved)
       end
 
-      it 'returns an error response with the appropriate message' do
-        response = service_response
-        expect(response).to be_error
-        expect(response.message).to eq("Failed to unarchive group!")
+      it_behaves_like 'rolls back all changes on failure'
+    end
+
+    context 'when unarchiving projects fails' do
+      before do
+        allow(group).to receive(:unarchive_all_projects!).and_raise(ActiveRecord::RecordNotSaved)
       end
+
+      it_behaves_like 'rolls back all changes on failure'
     end
   end
 

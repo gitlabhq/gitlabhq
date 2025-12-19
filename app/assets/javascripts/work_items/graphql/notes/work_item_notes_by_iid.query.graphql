@@ -8,7 +8,7 @@ query workItemNotesByIid(
   $pageSize: Int
   $sort: WorkItemDiscussionsSort
 ) {
-  workspace: namespace(fullPath: $fullPath) {
+  namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {
       id

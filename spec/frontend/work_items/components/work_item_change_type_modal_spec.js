@@ -32,20 +32,20 @@ describe('WorkItemChangeTypeModal component', () => {
   let wrapper;
 
   const typesQuerySuccessHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
-  const issueTypeId = namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
+  const issueTypeId = namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes.find(
     (type) => type.name === WORK_ITEM_TYPE_NAME_ISSUE,
   ).id;
-  const taskTypeId = namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
+  const taskTypeId = namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes.find(
     (type) => type.name === WORK_ITEM_TYPE_NAME_TASK,
   ).id;
-  const epicTypeId = namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
+  const epicTypeId = namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes.find(
     (item) => item.name === WORK_ITEM_TYPE_NAME_EPIC,
   ).id;
 
-  namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes
+  namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes
     .find((item) => item.name === WORK_ITEM_TYPE_NAME_TASK)
     .widgetDefinitions.splice(
-      namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes
+      namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes
         .find((item) => item.name === WORK_ITEM_TYPE_NAME_TASK)
         .widgetDefinitions.findIndex((item) => item.type === 'CRM_CONTACTS'),
       1,

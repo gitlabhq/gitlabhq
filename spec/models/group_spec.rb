@@ -865,6 +865,10 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { expect(group.descendants.to_sql).to include 'traversal_ids @>' }
     end
 
+    describe '#descendant_ids' do
+      it { expect(group.descendant_ids.to_sql).to include 'traversal_ids @>' }
+    end
+
     describe '#self_and_hierarchy' do
       it { expect(group.self_and_hierarchy.to_sql).to include 'traversal_ids @>' }
     end
@@ -4671,6 +4675,103 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         expect(result).to be_nil
         expect(group.members.where(user: user)).to be_empty
       end
+    end
+  end
+
+  describe '#unarchive_self_and_descendants!' do
+    let_it_be_with_reload(:parent_group) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group, :archived, parent: parent_group) }
+    let_it_be_with_reload(:subgroup) { create(:group, :archived, parent: group) }
+    let_it_be_with_reload(:sub_subgroup) { create(:group, :archived, parent: subgroup) }
+
+    it 'unarchives the group itself' do
+      group.unarchive_self_and_descendants!
+
+      expect(group.namespace_settings.reload.archived).to be(false)
+    end
+
+    it 'unarchives all descendant groups', :aggregate_failures do
+      group.unarchive_self_and_descendants!
+
+      expect(subgroup.namespace_settings.reload.archived).to be(false)
+      expect(sub_subgroup.namespace_settings.reload.archived).to be(false)
+    end
+
+    it 'does not unarchive parent groups' do
+      parent_group.namespace_settings.update!(archived: true)
+
+      group.unarchive_self_and_descendants!
+
+      expect(parent_group.namespace_settings.reload.archived).to be(true)
+    end
+
+    it 'does not affect groups that are not archived' do
+      unarchived_group = create(:group, parent: group)
+
+      expect { group.unarchive_self_and_descendants! }.not_to change {
+        unarchived_group.namespace_settings.reload.archived
+      }
+    end
+  end
+
+  describe '#unarchive_descendants!' do
+    let_it_be_with_reload(:parent_group) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group, :archived, parent: parent_group) }
+    let_it_be_with_reload(:subgroup) { create(:group, :archived, parent: group) }
+    let_it_be_with_reload(:sub_subgroup) { create(:group, :archived, parent: subgroup) }
+
+    it 'does not unarchive the group itself' do
+      group.unarchive_descendants!
+
+      expect(group.namespace_settings.reload.archived).to be(true)
+    end
+
+    it 'unarchives all descendant groups', :aggregate_failures do
+      group.unarchive_descendants!
+
+      expect(subgroup.namespace_settings.reload.archived).to be(false)
+      expect(sub_subgroup.namespace_settings.reload.archived).to be(false)
+    end
+
+    it 'does not unarchive parent groups' do
+      parent_group.namespace_settings.update!(archived: true)
+
+      group.unarchive_descendants!
+
+      expect(parent_group.namespace_settings.reload.archived).to be(true)
+    end
+
+    it 'does not affect groups that are not archived' do
+      unarchived_group = create(:group, parent: group)
+
+      expect { group.unarchive_descendants! }.not_to change {
+        unarchived_group.namespace_settings.reload.archived
+      }
+    end
+  end
+
+  describe '#unarchive_all_projects!' do
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:archived_project_1) { create(:project, :archived, group: group) }
+    let_it_be_with_reload(:archived_project_2) { create(:project, :archived, group: group) }
+    let_it_be_with_reload(:non_archived_project) { create(:project, group: group) }
+
+    let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
+    let_it_be_with_reload(:subgroup_archived_project) { create(:project, :archived, group: subgroup) }
+    let_it_be_with_reload(:subgroup_non_archived_project) { create(:project, group: subgroup) }
+
+    it 'unarchives all archived projects in the group', :aggregate_failures do
+      group.unarchive_all_projects!
+
+      expect(archived_project_1.reload.archived).to be(false)
+      expect(archived_project_2.reload.archived).to be(false)
+      expect(subgroup_archived_project.reload.archived).to be(false)
+    end
+
+    it 'does not affect projects that are not archived' do
+      expect { group.unarchive_all_projects! }
+        .to not_change { non_archived_project.reload.archived }
+          .and not_change { subgroup_non_archived_project.reload.archived }
     end
   end
 end

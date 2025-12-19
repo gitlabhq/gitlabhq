@@ -285,7 +285,7 @@ describe('Description component', () => {
 
         it('calls a mutation to create a task', () => {
           const workItemTypeIdForTask =
-            namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
+            namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes.find(
               (node) => node.name === 'Task',
             ).id;
           const { confidential, iteration, milestone } = issueDetailsResponse.data.issue;

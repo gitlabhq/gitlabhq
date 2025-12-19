@@ -25,10 +25,20 @@ module Namespaces
         return NotAuthorizedError unless can?(current_user, :archive_group, group)
         return AncestorArchivedError if group.ancestors_archived?
         return AlreadyUnarchivedError unless group.archived
-        return UnarchivingFailedError unless group.namespace_settings.update(archived: false)
+
+        if unarchive_descendants?
+          group.transaction do
+            group.unarchive_self_and_descendants!
+            group.unarchive_all_projects!
+          end
+        else
+          group.namespace_settings.update!(archived: false)
+        end
 
         after_unarchive
         ServiceResponse.success
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
+        UnarchivingFailedError
       end
 
       private
@@ -40,6 +50,10 @@ module Namespaces
 
       def error_response(message)
         ServiceResponse.error(message: message)
+      end
+
+      def unarchive_descendants?
+        Feature.enabled?(:cascade_unarchive_group, group, type: :gitlab_com_derisk)
       end
     end
   end

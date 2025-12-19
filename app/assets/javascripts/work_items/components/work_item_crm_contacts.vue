@@ -133,7 +133,7 @@ export default {
         };
       },
       update(data) {
-        return data?.workspace?.workItem ?? {};
+        return data?.namespace?.workItem ?? {};
       },
       result() {
         this.selectedCount = this.selectedItemIds.length;

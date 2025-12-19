@@ -233,7 +233,7 @@ export default {
             iid,
           },
           update(data) {
-            return data.workspace?.workItem;
+            return data.namespace?.workItem;
           },
         })
         .catch((error) => {

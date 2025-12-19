@@ -63,6 +63,8 @@ tags:
   description: Operations about cargo_packages
 - name: commits
   description: Operations about commits
+- name: draft_notes
+  description: Operations about draft_notes
 - name: issues
   description: Operations about issues
 - name: issue_participants
@@ -18536,7 +18538,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - draft_notes
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidDraftNotes
     post:
       description: Create a new draft note
@@ -18571,7 +18573,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - draft_notes
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidDraftNotes
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/draft_notes/{draft_note_id}":
     get:
@@ -18606,7 +18608,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - draft_notes
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidDraftNotesDraftNoteId
     put:
       description: Modify an existing draft note
@@ -18647,7 +18649,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - draft_notes
       operationId: putApiV4ProjectsIdMergeRequestsMergeRequestIidDraftNotesDraftNoteId
     delete:
       description: Delete a draft note
@@ -18677,7 +18679,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - draft_notes
       operationId: deleteApiV4ProjectsIdMergeRequestsMergeRequestIidDraftNotesDraftNoteId
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/draft_notes/{draft_note_id}/publish":
     put:
@@ -18712,7 +18714,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - draft_notes
       operationId: putApiV4ProjectsIdMergeRequestsMergeRequestIidDraftNotesDraftNoteIdPublish
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/draft_notes/bulk_publish":
     post:
@@ -18741,7 +18743,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - draft_notes
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidDraftNotesBulkPublish
   "/api/v4/projects/{id}/environments":
     get:

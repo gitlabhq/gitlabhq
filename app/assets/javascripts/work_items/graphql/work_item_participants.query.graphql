@@ -1,7 +1,7 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 
 query workItemParticipants($fullPath: ID!, $iid: String!) {
-  workspace: namespace(fullPath: $fullPath) {
+  namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {
       id

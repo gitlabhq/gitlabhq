@@ -104,10 +104,10 @@ export default {
       skip() {
         return !this.workItemIid;
       },
-      update({ workspace }) {
-        if (!workspace?.workItem) return [];
+      update({ namespace }) {
+        if (!namespace?.workItem) return [];
 
-        return findLinkedItemsWidget(workspace.workItem).linkedItems?.nodes || [];
+        return findLinkedItemsWidget(namespace.workItem).linkedItems?.nodes || [];
       },
       async result() {
         // When work items are switched in a modal, the data props are not getting reset.
@@ -303,7 +303,7 @@ export default {
               ...queryArgs,
               data: produce(sourceData, (draftState) => {
                 const linkedItems =
-                  findLinkedItemsWidget(draftState.workspace.workItem).linkedItems?.nodes || [];
+                  findLinkedItemsWidget(draftState.namespace.workItem).linkedItems?.nodes || [];
                 const index = linkedItems.findIndex((item) => {
                   return item.workItem.id === linkedItem.id;
                 });
