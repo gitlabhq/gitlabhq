@@ -67,6 +67,13 @@ required upgrade stops occur at versions:
 
 ## 18.7.0
 
+- A [post deployment migration](../../development/database/post_deployment_migrations.md)
+  schedules batched [background migrations](../background_migrations.md) to copy CI builds metadata
+  to new optimized tables (`p_ci_job_definitions`). This migration is part of an initiative to
+  ultimately reduce CI database size (see [epic 13886](https://gitlab.com/groups/gitlab-org/-/epics/13886)).
+  If you have an instance with millions of jobs and want to speed up the migration,
+  you can [select what data is migrated](#ci-builds-metadata-migration-details).
+
 ### Geo installations 18.7.0
 
 - Added a new `action_cable_allowed_origins` setting to configure allowed origins for ActionCable websocket requests.
@@ -241,3 +248,133 @@ To fix this issue, you have a few options:
 
 The last option is the recommended one to meet FIPS requirements. For
 legacy installations, the first two options can be used as a stopgap.
+
+## CI builds metadata migration details
+
+> [!note]
+> Since GitLab 18.6, new pipelines write data exclusively to the new format
+> (see [issue 552065](https://gitlab.com/gitlab-org/gitlab/-/issues/552065)).
+> This migration only copies existing data from the old format to the new one.
+> No data is deleted.
+
+Data not migrated will be removed in a future release (see [epic 18271](https://gitlab.com/groups/gitlab-org/-/epics/18271)).
+
+The migration duration is directly proportional to the total number of CI jobs in your instance.
+Jobs are processed from newest to oldest partitions to prioritize recent data.
+
+You can reduce the number of jobs to migrate by enabling
+[automatic pipeline cleanup](../../ci/pipelines/settings.md#automatic-pipeline-cleanup)
+on larger projects to delete old pipelines before upgrading.
+
+The migration copies two types of data:
+
+- **Jobs processing data**: Job execution configuration from `.gitlab-ci.yml` (such as `script`, `variables`)
+  needed only for runners when executing jobs, not for the UI or API.
+- **Job data visible to users**: of all the job data, this migration only impacts job timeout value,
+  job exit code values, [exposed artifacts](../../ci/jobs/job_artifacts.md#link-to-job-artifacts-in-the-merge-request-ui),
+  and [environment associations](../../ci/yaml/_index.md#environment).
+
+For GitLab Self-Managed and GitLab Dedicated instances with large CI datasets, you can speed up the migration by
+reducing the scope of data to migrate. To control the scope use the settings defined below.
+
+### Controlling the scope for jobs processing data
+
+By default, the migration copies processing data for all existing jobs.
+You can cut down the scope by using one of the settings described below.
+
+The value of the setting controls how much of jobs processing data you want to retain.
+For example, set it to `6mo` if you only expect jobs created in the last 6 months to be executed
+(through [retries](../../ci/jobs/_index.md#retry-jobs),
+[execution of manual jobs](../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually),
+[environment auto-stop](../../ci/environments/_index.md#stopping-an-environment)).
+
+GitLab looks for the setting in order of precedence:
+
+1. [Pipeline archival](../../administration/settings/continuous_integration.md#archive-pipelines) setting (recommended best practice).
+   Archived pipelines signal that jobs cannot be manually retried or re-run.
+   If this setting is enabled, processing data for archived jobs don't need to be migrated.
+
+   > [!note]
+   > If the pipeline archival range is later extended,
+   > jobs without processing data will remain unexecutable.
+
+1. `GITLAB_DB_CI_JOBS_PROCESSING_DATA_CUTOFF` [environment variable](../../administration/environment_variables.md),
+   if pipeline archival is not configured or needs to be overridden for this migration. It accepts duration strings
+   like `1y` (1 year), `6mo` (6 months), `90d` (90 days).
+1. `GITLAB_DB_CI_JOBS_MIGRATION_CUTOFF` environment variable, if neither of the above is set. It accepts duration
+   strings like `1y` (1 year), `6mo` (6 months), `90d` (90 days).
+   See [Controlling the scope for job data visible to users](#controlling-the-scope-for-job-data-visible-to-users).
+1. All data is copied if no configuration is found.
+
+### Controlling the scope for job data visible to users
+
+The environment variable `GITLAB_DB_CI_JOBS_MIGRATION_CUTOFF` controls which jobs will have
+their visible data migrated.
+
+For example, `GITLAB_DB_CI_JOBS_MIGRATION_CUTOFF=1y` copies affected visible data
+(timeout value, environment, exit codes, and metadata for exposed artifacts)
+for jobs from the most recent year.
+
+By default, there is no cutoff date and data for all jobs is migrated.
+
+### Estimating migration impact
+
+For reference, for GitLab.com we expect to migrate 400 million rows in about 2 months.
+
+To estimate the migration impact on your instance, you can run the following queries
+in the [PostgreSQL console](../../administration/troubleshooting/postgresql.md#start-a-database-console):
+
+{{< tabs >}}
+
+{{< tab title="Table size" >}}
+
+```sql
+SELECT n.nspname AS schema_name, c.relname AS partition_name,
+       pg_size_pretty(pg_total_relation_size(c.oid)) AS total_size
+FROM pg_inherits i
+JOIN pg_class c ON c.oid = i.inhrelid
+JOIN pg_namespace n ON n.oid = c.relnamespace
+JOIN pg_class p ON p.oid = i.inhparent
+WHERE p.relname = 'p_ci_builds_metadata'
+ORDER BY pg_total_relation_size(c.oid) DESC;
+```
+
+The new tables require approximately 20% of this space.
+
+{{< /tab >}}
+
+{{< tab title="Job count estimate" >}}
+
+This is an estimate from the PostgreSQL statistics table.
+
+```sql
+SELECT SUM(c.reltuples)::bigint AS estimated_jobs_count
+FROM pg_class c
+JOIN pg_inherits i ON c.oid = i.inhrelid
+WHERE i.inhparent = 'p_ci_builds'::regclass;
+```
+
+{{< /tab >}}
+
+{{< tab title="Jobs by timeframe" >}}
+
+To find the number of jobs created in a specific time frame, we need to query the tables:
+
+```sql
+SELECT COUNT(*) FROM p_ci_builds WHERE created_at >= now() - '1 year'::interval;
+```
+
+If the query times out, use the [Rails console](../../administration/operations/rails_console.md)
+to batch over the data:
+
+```ruby
+counts = []
+CommitStatus.each_batch(of: 25000) do |batch|
+  counts << batch.where(created_at: 1.year.ago...).count
+end
+counts.sum
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
