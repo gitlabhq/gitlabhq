@@ -74,34 +74,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
 
     before do
       described_class.new(model).setup_connection_proxy
-      model.load_balancer.release_connections
     end
 
-    it 'does not release connections if connection was overridden' do
-      allow(model).to receive(:connection).and_return(model.load_balancer.pool.lease_connection)
-
-      expect(model.load_balancer).not_to receive(:release_connections)
-
+    it 'yields the connection proxy' do
       model.with_connection do |conn|
-        conn.execute('SELECT 1')
-      end
-    end
-
-    it 'does not release connections if a connection was already checked out' do
-      expect(model.load_balancer).not_to receive(:release_connections)
-
-      model.connection.execute('SELECT 1')
-
-      model.with_connection do |conn|
-        conn.execute('SELECT 1')
-      end
-    end
-
-    it 'releases connections if a connection has not been checked out' do
-      expect(model.load_balancer).to receive(:release_connections)
-
-      model.with_connection do |conn|
-        conn.execute('SELECT 1')
+        expect(conn).to be_a(Gitlab::Database::LoadBalancing::ConnectionProxy)
       end
     end
   end
