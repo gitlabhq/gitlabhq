@@ -40,6 +40,10 @@ module Gitlab
           @load_balancer.pool.query_cache_enabled
         end
 
+        def clear_query_cache
+          # We let rails manage the query cache lifecycle for primary connection pools, so we make this a no-op
+        end
+
         def connection
           @load_balancer.pool.lease_connection
         end

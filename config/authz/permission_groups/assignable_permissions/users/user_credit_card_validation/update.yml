@@ -1,8 +1,0 @@
----
-name: update_user_credit_card_validation
-description: Grants the ability to update user credit card validation
-feature_category: user_management
-boundaries:
-  - user
-permissions:
-  - update_user_credit_card_validation

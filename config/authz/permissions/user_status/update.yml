@@ -1,6 +1,0 @@
----
-name: update_user_status
-description: Grants the ability to update user status
-feature_category: user_management
-boundaries:
-  - user

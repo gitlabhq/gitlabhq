@@ -145,6 +145,7 @@ admin_work_item_link
 apply_suggestion
 approve_deployment
 approve_merge_request
+approve_user
 archive_group
 assign_default_duo_group
 assign_runner
@@ -252,6 +253,7 @@ create_terraform_state
 create_test_case
 create_timelog
 create_todo
+create_user_personal_access_token
 create_virtual_registry
 create_vulnerability
 create_vulnerability_archive_export
@@ -275,6 +277,7 @@ delete_project_secrets
 delete_project_subscription
 delete_service_account
 delete_tag
+delete_user
 delete_work_item
 destroy_alert_management_alert
 destroy_alert_management_metric_image
@@ -675,12 +678,14 @@ read_upload
 read_usage
 read_usage_quotas
 read_usage_trends_measurement
+read_user
 read_user_achievement
 read_user_email_address
 read_user_groups
 read_user_membership_counts
 read_user_organizations
 read_user_personal_access_tokens
+read_user_preference
 read_user_profile
 read_users_list
 read_virtual_registry
@@ -706,6 +711,7 @@ receive_confirmation_instructions
 receive_notifications
 register_group_runners
 register_project_runners
+reject_user
 remove_fork_project
 remove_group
 remove_pages
@@ -826,7 +832,9 @@ update_subscription_limit
 update_terraform_state
 update_timelog
 update_todo
+update_user
 update_user_achievement
+update_user_status
 update_virtual_registry
 update_vulnerability
 update_vulnerability_feedback

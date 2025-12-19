@@ -1,6 +1,0 @@
----
-name: create_support_pin_user
-description: Grants the ability to create user support PIN
-feature_category: user_management
-boundaries:
-  - user

@@ -7,7 +7,7 @@ module Gitlab
       class Host
         attr_reader :pool, :last_checked_at, :intervals, :load_balancer, :host, :port
 
-        delegate :release_connection, :enable_query_cache!, :disable_query_cache!, :query_cache_enabled, :discarded?, to: :pool
+        delegate :release_connection, :enable_query_cache!, :disable_query_cache!, :query_cache_enabled, :clear_query_cache, :discarded?, to: :pool
 
         CONNECTION_ERRORS = [
           ActionView::Template::Error,
@@ -278,10 +278,12 @@ module Gitlab
         end
 
         def query_and_release(...)
-          if low_timeout_for_host_queries?
-            query_and_release_fast_timeout(...)
-          else
-            query_and_release_old(...)
+          pool.disable_query_cache do
+            if low_timeout_for_host_queries?
+              query_and_release_fast_timeout(...)
+            else
+              query_and_release_old(...)
+            end
           end
         end
 

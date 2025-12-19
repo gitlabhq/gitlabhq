@@ -598,43 +598,171 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         end
       end
 
-      it 'does not release a replica host during a web request with no queries when sticking' do
-        expect(model.load_balancer).not_to receive(:release_host)
-        # This sticks a host to the current request store
-        model.load_balancer.host
+      context 'host confusion' do
+        it 'does not release a replica host during a web request with no queries when sticking' do
+          expect(model.load_balancer).not_to receive(:release_host)
+          # This sticks a host to the current request store
+          model.load_balancer.host
 
-        model.with_connection { |_conn| } # rubocop:disable Lint/EmptyBlock -- This is testing the block side effects
-      end
-
-      it 'does not release a replica host during a web request with a nested bare connection lease' do
-        expect(model.load_balancer).not_to receive(:release_host)
-
-        model.with_connection do |_conn|
-          model.lease_connection.select_all("select 1")
+          model.with_connection { |_conn| } # rubocop:disable Lint/EmptyBlock -- This is testing the block side effects
         end
-      end
 
-      it 'does not release a replica host with a nested with_connection block' do
-        expect(model.load_balancer).not_to receive(:release_host)
+        it 'does not release a replica host during a web request with a nested bare connection lease' do
+          expect(model.load_balancer).not_to receive(:release_host)
 
-        model.with_connection do |_conn|
-          model.with_connection do |conn|
-            conn.select_all("select 1")
+          model.with_connection do |_conn|
+            model.lease_connection.select_all("select 1")
+          end
+        end
+
+        it 'does not release a replica host with a nested with_connection block' do
+          expect(model.load_balancer).not_to receive(:release_host)
+
+          model.with_connection do |_conn|
+            model.with_connection do |conn|
+              conn.select_all("select 1")
+            end
+          end
+        end
+
+        it 'does not release when mixing requests across load balancers' do
+          expect(model.load_balancer).not_to receive(:release_host)
+          expect(ci_model.load_balancer).not_to receive(:release_host)
+
+          model.with_connection do |main_conn|
+            ci_model.with_connection do |ci_conn|
+              ci_conn.select_all("select 1")
+            end
+            main_conn.select_all("select 1")
           end
         end
       end
 
-      it 'does not release when mixing requests across load balancers' do
-        expect(model.load_balancer).not_to receive(:release_host)
-        expect(ci_model.load_balancer).not_to receive(:release_host)
+      context 'query caching' do
+        before do
+          # We only try to cache when this is true, so mock it to true
+          allow(Rails.application.executor).to receive(:active?).and_return(true)
+        end
 
-        model.with_connection do |main_conn|
-          ci_model.with_connection do |ci_conn|
-            ci_conn.select_all("select 1")
-          end
-          main_conn.select_all("select 1")
+        it 'clears query caching after a #release_hosts call' do
+          # This test relies on :database_replica only allocating 1 host to the replica list
+          current_host = model.load_balancer.host
+
+          expect(count_queries do
+            model.first
+          end).to eq({ cached: 0, queries: 1 })
+
+          expect(count_queries do
+            model.first
+          end).to eq({ cached: 1, queries: 0 })
+
+          model.load_balancer.release_host
+
+          expect(count_queries do
+            model.first
+          end).to eq({ cached: 0, queries: 1 })
+
+          # If we didn't cycle back to the same host, this test could pass without truly checking the caching behavior
+          expect(model.load_balancer.host).to eq(current_host)
         end
       end
     end
+  end
+
+  describe 'LoadBalancing integration tests without any replicas' do
+    around do |ex|
+      cache_was_enabled_per_db = Gitlab::Database.database_base_models.values.index_with do |model|
+        model.connection_pool.query_cache_enabled
+      end
+
+      Gitlab::Database.database_base_models.each_value do |model|
+        model.connection_pool.disable_query_cache!
+      end
+
+      ex.run
+
+      cache_was_enabled_per_db.each do |model, was_enabled|
+        if was_enabled
+          model.connection_pool.enable_query_cache!
+        else
+          model.connection_pool.disable_query_cache!
+        end
+      end
+    end
+
+    it 'manages the host query cache through the default rails lifecycle with a single database connection' do
+      skip_if_database_exists(:ci)
+
+      enabled_pools = ActiveRecord::QueryCache.run
+
+      expect(count_queries do
+        Project.first
+        Ci::Build.first
+      end).to eq({ cached: 0, queries: 2 })
+
+      expect(count_queries do
+        Project.first
+        Ci::Build.first
+      end).to eq({ cached: 2, queries: 0 })
+
+      # Clear just one pool to demonstrate they are shared
+
+      Ci::ApplicationRecord.connection_pool.clear_query_cache
+
+      # Depending on if the test db is configured as a single pool for main and ci or 2 pools for main and ci with the
+      # same backing db, cached will either be 1 or 0 here. Either way proves the point of this test, and it's difficult
+      # to check which scenario we're in.
+      expect(count_queries do
+        Project.first
+        Ci::Build.first
+      end).to satisfy { |r| r[:cached] < 2 && r[:queries] > 0 }
+
+      ActiveRecord::QueryCache.complete(enabled_pools)
+
+      expect(count_queries do
+        Project.first
+        Ci::Build.first
+      end).to eq({ cached: 0, queries: 2 })
+    end
+
+    it 'manages the host query cache through the default rails lifecycle with multiple databases set up' do
+      skip_if_shared_database(:ci)
+
+      enabled_pools = ActiveRecord::QueryCache.run
+
+      expect(count_queries do
+        Project.first
+        Ci::Build.first
+      end).to eq({ cached: 0, queries: 2 })
+
+      expect(count_queries do
+        Project.first
+        Ci::Build.first
+      end).to eq({ cached: 2, queries: 0 })
+
+      # Clear just one pool to demonstrate they are seperate
+
+      Ci::ApplicationRecord.connection_pool.clear_query_cache
+
+      expect(count_queries do
+        Project.first
+        Ci::Build.first
+      end).to eq({ cached: 1, queries: 1 })
+
+      ActiveRecord::QueryCache.complete(enabled_pools)
+
+      expect(count_queries do
+        Project.first
+        Ci::Build.first
+      end).to eq({ cached: 0, queries: 2 })
+    end
+  end
+
+  def count_queries
+    recorder = ActiveRecord::QueryRecorder.new(skip_cached: true) do
+      yield
+    end
+
+    { queries: recorder.count, cached: recorder.cached_count }
   end
 end

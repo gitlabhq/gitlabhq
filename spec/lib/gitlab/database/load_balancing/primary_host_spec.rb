@@ -37,6 +37,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::PrimaryHost do
     end
   end
 
+  describe '#clear_query_cache' do
+    it 'does nothing' do
+      expect(host.clear_query_cache).to be_nil
+    end
+  end
+
   describe '#query_cache_enabled' do
     it 'delegates to the primary connection pool' do
       expect(host.query_cache_enabled)

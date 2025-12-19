@@ -1,8 +1,0 @@
----
-name: update_avatar_user
-description: Grants the ability to update user avatar
-feature_category: user_management
-boundaries:
-  - user
-permissions:
-  - update_avatar_user

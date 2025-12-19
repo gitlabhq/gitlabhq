@@ -165,6 +165,7 @@ module Gitlab
         def release_host
           if host = request_cache[CACHE_KEY]
             host.disable_query_cache!
+            host.clear_query_cache
             host.release_connection
           end
 

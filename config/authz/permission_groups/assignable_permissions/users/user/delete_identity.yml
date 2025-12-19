@@ -1,8 +1,0 @@
----
-name: delete_identity_user
-description: Grants the ability to delete user identity
-feature_category: user_management
-boundaries:
-  - user
-permissions:
-  - delete_identity_user

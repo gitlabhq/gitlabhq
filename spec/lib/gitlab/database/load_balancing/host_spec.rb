@@ -457,9 +457,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
         allow(host.connection).to receive(:select_all).and_call_original
         expect(host.connection).to receive(:select_all).with(described_class::REPLICATION_LAG_QUERY) do
           host.connection.select_all(<<~SQL)
-              select
-                EXTRACT(EPOCH FROM (now() - pg_last_xact_replay_timestamp()))::float as lag,
-                pg_sleep(1)
+            select
+              EXTRACT(EPOCH FROM (now() - pg_last_xact_replay_timestamp()))::float as lag,
+              pg_sleep(1)
           SQL
         end
 
@@ -684,6 +684,14 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
               .and_raise(RuntimeError, 'kittens')
 
       expect(host.query_and_release('SELECT 10 AS number')).to eq({})
+    end
+
+    it 'does not use the query cache' do
+      host.pool.enable_query_cache do
+        first_result = host.query_and_release("select random()")
+        second_result = host.query_and_release("select random()")
+        expect(first_result).not_to eq(second_result)
+      end
     end
   end
 

@@ -1,8 +1,0 @@
----
-name: unblock_user
-description: Grants the ability to unblock users
-feature_category: user_management
-boundaries:
-  - user
-permissions:
-  - unblock_user

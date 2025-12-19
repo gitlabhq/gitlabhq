@@ -1,8 +1,0 @@
----
-name: reject_user
-description: Grants the ability to reject users
-feature_category: user_management
-boundaries:
-  - user
-permissions:
-  - reject_user

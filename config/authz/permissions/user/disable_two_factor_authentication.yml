@@ -1,6 +1,0 @@
----
-name: disable_two_factor_authentication_user
-description: Grants the ability to disable user two-factor authentication
-feature_category: user_management
-boundaries:
-  - user
