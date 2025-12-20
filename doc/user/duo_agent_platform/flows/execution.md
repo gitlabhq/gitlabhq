@@ -23,7 +23,7 @@ You can also [use your own runners](#configure-runners).
 
 When flows execute in GitLab CI/CD:
 
-- They [use a composite identity](../security.md) to limit access.
+- They use a [composite identity](../composite_identity.md) to limit access.
 - The tools at their disposal are specific to the purpose of the flow.
   These tools can include the creation of merge requests or the running of local shell commands in their execution environment.
 

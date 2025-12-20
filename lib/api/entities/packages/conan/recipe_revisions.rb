@@ -8,7 +8,7 @@ module API
           MAX_REVISIONS_COUNT = 1000
 
           expose :conan_recipe, as: :reference, documentation: {
-            type: String,
+            type: 'String',
             desc: 'The Conan package reference',
             example: 'packageTest/1.2.3@gitlab-org+conan/stable'
           }

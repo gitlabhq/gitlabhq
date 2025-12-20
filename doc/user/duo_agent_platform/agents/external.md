@@ -185,7 +185,7 @@ The preferred workflow is:
 
 In this case, a service account is created for you.
 When the agent runs, it uses a combination of the user's memberships and the service account memberships.
-This combination is called a [composite identity](../security.md).
+This combination is called a [composite identity](../composite_identity.md).
 
 If you'd prefer, you can [create an external agent manually](#create-an-external-agent-manually).
 
@@ -332,7 +332,7 @@ You must create [a service account](../../../user/profile/service_accounts.md) t
 the projects where you expect to use an external agent.
 
 When the agent runs, it uses a combination of the user's memberships and the service account memberships.
-This combination is called a [composite identity](../security.md).
+This combination is called a [composite identity](../composite_identity.md).
 
 Prerequisites:
 

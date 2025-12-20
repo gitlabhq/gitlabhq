@@ -50,4 +50,4 @@ In the GitLab UI, foundational flows have access to the following GitLab APIs:
 - [Search API](../../../../api/search.md)
 
 In addition, foundational flows use a service account to complete tasks.
-For more information, see [the composite identity workflow](../../security.md#composite-identity-workflow).
+For more information, see [composite identity workflow](../../composite_identity.md#composite-identity-workflow).

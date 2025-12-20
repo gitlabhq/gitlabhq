@@ -9,9 +9,9 @@ module API
 
       EMPTY_PIPELINES = [].freeze
 
-      expose :id, documentation: { type: 'integer', example: 1 }
+      expose :id, documentation: { type: 'Integer', example: 1 }
 
-      expose :name, documentation: { type: 'string', example: '@foo/bar' } do |package|
+      expose :name, documentation: { type: 'String', example: '@foo/bar' } do |package|
         if package.conan?
           package.conan_recipe
         else
@@ -23,9 +23,9 @@ module API
         package.name
       end
 
-      expose :version, documentation: { type: 'string', example: '1.0.3' }
-      expose :package_type, documentation: { type: 'string', example: 'npm' }
-      expose :status, documentation: { type: 'string', example: 'default' }
+      expose :version, documentation: { type: 'String', example: '1.0.3' }
+      expose :package_type, documentation: { type: 'String', example: 'npm' }
+      expose :status, documentation: { type: 'String', example: 'default' }
 
       expose :_links do
         expose :web_path, if: ->(package) { package.detailed_info? } do |package|
@@ -37,10 +37,10 @@ module API
         end
       end
 
-      expose :created_at, documentation: { type: 'dateTime', example: '2022-09-16T12:47:31.949Z' }
-      expose :last_downloaded_at, documentation: { type: 'dateTime', example: '2022-09-19T11:32:35.169Z' }
-      expose :project_id, documentation: { type: 'integer', example: 2 }, if: ->(_, opts) { opts[:group] }
-      expose :project_path, documentation: { type: 'string', example: 'gitlab/foo/bar' }, if: ->(obj, opts) do
+      expose :created_at, documentation: { type: 'DateTime', example: '2022-09-16T12:47:31.949Z' }
+      expose :last_downloaded_at, documentation: { type: 'DateTime', example: '2022-09-19T11:32:35.169Z' }
+      expose :project_id, documentation: { type: 'Integer', example: 2 }, if: ->(_, opts) { opts[:group] }
+      expose :project_path, documentation: { type: 'String', example: 'gitlab/foo/bar' }, if: ->(obj, opts) do
         opts[:group] && Ability.allowed?(opts[:user], :read_project, obj.project)
       end
       expose :tags

@@ -157,8 +157,17 @@ describe('Project creation form fields component', () => {
       await nextTick();
 
       expect(findPrivateVisibilityLevelOption().props('disabled')).toBe(false);
+      expect(findPrivateVisibilityLevelOption().props('description')).toBe(
+        'Project access must be granted explicitly to each user. If this project is part of a group, access is granted to members of the group.',
+      );
       expect(findInternalVisibilityLevelOption().props('disabled')).toBe(false);
+      expect(findInternalVisibilityLevelOption().props('description')).toBe(
+        'The project can be accessed by any logged in user except external users.',
+      );
       expect(findPublicVisibilityLevelOption().props('disabled')).toBe(false);
+      expect(findPublicVisibilityLevelOption().props('description')).toBe(
+        'The project can be accessed without any authentication.',
+      );
     });
 
     it('renders internal visibility level as disabled when it was rescticted by admin', async () => {
@@ -192,10 +201,10 @@ describe('Project creation form fields component', () => {
 
     it('renders internal visibility level as default when admin set it up', () => {
       createComponent({
-        provide: { defaultProjectVisibility: 10 },
+        provide: { defaultProjectVisibility: '10' },
       });
 
-      expect(findVisibilitySelector().props('checked')).toBe(10);
+      expect(findVisibilitySelector().props('checked')).toBe('10');
     });
   });
 });

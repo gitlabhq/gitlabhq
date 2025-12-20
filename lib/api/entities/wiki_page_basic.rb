@@ -3,11 +3,11 @@
 module API
   module Entities
     class WikiPageBasic < Grape::Entity
-      expose :format, documentation: { type: 'string', example: 'markdown' }
-      expose :slug, documentation: { type: 'string', example: 'deploy' }
-      expose :title, documentation: { type: 'string', example: 'deploy' }
+      expose :format, documentation: { type: 'String', example: 'markdown' }
+      expose :slug, documentation: { type: 'String', example: 'deploy' }
+      expose :title, documentation: { type: 'String', example: 'deploy' }
 
-      expose :wiki_page_meta_id, documentation: { type: 'integer', example: { wiki_page_meta_id: 123 } } do |wiki_page|
+      expose :wiki_page_meta_id, documentation: { type: 'Integer', example: { wiki_page_meta_id: 123 } } do |wiki_page|
         wiki_page.find_or_create_meta.id
       end
     end

@@ -42,7 +42,7 @@ If a session for your flow does not start:
 
 ### Allow members to be added to projects
 
-Flows that use a [composite identity](security.md) need to add the `@duo-developer`
+Flows that use a [composite identity](composite_identity.md) must add the `@duo-developer`
 service account to your project. If your group is restricted, you cannot add users directly to projects,
 and your flows will not run.
 

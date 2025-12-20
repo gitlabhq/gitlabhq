@@ -177,6 +177,134 @@ path to the externalized configuration file from the main repository.
 This ensures that credentials and other settings are available when you
 check out the nested submodule.
 
+## Use submodules from another GitLab instance
+
+When your submodule is hosted on a different GitLab instance than your main project,
+the `CI_JOB_TOKEN` from your current instance cannot authenticate to the external instance.
+You must use a token created on the external instance to authenticate.
+
+You have two main approaches for authenticating with external GitLab instances:
+
+- URL rewriting: Modifies Git URLs to include authentication credentials.
+- Git credential helper: Stores credentials that Git automatically uses when needed.
+
+The authentication method you choose depends on your GitLab Runner executor type:
+
+- Containerized executors (Docker or Kubernetes): Each job runs in an isolated container,
+  so global Git configuration changes only affect the current job and are automatically
+  cleaned up when the container is destroyed.
+
+- Shell executors: Jobs run directly on the runner host system, so global Git
+  configuration changes persist between jobs. This can cause authentication conflicts
+  if different jobs use different credentials.
+
+{{< alert type="warning" >}}
+
+When using shell executors, avoid `git config --global` commands that persist authentication
+credentials. These settings remain active between jobs and can cause authentication failures
+or security issues if different jobs use different credentials.
+
+{{< /alert >}}
+
+You can use one of the following token types:
+
+- [Personal access token](../../user/profile/personal_access_tokens.md)
+- [Deploy token](../../user/project/deploy_tokens/_index.md)
+- [Project access token](../../user/project/settings/project_access_tokens.md)
+
+### Configure authentication with URL rewriting
+
+To configure authentication with URL rewriting:
+
+1. In your `.gitmodules` file, use an absolute HTTPS URL for the submodule:
+
+   ```ini
+   [submodule "external-project"]
+     path = external-project
+     url = https://other-gitlab.example.com/group/project.git
+   ```
+
+1. On the external GitLab instance, create a token with the `read_repository` scope.
+1. In your main project, add the token as a [masked CI/CD variable](../variables/_index.md#mask-a-cicd-variable).
+   For example, name it `EXTERNAL_GITLAB_TOKEN`.
+1. In your `.gitlab-ci.yml` file, configure authentication based on your executor type:
+
+   For containerized executors (Docker or Kubernetes):
+
+   ```yaml
+   variables:
+     GIT_SUBMODULE_STRATEGY: recursive
+
+   my-job:
+     before_script:
+       - git config --global url."https://<username>:${EXTERNAL_GITLAB_TOKEN}@other-gitlab.example.com/".insteadOf "https://other-gitlab.example.com/"
+     script:
+       - echo "Submodules are fetched with authentication"
+       - ls -la external-project/
+   ```
+
+   For shell executors:
+
+   ```yaml
+   variables:
+     GIT_SUBMODULE_STRATEGY: none
+
+   my-job:
+     before_script:
+       - parent_include_path=$(git -C $CI_PROJECT_DIR config include.path)
+       - git -c "include.path=${parent_include_path}" -c "url.https://<username>:${EXTERNAL_GITLAB_TOKEN}@other-gitlab.example.com/.insteadOf=https://other-gitlab.example.com/" submodule update --init --recursive --force
+     script:
+       - echo "Submodules are fetched with authentication"
+       - ls -la external-project/
+   ```
+
+   Replace `<username>` with the GitLab username associated with the token.
+
+   To configure authentication globally for all jobs in containerized executors only:
+
+   ```yaml
+   hooks:
+     pre_get_sources_script:
+       - git config --global url."https://<username>:${EXTERNAL_GITLAB_TOKEN}@other-gitlab.example.com/".insteadOf "https://other-gitlab.example.com/"
+   ```
+
+### Configure authentication with Git credential helper
+
+To configure authentication with Git credential helper:
+
+1. On the external GitLab instance, create a token with the `read_repository` scope.
+1. In your main project, add the token as a [masked CI/CD variable](../variables/_index.md#mask-a-cicd-variable).
+   For example, name it `EXTERNAL_GITLAB_TOKEN`.
+1. In your `.gitlab-ci.yml` file, configure the credential helper based on your executor type:
+
+   For containerized executors (Docker or Kubernetes):
+
+   ```yaml
+   my-job:
+     before_script:
+       - git config --global credential.helper store
+       - echo "https://<username>:${EXTERNAL_GITLAB_TOKEN}@other-gitlab.example.com" >> ~/.git-credentials
+     script:
+       - echo "Submodules are fetched with authentication"
+       - ls -la external-project/
+   ```
+
+   For shell executors:
+
+   ```yaml
+   my-job:
+     before_script:
+       - TEMP_CREDS=$(mktemp)
+       - echo "https://<username>:${EXTERNAL_GITLAB_TOKEN}@other-gitlab.example.com" > "$TEMP_CREDS"
+       - git config credential.helper "store --file=$TEMP_CREDS"
+       - trap "rm -f $TEMP_CREDS" EXIT
+     script:
+       - echo "Submodules are fetched with authentication"
+       - ls -la external-project/
+   ```
+
+   Replace `<username>` with the GitLab username associated with the token.
+
 ## Troubleshooting
 
 ### Can't find the `.gitmodules` file
@@ -217,19 +345,13 @@ To resolve this issue:
   ```
 
 - For GitLab-hosted runners or jobs with multiple Git operations within submodules,
-  configure URL substitution with `CI_JOB_TOKEN`. Use `pre_get_sources_script` for all jobs, or `before_script` for specific jobs:
+  configure URL substitution with `CI_JOB_TOKEN`:
 
   ```yaml
-    # Option 1: Configure globally for all jobs
-    hooks:
-      pre_get_sources_script:
-        - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}".insteadOf "https://gitlab.com"
-
-    # Option 2: Configure for specific jobs
-    my-job:
-      before_script:
-        - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}".insteadOf "https://gitlab.com"
-      script:
-        - cd path/to/submodule
-        - git fetch origin
+  my-job:
+    script:
+      - cd path/to/submodule
+      - git -c "include.path=$(git -C $CI_PROJECT_DIR config include.path)" -c "url.https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}/.insteadOf=https://gitlab.com/" fetch origin
   ```
+
+  For executor-specific configuration options, see [use submodules from another GitLab instance](#use-submodules-from-another-gitlab-instance).

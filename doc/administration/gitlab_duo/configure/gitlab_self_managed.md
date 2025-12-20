@@ -30,7 +30,7 @@ Earlier versions might continue to work, but performance might be degraded.
 
 ## Turn on composite identity
 
-You must turn on [composite identity](../../../user/duo_agent_platform/security.md),
+You must turn on [composite identity](../../../user/duo_agent_platform/composite_identity.md)
 so that the `@duo-developer` service account can perform actions
 on behalf of users.
 
