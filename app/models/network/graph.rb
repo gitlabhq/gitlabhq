@@ -67,6 +67,21 @@ module Network
 
     # Skip count that the target commit is displayed in center.
     def count_to_display_commit_in_center
+      offset = calculate_offset
+
+      if self.class.max_count / 2 < offset
+        # get max index that commit is displayed in the center.
+        offset - (self.class.max_count / 2)
+      else
+        0
+      end
+    end
+
+    def calculate_offset
+      if Feature.enabled?(:optimize_network_graph_calculations, @project) && !@filter_ref
+        return @project.repository.count_commits(all: true, after: @commit.date)
+      end
+
       offset = -1
       skip = 0
       while offset == -1
@@ -89,26 +104,7 @@ module Network
         end
       end
 
-      if self.class.max_count / 2 < offset
-        # get max index that commit is displayed in the center.
-        offset - (self.class.max_count / 2)
-      else
-        0
-      end
-    end
-
-    def find_commits(skip = 0)
-      Gitlab::SafeRequestStore.fetch([@project, :network_graph_commits, skip]) do
-        opts = {
-          max_count: self.class.max_count,
-          skip: skip,
-          order: :date
-        }
-
-        opts[:ref] = @commit.id if @filter_ref
-
-        Gitlab::Git::Commit.find_all(@repo.raw_repository, opts)
-      end
+      offset
     end
 
     def list_commits(skip = 0)

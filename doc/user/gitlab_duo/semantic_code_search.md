@@ -57,7 +57,7 @@ you can enable semantic code search by connecting to the same cluster:
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Semantic search**.
-1. Select **Connect to advanced search cluster**.
+1. Select **Connect to the advanced search cluster**.
 
 ### With the Rails console
 

@@ -1,0 +1,10 @@
+---
+name: optimize_network_graph_calculations
+description:
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/27625
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212152
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/580140
+milestone: '18.8'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false
