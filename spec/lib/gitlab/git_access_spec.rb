@@ -255,7 +255,9 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
     end
 
     context 'key is expired' do
-      let(:actor) { create(:deploy_key, :expired) }
+      before do
+        actor.expires_at = 2.days.ago
+      end
 
       it 'does not allow expired keys' do
         expect { pull_access_check }.to raise_forbidden('Your SSH key has expired.')
@@ -280,7 +282,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
         stub_application_setting(rsa_key_restriction: ApplicationSetting::FORBIDDEN_KEY_VALUE)
       end
 
-      it 'does not allow keys which are too small' do
+      it 'does not allow keys which are forbidden' do
         expect(actor).not_to be_valid
         expect { pull_access_check }.to raise_forbidden(/Your SSH key type is forbidden/)
         expect { push_access_check }.to raise_forbidden(/Your SSH key type is forbidden/)
@@ -289,7 +291,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
   end
 
   it_behaves_like '#check with a key that is not valid' do
-    let(:actor) { build(:deploy_key, user: user) }
+    let(:actor) { build(:rsa_key_2048, user: user) }
   end
 
   it_behaves_like '#check with a key that is not valid' do

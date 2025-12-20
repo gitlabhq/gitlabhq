@@ -50,3 +50,5 @@ module Keys
     end
   end
 end
+
+Keys::ExpiryNotificationService.prepend_mod

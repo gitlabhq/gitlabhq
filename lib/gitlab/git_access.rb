@@ -189,7 +189,7 @@ module Gitlab
     end
 
     def check_for_console_messages
-      return console_messages unless key?
+      return console_messages unless key? || deploy_key?
 
       key_status = Gitlab::Auth::KeyStatusChecker.new(actor)
 
@@ -205,12 +205,12 @@ module Gitlab
     end
 
     def check_valid_actor!
-      return unless key?
-
-      if !actor.valid?
-        raise ForbiddenError, "Your SSH key #{actor.errors[:key].first}."
-      elsif actor.expired?
-        raise ForbiddenError, "Your SSH key has expired."
+      if key? || deploy_key?
+        if !actor.valid?
+          raise ForbiddenError, "Your SSH key #{actor.errors[:key].first}."
+        elsif actor.expired?
+          raise ForbiddenError, "Your SSH key has expired."
+        end
       end
     end
 
@@ -417,7 +417,7 @@ module Gitlab
     end
 
     def key?
-      actor.is_a?(Key)
+      actor.is_a?(Key) && actor.regular_key?
     end
 
     def can_read_project?

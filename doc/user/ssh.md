@@ -564,12 +564,6 @@ Disabling the SSH Keys of a group's [enterprise users](enterprise_user/_index.md
   even if an enterprise user is also an administrator of the group.
 - Disables the existing SSH Keys of the enterprise users.
 
-{{< alert type="warning" >}}
-
-Disabling SSH Keys for enterprise users does not disable deployment keys for [service accounts](profile/service_accounts.md).
-
-{{< /alert >}}
-
 To disable the enterprise users' SSH Keys:
 
 1. On the top bar, select **Search or go to** and find your group.
@@ -577,5 +571,3 @@ To disable the enterprise users' SSH Keys:
 1. Expand **Permissions and group features**.
 1. Under **Enterprise users**, select **Disable SSH Keys**.
 1. Select **Save changes**.
-
-When you delete or block an enterprise user account, their personal SSH Keys are automatically revoked.

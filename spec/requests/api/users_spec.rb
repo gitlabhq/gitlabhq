@@ -2594,7 +2594,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
   end
 
-  describe 'GET /user/:id/keys' do
+  describe 'GET /users/:id/keys' do
     subject(:request) { get api(path) }
 
     let(:path) { "/users/#{user.id}/keys" }
@@ -2679,7 +2679,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
   end
 
-  describe 'GET /user/:user_id/keys' do
+  describe 'GET /users/:username/keys' do
     let(:path) { "/users/#{user.username}/keys" }
 
     before do
@@ -2717,7 +2717,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
   end
 
-  describe 'GET /user/:id/keys/:key_id' do
+  describe 'GET /users/:id/keys/:key_id' do
     let(:path) { "/users/#{user.id}/keys/#{key.id}" }
 
     it 'gets existing key' do
@@ -2777,7 +2777,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
   end
 
-  describe 'DELETE /user/:id/keys/:key_id' do
+  describe 'DELETE /users/:id/keys/:key_id' do
     let(:path) { "/users/#{user.id}/keys/#{key.id}" }
 
     it_behaves_like 'DELETE request permissions for admin mode'

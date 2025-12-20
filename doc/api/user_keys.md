@@ -79,7 +79,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Get an SSH key
 
-Gets an SSH key for your user account. This endpoint does not require authentication.
+Gets an SSH key for your user account.
+
+Prerequisites:
+
+- You must be authenticated.
 
 ```plaintext
 GET /user/keys/:key_id
@@ -122,7 +126,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `id`      | integer | yes      | ID of user account |
+| `id`      | integer | yes      | ID or username of user account |
 | `key_id`  | integer | yes      | ID of existing key  |
 
 Example request:
