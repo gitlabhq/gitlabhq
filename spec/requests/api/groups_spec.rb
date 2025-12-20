@@ -701,9 +701,11 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         # These queries are unrelated to what this N+1 spec is testing.
         # Added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216006
         # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
-        # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all project instances for N+1 spec
-        allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
-        # rubocop:enable RSpec/AnyInstanceOf
+        if Gitlab.ee?
+          # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all project instances for N+1 spec
+          allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+          # rubocop:enable RSpec/AnyInstanceOf
+        end
       end
 
       it "returns one of user1's groups", :aggregate_failures do
@@ -1825,9 +1827,11 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           # These queries are unrelated to what this N+1 spec is testing.
           # Added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216006
           # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
-          # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all project instances for N+1 spec
-          allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
-          # rubocop:enable RSpec/AnyInstanceOf
+          if Gitlab.ee?
+            # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all project instances for N+1 spec
+            allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+            # rubocop:enable RSpec/AnyInstanceOf
+          end
         end
 
         it "returns projects including those in subgroups", :aggregate_failures do
@@ -1921,9 +1925,11 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         # These queries are unrelated to what this N+1 spec is testing.
         # Added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216006
         # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
-        # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all project instances for N+1 spec
-        allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
-        # rubocop:enable RSpec/AnyInstanceOf
+        if Gitlab.ee?
+          # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all project instances for N+1 spec
+          allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+          # rubocop:enable RSpec/AnyInstanceOf
+        end
 
         get api("/groups/#{group1.id}/projects", user1)
         expect(response).to have_gitlab_http_status(:ok)

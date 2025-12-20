@@ -92,6 +92,14 @@ export default {
     buttonTabindex() {
       return this.rovingTabindex ? -1 : 0;
     },
+    // this.$router will throw if some of the apps did Vue.use(VueRouter) but your app didn't pass router in new Vue({ router })
+    hasRouter() {
+      try {
+        return Boolean(this.$router);
+      } catch (error) {
+        return false;
+      }
+    },
   },
   watch: {
     'file.active': function fileActiveWatch(active) {
@@ -124,7 +132,7 @@ export default {
 
       if (this.file.submodule) this.$emit('clickSubmodule', this.file.webUrl);
 
-      if (this.$router && !this.hasUrlAtCurrentRoute() && !this.file.submodule) {
+      if (this.hasRouter && !this.hasUrlAtCurrentRoute() && !this.file.submodule) {
         this.$router.push(this.fileRouterUrl);
       }
 
@@ -139,7 +147,7 @@ export default {
       });
     },
     hasPathAtCurrentRoute() {
-      if (!this.$router || !this.$router.currentRoute || this.file.isShowMore) {
+      if (!this.hasRouter || !this.$router.currentRoute || this.file.isShowMore) {
         return false;
       }
 
@@ -154,7 +162,7 @@ export default {
       return filePath === routePath;
     },
     hasUrlAtCurrentRoute() {
-      if (!this.$router || !this.$router.currentRoute) return true;
+      if (!this.hasRouter || !this.$router.currentRoute) return true;
 
       return escapeFileUrl(this.$router.currentRoute.path) === escapeFileUrl(this.fileRouterUrl);
     },
