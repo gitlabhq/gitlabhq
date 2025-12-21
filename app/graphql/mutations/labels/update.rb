@@ -26,7 +26,14 @@ module Mutations
           raise_resource_not_available_error!("'labels_archive' feature flag is disabled")
         end
 
-        label = authorized_find!(id)
+        label = Gitlab::Graphql::Lazy.force(find_object(id))
+        raise_resource_not_available_error! unless label
+
+        unless label.instance_of?(ProjectLabel) || label.instance_of?(GroupLabel)
+          raise_resource_not_available_error!('Label is not a project or group label.')
+        end
+
+        authorize!(label)
 
         updated_label = ::Labels::UpdateService.new(args).execute(label)
 
