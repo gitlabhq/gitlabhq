@@ -27,6 +27,12 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
       get new_user_session_path
     end
 
+    it 'pushes passkeys feature flag to frontend' do
+      perform_request
+
+      expect(response.body).to have_pushed_frontend_feature_flags(passkeys: true)
+    end
+
     include_examples 'set_current_context'
   end
 

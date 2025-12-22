@@ -10,17 +10,16 @@ export const initSignInForm = () => {
 
   const railsFields = parseRailsFormFields(el);
 
-  const {
-    dataset: { appData },
-  } = el;
+  const { appData } = el.dataset;
 
   const {
     signInPath,
-    signInPathIsScoped,
+    passkeysSignInPath,
     isUnconfirmedEmail,
     newUserConfirmationPath,
     newPasswordPath,
     showCaptcha,
+    isRememberMeEnabled,
   } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
   return new Vue({
@@ -31,11 +30,12 @@ export const initSignInForm = () => {
         props: {
           railsFields,
           signInPath,
-          signInPathIsScoped,
+          passkeysSignInPath,
           isUnconfirmedEmail,
           newUserConfirmationPath,
           newPasswordPath,
           showCaptcha,
+          isRememberMeEnabled,
         },
       });
     },

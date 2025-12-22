@@ -4,7 +4,7 @@ description:
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/574982
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209857
 rollout_issue_url:
-milestone: '18.7'
+milestone: '18.8'
 group: group::organizations
 type: wip
 default_enabled: false

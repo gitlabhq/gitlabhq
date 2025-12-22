@@ -11,8 +11,8 @@
       = gl_loading_icon(css_class: 'gl-my-5', size: 'md')
       -# The below form allows us to generate input names with Rails
       -# and pass them to the frontend so they never get out of sync
-      = gitlab_ui_form_for(:user, url: session_path(:user)) do |f|
-        = f.hidden_field :login, data: { js_name: 'login' }
+      = form_for(:user, url: user_session_path) do |f|
+        = f.hidden_field :login, value: @invite_email, data: { js_name: 'login' }
         = f.hidden_field :password, data: { js_name: 'password' }
         = f.hidden_field :remember_me, data: { js_name: 'rememberMe' }
   - else
@@ -40,7 +40,7 @@
       = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { class: 'js-sign-in-button', data: { testid: 'sign-in-button' } }) do
         = _('Sign in')
 
-  - if Feature.enabled?(:passkeys, :instance)
-    = render Pajamas::ButtonComponent.new(href: users_passkeys_sign_in_path, method: :post, form: true, block: true, icon: 'passkey', button_options: { class: 'gl-mt-3', data: {testid: 'passkey-login-button' }}) do
-      = hidden_field_tag :remember_me, '0', id: 'js-remember-me-passkey-hidden-field'
-      = s_('PasskeyAuthentication|Passkey')
+    - if Feature.enabled?(:passkeys, :instance)
+      = render Pajamas::ButtonComponent.new(href: users_passkeys_sign_in_path, method: :post, form: true, block: true, icon: 'passkey', button_options: { class: 'gl-mt-3', data: {testid: 'passkey-login-button' }}) do
+        = hidden_field_tag :remember_me, '0', id: 'js-remember-me-passkey-hidden-field'
+        = s_('PasskeyAuthentication|Passkey')

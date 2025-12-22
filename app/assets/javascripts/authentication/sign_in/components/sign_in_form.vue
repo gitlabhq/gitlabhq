@@ -6,7 +6,7 @@ import csrf from '~/lib/utils/csrf';
 import { initRecaptchaScript } from '~/captcha/init_recaptcha_script';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import PasswordInput from '~/authentication/password/components/password_input.vue';
-import { FORM_FIELD_LOGIN, FORM_FIELD_PASSWORD, FORM_FIELD_REMEMBER_ME } from '../constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'SignInForm',
@@ -20,12 +20,17 @@ export default {
     GlLink,
     PasswordInput,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     railsFields: {
       type: Object,
       required: true,
     },
     signInPath: {
+      type: String,
+      required: true,
+    },
+    passkeysSignInPath: {
       type: String,
       required: true,
     },
@@ -45,32 +50,36 @@ export default {
       type: Boolean,
       required: true,
     },
+    isRememberMeEnabled: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
       formFieldsValues: {
-        [FORM_FIELD_LOGIN]: this.railsFields[FORM_FIELD_LOGIN].value,
-        [FORM_FIELD_PASSWORD]: this.railsFields[FORM_FIELD_PASSWORD].value,
+        login: this.railsFields.login.value,
+        password: this.railsFields.password.value,
       },
-      [FORM_FIELD_REMEMBER_ME]: this.railsFields[FORM_FIELD_REMEMBER_ME].value,
+      rememberMe: this.railsFields.rememberMe.value || '0',
       isSubmitDisabled: false,
     };
   },
   computed: {
     passwordNameAttr() {
-      return this.railsFields[FORM_FIELD_PASSWORD].name;
+      return this.railsFields.password.name;
     },
     rememberMeNameAttr() {
-      return this.railsFields[FORM_FIELD_REMEMBER_ME].name;
+      return this.railsFields.rememberMe.name;
     },
     fields() {
       return {
-        [FORM_FIELD_LOGIN]: {
-          id: this.railsFields[FORM_FIELD_LOGIN].id,
+        login: {
+          id: this.railsFields.login.id,
           label: __('Username or primary email'),
           validators: [formValidators.required(__('Username or primary email is required.'))],
           inputAttrs: {
-            name: this.railsFields[FORM_FIELD_LOGIN].name,
+            name: this.railsFields.login.name,
             autofocus: true,
             autocomplete: 'username',
             autocapitalize: 'off',
@@ -79,12 +88,15 @@ export default {
             'data-testid': 'username-field',
           },
         },
-        [FORM_FIELD_PASSWORD]: {
-          id: this.railsFields[FORM_FIELD_PASSWORD].id,
+        password: {
+          id: this.railsFields.password.id,
           label: __('Password'),
           validators: [formValidators.required(__('Password is required.'))],
         },
       };
+    },
+    isPasskeysEnabled() {
+      return this.glFeatures.passkeys ?? false;
     },
   },
   async mounted() {
@@ -110,72 +122,78 @@ export default {
 </script>
 
 <template>
-  <gl-form
-    :id="$options.formId"
-    :action="signInPath"
-    method="post"
-    aria-live="assertive"
-    novalidate
-    data-testid="sign-in-form"
-  >
-    <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
-    <gl-form-fields
-      v-model="formFieldsValues"
-      :form-id="$options.formId"
-      :fields="fields"
-      :validate-on-blur="false"
-      @submit="onSubmit"
+  <div>
+    <gl-form
+      :id="$options.formId"
+      :action="signInPath"
+      method="post"
+      aria-live="assertive"
+      novalidate
+      data-testid="sign-in-form"
     >
-      <template #group(password)-description>
-        <div class="gl-text-right">
-          <gl-link v-if="isUnconfirmedEmail" :href="newUserConfirmationPath">{{
-            __('Resend confirmation email')
-          }}</gl-link>
-          <gl-link v-else :href="newPasswordPath">{{ __('Forgot your password?') }}</gl-link>
-        </div>
-      </template>
-      <template #input(password)="{ id, validation, value, input, blur }">
-        <password-input
-          :id="id"
-          :value="value"
-          :state="validation.state"
-          :name="passwordNameAttr"
-          testid="password-field"
-          @input="input"
-          @blur="blur"
-        />
-      </template>
-    </gl-form-fields>
-
-    <div
-      v-if="showCaptcha"
-      ref="captcha"
-      class="gl-mb-5 gl-flex gl-justify-center"
-      data-testid="captcha-el"
-    ></div>
-
-    <div class="gl-mb-5">
-      <!-- Unchecked checkboxes do not send a value with the form submission -->
-      <!-- This ensures that when the "Remember me" checkbox is unchecked we send a value of 0 -->
-      <!-- When the "Remember me" checkbox is checked the value of the checkbox overrides this hidden input -->
-      <input type="hidden" :name="rememberMeNameAttr" value="0" />
-      <gl-form-checkbox
-        v-model="rememberMe"
-        :name="rememberMeNameAttr"
-        value="1"
-        unchecked-value="0"
+      <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
+      <gl-form-fields
+        v-model="formFieldsValues"
+        :form-id="$options.formId"
+        :fields="fields"
+        :validate-on-blur="false"
+        @submit="onSubmit"
       >
-        {{ __('Remember me') }}
-      </gl-form-checkbox>
-    </div>
-    <gl-button
-      type="submit"
-      variant="confirm"
-      class="js-no-auto-disable"
-      data-testid="sign-in-button"
-      block
-      :disabled="isSubmitDisabled"
-      >{{ __('Sign in') }}</gl-button
+        <template #group(password)-description>
+          <div class="gl-text-right">
+            <gl-link v-if="isUnconfirmedEmail" :href="newUserConfirmationPath">{{
+              __('Resend confirmation email')
+            }}</gl-link>
+            <gl-link v-else :href="newPasswordPath">{{ __('Forgot your password?') }}</gl-link>
+          </div>
+        </template>
+        <template #input(password)="{ id, validation, value, input }">
+          <password-input
+            :id="id"
+            :value="value"
+            :state="validation.state"
+            :name="passwordNameAttr"
+            testid="password-field"
+            @input="input"
+          />
+        </template>
+      </gl-form-fields>
+
+      <div
+        v-if="showCaptcha"
+        ref="captcha"
+        class="gl-mb-5 gl-flex gl-justify-center"
+        data-testid="captcha-el"
+      ></div>
+
+      <div v-if="isRememberMeEnabled" class="gl-mb-3">
+        <input type="hidden" :name="rememberMeNameAttr" :value="rememberMe" />
+        <gl-form-checkbox v-model="rememberMe" value="1" unchecked-value="0">
+          {{ __('Remember me') }}
+        </gl-form-checkbox>
+      </div>
+      <gl-button
+        type="submit"
+        variant="confirm"
+        class="js-no-auto-disable"
+        data-testid="sign-in-button"
+        block
+        :disabled="isSubmitDisabled"
+        >{{ __('Sign in') }}</gl-button
+      >
+    </gl-form>
+    <gl-form
+      v-if="isPasskeysEnabled"
+      :action="passkeysSignInPath"
+      method="post"
+      class="gl-mt-3"
+      data-testid="passkey-form"
     >
-  </gl-form>
+      <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
+      <input type="hidden" name="remember_me" :value="rememberMe" />
+      <gl-button icon="passkey" type="submit" block data-testid="passkey-login-button">{{
+        s__('PasskeyAuthentication|Passkey')
+      }}</gl-button>
+    </gl-form>
+  </div>
 </template>

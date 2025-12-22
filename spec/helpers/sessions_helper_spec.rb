@@ -368,11 +368,13 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
 
       expect(json).to match(
         {
-          'sign_in_path' => new_user_session_path,
+          'sign_in_path' => '/users/sign_in',
+          'passkeys_sign_in_path' => '/users/passkeys/sign_in',
           'is_unconfirmed_email' => false,
-          'new_user_confirmation_path' => new_user_confirmation_path,
-          'new_password_path' => new_user_password_path,
-          'show_captcha' => false
+          'new_user_confirmation_path' => '/users/confirmation/new',
+          'new_password_path' => '/users/password/new',
+          'show_captcha' => false,
+          'is_remember_me_enabled' => true
         }
       )
     end

@@ -1,4 +1,4 @@
-import { GlFormFields } from '@gitlab/ui';
+import { GlFormFields, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import htmlSessionsNew from 'test_fixtures/sessions/new_vue.html';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
@@ -32,22 +32,26 @@ describe('SignInForm', () => {
 
     const {
       signInPath,
+      passkeysSignInPath,
       signInPathIsScoped,
       isUnconfirmedEmail,
       newUserConfirmationPath,
       newPasswordPath,
       showCaptcha,
+      isRememberMeEnabled,
     } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
     resetHTMLFixture();
 
     defaultPropsData = {
       signInPath,
+      passkeysSignInPath,
       signInPathIsScoped,
       isUnconfirmedEmail,
       newUserConfirmationPath,
       newPasswordPath,
       showCaptcha,
+      isRememberMeEnabled,
       railsFields,
     };
   });
@@ -56,17 +60,20 @@ describe('SignInForm', () => {
     defaultPropsData = {};
   });
 
-  const createComponent = ({ propsData = {} } = {}) => {
+  const createComponent = ({ propsData = {}, provide = {} } = {}) => {
     wrapper = mountExtended(SignInForm, {
       attachTo: document.body,
       propsData: {
         ...defaultPropsData,
         ...propsData,
       },
+      provide,
     });
   };
 
   const findPasswordInputComponent = () => wrapper.findComponent(PasswordInput);
+  const findRememberMeCheckbox = () => wrapper.findByLabelText('Remember me');
+  const findPasskeysForm = () => wrapper.findByTestId('passkey-form');
 
   const submitForm = async () => {
     await wrapper.find('form').trigger('submit');
@@ -96,6 +103,25 @@ describe('SignInForm', () => {
     expect(wrapper.text()).toContain('Username or primary email is required.');
   });
 
+  describe('when login field has a value set (invite email)', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          railsFields: {
+            ...defaultPropsData.railsFields,
+            login: { ...defaultPropsData.railsFields.login, value: 'foo@bar.com' },
+          },
+        },
+      });
+    });
+
+    it('prefills the login field', () => {
+      expect(wrapper.findByLabelText('Username or primary email').element.value).toBe(
+        'foo@bar.com',
+      );
+    });
+  });
+
   it('renders password field with correct name and id attributes', () => {
     createComponent();
 
@@ -114,22 +140,28 @@ describe('SignInForm', () => {
     expect(findPasswordInputComponent().props('state')).toBe(false);
   });
 
-  it('renders hidden remember me input', () => {
+  it('renders hidden remember me input that is controlled by checkbox', async () => {
     createComponent();
 
-    expect(
-      wrapper
-        .find(`input[type="hidden"][name="${defaultPropsData.railsFields.rememberMe.name}"]`)
-        .attributes('value'),
-    ).toBe('0');
+    const hiddenRememberMeInput = wrapper.find(
+      `input[type="hidden"][name="${defaultPropsData.railsFields.rememberMe.name}"]`,
+    );
+
+    expect(hiddenRememberMeInput.attributes('value')).toBe('0');
+
+    await findRememberMeCheckbox().setChecked();
+
+    expect(hiddenRememberMeInput.attributes('value')).toBe('1');
   });
 
-  it('renders remember me checkbox with correct name attribute', () => {
-    createComponent();
+  describe('when isRememberMeEnabled prop is false', () => {
+    beforeEach(() => {
+      createComponent({ propsData: { isRememberMeEnabled: false } });
+    });
 
-    expect(wrapper.findByLabelText('Remember me').attributes('name')).toBe(
-      defaultPropsData.railsFields.rememberMe.name,
-    );
+    it('does not render remember me checkbox', () => {
+      expect(findRememberMeCheckbox().exists()).toBe(false);
+    });
   });
 
   describe('when isUnconfirmedEmail is false', () => {
@@ -209,6 +241,39 @@ describe('SignInForm', () => {
       wrapper.findComponent(GlFormFields).vm.$emit('submit', { target: { submit: submitMock } });
 
       expect(submitMock).toHaveBeenCalled();
+    });
+  });
+
+  describe('when passkeys feature flag is enabled', () => {
+    beforeEach(() => {
+      createComponent({ provide: { glFeatures: { passkeys: true } } });
+    });
+
+    it('renders form with passkeys button', () => {
+      const form = findPasskeysForm();
+      const submitButton = form.findComponent(GlButton);
+      expect(form.attributes()).toMatchObject({
+        method: 'post',
+        action: defaultPropsData.passkeysSignInPath,
+      });
+      expect(form.find('input[type="hidden"][name="authenticity_token"]').attributes('value')).toBe(
+        csrfToken,
+      );
+      expect(submitButton.attributes('type')).toBe('submit');
+      expect(submitButton.props('icon')).toBe('passkey');
+      expect(submitButton.text()).toBe('Passkey');
+    });
+
+    it('renders hidden remember me input that is controlled by remember me checkbox', async () => {
+      const hiddenRememberMeInput = findPasskeysForm().find(
+        'input[type="hidden"][name="remember_me"]',
+      );
+
+      expect(hiddenRememberMeInput.attributes('value')).toBe('0');
+
+      await findRememberMeCheckbox().setChecked();
+
+      expect(hiddenRememberMeInput.attributes('value')).toBe('1');
     });
   });
 });
