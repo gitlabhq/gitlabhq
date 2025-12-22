@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class FinalizeIssuesTraversalIdsBackfill < Gitlab::Database::Migration[2.3] # rubocop:disable BackgroundMigration/DictionaryFile -- false positive due to being requeued https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215753
+class FinalizeIssuesTraversalIdsBackfill < Gitlab::Database::Migration[2.3]
   milestone '18.6'
 
   restrict_gitlab_migration gitlab_schema: :gitlab_main_org
@@ -8,13 +8,7 @@ class FinalizeIssuesTraversalIdsBackfill < Gitlab::Database::Migration[2.3] # ru
   disable_ddl_transaction!
 
   def up
-    ensure_batched_background_migration_is_finished(
-      job_class_name: 'BackfillNamespaceTraversalIdsOnIssues',
-      table_name: :issues,
-      column_name: :id,
-      job_arguments: [],
-      finalize: true
-    )
+    # no-op: This migration has been requeued by RequeueBackfillNamespaceTraversalIdsOnIssues
   end
 
   def down; end
