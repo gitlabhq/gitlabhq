@@ -21,7 +21,7 @@ RSpec.describe Editable do
     context 'when actual last_edited_by cannot be found' do
       context 'and organization_id is specified on editable' do
         let(:other_organization) { create(:organization) }
-        let(:ghost_user) { Users::Internal.for_organization(other_organization).ghost }
+        let(:ghost_user) { Users::Internal.in_organization(other_organization).ghost }
         let(:edited_note) do
           create(:note, author: author, created_at: 3.days.ago, last_edited_at: 2.days.ago,
             organization: other_organization)
@@ -42,7 +42,7 @@ RSpec.describe Editable do
         let_it_be(:updated_by) { create(:user, organization: project_org) }
         let_it_be_with_refind(:editable) { create(:issue, project: project, updated_by: updated_by) }
 
-        let(:ghost_user) { Users::Internal.for_organization(project.creator.organization).ghost }
+        let(:ghost_user) { Users::Internal.in_organization(project.creator.organization).ghost }
 
         subject(:last_edited_by) { editable.last_edited_by }
 
@@ -54,7 +54,7 @@ RSpec.describe Editable do
 
         context 'and author is missing or deleted' do
           let(:ghost_organization) { create(:common_organization) }
-          let(:ghost_user) { Users::Internal.for_organization(ghost_organization).ghost }
+          let(:ghost_user) { Users::Internal.in_organization(ghost_organization).ghost }
 
           before do
             allow(Organizations::Organization).to receive(:first).and_return(ghost_organization)

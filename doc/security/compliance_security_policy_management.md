@@ -211,7 +211,7 @@ class CspDesignation
     end
 
     puts "Setting #{@csp_group.full_path} as CSP..."
-    Security::PolicySetting.for_organization(Organizations::Organization.default_organization).update! csp_namespace: @csp_group
+    Security::PolicySetting.in_organization(Organizations::Organization.default_organization).update! csp_namespace: @csp_group
 
     if config_ids.present?
       puts "Unassigning the policy project #{@spp.id} from the groups in the background to remove duplicate policies..."
@@ -228,7 +228,7 @@ class CspDesignation
     check_spp!
 
     puts "Unassigning #{@csp_group.full_path} as CSP..."
-    Security::PolicySetting.for_organization(Organizations::Organization.default_organization).update! csp_namespace: nil
+    Security::PolicySetting.in_organization(Organizations::Organization.default_organization).update! csp_namespace: nil
 
     if File.exist?(@backup_filename)
       puts "Reading group IDs from #{@backup_filename} to restore the policy project links..."

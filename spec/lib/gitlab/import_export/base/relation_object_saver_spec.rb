@@ -178,23 +178,6 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
       let(:relation_object) { build(:issue, project: project, notes: notes) }
       let(:relation_definition) { { 'notes' => {} } }
 
-      before do
-        stub_feature_flags(import_rescue_query_canceled: true)
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(import_rescue_query_canceled: false)
-        end
-
-        it 're-raises the exception without retrying' do
-          allow(saver).to receive(:save_valid_records).and_raise(ActiveRecord::QueryCanceled)
-
-          expect { saver.execute }.to raise_error(ActiveRecord::QueryCanceled)
-          expect(saver).not_to receive(:process_with_smaller_batch_size)
-        end
-      end
-
       context 'when maximum exception rescue count is exceeded' do
         it 're-raises the exception after MAX_EXCEPTION_RESCUE_COUNT attempts' do
           allow(saver).to receive(:save_valid_records).and_raise(ActiveRecord::QueryCanceled)

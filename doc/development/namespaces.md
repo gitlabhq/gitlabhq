@@ -48,9 +48,13 @@ The following is a non-exhaustive list of methods to query `Namespace` hierarchi
 The root is the top most `Namespace` in the hierarchy. A root has a `nil` `parent_id`.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
-  classDef active fill:#f00,color:#fff
-  classDef sel fill:#00f,color:#fff
+  accTitle: Root namespaces
+  accDescr: Diagram showing a namespace hierarchy, starting with the root namespace at the top
+
+  classDef active stroke-width:3px
+  classDef sel stroke-width:2px
 
   A --- A.A --- A.A.A
   A.A --- A.A.B
@@ -72,9 +76,13 @@ namespace_object.root_ancestor
 The descendants of a namespace are its children, their children, and so on.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
-  classDef active fill:#f00,color:#fff
-  classDef sel fill:#00f,color:#fff
+  accTitle: Descendent namespaces
+  accDescr: Diagram showing namespace descendants, including children namespaces and their children namespaces
+
+  classDef active stroke-width:3px
+  classDef sel stroke-width:2px
 
   A --- A.A --- A.A.A
   A.A --- A.A.B
@@ -118,9 +126,13 @@ namespace_object.descendant_ids
 The ancestors of a namespace are its parent, its parent's parent, and so on.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
-  classDef active fill:#f00,color:#fff
-  classDef sel fill:#00f,color:#fff
+  accTitle: Ancestor namespaces
+  accDescr: Diagram showing ancestors of a namespace, including its parent, its parent's parent, and so on
+
+  classDef active stroke-width:3px
+  classDef sel stroke-width:2px
 
   A --- A.A --- A.A.A
   A.A --- A.A.B
@@ -164,9 +176,13 @@ namespace_object.ancestor_ids
 A Namespace hierarchy is a `Namespace`, its ancestors, and its descendants.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
-  classDef active fill:#f00,color:#fff
-  classDef sel fill:#00f,color:#fff
+  accTitle: Hierarchies
+  accDescr: Diagram showing the namespace hierarchy, including the namespace, its ancestors, and its descendants
+
+  classDef active stroke-width:3px
+  classDef sel stroke-width:2px
 
   A --- A.A --- A.A.A
   A.A --- A.A.B
@@ -238,9 +254,13 @@ The linear queries are executed using the `namespaces.traversal_ids` array colum
 Given the scenario:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
-  classDef active fill:#f00,color:#fff
-  classDef sel fill:#00f,color:#fff
+  accTitle: Namespace query implementation
+  accDescr: Diagram showing how linear queries are executed using the namespaces traversal ids array column
+
+  classDef active stroke-width:3px
+  classDef sel stroke-width:2px
 
   A --- A.A --- A.A.A
   A.A --- A.A.B
@@ -289,9 +309,13 @@ WHERE namespaces.traversal_ids > ARRAY[1,2,3]
 `Namespace` queries are prone to returning duplicate results. For example, consider a query to find descendants of `A` and `A.A`:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
-  classDef active fill:#f00,color:#fff
-  classDef sel fill:#00f,color:#fff
+  accTitle: Superset
+  accDescr: Diagram showing how namespace queries can return duplicate results
+
+  classDef active stroke-width:3px
+  classDef sel stroke-width:2px
 
   A --- A.A --- A.A.A
   A.A --- A.A.B

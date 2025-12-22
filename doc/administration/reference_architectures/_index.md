@@ -225,17 +225,17 @@ graph TD
     accDescr: Key considerations for selecting architecture including expected load, HA requirements, and additional workload factors.
 
    L0A(<b>What Reference Architecture should I use?</b>)
-   L1A(<b>What is your <a href=#expected-load-rps--user-count>expected load</a>?</b>)
+   L1A(<b>What is your expected load?</b>)
 
    L2A("60 RPS / 3,000 users or more?")
    L2B("40 RPS / 2,000 users or less?")
 
-   L3A("<a href=#do-you-need-high-availability-ha>Do you need HA?</a><br>(or zero-downtime upgrades)")
+   L3A("Do you need HA?<br>(or zero-downtime upgrades)")
    L3B[Do you have experience with<br/>and want additional resilience<br/>with select components in Kubernetes?]
 
    L4A><b>Recommendation</b><br><br>60 RPS / 3,000 user architecture with HA<br>and supported reductions]
-   L4B><b>Recommendation</b><br><br>Architecture closest to <a href=#expected-load-rps--user-count>expected load</a> with HA]
-   L4C><b>Recommendation</b><br><br>Cloud Native Hybrid architecture<br>closest to <a href=#expected-load-rps--user-count>expected load</a>]
+   L4B><b>Recommendation</b><br><br>Architecture closest to expected load with HA]
+   L4C><b>Recommendation</b><br><br>Cloud Native Hybrid architecture<br>closest to expected load]
    L4D>"<b>Recommendation</b><br><br>Standalone 20 RPS / 1,000 user or 40 RPS / 2,000 user<br/>architecture with Backups"]
 
    L0A --> L1A
@@ -248,20 +248,18 @@ graph TD
    L2B --> L3A
    L3A -->|Yes| L4A
    L3A -->|No| L4D
-   L5A("<a href=#gitlab-geo-cross-regional-distribution--disaster-recovery>Do you need cross regional distribution</br> or disaster recovery?"</a>) --> |Yes| L6A><b>Additional Recommendation</b><br><br> GitLab Geo]
+   L5A("Do you need cross regional distribution</br> or disaster recovery?") --> |Yes| L6A><b>Additional Recommendation</b><br><br> GitLab Geo]
    L4A ~~~ L5A
    L4B ~~~ L5A
    L4C ~~~ L5A
    L4D ~~~ L5A
 
-   L5B("Do you have <a href=#large-monorepos>Large Monorepos</a> or expect</br> to have substantial <a href=#additional-workloads>additional workloads</a>?") --> |Yes| L6B><b>Additional Recommendations</b><br><br><a href=#if-in-doubt---start-large-monitor-and-scale-down>Start large, monitor and scale down</a><br><br> Contact GitLab representative or Support]
+   L5B("Do you have Large Monorepos or expect</br> to have substantial additional workloads?") --> |Yes| L6B><b>Additional Recommendations</b><br><br>Start large, monitor and scale down<br><br> Contact GitLab representative or Support]
    L4A ~~~ L5B
    L4B ~~~ L5B
    L4C ~~~ L5B
    L4D ~~~ L5B
 
-classDef default fill:#FCA326
-linkStyle default fill:none,stroke:#7759C2
 ```
 
 ## Requirements

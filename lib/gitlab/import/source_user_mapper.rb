@@ -68,7 +68,7 @@ module Gitlab
       end
 
       def ghost_user
-        Users::Internal.for_organization(namespace.organization_id).ghost
+        Users::Internal.in_organization(namespace.organization_id).ghost
       end
 
       private

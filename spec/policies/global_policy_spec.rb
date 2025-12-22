@@ -567,7 +567,7 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
     end
 
     context 'when internal' do
-      let(:current_user) { Users::Internal.for_organization(user.organization).ghost }
+      let(:current_user) { Users::Internal.in_organization(user.organization).ghost }
 
       it { is_expected.to be_disallowed(:use_slash_commands) }
     end

@@ -86,7 +86,7 @@ module Banzai
           return {} unless Feature.enabled?(:organization_users_internal, organization)
 
           Organizations::OrganizationUserDetail.for_references
-                                               .for_organization(organization)
+                                               .in_organization(organization)
                                                .with_usernames(usernames)
                                                .index_by(&:username)
                                                .transform_keys(&:downcase)

@@ -340,7 +340,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         it 'returns "Ghost user" for updated by data' do
           edited_issuable = create(:issue, author: user, description: 'issue text', last_edited_by: destroyed_user, created_at: 3.days.ago, updated_at: 1.day.ago, last_edited_at: 2.days.ago)
           @project = edited_issuable.project
-          ghost_user = Users::Internal.for_organization(@project.organization).ghost
+          ghost_user = Users::Internal.in_organization(@project.organization).ghost
 
           expected = {
             updatedAt: edited_issuable.last_edited_at.to_time.iso8601,

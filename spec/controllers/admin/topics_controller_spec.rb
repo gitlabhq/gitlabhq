@@ -79,7 +79,7 @@ RSpec.describe Admin::TopicsController, feature_category: :groups_and_projects d
     it 'creates topic' do
       expect do
         post :create, params: { projects_topic: { name: 'test', title: 'Test' } }
-      end.to change { Projects::Topic.for_organization(current_organization.id).count }.by(1)
+      end.to change { Projects::Topic.in_organization(current_organization.id).count }.by(1)
     end
 
     it 'shows error message for invalid topic name' do

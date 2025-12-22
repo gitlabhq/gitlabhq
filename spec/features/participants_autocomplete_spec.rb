@@ -93,7 +93,7 @@ RSpec.describe 'Member autocomplete', :js, feature_category: :groups_and_project
     let_it_be(:organization) { create(:organization) }
     let_it_be(:author) { create(:user, organization: organization) }
     let_it_be(:project) { create(:project, :public, :repository, organization: organization) }
-    let_it_be(:admin_bot) { Users::Internal.for_organization(organization).admin_bot }
+    let_it_be(:admin_bot) { Users::Internal.in_organization(organization).admin_bot }
 
     let(:organization_user_detail) { admin_bot.organization_user_details.first }
     let(:resource_name) { 'issue' }

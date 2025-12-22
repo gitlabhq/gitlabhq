@@ -10,7 +10,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   let_it_be_with_refind(:project, reload: true) { create(:project, :public) }
   let_it_be_with_refind(:assignee) { create(:user) }
 
-  let_it_be(:ghost_user) { Users::Internal.for_organization(project.organization).ghost }
+  let_it_be(:ghost_user) { Users::Internal.in_organization(project.organization).ghost }
 
   let(:notification) { described_class.new }
 

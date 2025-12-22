@@ -35,7 +35,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
   end
 
   let(:client) { instance_double(Gitlab::LegacyGithubImport::Client) }
-  let(:internal_ghost_user) { Users::Internal.for_organization(project.organization).ghost }
+  let(:internal_ghost_user) { Users::Internal.in_organization(project.organization).ghost }
   let(:ghost_user) { { id: -1, login: 'Ghost' } }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }

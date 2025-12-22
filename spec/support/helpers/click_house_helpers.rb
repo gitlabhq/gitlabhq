@@ -67,7 +67,18 @@ module ClickHouseHelpers
     ActiveRecord.default_timezone
   end
 
-  def clickhouse_fixture(table, data, db = :main, &block)
+  def clickhouse_fixture(table_or_models, *args, &block)
+    case table_or_models
+    when String, Symbol then clickhouse_raw_fixture(table_or_models, *args, &block)
+    else clickhouse_model_fixture(table_or_models)
+    end
+  end
+
+  def clickhouse_model_fixture(models)
+    clickhouse_raw_fixture(models.first.class.clickhouse_table_name, models.map(&:to_clickhouse_csv_row))
+  end
+
+  def clickhouse_raw_fixture(table, data, db = :main, &block)
     return if data.empty?
 
     if data.map { |row| row.keys.sort }.uniq.size > 1

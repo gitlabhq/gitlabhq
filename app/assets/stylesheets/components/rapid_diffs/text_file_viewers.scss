@@ -48,7 +48,7 @@
   font-size: var(--rd-body-font-size);
   // this property is set in the DiffFileComponent from virtual_rendering_params
   content-visibility: var(--virtual-rows-visibility);
-  contain-intrinsic-size: 0 var(--rd-row-intrinsic-height);
+  contain-intrinsic-size: auto 0 auto var(--rd-row-intrinsic-height);
 
   // switch file into a Fine-grained content-visibility when Coarse content-visibility can not be applied
   // Coarse and Fine-grained modes are explained in app/assets/stylesheets/components/rapid_diffs/diff_file_component.scss

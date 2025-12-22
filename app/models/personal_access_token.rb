@@ -73,7 +73,7 @@ class PersonalAccessToken < ApplicationRecord
   scope :for_user, ->(user) { where(user: user) }
   scope :for_users, ->(users) { where(user: users) }
   scope :for_user_types, ->(user_types) { where(user_type: user_types) }
-  scope :for_organization, ->(organization) { where(organization_id: organization) }
+  scope :in_organization, ->(organization) { where(organization_id: organization) }
   scope :for_group, ->(group) { where(group: group) }
   scope :preload_users, -> { preload(:user) }
   scope :order_name_asc_id_asc, -> { reorder(name: :asc, id: :asc) }

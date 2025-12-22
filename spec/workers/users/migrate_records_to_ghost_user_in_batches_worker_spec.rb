@@ -23,7 +23,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserInBatchesWorker, feature_category
   it_behaves_like 'an idempotent worker' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, namespace: create(:group)) }
-    let_it_be(:ghost_user) { Users::Internal.for_organization(project.organization).ghost }
+    let_it_be(:ghost_user) { Users::Internal.in_organization(project.organization).ghost }
 
     let_it_be(:issue) do
       create(:issue, project: project, author: user, last_edited_by: user, last_edited_at: Time.current)

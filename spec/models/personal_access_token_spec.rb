@@ -322,13 +322,13 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       it { is_expected.to contain_exactly(old_unused_token, old_formerly_used_token) }
     end
 
-    describe ".for_organization" do
+    describe ".in_organization" do
       let_it_be(:organization) { create(:organization) }
       let_it_be(:personal_access_token) { create(:personal_access_token, organization: organization) }
       let_it_be(:personal_access_token_2) { create(:personal_access_token) }
 
       it "returns personal access tokens for the specified organization only" do
-        expect(described_class.for_organization(organization)).to contain_exactly(personal_access_token)
+        expect(described_class.in_organization(organization)).to contain_exactly(personal_access_token)
       end
     end
 

@@ -7,7 +7,7 @@ class Admin::LabelsController < Admin::ApplicationController
   urgency :low
 
   def index
-    @labels = Label.for_organization(Current.organization).templates.page(pagination_params[:page])
+    @labels = Label.in_organization(Current.organization).templates.page(pagination_params[:page])
   end
 
   def show; end
@@ -59,7 +59,7 @@ class Admin::LabelsController < Admin::ApplicationController
   private
 
   def set_label
-    @label = Label.for_organization(Current.organization).templates.find(params.permit(:id)[:id])
+    @label = Label.in_organization(Current.organization).templates.find(params.permit(:id)[:id])
   end
 
   def label_params

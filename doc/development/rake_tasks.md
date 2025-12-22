@@ -94,7 +94,11 @@ bin/rake "gitlab:seed:runner_fleet[username, registration_prefix, runner_count, 
 By default, the Rake task uses the `root` username to create 40 runners and 400 jobs.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
+    accTitle: Seeding a runner fleet test environment
+    accDescr: Diagram showing how the runner seed rake task seeds a full runner fleet with groups, subgroups, and projects with runners and pipelines
+
     G1[Top-level group 1] --> G11
     G2[Top-level group 2] --> G21
     G11[Group 1.1] --> G111
@@ -125,8 +129,8 @@ graph TD
     P211 --> G21R
     P211 --> IR1
 
-    classDef groups fill:#09f6,color:#000000,stroke:#333,stroke-width:3px;
-    classDef projects fill:#f96a,color:#000000,stroke:#333,stroke-width:2px;
+    classDef groups stroke-width:3px;
+    classDef projects stroke-width:2px;
     class G1,G2,G11,G111,G112,G21 groups
     class P1111,P1121,P211 projects
 ```

@@ -34,10 +34,13 @@ Cache Miss:
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+   accTitle: How polling with ETag caching works
+   accDescr: Diagram showing how polling with ETag caching works with a cache miss
+
    Client->>+Rails: GET /projects/5/pipelines
    Rails->>+EtagCaching: GET /projects/5/pipelines
    EtagCaching->>+Redis: read(key = 'GET <ETag>')
-   rect rgb(255, 204, 203)
+   rect rgba(0, 0, 0, 0)
      Redis->>+EtagCaching: cache MISS
    end
    EtagCaching->>+Redis: write('<New ETag>')
@@ -50,10 +53,13 @@ Cache Hit:
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+   accTitle: How polling with ETag caching works
+   accDescr: Diagram showing how polling with ETag caching works with a cache hit
+
    Client->>+Rails: GET /projects/5/pipelines
    Rails->>+EtagCaching: GET /projects/5/pipelines
    EtagCaching->>+Redis: read(key = 'GET <ETag>')
-   rect rgb(144, 238, 144)
+   rect rgba(0, 0, 0, 0)
      Redis->>+EtagCaching: cache HIT
    end
    EtagCaching->>+Client: 304 Not Modified

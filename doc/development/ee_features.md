@@ -31,7 +31,11 @@ title: Guidelines for implementing Enterprise Edition features
 The following diagram illustrates how to decide where and how to implement features across the CE/EE/SaaS layers:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TD
+    accTitle: Feature implementation decision flow
+    accDescr: Diagram showing how to decide where and how to implement features across CE/EE/SaaS layers
+
     A[Developer wants to implement a feature] --> B{What type of feature?}
 
     B -->|CE Feature| C[Implement in main codebase]
@@ -72,16 +76,6 @@ flowchart TD
     E8 --> E10[Write tests in ee/spec/]
     E9 --> E10
     E10 --> E11[Use stub_saas_features helper]
-
-    classDef ceStyle fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#000000
-    classDef eeStyle fill:#fff8e1,stroke:#f57c00,stroke-width:2px,color:#000000
-    classDef saasStyle fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000000
-    classDef startStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000000
-
-    class A startStyle
-    class C,C1,C2,C3 ceStyle
-    class D,D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12 eeStyle
-    class E,E1,E2,E3,E4,E5,E6,E7,E8,E9,E10,E11 saasStyle
 ```
 
 This diagram shows the three main implementation layers:
@@ -746,7 +740,7 @@ When it's not possible/logical to modify the implementation of a method, then
 wrap it in a self-descriptive method and use that method.
 
 For example, in GitLab-FOSS, the only user created by the system is
-`Users::Internal.for_organization(Organizations::Organization.first).ghost`
+`Users::Internal.in_organization(Organizations::Organization.first).ghost`
 but in EE there are several types of bot-users that aren't really users. It would
 be incorrect to override the implementation of `User#ghost?`, so instead we add
 a method `#internal?` to `app/models/user.rb`. The implementation:

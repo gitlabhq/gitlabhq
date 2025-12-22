@@ -41,7 +41,7 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
   describe '#execute' do
     let_it_be_with_reload(:project) { create(:project, :private) }
     let_it_be(:user) { create(:user) }
-    let_it_be(:support_bot) { Users::Internal.for_organization(project.organization_id).support_bot }
+    let_it_be(:support_bot) { Users::Internal.in_organization(project.organization_id).support_bot }
     let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
     let(:email) { nil }
@@ -108,7 +108,7 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
         context 'with work item of type epic' do
           let_it_be_with_reload(:epic) { create(:work_item, :epic) }
 
-          let_it_be(:support_bot) { Users::Internal.for_organization(epic.namespace.organization_id).support_bot }
+          let_it_be(:support_bot) { Users::Internal.in_organization(epic.namespace.organization_id).support_bot }
 
           it_behaves_like 'a successful service execution'
         end

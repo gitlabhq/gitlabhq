@@ -35,7 +35,7 @@ module Resolvers
     end
 
     def organization_topics(organization_id)
-      ::Projects::Topic.for_organization(organization_id).order_by_non_private_projects_count
+      ::Projects::Topic.in_organization(organization_id).order_by_non_private_projects_count
     end
   end
 end

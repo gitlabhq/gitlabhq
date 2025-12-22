@@ -112,10 +112,10 @@ class DeployKey < Key
 
   def ghost_user
     @ghost_user ||= if ghost_user_project.present?
-                      Users::Internal.for_organization(ghost_user_project.organization_id).ghost
+                      Users::Internal.in_organization(ghost_user_project.organization_id).ghost
                     else
                       Gitlab::AppLogger.warn("Fallback ghost user used for DeployKey=#{id}")
-                      Users::Internal.for_organization(Organizations::Organization.first).ghost # rubocop:disable Gitlab/PreventOrganizationFirst -- final fallback after all other methods fail
+                      Users::Internal.in_organization(Organizations::Organization.first).ghost # rubocop:disable Gitlab/PreventOrganizationFirst -- final fallback after all other methods fail
                     end
   end
 

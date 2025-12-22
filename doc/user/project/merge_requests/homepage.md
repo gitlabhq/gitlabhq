@@ -33,15 +33,6 @@ flowchart LR
     E -->G{All<br>approvals?}
     G -->|Yes| K[Ready to merge]
     G -.->|No| J[Remains in<br><strong>Waiting for approvals</strong>]
-
-    linkStyle default stroke:red
-    linkStyle 0 stroke:green
-    linkStyle 1 stroke:green
-    linkStyle 3 stroke:green
-    linkStyle 5 stroke:green
-    linkStyle 6 stroke:green
-    linkStyle 7 stroke:green
-    style K stroke:black,fill:#28a745,color:#fff
 ```
 
 This review flow assumes reviewers use the **Start a review** and **Submit a review** features.

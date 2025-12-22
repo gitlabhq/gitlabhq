@@ -39,7 +39,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
 
   let(:client) { instance_double(Gitlab::LegacyGithubImport::Client) }
   let(:ghost_user) { { id: -1, login: 'Ghost' } }
-  let(:internal_ghost_user) { Users::Internal.for_organization(project.organization).ghost }
+  let(:internal_ghost_user) { Users::Internal.in_organization(project.organization).ghost }
   let(:source_sha) { create(:commit, project: project).id }
   let(:target_commit) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit) }
   let(:target_sha) { target_commit.id }

@@ -906,7 +906,7 @@ class Namespace < ApplicationRecord
   # route / path global uniqueness is handled by Routeable concern
   # here we are checking only for conflicts with per-organization username aliases
   def no_conflict_with_organization_user_details
-    return unless Organizations::OrganizationUserDetail.for_organization(organization).with_usernames(path).any?
+    return unless Organizations::OrganizationUserDetail.in_organization(organization).with_usernames(path).any?
 
     errors.add(:path, _('has already been taken'))
   end

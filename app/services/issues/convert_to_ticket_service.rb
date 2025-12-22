@@ -78,7 +78,7 @@ module Issues
     end
 
     def support_bot
-      @support_bot ||= Users::Internal.for_organization(project.organization_id).support_bot
+      @support_bot ||= Users::Internal.in_organization(project.organization_id).support_bot
     end
 
     def error_service_desk_disabled

@@ -23,7 +23,7 @@ module Gitlab
       key = "github-import/ghost-user-id/#{organization_id}"
 
       Gitlab::Cache::Import::Caching.read_integer(key) ||
-        Gitlab::Cache::Import::Caching.write(key, Users::Internal.for_organization(organization_id).ghost.id)
+        Gitlab::Cache::Import::Caching.write(key, Users::Internal.in_organization(organization_id).ghost.id)
     end
 
     # Get formatted GitHub import URL. If github.com is in the import URL, this will return nil and octokit will use the default github.com API URL

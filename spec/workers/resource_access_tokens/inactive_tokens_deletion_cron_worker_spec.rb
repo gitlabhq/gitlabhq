@@ -140,7 +140,7 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
       worker.perform
 
       users_to_keep.each do |user|
-        admin_bot = Users::Internal.for_organization(user.organization).admin_bot
+        admin_bot = Users::Internal.in_organization(user.organization).admin_bot
         expect(
           Users::GhostUserMigration.find_by(
             user: user,
@@ -150,7 +150,7 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
       end
 
       users_to_delete.each do |user|
-        admin_bot = Users::Internal.for_organization(user.organization).admin_bot
+        admin_bot = Users::Internal.in_organization(user.organization).admin_bot
         expect(
           Users::GhostUserMigration.find_by(
             user: user,

@@ -93,7 +93,7 @@ RSpec.describe 'issue move to another project', :js, feature_category: :team_pla
     let(:namespace) { create(:namespace) }
     let(:regular_project) { create(:project, title: project_title, service_desk_enabled: false) }
     let(:service_desk_project) { build(:project, :private, namespace: namespace, service_desk_enabled: true) }
-    let(:support_bot) { Users::Internal.for_organization(service_desk_project.organization_id).support_bot }
+    let(:support_bot) { Users::Internal.in_organization(service_desk_project.organization_id).support_bot }
     let(:service_desk_issue) { create(:issue, project: service_desk_project, author: support_bot) }
 
     before do

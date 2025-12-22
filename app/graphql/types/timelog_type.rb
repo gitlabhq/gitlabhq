@@ -68,7 +68,7 @@ module Types
     private
 
     def default_ghost
-      ::Users::Internal.for_organization(object.project&.organization_id).ghost
+      ::Users::Internal.in_organization(object.project&.organization_id).ghost
     end
   end
 end

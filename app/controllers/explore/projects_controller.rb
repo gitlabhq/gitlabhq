@@ -142,7 +142,7 @@ class Explore::ProjectsController < Explore::ApplicationController
 
     return unless current_organization
 
-    @topic = Projects::Topic.for_organization(current_organization.id).find_by_name_case_insensitive(topic_name)
+    @topic = Projects::Topic.in_organization(current_organization.id).find_by_name_case_insensitive(topic_name)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

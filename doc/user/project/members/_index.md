@@ -419,7 +419,6 @@ In the following example, `User` is a:
 graph TD
   accTitle: Diagram of group inheritance
   accDescr: User inheritance, both direct and indirect through subgroups
-  classDef user stroke:green,color:green;
 
   root --> subgroup --> subsubgroup
   root-2 --> subgroup-2 --> subsubgroup-2

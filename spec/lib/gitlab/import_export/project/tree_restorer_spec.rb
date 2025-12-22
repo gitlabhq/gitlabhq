@@ -547,7 +547,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
               aggregate_failures do
                 expect(release.tag).to eq('release-1.0')
-                expect(release.author_id).to eq(Users::Internal.for_organization(@project.organization).ghost.id)
+                expect(release.author_id).to eq(Users::Internal.in_organization(@project.organization).ghost.id)
               end
             end
 

@@ -449,7 +449,6 @@ export default {
     'ee/app/assets/javascripts/packages_and_registries/container_registry/explorer/components/list_page/metadata_container_scanning.vue',
     'ee/app/assets/javascripts/packages_and_registries/virtual_registries/components/maven/registries_and_upstreams/upstreams_list.vue',
     'ee/app/assets/javascripts/packages_and_registries/virtual_registries/components/maven/shared/delete_upstream_with_modal.vue',
-    'ee/app/assets/javascripts/packages_and_registries/virtual_registries/pages/maven/registries/show.vue',
     'ee/app/assets/javascripts/packages_and_registries/virtual_registries/pages/maven/registries_and_upstreams/index.vue',
     'ee/app/assets/javascripts/packages_and_registries/virtual_registries/pages/maven/upstreams/edit.vue',
     'ee/app/assets/javascripts/pages/admin/groups/edit/index.js',

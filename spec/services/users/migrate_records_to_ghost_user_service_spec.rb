@@ -8,7 +8,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
   let!(:user) { create(:user) }
   let(:service) { described_class.new(user, admin, execution_tracker) }
   let(:execution_tracker) { instance_double(::Gitlab::Utils::ExecutionTracker, over_limit?: false) }
-  let(:ghost_user) { Users::Internal.for_organization(user.organization_id).ghost }
+  let(:ghost_user) { Users::Internal.in_organization(user.organization_id).ghost }
 
   let_it_be(:admin) { create(:admin) }
   let_it_be(:project) { create(:project, :repository) }

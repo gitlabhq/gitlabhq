@@ -87,10 +87,10 @@ RSpec.describe Organizations::OrganizationUserDetail, type: :model, feature_cate
       end
     end
 
-    describe '.for_organization' do
+    describe '.in_organization' do
       it 'scopes query to organization' do
-        expect(described_class.for_organization(organization_user_detail.organization).count).to eq(1)
-        expect(described_class.for_organization(99999).count).to eq(0)
+        expect(described_class.in_organization(organization_user_detail.organization).count).to eq(1)
+        expect(described_class.in_organization(99999).count).to eq(0)
       end
     end
 

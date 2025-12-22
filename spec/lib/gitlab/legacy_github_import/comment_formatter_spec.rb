@@ -75,7 +75,7 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
 
       it 'sets the note author as the gitlab ghost user' do
         expect(comment.attributes.fetch(:author_id)).to eq(
-          Users::Internal.for_organization(project.organization).ghost.id
+          Users::Internal.in_organization(project.organization).ghost.id
         )
       end
     end

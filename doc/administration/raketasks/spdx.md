@@ -2,6 +2,7 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Import the SPDX license list into GitLab, enabling accurate license matching for compliance policies
 title: SPDX license list import Rake task
 ---
 

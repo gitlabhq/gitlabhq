@@ -2148,7 +2148,7 @@ class Project < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def create_labels
-    Label.templates.for_organization(organization).each do |label|
+    Label.templates.in_organization(organization).each do |label|
       # slice on column_names to ensure an added DB column will not break a mixed deployment
       params = label.attributes
                     .slice(*Label.column_names)
@@ -3813,7 +3813,7 @@ class Project < ApplicationRecord
       self.topics.delete_all
       self.topics = @topic_list.map do |topic_name|
         Projects::Topic
-          .for_organization(organization_id)
+          .in_organization(organization_id)
           .where('lower(name) = ?', topic_name.downcase)
           .order(total_projects_count: :desc)
           .first_or_create(name: topic_name, title: topic_name, slug: Gitlab::Slug::Path.new(topic_name).generate)

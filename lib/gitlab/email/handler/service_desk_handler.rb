@@ -260,7 +260,7 @@ module Gitlab
         end
 
         def support_bot
-          @support_bot ||= Users::Internal.for_organization(project.organization_id).support_bot
+          @support_bot ||= Users::Internal.in_organization(project.organization_id).support_bot
         end
       end
     end

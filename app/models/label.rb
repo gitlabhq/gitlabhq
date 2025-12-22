@@ -38,7 +38,7 @@ class Label < ApplicationRecord
   default_scope { order(title: :asc) } # rubocop:disable Cop/DefaultScope
 
   scope :templates, -> { where(template: true, type: [Label.name, nil]) }
-  scope :for_organization, ->(organization) { where(organization: organization) }
+  scope :in_organization, ->(organization) { where(organization: organization) }
   scope :with_title, ->(title) { where(title: title) }
   scope :with_lists_and_board, -> { joins(lists: :board).merge(List.movable) }
   scope :with_lock_on_merge, -> { where(lock_on_merge: true) }

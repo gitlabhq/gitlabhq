@@ -141,7 +141,7 @@ class PersonalAccessTokensFinder
   def by_organization(tokens)
     return tokens unless params[:organization]
 
-    tokens.for_organization(params[:organization])
+    tokens.in_organization(params[:organization])
   end
 
   def by_group(tokens)
