@@ -34,6 +34,7 @@ module API
       resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "Get a list of #{noteable_type.human_name} notes" do
           success Entities::Note
+          tags ['notes']
         end
         params do
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
@@ -78,6 +79,7 @@ module API
 
         desc "Get a single #{noteable_type.human_name} note" do
           success Entities::Note
+          tags %w[notes]
         end
         params do
           requires :note_id, type: Integer, desc: 'The ID of a note'
@@ -98,6 +100,7 @@ module API
 
         desc "Create a new #{noteable_type.human_name} note" do
           success Entities::Note
+          tags %w[notes]
         end
         params do
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
@@ -136,6 +139,7 @@ module API
 
         desc "Update an existing #{noteable_type.human_name} note" do
           success Entities::Note
+          tags %w[notes]
         end
         params do
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
@@ -151,6 +155,7 @@ module API
 
         desc "Delete a #{noteable_type.human_name} note" do
           success Entities::Note
+          tags %w[notes]
         end
         params do
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'

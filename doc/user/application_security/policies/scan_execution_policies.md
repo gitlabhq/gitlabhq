@@ -450,7 +450,7 @@ Some scanners behave differently in a `scan` action than they do in a regular CI
 
 ### DAST profiles
 
-The following requirements apply when enforcing Dynamic Application Security Testing (DAST):
+The following requirements apply when enforcing dynamic application security testing (DAST):
 
 - For every project in the policy's scope the specified
   [site profile](../dast/profiles.md#site-profile) and

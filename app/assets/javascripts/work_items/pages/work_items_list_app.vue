@@ -927,7 +927,9 @@ export default {
     },
     workItemTypeId() {
       const workItemTypeName = this.workItemType || WORK_ITEM_TYPE_NAME_ISSUE;
-      return this.workItemTypes?.find((workItemType) => workItemType.name === workItemTypeName)?.id;
+      return (
+        this.workItemTypes?.find((workItemType) => workItemType.name === workItemTypeName)?.id || ''
+      );
     },
     shouldLoad() {
       return !this.isInitialLoadComplete || (!this.isSortKeyInitialized && !this.error);

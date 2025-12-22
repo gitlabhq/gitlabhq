@@ -15,3 +15,5 @@ notes: |
   Temporary table for archiving authentication events during retention implementation.
   Will be dropped after verification period.
 table_size: medium
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216011
+removed_in_milestone: 18.8

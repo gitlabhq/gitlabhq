@@ -23,7 +23,7 @@
 {"name":"apollo_upload_server","version":"2.1.6","platform":"ruby","checksum":"dcec4072258e6518b0b82e03b485efbddde946813543c14184fc81952d6bcdb2"},
 {"name":"app_store_connect","version":"0.38.0","platform":"ruby","checksum":"30f624109298ed009a36408edac264a5200d967d28d960f3e37f02e9cab25ce6"},
 {"name":"arr-pm","version":"0.0.12","platform":"ruby","checksum":"fdff482f75239239201f4d667d93424412639aad0b3b0ad4d827e7c637e0ad39"},
-{"name":"asciidoctor","version":"2.0.23","platform":"ruby","checksum":"52208807f237dfa0ca29882f8b13d60b820496116ad191cf197ca56f2b7fddf3"},
+{"name":"asciidoctor","version":"2.0.26","platform":"ruby","checksum":"16e3accf1fc206bbd6335848649d7fd65f31d2daa60d85af13d47a8ee4b071c1"},
 {"name":"asciidoctor-include-ext","version":"0.4.0","platform":"ruby","checksum":"406adb9d2fbfc25536609ca13b787ed704dc06a4e49d6709b83f3bad578f7878"},
 {"name":"asciidoctor-kroki","version":"0.10.0","platform":"ruby","checksum":"8e4225d88f120e2e7b5d3f5ddb67c5e69496d7344a16c57db5036ac900123062"},
 {"name":"asciidoctor-plantuml","version":"0.0.16","platform":"ruby","checksum":"407e47cd1186ded5ccc75f0c812e5524c26c571d542247c5132abb8f47bd1793"},

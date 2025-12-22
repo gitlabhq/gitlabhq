@@ -430,6 +430,13 @@ begins to diverge from the old one. If problems occur at this point, [failing ba
 back to the old primary site is possible, but likely to result
 in the loss of any data uploaded to the new primary in the meantime.
 
+Re-enable all non-Geo periodic background jobs that were [disabled earlier](#prevent-updates-to-the-primary-site) on the new primary site:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Monitoring** > **Background jobs**.
+1. On the Sidekiq dashboard, select **Cron**.
+1. Select **Enable All** to re-enable all periodic background jobs.
+
 Don't forget to remove the broadcast message after the failover is complete.
 
 Finally, bring the

@@ -166,19 +166,6 @@ RETURN NEW;
 END
 $$;
 
-CREATE FUNCTION assign_p_knowledge_graph_tasks_id_value() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-IF NEW."id" IS NOT NULL THEN
-  RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
-END IF;
-NEW."id" := nextval('p_knowledge_graph_tasks_id_seq'::regclass);
-RETURN NEW;
-
-END
-$$;
-
 CREATE FUNCTION assign_zoekt_tasks_id_value() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -13247,19 +13234,6 @@ CREATE SEQUENCE audit_events_streaming_instance_namespace_filters_id_seq
 
 ALTER SEQUENCE audit_events_streaming_instance_namespace_filters_id_seq OWNED BY audit_events_streaming_instance_namespace_filters.id;
 
-CREATE TABLE authentication_event_archived_records (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    user_id bigint,
-    result smallint NOT NULL,
-    ip_address inet,
-    provider text NOT NULL,
-    user_name text NOT NULL,
-    archived_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT check_0a55f02112 CHECK ((char_length(provider) <= 64)),
-    CONSTRAINT check_3b5f782c5d CHECK ((char_length(user_name) <= 255))
-);
-
 CREATE TABLE authentication_events (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -22498,74 +22472,6 @@ CREATE SEQUENCE p_generated_ref_commits_id_seq
 
 ALTER SEQUENCE p_generated_ref_commits_id_seq OWNED BY p_generated_ref_commits.id;
 
-CREATE TABLE p_knowledge_graph_enabled_namespaces (
-    id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    state smallint DEFAULT 0 NOT NULL
-)
-PARTITION BY RANGE (namespace_id);
-
-CREATE SEQUENCE p_knowledge_graph_enabled_namespaces_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE p_knowledge_graph_enabled_namespaces_id_seq OWNED BY p_knowledge_graph_enabled_namespaces.id;
-
-CREATE TABLE p_knowledge_graph_replicas (
-    id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    knowledge_graph_enabled_namespace_id bigint,
-    zoekt_node_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    state smallint DEFAULT 0 NOT NULL,
-    retries_left smallint NOT NULL,
-    reserved_storage_bytes bigint DEFAULT 10485760 NOT NULL,
-    indexed_at timestamp with time zone,
-    schema_version smallint DEFAULT 0 NOT NULL,
-    CONSTRAINT c_p_knowledge_graph_replicas_retries_status CHECK (((retries_left > 0) OR ((retries_left = 0) AND (state >= 200))))
-)
-PARTITION BY RANGE (namespace_id);
-
-CREATE SEQUENCE p_knowledge_graph_replicas_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE p_knowledge_graph_replicas_id_seq OWNED BY p_knowledge_graph_replicas.id;
-
-CREATE TABLE p_knowledge_graph_tasks (
-    id bigint NOT NULL,
-    partition_id bigint DEFAULT 1 NOT NULL,
-    zoekt_node_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    knowledge_graph_replica_id bigint NOT NULL,
-    perform_at timestamp with time zone DEFAULT now() NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    state smallint DEFAULT 0 NOT NULL,
-    task_type smallint NOT NULL,
-    retries_left smallint NOT NULL,
-    CONSTRAINT c_p_knowledge_graph_tasks_on_retries_left CHECK (((retries_left > 0) OR ((retries_left = 0) AND (state = 255))))
-)
-PARTITION BY LIST (partition_id);
-
-CREATE SEQUENCE p_knowledge_graph_tasks_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE p_knowledge_graph_tasks_id_seq OWNED BY p_knowledge_graph_tasks.id;
-
 CREATE SEQUENCE p_sent_notifications_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -31045,7 +30951,6 @@ CREATE TABLE zoekt_nodes (
     usable_storage_bytes_locked_until timestamp with time zone,
     schema_version smallint DEFAULT 0 NOT NULL,
     services smallint[] DEFAULT '{0}'::smallint[] NOT NULL,
-    knowledge_graph_schema_version smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_32f39efba3 CHECK ((char_length(search_base_url) <= 1024)),
     CONSTRAINT check_38c354a3c2 CHECK ((char_length(index_base_url) <= 1024))
 );
@@ -32752,10 +32657,6 @@ ALTER TABLE ONLY p_ci_workload_variable_inclusions ALTER COLUMN id SET DEFAULT n
 ALTER TABLE ONLY p_ci_workloads ALTER COLUMN id SET DEFAULT nextval('p_ci_workloads_id_seq'::regclass);
 
 ALTER TABLE ONLY p_generated_ref_commits ALTER COLUMN id SET DEFAULT nextval('p_generated_ref_commits_id_seq'::regclass);
-
-ALTER TABLE ONLY p_knowledge_graph_enabled_namespaces ALTER COLUMN id SET DEFAULT nextval('p_knowledge_graph_enabled_namespaces_id_seq'::regclass);
-
-ALTER TABLE ONLY p_knowledge_graph_replicas ALTER COLUMN id SET DEFAULT nextval('p_knowledge_graph_replicas_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_build_infos ALTER COLUMN id SET DEFAULT nextval('packages_build_infos_id_seq'::regclass);
 
@@ -34694,9 +34595,6 @@ ALTER TABLE ONLY audit_events_streaming_instance_event_type_filters
 ALTER TABLE ONLY audit_events_streaming_instance_namespace_filters
     ADD CONSTRAINT audit_events_streaming_instance_namespace_filters_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY authentication_event_archived_records
-    ADD CONSTRAINT authentication_event_archived_records_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY authentication_events
     ADD CONSTRAINT authentication_events_pkey PRIMARY KEY (id);
 
@@ -36229,15 +36127,6 @@ ALTER TABLE ONLY p_duo_workflows_checkpoints
 
 ALTER TABLE ONLY p_generated_ref_commits
     ADD CONSTRAINT p_generated_ref_commits_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY p_knowledge_graph_enabled_namespaces
-    ADD CONSTRAINT p_knowledge_graph_enabled_namespaces_pkey PRIMARY KEY (id, namespace_id);
-
-ALTER TABLE ONLY p_knowledge_graph_replicas
-    ADD CONSTRAINT p_knowledge_graph_replicas_pkey PRIMARY KEY (id, namespace_id);
-
-ALTER TABLE ONLY p_knowledge_graph_tasks
-    ADD CONSTRAINT p_knowledge_graph_tasks_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY p_sent_notifications
     ADD CONSTRAINT p_sent_notifications_pkey PRIMARY KEY (id, partition);
@@ -43136,24 +43025,6 @@ CREATE INDEX index_p_duo_workflows_checkpoints_on_project_id ON ONLY p_duo_workf
 
 CREATE INDEX index_p_duo_workflows_checkpoints_thread ON ONLY p_duo_workflows_checkpoints USING btree (workflow_id, thread_ts);
 
-CREATE UNIQUE INDEX index_p_knowledge_graph_enabled_namespaces_on_namespace_id ON ONLY p_knowledge_graph_enabled_namespaces USING btree (namespace_id);
-
-CREATE INDEX index_p_knowledge_graph_enabled_namespaces_on_state ON ONLY p_knowledge_graph_enabled_namespaces USING btree (state);
-
-CREATE INDEX index_p_knowledge_graph_replicas_on_namespace_id ON ONLY p_knowledge_graph_replicas USING btree (namespace_id);
-
-CREATE INDEX index_p_knowledge_graph_replicas_on_schema_version ON ONLY p_knowledge_graph_replicas USING btree (schema_version);
-
-CREATE INDEX index_p_knowledge_graph_replicas_on_state ON ONLY p_knowledge_graph_replicas USING btree (state);
-
-CREATE INDEX index_p_knowledge_graph_replicas_on_zoekt_node_id ON ONLY p_knowledge_graph_replicas USING btree (zoekt_node_id);
-
-CREATE INDEX index_p_knowledge_graph_tasks_on_knowledge_graph_replica_id ON ONLY p_knowledge_graph_tasks USING btree (knowledge_graph_replica_id);
-
-CREATE INDEX index_p_knowledge_graph_tasks_on_node_state_and_perform_at ON ONLY p_knowledge_graph_tasks USING btree (zoekt_node_id, state, perform_at);
-
-CREATE INDEX index_p_knowledge_graph_tasks_on_state ON ONLY p_knowledge_graph_tasks USING btree (state);
-
 CREATE INDEX index_p_sent_notifications_on_issue_email_participant_id ON ONLY p_sent_notifications USING btree (issue_email_participant_id);
 
 CREATE INDEX index_p_sent_notifications_on_namespace_id ON ONLY p_sent_notifications USING btree (namespace_id);
@@ -45451,8 +45322,6 @@ CREATE UNIQUE INDEX p_ci_workloads_pipeline_id_idx ON ONLY p_ci_workloads USING 
 CREATE INDEX p_index_generated_ref_commits_on_merge_request_id ON ONLY p_generated_ref_commits USING btree (project_id, merge_request_iid);
 
 CREATE INDEX p_index_generated_ref_commits_on_project_id_and_commit_sha ON ONLY p_generated_ref_commits USING btree (project_id, commit_sha);
-
-CREATE UNIQUE INDEX p_knowledge_graph_replicas_namespace_id_and_zoekt_node_id ON ONLY p_knowledge_graph_replicas USING btree (knowledge_graph_enabled_namespace_id, zoekt_node_id, namespace_id);
 
 CREATE INDEX package_name_index ON packages_packages USING btree (name);
 
@@ -48858,8 +48727,6 @@ CREATE TRIGGER assign_p_ci_stages_id_trigger BEFORE INSERT ON p_ci_stages FOR EA
 
 CREATE TRIGGER assign_p_duo_workflows_checkpoints_id_trigger BEFORE INSERT ON p_duo_workflows_checkpoints FOR EACH ROW EXECUTE FUNCTION assign_p_duo_workflows_checkpoints_id_value();
 
-CREATE TRIGGER assign_p_knowledge_graph_tasks_id_trigger BEFORE INSERT ON p_knowledge_graph_tasks FOR EACH ROW EXECUTE FUNCTION assign_p_knowledge_graph_tasks_id_value();
-
 CREATE TRIGGER assign_zoekt_tasks_id_trigger BEFORE INSERT ON zoekt_tasks FOR EACH ROW EXECUTE FUNCTION assign_zoekt_tasks_id_value();
 
 CREATE TRIGGER chat_names_loose_fk_trigger AFTER DELETE ON chat_names REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
@@ -48915,8 +48782,6 @@ CREATE TRIGGER p_ci_builds_loose_fk_trigger AFTER DELETE ON p_ci_builds REFERENC
 CREATE TRIGGER p_ci_pipelines_loose_fk_trigger AFTER DELETE ON p_ci_pipelines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ci_pipelines');
 
 CREATE TRIGGER p_ci_workloads_loose_fk_trigger AFTER DELETE ON p_ci_workloads REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ci_workloads');
-
-CREATE TRIGGER p_knowledge_graph_enabled_namespaces_loose_fk_trigger AFTER DELETE ON p_knowledge_graph_enabled_namespaces REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_knowledge_graph_enabled_namespaces');
 
 CREATE TRIGGER packages_nuget_symbols_loose_fk_trigger AFTER DELETE ON packages_nuget_symbols REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
@@ -52745,9 +52610,6 @@ ALTER TABLE ONLY duo_workflows_checkpoint_writes
 ALTER TABLE ONLY issuable_resource_links
     ADD CONSTRAINT fk_rails_3f0ec6b1cf FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
-ALTER TABLE p_knowledge_graph_replicas
-    ADD CONSTRAINT fk_rails_3f20642c2f FOREIGN KEY (zoekt_node_id) REFERENCES zoekt_nodes(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY analytics_cycle_analytics_stage_aggregations
     ADD CONSTRAINT fk_rails_3f409802fc FOREIGN KEY (stage_id) REFERENCES analytics_cycle_analytics_group_stages(id) ON DELETE CASCADE;
 
@@ -53299,9 +53161,6 @@ ALTER TABLE ONLY personal_access_token_last_used_ips
 
 ALTER TABLE ONLY clusters_kubernetes_namespaces
     ADD CONSTRAINT fk_rails_7e7688ecaf FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
-
-ALTER TABLE p_knowledge_graph_enabled_namespaces
-    ADD CONSTRAINT fk_rails_801c561c42 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY security_policies
     ADD CONSTRAINT fk_rails_802ceea0c8 FOREIGN KEY (security_orchestration_policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;

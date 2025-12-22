@@ -21,7 +21,7 @@
     - Infrastructure as Code (IaC) scanning: version 1
     - License scanning: version 3
     - Secret detection: version 3
-    - Static Application Security Testing (SAST): version 2 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks), except `gosec` which is currently at version 3
+    - Static application security testing (SAST): version 2 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks), except `gosec` which is currently at version 3
       - `bandit`: version 2
       - `brakeman`: version 2
       - `eslint`: version 2

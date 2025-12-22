@@ -25,7 +25,7 @@ how to migrate from the DAST version 4 browser-based analyzer to DAST version 5,
 
 {{< /alert >}}
 
-Dynamic Application Security Testing (DAST) runs automated penetration tests to find vulnerabilities
+Dynamic application security testing (DAST) runs automated penetration tests to find vulnerabilities
 in your web applications and APIs as they are running. DAST automates a hacker's approach and
 simulates real-world attacks for critical threats such as cross-site scripting (XSS), SQL injection
 (SQLi), and cross-site request forgery (CSRF) to uncover vulnerabilities and misconfigurations that

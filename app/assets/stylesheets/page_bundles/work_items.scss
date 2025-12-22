@@ -469,9 +469,10 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
 ul.content-list {
   .issue-clickable {
-    a, span {
+    a, span, button {
       @apply gl-relative;
       @apply gl-z-2;
+      cursor: pointer !important;
     }
   }
 }

@@ -31,6 +31,14 @@ tags:
   description: Operations about badges
 - name: groups
   description: Operations about groups
+- name: ldap
+  description: Operations about ldaps
+- name: audit_events
+  description: Operations about audit_events
+- name: group
+  description: Operations about groups
+- name: group_ssh_certificates
+  description: Operations about group_ssh_certificates
 - name: runners
   description: Operations about runners
 - name: group_avatar
@@ -2264,7 +2272,7 @@ paths:
         '201':
           description: Sync a group with LDAP.
       tags:
-      - groups
+      - ldap
       operationId: postApiV4GroupsIdLdapSync
   "/api/v4/groups/{id}/audit_events":
     get:
@@ -2315,7 +2323,7 @@ paths:
             items:
               "$ref": "#/definitions/API_Entities_AuditEvent"
       tags:
-      - groups
+      - audit_events
       operationId: getApiV4GroupsIdAuditEvents
   "/api/v4/groups/{id}/audit_events/{audit_event_id}":
     get:
@@ -2411,7 +2419,7 @@ paths:
             items:
               "$ref": "#/definitions/API_Entities_UserPublic"
       tags:
-      - groups
+      - group
       operationId: getApiV4GroupsIdSamlUsers
   "/api/v4/groups/{id}/provisioned_users":
     get:
@@ -2524,7 +2532,7 @@ paths:
         '404':
           description: 404 Not Found
       tags:
-      - groups
+      - group_ssh_certificates
       operationId: getApiV4GroupsIdSshCertificates
     post:
       summary: Add a Groups::SshCertificate.
@@ -2558,7 +2566,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - groups
+      - group_ssh_certificates
       operationId: postApiV4GroupsIdSshCertificates
   "/api/v4/groups/{id}/ssh_certificates/{ssh_certificates_id}":
     delete:
@@ -2589,7 +2597,7 @@ paths:
         '422':
           description: Unprocessable entity
       tags:
-      - groups
+      - group_ssh_certificates
       operationId: deleteApiV4GroupsIdSshCertificatesSshCertificatesId
   "/api/v4/groups/{id}/runners":
     get:
@@ -7687,7 +7695,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Member"
       tags:
-      - groups
+      - members
       operationId: postApiV4GroupsIdMembersUserIdOverride
     delete:
       description: Remove an LDAP group member access level override.
@@ -7711,7 +7719,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Member"
       tags:
-      - groups
+      - members
       operationId: deleteApiV4GroupsIdMembersUserIdOverride
   "/api/v4/groups/{id}/members/{member_id}/approve":
     put:
@@ -7736,7 +7744,7 @@ paths:
         '200':
           description: Approves a pending member
       tags:
-      - groups
+      - members
       operationId: putApiV4GroupsIdMembersMemberIdApprove
   "/api/v4/groups/{id}/members/approve_all":
     post:
@@ -7755,7 +7763,7 @@ paths:
         '201':
           description: Approves all pending members
       tags:
-      - groups
+      - members
       operationId: postApiV4GroupsIdMembersApproveAll
   "/api/v4/groups/{id}/pending_members":
     get:
@@ -7788,7 +7796,7 @@ paths:
         '200':
           description: Lists all pending members for a group including invited users
       tags:
-      - groups
+      - members
       operationId: getApiV4GroupsIdPendingMembers
   "/api/v4/groups/{id}/billable_members":
     get:
@@ -7874,7 +7882,7 @@ paths:
         '200':
           description: Changes the state of the memberships of a user in the group
       tags:
-      - groups
+      - members
       operationId: putApiV4GroupsIdMembersUserIdState
   "/api/v4/groups/{id}/billable_members/{user_id}/memberships":
     get:
@@ -7916,7 +7924,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_BillableMembership"
       tags:
-      - groups
+      - members
       operationId: getApiV4GroupsIdBillableMembersUserIdMemberships
   "/api/v4/groups/{id}/billable_members/{user_id}/indirect":
     get:
@@ -7959,7 +7967,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_BillableMembership"
       tags:
-      - groups
+      - members
       operationId: getApiV4GroupsIdBillableMembersUserIdIndirect
   "/api/v4/groups/{id}/billable_members/{user_id}":
     delete:
@@ -7982,7 +7990,7 @@ paths:
         '204':
           description: Removes a billable member from a group or project.
       tags:
-      - groups
+      - members
       operationId: deleteApiV4GroupsIdBillableMembersUserId
   "/api/v4/groups/{id}/merge_requests":
     get:

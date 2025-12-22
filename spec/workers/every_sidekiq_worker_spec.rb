@@ -508,6 +508,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Vulnerabilities::UpdateArchivedAttributeOfVulnerabilityReadsWorker' => 2,
         'VulnerabilityExports::ExportDeletionWorker' => 3,
         'VulnerabilityExports::ExportWorker' => 3,
+        'VirtualRegistries::Cache::DestroyOrphanEntriesWorker' => 0,
         'VirtualRegistries::Packages::Cache::DestroyOrphanEntriesWorker' => 0,
         'VirtualRegistries::Cleanup::ExecutePolicyWorker' => 0,
         'WaitForClusterCreationWorker' => 3,

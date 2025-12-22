@@ -86,7 +86,7 @@ The configuration for each unit primitive adhere to the following schema.
 |-------|------|-------------------------------------------------------------------------|
 | `license_types` | array[string] | GitLab license types that can access this primitive. Possible values must match the name field in corresponding files under `config/license_types` (for example, `premium`).|
 | `backend_services` | array[string] | Backend services hosting this primitive. Possible values must match the name field in corresponding files under `config/backend_services` (for example, `ai_gateway`).|
-| `add_ons` | array[string] | Add-on products including this primitive. To have access to this feature, you must have all listed add-ons. Possible values must match the name field in corresponding files under `config/add_ons` (for example, `duo_pro`). **NOTE:** This field is enforced only with a defined `cut_off_date` beyond which a feature moves out of free access or beta status. |
+| `add_ons` | array[string] | Add-on products including this primitive. To have access to this feature, you must have at least one of the listed add-ons. Possible values must match the name field in corresponding files under `config/add_ons` (for example, `duo_pro`). **NOTE:** This field is enforced only with a defined `cut_off_date` beyond which a feature moves out of free access or beta status. |
 
 Example unit primitive configuration:
 

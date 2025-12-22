@@ -13,8 +13,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'web_hook_logs_daily', # temporary copy of web_hook_logs
       'uploads_9ba88c4165', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
       'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
-      'award_emoji_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/580326
-      'authentication_event_archived_records' # temp table: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202447
+      'award_emoji_archived' # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/580326
     ]
   end
 

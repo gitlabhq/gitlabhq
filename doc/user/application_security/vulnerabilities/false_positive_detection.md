@@ -21,7 +21,7 @@ description: Automatic detection and filtering of false positives in SAST findin
 
 {{< /history >}}
 
-When a SAST (Static Application Security Testing) scan runs, GitLab Duo automatically analyzes each Critical and High severity SAST vulnerabilities to determine the likelihood that it's a false positive. Detection is available for vulnerabilities from [GitLab-supported SAST analyzers](../sast/analyzers.md).
+When a static application security testing (SAST) scan runs, GitLab Duo automatically analyzes each Critical and High severity SAST vulnerabilities to determine the likelihood that it's a false positive. Detection is available for vulnerabilities from [GitLab-supported SAST analyzers](../sast/analyzers.md).
 
 The GitLab Duo assessment includes:
 

@@ -35,7 +35,7 @@
     - Fuzz API: version 4
     - IaC scanning: version 5
     - Pipeline secret detection: version 6
-    - Static Application Security Testing (SAST): version 5 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/)
+    - Static application security testing (SAST): version 5 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/)
       - `kics`
       - `kubesec`
       - `pmd-apex`

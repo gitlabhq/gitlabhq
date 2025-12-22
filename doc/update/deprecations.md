@@ -692,7 +692,7 @@ Specifically, the following analyzers will no longer be updated after the GitLab
 - Fuzz API: version 4
 - IaC scanning: version 5
 - Pipeline secret detection: version 6
-- Static Application Security Testing (SAST): version 5 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/)
+- Static application security testing (SAST): version 5 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/)
   - `kics`
   - `kubesec`
   - `pmd-apex`
@@ -3015,7 +3015,7 @@ the GitLab 17.0 release:
 - Fuzz API: version 3
 - IaC scanning: version 4
 - Secret detection: version 5
-- Static Application Security Testing (SAST): version 4 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/)
+- Static application security testing (SAST): version 4 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/)
   - `brakeman`
   - `flawfinder`
   - `kubesec`
@@ -4856,7 +4856,7 @@ Specifically, the following are being deprecated and will no longer be updated a
 - IaC scanning: version 3
 - License scanning: version 4
 - Secret detection: version 4
-- Static Application Security Testing (SAST): version 3 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks)
+- Static application security testing (SAST): version 3 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks)
   - `brakeman`: version 3
   - `flawfinder`: version 3
   - `kubesec`: version 3
@@ -6626,7 +6626,7 @@ Specifically, the following are being deprecated and will no longer be updated a
 - Infrastructure as Code (IaC) scanning: version 1
 - License scanning: version 3
 - Secret detection: version 3
-- Static Application Security Testing (SAST): version 2 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks), except `gosec` which is currently at version 3
+- Static application security testing (SAST): version 2 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks), except `gosec` which is currently at version 3
   - `bandit`: version 2
   - `brakeman`: version 2
   - `eslint`: version 2

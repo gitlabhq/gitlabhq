@@ -119,7 +119,7 @@ export default {
       anchor-id="time-estimate"
       wrapper-component="button"
       icon-name="timer"
-      icon-size="12"
+      :icon-size="12"
       :title="timeEstimate"
       wrapper-component-class="gl-text-subtle gl-bg-transparent gl-border-0 gl-p-0 focus-visible:gl-focus-inset"
       :tooltip-text="__('Estimate')"

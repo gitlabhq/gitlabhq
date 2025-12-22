@@ -1,6 +1,9 @@
 ---
 API/DescriptionSuccessResponse:
   Exclude:
+    - 'ee/lib/ee/api/groups.rb'
+    - 'ee/lib/ee/api/members.rb'
+    - 'ee/lib/ee/api/namespaces.rb'
     - 'ee/lib/api/admin/search/migrations.rb'
     - 'ee/lib/api/admin/search/zoekt.rb'
     - 'ee/lib/api/clusters/agent_url_configurations.rb'
