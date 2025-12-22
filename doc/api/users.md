@@ -1077,6 +1077,14 @@ Upload an avatar for yourself.
 Prerequisites:
 
 - You must be authenticated.
+- Your file must be 200 KB or smaller. The ideal image size is 192 x 192 pixels.
+- The image must be one of the following file types:
+  - `.bmp`
+  - `.gif`
+  - `.ico`
+  - `.jpeg`
+  - `.png`
+  - `.tiff`
 
 ```plaintext
 PUT /user/avatar
@@ -1086,11 +1094,11 @@ Supported attributes:
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `avatar`  | string | Yes      | The file to be uploaded. The ideal image size is 192 x 192 pixels. The maximum file size allowed is 200 KiB. |
+| `avatar`  | string | Yes      | The file to be uploaded. |
 
 To upload an avatar from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`. The
-`file=` parameter must point to an image file on your file system and be
+`avatar=` parameter must point to an image file on your file system and be
 preceded by `@`.
 
 Example request:
@@ -1098,7 +1106,7 @@ Example request:
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --form "avatar=@avatar.png" \
+  --form "avatar=@/path/to/your/avatar.png" \
   --url "https://gitlab.example.com/api/v4/user/avatar"
 ```
 
@@ -1106,7 +1114,7 @@ Example response:
 
 ```json
 {
-  "avatar_url": "http://gdk.test:3000/uploads/-/system/user/avatar/76/avatar.png",
+  "avatar_url": "http://gitlab.example.com/uploads/-/system/user/avatar/76/avatar.png",
 }
 ```
 

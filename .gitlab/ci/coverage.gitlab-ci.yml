@@ -33,31 +33,7 @@ test-coverage:export-rspec-and-e2e:
     - ruby scripts/coverage/merge_backend_coverage.rb
     - echo "Merging E2E test mappings with Crystalball mappings..."
     - ruby scripts/coverage/merge_e2e_backend_test_mapping.rb
-    - |
-      if [ ! -f "coverage-backend/coverage.lcov" ]; then
-        echo "Backend coverage report not found. Skipping export to ClickHouse..."
-        exit 0
-      fi
-
-      if ! ls rspec/rspec-*.json e2e-test-reports/rspec-*.json 2>/dev/null | head -1 | grep -q .; then
-        echo "No test reports found. Skipping export to ClickHouse..."
-        exit 0
-      fi
-
-      if [ ! -f "crystalball/merged-mapping.json.gz" ]; then
-        echo "Merged test mapping not found. Skipping export to ClickHouse..."
-        exit 0
-      fi
-
-      echo "Exporting merged RSpec + E2E coverage to ClickHouse..."
-      bundle exec test-coverage \
-        --test-reports 'rspec/rspec-*.json,e2e-test-reports/rspec-*.json' \
-        --coverage-report 'coverage-backend/coverage.lcov' \
-        --test-map 'crystalball/merged-mapping.json.gz' \
-        --responsibility-patterns '.gitlab/coverage/responsibility_patterns.yml' \
-        --clickhouse-url "${CLICKHOUSE_URL}" \
-        --clickhouse-database "${CLICKHOUSE_DATABASE}" \
-        --clickhouse-username "${CLICKHOUSE_USERNAME}"
+    - ruby scripts/coverage/backend_coverage_exporter.rb || true
   artifacts:
     paths:
       - coverage-backend/
@@ -87,37 +63,11 @@ test-coverage:export-jest-and-e2e:
     - yarn_install_script
   script:
     - ruby scripts/coverage/download_e2e_artifacts_from_child_pipeline.rb
-    - |
-      if [ ! -f "coverage-frontend/lcov.info" ]; then
-        echo "Frontend coverage report not found. Skipping export to ClickHouse..."
-        exit 0
-      fi
-
-      if ! ls jest-reports/**/*.json e2e-test-reports/rspec-*.json 2>/dev/null | head -1 | grep -q .; then
-        echo "No test reports found. Skipping export to ClickHouse..."
-        exit 0
-      fi
-
-      echo "Merging Jest + E2E coverage..."
-      node scripts/frontend/merge_coverage_frontend.js
-    - |
-      echo "Merging E2E test mappings with Jest mappings..."
-      node scripts/frontend/merge_e2e_frontend_test_mapping.js
-
-      if [ ! -f "jest-test-mapping/merged-source-to-test.json" ]; then
-        echo "Merged test mapping not found. Skipping export to ClickHouse..."
-        exit 0
-      fi
-
-      echo "Exporting merged Jest + E2E coverage to ClickHouse..."
-      bundle exec test-coverage \
-        --test-reports 'jest-reports/**/*.json,e2e-test-reports/rspec-*.json' \
-        --coverage-report 'coverage-frontend/lcov.info' \
-        --test-map 'jest-test-mapping/merged-source-to-test.json' \
-        --responsibility-patterns '.gitlab/coverage/responsibility_patterns.yml' \
-        --clickhouse-url "${CLICKHOUSE_URL}" \
-        --clickhouse-database "${CLICKHOUSE_DATABASE}" \
-        --clickhouse-username "${CLICKHOUSE_USERNAME}"
+    - echo "Merging Jest + E2E coverage..."
+    - node scripts/frontend/merge_coverage_frontend.js
+    - echo "Merging E2E test mappings with Jest mappings..."
+    - node scripts/frontend/merge_e2e_frontend_test_mapping.js
+    - ruby scripts/coverage/frontend_coverage_exporter.rb || true
   artifacts:
     paths:
       - coverage-frontend/
@@ -135,30 +85,7 @@ test-coverage:export-workhorse:
     - job: workhorse-coverage
       optional: true
   script:
-    - |
-      if [ ! -f "workhorse/coverage.lcov" ]; then
-        echo "Workhorse coverage report not found. Skipping export to ClickHouse..."
-        exit 0
-      fi
-
-      if [ ! -f "workhorse-test-reports/workhorse-tests.json" ]; then
-        echo "Workhorse test report not found. Skipping export to ClickHouse..."
-        exit 0
-      fi
-
-      if [ ! -f "workhorse-test-mapping/workhorse-source-to-test.json" ]; then
-        echo "Workhorse test mapping not found. Skipping export to ClickHouse..."
-        exit 0
-      fi
-    - echo "Exporting Workhorse Go coverage to ClickHouse..."
-    - bundle exec test-coverage
-        --test-reports 'workhorse-test-reports/workhorse-tests.json'
-        --coverage-report 'workhorse/coverage.lcov'
-        --test-map 'workhorse-test-mapping/workhorse-source-to-test.json'
-        --responsibility-patterns '.gitlab/coverage/responsibility_patterns.yml'
-        --clickhouse-url "${CLICKHOUSE_URL}"
-        --clickhouse-database "${CLICKHOUSE_DATABASE}"
-        --clickhouse-username "${CLICKHOUSE_USERNAME}"
+    - ruby scripts/coverage/workhorse_coverage_exporter.rb || true
   artifacts:
     paths:
       - workhorse/

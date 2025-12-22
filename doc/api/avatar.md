@@ -47,3 +47,8 @@ Example response:
   "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=64&d=identicon"
 }
 ```
+
+## Related topics
+
+- [Upload an avatar for yourself](users.md#upload-an-avatar-for-yourself).
+- [Upload a project avatar](projects.md#upload-a-project-avatar).

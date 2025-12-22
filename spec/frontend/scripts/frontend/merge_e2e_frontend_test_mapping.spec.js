@@ -386,20 +386,52 @@ describe('merge_e2e_frontend_test_mapping', () => {
   });
 
   describe('main', () => {
+    let mockExit;
+
     beforeEach(() => {
       fs.existsSync.mockReturnValue(false);
       fs.mkdirSync.mockImplementation();
       fs.writeFileSync.mockImplementation();
+      mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {});
     });
 
-    it('fails when no E2E mappings exist', () => {
+    afterEach(() => {
+      mockExit.mockRestore();
+    });
+
+    it('fails when both E2E and Jest mappings are missing', () => {
+      glob.sync.mockReturnValue([]);
+      fs.existsSync.mockReturnValue(false);
+      mockExit.mockImplementation(() => {
+        throw new Error('process.exit called');
+      });
+
+      expect(() => main()).toThrow('process.exit called');
+
+      expect(console.error).toHaveBeenCalledWith(
+        'ERROR: Both E2E and Jest mappings are missing, cannot produce merged mapping',
+      );
+      expect(process.exit).toHaveBeenCalledWith(1);
+    });
+
+    it('saves Jest mapping only when no E2E mappings exist but Jest exists', () => {
       glob.sync.mockReturnValue([]);
 
-      const result = main();
+      const jestData = {
+        'app/assets/javascripts/a.js': {
+          spec: { frontend: { 'a_spec.js': 1 } },
+        },
+      };
 
-      expect(result).toBe(false);
-      expect(console.error).toHaveBeenCalledWith('ERROR: No E2E mappings found');
-      expect(fs.writeFileSync).not.toHaveBeenCalled();
+      fs.existsSync.mockImplementation((path) => {
+        return path === 'jest-test-mapping/jest-source-to-test.json';
+      });
+      fs.readFileSync.mockReturnValue(JSON.stringify(jestData));
+
+      main();
+
+      expect(console.log).toHaveBeenCalledWith('No E2E mappings found, saving Jest mapping only');
+      expect(fs.writeFileSync).toHaveBeenCalled();
     });
 
     it('saves E2E mapping only when no Jest mapping exists', () => {

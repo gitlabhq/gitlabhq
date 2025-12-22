@@ -102,6 +102,7 @@ workhorse-coverage:
   needs:
     - job: workhorse:test go
       artifacts: true
+      optional: true
       parallel:
         matrix:
           - GO_VERSION: "1.25"
@@ -109,6 +110,11 @@ workhorse-coverage:
   variables:
     GO_VERSION: "1.25"
   script:
+    - |
+      if [ ! -f "workhorse/test-output.json" ]; then
+        echo "Workhorse test output not found. Skipping coverage processing..."
+        exit 0
+      fi
     - echo "Generating test report from Go test JSON output..."
     - mkdir -p workhorse-test-reports
     - cd workhorse && go run ../scripts/workhorse/generate_test_report.go test-output.json ../workhorse-test-reports/workhorse-tests.json

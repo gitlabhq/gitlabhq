@@ -2436,6 +2436,18 @@ Upload an avatar to the specified project.
 PUT /projects/:id
 ```
 
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+- Your file must be 200 KB or smaller. The ideal image size is 192 x 192 pixels.
+- The image must be one of the following file types:
+  - `.bmp`
+  - `.gif`
+  - `.ico`
+  - `.jpeg`
+  - `.png`
+  - `.tiff`
+
 Supported attributes:
 
 | Attribute | Type              | Required | Description |
@@ -2445,8 +2457,8 @@ Supported attributes:
 
 To upload an avatar from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`. The
-`file=` parameter must point to an image file on your file system and be
-preceded by `@`. For example:
+`avatar=` parameter must point to an image file on your file system and be
+preceded by `@`.
 
 Example request:
 

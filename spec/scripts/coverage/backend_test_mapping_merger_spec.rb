@@ -68,18 +68,37 @@ RSpec.describe BackendTestMappingMerger, feature_category: :tooling do
       end
     end
 
-    context 'when E2E mappings are missing' do
-      it 'returns false' do
+    context 'when E2E mappings are missing but Crystalball exists' do
+      before do
+        create_crystalball_mapping(crystalball_mapping)
+      end
+
+      it 'returns true and uses Crystalball mapping only' do
         result = merger.run
 
-        expect(result).to be false
-        expect(merger).to have_received(:warn).with('ERROR: No E2E mappings found')
+        expect(result).to be true
+        expect(File.exist?(merged_mapping_path)).to be true
+        expect(merger).to have_received(:puts).with('No E2E mappings found, will use Crystalball mapping only')
       end
     end
 
-    context 'when Crystalball mapping is missing' do
+    context 'when Crystalball mapping is missing but E2E exists' do
       before do
         create_e2e_mapping(e2e_mapping)
+        stub_const('BackendTestMappingMerger::CRYSTALBALL_MAPPING_PATH', 'nonexistent/path.json.gz')
+      end
+
+      it 'returns true and uses E2E mapping only' do
+        result = merger.run
+
+        expect(result).to be true
+        expect(File.exist?(merged_mapping_path)).to be true
+        expect(merger).to have_received(:puts).with(/Crystalball mapping not found/)
+      end
+    end
+
+    context 'when both E2E and Crystalball mappings are missing' do
+      before do
         stub_const('BackendTestMappingMerger::CRYSTALBALL_MAPPING_PATH', 'nonexistent/path.json.gz')
       end
 
@@ -87,7 +106,8 @@ RSpec.describe BackendTestMappingMerger, feature_category: :tooling do
         result = merger.run
 
         expect(result).to be false
-        expect(merger).to have_received(:warn).with(/Crystalball mapping not found/)
+        expect(merger).to have_received(:warn)
+          .with('ERROR: Both E2E and Crystalball mappings are missing, cannot produce merged mapping')
       end
     end
 
