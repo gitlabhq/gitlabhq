@@ -8,13 +8,7 @@ class FinalizeIssuesTraversalIdsBackfill < Gitlab::Database::Migration[2.3]
   disable_ddl_transaction!
 
   def up
-    ensure_batched_background_migration_is_finished(
-      job_class_name: 'BackfillNamespaceTraversalIdsOnIssues',
-      table_name: :issues,
-      column_name: :id,
-      job_arguments: [],
-      finalize: true
-    )
+    # no-op: This migration has been requeued by RequeueBackfillNamespaceTraversalIdsOnIssues
   end
 
   def down; end
