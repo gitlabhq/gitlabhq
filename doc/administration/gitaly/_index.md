@@ -202,8 +202,5 @@ your assumptions, resulting in performance degradation, instability, and even da
   [distributed reads](praefect/_index.md#distributed-reads), that depend on the gRPC interface and database
   to determine repository state.
 
-{{< alert type="warning" >}}
-
-Accessing Git repositories directly is done at your own risk and is not supported.
-
-{{< /alert >}}
+> [!warning]
+> Accessing Git repositories directly is done at your own risk and is not supported.

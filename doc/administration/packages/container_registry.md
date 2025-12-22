@@ -114,11 +114,8 @@ auth:
     rootcertbundle: /root/certs/certbundle
 ```
 
-{{< alert type="warning" >}}
-
-If `auth` is not set up, users can pull Docker images without authentication.
-
-{{< /alert >}}
+> [!warning]
+> If `auth` is not set up, users can pull Docker images without authentication.
 
 ## Container registry domain configuration
 
@@ -495,11 +492,8 @@ you should configure an object lifecycle policy with your storage provider.
 
 {{< /alert >}}
 
-{{< alert type="warning" >}}
-
-Do not directly modify the files or objects stored by the container registry. Anything other than the registry writing or deleting these entries can lead to instance-wide data consistency and instability issues from which recovery may not be possible.
-
-{{< /alert >}}
+> [!warning]
+> Do not directly modify the files or objects stored by the container registry. Anything other than the registry writing or deleting these entries can lead to instance-wide data consistency and instability issues from which recovery may not be possible.
 
 You can configure the container registry to use various storage backends by
 configuring a storage driver. By default the GitLab container registry
@@ -1191,11 +1185,8 @@ response to events happening in the registry.
 Read more about the container registry notifications configuration options in the
 [Docker Registry notifications documentation](https://distribution.github.io/distribution/about/notifications/).
 
-{{< alert type="warning" >}}
-
-The threshold parameter was [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1243) in GitLab 17.0, and is planned for removal in 23.0. Use `maxretries` instead. The registry automatically translates existing threshold configurations to equivalent `maxretries` values based on your configured `backoff` duration, and emits a deprecation warning in logs showing the translated value. While your existing configuration continues to work, you should set `maxretries` to avoid automatic translation.
-
-{{< /alert >}}
+> [!warning]
+> The threshold parameter was [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1243) in GitLab 17.0, and is planned for removal in 23.0. Use `maxretries` instead. The registry automatically translates existing threshold configurations to equivalent `maxretries` values based on your configured `backoff` duration, and emits a deprecation warning in logs showing the translated value. While your existing configuration continues to work, you should set `maxretries` to avoid automatic translation.
 
 You can configure multiple endpoints for the container registry.
 
@@ -1318,11 +1309,8 @@ projects_and_size.each do |ps|
 end
 ```
 
-{{< alert type="note" >}}
-
-The script calculates size based on container image layers. Because layers can be shared across multiple projects, the results are approximate but give a good indication of relative disk usage between projects.
-
-{{< /alert >}}
+> [!note]
+> The script calculates size based on container image layers. Because layers can be shared across multiple projects, the results are approximate but give a good indication of relative disk usage between projects.
 
 To remove image tags by running the cleanup policy, run the following commands in the
 [GitLab Rails console](../operations/rails_console.md):
@@ -1670,11 +1658,8 @@ The following configuration options should be set in `/etc/gitlab/gitlab.rb` on 
 
 <!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
 
-{{< alert type="warning" >}}
-
-Support for authenticating requests using Amazon S3 Signature Version 2 in the container registry is deprecated in GitLab 17.8 and is planned for removal in 19.0. Use Signature Version 4 instead. This is a breaking change. For more information, see [issue 1449](https://gitlab.com/gitlab-org/container-registry/-/issues/1449).
-
-{{< /alert >}}
+> [!warning]
+> Support for authenticating requests using Amazon S3 Signature Version 2 in the container registry is deprecated in GitLab 17.8 and is planned for removal in 19.0. Use Signature Version 4 instead. This is a breaking change. For more information, see [issue 1449](https://gitlab.com/gitlab-org/container-registry/-/issues/1449).
 
 <!--- end_remove -->
 

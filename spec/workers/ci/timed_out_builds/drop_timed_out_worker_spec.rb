@@ -10,10 +10,8 @@ RSpec.describe Ci::TimedOutBuilds::DropTimedOutWorker, feature_category: :contin
 
     it_behaves_like 'an idempotent worker'
 
-    it "calls DropTimedOutService" do
-      expect_next_instance_of(Ci::TimedOutBuilds::DropTimedOutService) do |service|
-        expect(service).to receive(:execute).exactly(:once)
-      end
+    it "schedules DropRunningWorker asynchronously" do
+      expect(Ci::TimedOutBuilds::DropRunningWorker).to receive(:perform_async).exactly(:once)
 
       perform
     end

@@ -181,6 +181,7 @@ class Namespace < ApplicationRecord
     to: :package_settings
 
   delegate :add_creator, :deleted_at, :deleted_at=, :description, :description=, :description_html,
+    :state_metadata, :state_metadata=,
     to: :namespace_details, allow_nil: true
 
   with_options to: :namespace_settings do

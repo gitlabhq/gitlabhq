@@ -34,11 +34,8 @@ You can use the free public cloud instance `https://kroki.io` or you can [instal
 on your own infrastructure.
 After you've installed Kroki, make sure to update the **Kroki URL** in the settings to point to your instance.
 
-{{< alert type="note" >}}
-
-Kroki diagrams are not stored on GitLab, so standard GitLab access controls and other user permission restrictions are not in force.
-
-{{< /alert >}}
+> [!note]
+> Kroki diagrams are not stored on GitLab, so standard GitLab access controls and other user permission restrictions are not in force.
 
 ### Docker
 

@@ -43,6 +43,6 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
   end
 
   def render_component(**args)
-    render_inline(described_class.new(diff_file:, merge_request:, **args))
+    render_inline(described_class.new(diff_file: diff_file, merge_request: merge_request, plain_view: true, **args))
   end
 end

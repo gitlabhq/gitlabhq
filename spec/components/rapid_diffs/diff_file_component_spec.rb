@@ -55,6 +55,6 @@ RSpec.describe RapidDiffs::DiffFileComponent, type: :component, feature_category
   end
 
   def render_component(**args, &block)
-    render_inline(described_class.new(diff_file: diff_file, **args), &block)
+    render_inline(described_class.new(diff_file: diff_file, plain_view: true, **args), &block)
   end
 end

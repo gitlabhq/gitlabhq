@@ -210,6 +210,46 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
         end
       end
 
+      context 'when some metadata ids are missing' do
+        before do
+          first_commit_sha = commits.first.sha
+          existing_metadata = create(
+            :merge_request_commits_metadata,
+            project: project,
+            sha: Gitlab::Database::ShaAttribute.serialize(first_commit_sha)
+          )
+
+          allow(MergeRequest::CommitsMetadata)
+            .to receive(:bulk_find_or_create)
+            .and_return({ first_commit_sha => existing_metadata.id })
+        end
+
+        it 'logs an error for only the failed commits' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(described_class::CouldNotCreateMetadataError),
+            hash_including(
+              message: 'Failed to create metadata',
+              merge_request_diff_id: merge_request_diff.id,
+              project_id: project.id,
+              failed_count: 1,
+              total_count: 2,
+              relative_orders: [1]
+            )
+          )
+
+          create_bulk(merge_request_diff.id)
+        end
+
+        it 'creates records with mixed metadata_id states' do
+          create_bulk(merge_request_diff.id)
+
+          diff_commits = merge_request_diff.reload.merge_request_diff_commits
+
+          expect(diff_commits[0].merge_request_commits_metadata_id).not_to be_nil
+          expect(diff_commits[1].merge_request_commits_metadata_id).to be_nil
+        end
+      end
+
       context 'when merge_request_diff_commits_dedup is disabled' do
         before do
           stub_feature_flags(merge_request_diff_commits_dedup: false)

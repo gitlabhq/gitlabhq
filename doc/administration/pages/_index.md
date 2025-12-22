@@ -103,11 +103,8 @@ Before configuring Pages for single-domain sites, you must:
    so that your users don't have to bring their own.
 1. For custom domains, have a **secondary IP**.
 
-{{< alert type="note" >}}
-
-If your GitLab instance and the Pages daemon are deployed in a private network or behind a firewall, your GitLab Pages websites are only accessible to devices/users that have access to the private network.
-
-{{< /alert >}}
+> [!note]
+> If your GitLab instance and the Pages daemon are deployed in a private network or behind a firewall, your GitLab Pages websites are only accessible to devices and users with access to the private network.
 
 ### Add the domain to the Public Suffix List
 
@@ -194,11 +191,8 @@ This example contains the following:
 - `192.0.2.1`: The primary IP of your GitLab instance.
 - `192.0.2.2`: The secondary IP, which is dedicated to GitLab Pages. It must be different than the primary IP.
 
-{{< alert type="note" >}}
-
-You should not use the GitLab domain to serve user pages. For more information see the [security section](#security).
-
-{{< /alert >}}
+> [!note]
+> You should not use the GitLab domain to serve user pages. For more information, see [Security](#security).
 
 ## Configuration
 
@@ -320,11 +314,8 @@ Prerequisites:
 
 The resulting URL scheme is `https://<namespace>.example.io/<project_slug>`.
 
-{{< alert type="warning" >}}
-
-Multiple wildcards for one instance is not supported. Only one wildcard per instance can be assigned.
-
-{{< /alert >}}
+> [!warning]
+> Only one wildcard can be assigned to an instance.
 
 {{< alert type="warning" >}}
 

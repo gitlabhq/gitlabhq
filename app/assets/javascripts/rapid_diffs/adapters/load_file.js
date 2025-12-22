@@ -10,30 +10,44 @@ function htmlToElement(html) {
   return doc.body.firstChild;
 }
 
+async function loadFile(params = {}) {
+  const { parallelView, showWhitespace } = useDiffsView(pinia);
+  const url = new URL(this.appData.diffFileEndpoint, window.location.origin);
+  const { oldPath, newPath } = this.data;
+  if (oldPath) url.searchParams.set('old_path', oldPath);
+  if (newPath) url.searchParams.set('new_path', newPath);
+  url.searchParams.set('ignore_whitespace_changes', !showWhitespace);
+  if (parallelView) url.searchParams.set('view', 'parallel');
+  Object.keys(params).forEach((key) => {
+    url.searchParams.set(key, params[key]);
+  });
+  const response = await axios.get(url.toString());
+  const node = htmlToElement(response.data);
+  this.replaceWith(node);
+}
+
+async function loadWithDisabledButton(button, params) {
+  try {
+    button.setAttribute('disabled', true);
+    await loadFile.call(this, params);
+  } catch (error) {
+    createAlert({
+      message: s__('RapidDiffs|Failed to load changes, please try again.'),
+      error,
+    });
+    button.removeAttribute('disabled');
+  }
+}
+
 export const loadFileAdapter = {
   clicks: {
-    async showChanges(event, button) {
-      const { parallelView, showWhitespace } = useDiffsView(pinia);
-      const url = new URL(this.appData.diffFileEndpoint, window.location.origin);
-      const { old_path: oldPath, new_path: newPath } = JSON.parse(button.dataset.paths);
-      if (oldPath) url.searchParams.set('old_path', oldPath);
-      if (newPath) url.searchParams.set('new_path', newPath);
-      url.searchParams.set('ignore_whitespace_changes', !showWhitespace);
-      if (parallelView) url.searchParams.set('view', 'parallel');
-      button.setAttribute('disabled', true);
-      let response;
-      try {
-        response = await axios.get(url.toString());
-      } catch (error) {
-        button.removeAttribute('disabled');
-        createAlert({
-          message: s__('RapidDiffs|Failed to load changes, please try again.'),
-          error,
-        });
-        return;
-      }
-      const node = htmlToElement(response.data);
-      this.replaceWith(node);
+    showChanges(event, button) {
+      loadWithDisabledButton.call(this, button);
+    },
+    toggleRichView(event, button) {
+      loadWithDisabledButton.call(this, button, {
+        plain_view: JSON.parse(button.dataset.rendered),
+      });
     },
   },
 };

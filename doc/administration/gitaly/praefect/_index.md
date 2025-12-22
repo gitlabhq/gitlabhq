@@ -517,11 +517,8 @@ To roll back a Gitaly Cluster (Praefect), assuming multiple Praefect nodes:
 
 ## Migrate to Gitaly Cluster (Praefect)
 
-{{< alert type="warning" >}}
-
-Some [known issues](#known-issues) exist in Gitaly Cluster (Praefect). Review the following information before you continue.
-
-{{< /alert >}}
+> [!warning]
+> Some [known issues](#known-issues) exist in Gitaly Cluster (Praefect). Review the following information before you continue.
 
 Before migrating to Gitaly Cluster (Praefect):
 

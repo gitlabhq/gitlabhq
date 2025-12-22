@@ -1,9 +1,10 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
     "last_updated_at": {
-      "type": "date-time"
+      "type": "string",
+      "format": "date-time"
     },
     "last_changed_by_user_id": {
       "type": [
@@ -22,6 +23,26 @@
         "string",
         "null"
       ]
+    },
+    "deletion_scheduled_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "deletion_scheduled_by_user_id": {
+      "type": "number"
+    },
+    "preserved_states": {
+      "type": "object",
+      "properties": {
+        "schedule_deletion": {
+          "type": "string",
+          "enum": [
+            "ancestor_inherited",
+            "archived"
+          ]
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false

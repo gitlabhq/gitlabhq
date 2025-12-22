@@ -50,11 +50,8 @@ To configure access between your GitLab instance and your local AI Gateway:
 1. Under **Local AI Gateway URL**, enter your AI Gateway URL.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-If your AI Gateway URL points to a local network or private IP address (for example, `172.31.x.x` or internal hostnames like `ip-172-xx-xx-xx.region.compute.internal`), GitLab might block the request for security reasons. To allow requests to this address, [add the address to the IP allowlist](../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
-
-{{< /alert >}}
+> [!note]
+> If your AI Gateway URL points to a local network or private IP address (for example, `172.31.x.x` or internal hostnames like `ip-172-xx-xx-xx.region.compute.internal`), GitLab might block the request for security reasons. To allow requests to this address, [add the address to the IP allowlist](../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
 ## Configure timeout for the AI Gateway
 
@@ -183,11 +180,8 @@ Some regions are not supported by cross-region inferencing. For these regions, d
 
 ## Turn on self-hosted beta models and features
 
-{{< alert type="note" >}}
-
-Turning on beta self-hosted models and features also accepts the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
-
-{{< /alert >}}
+> [!note]
+> Turning on beta self-hosted models and features also accepts the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 To enable self-hosted beta models and features:
 

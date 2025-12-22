@@ -382,6 +382,11 @@
   all: unset;
 }
 
+// Jupyter images
+.rd-line-text img {
+  max-width: 100%;
+}
+
 [data-disable-diff-side=old] [data-position=old],
 [data-disable-diff-side=new] [data-position=new] {
   user-select: none;

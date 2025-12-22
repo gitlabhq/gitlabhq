@@ -86,9 +86,9 @@ Before you create a key pair, see if a key pair already exists.
 If you do not have an existing SSH key pair, generate a new one:
 
 1. Open a terminal.
-1. Run `ssh-keygen -t` followed by the key type and an optional comment.
-   This comment is included in the `.pub` file that's created.
-   You may want to use an email address for the comment.
+1. Run `ssh-keygen -t` with the key type and an optional comment to help identify the key later.
+   A common option is to use your email address as the comment.
+   The comment is included in the `.pub` file.
 
    For example, for ED25519:
 
@@ -295,9 +295,9 @@ To generate ED25519_SK or ECDSA_SK SSH keys, you must use OpenSSH 8.2 or later:
 
 1. Insert a hardware security key into your computer.
 1. Open a terminal.
-1. Run `ssh-keygen -t` followed by the key type and an optional comment.
-   This comment is included in the `.pub` file that's created.
-   You may want to use an email address for the comment.
+1. Run `ssh-keygen -t` with the key type and an optional comment to help identify the key later.
+   A common option is to use your email address as the comment.
+   The comment is included in the `.pub` file.
 
    For example, for ED25519_SK:
 

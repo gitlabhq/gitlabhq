@@ -520,11 +520,8 @@ You can see the total storage used for LFS objects for groups and projects in:
 - The **Admin** area
 - The [groups](../../api/groups.md) and [projects](../../api/projects.md) APIs
 
-{{< alert type="note" >}}
-
-The storage statistics count each LFS object for every project linking to it.
-
-{{< /alert >}}
+> [!note]
+> The storage statistics count each LFS object for every project linking to it.
 
 ## Related topics
 
@@ -700,8 +697,5 @@ If you encounter this, follow these steps to diagnose and resolve the issue:
 
 1. Repeat the fork operation.
 
-{{< alert type="note" >}}
-
-For the GitLab Helm chart, use [`extraEnv`](https://docs.gitlab.com/charts/charts/globals.html#extraenv) to configure the environment variable `GITLAB_LFS_MAX_OID_TO_FETCH`.
-
-{{< /alert >}}
+> [!note]
+> For the GitLab Helm chart, use [`extraEnv`](https://docs.gitlab.com/charts/charts/globals.html#extraenv) to configure the environment variable `GITLAB_LFS_MAX_OID_TO_FETCH`.

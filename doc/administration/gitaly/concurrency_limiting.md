@@ -75,11 +75,8 @@ repository. In the previous example:
 - If a request waits in the queue for more than 1 second, it is rejected with an error.
 - If the queue grows beyond 10, subsequent requests are rejected with an error.
 
-{{< alert type="note" >}}
-
-When these limits are reached, users are disconnected.
-
-{{< /alert >}}
+> [!note]
+> When these limits are reached, users are disconnected.
 
 You can observe the behavior of this queue using the Gitaly logs and Prometheus. For more
 information, see the [relevant documentation](monitoring.md#monitor-gitaly-concurrency-limiting).

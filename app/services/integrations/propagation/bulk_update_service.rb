@@ -104,8 +104,10 @@ module Integrations
           scope_names, organization_id: integration.organization_id_from_parent
         )
 
-        items_to_insert = scopes.flat_map do |scope|
-          SlackIntegration.id_in(inserted_slack_ids).preloaded_integration.flat_map do |slack_integration|
+        items_to_insert = SlackIntegration.id_in(inserted_slack_ids)
+                                          .preloaded_integration
+                                          .flat_map do |slack_integration|
+          scopes.map do |scope|
             {
               'slack_integration_id' => slack_integration.id,
               'slack_api_scope_id' => scope.id,

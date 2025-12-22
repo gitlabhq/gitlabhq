@@ -105,11 +105,8 @@ Prerequisites:
 
 Downtime depends on the import method. For recommendations on import methods, see [How to choose the right import method](../container_registry_metadata_database.md#how-to-choose-the-right-import-method).
 
-{{< alert type="note" >}}
-
-The registry being migrated is read-only during the import.
-
-{{< /alert >}}
+> [!note]
+> The registry being migrated is read-only during the import.
 
 During migration, the rest of Geo replication continues.
 

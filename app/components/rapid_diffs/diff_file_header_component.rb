@@ -40,6 +40,7 @@ module RapidDiffs
       [
         view_file_menu_item,
         view_on_environment_menu_item,
+        rich_view_toggle,
         *@additional_menu_items
       ]
                         .compact
@@ -112,6 +113,19 @@ module RapidDiffs
         href: environment_path,
         extraAttrs: { target: '_blank', rel: 'noopener noreferrer' },
         position: 2
+      }
+    end
+
+    def rich_view_toggle
+      return unless @diff_file.has_renderable?
+
+      {
+        text: @diff_file.rendered? ? s_('RapidDiffs|View plain diff') : s_('RapidDiffs|View rich diff'),
+        extraAttrs: {
+          'data-click': 'toggleRichView',
+          'data-rendered': @diff_file.rendered?.to_json
+        },
+        position: 10
       }
     end
   end

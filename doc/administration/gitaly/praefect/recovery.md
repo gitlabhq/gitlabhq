@@ -136,11 +136,8 @@ The following parameters are available:
   that specifies whether to include in the output repositories that are available but have
   some assigned copies that are not available.
 
-{{< alert type="note" >}}
-
-`dataloss` is still in [beta](../../../policy/development_stages_support.md#beta) and the output format is subject to change.
-
-{{< /alert >}}
+> [!note]
+> `dataloss` is still in [beta](../../../policy/development_stages_support.md#beta) and the output format is subject to change.
 
 To check for repositories with outdated primaries or for unavailable repositories, run:
 

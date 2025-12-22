@@ -1008,6 +1008,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:description=).to(:namespace_details).with_arguments(:args) }
     it { is_expected.to delegate_method(:description_html).to(:namespace_details) }
     it { is_expected.to delegate_method(:deleted_at=).to(:namespace_details).with_arguments(:args) }
+    it { is_expected.to delegate_method(:state_metadata).to(:namespace_details) }
+    it { is_expected.to delegate_method(:state_metadata=).to(:namespace_details).with_arguments(:args) }
     it { is_expected.to delegate_method(:resource_access_token_notify_inherited?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:resource_access_token_notify_inherited_locked?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:resource_access_token_notify_inherited_locked_by_ancestor?).to(:namespace_settings) }

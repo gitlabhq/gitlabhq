@@ -135,11 +135,8 @@ Examples:
 
 When running vLLM in production, you can significantly reduce latency by using the `--disable-log-requests` flag to disable request logging.
 
-{{< alert type="note" >}}
-
-Use this flag only when you do not need detailed request logging.
-
-{{< /alert >}}
+> [!note]
+> Use this flag only when you do not need detailed request logging.
 
 Disabling request logging minimizes the overhead introduced by verbose logs, especially under high load, and can help improve performance levels.
 

@@ -33607,6 +33607,7 @@ GPG signature for a signed commit.
 | <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | Permission level required to create subgroups within the group. |
 | <a id="groupsubscribedsavedviewlimit"></a>`subscribedSavedViewLimit` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.8. **Status**: Experiment. Maximum number of subscribed saved views allowed on the namespace. |
 | <a id="groupsubscriptionhistory"></a>`subscriptionHistory` {{< icon name="warning-solid" >}} | [`GitlabSubscriptionHistoryConnection`](#gitlabsubscriptionhistoryconnection) | **Introduced** in GitLab 17.3. **Status**: Experiment. Find subscription history records. |
+| <a id="grouptargetedmessages"></a>`targetedMessages` {{< icon name="warning-solid" >}} | [`[TargetedMessage!]`](#targetedmessage) | **Introduced** in GitLab 18.7. **Status**: Experiment. Targeted messages for the namespace. |
 | <a id="grouptimelogcategories"></a>`timelogCategories` {{< icon name="warning-solid" >}} | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in GitLab 15.3. **Status**: Experiment. Timelog categories for the namespace. |
 | <a id="grouptotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="grouptotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
@@ -39848,6 +39849,7 @@ Version of a machine learning model.
 | <a id="namespacestoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
 | <a id="namespacesubscribedsavedviewlimit"></a>`subscribedSavedViewLimit` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.8. **Status**: Experiment. Maximum number of subscribed saved views allowed on the namespace. |
 | <a id="namespacesubscriptionhistory"></a>`subscriptionHistory` {{< icon name="warning-solid" >}} | [`GitlabSubscriptionHistoryConnection`](#gitlabsubscriptionhistoryconnection) | **Introduced** in GitLab 17.3. **Status**: Experiment. Find subscription history records. |
+| <a id="namespacetargetedmessages"></a>`targetedMessages` {{< icon name="warning-solid" >}} | [`[TargetedMessage!]`](#targetedmessage) | **Introduced** in GitLab 18.7. **Status**: Experiment. Targeted messages for the namespace. |
 | <a id="namespacetimelogcategories"></a>`timelogCategories` {{< icon name="warning-solid" >}} | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in GitLab 15.3. **Status**: Experiment. Timelog categories for the namespace. |
 | <a id="namespacetotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="namespacetotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
@@ -47144,6 +47146,17 @@ Represents a Suggested Reviewers result set.
 | <a id="tagcommit"></a>`commit` | [`Commit`](#commit) | Commit for the tag. |
 | <a id="tagmessage"></a>`message` | [`String`](#string) | Tagging message. |
 | <a id="tagname"></a>`name` | [`String!`](#string) | Name of the tag. |
+
+### `TargetedMessage`
+
+Represents a targeted message.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="targetedmessageid"></a>`id` | [`ID!`](#id) | ID of the targeted message. |
+| <a id="targetedmessagetargettype"></a>`targetType` | [`String!`](#string) | Type of the targeted message (e.g., banner_page_level). |
 
 ### `TaskCompletionStatus`
 

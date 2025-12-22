@@ -34,11 +34,8 @@ The minimum recommended configuration for a Gitaly Cluster (Praefect) requires:
 - 3 Praefect nodes
 - 3 Gitaly nodes (1 primary, 2 secondary)
 
-{{< alert type="note" >}}
-
-[Disk requirements](../_index.md#disk-requirements) apply to Gitaly nodes.
-
-{{< /alert >}}
+> [!note]
+> [Disk requirements](../_index.md#disk-requirements) apply to Gitaly nodes.
 
 You should configure an odd number of Gitaly nodes so that transactions have a tie-breaker in case one of the
 Gitaly nodes fails in a mutating RPC call.
@@ -174,11 +171,8 @@ with secure tokens as you complete the setup process.
 
 We note in the instructions below where these secrets are required.
 
-{{< alert type="note" >}}
-
-Linux package installations can use `gitlab-secrets.json` for `GITLAB_SHELL_SECRET_TOKEN`.
-
-{{< /alert >}}
+> [!note]
+> Linux package installations can use `gitlab-secrets.json` for `GITLAB_SHELL_SECRET_TOKEN`.
 
 ### Customize time server setting
 
@@ -1072,11 +1066,8 @@ Prerequisites:
 
 ### Gitaly
 
-{{< alert type="note" >}}
-
-Complete these steps for each Gitaly node.
-
-{{< /alert >}}
+> [!note]
+> Complete these steps for each Gitaly node.
 
 To complete this section you need:
 
@@ -1233,11 +1224,8 @@ For more information on Gitaly server configuration, see our
    gitlab-ctl restart gitaly
    ```
 
-{{< alert type="note" >}}
-
-The previous steps must be completed for each Gitaly node!
-
-{{< /alert >}}
+> [!note]
+> The previous steps must be completed for each Gitaly node!
 
 After all Gitaly nodes are configured, run the Praefect connection
 checker to verify Praefect can connect to all Gitaly servers in the Praefect

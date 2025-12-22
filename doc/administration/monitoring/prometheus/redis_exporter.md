@@ -40,11 +40,8 @@ You can use the `redis_exporter['flags']` setting to pass
 [command-line flags](https://github.com/oliver006/redis_exporter/blob/master/README.md#command-line-flags)
 and customize the Redis exporter's behavior according to your monitoring requirements.
 
-{{< alert type="note" >}}
-
-`redis.addr` is not usable as that value is configured by `gitlab_rails[redis_*]` values such as `gitlab_rails[redis_host]`.
-
-{{< /alert >}}
+> [!note]
+> `redis.addr` is not usable as that value is configured by `gitlab_rails[redis_*]` values such as `gitlab_rails[redis_host]`.
 
 To configure the Redis exporter flags:
 

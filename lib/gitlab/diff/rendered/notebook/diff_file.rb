@@ -48,6 +48,10 @@ module Gitlab
             self
           end
 
+          def rendered?
+            true
+          end
+
           def highlighted_diff_lines
             strong_memoize(:highlighted_diff_lines) do
               lines = Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
@@ -59,6 +63,16 @@ module Gitlab
                    .map { |line, positions| mutate_line(line, positions, lines_in_source) }
             end
           end
+
+          def diff_lines_with_match_tail
+            lines = highlighted_diff_lines
+
+            return [] if lines.empty?
+            return [] if blob.nil?
+
+            lines
+          end
+          strong_memoize_attr(:diff_lines_with_match_tail)
 
           private
 

@@ -121,6 +121,10 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile, feature_category: :ml
   end
 
   describe '#highlighted_diff_lines?' do
+    it 'does not have any match lines' do
+      expect(nb_file.highlighted_diff_lines.all? { |line| line.type != 'match' }).to be_truthy
+    end
+
     context 'when line transformed line is not part of the diff' do
       it 'line is not discussable' do
         expect(nb_file.highlighted_diff_lines[0].discussable?).to be_falsey
@@ -165,6 +169,38 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile, feature_category: :ml
 
       it 'keeps the injected html as part of the string' do
         expect(nb_file.highlighted_diff_lines[43].rich_text).to end_with('/div&gt;">')
+      end
+    end
+  end
+
+  describe '#rendered?' do
+    it { expect(nb_file.rendered?).to be_truthy }
+  end
+
+  describe '#diff_lines_with_match_tail' do
+    it 'returns highlighted lines by default' do
+      expect(nb_file.diff_lines_with_match_tail).to eq(nb_file.highlighted_diff_lines)
+    end
+
+    context 'when highlighted_diff_lines is empty' do
+      it 'returns an empty array' do
+        allow(nb_file).to receive(:highlighted_diff_lines).and_return([])
+
+        expect(nb_file.diff_lines_with_match_tail).to eq([])
+      end
+    end
+
+    context 'when blob is nil' do
+      it 'returns an empty array' do
+        allow(nb_file).to receive(:blob).and_return(nil)
+
+        expect(nb_file.diff_lines_with_match_tail).to eq([])
+      end
+    end
+
+    context 'when there are highlighted diff lines and blob exists' do
+      it 'returns the highlighted diff lines' do
+        expect(nb_file.diff_lines_with_match_tail).to eq(nb_file.highlighted_diff_lines)
       end
     end
   end

@@ -25,14 +25,19 @@ describe('initNewDiscussionToggle', () => {
                 <td>Diff</td>
               </tr>
               <tr data-hunk-lines data-expanded>
-                <td data-position="old" data-change="meta"></td>
-                <td data-position="new" data-change="meta"></td>
-                <td data-change="meta">Expanded line</td>
+                <td data-position="old"></td>
+                <td data-position="new"></td>
+                <td>Expanded line</td>
               </tr>
               <tr data-hunk-lines>
                 <td data-position="old" data-change="meta"></td>
                 <td data-position="new" data-change="meta"></td>
                 <td data-change="meta"> No newline at end of file</td>
+              </tr>
+              <tr data-hunk-lines>
+                <td data-position="old"></td>
+                <td data-position="new"></td>
+                <td>Generated diff</td>
               </tr>
             </tbody>
           </table>
@@ -59,16 +64,22 @@ describe('initNewDiscussionToggle', () => {
                 <td data-position="new">Diff</td>
               </tr>
               <tr data-hunk-lines data-expanded>
-                <td data-position="old" data-change="meta"></td>
-                <td data-change="meta">Expanded left</td>
-                <td data-position="new" data-change="meta"></td>
-                <td data-change="meta">Expanded right</td>
+                <td data-position="old"></td>
+                <td>Expanded left</td>
+                <td data-position="new"></td>
+                <td>Expanded right</td>
               </tr>
               <tr data-hunk-lines>
                 <td data-position="old" data-change="meta"></td>
                 <td data-change="meta"> No newline at end of file</td>
                 <td data-position="new" data-change="meta"></td>
                 <td data-change="meta"> No newline at end of file</td>
+              </tr>
+              <tr data-hunk-lines>
+                <td data-position="old"></td>
+                <td data-position="old">Generated diff</td>
+                <td data-position="new"></td>
+                <td data-position="new">Generated diff</td>
               </tr>
             </tbody>
           </table>
@@ -171,7 +182,20 @@ describe('initNewDiscussionToggle', () => {
 
     it('does not show toggle on expanded lines', () => {
       const expandedRow = appElement.querySelector('tr:nth-child(2)');
-      const cell = expandedRow.querySelector('[data-change]');
+      const cell = expandedRow.querySelector('td');
+
+      cell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(cell);
+
+      cell.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(cell);
+    });
+
+    it('does not show toggle on generated lines', () => {
+      const expandedRow = appElement.querySelector('tr:nth-child(4)');
+      const cell = expandedRow.querySelector('td');
 
       cell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
       expect(toggle.hidden).toBe(true);
@@ -319,8 +343,33 @@ describe('initNewDiscussionToggle', () => {
       initNewDiscussionToggle(appElement);
 
       const expandedRow = appElement.querySelector('tr:nth-child(2)');
-      const oldCell = expandedRow.querySelector('[data-position="old"][data-change="meta"]');
-      const newCell = expandedRow.querySelector('[data-position="new"][data-change="meta"]');
+      const oldCell = expandedRow.querySelector('[data-position="old"]');
+      const newCell = expandedRow.querySelector('[data-position="new"]');
+
+      oldCell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(oldCell);
+
+      oldCell.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(oldCell);
+
+      newCell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(newCell);
+
+      newCell.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+      expect(toggle.parentElement).not.toBe(newCell);
+    });
+
+    it('does not show toggle on generated diff rows', () => {
+      createParallelDiff();
+      initNewDiscussionToggle(appElement);
+
+      const expandedRow = appElement.querySelector('tr:nth-child(4)');
+      const oldCell = expandedRow.querySelector('[data-position="old"]');
+      const newCell = expandedRow.querySelector('[data-position="new"]');
 
       oldCell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
       expect(toggle.hidden).toBe(true);

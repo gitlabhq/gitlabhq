@@ -2,7 +2,7 @@
 
 module Ci
   module TimedOutBuilds
-    class DropTimedOutService
+    class DropRunningService
       include StuckBuilds::DropHelpers
 
       def execute

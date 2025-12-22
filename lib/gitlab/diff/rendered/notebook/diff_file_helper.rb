@@ -97,7 +97,7 @@ module Gitlab
 
             image_body = line_text[1..].delete_prefix(EMBEDDED_IMAGE_PATTERN).delete_suffix(')')
 
-            "<img src=\"data:image#{CGI.escapeHTML(image_body)}\">".html_safe
+            " <img src=\"data:image#{CGI.escapeHTML(image_body)}\">".html_safe
           end
         end
       end

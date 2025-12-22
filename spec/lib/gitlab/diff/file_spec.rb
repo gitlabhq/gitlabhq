@@ -1259,6 +1259,10 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
     it { expect(diff_file.viewer_hunks).to all(be_instance_of(Gitlab::Diff::ViewerHunk)) }
   end
 
+  describe '#rendered?' do
+    it { expect(diff_file.rendered?).to be_falsy }
+  end
+
   describe '#no_preview?' do
     subject(:no_preview?) { diff_file.no_preview? }
 

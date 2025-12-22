@@ -853,11 +853,8 @@ gitaly['configuration'] = {
 }
 ```
 
-{{< alert type="warning" >}}
-
-Without completing this step, you have no Gitaly authentication.
-
-{{< /alert >}}
+> [!warning]
+> Without completing this step, you have no Gitaly authentication.
 
 ### Verify authentication is enforced
 

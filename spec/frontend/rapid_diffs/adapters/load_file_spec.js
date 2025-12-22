@@ -19,7 +19,8 @@ describe('loadFileAdapter', () => {
   let mockAdapter;
 
   const getDiffFile = () => document.querySelector('diff-file');
-  const getButton = () => document.querySelector('button[data-click="showChanges"]');
+  const getChangesButton = () => document.querySelector('button[data-click="showChanges"]');
+  const getRichViewButton = () => document.querySelector('button[data-click="toggleRichView"]');
   const getExpandedContent = () => document.querySelector('#expanded');
   const getRequestUrl = () =>
     `${TEST_HOST}${diffFileEndpoint}?old_path=foo&new_path=bar&ignore_whitespace_changes=${!useDiffsView(pinia).showWhitespace}`;
@@ -33,16 +34,16 @@ describe('loadFileAdapter', () => {
   };
 
   const createComponentHtml = (name, content) => `
-      <${name} data-file-data='${JSON.stringify({ viewer })}'>
+      <${name} data-file-data='${JSON.stringify({ viewer, old_path: 'foo', new_path: 'bar' })}'>
         ${content}
       </${name}>
     `;
 
-  const mount = () => {
+  const mount = ({ rendered = false } = {}) => {
     setHTMLFixture(
       createComponentHtml(
         'diff-file',
-        `<button data-click="showChanges" data-paths='${JSON.stringify({ old_path: 'foo', new_path: 'bar' })}'>button</button>`,
+        `<button data-click="showChanges">button</button><button data-click="toggleRichView" data-rendered="${JSON.stringify(rendered)}">button</button>`,
       ),
     );
     mountComponent();
@@ -90,8 +91,25 @@ describe('loadFileAdapter', () => {
         ),
       );
     mount();
-    delegatedClick(getButton());
-    expect(getButton().disabled).toBe(true);
+    delegatedClick(getChangesButton());
+    expect(getChangesButton().disabled).toBe(true);
+    await waitForPromises();
+    expect(getExpandedContent()).not.toBeFalsy();
+  });
+
+  it.each([true, false])('loads file with plain_view %s', async (rendered) => {
+    mockAdapter
+      .onGet(`${getRequestUrl()}&plain_view=${rendered}`)
+      .reply(
+        HTTP_STATUS_OK,
+        createComponentHtml(
+          'new-diff-file',
+          '<div id="expanded">Expanded Content<button></button></div>',
+        ),
+      );
+    mount({ rendered });
+    delegatedClick(getRichViewButton());
+    expect(getRichViewButton().disabled).toBe(true);
     await waitForPromises();
     expect(getExpandedContent()).not.toBeFalsy();
   });
@@ -99,10 +117,10 @@ describe('loadFileAdapter', () => {
   it('handles error', async () => {
     mockAdapter.onGet(getRequestUrl()).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
     mount();
-    delegatedClick(getButton());
-    expect(getButton().disabled).toBe(true);
+    delegatedClick(getChangesButton());
+    expect(getChangesButton().disabled).toBe(true);
     await waitForPromises();
-    expect(getButton().disabled).toBe(false);
+    expect(getChangesButton().disabled).toBe(false);
     expect(createAlert).toHaveBeenCalled();
   });
 });

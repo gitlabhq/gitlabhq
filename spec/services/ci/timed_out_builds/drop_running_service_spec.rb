@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::TimedOutBuilds::DropTimedOutService, feature_category: :continuous_integration do
+RSpec.describe Ci::TimedOutBuilds::DropRunningService, feature_category: :continuous_integration do
   let_it_be(:ci_partition) { create(:ci_partition) }
   let!(:runner) { create :ci_runner }
   let!(:running_build) { create(:ci_running_build, runner: runner, build: job, created_at: created_at) }

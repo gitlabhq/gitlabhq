@@ -188,18 +188,6 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
         service_execution
       end
 
-      context 'when stop_release_lease_for_pat_last_used_service feature flag is disabled' do
-        before do
-          stub_feature_flags(stop_release_lease_for_pat_last_used_service: false)
-        end
-
-        it 'calls super and returns its value' do
-          expect(Gitlab::ExclusiveLease).to receive(:cancel)
-
-          service_execution
-        end
-      end
-
       context 'when database load balancing is configured' do
         let!(:service) { described_class.new(personal_access_token) }
         let(:lb) { personal_access_token.load_balancer }

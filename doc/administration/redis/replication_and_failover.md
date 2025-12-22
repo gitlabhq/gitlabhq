@@ -165,11 +165,8 @@ is not achieved. In that case,
 a new attempt is made after the amount of time defined in
 `sentinel['failover_timeout']` (in milliseconds).
 
-{{< alert type="note" >}}
-
-We can see where `sentinel['failover_timeout']` is defined later.
-
-{{< /alert >}}
+> [!note]
+> We can see where `sentinel['failover_timeout']` is defined later.
 
 The `failover_timeout` variable has a lot of different use cases. According to
 the official documentation:
@@ -362,11 +359,11 @@ the same Sentinels.
 
 ### Step 3. Configuring the Redis Sentinel instances
 
-{{< alert type="note" >}}
+{{< history >}}
 
-[Support for Sentinel password authentication](https://gitlab.com/gitlab-org/gitlab/-/issues/235938) was introduced in GitLab 16.1.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235938) support for Sentinel password authentication in GitLab 16.1.
 
-{{< /alert >}}
+{{< /history >}}
 
 Now that the Redis servers are all set up, let's configure the Sentinel
 servers.

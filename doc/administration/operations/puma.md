@@ -89,11 +89,8 @@ RSS limit set through `per_worker_max_memory_mb`.
 
 The default Puma [timeout is 60 seconds](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/rack_timeout.rb).
 
-{{< alert type="note" >}}
-
-The `puma['worker_timeout']` setting does not set the maximum request duration.
-
-{{< /alert >}}
+> [!note]
+> The `puma['worker_timeout']` setting does not set the maximum request duration.
 
 To change the worker timeout to 600 seconds:
 

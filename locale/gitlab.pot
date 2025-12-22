@@ -55125,6 +55125,12 @@ msgstr ""
 msgid "RapidDiffs|View on %{environment}"
 msgstr ""
 
+msgid "RapidDiffs|View plain diff"
+msgstr ""
+
+msgid "RapidDiffs|View rich diff"
+msgstr ""
+
 msgid "Rate Limits"
 msgstr ""
 
@@ -67261,22 +67267,19 @@ msgstr ""
 msgid "TargetedMessages|New targeted message"
 msgstr ""
 
+msgid "TargetedMessages|Scheduled deletion of targeted message with id: %{id}."
+msgstr ""
+
 msgid "TargetedMessages|Select a target type"
 msgstr ""
 
 msgid "TargetedMessages|Target Type"
 msgstr ""
 
-msgid "TargetedMessages|Targeted message failed to delete. Please try again."
-msgstr ""
-
 msgid "TargetedMessages|Targeted message was successfully created."
 msgstr ""
 
 msgid "TargetedMessages|Targeted message was successfully created. But %{invalid_namespace_ids_message}"
-msgstr ""
-
-msgid "TargetedMessages|Targeted message was successfully deleted."
 msgstr ""
 
 msgid "TargetedMessages|Targeted message was successfully updated."

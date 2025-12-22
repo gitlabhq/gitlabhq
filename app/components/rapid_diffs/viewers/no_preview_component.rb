@@ -105,13 +105,6 @@ module RapidDiffs
         end
       end
 
-      def paths
-        {
-          old_path: @diff_file.old_path,
-          new_path: @diff_file.new_path
-        }
-      end
-
       def project
         @diff_file.repository.project
       end

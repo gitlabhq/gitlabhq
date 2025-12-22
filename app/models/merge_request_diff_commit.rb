@@ -8,6 +8,8 @@ class MergeRequestDiffCommit < ApplicationRecord
   include CachedCommit
   include FromUnion
 
+  CouldNotCreateMetadataError = Class.new(StandardError)
+
   belongs_to :merge_request_diff
 
   # This relation is called `commit_author` and not `author`, as the project
@@ -92,20 +94,7 @@ class MergeRequestDiffCommit < ApplicationRecord
       commit_hash
     end
 
-    if dedup_enabled
-      commits_metadata_mapping = MergeRequest::CommitsMetadata.bulk_find_or_create(
-        project.id,
-        rows
-      )
-
-      rows.each do |row|
-        row[:merge_request_commits_metadata_id] = commits_metadata_mapping[row[:raw_sha]]
-
-        # At this point, we no longer need the `raw_sha` so we delete it from
-        # the row that will be inserted into `merge_request_diff_commits` table.
-        row.delete(:raw_sha)
-      end
-    end
+    rows = commit_rows_with_metadata(project.id, merge_request_diff_id, rows) if dedup_enabled
 
     ApplicationRecord.legacy_bulk_insert(self.table_name, rows) # rubocop:disable Gitlab/BulkInsert
   end
@@ -166,6 +155,37 @@ class MergeRequestDiffCommit < ApplicationRecord
     # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- limit may be applied in the caller
     relation.pluck(shas_sql)
     # rubocop:enable Database/AvoidUsingPluckWithoutLimit
+  end
+
+  def self.commit_rows_with_metadata(project_id, merge_request_diff_id, rows)
+    commits_metadata_mapping = MergeRequest::CommitsMetadata.bulk_find_or_create(
+      project_id,
+      rows
+    )
+
+    rows.each do |row|
+      row[:merge_request_commits_metadata_id] = commits_metadata_mapping[row[:raw_sha]]
+
+      # At this point, we no longer need the `raw_sha` so we delete it from
+      # the row that will be inserted into `merge_request_diff_commits` table.
+      row.delete(:raw_sha)
+    end
+
+    rows_without_metadata = rows.select { |row| row[:merge_request_commits_metadata_id].nil? }
+
+    if rows_without_metadata.any?
+      Gitlab::ErrorTracking.track_exception(
+        CouldNotCreateMetadataError.new,
+        message: 'Failed to create metadata',
+        failed_count: rows_without_metadata.size,
+        total_count: rows.size,
+        merge_request_diff_id: merge_request_diff_id,
+        project_id: project_id,
+        relative_orders: rows_without_metadata.filter_map { |r| r[:relative_order] }
+      )
+    end
+
+    rows
   end
 
   def author_name

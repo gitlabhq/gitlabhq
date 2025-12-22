@@ -7,8 +7,8 @@ module RapidDiffs
 
     renders_one :header
 
-    def initialize(diff_file:, parallel_view: false, environment: nil)
-      @diff_file = diff_file
+    def initialize(diff_file:, parallel_view: false, plain_view: false, environment: nil)
+      @diff_file = plain_view ? diff_file : diff_file.rendered || diff_file
       @parallel_view = parallel_view
       @environment = environment
     end
@@ -55,7 +55,7 @@ module RapidDiffs
 
     # enables virtual rendering through content-visibility: auto, significantly boosts client performance
     def virtual?
-      viewer_component_instance.virtual_rendering_params != nil
+      !viewer_component_instance.virtual_rendering_params.nil? && !@diff_file.rendered?
     end
 
     def virtual_rendering_styles

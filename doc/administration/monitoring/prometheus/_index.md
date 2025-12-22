@@ -178,11 +178,8 @@ ensure that `prometheus['scrape_configs']` is not set in `/etc/gitlab/gitlab.rb`
 
 ### Using an external Prometheus server
 
-{{< alert type="warning" >}}
-
-Prometheus and most exporters don't support authentication. We don't recommend exposing them outside the local network.
-
-{{< /alert >}}
+> [!warning]
+> Prometheus and most exporters don't support authentication. We don't recommend exposing them outside the local network.
 
 A few configuration changes are required to allow GitLab to be monitored by an external Prometheus server.
 
@@ -384,11 +381,8 @@ For a more fully featured dashboard, Grafana can be used and has
 
 Below are some sample Prometheus queries that can be used.
 
-{{< alert type="note" >}}
-
-These are only examples and may not work on all setups. Further adjustments may be required.
-
-{{< /alert >}}
+> [!note]
+> These examples may not work on all setups. Further adjustments might be required.
 
 - **% CPU utilization**: `1 - avg without (mode,cpu) (rate(node_cpu_seconds_total{mode="idle"}[5m]))`
 - **% Memory available**: `((node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) or ((node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes) / node_memory_MemTotal_bytes)) * 100`

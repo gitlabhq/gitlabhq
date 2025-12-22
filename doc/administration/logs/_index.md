@@ -1566,11 +1566,8 @@ When [troubleshooting](../troubleshooting/_index.md) issues that aren't localize
 previously listed components, it's helpful to simultaneously gather multiple logs and statistics
 from a GitLab instance.
 
-{{< alert type="note" >}}
-
-GitLab Support often asks for one of these, and maintains the required tools.
-
-{{< /alert >}}
+> [!note]
+> GitLab Support often asks for one of these, and maintains the required tools.
 
 ### Briefly tail the main logs
 

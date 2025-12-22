@@ -100,6 +100,31 @@ RSpec.describe Banzai::Filter::JsonTableFilter, feature_category: :markdown do
     HTML
   end
 
+  let_it_be(:table_without_items) do
+    <<~TEXT
+      <pre data-canonical-lang="json" data-lang-params="table">
+      <code>
+      {
+        "markdown": true
+      }
+      </code>
+      </pre>
+    TEXT
+  end
+
+  let_it_be(:table_with_invalid_items) do
+    <<~TEXT
+      <pre data-canonical-lang="json" data-lang-params="table">
+      <code>
+      {
+        "items": ["wrong", {"format": null}],
+        "markdown": true
+      }
+      </code>
+      </pre>
+    TEXT
+  end
+
   let_it_be(:table_no_markdown) do
     <<~TEXT
       <pre data-canonical-lang="json" data-lang-params="table">
@@ -153,6 +178,18 @@ RSpec.describe Banzai::Filter::JsonTableFilter, feature_category: :markdown do
   context 'when fields are not provided' do
     it 'generates the correct HTML' do
       expect(filter(table_without_fields).to_html).to eq table_without_fields_html
+    end
+  end
+
+  context 'when items are not provided' do
+    it 'does not change the HTML' do
+      expect(filter(table_without_items).to_html).to eq table_without_items
+    end
+  end
+
+  context 'when item format is invalid' do
+    it 'does not change the HTML' do
+      expect(filter(table_with_invalid_items).to_html).to eq table_with_invalid_items
     end
   end
 

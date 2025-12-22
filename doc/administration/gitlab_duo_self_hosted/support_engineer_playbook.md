@@ -205,11 +205,8 @@ If it returns `false`, enable the flag using:
 ::Ai::Setting.instance.update!(enabled_instance_verbose_ai_logs: true)
 ```
 
-{{< alert type="note" >}}
-
-To enable logging, use the `enabled_instance_verbose_ai_logs` instance setting. Do not use the `expanded_ai_logging` feature flag. Only use the `expanded_ai_logging` feature flag on GitLab.com for debugging purposes. Do not use this feature flag in GitLab Self-Managed instances, including instances running GitLab Duo Self-Hosted.
-
-{{< /alert >}}
+> [!note]
+> To enable logging, use the `enabled_instance_verbose_ai_logs` instance setting. Do not use the `expanded_ai_logging` feature flag. Only use the `expanded_ai_logging` feature flag on GitLab.com for debugging purposes. Do not use this feature flag in GitLab Self-Managed instances, including instances running GitLab Duo Self-Hosted.
 
 ### Step 2: Reproduce the Issue
 

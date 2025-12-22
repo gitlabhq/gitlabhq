@@ -3066,6 +3066,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :terraform
+- :name: timed_out_builds:ci_timed_out_builds_drop_running
+  :worker_name: Ci::TimedOutBuilds::DropRunningWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :timed_out_builds
 - :name: todos_destroyer:todos_delete_all_done
   :worker_name: Todos::DeleteAllDoneWorker
   :feature_category: :notifications

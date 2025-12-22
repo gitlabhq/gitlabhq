@@ -394,6 +394,10 @@ module Gitlab
         strong_memoize(:rendered) { Rendered::Notebook::DiffFile.new(self) }
       end
 
+      def rendered?
+        false
+      end
+
       def ipynb?
         file_path.ends_with?('.ipynb')
       end

@@ -16,7 +16,7 @@ module Ci
       queue_namespace :cronjob
 
       def perform
-        DropTimedOutService.new.execute
+        DropRunningWorker.perform_async
       end
     end
   end

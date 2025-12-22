@@ -106,11 +106,8 @@ We provide two debugging scripts to help administrators verify their self-hosted
 
 After troubleshooting is complete, stop and restart the AI Gateway container **without** `AIGW_AUTH__BYPASS_EXTERNAL=true`.
 
-{{< alert type="warning" >}}
-
-You must not bypass authentication in production.
-
-{{< /alert >}}
+> [!warning]
+> You must not bypass authentication in production.
 
 Verify the output of the commands, and fix accordingly.
 

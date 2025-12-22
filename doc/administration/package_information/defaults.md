@@ -76,11 +76,8 @@ If you are using NFS (Network File System), files are carried
 over a network which requires, based on implementation, ports `111` and
 `2049` to be open.
 
-{{< alert type="note" >}}
-
-In some cases, the GitLab Registry is automatically enabled by default. See [our documentation](../packages/container_registry.md) for more details.
-
-{{< /alert >}}
+> [!note]
+> In some cases, the GitLab Registry is automatically enabled by default. For more information, see [GitLab container registry administration](../packages/container_registry.md).
 
  [^Consul-notes]: If using additional Consul functionality, more ports may need to be opened. See the [official documentation](https://developer.hashicorp.com/consul/docs/install/ports#ports-table) for the list.
 

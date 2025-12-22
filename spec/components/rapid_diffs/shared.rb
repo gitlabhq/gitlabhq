@@ -4,6 +4,7 @@ require "spec_helper"
 
 RSpec.shared_context "with diff file component tests" do
   let_it_be(:diff_file) { build(:diff_file) }
+  let_it_be(:rich_diff_file) { build(:diff_file) }
   let(:web_component_selector) { 'diff-file' }
   let(:web_component) { page.find(web_component_selector) }
   let(:repository) { diff_file.repository }
@@ -12,6 +13,13 @@ RSpec.shared_context "with diff file component tests" do
   let(:sample_commit) { instance_double(Commit, raw_diffs: [diff_file]) }
 
   before do
+    allow(diff_file).to receive(:rendered).and_return(rich_diff_file)
+    allow(rich_diff_file).to receive_messages(
+      total_blob_lines: 1,
+      highlighted_diff_lines: [
+        Gitlab::Diff::Line.new('rich', 'new', 0, 1, 1, rich_text: ' <img src="rich.png">'.html_safe)
+      ]
+    )
     allow(repository).to receive(:commit).with(RepoHelpers.sample_commit.id).and_return(sample_commit)
   end
 
@@ -20,6 +28,11 @@ RSpec.shared_context "with diff file component tests" do
     expect(page).to have_selector(web_component_selector)
     expect(page).to have_selector("#{web_component_selector}-mounted")
     expect(page).to have_selector("details[data-file-body]")
+  end
+
+  it "renders rich diff" do
+    render_component(plain_view: false)
+    expect(page).to have_selector("img[src='rich.png']")
   end
 
   it "renders server data" do
@@ -104,12 +117,23 @@ RSpec.shared_context "with diff file component tests" do
     end
   end
 
+  context "when is rendered diff" do
+    before do
+      allow(diff_file).to receive(:rendered?).and_return(true)
+    end
+
+    it "disables virtual rendering" do
+      render_component
+      expect(web_component).not_to have_css("[data-virtual]")
+    end
+  end
+
   def file_data
     Gitlab::Json.parse(web_component['data-file-data'])
   end
 
   # This should be overridden in the including spec
-  def render_component
+  def render_component(**_args)
     raise "Override render_component in the including spec"
   end
 end

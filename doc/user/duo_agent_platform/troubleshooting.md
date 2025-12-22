@@ -72,10 +72,10 @@ To configure push rules for a project:
    1. In **Commit author's email**, add a regular expression that allows the email address you just copied.
    1. Select **Save push rules**.
 
-1. Allow the `workloads/` branch prefix:
+1. Allow the `workloads/` and `duo/feature/` branch prefixes:
    1. In the **Push rules** section, find **Branch name**.
-   1. Add a regular expression that allows branches starting with `workloads/`.
-      For example: `^workloads/.*$`
+   1. Add a regular expression that allows branches starting with `workloads/` and `duo/feature/`.
+      For example: `^(workloads|duo/feature)/.*$`
    1. Select **Save push rules**.
 
 If you are an administrator, you can create push rules for the instance:

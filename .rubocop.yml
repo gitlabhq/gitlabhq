@@ -588,6 +588,7 @@ Gitlab/AvoidUserOrganization:
     - 'lib/gitlab/current/organization.rb'
     - 'spec/**/*'
     - 'ee/spec/**/*'
+    - 'ee/db/fixtures/development/**/*'
 
 Gitlab/DisallowCurrentOrganizationIdSafeNavigation:
   Description: 'Use `Current.organization.id` instead of `Current.organization&.id`. `Current.organization` is expected to be assigned.'

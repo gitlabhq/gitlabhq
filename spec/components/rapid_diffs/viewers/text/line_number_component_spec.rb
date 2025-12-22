@@ -17,6 +17,12 @@ RSpec.describe RapidDiffs::Viewers::Text::LineNumberComponent, type: :component,
     expect(page).not_to have_selector('a')
   end
 
+  it "renders cell with span when line number is zero" do
+    render_component(line: Gitlab::Diff::Line.new('', 'new', nil, 0, 0, rich_text: ''), position: :new)
+    expect(page).to have_selector('td[data-change=added] span')
+    expect(page).not_to have_selector('a')
+  end
+
   it "renders empty cell for removed line on right side" do
     render_component(line: old_line, position: :new)
     expect(page).to have_selector('td[data-change=removed]')

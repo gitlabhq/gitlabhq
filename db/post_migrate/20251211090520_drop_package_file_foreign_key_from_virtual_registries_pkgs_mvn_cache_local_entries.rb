@@ -4,7 +4,7 @@ class DropPackageFileForeignKeyFromVirtualRegistriesPkgsMvnCacheLocalEntries < G
   include Gitlab::Database::PartitioningMigrationHelpers
 
   disable_ddl_transaction!
-  milestone '18.7'
+  milestone '18.8'
 
   TABLE_NAME = :virtual_registries_packages_maven_cache_local_entries
   REFERENCED_TABLE_NAME = :packages_package_files
