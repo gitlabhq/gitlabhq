@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe SystemNotes::BaseService, feature_category: :groups_and_projects do
   let(:noteable) { double }
   let(:project) { build(:project) }
-  let(:author) { double }
+  let(:author) { build(:user) }
   let(:container) { project }
   let(:base_service) { described_class.new(noteable: noteable, container: container, author: author) }
 

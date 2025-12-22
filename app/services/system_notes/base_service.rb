@@ -8,7 +8,7 @@ module SystemNotes
     def initialize(container: nil, noteable: nil, author: nil)
       @container = container
       @noteable = noteable
-      @author = author
+      @author = Gitlab::Auth::Identity.invert_composite_identity(author)
 
       handle_container_type(container)
     end
