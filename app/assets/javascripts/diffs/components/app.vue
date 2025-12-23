@@ -16,7 +16,7 @@ import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { getScrollingElement } from '~/lib/utils/scroll_utils';
+import { getScrollingElement } from '~/lib/utils/panels';
 import { parseBoolean, handleLocationHash, getCookie } from '~/lib/utils/common_utils';
 import { BV_HIDE_TOOLTIP, DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { Mousetrap } from '~/lib/mousetrap';

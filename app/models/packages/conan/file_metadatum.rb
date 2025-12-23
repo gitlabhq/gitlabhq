@@ -21,6 +21,7 @@ class Packages::Conan::FileMetadatum < ApplicationRecord
   PACKAGE_FILES = ::Gitlab::Regex::Packages::CONAN_PACKAGE_FILES
   PACKAGE_BINARY = 'conan_package.tgz'
   CONANINFO_TXT = 'conaninfo.txt'
+  MANIFEST_FILE = 'conanmanifest.txt'
 
   def recipe_revision_value
     recipe_revision&.revision || DEFAULT_REVISION

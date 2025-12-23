@@ -7,9 +7,10 @@ module Packages
 
       UNIQUENESS_COLUMNS = %i[package_id revision].freeze
 
-      def initialize(package, revision)
+      def initialize(package, revision, status)
         @package = package
         @revision = revision
+        @status = status
       end
 
       def execute!
@@ -24,12 +25,13 @@ module Packages
 
       private
 
-      attr_reader :package, :revision
+      attr_reader :package, :revision, :status
 
       def recipe_revision
         package.conan_recipe_revisions.build(
           revision: revision,
-          project_id: package.project_id
+          project_id: package.project_id,
+          status: status
         )
       end
       strong_memoize_attr :recipe_revision
@@ -37,7 +39,7 @@ module Packages
       def upsert_recipe_revision
         ::Packages::Conan::RecipeRevision
           .upsert(
-            recipe_revision.attributes.slice('package_id', 'project_id', 'revision'),
+            recipe_revision.attributes.slice('package_id', 'project_id', 'revision', 'status'),
             unique_by: UNIQUENESS_COLUMNS
           )
       end

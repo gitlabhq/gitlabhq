@@ -8,6 +8,8 @@ module Packages
 
       sha_attribute :revision
 
+      enum :status, { default: 0, processing: 1 }
+
       belongs_to :package, class_name: 'Packages::Conan::Package', inverse_of: :conan_recipe_revisions
       belongs_to :project
 

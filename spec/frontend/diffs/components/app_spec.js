@@ -5,7 +5,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
-import { getScrollingElement } from '~/lib/utils/scroll_utils';
+import { getScrollingElement } from '~/lib/utils/panels';
 import getMRCodequalityAndSecurityReports from 'ee_else_ce/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';

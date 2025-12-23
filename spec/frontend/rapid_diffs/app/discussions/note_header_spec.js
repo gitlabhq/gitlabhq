@@ -4,9 +4,6 @@ import NoteHeader from '~/rapid_diffs/app/discussions/note_header.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import NoteAuthor from '~/rapid_diffs/app/discussions/note_author.vue';
-import { preventScrollToFragment } from '~/lib/utils/scroll_utils';
-
-jest.mock('~/lib/utils/scroll_utils');
 
 describe('NoteHeader', () => {
   let wrapper;
@@ -98,16 +95,6 @@ describe('NoteHeader', () => {
         noteUrl: '/custom/url',
       });
       expect(findTimeAgoTooltip().attributes('href')).toBe('/custom/url');
-    });
-
-    it('prevents trusted scrolls', () => {
-      createComponent({
-        createdAt: '2024-01-01T10:00:00Z',
-        noteId: '456',
-        noteUrl: '/custom/url',
-      });
-      findTimeAgoTooltip().vm.$emit('click', { isTrusted: true });
-      expect(preventScrollToFragment).toHaveBeenCalled();
     });
   });
 

@@ -16,6 +16,7 @@ import {
 } from '../constants';
 import CreatePersonalAccessTokenButton from './create_personal_access_token_button.vue';
 import PersonalAccessTokensTable from './personal_access_tokens_table.vue';
+import PersonalAccessTokenDrawer from './personal_access_token_drawer.vue';
 
 export default {
   name: 'PersonalAccessTokensApp',
@@ -27,6 +28,7 @@ export default {
     CrudComponent,
     PersonalAccessTokensTable,
     CreatePersonalAccessTokenButton,
+    PersonalAccessTokenDrawer,
   },
   data() {
     return {
@@ -36,6 +38,7 @@ export default {
       },
       filter: structuredClone(DEFAULT_FILTER),
       sort: structuredClone(DEFAULT_SORT),
+      selectedToken: null,
       pagination: {
         first: PAGE_SIZE,
         after: null,
@@ -120,6 +123,9 @@ export default {
         before: item,
       };
     },
+    selectToken(token) {
+      this.selectedToken = token;
+    },
   },
   i18n: {
     pageTitle: s__('AccessTokens|Personal access tokens'),
@@ -170,7 +176,12 @@ export default {
         <create-personal-access-token-button />
       </template>
 
-      <personal-access-tokens-table :tokens="tokens.list" :loading="isLoading" class="gl-mb-5" />
+      <personal-access-tokens-table
+        :tokens="tokens.list"
+        :loading="isLoading"
+        class="gl-mb-5"
+        @select="selectToken"
+      />
 
       <template #pagination>
         <gl-keyset-pagination
@@ -181,5 +192,7 @@ export default {
         />
       </template>
     </crud-component>
+
+    <personal-access-token-drawer :token="selectedToken" @close="selectToken(null)" />
   </div>
 </template>

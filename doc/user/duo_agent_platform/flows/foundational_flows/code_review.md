@@ -46,7 +46,7 @@ This flow:
 
 This flow is available in the GitLab UI only.
 
-The Code Review Flow is [different from classic GitLab Duo Code Review](#differences-from-classic-gitlab-duo-code-review).
+The Code Review Flow is [different from GitLab Duo Code Review (Classic)](#differences-from-gitlab-duo-code-review-classic).
 
 ## Use the flow
 
@@ -93,10 +93,10 @@ You can customize the format of code review comments for GitLab Duo to follow.
 
 To configure custom comments, see [customized code review comments](../../../project/merge_requests/duo_in_merge_requests.md#customized-code-review-comments).
 
-## Differences from classic GitLab Duo Code Review
+## Differences from GitLab Duo Code Review (Classic)
 
-While the Code Review Flow provides the same core functionality as the classic
-[GitLab Duo Code Review](../../../project/merge_requests/duo_in_merge_requests.md#gitlab-duo-code-review),
+While the Code Review Flow provides the same core functionality as
+[GitLab Duo Code Review (Classic)](../../../project/merge_requests/duo_in_merge_requests.md#gitlab-duo-code-review-classic),
 the GitLab Duo Agent Platform implementation offers:
 
 - Improved context awareness: Better understanding of repository structure and cross-file dependencies.

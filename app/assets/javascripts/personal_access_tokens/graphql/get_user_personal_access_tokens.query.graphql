@@ -37,6 +37,27 @@ query getUserPersonalAccessTokens(
         lastUsedAt
         createdAt
         expiresAt
+        lastUsedIps
+        scopes {
+          __typename
+          ... on AccessTokenLegacyScope {
+            value
+          }
+          ... on AccessTokenGranularScope {
+            access
+            namespace {
+              id
+              fullName
+              fullPath
+              webUrl
+              avatarUrl
+            }
+            permissions {
+              action
+              resource
+            }
+          }
+        }
       }
       pageInfo {
         ...PageInfo

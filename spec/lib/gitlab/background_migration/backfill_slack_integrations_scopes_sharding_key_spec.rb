@@ -14,6 +14,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSlackIntegrationsScopesShard
   let(:slack_integrations) { table(:slack_integrations) }
   let(:slack_integrations_scopes) { table(:slack_integrations_scopes) }
   let(:slack_api_scopes) { table(:slack_api_scopes) }
+  let(:slack_integrations_scopes_archived) { table(:slack_integrations_scopes_archived) }
 
   let(:start_id) { slack_integrations_scopes.minimum(:id) }
   let(:end_id) { slack_integrations_scopes.maximum(:id) }
@@ -27,6 +28,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSlackIntegrationsScopesShard
   let(:api_scope1) { slack_api_scopes.create!(name: 'scope1') }
   let(:api_scope2) { slack_api_scopes.create!(name: 'scope2') }
   let(:api_scope3) { slack_api_scopes.create!(name: 'scope3', organization_id: other_organization.id) }
+  let(:duplicate_scope3) { slack_api_scopes.create!(name: 'scope3') }
 
   let!(:project) do
     projects.create!(
@@ -102,9 +104,16 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSlackIntegrationsScopesShard
     )
   end
 
-  let(:other_org_slack_integration_scope) do
+  let(:other_org_slack_integration_scope1) do
     slack_integrations_scopes.create!(
       slack_api_scope_id: api_scope3.id,
+      slack_integration_id: other_org_slack_integration.id
+    )
+  end
+
+  let(:other_org_slack_integration_scope2) do
+    slack_integrations_scopes.create!(
+      slack_api_scope_id: duplicate_scope3.id,
       slack_integration_id: other_org_slack_integration.id
     )
   end
@@ -255,7 +264,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSlackIntegrationsScopesShard
 
       org_slack_integration_scope1
       org_slack_integration_scope2
-      other_org_slack_integration_scope
+      other_org_slack_integration_scope1
+      other_org_slack_integration_scope2
       group_slack_integration_scope1
       group_slack_integration_scope2
       other_group_slack_integration_scope1
@@ -283,10 +293,14 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSlackIntegrationsScopesShard
       expect(org_slack_integration_scope2.organization_id).to be_nil
       expect(org_slack_integration_scope2.slack_api_scope_id).to eq(api_scope2.id)
 
-      expect(other_org_slack_integration_scope.project_id).to be_nil
-      expect(other_org_slack_integration_scope.group_id).to be_nil
-      expect(other_org_slack_integration_scope.organization_id).to be_nil
-      expect(other_org_slack_integration_scope.slack_api_scope_id).to eq(api_scope3.id)
+      expect(other_org_slack_integration_scope1.project_id).to be_nil
+      expect(other_org_slack_integration_scope1.group_id).to be_nil
+      expect(other_org_slack_integration_scope1.organization_id).to be_nil
+      expect(other_org_slack_integration_scope1.slack_api_scope_id).to eq(api_scope3.id)
+      expect(other_org_slack_integration_scope2.project_id).to be_nil
+      expect(other_org_slack_integration_scope2.group_id).to be_nil
+      expect(other_org_slack_integration_scope2.organization_id).to be_nil
+      expect(other_org_slack_integration_scope2.slack_api_scope_id).to eq(duplicate_scope3.id)
 
       expect(group_slack_integration_scope1.project_id).to be_nil
       expect(group_slack_integration_scope1.group_id).to be_nil
@@ -321,8 +335,14 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSlackIntegrationsScopesShard
 
       expect do
         migration.perform
-      end.to change { slack_api_scopes.count }.from(3).to(7).and(
+      end.to change { slack_api_scopes.count }.from(4).to(8).and(
         not_change { api_scope3.reload.organization_id }.from(other_organization.id)
+      ).and(
+        # The final count on this table is only -1 as we only had 1 duplicate record with the same scope name
+        change { slack_integrations_scopes.count }.by(-1)
+      ).and(
+        # 11 records are inserted and deleted in the original table
+        change { slack_integrations_scopes_archived.count }.by(11)
       )
 
       # These are the 4 new `slack_api_scopes` records that were created while upserting each batch
@@ -331,59 +351,113 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSlackIntegrationsScopesShard
       new_scope1_other_org = slack_api_scopes.find_by(name: api_scope1.name, organization_id: other_organization.id)
       new_scope2_other_org = slack_api_scopes.find_by(name: api_scope2.name, organization_id: other_organization.id)
 
-      expect(org_slack_integration_scope1.reload.project_id).to be_nil
-      expect(org_slack_integration_scope1.group_id).to be_nil
-      expect(org_slack_integration_scope1.organization_id).to eq(organization.id)
-      expect(org_slack_integration_scope1.slack_api_scope_id).to eq(new_scope1_org.id)
-      expect(org_slack_integration_scope2.reload.project_id).to be_nil
-      expect(org_slack_integration_scope2.group_id).to be_nil
-      expect(org_slack_integration_scope2.organization_id).to eq(organization.id)
-      expect(org_slack_integration_scope2.slack_api_scope_id).to eq(new_scope2_org.id)
+      # We need to find new records as we are upserting and not only updating
+      new_org_slack_integration_scope1 = slack_integrations_scopes.find_by(
+        slack_api_scope_id: new_scope1_org.id,
+        slack_integration_id: org_slack_integration_scope1.slack_integration_id
+      )
+      new_org_slack_integration_scope2 = slack_integrations_scopes.find_by(
+        slack_api_scope_id: new_scope2_org.id,
+        slack_integration_id: org_slack_integration_scope2.slack_integration_id
+      )
+      new_other_org_slack_integration_scope2 = slack_integrations_scopes.find_by(
+        slack_api_scope_id: api_scope3.id,
+        slack_integration_id: other_org_slack_integration_scope2.slack_integration_id
+      )
+      new_group_slack_integration_scope1 = slack_integrations_scopes.find_by(
+        slack_api_scope_id: new_scope1_org.id,
+        slack_integration_id: group_slack_integration_scope1.slack_integration_id
+      )
+      new_group_slack_integration_scope2 = slack_integrations_scopes.find_by(
+        slack_api_scope_id: new_scope2_org.id,
+        slack_integration_id: group_slack_integration_scope2.slack_integration_id
+      )
+      new_other_group_slack_integration_scope1 = slack_integrations_scopes.find_by(
+        slack_api_scope_id: new_scope1_other_org.id,
+        slack_integration_id: other_group_slack_integration_scope1.slack_integration_id
+      )
+      new_other_group_slack_integration_scope2 = slack_integrations_scopes.find_by(
+        slack_api_scope_id: new_scope2_other_org.id,
+        slack_integration_id: other_group_slack_integration_scope2.slack_integration_id
+      )
+      new_project_slack_integration_scope1 = slack_integrations_scopes.find_by(
+        slack_api_scope_id: new_scope1_org.id,
+        slack_integration_id: project_slack_integration_scope1.slack_integration_id
+      )
+      new_project_slack_integration_scope2 = slack_integrations_scopes.find_by(
+        slack_api_scope_id: new_scope2_org.id,
+        slack_integration_id: project_slack_integration_scope2.slack_integration_id
+      )
+      new_another_project_slack_integration_scope1 = slack_integrations_scopes.find_by(
+        slack_api_scope_id: new_scope1_org.id,
+        slack_integration_id: another_project_slack_integration_scope1.slack_integration_id
+      )
+      new_another_project_slack_integration_scope2 = slack_integrations_scopes.find_by(
+        slack_api_scope_id: new_scope2_org.id,
+        slack_integration_id: another_project_slack_integration_scope2.slack_integration_id
+      )
 
-      expect(other_org_slack_integration_scope.reload.project_id).to be_nil
-      expect(other_org_slack_integration_scope.group_id).to be_nil
-      expect(other_org_slack_integration_scope.organization_id).to eq(other_organization.id)
-      expect(other_org_slack_integration_scope.slack_api_scope_id).to eq(api_scope3.id)
+      expect(new_org_slack_integration_scope1.project_id).to be_nil
+      expect(new_org_slack_integration_scope1.group_id).to be_nil
+      expect(new_org_slack_integration_scope1.organization_id).to eq(organization.id)
+      expect(new_org_slack_integration_scope1.slack_api_scope_id).to eq(new_scope1_org.id)
+      expect(new_org_slack_integration_scope2.project_id).to be_nil
+      expect(new_org_slack_integration_scope2.group_id).to be_nil
+      expect(new_org_slack_integration_scope2.organization_id).to eq(organization.id)
+      expect(new_org_slack_integration_scope2.slack_api_scope_id).to eq(new_scope2_org.id)
 
-      expect(group_slack_integration_scope1.reload.project_id).to be_nil
-      expect(group_slack_integration_scope1.group_id).to eq(group.id)
-      expect(group_slack_integration_scope1.organization_id).to be_nil
-      expect(group_slack_integration_scope1.slack_api_scope_id).to eq(new_scope1_org.id)
-      expect(group_slack_integration_scope2.reload.project_id).to be_nil
-      expect(group_slack_integration_scope2.group_id).to eq(group.id)
-      expect(group_slack_integration_scope2.organization_id).to be_nil
-      expect(group_slack_integration_scope2.slack_api_scope_id).to eq(new_scope2_org.id)
+      # other_org_slack_integration_scope1 is the only record that is not recreated with the correct sharding key
+      # as it was already associated with a valid api_scope record with a sharding key
+      expect(other_org_slack_integration_scope1.reload.project_id).to be_nil
+      expect(other_org_slack_integration_scope1.group_id).to be_nil
+      expect(other_org_slack_integration_scope1.organization_id).to eq(other_organization.id)
+      expect(other_org_slack_integration_scope1.slack_api_scope_id).to eq(api_scope3.id)
+      expect(new_other_org_slack_integration_scope2.reload.project_id).to be_nil
+      expect(new_other_org_slack_integration_scope2.group_id).to be_nil
+      expect(new_other_org_slack_integration_scope2.organization_id).to eq(other_organization.id)
+      expect(new_other_org_slack_integration_scope2.slack_api_scope_id).to eq(api_scope3.id)
 
-      expect(other_group_slack_integration_scope1.reload.project_id).to be_nil
-      expect(other_group_slack_integration_scope1.group_id).to eq(other_group.id)
-      expect(other_group_slack_integration_scope1.organization_id).to be_nil
-      expect(other_group_slack_integration_scope1.slack_api_scope_id).to eq(new_scope1_other_org.id)
-      expect(other_group_slack_integration_scope2.reload.project_id).to be_nil
-      expect(other_group_slack_integration_scope2.group_id).to eq(other_group.id)
-      expect(other_group_slack_integration_scope2.organization_id).to be_nil
-      expect(other_group_slack_integration_scope2.slack_api_scope_id).to eq(new_scope2_other_org.id)
+      expect(new_group_slack_integration_scope1.project_id).to be_nil
+      expect(new_group_slack_integration_scope1.group_id).to eq(group.id)
+      expect(new_group_slack_integration_scope1.organization_id).to be_nil
+      expect(new_group_slack_integration_scope1.slack_api_scope_id).to eq(new_scope1_org.id)
+      expect(new_group_slack_integration_scope2.project_id).to be_nil
+      expect(new_group_slack_integration_scope2.group_id).to eq(group.id)
+      expect(new_group_slack_integration_scope2.organization_id).to be_nil
+      expect(new_group_slack_integration_scope2.slack_api_scope_id).to eq(new_scope2_org.id)
 
-      expect(project_slack_integration_scope1.reload.project_id).to eq(project.id)
-      expect(project_slack_integration_scope1.group_id).to be_nil
-      expect(project_slack_integration_scope1.organization_id).to be_nil
-      expect(project_slack_integration_scope1.slack_api_scope_id).to eq(new_scope1_org.id)
-      expect(project_slack_integration_scope2.reload.project_id).to eq(project.id)
-      expect(project_slack_integration_scope2.group_id).to be_nil
-      expect(project_slack_integration_scope2.organization_id).to be_nil
-      expect(project_slack_integration_scope2.slack_api_scope_id).to eq(new_scope2_org.id)
+      expect(new_other_group_slack_integration_scope1.project_id).to be_nil
+      expect(new_other_group_slack_integration_scope1.group_id).to eq(other_group.id)
+      expect(new_other_group_slack_integration_scope1.organization_id).to be_nil
+      expect(new_other_group_slack_integration_scope1.slack_api_scope_id).to eq(new_scope1_other_org.id)
+      expect(new_other_group_slack_integration_scope2.project_id).to be_nil
+      expect(new_other_group_slack_integration_scope2.group_id).to eq(other_group.id)
+      expect(new_other_group_slack_integration_scope2.organization_id).to be_nil
+      expect(new_other_group_slack_integration_scope2.slack_api_scope_id).to eq(new_scope2_other_org.id)
 
-      expect(another_project_slack_integration_scope1.reload.project_id).to eq(another_project.id)
-      expect(another_project_slack_integration_scope1.group_id).to be_nil
-      expect(another_project_slack_integration_scope1.organization_id).to be_nil
-      expect(another_project_slack_integration_scope1.slack_api_scope_id).to eq(new_scope1_org.id)
-      expect(another_project_slack_integration_scope2.reload.project_id).to eq(another_project.id)
-      expect(another_project_slack_integration_scope2.group_id).to be_nil
-      expect(another_project_slack_integration_scope2.organization_id).to be_nil
-      expect(another_project_slack_integration_scope2.slack_api_scope_id).to eq(new_scope2_org.id)
+      expect(new_project_slack_integration_scope1.project_id).to eq(project.id)
+      expect(new_project_slack_integration_scope1.group_id).to be_nil
+      expect(new_project_slack_integration_scope1.organization_id).to be_nil
+      expect(new_project_slack_integration_scope1.slack_api_scope_id).to eq(new_scope1_org.id)
+      expect(new_project_slack_integration_scope2.project_id).to eq(project.id)
+      expect(new_project_slack_integration_scope2.group_id).to be_nil
+      expect(new_project_slack_integration_scope2.organization_id).to be_nil
+      expect(new_project_slack_integration_scope2.slack_api_scope_id).to eq(new_scope2_org.id)
+
+      expect(new_another_project_slack_integration_scope1.project_id).to eq(another_project.id)
+      expect(new_another_project_slack_integration_scope1.group_id).to be_nil
+      expect(new_another_project_slack_integration_scope1.organization_id).to be_nil
+      expect(new_another_project_slack_integration_scope1.slack_api_scope_id).to eq(new_scope1_org.id)
+      expect(new_another_project_slack_integration_scope2.project_id).to eq(another_project.id)
+      expect(new_another_project_slack_integration_scope2.group_id).to be_nil
+      expect(new_another_project_slack_integration_scope2.organization_id).to be_nil
+      expect(new_another_project_slack_integration_scope2.slack_api_scope_id).to eq(new_scope2_org.id)
 
       # These will be deleted after the backfill is finalized
       expect(api_scope1.reload.organization_id).to be_nil
       expect(api_scope2.reload.organization_id).to be_nil
+
+      # This one stays as it already had an organization_id
       expect(api_scope3.reload.organization_id).to eq(other_organization.id)
     end
   end

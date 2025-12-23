@@ -31,7 +31,8 @@ module Packages
         package.conan_package_revisions.build(
           package_reference_id: package_reference_id,
           revision: revision,
-          project_id: package.project_id
+          project_id: package.project_id,
+          status: :processing
         )
       end
       strong_memoize_attr :package_revision
@@ -39,7 +40,7 @@ module Packages
       def upsert_package_revision
         ::Packages::Conan::PackageRevision
           .upsert(
-            package_revision.attributes.slice('package_id', 'project_id', 'package_reference_id', 'revision'),
+            package_revision.attributes.slice('package_id', 'project_id', 'package_reference_id', 'revision', 'status'),
             unique_by: UNIQUENESS_COLUMNS
           )
       end

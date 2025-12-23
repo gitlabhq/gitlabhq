@@ -8,6 +8,7 @@ module API
     resource :avatar do
       desc 'Return avatar url for a user' do
         success Entities::Avatar
+        tags %w[avatars]
       end
       params do
         requires :email, type: String, desc: 'Public email address of the user'

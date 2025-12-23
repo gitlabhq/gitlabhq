@@ -115,7 +115,7 @@ tags:
   description: Operations about broadcast_messages
 - name: applications
   description: Operations about applications
-- name: avatar
+- name: avatars
   description: Operations about avatars
 - name: bulk_imports
   description: Operations about bulk_imports
@@ -40159,7 +40159,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Avatar"
       tags:
-      - avatar
+      - avatars
       operationId: getApiV4Avatar
   "/api/v4/bulk_imports":
     post:

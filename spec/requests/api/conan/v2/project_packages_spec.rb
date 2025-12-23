@@ -315,15 +315,21 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
     subject(:request) { get api(url), headers: headers }
 
-    it 'returns the latest revision' do
-      request
+    context 'with multiple recipe revisions' do
+      before do
+        create(:conan_recipe_revision, :processing, package: package)
+      end
 
-      expect(response).to have_gitlab_http_status(:ok)
+      it 'returns the latest default revision' do
+        request
 
-      recipe_revision = package.conan_recipe_revisions.first
+        expect(response).to have_gitlab_http_status(:ok)
 
-      expect(json_response['revision']).to eq(recipe_revision.revision)
-      expect(json_response['time']).to eq(recipe_revision.created_at.iso8601(3))
+        recipe_revision = package.conan_recipe_revisions.first
+
+        expect(json_response['revision']).to eq(recipe_revision.revision)
+        expect(json_response['time']).to eq(recipe_revision.created_at.iso8601(3))
+      end
     end
 
     context 'when package has no revisions' do
@@ -514,15 +520,21 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
     subject(:request) { get api(url), headers: headers }
 
-    it 'returns the latest revision' do
-      request
+    context 'with multiple recipe revisions' do
+      before do
+        create(:conan_package_revision, :processing, package: package)
+      end
 
-      expect(response).to have_gitlab_http_status(:ok)
+      it 'returns the latest default revision' do
+        request
 
-      package_revision = package.conan_package_revisions.first
+        expect(response).to have_gitlab_http_status(:ok)
 
-      expect(json_response['revision']).to eq(package_revision.revision)
-      expect(json_response['time']).to eq(package_revision.created_at.iso8601(3))
+        package_revision = package.conan_package_revisions.first
+
+        expect(json_response['revision']).to eq(package_revision.revision)
+        expect(json_response['time']).to eq(package_revision.created_at.iso8601(3))
+      end
     end
 
     context 'when recipe revision does not exist' do

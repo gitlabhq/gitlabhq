@@ -13,7 +13,7 @@ import * as types from '~/diffs/store/mutation_types';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import * as scrollUtils from '~/lib/utils/scroll_utils';
+import * as panels from '~/lib/utils/panels';
 
 Vue.use(PiniaVuePlugin);
 
@@ -68,7 +68,7 @@ describe('DiffsFileTree', () => {
     pinia = createTestingPinia();
     useLegacyDiffs();
     mockBreakpointInstance('lg');
-    jest.spyOn(scrollUtils, 'getPanelElement').mockReturnValue(null);
+    jest.spyOn(panels, 'getPanelElement').mockReturnValue(null);
   });
 
   it('renders inside file browser height', () => {
@@ -181,7 +181,7 @@ describe('DiffsFileTree', () => {
     it('applies cached sizings on resize start', async () => {
       const panelTop = 50;
       const elementTop = 100;
-      jest.spyOn(scrollUtils, 'getPanelElement').mockReturnValue({
+      jest.spyOn(panels, 'getPanelElement').mockReturnValue({
         getBoundingClientRect: () => ({ top: panelTop }),
       });
       jest.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(() => ({

@@ -23159,7 +23159,8 @@ CREATE TABLE packages_conan_package_revisions (
     package_reference_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    revision bytea NOT NULL
+    revision bytea NOT NULL,
+    status smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE packages_conan_package_revisions_id_seq
@@ -23177,7 +23178,8 @@ CREATE TABLE packages_conan_recipe_revisions (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    revision bytea NOT NULL
+    revision bytea NOT NULL,
+    status smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE packages_conan_recipe_revisions_id_seq
@@ -27779,6 +27781,18 @@ CREATE TABLE slack_integrations_scopes (
     group_id bigint,
     organization_id bigint
 );
+
+CREATE TABLE slack_integrations_scopes_archived (
+    id bigint NOT NULL,
+    slack_api_scope_id bigint NOT NULL,
+    slack_integration_id bigint NOT NULL,
+    project_id bigint,
+    group_id bigint,
+    organization_id bigint,
+    archived_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+COMMENT ON TABLE slack_integrations_scopes_archived IS 'Temporary table for storing duplicate slack_integrations_scopes records during sharding key backfill. Stores duplicate/conflicting records with archival timestamp. TODO: Drop after BBM completion and verification.';
 
 CREATE SEQUENCE slack_integrations_scopes_id_seq
     START WITH 1
@@ -37390,6 +37404,9 @@ ALTER TABLE ONLY slack_api_scopes
 ALTER TABLE ONLY slack_integrations
     ADD CONSTRAINT slack_integrations_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY slack_integrations_scopes_archived
+    ADD CONSTRAINT slack_integrations_scopes_archived_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY slack_integrations_scopes
     ADD CONSTRAINT slack_integrations_scopes_pkey PRIMARY KEY (id);
 
@@ -40495,7 +40512,11 @@ CREATE INDEX idx_pkgs_conan_file_metadata_on_pkg_file_id_when_recipe_file ON pac
 
 CREATE INDEX idx_pkgs_conan_metadata_on_pkg_file_id_when_null_rec_rev ON packages_conan_file_metadata USING btree (package_file_id) WHERE (recipe_revision_id IS NULL);
 
+CREATE INDEX idx_pkgs_conan_package_revisions_on_package_id_status_id_desc ON packages_conan_package_revisions USING btree (package_id, status, id DESC);
+
 CREATE INDEX idx_pkgs_conan_recipe_rev_on_id_and_revision ON packages_conan_recipe_revisions USING btree (id, revision);
+
+CREATE INDEX idx_pkgs_conan_recipe_revisions_on_package_id_status_id_desc ON packages_conan_recipe_revisions USING btree (package_id, status, id DESC);
 
 CREATE INDEX idx_pkgs_debian_group_distribution_keys_on_distribution_id ON packages_debian_group_distribution_keys USING btree (distribution_id);
 

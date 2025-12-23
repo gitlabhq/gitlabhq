@@ -63,13 +63,13 @@ GitLab Duo can review your merge request for potential errors and provide feedba
 
 Add GitLab Duo as a reviewer using one of:
 
-- GitLab Duo Code Review: The classic code review functionality.
+- GitLab Duo Code Review (Classic): The classic code review functionality.
 - Code Review Flow: The new flow available through the GitLab Duo Agent Platform. Offers improved context awareness and agentic capabilities.
 
 The two options have different requirements and prerequisites. However, you request a review and interact with GitLab Duo the same way. Both options also support automatic reviews, custom
 instructions, and custom comments.
 
-### GitLab Duo Code Review
+### GitLab Duo Code Review (Classic)
 
 {{< details >}}
 
@@ -100,7 +100,7 @@ instructions, and custom comments.
 
 {{< /history >}}
 
-When your merge request is ready to be reviewed, use GitLab Duo Code Review to perform an initial review:
+When your merge request is ready to be reviewed, use GitLab Duo Code Review (Classic) to perform an initial review:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests** and find your merge request.

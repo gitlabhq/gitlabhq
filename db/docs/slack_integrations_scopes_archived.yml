@@ -1,0 +1,12 @@
+---
+table_name: slack_integrations_scopes_archived
+classes:
+- Gitlab::BackgroundMigration::BackfillSlackIntegrationsScopesShardingKey
+feature_categories:
+- integrations
+description: Temporary archive table for duplicate slack_integrations_scopes during
+  sharding key backfill migration.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217221
+milestone: '18.8'
+gitlab_schema: gitlab_main_org
+table_size: small

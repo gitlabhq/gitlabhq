@@ -10,7 +10,7 @@ import {
   GlButton,
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import { localeDateFormat } from '~/lib/utils/datetime_utility';
+import { timeFormattedAsDate, timeFormattedAsDateFull } from '../utils';
 import { TABLE_FIELDS } from '../constants';
 import PersonalAccessTokenStatusBadge from './personal_access_token_status_badge.vue';
 
@@ -51,32 +51,16 @@ export default {
       this.$emit('revoke', token);
     },
     expiryDate(token) {
-      if (token.expiresAt) {
-        return localeDateFormat.asDate.format(new Date(token.expiresAt));
-      }
-
-      return this.$options.i18n.emptyDateField;
+      return timeFormattedAsDate(token.expiresAt);
     },
     expiryTimestamp(token) {
-      if (token.expiresAt) {
-        return localeDateFormat.asDateTimeFull.format(new Date(token.expiresAt));
-      }
-
-      return this.$options.i18n.emptyDateField;
+      return timeFormattedAsDateFull(token.expiresAt);
     },
     lastUsedDate(token) {
-      if (token.lastUsedAt) {
-        return localeDateFormat.asDate.format(new Date(token.lastUsedAt));
-      }
-
-      return this.$options.i18n.emptyDateField;
+      return timeFormattedAsDate(token.lastUsedAt);
     },
     lastUsedTimestamp(token) {
-      if (token.lastUsedAt) {
-        return localeDateFormat.asDateTimeFull.format(new Date(token.lastUsedAt));
-      }
-
-      return this.$options.i18n.emptyDateField;
+      return timeFormattedAsDateFull(token.lastUsedAt);
     },
   },
   i18n: {
@@ -88,7 +72,6 @@ export default {
     viewDetails: s__('AccessTokens|View details'),
     rotate: s__('AccessTokens|Rotate'),
     revoke: s__('AccessTokens|Revoke'),
-    emptyDateField: __('Never'),
   },
   TABLE_FIELDS,
 };
@@ -126,7 +109,7 @@ export default {
       <div
         class="gl-flex gl-flex-wrap gl-items-center gl-justify-end gl-gap-3 @md/panel:gl-justify-start"
       >
-        <div v-gl-tooltip.d0="expiryTimestamp(item)" data-testid="token-expiry">
+        <div v-gl-tooltip="expiryTimestamp(item)" data-testid="token-expiry">
           <gl-icon name="expire" class="gl-mr-2" />
           <gl-sprintf :message="$options.i18n.expires">
             <template #date>{{ expiryDate(item) }}</template>

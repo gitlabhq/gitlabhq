@@ -93,7 +93,7 @@ module API
                 get urgency: :low do
                   not_found!('Package') unless package
 
-                  revision = package.conan_recipe_revisions.order_by_id_desc.first
+                  revision = package.conan_recipe_revisions.default.order_by_id_desc.first
 
                   not_found!('Revision') unless revision.present?
 
@@ -308,7 +308,7 @@ module API
                       get urgency: :low do
                         not_found!('Package') unless package
 
-                        revision = package_revisions.order_by_id_desc.first
+                        revision = package_revisions.default.order_by_id_desc.first
 
                         not_found!('Revision') unless revision.present?
 

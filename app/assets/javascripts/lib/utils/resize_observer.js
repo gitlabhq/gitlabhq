@@ -1,5 +1,5 @@
+import { getScrollingElement } from '~/lib/utils/panels';
 import { contentTop } from './common_utils';
-import { getScrollingElement } from './scroll_utils';
 
 /**
  * Watches for change in size of a container element

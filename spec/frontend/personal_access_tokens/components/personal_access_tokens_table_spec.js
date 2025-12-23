@@ -9,32 +9,10 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import PersonalAccessTokensTable from '~/personal_access_tokens/components/personal_access_tokens_table.vue';
 import PersonalAccessTokenStatusBadge from '~/personal_access_tokens/components/personal_access_token_status_badge.vue';
+import { mockTokens } from '../mock_data';
 
 describe('PersonalAccessTokensTable', () => {
   let wrapper;
-
-  const mockTokens = [
-    {
-      id: 'gid://gitlab/PersonalAccessToken/1',
-      name: 'Token 1',
-      description: 'Test token 1',
-      active: true,
-      revoked: false,
-      expiresAt: '2025-12-31',
-      lastUsedAt: '2025-11-01T10:30:00Z',
-      createdAt: '2025-01-01T00:00:00Z',
-    },
-    {
-      id: 'gid://gitlab/PersonalAccessToken/2',
-      name: 'Token 2',
-      description: null,
-      active: false,
-      revoked: true,
-      expiresAt: null,
-      lastUsedAt: null,
-      createdAt: '2025-02-01T00:00:00Z',
-    },
-  ];
 
   const createComponent = ({
     tokens = mockTokens,
@@ -170,7 +148,7 @@ describe('PersonalAccessTokensTable', () => {
 
     it('displays last used date tooltip', () => {
       expect(getBinding(findTokenLastUsedDates().at(0).element, 'gl-tooltip').value).toBe(
-        'November 1, 2025 at 10:30:00 AM GMT',
+        'November 1, 2025 at 10:00:00 AM GMT',
       );
       expect(getBinding(findTokenLastUsedDates().at(1).element, 'gl-tooltip').value).toBe('Never');
     });

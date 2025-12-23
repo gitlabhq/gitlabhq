@@ -4023,6 +4023,9 @@ msgstr ""
 msgid "AccessTokens|Broad-access token"
 msgstr ""
 
+msgid "AccessTokens|Consider reducing scope"
+msgstr ""
+
 msgid "AccessTokens|Copy feed token"
 msgstr ""
 
@@ -4140,6 +4143,9 @@ msgstr ""
 msgid "AccessTokens|Group and project access"
 msgstr ""
 
+msgid "AccessTokens|Group and project permissions"
+msgstr ""
+
 msgid "AccessTokens|How do I use DPoP?"
 msgstr ""
 
@@ -4155,6 +4161,9 @@ msgid "AccessTokens|Inactive"
 msgstr ""
 
 msgid "AccessTokens|Incoming email token"
+msgstr ""
+
+msgid "AccessTokens|Instance permissions"
 msgstr ""
 
 msgid "AccessTokens|Instance token prefix"
@@ -4209,6 +4218,9 @@ msgid "AccessTokens|Not eligible to rotate tokens with permissions not held by t
 msgstr ""
 
 msgid "AccessTokens|Only personal projects"
+msgstr ""
+
+msgid "AccessTokens|Only specific group or projects that I'm a member of"
 msgstr ""
 
 msgid "AccessTokens|Only specific groups or projects that I'm a member of"
@@ -4322,6 +4334,9 @@ msgstr ""
 msgid "AccessTokens|Tokens expiring in 2 weeks"
 msgstr ""
 
+msgid "AccessTokens|Type"
+msgstr ""
+
 msgid "AccessTokens|Usage"
 msgstr ""
 
@@ -4329,6 +4344,9 @@ msgid "AccessTokens|Use DPoP to protect your REST or GraphQL API access when usi
 msgstr ""
 
 msgid "AccessTokens|Use Demonstrating Proof of Possession (DPoP)"
+msgstr ""
+
+msgid "AccessTokens|User permissions"
 msgstr ""
 
 msgid "AccessTokens|View details"

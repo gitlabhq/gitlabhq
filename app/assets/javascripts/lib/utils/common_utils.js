@@ -7,12 +7,16 @@ import { isFunction, escape, partial, toLower } from 'lodash';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import Cookies from '~/lib/utils/cookies';
 import { SCOPED_LABEL_DELIMITER } from '~/sidebar/components/labels/labels_select_widget/constants';
-import { DEFAULT_CI_CONFIG_PATH, CI_CONFIG_PATH_EXTENSION } from '~/lib/utils/constants';
+import {
+  CI_CONFIG_PATH_EXTENSION,
+  DEFAULT_CI_CONFIG_PATH,
+  NO_SCROLL_TO_HASH_CLASS,
+} from '~/lib/utils/constants';
+import { getCoveringElement, observeIntersectionOnce } from '~/lib/utils/viewport';
+import { scrollPastCoveringElements } from '~/lib/utils/sticky';
 import { convertToCamelCase, convertToSnakeCase } from './text_utility';
 import { isObject } from './type_utility';
 import { getLocationHash } from './url_utility';
-
-export const NO_SCROLL_TO_HASH_CLASS = 'js-no-scroll-to-hash';
 
 export const getPagePath = (index = 0) => {
   const { page = '' } = document.body.dataset;
@@ -61,18 +65,7 @@ export const disableButtonIfEmptyField = (fieldSelector, buttonSelector, eventNa
   });
 };
 
-/**
- * Return the given element's offset height, or 0 if the element doesn't exist.
- * Probably not useful outside of handleLocationHash.
- *
- * @param {HTMLElement} element The element to measure.
- * @returns {number} The element's offset height.
- */
-const getElementOffsetHeight = (element) => element?.offsetHeight ?? 0;
-
-// automatically adjust scroll position for hash urls taking the height of the navbar into account
-// https://github.com/twitter/bootstrap/issues/1768
-export const handleLocationHash = () => {
+export const handleLocationHash = async () => {
   let hash = getLocationHash();
   if (!hash) return;
 
@@ -81,59 +74,14 @@ export const handleLocationHash = () => {
 
   const target = document.getElementById(hash) || document.getElementById(`user-content-${hash}`);
 
-  // Allow targets to opt out of scroll behavior
-  if (target?.classList.contains(NO_SCROLL_TO_HASH_CLASS)) return;
+  if (!target || target.classList.contains(NO_SCROLL_TO_HASH_CLASS)) return;
 
-  const fixedTabs = document.querySelector('.js-tabs-affix');
-  const fixedDiffStats = document.querySelector('.js-diff-files-changed');
-  const headerLoggedOut = document.querySelector('.header-logged-out');
-  const fixedTopBar = document.querySelector('.top-bar-fixed');
-  const performanceBar = document.querySelector('#js-peek');
-  const topPadding = 8;
-  const diffFileHeader = document.querySelector('.js-file-title');
-  const getFixedIssuableTitle = () => document.querySelector('.issue-sticky-header');
-  const getMRStickyHeader = () => document.querySelector('.merge-request-sticky-header');
-  const isIssuePage = isInIssuePage();
-  const isEpicPage = isInEpicPage();
-  const isWorkItemPage = isInWorkItemPage();
+  const { isIntersecting } = await observeIntersectionOnce(target);
+  const covered = await getCoveringElement(target);
+  if (isIntersecting && !covered) return;
 
-  let adjustment = 0;
-  let fixedIssuableTitleOffset = 0;
-
-  adjustment -= getElementOffsetHeight(headerLoggedOut);
-  adjustment -= getElementOffsetHeight(fixedTabs);
-  adjustment -= getElementOffsetHeight(fixedDiffStats);
-  adjustment -= getElementOffsetHeight(fixedTopBar);
-  adjustment -= getElementOffsetHeight(performanceBar);
-  adjustment -= getElementOffsetHeight(diffFileHeader);
-
-  if (isIssuePage) {
-    adjustment -= topPadding;
-    fixedIssuableTitleOffset = getElementOffsetHeight(getFixedIssuableTitle());
-    adjustment -= fixedIssuableTitleOffset;
-  }
-
-  if (isInMRPage()) {
-    adjustment -= topPadding;
-    adjustment -= getElementOffsetHeight(getMRStickyHeader()) - getElementOffsetHeight(fixedTabs);
-  }
-
-  if (target?.scrollIntoView) {
-    target.scrollIntoView(true);
-  }
-
-  setTimeout(() => {
-    window.scrollBy(0, adjustment);
-  });
-
-  if (isIssuePage || isEpicPage || isWorkItemPage) {
-    if (fixedIssuableTitleOffset === 0) {
-      setTimeout(() => {
-        fixedIssuableTitleOffset = -1 * getElementOffsetHeight(getFixedIssuableTitle());
-        window.scrollBy(0, fixedIssuableTitleOffset);
-      }, 200);
-    }
-  }
+  target.scrollIntoView(true);
+  await scrollPastCoveringElements(target);
 };
 
 // Check if element scrolled into viewport from above or below

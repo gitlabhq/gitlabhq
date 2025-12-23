@@ -8,9 +8,11 @@ import { createAlert } from '~/alert';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import PersonalAccessTokensApp from '~/personal_access_tokens/components/app.vue';
 import PersonalAccessTokensTable from '~/personal_access_tokens/components/personal_access_tokens_table.vue';
+import PersonalAccessTokenDrawer from '~/personal_access_tokens/components/personal_access_token_drawer.vue';
 import CreatePersonalAccessTokenButton from '~/personal_access_tokens/components/create_personal_access_token_button.vue';
 import getUserPersonalAccessTokens from '~/personal_access_tokens/graphql/get_user_personal_access_tokens.query.graphql';
 import { DEFAULT_SORT, PAGE_SIZE } from '~/personal_access_tokens/constants';
+import { mockTokens, mockPageInfo, mockQueryResponse } from '../mock_data';
 
 jest.mock('~/alert');
 
@@ -19,51 +21,6 @@ Vue.use(VueApollo);
 describe('PersonalAccessTokensApp', () => {
   let wrapper;
   let mockApollo;
-
-  const mockTokens = [
-    {
-      id: 'gid://gitlab/PersonalAccessToken/1',
-      name: 'Token 1',
-      description: 'Test token 1',
-      active: true,
-      revoked: false,
-      expiresAt: '2025-12-31',
-      lastUsedAt: '2025-11-01',
-      createdAt: '2025-01-01',
-      granular: true,
-    },
-    {
-      id: 'gid://gitlab/PersonalAccessToken/2',
-      name: 'Token 2',
-      description: 'Test token 2',
-      active: false,
-      revoked: true,
-      expiresAt: '2025-06-30',
-      lastUsedAt: null,
-      createdAt: '2025-02-01',
-      granular: false,
-    },
-  ];
-
-  const mockPageInfo = {
-    hasNextPage: true,
-    hasPreviousPage: false,
-    startCursor: 'eyJpZCI6IjUxIn0',
-    endCursor: 'eyJpZCI6IjM1In0',
-    __typename: 'PageInfo',
-  };
-
-  const mockQueryResponse = {
-    data: {
-      user: {
-        id: 'gid://gitlab/User/123',
-        personalAccessTokens: {
-          nodes: mockTokens,
-          pageInfo: mockPageInfo,
-        },
-      },
-    },
-  };
 
   const mockQueryHandler = jest.fn().mockResolvedValue(mockQueryResponse);
 
@@ -85,6 +42,7 @@ describe('PersonalAccessTokensApp', () => {
   const findTable = () => wrapper.findComponent(PersonalAccessTokensTable);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findCreateButton = () => wrapper.findComponent(CreatePersonalAccessTokenButton);
+  const findDrawer = () => wrapper.findComponent(PersonalAccessTokenDrawer);
 
   beforeEach(() => {
     createComponent();
@@ -282,6 +240,29 @@ describe('PersonalAccessTokensApp', () => {
         last: PAGE_SIZE,
         before: 'cursor456',
       });
+    });
+  });
+
+  describe('drawer integration', () => {
+    it('opens drawer when table emits select event', async () => {
+      await waitForPromises();
+
+      findTable().vm.$emit('select', mockTokens[0]);
+      await nextTick();
+
+      expect(findDrawer().props('token')).toBe(mockTokens[0]);
+    });
+
+    it('closes drawer when drawer emits close event', async () => {
+      await waitForPromises();
+
+      findTable().vm.$emit('select', mockTokens[0]);
+      await nextTick();
+
+      findDrawer().vm.$emit('close');
+      await nextTick();
+
+      expect(findDrawer().props('token')).toBe(null);
     });
   });
 });

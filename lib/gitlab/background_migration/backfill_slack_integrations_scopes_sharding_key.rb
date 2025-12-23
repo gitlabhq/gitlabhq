@@ -9,6 +9,7 @@ module Gitlab
       def perform
         each_sub_batch do |sub_batch|
           update_batch(sub_batch)
+          delete_duplicates(sub_batch)
         end
       end
 
@@ -20,6 +21,8 @@ module Gitlab
             #{sub_batch.select(:id, :slack_integration_id, :slack_api_scope_id).limit(sub_batch_size).to_sql}
           ), required_scopes AS MATERIALIZED (
             SELECT "relation"."id",
+              "relation"."slack_integration_id",
+              "relation"."slack_api_scope_id",
               "integrations"."project_id",
               "integrations"."group_id",
               "integrations"."organization_id",
@@ -35,6 +38,7 @@ module Gitlab
             LEFT JOIN "namespaces" ON "namespaces"."id" = "integrations"."group_id"
             LEFT JOIN "projects" ON "projects"."id" = "integrations"."project_id"
             JOIN "slack_api_scopes" ON "slack_api_scopes"."id" = "relation"."slack_api_scope_id"
+            LIMIT #{sub_batch_size}
           ), upserted_api_scopes AS MATERIALIZED (
             INSERT INTO "slack_api_scopes" ("organization_id", "name")
             SELECT DISTINCT ON ("computed_organization_id", "name") "computed_organization_id", "name"
@@ -43,17 +47,48 @@ module Gitlab
               DO UPDATE SET "name" = EXCLUDED."name"
             RETURNING *
           )
-          UPDATE "slack_integrations_scopes"
-          SET "project_id" = "required_scopes"."project_id",
-            "group_id" = "required_scopes"."group_id",
-            "organization_id" = "required_scopes"."organization_id",
-            "slack_api_scope_id" = "upserted_api_scopes"."id"
+          INSERT INTO "slack_integrations_scopes"
+            ("slack_integration_id", "slack_api_scope_id", "project_id", "group_id", "organization_id")
+          SELECT DISTINCT ON ("slack_integration_id", "upserted_api_scopes"."id")
+                 "slack_integration_id",
+                 "upserted_api_scopes"."id",
+                 "project_id",
+                 "group_id",
+                 "required_scopes"."organization_id"
           FROM "required_scopes"
           JOIN "upserted_api_scopes"
             ON "upserted_api_scopes"."organization_id" = "required_scopes"."computed_organization_id"
             AND "upserted_api_scopes"."name" = "required_scopes"."name"
-          WHERE "slack_integrations_scopes"."id" = "required_scopes"."id"
+          ON CONFLICT ("slack_integration_id", "slack_api_scope_id")
+           DO UPDATE SET "project_id" = EXCLUDED."project_id",
+            "group_id" = EXCLUDED."group_id",
+            "organization_id" = EXCLUDED."organization_id"
         SQL
+      end
+
+      def delete_duplicates(sub_batch)
+        connection.execute(<<~SQL)
+          WITH relation AS MATERIALIZED (
+            #{sub_batch.limit(sub_batch_size).to_sql}
+          ), with_null_sharding_key AS MATERIALIZED (
+            SELECT "id" FROM "relation"
+            WHERE num_nonnulls("project_id", "group_id", "organization_id") = 0
+            LIMIT #{sub_batch_size}
+          ), deleted_rows AS MATERIALIZED (
+            DELETE FROM "slack_integrations_scopes"
+            WHERE "id" IN (SELECT "id" FROM "with_null_sharding_key")
+            RETURNING #{columns_for_archive}
+          )
+          INSERT INTO "slack_integrations_scopes_archived" (#{columns_for_archive})
+          SELECT #{columns_for_archive}
+          FROM deleted_rows
+        SQL
+      end
+
+      def columns_for_archive
+        @columns_for_archive ||= %w[
+          id slack_integration_id slack_api_scope_id project_id group_id organization_id
+        ].join(', ')
       end
     end
   end

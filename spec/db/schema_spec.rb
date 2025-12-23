@@ -134,6 +134,9 @@ RSpec.describe 'Database schema',
       namespace_descendants: %w[namespace_id],
       notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id discussion_id],
       award_emoji_archived: %w[user_id awardable_id namespace_id organization_id], # temp table
+      slack_integrations_scopes_archived: %w[
+        slack_api_scope_id slack_integration_id project_id group_id organization_id
+      ], # Temp table
       notification_settings: %w[source_id],
       oauth_access_grants: %w[resource_owner_id application_id],
       oauth_access_grant_archived_records: %w[resource_owner_id application_id],

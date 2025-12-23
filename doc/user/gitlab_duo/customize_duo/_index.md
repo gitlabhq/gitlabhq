@@ -13,7 +13,7 @@ You can customize GitLab Duo to match your workflow, coding standards, or projec
 |-----------|------------|--------------|
 | [Use custom rules](custom_rules.md) to provide instructions. | - GitLab Duo Chat | - Apply personal preferences.<br>- Enforce team standards. |
 | [Create an AGENTS.md file](agents_md.md) to provide instructions. | - GitLab Duo Chat<br>- Flows<br>- Other non-GitLab AI coding tools | - Account for project-specific context.<br>- Organize a monorepo.<br>- Enforce directory-specific conventions. |
-| [Create MR review instructions](../../project/merge_requests/duo_in_merge_requests.md#customize-review-instructions-for-gitlab-duo) to ensure consistent and specific code review standards in your project. | - GitLab Duo Code Review | Apply:<br>- Language-specific review rules.<br>- Security standards.<br>- Code quality requirements.<br>- File-specific guidelines. |
+| [Create MR review instructions](../../project/merge_requests/duo_in_merge_requests.md#customize-review-instructions-for-gitlab-duo) to ensure consistent and specific code review standards in your project. | - GitLab Duo Code Review (Classic)<br>- Code Review Flow | Apply:<br>- Language-specific review rules.<br>- Security standards.<br>- Code quality requirements.<br>- File-specific guidelines. |
 
 ## Best practices
 
