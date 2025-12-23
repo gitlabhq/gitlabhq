@@ -80,6 +80,13 @@ To view a history of flows you've run in your project:
 
 - On the **Flows** tab, scroll down and view **Recent agent sessions**.
 
+## Customize flows with `AGENTS.md`
+
+Use `AGENTS.md` files to provide context and instructions for GitLab Duo to follow while executing
+foundational and custom flows.
+
+For more information, see [`AGENTS.md` customization files](../../gitlab_duo/customize_duo/agents_md.md).
+
 ## Give feedback
 
 Flows are part of GitLab AI-powered development platform. Your feedback helps us improve these workflows.

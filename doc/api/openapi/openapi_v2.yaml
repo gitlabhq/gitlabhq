@@ -67,6 +67,8 @@ tags:
   description: Operations about pipelines
 - name: pipeline_schedules
   description: Operations about pipeline_schedules
+- name: ci_triggers
+  description: Operations about ci_triggers
 - name: cargo_packages
   description: Operations about cargo_packages
 - name: commits
@@ -13407,7 +13409,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - ci_triggers
       operationId: postApiV4ProjectsId(refRef)triggerPipeline
   "/api/v4/projects/{id}/triggers":
     get:
@@ -13451,7 +13453,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - ci_triggers
       operationId: getApiV4ProjectsIdTriggers
     post:
       description: Create a trigger token
@@ -13485,7 +13487,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - ci_triggers
       operationId: postApiV4ProjectsIdTriggers
   "/api/v4/projects/{id}/triggers/{trigger_id}":
     get:
@@ -13518,7 +13520,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - ci_triggers
       operationId: getApiV4ProjectsIdTriggersTriggerId
     put:
       description: Update a trigger token
@@ -13558,7 +13560,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - ci_triggers
       operationId: putApiV4ProjectsIdTriggersTriggerId
     delete:
       description: Delete a trigger token
@@ -13590,7 +13592,7 @@ paths:
         '412':
           description: Precondition Failed
       tags:
-      - projects
+      - ci_triggers
       operationId: deleteApiV4ProjectsIdTriggersTriggerId
   "/api/v4/projects/{id}/variables":
     get:

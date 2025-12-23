@@ -52,7 +52,7 @@ migrations from:
 - [GitLab by direct transfer](../group/import/_index.md)
 - [GitHub](../project/import/github.md)
 - [Bitbucket Server](bitbucket_server.md)
-- [Gitea](../project/import/gitea.md)
+- [Gitea](gitea.md)
 
 ## Post-migration mapping workflow
 
@@ -128,7 +128,7 @@ Placeholder users do not count towards license limits.
 
 A placeholder user is created for each user on the source instance, except in the following scenarios:
 
-- You're importing a project from [Gitea](../project/import/gitea.md), and the user was deleted on Gitea before the import.
+- You're importing a project from [Gitea](gitea.md), and the user was deleted on Gitea before the import.
   Contributions from these users are mapped to the user who imported the project, not to a placeholder user.
 - You have exceeded your [placeholder user limit](#placeholder-user-limits). Contributions from any new users after exceeding your limit are
   mapped to a single non-functional user called `Import User`.

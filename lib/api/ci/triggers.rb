@@ -16,6 +16,7 @@ module API
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Trigger a GitLab project pipeline' do
+          tags ['ci_triggers']
           success code: 201, model: Entities::Ci::Pipeline
           failure [
             { code: 400, message: 'Bad request' },
@@ -58,6 +59,7 @@ module API
         end
 
         desc 'Get trigger tokens list' do
+          tags ['ci_triggers']
           success code: 200, model: Entities::Trigger
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -79,6 +81,7 @@ module API
           present paginate(triggers), with: Entities::Trigger, current_user: current_user
         end
         desc 'Get specific trigger token of a project' do
+          tags ['ci_triggers']
           success code: 200, model: Entities::Trigger
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -101,6 +104,7 @@ module API
         end
 
         desc 'Create a trigger token' do
+          tags ['ci_triggers']
           success code: 201, model: Entities::Trigger
           failure [
             { code: 400, message: 'Bad request' },
@@ -138,6 +142,7 @@ module API
         end
 
         desc 'Update a trigger token' do
+          tags ['ci_triggers']
           success code: 200, model: Entities::Trigger
           failure [
             { code: 400, message: 'Bad request' },
@@ -174,6 +179,7 @@ module API
         end
 
         desc 'Delete a trigger token' do
+          tags ['ci_triggers']
           success code: 204
           failure [
             { code: 401, message: 'Unauthorized' },

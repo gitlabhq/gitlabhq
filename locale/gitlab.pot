@@ -5136,9 +5136,6 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|Features"
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|GitLab AI vendor model"
-msgstr ""
-
 msgid "AdminAIPoweredFeatures|GitLab Duo Agent Platform"
 msgstr ""
 
