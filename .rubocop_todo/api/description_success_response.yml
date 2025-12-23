@@ -1,6 +1,7 @@
 ---
 API/DescriptionSuccessResponse:
   Exclude:
+    - 'ee/lib/api/vulnerability_exports.rb'
     - 'ee/lib/ee/api/groups.rb'
     - 'ee/lib/ee/api/members.rb'
     - 'ee/lib/ee/api/namespaces.rb'
@@ -57,9 +58,11 @@ API/DescriptionSuccessResponse:
     - 'lib/api/ml/mlflow/runs.rb'
     - 'lib/api/ml/mlflow_artifacts/artifacts.rb'
     - 'lib/api/ml/mlflow_artifacts/entrypoint.rb'
+    - 'lib/api/pages_domains.rb'
     - 'lib/api/project_import.rb'
     - 'lib/api/project_milestones.rb'
     - 'lib/api/releases.rb'
+    - 'lib/api/repositories.rb'
     - 'lib/api/rpm_project_packages.rb'
     - 'lib/api/rubygem_packages.rb'
     - 'lib/api/snippets.rb'

@@ -247,7 +247,8 @@ module Gitlab
             'references' => [
               {
                 'table' => 'container_repository_states',
-                'column' => 'container_repository_id'
+                'column' => 'container_repository_id',
+                'delete_orphaned' => true
               }
             ]
           }
@@ -421,6 +422,7 @@ module Gitlab
           ref_column = ref['column']
           column_type = ref['type']
           deduplication_column = ref['deduplication_column']
+          delete_orphaned = ref['delete_orphaned']
 
           unless table_exists?(ref_table)
             logger.info("Reference table '#{ref_table}' does not exist in database #{database_name}. Skipping.")
@@ -429,10 +431,28 @@ module Gitlab
 
           if column_type == 'array'
             handle_array_references(ref_table, ref_column, id_mapping)
+          elsif delete_orphaned
+            delete_orphaned_references(ref_table, ref_column, id_mapping)
           elsif deduplication_column.present?
             handle_duplicate_references(ref_table, ref_column, deduplication_column, id_mapping)
           else
             update_references(ref_table, ref_column, id_mapping)
+          end
+        end
+      end
+
+      def delete_orphaned_references(ref_table, ref_column, id_mapping)
+        logger.info("Deleting orphaned references in '#{ref_table}' for column '#{ref_column}'...")
+
+        id_mapping.keys.each_slice(BATCH_SIZE) do |bad_ids_batch|
+          bad_ids_quoted = bad_ids_batch.map { |id| connection.quote(id) }.join(',')
+
+          sql = "DELETE FROM #{connection.quote_table_name(ref_table)} WHERE " \
+            "#{connection.quote_column_name(ref_column)} IN (#{bad_ids_quoted})"
+
+          execute_local(sql) do
+            deleted_count = connection.delete(sql)
+            logger.info("Deleted #{deleted_count} orphaned references in '#{ref_table}'")
           end
         end
       end

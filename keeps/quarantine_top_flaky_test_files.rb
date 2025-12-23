@@ -4,9 +4,14 @@ require_relative 'helpers/gitlab_api_helper'
 
 module Keeps
   class QuarantineTopFlakyTestFiles < ::Gitlab::Housekeeper::Keep
-    TOP_FLAKY_TEST_FILES_PROJECT_ID = 69718754
+    TOP_FLAKY_TEST_FILES_PROJECT_ID = 69718754 # gitlab-org/quality/test-failure-issues
     TOP_FLAKY_TEST_FILES_LABEL = 'automation:top-flaky-test-file'
-    QUERY_URL = "https://gitlab.com/api/v4/projects/#{TOP_FLAKY_TEST_FILES_PROJECT_ID}/issues/?order_by=updated_at&state=opened&labels[]=#{TOP_FLAKY_TEST_FILES_LABEL}&per_page=20".freeze
+    TOP_FLAKY_TEST_EXCLUDE_LABEL = 'flaky-test::false-positive'
+    QUERY_URL = "https://gitlab.com/api/v4/projects/#{TOP_FLAKY_TEST_FILES_PROJECT_ID}/issues/?order_by=updated_at&state=opened&labels[]=#{TOP_FLAKY_TEST_FILES_LABEL}&not[labels][]=#{TOP_FLAKY_TEST_EXCLUDE_LABEL}&per_page=20".freeze
+    SHARED_EXAMPLES_INCLUSION_PATTERNS = %w[
+      it_behaves_like
+      include_examples
+    ].freeze
 
     def each_identified_change
       each_top_flaky_test_file(QUERY_URL) do |flaky_test_file_issue|
@@ -28,6 +33,12 @@ module Keeps
 
     def prepare_change(change, flaky_test_file_issue)
       filename = withdraw_filename_from_issue(flaky_test_file_issue)
+      failing_tests = flaky_test_file_issue['description'].scan(/#{filename}:\d+/)
+
+      return if failing_tests.empty?
+
+      # Handle cases when tests are in qa/qa directory
+      failing_tests = failing_tests.map { |test| test.start_with?('qa/') ? "qa/#{test}" : test }
 
       if filename.start_with?('qa/')
         absolute_filepath = File.expand_path("../qa/#{filename}", __dir__)
@@ -37,7 +48,8 @@ module Keeps
         relative_file_path = filename
       end
 
-      new_file_content = update_file_content(absolute_filepath, relative_file_path, flaky_test_file_issue)
+      new_file_content = update_file_content_per_test(absolute_filepath, flaky_test_file_issue, failing_tests)
+
       # Return to skip MR creation if we couldn't generate new_file_content
       return unless new_file_content
 
@@ -60,8 +72,8 @@ module Keeps
 
         More details about the statistics for this test file can be found in the corresponding issue: #{flaky_test_file_issue['web_url']}.
 
-        This MR quarantines the test file. Stage group that owns this tests should review, update if needed \
-        and merge this MR to quarantine the test file unless the tests can be fixed in timely manner.
+        This MR quarantines affected tests in the test file. Stage group that owns this tests should review, update if needed \
+        and merge this MR to quarantine the tests unless the tests can be fixed in timely manner.
 
         ### References
 
@@ -93,32 +105,78 @@ module Keeps
       @gitlab_api_helper ||= ::Keeps::Helpers::GitlabApiHelper.new
     end
 
-    def update_file_content(absolute_filepath, relative_file_path, flaky_test_file_issue)
+    def update_file_content_per_test(absolute_filepath, flaky_test_file_issue, failing_tests)
       full_file_content = File.read(absolute_filepath)
+      file_lines = full_file_content.lines
 
-      # As some specs declare methadata in paranthesis we need different ways
-      # of matching metadata and adding quarantine tags
-      match = full_file_content.match(/RSpec\.describe (?<description_and_metadata>.*?) do/m)
+      failing_tests.each do |test|
+        puts "INFO: Processing test: #{test}"
 
-      if match
-        new_file_content = full_file_content.gsub(match[:description_and_metadata],
-          "#{match[:description_and_metadata]},\n" \
-            "quarantine: { issue: '#{flaky_test_file_issue['web_url']}', type: 'flaky' }")
-      else
-        match = full_file_content.match(/RSpec\.describe\((?<description_and_metadata>.*?)\) do/m)
+        test_line = test.split(':').last.to_i - 1 # we need -1 as we use this as index in file_lines array
 
-        # Return to skip MR creation if we couldn't match RSpec describe block
-        unless match
-          puts "ERROR: Can't find the RSpec describe block in file #{relative_file_path}"
-          return
+        # Skip test if identified test_line is invalid
+        if test_line >= file_lines.size || test_line < 0
+          puts "WARN: Invalid line number #{test_line + 1} for file. Skipping test #{test}"
+          next
         end
 
-        new_file_content = full_file_content.gsub(match[:description_and_metadata],
-          "#{match[:description_and_metadata].rstrip},\n" \
-            "quarantine: { issue: '#{flaky_test_file_issue['web_url']}', type: 'flaky' }\n")
+        if SHARED_EXAMPLES_INCLUSION_PATTERNS.any? { |pattern| file_lines[test_line].include?(pattern) }
+          file_lines[test_line] = add_quarantine_for_shared_example(file_lines, test_line, flaky_test_file_issue)
+        elsif file_lines[test_line].strip.start_with?("it {")
+          file_lines[test_line] = add_quarantine_for_it_example_without_name(
+            file_lines,
+            test_line,
+            flaky_test_file_issue
+          )
+        elsif file_lines[test_line].strip.start_with?("it")
+          line = find_quarantine_line_for_it_example(file_lines, test_line)
+
+          next unless line
+
+          file_lines[line] = add_quarantine_for_it_example(file_lines, line, flaky_test_file_issue)
+        else
+          puts "WARN: Can not auto-quarantine #{test}"
+        end
+
+        puts "INFO: File updated to quarantine #{test}"
       end
 
-      new_file_content
+      file_lines.join
+    end
+
+    def add_quarantine_for_shared_example(file_lines, line, flaky_test_file_issue)
+      # To avoid rubocop exception RSpec/RepeatedExampleGroupBody
+      # use line number in quarantine context name to make it uniq within test file
+      file_lines[line].gsub(
+        /(it_behaves_like|include_examples) .+/,
+        "context 'with quarantine test line was #{line}',\n" \
+          "quarantine: { issue: '#{flaky_test_file_issue['web_url']}', type: 'flaky' } do\n  \\0\nend"
+      )
+    end
+
+    def add_quarantine_for_it_example(file_lines, line, flaky_test_file_issue)
+      file_lines[line].gsub(
+        " do\n",
+        ",\nquarantine: { issue: '#{flaky_test_file_issue['web_url']}', type: 'flaky' } do\n"
+      )
+    end
+
+    def add_quarantine_for_it_example_without_name(file_lines, line, flaky_test_file_issue)
+      file_lines[line].gsub(
+        /it \{ (.+) \}/,
+        "it quarantine: { issue: '#{flaky_test_file_issue['web_url']}', type: 'flaky' } do\n  \\1\nend"
+      )
+    end
+
+    def find_quarantine_line_for_it_example(file_lines, test_line, check_lines: 5)
+      check_lines.times do
+        return if file_lines[test_line].include?("quarantine")
+        return test_line if file_lines[test_line].ends_with?("do\n")
+
+        test_line += 1
+      end
+      puts "WARN: Can not find line to add quarantine"
+      nil
     end
 
     def valid_flaky_issue?(flaky_test_file_issue)

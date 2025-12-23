@@ -58,10 +58,16 @@ module Types
           null: false,
           description: 'URL to auto subscribe users to the view.'
 
+        field :subscribed,
+          ::GraphQL::Types::Boolean,
+          null: false,
+          description: 'Whether the current user is subscribed to the saved view.'
+
         field :work_items,
           ::Types::WorkItemType.connection_type,
           null: true,
-          experiment: { milestone: '18.7' },
+          experiment: { milestone: '18.8' },
+          resolver: ::Resolvers::WorkItems::SavedViews::WorkItemsResolver,
           description: 'Work items associated with the saved view.'
 
         def filters
@@ -70,6 +76,10 @@ module Types
 
         def filter_warnings
           []
+        end
+
+        def subscribed
+          false
         end
 
         def share_url

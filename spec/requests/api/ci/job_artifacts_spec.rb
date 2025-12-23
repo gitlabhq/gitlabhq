@@ -913,6 +913,214 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
     end
   end
 
+  describe 'GET /projects/:id/jobs/:job_id/artifacts/tree' do
+    let_it_be(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
+
+    def get_tree(params = {})
+      get api("/projects/#{project.id}/jobs/#{job.id}/artifacts/tree", api_user), params: params
+    end
+
+    context 'when user is anonymous' do
+      let(:api_user) { nil }
+
+      context 'when project is public with public builds' do
+        before do
+          project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+          project.update_column(:public_builds, true)
+        end
+
+        it 'returns artifact tree entries' do
+          get_tree
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an(Array)
+        end
+      end
+
+      context 'when project is public with builds access disabled' do
+        before do
+          project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+          project.update_column(:public_builds, false)
+        end
+
+        it 'rejects access' do
+          get_tree
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when project is private' do
+        it 'returns not found' do
+          get_tree
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when user is authorized' do
+      it 'returns artifact tree entries' do
+        get_tree
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an(Array)
+      end
+
+      it 'returns entries with correct attributes for files' do
+        get_tree
+
+        file_entries = json_response.select { |e| e['type'] == 'file' }
+        expect(file_entries).to all(match(
+          'name' => an_instance_of(String),
+          'path' => an_instance_of(String),
+          'type' => 'file',
+          'size' => an_instance_of(Integer),
+          'mode' => an_instance_of(String)
+        ))
+      end
+
+      it 'returns entries with correct attributes for directories' do
+        get_tree
+
+        dir_entries = json_response.select { |e| e['type'] == 'directory' }
+        expect(dir_entries).to all(match(
+          'name' => an_instance_of(String),
+          'path' => an_instance_of(String),
+          'type' => 'directory',
+          'mode' => an_instance_of(String)
+        ))
+      end
+
+      context 'with path parameter' do
+        it 'returns entries for the specified directory' do
+          get_tree(path: 'other_artifacts_0.1.2')
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an(Array)
+          expect(json_response).not_to be_empty
+        end
+
+        it 'returns 404 for non-existent path' do
+          get_tree(path: 'non/existent/path')
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'with recursive parameter' do
+        it 'returns only immediate children when recursive=false' do
+          get_tree(recursive: false)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          # All returned paths should be at root level (no nested paths beyond one level)
+          entry_depths = json_response.map do |entry|
+            entry['path'].count('/') - (entry['type'] == 'directory' ? 1 : 0)
+          end
+          expect(entry_depths).to all(be <= 1)
+        end
+
+        it 'returns all entries recursively when recursive=true' do
+          get_tree(recursive: false)
+          non_recursive_count = json_response.size
+
+          get_tree(recursive: true)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          # Recursive listing should typically have more or equal entries
+          expect(json_response.size).to be >= non_recursive_count
+        end
+      end
+
+      context 'pagination' do
+        let(:per_page) { 1 }
+
+        it 'paginates the results' do
+          get_tree(per_page: per_page)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response.size).to eq(per_page)
+          expect(response.headers['X-Total'].to_i).to be > 1
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :download_job_artifact do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/jobs/#{job.id}/artifacts/tree", personal_access_token: pat)
+        end
+      end
+    end
+
+    context 'when job has no artifacts' do
+      let(:job) { create(:ci_build, :success, pipeline: pipeline) }
+
+      it 'returns 404' do
+        get_tree
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when job has archive but no metadata' do
+      let(:job) { create(:ci_build, :success, :with_archive_artifact, pipeline: pipeline) }
+
+      it 'returns 404 with metadata message' do
+        get_tree
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Artifacts metadata Not Found')
+      end
+    end
+
+    context 'when artifacts are locked' do
+      let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, artifacts_expire_at: 7.days.ago) }
+
+      before do
+        pipeline.artifacts_locked!
+      end
+
+      it 'allows access to expired artifacts' do
+        get_tree
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when using job token' do
+      it_behaves_like 'enforcing job token policies', :read_jobs do
+        before do
+          stub_licensed_features(cross_project_pipelines: true)
+        end
+
+        let(:request) do
+          get api("/projects/#{source_project.id}/jobs/#{job.id}/artifacts/tree"),
+            params: { job_token: target_job.token }
+        end
+      end
+    end
+
+    context 'when project has non-public artifacts' do
+      let(:job) { create(:ci_build, :private_artifacts, :with_private_artifacts_config, pipeline: pipeline) }
+
+      context 'when user is anonymous' do
+        let(:api_user) { nil }
+
+        before do
+          project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+          project.update_column(:public_builds, true)
+        end
+
+        it 'rejects access to artifacts' do
+          get_tree
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+  end
+
   describe 'POST /projects/:id/jobs/:job_id/artifacts/keep' do
     before do
       post api("/projects/#{project.id}/jobs/#{job.id}/artifacts/keep", user)

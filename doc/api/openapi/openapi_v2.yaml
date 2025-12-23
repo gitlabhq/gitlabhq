@@ -81,6 +81,8 @@ tags:
   description: Operations about issue_participants
 - name: metric_images
   description: Operations about metric_images
+- name: merge_request_approvals
+  description: Operations about merge_request_approvals
 - name: pages
   description: Operations about pages
 - name: pages_domains
@@ -91,18 +93,22 @@ tags:
   description: Operations about projects_job_token_scopes
 - name: project_snippets
   description: Operations about project_snippets
+- name: project_protected_branches
+  description: Operations about project_protected_branches
 - name: protected_tags
   description: Operations about protected_tags
 - name: remote_mirrors
   description: Operations about remote_mirrors
+- name: repositories
+  description: Operations about repositories
 - name: attestations
   description: Operations about attestations
 - name: tags
   description: Operations about tags
 - name: batched_background_migrations
   description: Operations about batched_background_migrations
-- name: admin
-  description: Operations about admins
+- name: database_dictionary
+  description: Operations about database_dictionaries
 - name: migrations
   description: Operations about migrations
 - name: broadcast_messages
@@ -147,6 +153,8 @@ tags:
   description: Operations about users
 - name: application
   description: Operations about applications
+- name: application_statistics
+  description: Operations about application_statistics
 - name: imports
   description: Operations about imports
 - name: slack
@@ -11208,6 +11216,77 @@ paths:
       tags:
       - job_artifacts
       operationId: deleteApiV4ProjectsIdJobsJobIdArtifacts
+  "/api/v4/projects/{id}/jobs/{job_id}/artifacts/tree":
+    get:
+      summary: List all files in the artifacts archive
+      description: Lists all files and directories in the artifacts archive without
+        extracting them
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: job_id
+        description: ID of a job
+        type: integer
+        format: int32
+        required: true
+        example: 42
+      - in: query
+        name: path
+        description: Path to browse in the artifacts archive. Defaults to root directory.
+        type: string
+        default: ''
+        required: false
+        example: coverage/reports
+      - in: query
+        name: recursive
+        description: If `true`, return all entries recursively.
+        type: boolean
+        default: false
+        required: false
+      - in: query
+        name: job_token
+        description: CI/CD job token for multi-project pipelines. Premium and Ultimate
+          only.
+        type: string
+        required: false
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
+      responses:
+        '200':
+          description: List all files in the artifacts archive
+          schema:
+            type: array
+            items:
+              "$ref": "#/definitions/API_Entities_Ci_JobArtifactEntry"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      tags:
+      - job_artifacts
+      operationId: getApiV4ProjectsIdJobsJobIdArtifactsTree
   "/api/v4/projects/{id}/jobs/{job_id}/artifacts/*artifact_path":
     get:
       summary: Download a specific file from artifacts archive
@@ -28126,7 +28205,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - merge_request_approvals
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals
     post:
       summary: 'Deprecated in 16.0: Use the merge request approvals API instead. Change
@@ -28160,7 +28239,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_ApprovalState"
       tags:
-      - projects
+      - merge_request_approvals
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals
       deprecated: true
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/approve":
@@ -28196,7 +28275,7 @@ paths:
         '401':
           description: Unauthorized
       tags:
-      - projects
+      - merge_request_approvals
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidApprove
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/unapprove":
     post:
@@ -28226,7 +28305,7 @@ paths:
         '401':
           description: Unauthorized
       tags:
-      - projects
+      - merge_request_approvals
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidUnapprove
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/reset_approvals":
     put:
@@ -28257,6 +28336,7 @@ paths:
           description: Not found
       tags:
       - merge_requests
+      - merge_request_approvals
       operationId: putApiV4ProjectsIdMergeRequestsMergeRequestIidResetApprovals
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/approval_state":
     get:
@@ -28281,7 +28361,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_MergeRequestApprovalState"
       tags:
-      - projects
+      - merge_request_approvals
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidApprovalState
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/versions":
     get:
@@ -29640,7 +29720,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_PagesDomain"
       tags:
-      - projects
+      - pages_domains
       operationId: postApiV4ProjectsIdPagesDomains
   "/api/v4/projects/{id}/pages/domains/{domain}":
     get:
@@ -29665,7 +29745,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_PagesDomain"
       tags:
-      - projects
+      - pages_domains
       operationId: getApiV4ProjectsIdPagesDomainsDomain
     put:
       description: Updates a pages domain
@@ -29694,7 +29774,7 @@ paths:
         '200':
           description: Updates a pages domain
       tags:
-      - projects
+      - pages_domains
       operationId: putApiV4ProjectsIdPagesDomainsDomain
     delete:
       description: Delete a pages domain
@@ -29716,7 +29796,7 @@ paths:
         '204':
           description: Delete a pages domain
       tags:
-      - projects
+      - pages_domains
       operationId: deleteApiV4ProjectsIdPagesDomainsDomain
   "/api/v4/projects/{id}/pages/domains/{domain}/verify":
     put:
@@ -29743,7 +29823,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_PagesDomain"
       tags:
-      - projects
+      - pages_domains
       operationId: putApiV4ProjectsIdPagesDomainsDomainVerify
   "/api/v4/projects/{id}/avatar":
     get:
@@ -36326,7 +36406,7 @@ paths:
         '401':
           description: 401 Unauthorized
       tags:
-      - projects
+      - project_protected_branches
       operationId: getApiV4ProjectsIdProtectedBranches
     post:
       description: Protect a single branch
@@ -36360,7 +36440,7 @@ paths:
         '401':
           description: 401 Unauthorized
       tags:
-      - projects
+      - project_protected_branches
       operationId: postApiV4ProjectsIdProtectedBranches
   "/api/v4/projects/{id}/protected_branches/{name}":
     get:
@@ -36390,7 +36470,7 @@ paths:
         '401':
           description: 401 Unauthorized
       tags:
-      - projects
+      - project_protected_branches
       operationId: getApiV4ProjectsIdProtectedBranchesName
     patch:
       description: Update a protected branch
@@ -36430,7 +36510,7 @@ paths:
         '400':
           description: 400 Bad request
       tags:
-      - projects
+      - project_protected_branches
       operationId: patchApiV4ProjectsIdProtectedBranchesName
     delete:
       description: Unprotect a single branch
@@ -36457,7 +36537,7 @@ paths:
         '401':
           description: 401 Unauthorized
       tags:
-      - projects
+      - project_protected_branches
       operationId: deleteApiV4ProjectsIdProtectedBranchesName
   "/api/v4/projects/{id}/protected_tags":
     get:
@@ -37546,7 +37626,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_TreeObject"
       tags:
-      - projects
+      - repositories
       operationId: getApiV4ProjectsIdRepositoryTree
   "/api/v4/projects/{id}/repository/blobs/{sha}/raw":
     get:
@@ -37570,7 +37650,7 @@ paths:
         '200':
           description: Get raw blob contents from the repository
       tags:
-      - projects
+      - repositories
       operationId: getApiV4ProjectsIdRepositoryBlobsShaRaw
   "/api/v4/projects/{id}/repository/blobs/{sha}":
     get:
@@ -37594,7 +37674,7 @@ paths:
         '200':
           description: Get a blob from the repository
       tags:
-      - projects
+      - repositories
       operationId: getApiV4ProjectsIdRepositoryBlobsSha
   "/api/v4/projects/{id}/repository/archive":
     get:
@@ -37643,7 +37723,7 @@ paths:
         '200':
           description: Get an archive of the repository
       tags:
-      - projects
+      - repositories
       operationId: getApiV4ProjectsIdRepositoryArchive
   "/api/v4/projects/{id}/repository/compare":
     get:
@@ -37695,7 +37775,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Compare"
       tags:
-      - projects
+      - repositories
       operationId: getApiV4ProjectsIdRepositoryCompare
   "/api/v4/projects/{id}/repository/health":
     get:
@@ -37721,7 +37801,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_RepositoryHealth"
       tags:
-      - projects
+      - repositories
       operationId: getApiV4ProjectsIdRepositoryHealth
   "/api/v4/projects/{id}/repository/contributors":
     get:
@@ -37783,7 +37863,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Contributor"
       tags:
-      - projects
+      - repositories
       operationId: getApiV4ProjectsIdRepositoryContributors
   "/api/v4/projects/{id}/repository/merge_base":
     get:
@@ -37812,7 +37892,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Commit"
       tags:
-      - projects
+      - repositories
       operationId: getApiV4ProjectsIdRepositoryMergeBase
   "/api/v4/projects/{id}/repository/changelog":
     get:
@@ -37880,7 +37960,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Changelog"
       tags:
-      - projects
+      - repositories
       operationId: getApiV4ProjectsIdRepositoryChangelog
     post:
       summary: Generates a changelog section for a release and commits it in a changelog
@@ -37907,7 +37987,7 @@ paths:
           description: Generates a changelog section for a release and commits it
             in a changelog file
       tags:
-      - projects
+      - repositories
       operationId: postApiV4ProjectsIdRepositoryChangelog
   "/api/v4/projects/{id}/access_tokens/self/rotate":
     post:
@@ -39688,7 +39768,7 @@ paths:
         '404':
           description: 404 Not found
       tags:
-      - admin
+      - database_dictionary
       operationId: getApiV4AdminDatabasesDatabaseNameDictionaryTablesTableName
   "/api/v4/admin/clusters":
     get:
@@ -45315,7 +45395,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_PagesDomainBasic"
       tags:
-      - pages
+      - pages_domains
       operationId: getApiV4PagesDomains
   "/api/v4/personal_access_tokens/self":
     get:
@@ -46864,7 +46944,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_ApplicationStatistics"
       tags:
-      - application
+      - application_statistics
       operationId: getApiV4ApplicationStatistics
   "/api/v4/discover-cert-based-clusters":
     get:
@@ -54063,6 +54143,29 @@ definitions:
         type: string
         example: https://gitlab.example.com/explore/catalog/my-namespace/my-component-project
     description: API_Entities_Ci_Catalog_Resources_Version model
+  API_Entities_Ci_JobArtifactEntry:
+    type: object
+    properties:
+      name:
+        type: string
+        example: index.html
+      path:
+        type: string
+        example: coverage/index.html
+      type:
+        type: string
+        enum:
+        - file
+        - directory
+        example: file
+      size:
+        type: integer
+        format: int32
+        example: 12345
+      mode:
+        type: string
+        example: '100644'
+    description: API_Entities_Ci_JobArtifactEntry model
   API_Entities_Ci_Job:
     type: object
     properties:

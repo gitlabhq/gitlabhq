@@ -14,6 +14,7 @@ module API
       desc 'Get global notification level settings and email, defaults to Participate' do
         detail 'This feature was introduced in GitLab 8.12'
         success Entities::GlobalNotificationSetting
+        tags ['notification_settings']
       end
       get do
         notification_setting = current_user.global_notification_setting
@@ -24,6 +25,7 @@ module API
       desc 'Update global notification level settings and email, defaults to Participate' do
         detail 'This feature was introduced in GitLab 8.12'
         success Entities::GlobalNotificationSetting
+        tags ['notification_settings']
       end
       params do
         optional :level, type: String, desc: 'The global notification level'
@@ -69,6 +71,7 @@ module API
         desc "Get #{source_type} level notification level settings, defaults to Global" do
           detail 'This feature was introduced in GitLab 8.12'
           success Entities::NotificationSetting
+          tags ['notification_settings']
         end
         get ":id/notification_settings" do
           source = find_source(source_type, params[:id])
@@ -81,6 +84,7 @@ module API
         desc "Update #{source_type} level notification level settings, defaults to Global" do
           detail 'This feature was introduced in GitLab 8.12'
           success Entities::NotificationSetting
+          tags ['notification_settings']
         end
         params do
           optional :level, type: String, desc: "The #{source_type} notification level"

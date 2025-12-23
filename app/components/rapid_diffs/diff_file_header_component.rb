@@ -39,6 +39,7 @@ module RapidDiffs
     def menu_items
       [
         view_file_menu_item,
+        view_full_file_menu_item,
         view_on_environment_menu_item,
         rich_view_toggle,
         *@additional_menu_items
@@ -94,6 +95,20 @@ module RapidDiffs
         extraAttrs: { target: '_blank' },
         position: 1
       }
+    end
+
+    def view_full_file_menu_item
+      return if !@diff_file.diffable_text? || expanded? || @diff_file.rendered?
+
+      {
+        text: @diff_file.manually_expanded? ? s_('MRDiff|Show changes only') : s_('MRDiff|Show full file'),
+        extraAttrs: { 'data-click': 'showFullFile', 'data-full': @diff_file.manually_expanded? },
+        position: 50
+      }
+    end
+
+    def expanded?
+      @diff_file.fully_expanded? && !@diff_file.manually_expanded?
     end
 
     def view_on_environment_menu_item

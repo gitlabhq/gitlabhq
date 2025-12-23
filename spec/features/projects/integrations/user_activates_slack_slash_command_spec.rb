@@ -9,6 +9,10 @@ RSpec.describe 'Slack slash commands', :js, feature_category: :integrations do
     visit_project_integration('Slack slash commands')
   end
 
+  it 'shows the slack slash command deprecation warning' do
+    expect(page).to have_content('Slack slash commands integration is deprecated')
+  end
+
   it 'shows a token placeholder' do
     token_placeholder = find_field('Token')['placeholder']
 

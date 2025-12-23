@@ -21,6 +21,7 @@ describe('loadFileAdapter', () => {
   const getDiffFile = () => document.querySelector('diff-file');
   const getChangesButton = () => document.querySelector('button[data-click="showChanges"]');
   const getRichViewButton = () => document.querySelector('button[data-click="toggleRichView"]');
+  const getShowFullFileButton = () => document.querySelector('button[data-click="showFullFile"]');
   const getExpandedContent = () => document.querySelector('#expanded');
   const getRequestUrl = () =>
     `${TEST_HOST}${diffFileEndpoint}?old_path=foo&new_path=bar&ignore_whitespace_changes=${!useDiffsView(pinia).showWhitespace}`;
@@ -39,11 +40,15 @@ describe('loadFileAdapter', () => {
       </${name}>
     `;
 
-  const mount = ({ rendered = false } = {}) => {
+  const mount = ({ rendered = false, full = false } = {}) => {
     setHTMLFixture(
       createComponentHtml(
         'diff-file',
-        `<button data-click="showChanges">button</button><button data-click="toggleRichView" data-rendered="${JSON.stringify(rendered)}">button</button>`,
+        `
+          <button data-click="showChanges">button</button>
+          <button data-click="showFullFile" ${full ? 'data-full="true"' : ''}>Show full file</button>
+          <button data-click="toggleRichView" data-rendered="${JSON.stringify(rendered)}">button</button>
+        `,
       ),
     );
     mountComponent();
@@ -110,6 +115,23 @@ describe('loadFileAdapter', () => {
     mount({ rendered });
     delegatedClick(getRichViewButton());
     expect(getRichViewButton().disabled).toBe(true);
+    await waitForPromises();
+    expect(getExpandedContent()).not.toBeFalsy();
+  });
+
+  it.each([true, false])('loads file with full set to %s', async (full) => {
+    mockAdapter
+      .onGet(`${getRequestUrl()}&full=${!full}`)
+      .reply(
+        HTTP_STATUS_OK,
+        createComponentHtml(
+          'new-diff-file',
+          '<div id="expanded">Expanded Content<button></button></div>',
+        ),
+      );
+    mount({ full });
+    delegatedClick(getShowFullFileButton());
+    expect(getShowFullFileButton().disabled).toBe(true);
     await waitForPromises();
     expect(getExpandedContent()).not.toBeFalsy();
   });

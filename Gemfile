@@ -643,7 +643,7 @@ gem 'grpc', '~> 1.76.0', feature_category: :shared # rubocop:todo Gemfile/Missin
 
 gem 'google-protobuf', '>= 3.25', '< 5.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-gem 'toml-rb', '~> 2.2.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'toml-rb', '~> 4.1', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # Feature toggles
 gem 'flipper', '~> 0.28.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839

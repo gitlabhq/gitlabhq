@@ -25,6 +25,14 @@ RSpec.describe Types::WorkItems::SavedViews::SavedViewType, feature_category: :p
     end
   end
 
+  describe '#subscribed' do
+    it 'returns false' do
+      saved_view = create(:saved_view)
+
+      expect(resolve_field(:subscribed, saved_view, current_user: current_user)).to be false
+    end
+  end
+
   describe '#share_url' do
     context 'when namespace is a group' do
       let_it_be(:group) { create(:group, planners: [current_user]) }

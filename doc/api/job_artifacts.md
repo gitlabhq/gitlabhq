@@ -159,6 +159,97 @@ curl --location \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/5/artifacts/some/release/file.pdf"
 ```
 
+## List all files in the artifacts archive
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31448) in GitLab 18.8.
+
+{{< /history >}}
+
+Lists all files and directories in the artifacts archive of a specified job.
+This operation reads the artifact metadata without extracting the full archive,
+making it efficient for browsing large archives.
+
+```plaintext
+GET /projects/:id/jobs/:job_id/artifacts/tree
+```
+
+Supported attributes:
+
+| Attribute   | Type              | Required | Description |
+| ----------- | ----------------- | -------- | ----------- |
+| `id`        | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
+| `job_id`    | integer           | Yes      | ID of a job. |
+| `path`      | string            | No       | Path to browse in the artifacts archive. Defaults to root directory. |
+| `recursive` | boolean           | No       | If `true`, return all entries recursively. Default: `false`. |
+| `job_token` | string            | No       | CI/CD job token used to trigger a multi-project pipeline. Premium and Ultimate only. |
+
+This endpoint supports [pagination](rest/_index.md#pagination).
+
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute | Type    | Description |
+|-----------|---------|-------------|
+| `name`    | string  | File or directory name. |
+| `path`    | string  | Full path in the artifacts archive. Directories include a trailing slash. |
+| `type`    | string  | Type of entry. Possible values: `file`, `directory`. |
+| `size`    | integer | File size in bytes. Only present for files. |
+| `mode`    | string  | Unix file mode in octal format. For example, `100644` for files or `040755` for directories. |
+
+If the job, artifacts, artifact metadata, or specified path are not found, returns [`404`](rest/troubleshooting.md#status-codes).
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts/tree"
+```
+
+Example response:
+
+```json
+[
+  {
+    "name": "ci_build_artifacts.zip",
+    "path": "ci_build_artifacts.zip",
+    "type": "file",
+    "size": 1024,
+    "mode": "100644"
+  },
+  {
+    "name": "other_artifacts_0.1.2",
+    "path": "other_artifacts_0.1.2/",
+    "type": "directory",
+    "mode": "040755"
+  }
+]
+```
+
+Example request to browse a subdirectory:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts/tree?path=coverage/reports"
+```
+
+Example request for recursive listing:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts/tree?recursive=true"
+```
+
+Example request using a CI/CD job token:
+
+```yaml
+# Uses the job_token parameter
+list_artifacts:
+  stage: test
+  script:
+    - 'curl --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts/tree?job_token=$CI_JOB_TOKEN"'
+```
+
 ## Download a single artifact file by reference name
 
 Download a single file from a job's artifacts in the latest successful pipeline

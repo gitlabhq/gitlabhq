@@ -35,6 +35,7 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
     let(:test_ref_table) { '_test_repair_index_ref_table' }
     let(:test_entity_ref_table) { '_test_repair_index_entity_ref_table' }
     let(:test_array_ref_table) { '_test_repair_index_array_ref_table' }
+    let(:test_orphaned_ref_table) { '_test_repair_index_orphaned_ref_table' }
     let(:test_regular_index) { '_test_repair_regular_idx' }
 
     let(:indexes_to_repair) do
@@ -104,6 +105,14 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
           );
       SQL
 
+      connection.execute(<<~SQL)
+          CREATE TABLE #{test_orphaned_ref_table} (
+            id serial PRIMARY KEY,
+            user_id integer NOT NULL,
+            data varchar(255) NOT NULL
+          );
+      SQL
+
       # Replace the SQL constants for tests to not use CONCURRENTLY
       stub_const(
         "#{described_class}::REINDEX_SQL",
@@ -116,6 +125,7 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
     end
 
     after do
+      connection.execute("DROP TABLE IF EXISTS #{test_orphaned_ref_table} CASCADE")
       connection.execute("DROP TABLE IF EXISTS #{test_array_ref_table} CASCADE")
       connection.execute("DROP TABLE IF EXISTS #{test_entity_ref_table} CASCADE")
       connection.execute("DROP TABLE IF EXISTS #{test_ref_table} CASCADE")
@@ -444,6 +454,89 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
           SQL
           expect(unique_index_exists).to be false
         end
+      end
+    end
+
+    context 'with delete_orphaned references' do
+      let(:test_orphaned_table) { '_test_orphaned_table' }
+      let(:test_orphaned_unique_index) { '_test_orphaned_unique_idx' }
+      let(:indexes_to_repair) do
+        {
+          test_orphaned_table => {
+            test_orphaned_unique_index => {
+              'columns' => %w[name email],
+              'unique' => true,
+              'references' => [
+                {
+                  'table' => test_orphaned_ref_table,
+                  'column' => 'user_id',
+                  'delete_orphaned' => true
+                }
+              ]
+            }
+          }
+        }
+      end
+
+      before do
+        # Create a separate table for this test to avoid conflicts with parent context data
+        connection.execute(<<~SQL)
+            CREATE TABLE #{test_orphaned_table} (
+              id serial PRIMARY KEY,
+              name varchar(255) NULL,
+              email varchar(255) NULL
+            );
+        SQL
+
+        # Insert duplicate data
+        connection.execute(<<~SQL)
+            INSERT INTO #{test_orphaned_table} (name, email) VALUES
+            ('test_user', 'test@example.com'),   -- ID 1 (good)
+            ('test_user', 'test@example.com');   -- ID 2 (bad/duplicate)
+        SQL
+
+        # Create orphaned references (one-to-one relationship like container_repository_states)
+        connection.execute(<<~SQL)
+            INSERT INTO #{test_orphaned_ref_table} (user_id, data) VALUES
+            (1, 'orphaned ref to good ID'),
+            (2, 'orphaned ref to bad ID - will be deleted');
+        SQL
+      end
+
+      after do
+        connection.execute("DROP TABLE IF EXISTS #{test_orphaned_table} CASCADE")
+      end
+
+      it 'deletes orphaned references for duplicate IDs' do
+        orphaned_count_before = connection.select_value("SELECT COUNT(*) FROM #{test_orphaned_ref_table}")
+        expect(orphaned_count_before).to eq(2)
+
+        repairer.run
+
+        # After repair: only the reference to the good ID should remain
+        orphaned_count_after = connection.select_value("SELECT COUNT(*) FROM #{test_orphaned_ref_table}")
+        expect(orphaned_count_after).to eq(1)
+
+        # Verify the remaining reference points to the good ID
+        remaining_user_id = connection.select_value(
+          "SELECT user_id FROM #{test_orphaned_ref_table}"
+        )
+        expect(remaining_user_id).to eq(1)
+
+        # Verify the duplicate user was deleted
+        user_count_after = connection.select_value("SELECT COUNT(*) FROM #{test_orphaned_table}")
+        expect(user_count_after).to eq(1)
+
+        # Verify the unique index was created
+        is_unique = connection.select_value(<<~SQL)
+            SELECT indisunique
+            FROM pg_index i
+            JOIN pg_class c ON i.indexrelid = c.oid
+            JOIN pg_class t ON i.indrelid = t.oid
+            WHERE c.relname = '#{test_orphaned_unique_index}'
+            AND t.relname = '#{test_orphaned_table}'
+        SQL
+        expect(is_unique).to be true
       end
     end
 

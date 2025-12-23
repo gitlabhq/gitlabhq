@@ -32,6 +32,7 @@ module API
     desc 'Get all license templates' do
       detail 'This feature was introduced in GitLab 8.7.'
       success ::API::Entities::License
+      tags ['templates']
     end
     params do
       optional :popular, type: Boolean, desc: 'If passed, returns only popular licenses'
@@ -49,6 +50,7 @@ module API
     desc 'Get a single license template' do
       detail 'This feature was introduced in GitLab 8.7.'
       success ::API::Entities::License
+      tags ['templates']
     end
     params do
       requires :name, type: String, desc: 'The name of the license template'
@@ -75,6 +77,7 @@ module API
       desc "Get all #{file_type} templates" do
         detail "This feature was introduced in GitLab #{gitlab_version}."
         success Entities::TemplatesList
+        tags ['templates']
       end
       params do
         use :pagination
@@ -87,6 +90,7 @@ module API
       desc "Get a single #{file_type} template" do
         detail "This feature was introduced in GitLab #{gitlab_version}."
         success Entities::Template
+        tags ['templates']
       end
       params do
         requires :name, type: String, desc: "The name of the #{file_type} template"

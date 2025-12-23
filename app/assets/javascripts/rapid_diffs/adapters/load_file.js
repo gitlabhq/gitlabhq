@@ -44,6 +44,11 @@ export const loadFileAdapter = {
     showChanges(event, button) {
       loadWithDisabledButton.call(this, button);
     },
+    showFullFile(event, button) {
+      loadWithDisabledButton.call(this, button, {
+        full: !button.dataset.full,
+      });
+    },
     toggleRichView(event, button) {
       loadWithDisabledButton.call(this, button, {
         plain_view: JSON.parse(button.dataset.rendered),

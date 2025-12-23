@@ -64967,6 +64967,12 @@ msgstr ""
 msgid "SlackIntegration|Slack app not enabled on GitLab instance"
 msgstr ""
 
+msgid "SlackIntegration|Slack slash commands integration is deprecated"
+msgstr ""
+
+msgid "SlackIntegration|Slack slash commands integration will be removed in GitLab 19.0. To run common GitLab operations from Slack, use the GitLab for Slack app instead."
+msgstr ""
+
 msgid "SlackIntegration|Step 1: Create your GitLab for Slack app"
 msgstr ""
 
@@ -76812,6 +76818,9 @@ msgid_plural "WorkItem|+%d more items"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "WorkItem|140 characters max"
+msgstr ""
+
 msgid "WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}."
 msgstr ""
 
@@ -76852,6 +76861,9 @@ msgid "WorkItem|Add to"
 msgstr ""
 
 msgid "WorkItem|Add up to 10 items at a time."
+msgstr ""
+
+msgid "WorkItem|Add view"
 msgstr ""
 
 msgid "WorkItem|All activity"
@@ -76900,6 +76912,9 @@ msgid "WorkItem|Ancestor"
 msgstr ""
 
 msgid "WorkItem|Ancestor not available"
+msgstr ""
+
+msgid "WorkItem|Anyone with access to this project can add the view, and those with the Planner and above roles can edit it."
 msgstr ""
 
 msgid "WorkItem|Apply template"
@@ -77079,6 +77094,9 @@ msgstr ""
 msgid "WorkItem|Create new work item by email"
 msgstr ""
 
+msgid "WorkItem|Create view"
+msgstr ""
+
 msgid "WorkItem|Created %{timeago}"
 msgstr ""
 
@@ -77191,6 +77209,9 @@ msgid "WorkItem|Existing %{workItemName}"
 msgstr ""
 
 msgid "WorkItem|Existing task"
+msgstr ""
+
+msgid "WorkItem|Existing view"
 msgstr ""
 
 msgid "WorkItem|Export as CSV"
@@ -77446,6 +77467,9 @@ msgstr ""
 msgid "WorkItem|New type"
 msgstr ""
 
+msgid "WorkItem|New view"
+msgstr ""
+
 msgid "WorkItem|No assignees"
 msgstr ""
 
@@ -77542,6 +77566,9 @@ msgstr ""
 msgid "WorkItem|Only 10 items can be added at a time."
 msgstr ""
 
+msgid "WorkItem|Only you can see and edit this view."
+msgstr ""
+
 msgid "WorkItem|Open"
 msgstr ""
 
@@ -77570,6 +77597,9 @@ msgid "WorkItem|Please review the %{linkStart}contribution guidelines%{linkEnd} 
 msgstr ""
 
 msgid "WorkItem|Please select a file to import."
+msgstr ""
+
+msgid "WorkItem|Private"
 msgstr ""
 
 msgid "WorkItem|Progress"
@@ -77690,6 +77720,9 @@ msgid "WorkItem|Select which type you would like to change this item to."
 msgstr ""
 
 msgid "WorkItem|Send email"
+msgstr ""
+
+msgid "WorkItem|Shared"
 msgstr ""
 
 msgid "WorkItem|Show all ancestors"
@@ -77921,6 +77954,9 @@ msgid "WorkItem|Ticket"
 msgstr ""
 
 msgid "WorkItem|Time tracking"
+msgstr ""
+
+msgid "WorkItem|Title is required."
 msgstr ""
 
 msgid "WorkItem|To do"

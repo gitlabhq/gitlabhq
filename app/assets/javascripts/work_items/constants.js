@@ -178,6 +178,11 @@ export const LINKED_ITEM_TYPE_VALUE = {
   BLOCKS: 'BLOCKS',
 };
 
+export const SAVED_VIEW_VISIBILITY = {
+  PRIVATE: 'private',
+  SHARED: 'shared',
+};
+
 export const LINK_ITEM_FORM_HEADER_LABEL = {
   [WORK_ITEM_TYPE_NAME_OBJECTIVE]: s__('WorkItem|The current objective'),
   [WORK_ITEM_TYPE_NAME_KEY_RESULT]: s__('WorkItem|The current key result'),

@@ -49791,7 +49791,8 @@ Check permissions for the current user on a work item.
 | <a id="workitemsavedviewtypeprivate"></a>`private` | [`Boolean!`](#boolean) | Whether the saved view is private. |
 | <a id="workitemsavedviewtypeshareurl"></a>`shareUrl` | [`String!`](#string) | URL to auto subscribe users to the view. |
 | <a id="workitemsavedviewtypesort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort option associated with the saved view. |
-| <a id="workitemsavedviewtypeworkitems"></a>`workItems` {{< icon name="warning-solid" >}} | [`WorkItemConnection`](#workitemconnection) | **Introduced** in GitLab 18.7. **Status**: Experiment. Work items associated with the saved view. |
+| <a id="workitemsavedviewtypesubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Whether the current user is subscribed to the saved view. |
+| <a id="workitemsavedviewtypeworkitems"></a>`workItems` {{< icon name="warning-solid" >}} | [`WorkItemConnection`](#workitemconnection) | **Introduced** in GitLab 18.8. **Status**: Experiment. Work items associated with the saved view. |
 
 ### `WorkItemSelectFieldValue`
 

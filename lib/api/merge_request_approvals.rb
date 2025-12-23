@@ -28,6 +28,7 @@ module API
           failure [
             { code: 404, message: 'Not found' }
           ]
+          tags ['merge_request_approvals']
         end
         get 'approvals', urgency: :low do
           merge_request = find_merge_request_with_access(params[:merge_request_iid])
@@ -49,6 +50,7 @@ module API
             { code: 404, message: 'Not found' },
             { code: 401, message: 'Unauthorized' }
           ]
+          tags ['merge_request_approvals']
         end
         params do
           optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
@@ -83,6 +85,7 @@ module API
             { code: 404, message: 'Not found' },
             { code: 401, message: 'Unauthorized' }
           ]
+          tags ['merge_request_approvals']
         end
         post 'unapprove', urgency: :low do
           merge_request = find_merge_request_with_access(params[:merge_request_iid], :approve_merge_request)
@@ -102,7 +105,7 @@ module API
             { code: 401, message: 'Unauthorized' },
             { code: 404, message: 'Not found' }
           ]
-          tags %w[merge_requests]
+          tags %w[merge_requests merge_request_approvals]
         end
         put 'reset_approvals', urgency: :low do
           merge_request = find_project_merge_request(params[:merge_request_iid])
