@@ -37197,7 +37197,6 @@ Represents Maven virtual registry details.
 | <a id="mavenregistrydetailsname"></a>`name` | [`String!`](#string) | Name of the virtual registry. |
 | <a id="mavenregistrydetailsregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[MavenRegistryUpstreamWithUpstream!]!`](#mavenregistryupstreamwithupstream) | **Introduced** in GitLab 18.7. **Status**: Experiment. List of registry upstreams for the Maven virtual registry. |
 | <a id="mavenregistrydetailsupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the virtual registry was updated. |
-| <a id="mavenregistrydetailsupstreams"></a>`upstreams` {{< icon name="warning-solid" >}} | [`[MavenUpstreamDetails!]`](#mavenupstreamdetails) | **Introduced** in GitLab 18.1. **Status**: Experiment. List of upstream registries for the Maven virtual registry. |
 
 ### `MavenRegistryUpstreamWithRegistry`
 

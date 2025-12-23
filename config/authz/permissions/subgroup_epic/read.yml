@@ -1,4 +1,3 @@
 ---
 name: read_subgroup_epic
 description: Used to filter out subgroup epics not visible to the user when showing parent group epics list.
-feature_category: team_planning

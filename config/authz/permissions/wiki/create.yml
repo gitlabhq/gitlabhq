@@ -1,7 +1,6 @@
 ---
 name: create_wiki
 description: Grants the ability to create wikis
-feature_category: wiki
 boundaries:
   - group
   - project

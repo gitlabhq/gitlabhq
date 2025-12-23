@@ -1,7 +1,6 @@
 ---
 name: read_protected_tag
 description: Grants the ability to read protected tags
-feature_category: source_code_management
 permissions:
   - read_protected_tag
 boundaries:

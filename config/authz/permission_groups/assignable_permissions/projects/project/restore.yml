@@ -1,7 +1,6 @@
 ---
 name: restore_project
 description: Grants the ability to restore projects marked for deletion
-feature_category: system_access
 permissions:
   - restore_project
 boundaries:

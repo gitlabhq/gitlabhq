@@ -61,5 +61,42 @@ RSpec.describe Ci::UpdateBuildNamesService, feature_category: :continuous_integr
 
       expect(Ci::BuildName.find_by_build_id(bridge1.id)).to be_nil
     end
+
+    context 'when build name exceeds MAX_JOB_NAME_LENGTH' do
+      let_it_be(:long_name) { 'a' * 300 }
+      let_it_be(:build_with_long_name) { create(:ci_build, name: long_name, pipeline: pipeline) }
+
+      it 'truncates the name to MAX_JOB_NAME_LENGTH' do
+        service.execute
+
+        build_name = Ci::BuildName.find_by(build_id: build_with_long_name.id)
+        expect(build_name.name).to eq(long_name.truncate(Ci::BuildName::MAX_JOB_NAME_LENGTH))
+        expect(build_name.name.length).to eq(Ci::BuildName::MAX_JOB_NAME_LENGTH)
+      end
+    end
+
+    context 'when a build name is empty' do
+      let!(:build_with_empty_name) { create(:ci_build, pipeline: pipeline) }
+      let_it_be(:other_build) { create(:ci_build, name: 'other-build', pipeline: pipeline) }
+
+      before do
+        build_with_empty_name.update_attribute(:name, nil)
+      end
+
+      it 'does not create a build_name record' do
+        service.execute
+
+        build_name = Ci::BuildName.find_by(build_id: build_with_empty_name.id)
+        expect(build_name).to be_nil
+      end
+
+      it 'processes the next records' do
+        other_build
+        service.execute
+
+        build_name = Ci::BuildName.find_by(build_id: other_build.id)
+        expect(build_name.name).to eq('other-build')
+      end
+    end
   end
 end

@@ -1,4 +1,3 @@
 ---
 name: delete_issuable_metric_image
 description: Grants the ability to delete issuable metric images
-feature_category: team_planning

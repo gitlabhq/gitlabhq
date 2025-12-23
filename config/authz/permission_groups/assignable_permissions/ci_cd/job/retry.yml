@@ -1,7 +1,6 @@
 ---
 name: retry_job
 description: Grants the ability to retry jobs
-feature_category: continuous_integration
 permissions:
   - retry_job
 boundaries:

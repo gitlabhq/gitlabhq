@@ -11,11 +11,6 @@
       "type": "string",
       "description": "Description of the permission"
     },
-    "feature_category": {
-      "type": "string",
-      "description": "Feature category of the permission",
-      "format": "known_product_category"
-    },
     "action": {
       "type": "string",
       "description": "Override for the generated action name"
@@ -51,7 +46,6 @@
   "required": [
     "name",
     "description",
-    "feature_category",
     "permissions",
     "boundaries"
   ]

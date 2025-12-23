@@ -3,6 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::Sharding, feature_category: :organization do
+  before_all do
+    Organizations::ShardingTestModel.ensure_table_exists
+  end
+
+  after(:all) do
+    Organizations::ShardingTestModel.cleanup_table
+  end
+
   describe '.sharding_keys' do
     it 'returns sharding keys for the model' do
       expect(Group.sharding_keys).to eq({ 'organization_id' => 'organizations' })
@@ -40,69 +48,118 @@ RSpec.describe Organizations::Sharding, feature_category: :organization do
   end
 
   describe '#sharding_organization' do
-    subject(:organization) { test_object.sharding_organization }
+    let_it_be(:namespace) { create(:namespace, organization: create(:organization)) }
+    let_it_be(:project) { create(:project, organization: create(:organization)) }
+    let_it_be(:user) { create(:user, organization: create(:organization)) }
+    let_it_be(:organization) { create(:organization) }
+
+    let(:test_model_class) do
+      Organizations::ShardingTestModel.create_test_model(
+        sharding_keys: sharding_keys
+      )
+    end
+
+    subject(:sharded_organization) { test_object.sharding_organization }
 
     context 'when the model is using organizations as sharding key' do
-      let_it_be(:organization) { create(:organization) }
-      let_it_be(:test_object) { create(:group, organization: organization) }
+      let(:sharding_keys) do
+        { 'organization_id' => 'organizations' }
+      end
+
+      let(:test_object) { test_model_class.create!(organization: organization) }
 
       it { is_expected.to eq(organization) }
     end
 
     context 'when the model is using namespaces as sharding key' do
-      let_it_be(:group_organization) { create(:organization) }
-      let_it_be(:group) { create(:group, organization: group_organization) }
-      let_it_be(:test_object) { create(:group_member, group: group) }
+      let(:sharding_keys) do
+        { 'namespace_id' => 'namespaces' }
+      end
 
-      it { is_expected.to eq(group_organization) }
+      let(:test_object) { test_model_class.create!(namespace: namespace) }
+
+      it { is_expected.to eq(namespace.organization) }
     end
 
     context 'when the model is using projects as sharding key' do
-      let_it_be(:project_organization) { create(:organization) }
-      let_it_be(:project) { create(:project, organization: project_organization) }
-      let_it_be(:test_object) { create(:deploy_token, projects: [project]) }
+      let(:sharding_keys) do
+        { 'project_id' => 'projects' }
+      end
 
-      it { is_expected.to eq(project_organization) }
+      let(:test_object) { test_model_class.create!(project: project) }
+
+      it { is_expected.to eq(project.organization) }
     end
 
     context 'when the model is using users as sharding key' do
-      let_it_be(:user_organization) { create(:organization) }
-      let_it_be(:user) { create(:user, organization: user_organization) }
-      let_it_be(:test_object) { create(:user_detail, user: user) }
+      let(:sharding_keys) do
+        { 'user_id' => 'users' }
+      end
 
-      it { is_expected.to eq(user_organization) }
+      let(:test_object) { test_model_class.create!(user: user) }
+
+      it { is_expected.to eq(user.organization) }
     end
 
-    context 'when the sharding key is nil' do
-      let_it_be(:test_object) { create(:group) }
-
-      before do
-        attrs = test_object.attributes
-        allow(test_object).to receive(:attributes).and_return(attrs)
-        allow(attrs).to receive(:[]).with('organization_id').and_return(nil)
+    context 'when the sharding key attribute is nil' do
+      let(:sharding_keys) do
+        { 'organization_id' => 'organizations' }
       end
+
+      let(:test_object) { test_model_class.create! }
 
       it { is_expected.to be_nil }
     end
 
     context 'when the sharding key table is not supported' do
-      let_it_be(:test_object) { create(:group) }
-
-      before do
-        allow(test_object.class).to receive(:sharding_keys).and_return({ 'organization_id' => 'unsupported_table' })
+      let(:sharding_keys) do
+        { 'organization_id' => 'unsupported_table' }
       end
+
+      let(:test_object) { test_model_class.create!(organization: organization) }
 
       it { is_expected.to be_nil }
     end
 
     context 'when no sharding key is defined' do
-      let_it_be(:test_object) { create(:group) }
-
-      before do
-        allow(test_object.class).to receive(:sharding_keys).and_return({})
+      let(:sharding_keys) do
+        {}
       end
 
+      let(:test_object) { test_model_class.create!(organization: organization) }
+
       it { is_expected.to be_nil }
+    end
+
+    context 'when the model is having multiple sharding keys' do
+      let(:sharding_keys) do
+        {
+          'organization_id' => 'organizations',
+          'project_id' => 'projects'
+        }
+      end
+
+      context 'and they refer to the same organization' do
+        let(:test_object) { test_model_class.create!(project: project, organization: project.organization) }
+
+        it { is_expected.to eq(project.organization) }
+      end
+
+      context 'and they refer to different organizations' do
+        let(:test_object) { test_model_class.create!(project: project, organization: create(:organization)) }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'and no organization is found' do
+        let(:test_object) { test_model_class.create!(organization: create(:organization)) }
+
+        before do
+          allow(::Organizations::Organization).to receive(:find_by).and_return(nil)
+        end
+
+        it { is_expected.to be_nil }
+      end
     end
   end
 end

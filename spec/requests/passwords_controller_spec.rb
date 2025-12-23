@@ -3,6 +3,24 @@
 require 'spec_helper'
 
 RSpec.describe PasswordsController, type: :request, feature_category: :system_access do
+  describe '#edit', :with_current_organization do
+    let(:user) { create(:user) }
+    let(:organization) { user.organization }
+
+    subject(:perform_request) do
+      get edit_organization_user_password_path(
+        organization,
+        reset_password_token: user.send_reset_password_instructions
+      )
+    end
+
+    it 'returns ok' do
+      perform_request
+
+      expect(response).to be_ok
+    end
+  end
+
   describe '#update' do
     let(:user) { create(:user, password_automatically_set: true, password_expires_at: 10.minutes.ago) }
     let(:expected_context) do

@@ -28,10 +28,15 @@ RSpec.shared_context 'with Organization URL helpers' do
       current_organization ||= nil
 
       unless current_organization
+        rack_env = (last_request_headers.presence || {}).transform_keys do |key|
+          upcased = key.to_s.upcase
+          ActionDispatch::Http::Headers::CGI_VARIABLES.include?(upcased) ? upcased : "HTTP_#{upcased}"
+        end
+
         context = {
           user: try(:warden)&.user,
           params: last_request_params,
-          headers: last_request_headers || {}
+          rack_env: rack_env
         }
 
         current_organization = Gitlab::Current::Organization.new(**context).organization

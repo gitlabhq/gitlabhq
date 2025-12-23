@@ -1,6 +1,5 @@
 ---
 name: create_protected_tag
 description: Grants the ability to create protected tags
-feature_category: source_code_management
 boundaries:
   - project

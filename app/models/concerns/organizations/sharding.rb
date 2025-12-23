@@ -11,29 +11,24 @@ module Organizations
     end
 
     def sharding_organization
-      self.class.sharding_keys.each do |column, table|
-        parent_record_id = attributes[column]
-        next unless parent_record_id
+      self.class.sharding_keys.reduce(nil) do |found, (column, table)|
+        next found unless ApplicationRecord.connection.data_source_exists?(table)
 
-        case table
-        when 'projects'
-          return ::Organizations::Organization.joins(:projects).where(
-            projects: { id: parent_record_id }
-          ).first
-        when 'namespaces'
-          return ::Organizations::Organization.joins(:namespaces).where(
-            namespaces: { id: parent_record_id }
-          ).first
-        when 'users'
-          return ::Organizations::Organization.joins(
-            'INNER JOIN users ON users.organization_id = organizations.id'
-          ).where(users: { id: parent_record_id }).first
-        when 'organizations'
-          return ::Organizations::Organization.find_by_id(parent_record_id)
-        end
+        record_id = attributes[column]
+        next found unless record_id
+
+        org = if table == 'organizations'
+                ::Organizations::Organization.find_by(id: record_id)
+              else
+                ::Organizations::Organization.joins(table.to_sym).find_by(table => { id: record_id })
+              end
+
+        next found unless org
+
+        next nil if found && found.id != org.id
+
+        org
       end
-
-      nil
     end
   end
 end
