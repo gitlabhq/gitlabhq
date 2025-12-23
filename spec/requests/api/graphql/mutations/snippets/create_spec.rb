@@ -152,8 +152,6 @@ RSpec.describe 'Creating a Snippet', :with_current_organization, feature_categor
         it_behaves_like 'a mutation that returns top-level errors',
           errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
       end
-
-      it_behaves_like 'snippet edit usage data counters'
     end
 
     context 'when there are ActiveRecord validation errors' do

@@ -132,7 +132,7 @@ module ApplicationHelper
   end
 
   def project_studio_enabled?
-    Users::ProjectStudio.new(current_user).enabled?
+    true
   end
 
   def body_data

@@ -22,19 +22,11 @@ RSpec.describe 'Merge request > User scrolls to note on load', :js, feature_cate
     expect(page).to have_selector(fragment_id.to_s)
     expect(find(fragment_id).visible?).to eq true
 
-    if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
-      panel_scroll_top = page.evaluate_script("document.querySelector('.js-static-panel-inner').scrollTop")
-      fragment_position_top = page.evaluate_script("Math.round(document.querySelector('#{fragment_id}').getBoundingClientRect().top + document.querySelector('.js-static-panel-inner').scrollTop)")
+    panel_scroll_top = page.evaluate_script("document.querySelector('.js-static-panel-inner').scrollTop")
+    fragment_position_top = page.evaluate_script("Math.round(document.querySelector('#{fragment_id}').getBoundingClientRect().top + document.querySelector('.js-static-panel-inner').scrollTop)")
 
-      expect(fragment_position_top).to be >= panel_scroll_top
-      expect(page.evaluate_script("document.querySelector('.js-static-panel-inner').scrollTop")).to be > 0
-    else
-      page_scroll_y = page.evaluate_script("window.scrollY")
-      fragment_position_top = page.evaluate_script("Math.round(document.querySelector('#{fragment_id}').getBoundingClientRect().top + window.pageYOffset)")
-
-      expect(fragment_position_top).to be >= page_scroll_y
-      expect(page.evaluate_script("window.pageYOffset")).to be > 0
-    end
+    expect(fragment_position_top).to be >= panel_scroll_top
+    expect(page.evaluate_script("document.querySelector('.js-static-panel-inner').scrollTop")).to be > 0
   end
 
   it 'renders un-collapsed notes with diff' do
@@ -42,11 +34,7 @@ RSpec.describe 'Merge request > User scrolls to note on load', :js, feature_cate
 
     visit "#{project_merge_request_path(project, merge_request)}#{fragment_id}"
 
-    if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
-      page.execute_script "document.querySelector('.js-static-panel-inner').scrollTo(0,0)"
-    else
-      page.execute_script "window.scrollTo(0,0)"
-    end
+    page.execute_script "document.querySelector('.js-static-panel-inner').scrollTo(0,0)"
 
     note_element = find(fragment_id)
     note_container = note_element.ancestor('.js-discussion-container')

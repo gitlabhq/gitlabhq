@@ -216,7 +216,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
   describe 'Branch Switcher' do
     def switch_to_branch(branch)
       # close button for the popover
-      find_by_testid('close-button').click if page.has_css?('[data-testid="close-button"]', wait: 0) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+      find_by_testid('close-button').click
       within_testid 'branch-selector' do
         toggle_listbox
         select_listbox_item(branch, exact_text: true)

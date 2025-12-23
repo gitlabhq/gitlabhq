@@ -4145,6 +4145,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_ad05b7ebe49b() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "deployments"
+  WHERE "deployments"."id" = NEW."deployment_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_af3f17817e4d() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -17386,7 +17402,8 @@ ALTER SEQUENCE deployment_approvals_id_seq OWNED BY deployment_approvals.id;
 CREATE TABLE deployment_clusters (
     deployment_id bigint NOT NULL,
     cluster_id bigint NOT NULL,
-    kubernetes_namespace character varying(255)
+    kubernetes_namespace character varying(255),
+    project_id bigint
 );
 
 CREATE TABLE deployment_merge_requests (
@@ -42036,6 +42053,8 @@ CREATE INDEX index_deployment_approvals_on_user_id ON deployment_approvals USING
 
 CREATE UNIQUE INDEX index_deployment_clusters_on_cluster_id_and_deployment_id ON deployment_clusters USING btree (cluster_id, deployment_id);
 
+CREATE INDEX index_deployment_clusters_on_project_id ON deployment_clusters USING btree (project_id);
+
 CREATE INDEX index_deployment_merge_requests_on_merge_request_id ON deployment_merge_requests USING btree (merge_request_id);
 
 CREATE INDEX index_deployments_for_visible_scope ON deployments USING btree (environment_id, finished_at DESC) WHERE (status = ANY (ARRAY[1, 2, 3, 4, 6]));
@@ -50042,6 +50061,8 @@ CREATE TRIGGER trigger_a68471fea292 BEFORE INSERT OR UPDATE ON snippet_uploads F
 
 CREATE TRIGGER trigger_a7e0fb195210 BEFORE INSERT OR UPDATE ON vulnerability_finding_evidences FOR EACH ROW EXECUTE FUNCTION trigger_a7e0fb195210();
 
+CREATE TRIGGER trigger_ad05b7ebe49b BEFORE INSERT OR UPDATE ON deployment_clusters FOR EACH ROW EXECUTE FUNCTION trigger_ad05b7ebe49b();
+
 CREATE TRIGGER trigger_af3f17817e4d BEFORE INSERT OR UPDATE ON protected_tag_create_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_af3f17817e4d();
 
 CREATE TRIGGER trigger_b046dd50c711 BEFORE INSERT OR UPDATE ON incident_management_oncall_rotations FOR EACH ROW EXECUTE FUNCTION trigger_b046dd50c711();
@@ -51673,6 +51694,9 @@ ALTER TABLE ONLY related_epic_links
 
 ALTER TABLE ONLY import_export_uploads
     ADD CONSTRAINT fk_83319d9721 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY deployment_clusters
+    ADD CONSTRAINT fk_8338580a3e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_npm_metadata
     ADD CONSTRAINT fk_83625a27c0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

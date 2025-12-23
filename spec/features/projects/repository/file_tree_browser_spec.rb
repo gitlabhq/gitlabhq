@@ -20,20 +20,12 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
 
   describe 'basic functionality' do
     it 'shows and hides the file tree browser' do
-      if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
-        expect(page).to have_css('.file-tree-browser-peek')
-      else
-        expect(page).to have_css('.file-tree-browser-expanded')
-      end
+      expect(page).to have_css('.file-tree-browser-peek')
 
       click_button 'Hide file tree browser'
       wait_for_requests
 
-      if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
-        expect(page).not_to have_css('.file-tree-browser-peek')
-      else
-        expect(page).not_to have_css('.file-tree-browser-expanded')
-      end
+      expect(page).not_to have_css('.file-tree-browser-peek')
     end
 
     it 'displays files and directories' do
@@ -68,8 +60,8 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
     it 'expands parent directories when navigating directly to a nested file' do
       visit project_blob_path(project, "#{project.default_branch}/files/ruby/popen.rb")
       wait_for_requests
-      # File tree starts collapsed in Project Studio
-      click_button('Show file tree browser') if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+      # File tree starts collapsed
+      click_button('Show file tree browser')
 
       within('.file-tree-browser') do
         # Should auto-expand parent directories

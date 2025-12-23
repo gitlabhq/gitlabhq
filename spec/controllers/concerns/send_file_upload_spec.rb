@@ -112,6 +112,15 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
 
           subject
         end
+
+        context 'when width has an invalid format' do
+          it 'does not write workhorse command header' do
+            expect(controller).to receive(:params).at_least(:once).and_return(width: ['wrong'])
+            expect(headers).not_to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
+
+            subject
+          end
+        end
       end
 
       context 'with width that is not allowed' do

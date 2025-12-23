@@ -22,17 +22,6 @@ RSpec.describe 'profiles/preferences/show' do
     end
   end
 
-  context 'navigation theme' do
-    before do
-      skip 'Test not applicable in new UI' if Users::ProjectStudio.enabled_for_user?(user)
-      render
-    end
-
-    it 'has an id for anchoring' do
-      expect(rendered).to have_css('#navigation-theme')
-    end
-  end
-
   context 'syntax highlighting theme' do
     before do
       render

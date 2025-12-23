@@ -167,10 +167,6 @@ RSpec.describe 'User comments on a diff with whitespace changes', :js, feature_c
   end
 
   def find_in_page_or_panel_by_scrolling(selector, **options)
-    if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
-      find_in_panel_by_scrolling(selector, **options)
-    else
-      find_by_scrolling(selector, **options)
-    end
+    find_in_panel_by_scrolling(selector, **options)
   end
 end

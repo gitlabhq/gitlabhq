@@ -25,7 +25,7 @@ module SendFileUpload
 
     if image_scaling_request?(file_upload)
       location = file_upload.file_storage? ? file_upload.path : file_upload.url
-      headers.store(*Gitlab::Workhorse.send_scaled_image(location, params[:width].to_i, content_type))
+      headers.store(*Gitlab::Workhorse.send_scaled_image(location, safe_width, content_type))
       head :ok
     elsif file_upload.file_storage?
       send_file file_upload.path, send_params
@@ -74,6 +74,13 @@ module SendFileUpload
   end
 
   def valid_image_scaling_width?(allowed_scalar_widths)
-    allowed_scalar_widths.include?(params[:width]&.to_i)
+    allowed_scalar_widths.include?(safe_width)
+  end
+
+  def safe_width
+    width = params[:width]
+    return 0 unless width.is_a?(String) || width.is_a?(Integer)
+
+    width.to_i
   end
 end

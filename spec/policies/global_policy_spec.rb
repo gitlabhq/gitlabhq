@@ -659,25 +659,7 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
   end
 
   describe 'enable_project_studio' do
-    context 'when ProjectStudio is available' do
-      before do
-        allow_next_instance_of(Users::ProjectStudio) do |instance|
-          allow(instance).to receive(:enabled?).and_return(true)
-        end
-      end
-
-      it { is_expected.to be_allowed(:enable_project_studio) }
-    end
-
-    context 'when ProjectStudio is not available' do
-      before do
-        allow_next_instance_of(Users::ProjectStudio) do |instance|
-          allow(instance).to receive(:enabled?).and_return(false)
-        end
-      end
-
-      it { is_expected.to be_disallowed(:enable_project_studio) }
-    end
+    it { is_expected.to be_allowed(:enable_project_studio) }
   end
 
   describe 'log in' do

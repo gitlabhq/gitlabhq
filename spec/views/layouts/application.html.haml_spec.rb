@@ -46,11 +46,9 @@ RSpec.describe 'layouts/application' do
       end
     end
 
-    context 'when user has `project studio` feature enabled' do
-      it 'renders the new global topbar' do
-        render
-        expect(rendered).to include('super-topbar')
-      end
+    it 'renders the new global topbar' do
+      render
+      expect(rendered).to include('super-topbar')
     end
   end
 

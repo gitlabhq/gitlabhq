@@ -30,11 +30,7 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
         line_code_element = page.find('.diff-grid-row', text: line_text)
         # scrolling to element's bottom is required in order for .hover action to work
         # otherwise, the element could be hidden underneath a sticky header
-        if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
-          scroll_to_panel_elements_bottom(line_code_element)
-        else
-          scroll_to_elements_bottom(line_code_element)
-        end
+        scroll_to_panel_elements_bottom(line_code_element)
 
         line_code_element.hover
         find_by_testid('left-comment-button', visible: true).click
@@ -286,10 +282,6 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
   end
 
   def find_in_page_or_panel_by_scrolling(selector, **options)
-    if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
-      find_in_panel_by_scrolling(selector, **options)
-    else
-      find_by_scrolling(selector, **options)
-    end
+    find_in_panel_by_scrolling(selector, **options)
   end
 end

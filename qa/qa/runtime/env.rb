@@ -709,13 +709,6 @@ module QA
         enabled?(ENV["QA_CREATE_UNIQUE_TEST_USERS"], default: true)
       end
 
-      # Run tests against Project Studio UI
-      #
-      # @return [Boolean]
-      def project_studio_enabled?
-        enabled?(ENV["QA_PROJECT_STUDIO"], default: true)
-      end
-
       private
 
       # Return non empty environment variable value

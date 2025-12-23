@@ -18,9 +18,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
   end
 
   def within_navigation_panel(&block)
-    # We search for .super-topbar to account for the Project Studio UI
-    selector = page.has_css?('.super-topbar') ? '.super-topbar' : '[data-testid="super-sidebar"]' # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
-    within(selector, &block)
+    within('.super-topbar', &block)
   end
 
   context 'with developer user' do

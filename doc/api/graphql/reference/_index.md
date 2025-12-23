@@ -50671,10 +50671,23 @@ Requires ClickHouse. Premium and Ultimate only.
 | <a id="agentplatformmetricscreatedsessioneventcount"></a>`createdSessionEventCount` | [`Int`](#int) | Total count of `agent_platform_session_created` event. |
 | <a id="agentplatformmetricsdroppedsessioneventcount"></a>`droppedSessionEventCount` | [`Int`](#int) | Total count of `agent_platform_session_dropped` event. |
 | <a id="agentplatformmetricsfinishedsessioneventcount"></a>`finishedSessionEventCount` | [`Int`](#int) | Total count of `agent_platform_session_finished` event. |
-| <a id="agentplatformmetricsflowmetrics"></a>`flowMetrics` | [`[AgentPlatformFlowMetric!]`](#agentplatformflowmetric) | Aggregated flow metrics for Duo Agent Platform. |
 | <a id="agentplatformmetricsresumedsessioneventcount"></a>`resumedSessionEventCount` | [`Int`](#int) | Total count of `agent_platform_session_resumed` event. |
 | <a id="agentplatformmetricsstartedsessioneventcount"></a>`startedSessionEventCount` | [`Int`](#int) | Total count of `agent_platform_session_started` event. |
 | <a id="agentplatformmetricsstoppedsessioneventcount"></a>`stoppedSessionEventCount` | [`Int`](#int) | Total count of `agent_platform_session_stopped` event. |
+
+#### Fields with arguments
+
+##### `agentPlatformMetrics.flowMetrics`
+
+Aggregated flow metrics for Duo Agent Platform.
+
+Returns [`[AgentPlatformFlowMetric!]`](#agentplatformflowmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentplatformmetricsflowmetricssort"></a>`sort` | [`FlowTypeSort`](#flowtypesort) | Sort results by flow type. |
 
 ### `agentPlatformUserMetrics`
 
@@ -52568,6 +52581,19 @@ Report comparison status.
 | <a id="findingreportscomparerstatuserror"></a>`ERROR` | An error happened while generating the report. |
 | <a id="findingreportscomparerstatusparsed"></a>`PARSED` | Report was generated. |
 | <a id="findingreportscomparerstatusparsing"></a>`PARSING` | Report is being generated. |
+
+### `FlowTypeSort`
+
+Values for Duo Agent Platform flow type sorting.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="flowtypesortmedian_time_asc"></a>`MEDIAN_TIME_ASC` | Sort by median execution time in ascending order. |
+| <a id="flowtypesortmedian_time_desc"></a>`MEDIAN_TIME_DESC` | Sort by median execution time in descending order. |
+| <a id="flowtypesortsessions_count_asc"></a>`SESSIONS_COUNT_ASC` | Sort by sessions count in ascending order. |
+| <a id="flowtypesortsessions_count_desc"></a>`SESSIONS_COUNT_DESC` | Sort by sessions count in descending order. |
+| <a id="flowtypesortusers_count_asc"></a>`USERS_COUNT_ASC` | Sort by unique users count in ascending order. |
+| <a id="flowtypesortusers_count_desc"></a>`USERS_COUNT_DESC` | Sort by unique users count in descending order. |
 
 ### `GeoRegistriesBulkAction`
 

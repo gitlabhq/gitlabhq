@@ -41,12 +41,8 @@ module QA
           end
 
           def go_to_admin_area
-            if Runtime::Env.project_studio_enabled?
-              click_element('topbar-admin-link')
-              expand_sidebar_if_collapsed
-            else
-              go_to_places_item("Admin area")
-            end
+            click_element('topbar-admin-link')
+            expand_sidebar_if_collapsed
 
             return unless has_text?('Enter admin mode', wait: 1.0)
 
@@ -79,11 +75,7 @@ module QA
           end
 
           def open_global_search_modal
-            if Runtime::Env.project_studio_enabled?
-              click_element('super-topbar-search-button')
-            else
-              click_element('super-sidebar-search-button')
-            end
+            click_element('super-topbar-search-button')
           end
         end
       end

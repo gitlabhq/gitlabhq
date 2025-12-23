@@ -95,11 +95,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
           expect(find_in_page_or_panel_by_scrolling(".js-discussion-container", index: 0)).to have_content('Line is correct')
 
           # Check the same comments in the side-by-side view.
-          if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
-            page.execute_script "document.querySelector('.js-static-panel-inner').scrollTo(0,0)"
-          else
-            execute_script "window.scrollTo(0,0)"
-          end
+          page.execute_script "document.querySelector('.js-static-panel-inner').scrollTo(0,0)"
 
           find('.js-show-diff-settings').click
           find_by_testid('listbox-item-parallel').click
@@ -290,11 +286,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
   def find_in_page_or_panel_by_scrolling(selector, index: nil, **options)
     if index.nil? # rubocop:disable RSpec/AvoidConditionalStatements -- This is to make index param optional
-      if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
-        find_in_panel_by_scrolling(selector, **options)
-      else
-        find_by_scrolling(selector, **options)
-      end
+      find_in_panel_by_scrolling(selector, **options)
     else
       all(selector, **options)[index]
     end

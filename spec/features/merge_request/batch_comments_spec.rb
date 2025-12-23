@@ -70,11 +70,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
     wait_for_requests
 
     # make sure comment form is in view
-    if Users::ProjectStudio.enabled_for_user?(user)
-      execute_script("document.querySelector('.js-static-panel-inner').scrollBy(0, 200)")
-    else
-      execute_script("window.scrollBy(0, 200)")
-    end
+    execute_script("document.querySelector('.js-static-panel-inner').scrollBy(0, 200)")
 
     write_comment(text: 'Testing update', button_text: 'Save comment')
 
@@ -328,10 +324,6 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
   end
 
   def find_in_page_or_panel_by_scrolling(selector, **options)
-    if Users::ProjectStudio.enabled_for_user?(user)
-      find_in_panel_by_scrolling(selector, **options)
-    else
-      find_by_scrolling(selector, **options)
-    end
+    find_in_panel_by_scrolling(selector, **options)
   end
 end

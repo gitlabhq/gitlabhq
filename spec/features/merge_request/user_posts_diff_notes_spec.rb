@@ -286,10 +286,6 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
   end
 
   def find_in_page_or_panel_by_scrolling(selector, **options)
-    if Users::ProjectStudio.enabled_for_user?(user)
-      find_in_panel_by_scrolling(selector, **options)
-    else
-      find_by_scrolling(selector, **options)
-    end
+    find_in_panel_by_scrolling(selector, **options)
   end
 end

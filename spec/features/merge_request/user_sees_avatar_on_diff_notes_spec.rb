@@ -126,11 +126,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
 
       it 'removes avatar when note is deleted',
         quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4253' do
-        if Users::ProjectStudio.enabled_for_user?(user)
-          open_more_actions_dropdown_in_panel(note)
-        else
-          open_more_actions_dropdown(note)
-        end
+        open_more_actions_dropdown_in_panel(note)
 
         accept_gl_confirm(button_text: 'Delete comment') do
           find(".note-row-#{note.id} .js-note-delete").click
@@ -211,10 +207,6 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
   end
 
   def find_in_page_or_panel_by_scrolling(selector, **options)
-    if Users::ProjectStudio.enabled_for_user?(user)
-      find_in_panel_by_scrolling(selector, **options)
-    else
-      find_by_scrolling(selector, **options)
-    end
+    find_in_panel_by_scrolling(selector, **options)
   end
 end

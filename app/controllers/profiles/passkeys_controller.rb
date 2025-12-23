@@ -42,7 +42,8 @@ module Profiles
 
         session.delete(:challenge)
 
-        redirect_to profile_two_factor_auth_path, status: :found, notice: result.message
+        flash[:success] = result.message
+        redirect_to profile_two_factor_auth_path, status: :found
       else
         track_passkey_internal_event(
           event_name: 'register_passkey',

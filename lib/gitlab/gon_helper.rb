@@ -106,13 +106,12 @@ module Gitlab
       push_frontend_feature_flag(:glql_work_items, current_user)
       push_frontend_feature_flag(:glql_aggregation, current_user, type: :wip)
       push_frontend_feature_flag(:glql_typescript, current_user, type: :wip)
-      push_frontend_feature_flag(:paneled_view, current_user)
       push_frontend_feature_flag(:archive_group)
       push_frontend_feature_flag(:accessible_loading_button, current_user)
       push_frontend_feature_flag(:allow_iframes_in_markdown, current_user)
 
       # Expose the Project Studio user preference as if it were a feature flag
-      push_force_frontend_feature_flag(:project_studio_enabled, Users::ProjectStudio.new(current_user).enabled?)
+      push_force_frontend_feature_flag(:project_studio_enabled, true)
     end
 
     # Exposes the state of a feature flag to the frontend code.

@@ -27,8 +27,7 @@ module QA
         end
 
         def expand_sidebar_if_collapsed
-          # With the ProjectStudio UI, the sidebar is initially expanded and then automatically collapses,
-          # so we need to wait for it to collapse
+          # The sidebar is initially expanded and then automatically collapses, so we need to wait for it to collapse
           Support::Waiter.wait_until(max_duration: 3, raise_on_failure: false) do
             has_css?('.issuable-sidebar.collapsed')
           end
