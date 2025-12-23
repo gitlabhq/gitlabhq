@@ -84,19 +84,6 @@ health-check:
     - if: $RUN_ALL_TESTS == "true"
     - if: $QA_SUITES =~ /Test::Instance::HealthCheck/
 
-# ========== instance ===========
-instance:
-  extends:
-    - .parallel
-    - .omnibus-e2e
-  variables:
-    QA_SCENARIO: Test::Instance::Image
-    QA_RUN_IN_PARALLEL: true
-  rules:
-    # gitlab-org/gitlab pipelines run instance suite in both gdk and cng deployments
-    - when: manual
-      allow_failure: true
-
 # ========== praefect ===========
 praefect:
   extends:
@@ -110,24 +97,6 @@ praefect:
   rules:
     - !reference [.rules:test:omnibus-base, rules]
     - !reference [.rules:test:smoke-for-omnibus-mr, rules]
-    - if: $QA_SUITES =~ /Test::Instance::Create/
-
-# ========== gitaly transactions enabled ===========
-# https://docs.gitlab.com/ee/architecture/blueprints/gitaly_transaction_management/
-gitaly-transactions:
-  when: manual
-  extends:
-    - .parallel
-    - .omnibus-e2e
-    - .with-ignored-runtime-data
-  variables:
-    QA_SCENARIO: Test::Integration::Praefect
-    QA_SUITE_CLASS_NAME: Test::Instance::Create # overrides default 'All' suite to only run 'Create' group specs
-    QA_CAN_TEST_PRAEFECT: "true"
-    QA_GITALY_TRANSACTIONS_ENABLED: "true"
-    QA_RUN_IN_PARALLEL: true
-  rules:
-    - !reference [.rules:test:omnibus-base, rules]
     - if: $QA_SUITES =~ /Test::Instance::Create/
 
 # ========== gitaly reftables backend ===========
@@ -244,29 +213,6 @@ mattermost:
   rules:
     - !reference [.rules:test:omnibus-base, rules]
     - if: $QA_SUITES =~ /Test::Integration::Mattermost/
-
-registry:
-  extends:
-    - .omnibus-e2e
-  variables:
-    QA_SCENARIO: Test::Integration::Registry
-  rules:
-    - !reference [.rules:test:omnibus-base, rules]
-    - if: $QA_SUITES =~ /Test::Integration::Registry/
-
-# ========== Relative url ===========
-# Only run a subset of smoke suite
-relative-url:
-  extends:
-    - .parallel
-    - .omnibus-e2e
-    - .with-ignored-runtime-data
-  variables:
-    QA_SCENARIO: Test::Instance::RelativeUrl
-    QA_RSPEC_TAGS: --tag smoke --tag ~orchestrated --tag ~skip_live_env
-  rules:
-    - !reference [.rules:test:omnibus-base, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
 
 repository-storage:
   extends:
