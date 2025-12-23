@@ -1313,41 +1313,6 @@ BEGIN
 END
 $$;
 
-CREATE FUNCTION sync_to_p_sent_notifications_table() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-INSERT INTO "p_sent_notifications" (
-  "project_id",
-  "noteable_id",
-  "noteable_type",
-  "recipient_id",
-  "commit_id",
-  "reply_key",
-  "in_reply_to_discussion_id",
-  "id",
-  "issue_email_participant_id",
-  "namespace_id",
-  "created_at"
-) VALUES (
-  NEW."project_id",
-  NEW."noteable_id",
-  NEW."noteable_type",
-  NEW."recipient_id",
-  NEW."commit_id",
-  NEW."reply_key",
-  NEW."in_reply_to_discussion_id",
-  NEW."id",
-  NEW."issue_email_participant_id",
-  NEW."namespace_id",
-  NEW."created_at"
-);
-
-RETURN NEW;
-
-END
-$$;
-
 CREATE FUNCTION sync_user_id_from_gpg_keys_table() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -27630,20 +27595,6 @@ CREATE SEQUENCE security_trainings_id_seq
 
 ALTER SEQUENCE security_trainings_id_seq OWNED BY security_trainings.id;
 
-CREATE TABLE sent_notifications (
-    project_id bigint,
-    noteable_id bigint,
-    noteable_type character varying,
-    recipient_id bigint,
-    commit_id character varying,
-    reply_key character varying NOT NULL,
-    in_reply_to_discussion_id character varying,
-    id bigint DEFAULT nextval('sent_notifications_id_seq'::regclass) NOT NULL,
-    issue_email_participant_id bigint,
-    created_at timestamp with time zone NOT NULL,
-    namespace_id bigint NOT NULL
-);
-
 CREATE TABLE sentry_issues (
     id bigint NOT NULL,
     issue_id bigint NOT NULL,
@@ -37374,9 +37325,6 @@ ALTER TABLE ONLY security_training_providers
 ALTER TABLE ONLY security_trainings
     ADD CONSTRAINT security_trainings_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY sent_notifications
-    ADD CONSTRAINT sent_notifications_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY sentry_issues
     ADD CONSTRAINT sentry_issues_pkey PRIMARY KEY (id);
 
@@ -44826,10 +44774,6 @@ CREATE INDEX index_security_trainings_on_provider_id ON security_trainings USING
 
 CREATE UNIQUE INDEX index_security_trainings_on_unique_project_id ON security_trainings USING btree (project_id) WHERE (is_primary IS TRUE);
 
-CREATE INDEX index_sent_notifications_on_issue_email_participant_id ON sent_notifications USING btree (issue_email_participant_id);
-
-CREATE INDEX index_sent_notifications_on_noteable_type_noteable_id_and_id ON sent_notifications USING btree (noteable_id, id) WHERE ((noteable_type)::text = 'Issue'::text);
-
 CREATE UNIQUE INDEX index_sentry_issues_on_issue_id ON sentry_issues USING btree (issue_id);
 
 CREATE INDEX index_sentry_issues_on_namespace_id ON sentry_issues USING btree (namespace_id);
@@ -49750,8 +49694,6 @@ CREATE TRIGGER slsa_attestations_loose_fk_trigger AFTER DELETE ON slsa_attestati
 
 CREATE TRIGGER sync_project_authorizations_to_migration AFTER INSERT OR DELETE OR UPDATE ON project_authorizations FOR EACH ROW EXECUTE FUNCTION sync_project_authorizations_to_migration_table();
 
-CREATE TRIGGER sync_sent_notifications_to_part AFTER INSERT ON sent_notifications FOR EACH ROW EXECUTE FUNCTION sync_to_p_sent_notifications_table();
-
 CREATE TRIGGER table_sync_trigger_3104e56c7b AFTER INSERT OR DELETE OR UPDATE ON project_daily_statistics FOR EACH ROW EXECUTE FUNCTION table_sync_function_c237afdf68();
 
 CREATE TRIGGER table_sync_trigger_4ea4473e79 AFTER INSERT OR DELETE OR UPDATE ON uploads FOR EACH ROW EXECUTE FUNCTION table_sync_function_40ecbfb353();
@@ -51661,9 +51603,6 @@ ALTER TABLE ONLY ssh_signatures
 
 ALTER TABLE ONLY work_item_custom_lifecycles
     ADD CONSTRAINT fk_7d5eb33a21 FOREIGN KEY (default_closed_status_id) REFERENCES work_item_custom_statuses(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY sent_notifications
-    ADD CONSTRAINT fk_7d7663e36a FOREIGN KEY (issue_email_participant_id) REFERENCES issue_email_participants(id) ON DELETE SET NULL NOT VALID;
 
 ALTER TABLE ONLY resource_iteration_events
     ADD CONSTRAINT fk_7d9260dbfb FOREIGN KEY (triggered_by_id) REFERENCES issues(id) ON DELETE SET NULL;

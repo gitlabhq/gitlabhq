@@ -40,26 +40,6 @@ RSpec.describe 'AdditionalEmailToExistingAccount', feature_category: :user_profi
       expect(page).to have_content('Your email address has been successfully confirmed.')
     end
 
-    context 'when devise_email_organization_routes FF is disabled' do
-      before do
-        stub_feature_flags(devise_email_organization_routes: false)
-      end
-
-      it 'sends confirmation email to user with clickable link' do
-        fill_in_new_email_form
-
-        mail = find_email_for(test_email)
-        expect(mail.subject).to eq('Confirmation instructions')
-
-        body = Nokogiri::HTML::DocumentFragment.parse(mail.body.parts.last.to_s)
-        confirmation_link = body.css('#cta a').attribute('href').value
-        expect(confirmation_link).not_to include("/o/#{user.organization.path}")
-
-        expect { visit confirmation_link }.to change { Email.last.confirmed_at }
-        expect(page).to have_content('Your email address has been successfully confirmed.')
-      end
-    end
-
     it 'verifies confirmation of additional email' do
       visit email_confirmation_path(confirmation_token: email.confirmation_token)
 

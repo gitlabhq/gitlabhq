@@ -85,13 +85,7 @@ guide GitLab Duo to:
 - Target specific file patterns with tailored review criteria.
 - Provide more detailed explanations for certain types of changes.
 
-To configure custom instructions, see [customize instructions for GitLab Duo](../../../project/merge_requests/duo_in_merge_requests.md#customize-review-instructions-for-gitlab-duo).
-
-### Custom code review comments
-
-You can customize the format of code review comments for GitLab Duo to follow.
-
-To configure custom comments, see [customized code review comments](../../../project/merge_requests/duo_in_merge_requests.md#customized-code-review-comments).
+To configure custom instructions, see [customize instructions for GitLab Duo](../../../gitlab_duo/customize_duo/review_instructions.md).
 
 ## Differences from GitLab Duo Code Review (Classic)
 

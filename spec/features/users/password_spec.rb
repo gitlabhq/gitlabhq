@@ -44,6 +44,7 @@ RSpec.describe 'User password', feature_category: :system_access do
 
       context 'when user enters the primary email' do
         let(:email) { user.email }
+        let(:new_password) { '5upers3cret!' }
 
         it 'sends reset instructions email' do
           submit_form
@@ -55,25 +56,12 @@ RSpec.describe 'User password', feature_category: :system_access do
 
           visit reset_password_link
           expect(page).to have_content('Change your password')
-        end
 
-        context 'when devise_email_organization_routes FF is disabled' do
-          before do
-            stub_feature_flags(devise_email_organization_routes: false)
-          end
+          fill_in 'user_password', with: new_password
+          fill_in 'user_password_confirmation', with: new_password
+          click_button 'Change your password'
 
-          it 'sends reset instructions email' do
-            submit_form
-
-            mail = find_email_for(email)
-            expect(mail.subject).to eq('Reset password instructions')
-            body = Nokogiri::HTML::DocumentFragment.parse(mail.body.parts.last.to_s)
-            reset_password_link = body.css('#cta a').attribute('href').value
-            expect(reset_password_link).not_to include("/o/#{user.organization.path}")
-
-            visit reset_password_link
-            expect(page).to have_content('Change your password')
-          end
+          expect(page).to have_content('Your password has been changed successfully.')
         end
       end
 
