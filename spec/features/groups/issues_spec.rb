@@ -133,6 +133,7 @@ RSpec.describe 'Group issues page', feature_category: :team_planning do
 
     before do
       sign_in(user_in_group)
+      stub_feature_flags(work_item_planning_view: false)
     end
 
     it 'displays all issues' do

@@ -52,6 +52,16 @@ RSpec.describe "Remove items linked to a work item", feature_category: :portfoli
   context 'when user has permissions to read the work item' do
     let(:current_user) { guest }
 
+    before do
+      tracking_service_double = instance_double(
+        Gitlab::WorkItems::Instrumentation::TrackingService,
+        execute: true
+      )
+
+      allow(Gitlab::WorkItems::Instrumentation::TrackingService).to receive(:new).and_return(
+        tracking_service_double)
+    end
+
     it 'unlinks the work items' do
       expect do
         post_graphql_mutation(mutation, current_user: current_user)

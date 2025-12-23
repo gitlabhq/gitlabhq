@@ -8,6 +8,7 @@ import {
   GlIcon,
   GlSkeletonLoader,
   GlModalDirective,
+  GlAlert,
 } from '@gitlab/ui';
 import produce from 'immer';
 import { isEmpty, unionBy } from 'lodash';
@@ -197,6 +198,7 @@ export default {
     GlSkeletonLoader,
     NewResourceDropdown,
     WorkItemsSavedViewsSelectors,
+    GlAlert,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -1446,7 +1448,7 @@ export default {
 <template>
   <gl-loading-icon v-if="shouldLoad" class="gl-mt-5" size="lg" />
 
-  <div v-else-if="shouldShowList">
+  <div v-else-if="shouldShowList" :class="{ 'work-item-list-container': isPlanningViewsEnabled }">
     <div v-if="showLocalBoard">
       <local-board :work-item-list-data="workItems" @back="showLocalBoard = false" />
     </div>
@@ -1466,7 +1468,7 @@ export default {
         :active-issuable="activeItem"
         :current-tab="state"
         :default-page-size="pageSize"
-        :error="error"
+        :error="isPlanningViewsEnabled ? undefined : error"
         :has-next-page="pageInfo.hasNextPage"
         :has-previous-page="pageInfo.hasPreviousPage"
         :initial-filter-value="filterTokens"
@@ -1563,6 +1565,11 @@ export default {
 
         <template #list-header>
           <template v-if="isPlanningViewsEnabled">
+            <div v-if="error" class="gl-mt-5">
+              <gl-alert variant="danger" :dismissible="hasWorkItems" @dismiss="error = undefined">
+                {{ error }}
+              </gl-alert>
+            </div>
             <template v-if="!workItemsSavedViewsEnabled">
               <work-item-list-heading>
                 <div class="gl-flex gl-justify-end gl-gap-3">
@@ -1667,7 +1674,7 @@ export default {
           <issue-card-statistics :issue="issuable" />
         </template>
 
-        <template #empty-state>
+        <template v-if="!error" #empty-state>
           <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab">
             <empty-state-with-any-issues
               v-if="hasAnyIssues"

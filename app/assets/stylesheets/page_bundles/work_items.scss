@@ -364,6 +364,22 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 }
 
+.work-item-list-container {
+  .row-content-block {
+    @apply gl-bg-transparent;
+    @apply gl-border-b-0;
+    @apply gl-p-0;
+  }
+
+  .sticky-filter {
+    @apply gl-bg-default;
+    @apply gl-left-0;
+    @apply gl-border-b;
+    @apply gl-py-3;
+    @apply gl-px-5;
+  }
+}
+
 .work-item-sidebar-container {
   container-type: inline-size;
   container-name: work-item-sidebar;

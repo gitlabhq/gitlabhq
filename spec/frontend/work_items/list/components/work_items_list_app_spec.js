@@ -1,4 +1,4 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -157,6 +157,7 @@ const findChildItem2 = () => wrapper.findAllComponents(IssuableItem).at(1);
 const findSubChildIndicator = (item) => item.find('[data-testid="sub-child-work-item-indicator"]');
 const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
 const findWorkItemListActions = () => wrapper.findComponent(WorkItemListActions);
+const findGlAlert = () => wrapper.findComponent(GlAlert);
 
 const mountComponent = ({
   provide = {},
@@ -395,6 +396,21 @@ describe('when work items are fetched', () => {
 
     expect(findSubChildIndicator(findChildItem1()).exists()).toBe(true);
     expect(findSubChildIndicator(findChildItem2()).exists()).toBe(false);
+  });
+
+  describe('when workItemPlanningView flag is enabled', () => {
+    beforeEach(async () => {
+      mountComponent({ workItemPlanningView: true });
+      await waitForPromises();
+    });
+
+    it('passes undefined as error to IssuableList', () => {
+      expect(findIssuableList().props('error')).toBe('');
+    });
+
+    it('does not display error alert when there is no error', () => {
+      expect(findGlAlert().exists()).toBe(false);
+    });
   });
 
   describe('when isGroupIssuesList is true', () => {
@@ -642,6 +658,24 @@ describe.each`
     await nextTick();
 
     expect(wrapper.text()).not.toContain(message);
+  });
+
+  describe('when workItemPlanningView flag is enabled', () => {
+    beforeEach(async () => {
+      mountComponent({
+        [handlerName]: jest.fn().mockRejectedValue(new Error('ERROR')),
+        workItemPlanningView: true,
+      });
+      await waitForPromises();
+    });
+
+    it('passes empty string as error to IssuableList', () => {
+      expect(findIssuableList().props('error')).toBe('');
+    });
+
+    it('displays error alert in the component', () => {
+      expect(findGlAlert().text()).toContain(message);
+    });
   });
 });
 

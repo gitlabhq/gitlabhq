@@ -71,6 +71,20 @@ RSpec.describe WorkItems::RelatedWorkItemLinks::DestroyService, feature_category
           is_expected.to eq(message: 'No work item IDs provided.', status: :error, http_status: 409)
         end
       end
+
+      context 'with tracking work item events' do
+        let(:work_item) { source }
+        let(:current_user) { user }
+        let(:ids_to_remove) { [linked_item1.id] }
+
+        def execute_service
+          described_class.new(source, user, { item_ids: ids_to_remove }).execute
+        end
+
+        it_behaves_like 'tracks work item event', :work_item, :current_user,
+          Gitlab::WorkItems::Instrumentation::EventActions::RELATED_ITEM_REMOVE,
+          :execute_service
+      end
     end
 
     context 'when user cannot `admin_work_item_link` for the work item' do

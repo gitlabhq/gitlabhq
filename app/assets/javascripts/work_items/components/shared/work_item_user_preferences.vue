@@ -232,7 +232,7 @@ export default {
     no-caret
     placement="bottom-end"
     :auto-close="false"
-    class="gl-mt-[10px] @sm/panel:gl-mt-0"
+    class="@sm/panel:gl-mt-0"
     @shown="showDropdown"
     @hidden="hideDropdown"
   >
