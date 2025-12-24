@@ -23,6 +23,9 @@ class ProjectPolicy < BasePolicy
   desc "User has reporter access"
   condition(:reporter) { team_access_level >= Gitlab::Access::REPORTER }
 
+  desc "User has security manager access"
+  condition(:security_manager) { Gitlab::Security::SecurityManagerConfig.enabled? && team_access_level == Gitlab::Access::SECURITY_MANAGER }
+
   desc "User has developer access"
   condition(:developer) { team_access_level >= Gitlab::Access::DEVELOPER }
 
@@ -344,6 +347,7 @@ class ProjectPolicy < BasePolicy
   rule { guest }.enable :guest_access
   rule { planner }.enable :planner_access
   rule { reporter }.enable :reporter_access
+  rule { security_manager }.enable :security_manager_access
   rule { developer }.enable :developer_access
   rule { maintainer }.enable :maintainer_access
   rule { owner | admin | organization_owner }.enable :owner_access
@@ -354,6 +358,7 @@ class ProjectPolicy < BasePolicy
     enable :guest_access
     enable :planner_access
     enable :reporter_access
+    enable :security_manager_access
     enable :developer_access
     enable :maintainer_access
 

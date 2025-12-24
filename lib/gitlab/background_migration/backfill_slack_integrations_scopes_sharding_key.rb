@@ -71,8 +71,9 @@ module Gitlab
           WITH relation AS MATERIALIZED (
             #{sub_batch.limit(sub_batch_size).to_sql}
           ), with_null_sharding_key AS MATERIALIZED (
-            SELECT "id" FROM "relation"
-            WHERE num_nonnulls("project_id", "group_id", "organization_id") = 0
+            SELECT "relation"."id" FROM "relation"
+            JOIN "slack_api_scopes" ON "slack_api_scopes"."id" = "relation"."slack_api_scope_id"
+            WHERE "slack_api_scopes"."organization_id" IS NULL
             LIMIT #{sub_batch_size}
           ), deleted_rows AS MATERIALIZED (
             DELETE FROM "slack_integrations_scopes"

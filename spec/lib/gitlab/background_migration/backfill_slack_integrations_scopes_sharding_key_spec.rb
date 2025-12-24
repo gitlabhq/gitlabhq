@@ -200,7 +200,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSlackIntegrationsScopesShard
   let(:project_slack_integration_scope1) do
     slack_integrations_scopes.create!(
       slack_api_scope_id: api_scope1.id,
-      slack_integration_id: project_slack_integration.id
+      slack_integration_id: project_slack_integration.id,
+      project_id: project.id
     )
   end
 
@@ -311,7 +312,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSlackIntegrationsScopesShard
       expect(group_slack_integration_scope2.organization_id).to be_nil
       expect(group_slack_integration_scope2.slack_api_scope_id).to eq(api_scope2.id)
 
-      expect(project_slack_integration_scope1.project_id).to be_nil
+      expect(project_slack_integration_scope1.project_id).to eq(project.id)
       expect(project_slack_integration_scope1.group_id).to be_nil
       expect(project_slack_integration_scope1.organization_id).to be_nil
       expect(project_slack_integration_scope1.slack_api_scope_id).to eq(api_scope1.id)

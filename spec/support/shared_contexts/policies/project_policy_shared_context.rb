@@ -5,11 +5,13 @@ RSpec.shared_context 'ProjectPolicy context' do
   let_it_be_with_reload(:guest) { create(:user) }
   let_it_be_with_reload(:planner) { create(:user) }
   let_it_be_with_reload(:reporter) { create(:user) }
+  let_it_be_with_reload(:security_manager) { create(:user) }
   let_it_be_with_reload(:developer) { create(:user) }
   let_it_be_with_reload(:maintainer) { create(:user) }
   let_it_be_with_reload(:inherited_guest) { create(:user) }
   let_it_be_with_reload(:inherited_planner) { create(:user) }
   let_it_be_with_reload(:inherited_reporter) { create(:user) }
+  let_it_be_with_reload(:inherited_security_manager) { create(:user) }
   let_it_be_with_reload(:inherited_developer) { create(:user) }
   let_it_be_with_reload(:inherited_maintainer) { create(:user) }
   let_it_be_with_reload(:organization) { create(:common_organization) }
@@ -55,6 +57,10 @@ RSpec.shared_context 'ProjectPolicy context' do
       read_sentry_issue update_issue create_merge_request_in
       read_external_emails read_internal_note
     ]
+  end
+
+  let(:base_security_manager_permissions) do
+    %i[security_manager_access]
   end
 
   let(:team_member_reporter_permissions) do
@@ -121,11 +127,13 @@ RSpec.shared_context 'ProjectPolicy context' do
   # Used in EE specs
   let(:additional_guest_permissions) { [] }
   let(:additional_reporter_permissions) { [] }
+  let(:additional_security_manager_permissions) { [] }
   let(:additional_maintainer_permissions) { [] }
   let(:additional_owner_permissions) { [] }
 
   let(:guest_permissions) { base_guest_permissions + additional_guest_permissions }
   let(:reporter_permissions) { base_reporter_permissions + additional_reporter_permissions }
+  let(:security_manager_permissions) { base_security_manager_permissions + additional_security_manager_permissions }
   let(:maintainer_permissions) { base_maintainer_permissions + additional_maintainer_permissions }
   let(:owner_permissions) { base_owner_permissions + additional_owner_permissions }
 
@@ -133,6 +141,7 @@ RSpec.shared_context 'ProjectPolicy context' do
     group.add_guest(inherited_guest)
     group.add_planner(inherited_planner)
     group.add_reporter(inherited_reporter)
+    group.add_security_manager(inherited_security_manager)
     group.add_developer(inherited_developer)
     group.add_maintainer(inherited_maintainer)
 
@@ -140,6 +149,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       project.add_guest(guest)
       project.add_planner(planner)
       project.add_reporter(reporter)
+      project.add_security_manager(security_manager)
       project.add_developer(developer)
       project.add_maintainer(maintainer)
       project.add_owner(owner)

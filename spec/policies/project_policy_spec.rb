@@ -19,6 +19,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     project_with_runner_registration_token.add_guest(guest)
     project_with_runner_registration_token.add_planner(planner)
     project_with_runner_registration_token.add_reporter(reporter)
+    project_with_runner_registration_token.add_security_manager(security_manager)
     project_with_runner_registration_token.add_developer(developer)
     project_with_runner_registration_token.add_maintainer(maintainer)
     project_with_runner_registration_token.add_owner(owner)
@@ -510,11 +511,12 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     using RSpec::Parameterized::TableSyntax
 
     where(:role, :allowed) do
-      :owner      | true
-      :maintainer | true
-      :developer  | false
-      :reporter   | false
-      :guest      | false
+      :owner            | true
+      :maintainer       | true
+      :developer        | false
+      :security_manager | false
+      :reporter         | false
+      :guest            | false
     end
 
     with_them do
@@ -626,6 +628,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   it_behaves_like 'project policies as guest'
   it_behaves_like 'project policies as planner'
   it_behaves_like 'project policies as reporter'
+  it_behaves_like 'project policies as security_manager'
   it_behaves_like 'project policies as developer'
   it_behaves_like 'project policies as maintainer'
   it_behaves_like 'project policies as owner'

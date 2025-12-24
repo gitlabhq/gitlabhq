@@ -10,35 +10,17 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   context 'public group with no user' do
     let(:group) { create(:group, :public) }
     let(:current_user) { nil }
+    let(:permissions) { public_anonymous_permissions }
 
-    specify do
-      expect_allowed(*public_permissions)
-      expect_disallowed(:upload_file)
-      expect_disallowed(*(guest_permissions - public_permissions))
-      expect_disallowed(*(planner_permissions - guest_permissions))
-      expect_disallowed(*reporter_permissions)
-      expect_disallowed(*developer_permissions)
-      expect_disallowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
-      expect_disallowed(:read_namespace_via_membership)
-    end
+    it_behaves_like 'valid permissions'
   end
 
   context 'public group with user who is not a member' do
     let(:group) { create(:group, :public) }
     let(:current_user) { create(:user) }
+    let(:permissions) { public_permissions }
 
-    specify do
-      expect_allowed(*public_permissions)
-      expect_allowed(:upload_file)
-      expect_disallowed(*(guest_permissions - public_permissions))
-      expect_disallowed(*(planner_permissions - guest_permissions))
-      expect_disallowed(*reporter_permissions)
-      expect_disallowed(*developer_permissions)
-      expect_disallowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
-      expect_disallowed(:read_namespace_via_membership)
-    end
+    it_behaves_like 'valid permissions'
   end
 
   context 'private group that has been invited to a public project and with no user' do
@@ -49,13 +31,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       create(:project_group_link, project: project, group: group)
     end
 
-    specify do
-      expect_disallowed(*public_permissions)
-      expect_disallowed(*guest_permissions)
-      expect_disallowed(*planner_permissions)
-      expect_disallowed(*reporter_permissions)
-      expect_disallowed(*owner_permissions)
-    end
+    it { expect_disallowed(*all_permissions) }
   end
 
   context 'private group that has been invited to a public project and with a foreign user' do
@@ -66,34 +42,32 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       create(:project_group_link, project: project, group: group)
     end
 
-    specify do
-      expect_disallowed(*public_permissions)
-      expect_disallowed(*guest_permissions)
-      expect_disallowed(*planner_permissions)
-      expect_disallowed(*reporter_permissions)
-      expect_disallowed(*owner_permissions)
-    end
+    it { expect_disallowed(*all_permissions) }
   end
 
   context 'has projects' do
     let(:current_user) { create(:user) }
     let(:project) { create(:project, namespace: group) }
+    let(:permissions) { public_permissions - [:read_counts] }
 
     before do
       project.add_developer(current_user)
     end
 
-    it { expect_allowed(*(public_permissions - [:read_counts])) }
+    it_behaves_like 'valid permissions'
 
     context 'in subgroups' do
       let(:subgroup) { create(:group, :private, parent: group) }
       let(:project) { create(:project, namespace: subgroup) }
 
-      it { expect_allowed(*(public_permissions - [:read_counts])) }
+      it_behaves_like 'valid permissions'
     end
   end
 
   shared_examples 'deploy token does not get confused with user' do
+    let(:deploy_token) { create(:deploy_token) }
+    let(:current_user) { deploy_token }
+
     before do
       # We force the id of the deploy token and the user to be the same,
       # which requires deleting the joining record as we cannot update
@@ -102,31 +76,14 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       deploy_token.update!(id: user_id)
     end
 
-    let(:deploy_token) { create(:deploy_token) }
-    let(:current_user) { deploy_token }
-
-    specify do
-      expect_disallowed(*public_permissions)
-      expect_disallowed(*guest_permissions)
-      expect_disallowed(*planner_permissions)
-      expect_disallowed(*reporter_permissions)
-      expect_disallowed(*developer_permissions)
-      expect_disallowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
-    end
+    it { expect_disallowed(*all_permissions) }
   end
 
   context 'guests' do
     let(:current_user) { guest }
+    let(:permissions) { guest_permissions }
 
-    specify do
-      expect_allowed(*public_permissions)
-      expect_allowed(*guest_permissions)
-      expect_disallowed(*reporter_permissions)
-      expect_disallowed(*developer_permissions)
-      expect_disallowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
-    end
+    it_behaves_like 'valid permissions'
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { guest.id }
@@ -135,16 +92,9 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'planners' do
     let(:current_user) { planner }
+    let(:permissions) { planner_permissions }
 
-    specify do
-      expect_allowed(*public_permissions)
-      expect_allowed(*guest_permissions)
-      expect_allowed(*planner_permissions)
-      expect_disallowed(*(reporter_permissions - planner_permissions))
-      expect_disallowed(*developer_permissions)
-      expect_disallowed(*maintainer_permissions)
-      expect_disallowed(*(owner_permissions - [:destroy_issue]))
-    end
+    it_behaves_like 'valid permissions'
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { planner.id }
@@ -153,32 +103,31 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'reporter' do
     let(:current_user) { reporter }
+    let(:permissions) { reporter_permissions }
 
-    specify do
-      expect_allowed(*public_permissions)
-      expect_allowed(*guest_permissions)
-      expect_allowed(*reporter_permissions)
-      expect_disallowed(*developer_permissions)
-      expect_disallowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
-    end
+    it_behaves_like 'valid permissions'
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { reporter.id }
     end
   end
 
+  context 'security_manager' do
+    let(:current_user) { security_manager }
+    let(:permissions) { security_manager_permissions }
+
+    it_behaves_like 'valid permissions'
+
+    it_behaves_like 'deploy token does not get confused with user' do
+      let(:user_id) { security_manager.id }
+    end
+  end
+
   context 'developer' do
     let(:current_user) { developer }
+    let(:permissions) { developer_permissions }
 
-    specify do
-      expect_allowed(*public_permissions)
-      expect_allowed(*guest_permissions)
-      expect_allowed(*reporter_permissions)
-      expect_allowed(*developer_permissions)
-      expect_disallowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
-    end
+    it_behaves_like 'valid permissions'
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { developer.id }
@@ -187,34 +136,18 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'maintainer' do
     let(:current_user) { maintainer }
+    let(:permissions) { maintainer_permissions }
+
+    it_behaves_like 'valid permissions'
 
     context 'with subgroup_creation level set to maintainer' do
+      let(:permissions) { maintainer_permissions + [:create_subgroup] }
+
       before do
         group.update!(subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
       end
 
-      it 'allows permissions from lower roles' do
-        expect_allowed(*public_permissions)
-        expect_allowed(*guest_permissions)
-        expect_allowed(*reporter_permissions)
-        expect_allowed(*developer_permissions)
-      end
-
-      it 'allows every maintainer permission plus creating subgroups' do
-        expect_allowed(:create_subgroup, *maintainer_permissions)
-        expect_disallowed(*(owner_permissions - [:create_subgroup]))
-      end
-    end
-
-    context 'with subgroup_creation_level set to owner' do
-      it 'allows every maintainer permission' do
-        expect_allowed(*public_permissions)
-        expect_allowed(*guest_permissions)
-        expect_allowed(*reporter_permissions)
-        expect_allowed(*developer_permissions)
-        expect_allowed(*maintainer_permissions)
-        expect_disallowed(*owner_permissions)
-      end
+      it_behaves_like 'valid permissions'
     end
 
     it_behaves_like 'deploy token does not get confused with user' do
@@ -224,16 +157,9 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'owner' do
     let(:current_user) { owner }
+    let(:permissions) { owner_permissions }
 
-    specify do
-      expect_allowed(*public_permissions)
-      expect_allowed(*guest_permissions)
-      expect_allowed(*planner_permissions)
-      expect_allowed(*reporter_permissions)
-      expect_allowed(*developer_permissions)
-      expect_allowed(*maintainer_permissions)
-      expect_allowed(*owner_permissions)
-    end
+    it_behaves_like 'valid permissions'
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { owner.id }
@@ -243,51 +169,28 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   context 'admin' do
     let(:current_user) { admin }
 
-    specify do
-      expect_disallowed(*public_permissions)
-      expect_disallowed(*guest_permissions)
-      expect_disallowed(*planner_permissions)
-      expect_disallowed(*reporter_permissions)
-      expect_disallowed(*developer_permissions)
-      expect_disallowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
-    end
+    it { expect_disallowed(*all_permissions) }
 
     context 'with admin mode', :enable_admin_mode do
-      specify do
-        expect_allowed(*public_permissions)
-        expect_allowed(*guest_permissions)
-        expect_allowed(*planner_permissions)
-        expect_allowed(*reporter_permissions)
-        expect_allowed(*developer_permissions)
-        expect_allowed(*maintainer_permissions)
-        expect_allowed(*owner_permissions)
-        expect_allowed(*admin_permissions)
-      end
+      let(:permissions) { admin_permissions }
+
+      it_behaves_like 'valid permissions'
     end
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { admin.id }
 
       context 'with admin mode', :enable_admin_mode do
-        it { expect_disallowed(*admin_permissions) }
+        it { expect_disallowed(*all_permissions) }
       end
     end
   end
 
   context 'organization owner' do
     let(:current_user) { organization_owner }
+    let(:permissions) { admin_permissions }
 
-    specify do
-      expect_allowed(*public_permissions)
-      expect_allowed(*guest_permissions)
-      expect_allowed(*planner_permissions)
-      expect_allowed(*reporter_permissions)
-      expect_allowed(*developer_permissions)
-      expect_allowed(*maintainer_permissions)
-      expect_allowed(*owner_permissions)
-      expect_allowed(*admin_permissions)
-    end
+    it_behaves_like 'valid permissions'
 
     context 'when user is also an admin' do
       before do
@@ -310,6 +213,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     before_all do
       nested_group.add_guest(guest)
       nested_group.add_guest(reporter)
+      nested_group.add_guest(security_manager)
       nested_group.add_guest(developer)
       nested_group.add_guest(maintainer)
 
@@ -324,99 +228,56 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     context 'with no user' do
       let(:current_user) { nil }
 
-      specify do
-        expect_disallowed(*public_permissions)
-        expect_disallowed(*guest_permissions)
-        expect_disallowed(*planner_permissions)
-        expect_disallowed(*reporter_permissions)
-        expect_disallowed(*developer_permissions)
-        expect_disallowed(*maintainer_permissions)
-        expect_disallowed(*owner_permissions)
-      end
+      it { expect_disallowed(*all_permissions) }
     end
 
     context 'guests' do
       let(:current_user) { guest }
+      let(:permissions) { guest_permissions }
 
-      specify do
-        expect_allowed(*public_permissions)
-        expect_allowed(*guest_permissions)
-        expect_disallowed(*(planner_permissions - guest_permissions))
-        expect_disallowed(*reporter_permissions)
-        expect_disallowed(*developer_permissions)
-        expect_disallowed(*maintainer_permissions)
-        expect_disallowed(*owner_permissions)
-      end
+      it_behaves_like 'valid permissions'
     end
 
     context 'planners' do
       let(:current_user) { planner }
+      let(:permissions) { planner_permissions }
 
-      specify do
-        expect_allowed(*public_permissions)
-        expect_allowed(*guest_permissions)
-        expect_allowed(*planner_permissions)
-        expect_disallowed(*(reporter_permissions - planner_permissions))
-        expect_disallowed(*developer_permissions)
-        expect_disallowed(*maintainer_permissions)
-        expect_disallowed(*(owner_permissions - [:destroy_issue]))
-      end
+      it_behaves_like 'valid permissions'
     end
 
     context 'reporter' do
       let(:current_user) { reporter }
+      let(:permissions) { reporter_permissions }
 
-      specify do
-        expect_allowed(*public_permissions)
-        expect_allowed(*guest_permissions)
-        expect_allowed(*reporter_permissions)
-        expect_disallowed(*developer_permissions)
-        expect_disallowed(*maintainer_permissions)
-        expect_disallowed(*owner_permissions)
-      end
+      it_behaves_like 'valid permissions'
+    end
+
+    context 'security_manager' do
+      let(:current_user) { security_manager }
+      let(:permissions) { security_manager_permissions }
+
+      it_behaves_like 'valid permissions'
     end
 
     context 'developer' do
       let(:current_user) { developer }
+      let(:permissions) { developer_permissions }
 
-      specify do
-        expect_allowed(*public_permissions)
-        expect_allowed(*guest_permissions)
-        expect_allowed(*reporter_permissions)
-        expect_allowed(*developer_permissions)
-        expect_disallowed(*maintainer_permissions)
-        expect_disallowed(*owner_permissions)
-      end
+      it_behaves_like 'valid permissions'
     end
 
     context 'maintainer' do
       let(:current_user) { maintainer }
+      let(:permissions) { maintainer_permissions }
 
-      specify do
-        expect_allowed(*public_permissions)
-        expect_allowed(*guest_permissions)
-        expect_allowed(*reporter_permissions)
-        expect_allowed(*developer_permissions)
-      end
-
-      it 'allows every maintainer permission plus creating subgroups' do
-        expect_allowed(*maintainer_permissions)
-        expect_disallowed(*owner_permissions)
-      end
+      it_behaves_like 'valid permissions'
     end
 
     context 'owner' do
       let(:current_user) { owner }
+      let(:permissions) { owner_permissions }
 
-      specify do
-        expect_allowed(*public_permissions)
-        expect_allowed(*guest_permissions)
-        expect_allowed(*planner_permissions)
-        expect_allowed(*reporter_permissions)
-        expect_allowed(*developer_permissions)
-        expect_allowed(*maintainer_permissions)
-        expect_allowed(*owner_permissions)
-      end
+      it_behaves_like 'valid permissions'
     end
   end
 

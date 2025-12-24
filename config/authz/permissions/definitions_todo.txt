@@ -731,6 +731,7 @@ retry_failed_status_checks
 revoke_token
 rollover_issues
 rotate_token
+security_manager_access
 set_confidentiality
 set_emails_disabled
 set_epic_created_at
