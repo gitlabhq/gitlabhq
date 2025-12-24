@@ -9,16 +9,12 @@ class QueueBackfillSlackIntegrationsScopesShardingKey < Gitlab::Database::Migrat
   SUB_BATCH_SIZE = 50
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :slack_integrations_scopes,
-      :id,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op
+    # We are going to have to retry this BBM. More details in
+    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215658#note_2960239220
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :slack_integrations_scopes, :id, [])
+    # no-op
   end
 end
