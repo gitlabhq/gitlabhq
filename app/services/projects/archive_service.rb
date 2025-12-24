@@ -22,7 +22,7 @@ module Projects
       return AncestorAlreadyArchivedError if project.ancestors_archived?
       return ScheduledDeletionError if project.scheduled_for_deletion_in_hierarchy_chain?
 
-      if project.update(archived: true)
+      if archive_project
         after_archive
         ServiceResponse.success
       else
@@ -34,6 +34,14 @@ module Projects
     end
 
     private
+
+    def archive_project
+      ApplicationRecord.transaction do
+        result = Feature.disabled?(:namespace_state_management, project.root_ancestor) ||
+          project.archive(transition_user: current_user)
+        result && project.update(archived: true)
+      end
+    end
 
     def after_archive
       system_hook_service.execute_hooks_for(project, :update)

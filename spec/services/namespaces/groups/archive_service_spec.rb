@@ -72,10 +72,20 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
     end
 
     shared_examples 'rolls back all changes on failure' do
+      let(:error_message) { 'random error message' }
+
+      before do
+        allow(group).to receive(:archive!)
+
+        errors = ActiveModel::Errors.new(group).tap { |e| e.add(:base, error_message) }
+        allow(group).to receive(:errors).and_return(errors)
+      end
+
       it 'returns an error response' do
         response = service_response
+
         expect(response).to be_error
-        expect(response.message).to eq("Failed to archive group!")
+        expect(response.message).to eq("Failed to archive group! #{error_message}")
       end
 
       it 'does not persist any changes' do
@@ -91,6 +101,24 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
         service_response
 
         expect(group.namespace_settings.reload.archived).to be(true)
+      end
+
+      it 'updates the namespace state' do
+        service_response
+
+        expect(group.state).to be(Namespaces::Stateful::STATES[:archived])
+      end
+
+      context 'with namespace_state_management feature flag disabled' do
+        before do
+          stub_feature_flags(namespace_state_management: false)
+        end
+
+        it 'does not update the namespace state' do
+          service_response
+
+          expect(group.state).to be(Namespaces::Stateful::STATES[:ancestor_inherited])
+        end
       end
 
       it 'unarchives all descendant groups', :aggregate_failures do

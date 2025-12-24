@@ -4678,42 +4678,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#unarchive_self_and_descendants!' do
-    let_it_be_with_reload(:parent_group) { create(:group) }
-    let_it_be_with_reload(:group) { create(:group, :archived, parent: parent_group) }
-    let_it_be_with_reload(:subgroup) { create(:group, :archived, parent: group) }
-    let_it_be_with_reload(:sub_subgroup) { create(:group, :archived, parent: subgroup) }
-
-    it 'unarchives the group itself' do
-      group.unarchive_self_and_descendants!
-
-      expect(group.namespace_settings.reload.archived).to be(false)
-    end
-
-    it 'unarchives all descendant groups', :aggregate_failures do
-      group.unarchive_self_and_descendants!
-
-      expect(subgroup.namespace_settings.reload.archived).to be(false)
-      expect(sub_subgroup.namespace_settings.reload.archived).to be(false)
-    end
-
-    it 'does not unarchive parent groups' do
-      parent_group.namespace_settings.update!(archived: true)
-
-      group.unarchive_self_and_descendants!
-
-      expect(parent_group.namespace_settings.reload.archived).to be(true)
-    end
-
-    it 'does not affect groups that are not archived' do
-      unarchived_group = create(:group, parent: group)
-
-      expect { group.unarchive_self_and_descendants! }.not_to change {
-        unarchived_group.namespace_settings.reload.archived
-      }
-    end
-  end
-
   describe '#unarchive_descendants!' do
     let_it_be_with_reload(:parent_group) { create(:group) }
     let_it_be_with_reload(:group) { create(:group, :archived, parent: parent_group) }

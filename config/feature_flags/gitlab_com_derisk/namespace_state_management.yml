@@ -1,0 +1,10 @@
+---
+name: namespace_state_management
+description: Enables state transitions on namespaces for operations like archive, unarchive, deletion scheduling, and deletion execution.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583196
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214396
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584390
+milestone: '18.8'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

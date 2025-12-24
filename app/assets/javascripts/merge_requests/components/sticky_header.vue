@@ -174,11 +174,7 @@ export default {
 
 <template>
   <gl-intersection-observer
-    class="merge-request-sticky-header-wrapper gl-relative"
-    :class="{
-      '-gl-top-5': !glFeatures.projectStudioEnabled,
-      'gl-top-8': glFeatures.projectStudioEnabled,
-    }"
+    class="merge-request-sticky-header-wrapper gl-relative gl-top-8"
     @appear="setStickyHeaderVisible(false)"
     @disappear="setStickyHeaderVisible(true)"
   >

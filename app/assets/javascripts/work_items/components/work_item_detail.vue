@@ -950,7 +950,7 @@ export default {
       @drop.prevent.stop="onDrop"
     >
       <!-- Do not remove the element below, it allows for scrolling to top on click of sticky header -->
-      <div v-if="glFeatures.projectStudioEnabled" id="top"></div>
+      <div id="top"></div>
       <section class="work-item-view">
         <component :is="isModalOrDrawer ? 'h2' : 'h1'" v-if="editMode" class="gl-sr-only">{{
           s__('WorkItem|Edit work item')

@@ -51,10 +51,19 @@ RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_categor
     end
 
     shared_examples 'rolls back all changes on failure' do
+      let(:error_message) { 'random error message' }
+
+      before do
+        allow(group).to receive(:unarchive!)
+
+        errors = ActiveModel::Errors.new(group).tap { |e| e.add(:base, error_message) }
+        allow(group).to receive(:errors).and_return(errors)
+      end
+
       it 'returns an error response' do
         response = service_response
         expect(response).to be_error
-        expect(response.message).to eq("Failed to unarchive group!")
+        expect(response.message).to eq("Failed to unarchive group! #{error_message}")
       end
 
       it 'does not persist any changes' do
@@ -66,6 +75,25 @@ RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_categor
     end
 
     context 'when unarchiving succeeds' do
+      it 'updates the namespace state' do
+        service_response
+
+        expect(group.state).to be(Namespaces::Stateful::STATES[:ancestor_inherited])
+      end
+
+      context 'with namespace_state_management feature flag disabled' do
+        before do
+          stub_feature_flags(namespace_state_management: false)
+        end
+
+        it 'does not update the namespace state' do
+          group.update_column(:state, Namespaces::Stateful::STATES[:archived])
+          service_response
+
+          expect(group.state).to be(Namespaces::Stateful::STATES[:archived])
+        end
+      end
+
       it 'unarchives all descendant groups', :aggregate_failures do
         service_response
 
@@ -116,7 +144,7 @@ RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_categor
 
     context 'when unarchiving fails' do
       before do
-        allow(group).to receive(:unarchive_self_and_descendants!).and_raise(ActiveRecord::RecordNotSaved)
+        allow(group).to receive(:unarchive_descendants!).and_raise(ActiveRecord::RecordNotSaved)
       end
 
       it_behaves_like 'rolls back all changes on failure'

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::UnarchiveService, feature_category: :groups_and_projects do
+  include Namespaces::StatefulHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, namespace: group, archived: true) }
@@ -78,6 +80,23 @@ RSpec.describe Projects::UnarchiveService, feature_category: :groups_and_project
             result = service.execute
 
             expect(result).to be_success
+          end
+
+          it 'updates the project_namespace state' do
+            set_state(project.project_namespace, :archived)
+
+            expect { service.execute }.to change { project.project_namespace.state }
+              .from(Namespaces::Stateful::STATES[:archived]).to(Namespaces::Stateful::STATES[:ancestor_inherited])
+          end
+
+          context 'with namespace_state_management feature flag disabled' do
+            before do
+              stub_feature_flags(namespace_state_management: false)
+            end
+
+            it 'does not update the project_namespace state' do
+              expect { service.execute }.not_to change { project.project_namespace.state }
+            end
           end
 
           it 'updates the project archived status to false' do

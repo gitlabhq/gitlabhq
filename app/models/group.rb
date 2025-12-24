@@ -1293,12 +1293,6 @@ class Group < Namespace
     deletion_schedule.marked_for_deletion_on.future?
   end
 
-  def unarchive_self_and_descendants!
-    NamespaceSetting
-      .where(namespace_id: self_and_descendant_ids, archived: true)
-      .update_all(archived: false)
-  end
-
   def unarchive_descendants!
     NamespaceSetting
       .where(namespace_id: descendant_ids, archived: true)

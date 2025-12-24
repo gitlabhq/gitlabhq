@@ -14,9 +14,6 @@ module Namespaces
       AncestorArchivedError = ServiceResponse.error(
         message: 'Cannot unarchive group since one of the ancestor groups is archived!'
       )
-      UnarchivingFailedError = ServiceResponse.error(
-        message: 'Failed to unarchive group!'
-      )
 
       Error = Class.new(StandardError)
       UpdateError = Class.new(Error)
@@ -28,20 +25,31 @@ module Namespaces
 
         if unarchive_descendants?
           group.transaction do
-            group.unarchive_self_and_descendants!
+            group.unarchive_descendants!
             group.unarchive_all_projects!
+            unarchive_group
           end
         else
-          group.namespace_settings.update!(archived: false)
+          unarchive_group
         end
 
         after_unarchive
         ServiceResponse.success
-      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
-        UnarchivingFailedError
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved, StateMachines::InvalidTransition
+        ServiceResponse.error(message: "Failed to unarchive group! #{group.errors.full_messages.to_sentence}")
       end
 
       private
+
+      def unarchive_group
+        Namespace.transaction do
+          if Feature.enabled?(:namespace_state_management, group.root_ancestor)
+            group.unarchive!(transition_user: current_user)
+          end
+
+          group.namespace_settings.update!(archived: false)
+        end
+      end
 
       def after_unarchive
         system_hook_service.execute_hooks_for(group, :update)

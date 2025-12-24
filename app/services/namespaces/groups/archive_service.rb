@@ -17,9 +17,6 @@ module Namespaces
       ScheduledDeletionError = ServiceResponse.error(
         message: 'Cannot archive group since it is scheduled for deletion.'
       )
-      ArchivingFailedError = ServiceResponse.error(
-        message: 'Failed to archive group!'
-      )
 
       Error = Class.new(StandardError)
       UpdateError = Class.new(Error)
@@ -35,21 +32,32 @@ module Namespaces
 
         if unarchive_descendants?
           group.transaction do
-            group.namespace_settings.update!(archived: true)
+            archive_group
             group.unarchive_descendants!
             group.unarchive_all_projects!
           end
         else
-          group.namespace_settings.update!(archived: true)
+          archive_group
         end
 
         after_archive
         ServiceResponse.success
-      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
-        ArchivingFailedError
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved, StateMachines::InvalidTransition
+        message = "Failed to archive group! #{group.errors.full_messages.to_sentence}".strip
+        ServiceResponse.error(message: message)
       end
 
       private
+
+      def archive_group
+        Namespace.transaction do
+          if Feature.enabled?(:namespace_state_management, group.root_ancestor)
+            group.archive!(transition_user: current_user)
+          end
+
+          group.namespace_settings.update!(archived: true)
+        end
+      end
 
       def after_archive
         system_hook_service.execute_hooks_for(group, :update)

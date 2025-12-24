@@ -57,6 +57,8 @@ tags:
   description: Operations about alert_managements
 - name: branches
   description: Operations about branches
+- name: ci_catalog
+  description: Operations about ci_catalogs
 - name: job_artifacts
   description: Operations about job_artifacts
 - name: ci_jobs
@@ -11053,7 +11055,7 @@ paths:
         '422':
           description: Unprocessable entity
       tags:
-      - projects
+      - ci_catalog
       operationId: postApiV4ProjectsIdCatalogPublish
   "/api/v4/projects/{id}/jobs/artifacts/{ref_name}/download":
     get:

@@ -8,7 +8,7 @@ gem 'gitlab-utils', path: '../gems/gitlab-utils'
 gem 'gitlab-rspec', path: '../gems/gitlab-rspec', require: false
 
 gem 'activesupport', '~> 7.2.3' # This should stay in sync with the root's Gemfile
-gem 'allure-rspec', '~> 2.27.0'
+gem 'allure-rspec', '~> 2.28.0'
 gem 'capybara', '~> 3.40.0'
 gem 'capybara-screenshot', '~> 1.0.26'
 gem 'deprecation_toolkit', '~> 2.3.0', require: false

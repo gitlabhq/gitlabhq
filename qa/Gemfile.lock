@@ -58,13 +58,13 @@ GEM
       tzinfo (~> 2.0, >= 2.0.5)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
-    allure-rspec (2.27.0)
-      allure-ruby-commons (= 2.27.0)
+    allure-rspec (2.28.0)
+      allure-ruby-commons (= 2.28.0)
       rspec-core (>= 3.8, < 4)
-    allure-ruby-commons (2.27.0)
+    allure-ruby-commons (2.28.0)
       mime-types (>= 3.3, < 4)
       require_all (>= 2, < 4)
-      rspec-expectations (~> 3.12)
+      rspec-expectations (~> 3.13)
     amatch (0.4.1)
       mize
       tins (~> 1.0)
@@ -396,7 +396,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport (~> 7.2.3)
-  allure-rspec (~> 2.27.0)
+  allure-rspec (~> 2.28.0)
   capybara (~> 3.40.0)
   capybara-screenshot (~> 1.0.26)
   deprecation_toolkit (~> 2.3.0)
