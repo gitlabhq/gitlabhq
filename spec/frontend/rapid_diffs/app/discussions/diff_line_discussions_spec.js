@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { GlButton } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
@@ -79,6 +80,19 @@ describe('DiffLineDiscussions', () => {
     expect(wrapper.findComponent(NewLineDiscussionForm).props('discussion')).toStrictEqual(
       useDiffDiscussions().discussions[0],
     );
+  });
+
+  it('emits empty event when there are no discussions', async () => {
+    useDiffDiscussions().addNewLineDiscussionForm({
+      oldPath: 'old',
+      newPath: 'old',
+      oldLine: '1',
+      newLine: '1',
+    });
+    createComponent({ position: { oldPath: 'old', newPath: 'old', oldLine: '1', newLine: '1' } });
+    useDiffDiscussions().removeNewLineDiscussionForm(useDiffDiscussions().discussions[0]);
+    await nextTick();
+    expect(wrapper.emitted('empty')).toStrictEqual([[]]);
   });
 
   it('scrolls to note fragment once', () => {

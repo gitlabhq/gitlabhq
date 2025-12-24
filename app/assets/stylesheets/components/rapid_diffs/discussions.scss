@@ -8,14 +8,8 @@
   grid-auto-flow: column;
   background-color: var(--gl-background-color-subtle);
   border-radius: var(--content-border-radius);
-  border-left: 1px solid var(--rd-line-border-color);
-  border-right: 1px solid var(--rd-line-border-color);
+  border: 1px solid var(--rd-line-border-color);
   container: discussion-row / inline-size;
-}
-
-.rd-discussion-row:has(> td:not(:empty)) {
-  border-top: 1px solid var(--rd-line-border-color);
-  border-bottom: 1px solid var(--rd-line-border-color);
 }
 
 .rd-discussion-row.rd-discussion-row:last-child {

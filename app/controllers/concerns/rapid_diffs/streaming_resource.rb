@@ -56,7 +56,8 @@ module RapidDiffs
       return unless resource
 
       # NOTE: This is a temporary flag to test out the new diff_blobs
-      if !!ActiveModel::Type::Boolean.new.cast(params.permit(:diff_blobs)[:diff_blobs])
+      use_new_gitaly_rpc = ActiveModel::Type::Boolean.new.cast(params.permit(:diff_blobs)[:diff_blobs])
+      if use_new_gitaly_rpc && Feature.enabled?(:rapid_diffs_debug, current_user)
         stream_diff_blobs(options, view_context)
       else
         stream_diff_collection(options, view_context)

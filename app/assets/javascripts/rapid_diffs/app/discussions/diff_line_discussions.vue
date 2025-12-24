@@ -29,6 +29,7 @@ export default {
       required: true,
     },
   },
+  emits: ['empty'],
   data() {
     return {
       isLoggedIn: isLoggedIn(),
@@ -42,6 +43,11 @@ export default {
     },
     hasForm() {
       return this.discussions.some((discussion) => discussion.isForm);
+    },
+  },
+  watch: {
+    discussions(value) {
+      if (value.length === 0) this.$emit('empty');
     },
   },
   mounted() {

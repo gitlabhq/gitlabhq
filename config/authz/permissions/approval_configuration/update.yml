@@ -1,0 +1,5 @@
+---
+name: update_approval_configuration
+description: Grants the ability to update approval settings
+boundaries:
+  - project

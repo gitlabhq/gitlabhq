@@ -4,9 +4,8 @@ import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import { pinia } from '~/pinia/instance';
 import DiffLineDiscussions from '~/rapid_diffs/app/discussions/diff_line_discussions.vue';
 
-function mountVueApp(el, position, appData) {
-  // eslint-disable-next-line no-new
-  new Vue({
+function mountVueApp({ el, position, appData, onEmpty }) {
+  const instance = new Vue({
     el,
     pinia,
     provide() {
@@ -24,7 +23,14 @@ function mountVueApp(el, position, appData) {
       };
     },
     render(h) {
-      return h(DiffLineDiscussions, { props: { position } });
+      return h(DiffLineDiscussions, {
+        props: { position },
+        on: {
+          empty() {
+            if (onEmpty()) instance.$destroy();
+          },
+        },
+      });
     },
   });
 }
@@ -103,16 +109,23 @@ function createDiscussionMount(createCell) {
     const mountTarget = document.createElement('div');
     cell.appendChild(mountTarget);
     cell.hasMountedApp = true;
-    mountVueApp(
-      mountTarget,
-      {
+    mountVueApp({
+      el: mountTarget,
+      position: {
         oldLine: position.old_line,
         newLine: position.new_line,
         oldPath: position.old_path,
         newPath: position.new_path,
       },
       appData,
-    );
+      onEmpty() {
+        const row = cell.parentElement;
+        // parallel view can have discussions on both sides, we should only remove the whole row if the last discussion was removed
+        if (Array.from(row.querySelectorAll('td:not(:empty)')).length > 1) return false;
+        row.remove();
+        return true;
+      },
+    });
   };
 }
 

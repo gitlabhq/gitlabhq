@@ -18,6 +18,14 @@ jest.mock('~/rapid_diffs/app/discussions/diff_line_discussions.vue', () => {
     props: jest.requireActual('~/rapid_diffs/app/discussions/diff_line_discussions.vue').default
       .props,
     inject: ['userPermissions', 'endpoints', 'noteableType'],
+    methods: {
+      empty() {
+        this.$emit('empty');
+      },
+    },
+    mounted() {
+      this.$el.instance = () => this;
+    },
     render(h) {
       const renderAsDataAttr = (key, value) => {
         return h('div', { attrs: { [`data-${toKebab(key)}`]: JSON.stringify(value) } });
@@ -30,7 +38,7 @@ jest.mock('~/rapid_diffs/app/discussions/diff_line_discussions.vue', () => {
         renderAsDataAttr('endpoints', this.endpoints),
         renderAsDataAttr('noteable-type', this.noteableType),
       ];
-      return h('div', undefined, [...props, ...injected]);
+      return h('div', { attrs: { id: 'discussions-component' } }, [...props, ...injected]);
     },
   };
 });
@@ -218,6 +226,22 @@ describe('discussions adapters', () => {
           getDiffFile().querySelector('[data-discussion-row] [data-position]').dataset.position,
         ),
       ).toStrictEqual({ oldPath, newPath, oldLine: 2, newLine: null });
+    });
+
+    it('removes empty row', async () => {
+      const discussionId = 'abc';
+      const oldLine = 1;
+      useDiffDiscussions().discussions = [
+        {
+          id: discussionId,
+          diff_discussion: true,
+          position: { old_path: oldPath, new_path: newPath, old_line: oldLine, new_line: null },
+        },
+      ];
+      await nextTick();
+      document.querySelector('#discussions-component').instance().empty();
+      await nextTick();
+      expect(getDiscussionRows()).toHaveLength(0);
     });
   });
 
@@ -422,6 +446,45 @@ describe('discussions adapters', () => {
           getDiffFile().querySelector('[data-discussion-row] [data-position]').dataset.position,
         ),
       ).toStrictEqual({ oldPath, newPath, oldLine: 2, newLine: 2 });
+    });
+
+    it('removes empty row', async () => {
+      const discussionId = 'abc';
+      const oldLine = 1;
+      useDiffDiscussions().discussions = [
+        {
+          id: discussionId,
+          diff_discussion: true,
+          position: { old_path: oldPath, new_path: newPath, old_line: oldLine, new_line: null },
+        },
+      ];
+      await nextTick();
+      document.querySelector('#discussions-component').instance().empty();
+      await nextTick();
+      expect(getDiscussionRows()).toHaveLength(0);
+    });
+
+    it('does not remove row if it contains at least one discussion', async () => {
+      const leftDiscussionId = 'left';
+      const rightDiscussionId = 'right';
+      const oldLine = 1;
+      const newLine = 1;
+      useDiffDiscussions().discussions = [
+        {
+          id: leftDiscussionId,
+          diff_discussion: true,
+          position: { old_path: oldPath, new_path: newPath, old_line: oldLine, new_line: null },
+        },
+        {
+          id: rightDiscussionId,
+          diff_discussion: true,
+          position: { old_path: oldPath, new_path: newPath, old_line: null, new_line: newLine },
+        },
+      ];
+      await nextTick();
+      document.querySelector('#discussions-component').instance().empty();
+      await nextTick();
+      expect(getDiscussionRows()).toHaveLength(1);
     });
   });
 });

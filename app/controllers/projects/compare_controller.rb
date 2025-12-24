@@ -14,8 +14,8 @@ class Projects::CompareController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :authorize_read_code!
   # Defining ivars
-  before_action :define_diffs, only: [:show, :diff_for_path]
   before_action :define_environment, only: [:show]
+  before_action :define_diffs, only: [:diff_for_path]
   before_action :define_diff_notes_disabled, only: [:show, :diff_for_path]
   before_action :define_commits, only: [:show, :diff_for_path, :signatures]
   before_action :merge_request, only: [:index, :show]
@@ -25,38 +25,29 @@ class Projects::CompareController < Projects::ApplicationController
   feature_category :source_code_management
   urgency :low, [:show, :create, :signatures]
 
-  # Diffs may be pretty chunky, the less is better in this endpoint.
-  # Pagination design guides: https://design.gitlab.com/components/pagination/#behavior
-  COMMIT_DIFFS_PER_PAGE = 20
-
   def index
     compare_params
   end
 
   def show
-    apply_diff_view_cookie!
-
-    if rapid_diffs_enabled?
-      @js_action_name = 'rapid_diffs'
-      @rapid_diffs_presenter = ::RapidDiffs::ComparePresenter.new(
-        compare,
-        diff_view,
-        diff_options,
-        compare_params
-      )
-      return render action: :rapid_diffs
-    end
-
     respond_to do |format|
       format.html do
-        render locals: { pagination_params: params.permit(:page) }
+        apply_diff_view_cookie!
+        @rapid_diffs_presenter = ::RapidDiffs::ComparePresenter.new(
+          compare,
+          diff_view,
+          diff_options,
+          compare_params
+        )
       end
 
       format.patch do
+        define_diffs
         compare ? send_git_patch(source_project.repository, compare.diff_refs) : render_404
       end
 
       format.diff do
+        define_diffs
         compare ? send_git_diff(source_project.repository, compare.diff_refs) : render_404
       end
     end
@@ -186,8 +177,6 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def define_diffs
-    return if rapid_diffs_enabled?
-
     @diffs = compare.present? ? compare.diffs(diff_options) : []
   end
 
@@ -225,17 +214,6 @@ class Projects::CompareController < Projects::ApplicationController
 
   def diffs_resource(options = {})
     compare&.diffs(diff_options.merge(options))
-  end
-
-  def rapid_diffs_force_disabled?
-    ::Feature.enabled?(:rapid_diffs_debug, current_user, type: :ops) &&
-      params.permit(:rapid_diffs_disabled)[:rapid_diffs_disabled] == 'true'
-  end
-
-  def rapid_diffs_enabled?
-    ::Feature.enabled?(:rapid_diffs_on_compare_show, current_user, type: :beta) &&
-      !rapid_diffs_force_disabled? &&
-      params.permit(:format)[:format].blank?
   end
 end
 

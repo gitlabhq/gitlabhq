@@ -76,45 +76,16 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
     let(:straight) { nil }
     let(:page) { nil }
 
-    before do
-      stub_feature_flags(rapid_diffs_on_compare_show: false)
-    end
-
     context 'when the refs exist in the same project' do
-      context 'when we set the white space param' do
-        let(:from_project_id) { nil }
-        let(:from_ref) { '08f22f25' }
-        let(:to_ref) { '66eceea0' }
-        let(:whitespace) { 1 }
+      let(:from_project_id) { nil }
+      let(:from_ref) { 'improve%2Fawesome' }
+      let(:to_ref) { 'feature' }
 
-        it 'shows some diffs with ignore whitespace change option' do
-          allow(controller.current_user).to receive(:show_whitespace_in_diffs).and_return(false)
+      it 'sets the commits ivar' do
+        show_request
 
-          show_request
-
-          expect(response).to be_successful
-          diff_file = assigns(:diffs).diff_files.first
-          expect(diff_file).not_to be_nil
-          expect(assigns(:commits).length).to be >= 1
-          # without whitespace option, there are more than 2 diff_splits
-          diff_splits = diff_file.diff.diff.split("\n")
-          expect(diff_splits.length).to be <= 2
-        end
-      end
-
-      context 'when we do not set the white space param' do
-        let(:from_project_id) { nil }
-        let(:from_ref) { 'improve%2Fawesome' }
-        let(:to_ref) { 'feature' }
-        let(:whitespace) { nil }
-
-        it 'sets the diffs and commits ivars' do
-          show_request
-
-          expect(response).to be_successful
-          expect(assigns(:diffs).diff_files.first).not_to be_nil
-          expect(assigns(:commits).length).to be >= 1
-        end
+        expect(response).to be_successful
+        expect(assigns(:commits).length).to be >= 1
       end
     end
 
@@ -157,11 +128,10 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
       let(:to_ref) { 'feature' }
       let(:whitespace) { nil }
 
-      it 'shows the diff' do
+      it 'shows commits' do
         show_request
 
         expect(response).to be_successful
-        expect(assigns(:diffs).diff_files.first).not_to be_nil
         expect(assigns(:commits).length).to be >= 1
       end
     end
@@ -182,8 +152,6 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
 
           expect(response).to be_successful
           expect(assigns(:commits).length).to be >= 2
-          expect(assigns(:diffs).raw_diff_files.size).to be >= 2
-          expect(assigns(:diffs).diff_files.first).to be_present
         end
       end
 
@@ -193,12 +161,11 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
 
         let(:straight) { "true" }
 
-        it 'the commits are empty, but the removed lines are visible as diffs' do
+        it 'the commits are empty' do
           show_request
 
           expect(response).to be_successful
           expect(assigns(:commits).length).to eq 0
-          expect(assigns(:diffs).diff_files.size).to be >= 4
         end
       end
 
@@ -208,12 +175,11 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
 
         let(:straight) { "false" }
 
-        it 'the additional commits are not visible in diffs and commits' do
+        it 'the additional commits are not visible' do
           show_request
 
           expect(response).to be_successful
           expect(assigns(:commits).length).to eq 0
-          expect(assigns(:diffs).diff_files.size).to eq 0
         end
       end
     end
@@ -228,7 +194,6 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
         show_request
 
         expect(response).to be_successful
-        expect(assigns(:diffs)).to be_empty
         expect(assigns(:commits)).to be_empty
       end
     end
@@ -251,14 +216,13 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
         }
       end
 
-      it 'does not show the diff' do
+      it 'does not show commits' do
         allow(controller).to receive(:source_project).and_return(project)
         expect(project).to receive(:default_merge_request_target).and_return(private_fork)
 
         show_request
 
         expect(response).to be_successful
-        expect(assigns(:diffs)).to be_empty
         expect(assigns(:commits)).to be_empty
       end
     end
@@ -268,11 +232,10 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
       let(:from_ref) { 'non-existent-source-ref' }
       let(:to_ref) { 'feature' }
 
-      it 'sets empty diff and commit ivars' do
+      it 'sets empty commit ivar' do
         show_request
 
         expect(response).to be_successful
-        expect(assigns(:diffs)).to eq([])
         expect(assigns(:commits)).to eq([])
       end
     end
@@ -282,11 +245,10 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
       let(:from_ref) { 'improve%2Fawesome' }
       let(:to_ref) { 'non-existent-target-ref' }
 
-      it 'sets empty diff and commit ivars' do
+      it 'sets empty commit ivar' do
         show_request
 
         expect(response).to be_successful
-        expect(assigns(:diffs)).to eq([])
         expect(assigns(:commits)).to eq([])
       end
     end
@@ -414,31 +376,15 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
       let(:page) { 1 }
 
       shared_examples 'valid compare page' do
-        it 'shows the diff' do
+        it 'shows commits' do
           show_request
 
           expect(response).to be_successful
-          expect(assigns(:diffs).diff_files.first).to be_present
           expect(assigns(:commits).length).to be >= 1
         end
       end
 
       it_behaves_like 'valid compare page'
-
-      it 'only loads blobs in the current page' do
-        stub_const('Projects::CompareController::COMMIT_DIFFS_PER_PAGE', 1)
-
-        expect_next_instance_of(Repository) do |repository|
-          # This comparison contains 4 changed files but we expect only the blobs for the first one to be loaded
-          expect(repository).to receive(:blobs_at).with(
-            contain_exactly([from_ref, '.gitmodules'], [to_ref, '.gitmodules']), anything
-          ).and_call_original
-        end
-
-        show_request
-
-        expect(response).to be_successful
-      end
 
       context 'when from_ref is HEAD ref' do
         let(:from_ref) { 'HEAD' }
@@ -860,12 +806,6 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
         to: '5937ac0a7beb003549fc5fd26fc247adbce4a52e',
         format: format
       }
-    end
-
-    it 'renders rapid_diffs template' do
-      send_request
-
-      expect(response).to render_template(:rapid_diffs)
     end
 
     context 'when format is not supported' do

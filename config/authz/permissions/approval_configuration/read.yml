@@ -1,0 +1,5 @@
+---
+name: read_approval_configuration
+description: Grants the ability to read approval settings
+boundaries:
+  - project
