@@ -18,6 +18,13 @@ instructions:
       - "**/*"
     instructions: |
       1. Ensure you use inclusive language where applicable, e.g. prefer `allowlist` over `whitelist`
+      2. Verify CE/EE code separation:
+         - Code in CE (outside `ee/` directory) should not directly reference EE modules or classes
+         - EE extensions should use `prepend_mod` pattern in CE files
+         - If CE code needs EE-aware behavior, use `prepend_mod` hooks or `Gitlab.ee?` guards
+         - Flag direct references to `EE::` namespaced classes in CE code
+         - This prevents FOSS build failures
+         - Reference: https://docs.gitlab.com/development/ee_features/
   - name: Ruby Code Quality
     fileFilters:
       - "**/*.rb"
@@ -45,6 +52,14 @@ instructions:
         - Check that maximum query execution time is under 100ms
         - Ensure the query plan reflects the complete query as executed by the database, including all chained scopes, pagination, ordering, and any other modifiers - not a partial or simplified version of the query
       11. Flag comments that only describe what code does (e.g., "# Loop through users") rather than why. Suggest removing these comments and using better naming or method extraction instead
+      12. For ActiveRecord callbacks (before_validation, before_save, after_save, etc.):
+          - Verify callbacks only modify data on the current model, not associated records
+          - Question if callback logic should be in a service layer instead
+          - Ask: "Why use this callback instead of explicit method calls in the service/controller?"
+          - Flag callbacks that have side effects (external API calls, updating other records, complex business logic)
+          - Flag bulk operations on associated records in callbacks (performance concern as associations grow)
+          - Acceptable uses: data normalization on current model only (trimming whitespace, setting defaults)
+          - Reference: https://docs.gitlab.com/development/backend/ruby_style_guide/#avoid-activerecord-callbacks
 
   - name: Database Migrations
     fileFilters:
@@ -91,6 +106,16 @@ instructions:
       1. Use shared examples to reduce duplication
       2. Ensure error handling tests for security-sensitive operations
       3. Ensure input validation tests for user-facing endpoints
+      4. For conditional logic (||, &&, if/else, case), verify each branch has test coverage
+      5. For helper methods, ensure unit specs exist (not just integration coverage)
+      6. For callbacks (before_validation, before_save), ensure unit specs test the callback behavior specifically
+      7. Flag missing edge case coverage:
+         - Nil/empty values
+         - Boundary conditions
+         - Fallback logic (|| operators)
+         - Error states
+      8. Follow the testing pyramid: most tests at unit level, fewer at integration/system level
+      9. Reference: https://docs.gitlab.com/development/testing_guide/testing_levels/
 
   - name: Documentation
     fileFilters:
@@ -155,3 +180,8 @@ instructions:
       10. Temporary assets (icons/illustrations) are in `/ee/app/assets/images` or `/app/assets/images` not Pajamas library
       11. When both control and variants are being toggled in Vue components layer, we prefer to use the `<gitlab-experiment>` component.
 
+  - name: Schema Migrations
+    fileFilters:
+      - "db/schema_migrations/**/*"
+    instructions: |
+      1. These files are auto-generated and do not require a newline at the end of the file - do not flag missing newlines
