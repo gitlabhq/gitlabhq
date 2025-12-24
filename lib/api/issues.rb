@@ -12,6 +12,7 @@ module API
     allow_mcp_access_create
 
     helpers Helpers::IssuesHelpers
+    helpers Helpers::Authz::PostfilteringHelpers
     helpers SpammableActions::CaptchaCheck::RestApiActionsSupport
 
     before { authenticate_non_get! }
@@ -147,7 +148,12 @@ module API
         authenticate! unless params[:scope] == 'all'
         validate_search_rate_limit! if declared_params[:search].present?
         issues = paginate(find_issues)
-        issues = Ability.issues_readable_by_user(issues, current_user)
+
+        issues = filter_with_logging(
+          collection: issues,
+          filter_proc: -> { Ability.issues_readable_by_user(issues, current_user) },
+          resource_type: 'api/issues'
+        )
 
         options = {
           with: Entities::Issue,

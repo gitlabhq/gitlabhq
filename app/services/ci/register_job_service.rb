@@ -170,22 +170,16 @@ module Ci
 
     def process_build(build, params, queue_size:, queue_depth:)
       unless build.pending?
-        refresh = Feature.enabled?(:ci_build_confirm_pending_state, build.project)
+        build = refresh_build(build)
 
-        if refresh
-          refreshed_build = refresh_build(build)
+        # If refreshed_build is nil, that means the primary no longer has the
+        # record of the build ID. We have a foreign key constraint that ensures
+        # the queue entry has been removed, so let's just return here.
+        return ResultFactory.invalid unless build.present?
 
-          # If refreshed_build is nil, that means the primary no longer has the
-          # record of the build ID. We have a foreign key constraint that ensures
-          # this entry has been removed, so let's just return here.
-          return ResultFactory.invalid unless refreshed_build.present?
-
-          build = refreshed_build
-        end
-
-        # Recheck the status to ensure that the build is pending in case we refreshed
+        # Recheck the status to ensure that the build is pending because we refreshed
         # from the primary. Otherwise remove it from the pending list.
-        return remove_from_queue!(build, refresh) unless build.pending?
+        return remove_from_queue!(build) unless build.pending?
       end
 
       if runner_matched?(build)
@@ -260,25 +254,8 @@ module Ci
       MAX_QUEUE_DEPTH
     end
 
-    def remove_from_queue!(build, refreshed)
+    def remove_from_queue!(build)
       @metrics.increment_queue_operation(:build_not_pending)
-
-      ##
-      # If the replica is not caught up, we should not remove the build from the queue.
-      # The build might actually be pending on the primary database, and removing it
-      # could cause it to be lost. Instead, we return an invalid result to signal
-      # the runner to retry.
-      #
-      if !refreshed && !@replica_caught_up
-        ::Gitlab::AppJsonLogger.info(message: "build left on pending queue because replica not caught up",
-          build_status: build.status,
-          build_id: build.id,
-          runner_id: runner.id,
-          runner_type: runner.runner_type,
-          class: self.class.to_s)
-        @metrics.increment_queue_operation(:build_status_stale)
-        return ResultFactory.invalid
-      end
 
       ##
       # If this build can not be picked because we had stale data in

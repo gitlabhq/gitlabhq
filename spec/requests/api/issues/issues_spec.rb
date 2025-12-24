@@ -1159,6 +1159,26 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
           expect_paginated_array_response(unrestricted_issue.id)
         end
+
+        context 'when postfiltering_logging is enabled' do
+          before do
+            stub_feature_flags(postfilter_logging: true)
+          end
+
+          it 'logs postfiltering information' do
+            allow(Gitlab::AppLogger).to receive(:info).and_call_original
+            expect(Gitlab::AppLogger).to receive(:info).with(
+              message: "Post-filtering - api/issues",
+              redacted_count: 1,
+              postfiltering_duration: be_a(Float),
+              user_id: current_user.id
+            ).at_least(:once).and_call_original
+
+            get api('/issues', current_user), params: { scope: 'assigned_to_me' }
+
+            expect_paginated_array_response(unrestricted_issue.id)
+          end
+        end
       end
     end
   end

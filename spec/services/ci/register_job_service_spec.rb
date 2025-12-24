@@ -85,73 +85,6 @@ module Ci
             expect(pending_job.reload.queuing_entry).not_to be_present
           end
 
-          context 'when ci_build_confirm_pending_state feature flag is disabled' do
-            before do
-              stub_feature_flags(ci_build_confirm_pending_state: false)
-            end
-
-            it 'does not refresh build from primary' do
-              expect_next_instance_of(::Gitlab::Ci::Queue::Metrics) do |metric|
-                allow(metric).to receive(:increment_queue_operation).and_call_original
-                expect(metric).to receive(:increment_queue_operation).with(:build_status_stale).and_call_original
-              end
-
-              expect(ApplicationRecord.sticking).to receive(:find_caught_up_replica)
-                .with(:runner, runner.id, use_primary_on_failure: false)
-                .and_return(false)
-              expect(::Gitlab::Database::LoadBalancing::SessionMap).not_to receive(:with_sessions)
-              expect(Gitlab::AppJsonLogger).not_to receive(:info).with(
-                hash_including(message: 'build refreshed from primary')
-              )
-              expect(Gitlab::AppJsonLogger).to receive(:info).once.with(
-                hash_including(
-                  message: 'build left on pending queue because replica not caught up',
-                  build_status: 'created',
-                  build_id: pending_job.id,
-                  runner_id: runner.id,
-                  runner_type: runner.runner_type,
-                  class: described_class.to_s
-                )
-              )
-
-              expect(execute).not_to be_valid
-              expect(pending_job.reload.queuing_entry).to be_present
-            end
-
-            context 'when replica is caught up' do
-              before do
-                allow(ApplicationRecord.sticking).to receive(:find_caught_up_replica)
-                  .with(:runner, runner.id, use_primary_on_failure: false)
-                  .and_return(true)
-              end
-
-              it 'removes build from queue without refreshing from primary' do
-                expect_next_instance_of(::Gitlab::Ci::Queue::Metrics) do |metric|
-                  allow(metric).to receive(:increment_queue_operation).and_call_original
-                  expect(metric).to receive(:increment_queue_operation).with(:build_not_pending).and_call_original
-                end
-
-                expect(::Gitlab::Database::LoadBalancing::SessionMap).not_to receive(:with_sessions)
-                expect(Gitlab::AppJsonLogger).not_to receive(:info).with(
-                  hash_including(message: 'build refreshed from primary')
-                )
-                expect(Gitlab::AppJsonLogger).to receive(:info).once.with(
-                  hash_including(
-                    message: 'build removed from pending queue',
-                    build_status: 'created',
-                    build_id: pending_job.id,
-                    runner_id: runner.id,
-                    runner_type: runner.runner_type,
-                    class: described_class.to_s
-                  )
-                )
-
-                expect(execute).not_to be_valid
-                expect(pending_job.reload.queuing_entry).not_to be_present
-              end
-            end
-          end
-
           context 'when primary returns a pending build' do
             it 'picks the job' do
               expect(ApplicationRecord.sticking).to receive(:find_caught_up_replica)
@@ -176,7 +109,7 @@ module Ci
                 .with(:runner, runner.id, use_primary_on_failure: false)
                 .and_return(false)
 
-              allow(service).to receive(:refresh_build).and_return(nil)
+              allow(Ci::Build).to receive_message_chain(:in_partition, :find_by_id).and_return(nil)
 
               expect(execute).not_to be_valid
               expect(pending_job.reload.queuing_entry).to be_present
