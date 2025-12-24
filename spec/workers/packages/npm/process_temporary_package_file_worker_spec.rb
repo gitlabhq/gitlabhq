@@ -22,6 +22,8 @@ RSpec.describe Packages::Npm::ProcessTemporaryPackageFileWorker, feature_categor
 
   let(:deprecate) { true }
   let(:params) { { deprecate: } }
+  let(:user_gid) { user.to_global_id.to_s }
+  let(:job_args) { [user_gid, package_file.id, deprecate] }
 
   let(:json_doc) do
     Gitlab::Json.parse(fixture_file('packages/npm/deprecate_payload.json')
@@ -31,16 +33,22 @@ RSpec.describe Packages::Npm::ProcessTemporaryPackageFileWorker, feature_categor
   let!(:file) { temp_file('payload', content: json_doc.to_json) }
   let!(:package_file) { create(:package_file, :processing, file: file, package: temp_package, file_fixture: nil) }
 
-  describe '#peform' do
+  describe '#perform' do
+    shared_examples 'does not process temporary package file' do
+      it 'does not call the service' do
+        expect(::Packages::Npm::ProcessTemporaryPackageFileService).not_to receive(:new)
+
+        worker.perform(*job_args)
+      end
+    end
+
     subject(:worker) { described_class.new }
 
-    it_behaves_like 'an idempotent worker' do
-      let(:job_args) { [user.id, package_file.id, deprecate] }
-    end
+    it_behaves_like 'an idempotent worker'
 
     context 'when deprecating packages' do
       it 'deprecates package' do
-        expect { worker.perform(user.id, package_file.id, deprecate) }
+        expect { worker.perform(*job_args) }
           .to change {
             package.reload.npm_metadatum.package_json['deprecated']
           }.to('This version is deprecated')
@@ -59,34 +67,43 @@ RSpec.describe Packages::Npm::ProcessTemporaryPackageFileWorker, feature_categor
       let(:data) { Base64.decode64(json_doc['_attachments']["#{package_name}-#{version}.tgz"]['data']) }
       let(:deprecate) { false }
 
-      it 'creates a new npm package from temporary package', :aggregate_failures do
-        expect(::Packages::Npm::ProcessPackageFileWorker).to receive(:perform_async).once
+      shared_examples 'creating a new npm package from temporary package' do
+        it 'creates a new npm package from temporary package', :aggregate_failures do
+          expect(::Packages::Npm::ProcessPackageFileWorker).to receive(:perform_async).once
 
-        expect { worker.perform(user.id, package_file.id, deprecate) }
-          .to change { Packages::Tag.count }.by(1)
-          .and change { Packages::Npm::Metadatum.count }.by(1)
-          .and change { Packages::Dependency.count }.by(1)
-          .and change { Packages::DependencyLink.count }.by(1)
+          expect { worker.perform(*job_args) }
+            .to change { Packages::Tag.count }.by(1)
+            .and change { Packages::Npm::Metadatum.count }.by(1)
+            .and change { Packages::Dependency.count }.by(1)
+            .and change { Packages::DependencyLink.count }.by(1)
 
-        expect(temp_package.reload.version).to eq(version)
+          expect(temp_package.reload.version).to eq(version)
 
-        expect(package_file.reload).to have_attributes(
-          size: data.size,
-          file_sha1: json_doc['versions'][version]['dist']['shasum'],
-          file_name: "#{package_name}-#{version}.tgz",
-          status: 'default'
-        )
+          expect(package_file.reload).to have_attributes(
+            size: data.size,
+            file_sha1: json_doc['versions'][version]['dist']['shasum'],
+            file_name: "#{package_name}-#{version}.tgz",
+            status: 'default',
+            file: satisfy { |f| f.read == data }
+          )
+        end
+      end
 
-        expect(package_file.file.read).to eq(data)
+      it_behaves_like 'creating a new npm package from temporary package'
+
+      context 'with deploy token' do
+        let_it_be(:deploy_token) { create(:deploy_token, :all_scopes, projects: [project]) }
+
+        let(:user_gid) { deploy_token.to_global_id.to_s }
+
+        it_behaves_like 'creating a new npm package from temporary package'
       end
     end
 
     context 'with a non-existing package file' do
-      it 'does not call the service' do
-        expect(::Packages::Npm::ProcessTemporaryPackageFileService).not_to receive(:new)
+      let(:job_args) { [user.to_global_id.to_s, non_existing_record_id, deprecate] }
 
-        worker.perform(user.id, non_existing_record_id, deprecate)
-      end
+      it_behaves_like 'does not process temporary package file'
     end
 
     context 'when a package file is not in the processing status' do
@@ -94,19 +111,34 @@ RSpec.describe Packages::Npm::ProcessTemporaryPackageFileWorker, feature_categor
         package_file.update_column(:status, :default)
       end
 
-      it 'does not call the service' do
-        expect(::Packages::Npm::ProcessTemporaryPackageFileService).not_to receive(:new)
-
-        worker.perform(user.id, package_file.id, deprecate)
-      end
+      it_behaves_like 'does not process temporary package file'
     end
 
     context 'with a non-existing user' do
-      it 'does not call the service' do
+      let(:user_gid) { Gitlab::GlobalId.as_global_id(non_existing_record_id, model_name: ::User.to_s).to_s }
+
+      it_behaves_like 'does not process temporary package file'
+    end
+
+    context 'when the global ID references a non-existent class' do
+      let(:user_gid) { Gitlab::GlobalId.as_global_id(non_existing_record_id, model_name: 'NonExistent').to_s }
+
+      it 'logs the error and does not process temporary package file' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+          .with(instance_of(NameError), gid: user_gid, worker: described_class.name)
+
         expect(::Packages::Npm::ProcessTemporaryPackageFileService).not_to receive(:new)
 
-        worker.perform(non_existing_record_id, package_file.id, deprecate)
+        expect(worker.perform(*job_args)).to be_nil
       end
+    end
+
+    context 'with not-allowed global id class' do
+      let_it_be(:pat) { create(:personal_access_token, user: user) }
+
+      let(:user_gid) { Gitlab::GlobalId.as_global_id(pat.id, model_name: ::PersonalAccessToken.to_s).to_s }
+
+      it_behaves_like 'does not process temporary package file'
     end
 
     context 'when the process temporary package file service errored' do
@@ -124,7 +156,7 @@ RSpec.describe Packages::Npm::ProcessTemporaryPackageFileWorker, feature_categor
       end
 
       it 'logs the error and updates package status to error' do
-        worker.perform(user.id, package_file.id, deprecate)
+        worker.perform(*job_args)
 
         expect(temp_package.reload).to have_attributes(
           status: 'error',
@@ -150,7 +182,7 @@ RSpec.describe Packages::Npm::ProcessTemporaryPackageFileWorker, feature_categor
           exception: exception
         )
 
-        worker.perform(user.id, package_file.id, deprecate)
+        worker.perform(*job_args)
       end
     end
 
@@ -162,7 +194,7 @@ RSpec.describe Packages::Npm::ProcessTemporaryPackageFileWorker, feature_categor
       end
 
       it 'raises the error' do
-        expect { worker.perform(user.id, package_file.id, deprecate) }.to raise_error(exception.class)
+        expect { worker.perform(*job_args) }.to raise_error(exception.class)
       end
     end
   end

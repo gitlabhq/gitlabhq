@@ -147,8 +147,8 @@ tags:
   description: Operations about usage_data
 - name: metrics
   description: Operations about metrics
-- name: user_counts
-  description: Operations about user_counts
+- name: users
+  description: Operations about users
 - name: user
   description: Operations about users
 - name: application
@@ -46727,7 +46727,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_UserCounts"
       tags:
-      - user_counts
+      - users
       operationId: getApiV4UserCounts
   "/api/v4/user/runners":
     post:

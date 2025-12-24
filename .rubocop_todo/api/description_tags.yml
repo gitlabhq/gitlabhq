@@ -97,7 +97,6 @@ API/DescriptionTags:
     - 'lib/api/snippet_repository_storage_moves.rb'
     - 'lib/api/statistics.rb'
     - 'lib/api/submodules.rb'
-    - 'lib/api/subscriptions.rb'
     - 'lib/api/todos.rb'
     - 'lib/api/topics.rb'
     - 'lib/api/usage_data_non_sql_metrics.rb'

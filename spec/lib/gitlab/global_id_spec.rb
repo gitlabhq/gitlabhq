@@ -67,4 +67,78 @@ RSpec.describe Gitlab::GlobalId do
       end
     end
   end
+
+  describe '.safe_locate', :aggregate_failures do
+    let_it_be(:user) { create(:user) }
+
+    let(:gid) { user.to_global_id }
+    let(:args) { [gid] }
+    let(:kwargs) { {} }
+
+    subject(:safe_locate) { described_class.safe_locate(*args, **kwargs) }
+
+    it 'returns the located object' do
+      is_expected.to eq(user)
+    end
+
+    context 'when options are provided' do
+      let(:options) { { only: User } }
+      let(:kwargs) { { options: } }
+
+      it 'passes options to GlobalID::Locator.locate' do
+        expect(GlobalID::Locator).to receive(:locate).with(*args, options).and_call_original
+
+        safe_locate
+      end
+    end
+
+    context 'when gid is nil' do
+      let(:gid) { nil }
+      let(:on_error) { instance_double(Proc) }
+      let(:kwargs) { { on_error: } }
+
+      it 'returns nil without calling on_error' do
+        expect(on_error).not_to receive(:call)
+
+        is_expected.to be_nil
+      end
+    end
+
+    context 'when gid is a string' do
+      let(:gid) { super().to_s }
+
+      it 'returns the located object' do
+        is_expected.to eq(user)
+      end
+    end
+
+    context 'when record does not exist' do
+      let(:gid) { described_class.build(model_name: ::User.to_s, id: non_existing_record_id) }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+
+    context 'when an error is raised' do
+      let(:gid) { described_class.build(model_name: 'NonExistent', id: non_existing_record_id) }
+
+      it 'returns nil without raising' do
+        expect { safe_locate }.not_to raise_error
+
+        is_expected.to be_nil
+      end
+
+      context 'when on_error is provided' do
+        let(:on_error) { ->(e) { Gitlab::ErrorTracking.track_exception(e) } }
+        let(:kwargs) { { on_error: } }
+
+        it 'calls on_error with the exception' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(an_instance_of(NameError))
+
+          safe_locate
+        end
+      end
+    end
+  end
 end
