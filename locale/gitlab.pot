@@ -75892,18 +75892,6 @@ msgstr ""
 msgid "Webhooks|A URL is required."
 msgstr ""
 
-msgid "Webhooks|A group member is created, updated, or removed."
-msgstr ""
-
-msgid "Webhooks|A project is created or removed."
-msgstr ""
-
-msgid "Webhooks|A subgroup is created or removed."
-msgstr ""
-
-msgid "Webhooks|A vulnerability is created or updated."
-msgstr ""
-
 msgid "Webhooks|A webhook in this group was automatically disabled after it was retried multiple times."
 msgstr ""
 
