@@ -44276,8 +44276,6 @@ CREATE UNIQUE INDEX index_project_user_callouts_feature ON user_project_callouts
 
 CREATE UNIQUE INDEX index_project_wiki_repositories_on_project_id ON project_wiki_repositories USING btree (project_id);
 
-CREATE INDEX index_projects_aimed_for_deletion ON projects USING btree (marked_for_deletion_at) WHERE ((marked_for_deletion_at IS NOT NULL) AND (pending_delete = false));
-
 CREATE INDEX index_projects_api_created_at_id_desc ON projects USING btree (created_at, id DESC);
 
 CREATE INDEX index_projects_api_last_activity_at_id_desc ON projects USING btree (last_activity_at, id DESC);
@@ -44297,8 +44295,6 @@ CREATE INDEX index_projects_api_vis20_name ON projects USING btree (name, id) WH
 CREATE INDEX index_projects_api_vis20_path ON projects USING btree (path, id) WHERE (visibility_level = 20);
 
 CREATE INDEX index_projects_api_vis20_updated_at ON projects USING btree (updated_at, id) WHERE (visibility_level = 20);
-
-CREATE INDEX index_projects_id_for_aimed_for_deletion ON projects USING btree (id, marked_for_deletion_at) WHERE ((marked_for_deletion_at IS NOT NULL) AND (pending_delete = false));
 
 CREATE INDEX index_projects_not_aimed_for_deletion ON projects USING btree (id) WHERE (marked_for_deletion_at IS NULL);
 

@@ -299,7 +299,7 @@ RSpec.describe 'Database schema',
       packages_package_files: 16,
       packages_packages: 27,
       project_type_ci_runners: 16,
-      projects: 56,
+      projects: 54, # Decrement by 2 after the removal of temporary indexes https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217449
       sbom_occurrences: 25,
       users: 34, # Decrement by 1 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848
       vulnerability_reads: 23
