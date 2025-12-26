@@ -25,7 +25,8 @@ module Groups
         result = ServiceResponse.error(message: resource.errors.full_messages.to_sentence)
         raise ActiveRecord::Rollback
       rescue DeletionScheduleDestroyingFailedError
-        result = ServiceResponse.error(message: _('Could not restore the group'))
+        message = ([_('Could not restore the group')] + resource.errors.full_messages).to_sentence
+        result = ServiceResponse.error(message: message)
         raise ActiveRecord::Rollback
       end
 
@@ -44,7 +45,14 @@ module Groups
     end
 
     def destroy_deletion_schedule!
-      return if resource.deletion_schedule.destroy
+      deletion_schedule_destroyed = ApplicationRecord.transaction do
+        result = Feature.disabled?(:namespace_state_management, resource.root_ancestor) ||
+          resource.cancel_deletion(transition_user: current_user)
+
+        result && resource.deletion_schedule.destroy
+      end
+
+      return if deletion_schedule_destroyed
 
       raise DeletionScheduleDestroyingFailedError
     end

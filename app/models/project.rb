@@ -548,7 +548,9 @@ class Project < ApplicationRecord
       :allowed_work_item_type?,
       :supports_work_items?,
       :archive,
-      :unarchive
+      :unarchive,
+      :schedule_deletion,
+      :cancel_deletion
   end
 
   delegate :merge_requests_access_level, :forking_access_level, :issues_access_level, :wiki_access_level, :snippets_access_level, :builds_access_level, :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level, :operations_access_level, :security_and_compliance_access_level, :container_registry_access_level, :environments_access_level, :feature_flags_access_level, :monitor_access_level, :releases_access_level, :infrastructure_access_level, :model_experiments_access_level, :model_registry_access_level, to: :project_feature, allow_nil: true

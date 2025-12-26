@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
+  include Namespaces::StatefulHelpers
+
   let(:user) { create(:user) }
   let(:group) do
     create(:group_with_deletion_schedule,
@@ -88,6 +90,29 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
           end
         end
 
+        context 'when namespace_state_management feature flag is enabled' do
+          before do
+            stub_feature_flags(namespace_state_management: true)
+            set_state(group, :deletion_scheduled)
+          end
+
+          it 'changes the state of the group' do
+            expect { execute }.to change { group.state }
+              .from(Namespaces::Stateful::STATES[:deletion_scheduled])
+              .to(Namespaces::Stateful::STATES[:ancestor_inherited])
+          end
+        end
+
+        context 'when namespace_state_management feature flag is disabled' do
+          before do
+            stub_feature_flags(namespace_state_management: false)
+          end
+
+          it 'does not change the state of the group' do
+            expect { execute }.not_to change { group.state }
+          end
+        end
+
         context 'when group renaming fails' do
           before do
             allow_next_instance_of(Groups::UpdateService) do |group_update_service|
@@ -107,6 +132,7 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
 
         context 'when deletion schedule destroy fails' do
           before do
+            stub_feature_flags(namespace_state_management: false)
             allow(group.deletion_schedule).to receive(:destroy).and_return(false)
           end
 
@@ -115,6 +141,21 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
 
             expect(result).to be_error
             expect(result.message).to eq('Could not restore the group')
+          end
+
+          context 'when namespace_state_management feature flag is enabled' do
+            before do
+              stub_feature_flags(namespace_state_management: true)
+              allow(group).to receive(:cancel_deletion).and_return(false)
+              allow(group).to receive_message_chain(:errors, :full_messages).and_return(['resource error'])
+            end
+
+            it 'returns error with combined messages' do
+              result = execute
+
+              expect(result).to be_error
+              expect(result.message).to eq('resource error')
+            end
           end
         end
       end

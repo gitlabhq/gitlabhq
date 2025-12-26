@@ -25,8 +25,15 @@ module Projects
     end
 
     def rename_resource
-      ServiceResponse.from_legacy_hash(
-        ::Projects::UpdateService.new(
+      Project.transaction do
+        if Feature.enabled?(:namespace_state_management, resource.root_ancestor)
+          transition_success = resource.cancel_deletion(transition_user: current_user)
+          unless transition_success
+            next ServiceResponse.error(message: resource.project_namespace.errors.full_messages.to_sentence)
+          end
+        end
+
+        update_service_response = ::Projects::UpdateService.new(
           resource,
           current_user,
           {
@@ -38,7 +45,9 @@ module Projects
             deleting_user: nil
           }
         ).execute
-      )
+
+        ServiceResponse.from_legacy_hash(update_service_response)
+      end
     end
   end
 end

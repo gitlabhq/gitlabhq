@@ -75,8 +75,30 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
       result
     end
 
+    context 'when namespace_state_management feature flag is enabled' do
+      before do
+        stub_feature_flags(namespace_state_management: true)
+      end
+
+      it 'changes the state of the project' do
+        expect { result }.to change { project.project_namespace.state }
+          .from(Namespaces::Stateful::STATES[:ancestor_inherited]).to(Namespaces::Stateful::STATES[:deletion_scheduled])
+      end
+    end
+
+    context 'when namespace_state_management feature flag is disabled' do
+      before do
+        stub_feature_flags(namespace_state_management: false)
+      end
+
+      it 'does not change the state of the project' do
+        expect { result }.not_to change { project.project_namespace.state }
+      end
+    end
+
     context 'when deletion schedule creation fails' do
       before do
+        stub_feature_flags(namespace_state_management: false)
         allow_next_instance_of(Projects::UpdateService) do |project_update_service|
           allow(project_update_service).to receive(:execute)
             .and_return({ status: :error, message: 'error message' })
@@ -94,6 +116,26 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
         expect(NotificationService).not_to receive(:new)
 
         result
+      end
+
+      context 'when namespace_state_management feature flag is enabled' do
+        before do
+          stub_feature_flags(namespace_state_management: true)
+          allow(project).to receive(:schedule_deletion).and_return(false)
+          allow(project.project_namespace).to receive_message_chain(:errors, :full_messages)
+                                                .and_return(['state transition error'])
+        end
+
+        it 'returns error with resource errors' do
+          expect(result).to be_error
+          expect(result.message).to eq('state transition error')
+        end
+
+        it 'does not send notification' do
+          expect(NotificationService).not_to receive(:new)
+
+          result
+        end
       end
     end
   end
