@@ -28,17 +28,7 @@ module QA
 
       context 'with ci deploy token' do
         let(:maven_header_name) { 'Job-Token' }
-        let(:token) do
-          project_inbound_job_token_disabled
-          '${CI_JOB_TOKEN}'
-        end
-
-        let(:project_inbound_job_token_disabled) do
-          Resource::CICDSettings.fabricate_via_api! do |settings|
-            settings.project_path = project.full_path
-            settings.inbound_job_token_scope_enabled = false
-          end
-        end
+        let(:token) { '${CI_JOB_TOKEN}' }
 
         let!(:runner) do
           create(:project_runner,

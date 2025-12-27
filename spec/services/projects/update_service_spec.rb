@@ -961,6 +961,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         let(:ci_inbound_job_token_scope_enabled) { false }
 
         before do
+          allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(false)
           project.update!(ci_inbound_job_token_scope_enabled: true)
           project.reload
         end
@@ -998,6 +999,22 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
 
         it 'does not trigger event' do
           expect { service_action }.not_to trigger_internal_events('disable_inbound_job_token_scope')
+        end
+      end
+
+      context 'when instance-level enforcement is enabled and trying to disable' do
+        let(:ci_inbound_job_token_scope_enabled) { false }
+
+        before do
+          allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(true)
+          project.update!(ci_inbound_job_token_scope_enabled: true)
+          project.reload
+        end
+
+        it { is_expected.to include(status: :api_error, message: include('enforced for the instance')) }
+
+        it 'does not update the setting' do
+          expect { service_action }.not_to change { project.reload.ci_inbound_job_token_scope_enabled }
         end
       end
     end

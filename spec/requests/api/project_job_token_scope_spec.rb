@@ -196,6 +196,41 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
+
+    context 'when instance-level enforcement is enabled' do
+      before do
+        allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(true)
+      end
+
+      context 'when authenticated user as maintainer' do
+        before_all { project.add_maintainer(user) }
+
+        context 'when trying to disable the setting' do
+          let(:patch_job_token_scope_params) { { enabled: false } }
+
+          it 'returns bad_request with an error message' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to include('enforced for the instance')
+          end
+
+          it 'does not update the project setting' do
+            expect { subject }.not_to change { project.reload.ci_cd_settings.inbound_job_token_scope_enabled }
+          end
+        end
+
+        context 'when trying to enable the setting' do
+          let(:patch_job_token_scope_params) { { enabled: true } }
+
+          it 'returns no content and succeeds' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:no_content)
+          end
+        end
+      end
+    end
   end
 
   describe "GET /projects/:id/job_token_scope/allowlist" do

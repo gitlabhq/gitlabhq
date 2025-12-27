@@ -49,7 +49,7 @@ module API
         job_token_scope_params = declared_params(include_missing: false)
         result = ::Projects::UpdateService.new(user_project, current_user, job_token_scope_params).execute
 
-        break bad_request!(result[:message]) if result[:status] == :error
+        break bad_request!(result[:message]) if result[:status] == :error || result[:status] == :api_error
 
         no_content!
       end

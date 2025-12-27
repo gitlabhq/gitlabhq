@@ -72061,6 +72061,9 @@ msgstr ""
 msgid "UpdateProject|Could not set the default branch. Do you have a branch named 'HEAD' in your repository? (%{linkStart}How do I fix this?%{linkEnd})"
 msgstr ""
 
+msgid "UpdateProject|Job token scope cannot be disabled for this project because it is enforced for the instance. Contact your administrator to modify this setting."
+msgstr ""
+
 msgid "UpdateProject|Learn more."
 msgstr ""
 

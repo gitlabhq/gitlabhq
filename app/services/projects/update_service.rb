@@ -79,6 +79,18 @@ module Projects
       validate_renaming_project_with_tags
       validate_restrict_user_defined_variables_change
       validate_pages_primary_domain
+      validate_ci_inbound_job_token_scope_change
+    end
+
+    def validate_ci_inbound_job_token_scope_change
+      return unless ::Gitlab::CurrentSettings.enforce_ci_inbound_job_token_scope_enabled?
+      return unless params[:ci_inbound_job_token_scope_enabled] == false
+
+      raise_api_error(
+        s_('UpdateProject|Job token scope cannot be disabled for this project ' \
+          'because it is enforced for the instance. ' \
+          'Contact your administrator to modify this setting.')
+      )
     end
 
     def validate_restrict_user_defined_variables_change

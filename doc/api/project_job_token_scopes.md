@@ -39,7 +39,7 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the fol
 
 | Attribute          | Type    | Description |
 |--------------------|---------|-------------|
-| `inbound_enabled`  | boolean | Indicates if the [**Limit access to this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) is enabled. If disabled, then [all projects have access](../ci/jobs/ci_job_token.md#allow-any-project-to-access-your-project). |
+| `inbound_enabled`  | boolean | Indicates if the [**Authorized groups and projects**](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) setting is enabled for the allowlist. If disabled, then [all projects have access](../ci/jobs/ci_job_token.md#allow-any-project-to-access-your-project). This value shows whether the allowlist is currently active, which can be `true` due to the [**Enforce job token allowlist**](../administration/settings/continuous_integration.md#enforce-job-token-allowlist) instance setting. |
 | `outbound_enabled` | boolean | Indicates if the CI/CD job token generated in this project has access to other projects. [Deprecated and planned for removal in GitLab 18.0](../update/deprecations.md#cicd-job-token---limit-access-from-your-project-setting-removal). |
 
 Example request:
@@ -74,12 +74,15 @@ PATCH /projects/:id/job_token_scope
 
 Supported attributes:
 
-| Attribute | Type           | Required | Description |
-|-----------|----------------|----------|-------------|
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
 | `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `enabled` | boolean        | Yes      | The state of the [**Authorized groups and projects** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) to select. Set to `true` to select the **This project and any groups and projects in the allowlist** option, and set to `false` to select **All groups and projects**. |
+| `enabled` | boolean           | Yes      | Restricts job token access to allowlisted projects only. Set to `false` to allow access from all projects. This parameter can be overridden by the [**Enforce job token allowlist**](../administration/settings/continuous_integration.md#enforce-job-token-allowlist) instance setting. |
 
 If successful, returns [`204`](rest/troubleshooting.md#status-codes) and no response body.
+
+If the **Enforce job token allowlist** instance setting is enabled and you attempt to set `enabled` to `false`,
+returns [`400`](rest/troubleshooting.md#status-codes) with an error message.
 
 Example request:
 

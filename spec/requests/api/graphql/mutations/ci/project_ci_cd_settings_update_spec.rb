@@ -59,6 +59,10 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
   context 'when authorized' do
     let_it_be(:user) { project.first_owner }
 
+    before do
+      allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(false)
+    end
+
     it 'updates ci cd settings', :aggregate_failures do
       post_graphql_mutation(mutation, current_user: user)
 
@@ -227,6 +231,46 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
 
         it 'does not trigger event' do
           expect { service_action }.not_to trigger_internal_events('disable_inbound_job_token_scope')
+        end
+      end
+
+      context 'when instance-level enforcement is enabled' do
+        before do
+          allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(true)
+        end
+
+        context 'when trying to disable inbound_job_token_scope_enabled' do
+          before do
+            project.update!(ci_inbound_job_token_scope_enabled: true)
+            variables[:inbound_job_token_scope_enabled] = false
+          end
+
+          it 'returns an error and does not update the setting', :aggregate_failures do
+            post_graphql_mutation(mutation, current_user: user)
+
+            project.reload
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(response_errors).to include(include('enforced for the instance'))
+            expect(project.ci_inbound_job_token_scope_enabled).to be(true)
+          end
+        end
+
+        context 'when trying to enable inbound_job_token_scope_enabled' do
+          before do
+            project.update!(ci_inbound_job_token_scope_enabled: false)
+            variables[:inbound_job_token_scope_enabled] = true
+          end
+
+          it 'allows enabling the setting', :aggregate_failures do
+            post_graphql_mutation(mutation, current_user: user)
+
+            project.reload
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(response_errors).to be_blank
+            expect(project.ci_inbound_job_token_scope_enabled).to be(true)
+          end
         end
       end
     end
