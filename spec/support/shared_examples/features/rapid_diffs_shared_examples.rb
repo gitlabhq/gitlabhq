@@ -24,6 +24,24 @@ RSpec.shared_examples 'Rapid Diffs application' do
       end
     end
 
+    it 'shows view file at <sha> on every file' do
+      all('diff-file').each do |diff_file|
+        diff_file.find('button[aria-label="Show options"]').click
+        link = diff_file.find_link('View file at', exact: false)
+        expect(link[:href]).not_to be_nil
+      end
+    end
+
+    it 'shows full file' do
+      diff_file = page.first('button[data-expand-direction]').ancestor('diff-file')
+      id = diff_file[:id]
+      diff_file.find('button[aria-label="Show options"]').click
+      diff_file.find_button('Show full file').click
+      wait_for_requests
+      # we're searching for a diff file again because the file is fully replaced when expanded
+      expect(page.find(id: id)).not_to have_selector('button[data-expand-direction]')
+    end
+
     describe 'line expansion' do
       let(:file) { button.find(:xpath, './ancestor::*[@data-testid="rd-diff-file"][1]') }
       let(:row) { button.find(:xpath, './ancestor::tr[1]') }
@@ -94,6 +112,14 @@ RSpec.shared_examples 'Rapid Diffs application' do
       expect(parallel_view_option['aria-selected']).to eq('true')
       expect(page).not_to have_css('[data-testid="hunk-lines-inline"]')
       expect(page).to have_css('[data-testid="hunk-lines-parallel"]')
+    end
+
+    it 'collapses all files' do
+      find('button[aria-label="Collapse all files"]').click
+      all('diff-file').each do |diff_file|
+        details = diff_file.find('details', visible: :all)
+        expect(details[:open]).to eq('false')
+      end
     end
   end
 

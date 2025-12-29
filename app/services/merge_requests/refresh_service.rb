@@ -42,7 +42,10 @@ module MergeRequests
         # Leave a system note if a branch was deleted/added
         comment_mr_branch_presence_changed(mr) if branch_added_or_removed?
 
-        notify_about_push(mr)
+        measure_duration_aggregated(:notify_about_push) do
+          notify_about_push(mr)
+        end
+
         mark_mr_as_draft_from_commits(mr)
 
         merge_request_activity_counter.track_mr_including_ci_config(user: mr.author, merge_request: mr)
@@ -284,13 +287,17 @@ module MergeRequests
         mr_commit_ids.include?(commit.id)
       end
 
-      SystemNoteService.add_commits(
-        merge_request, merge_request.project,
-        @current_user, new_commits,
-        existing_commits, @push.oldrev
-      )
+      measure_duration_aggregated(:system_note_add_commits) do
+        SystemNoteService.add_commits(
+          merge_request, merge_request.project,
+          @current_user, new_commits,
+          existing_commits, @push.oldrev
+        )
+      end
 
-      notification_service.push_to_merge_request(merge_request, @current_user, new_commits: new_commits, existing_commits: existing_commits)
+      measure_duration_aggregated(:notification_push_to_merge_request) do
+        notification_service.push_to_merge_request(merge_request, @current_user, new_commits: new_commits, existing_commits: existing_commits)
+      end
     end
 
     def mark_mr_as_draft_from_commits(merge_request)
@@ -367,6 +374,51 @@ module MergeRequests
         @push.ref,
         params.slice(:push_options, :gitaly_context).as_json # ensure sidekiq-compatible hash argument
       )
+    end
+
+    def measure_duration_aggregated(operation_name)
+      return yield unless log_refresh_service_duration_enabled?
+
+      start_time = current_monotonic_time
+      result = yield
+      duration = current_monotonic_time - start_time
+
+      key = :"#{operation_name}_duration_s"
+      duration_statistics[key] ||= 0
+      duration_statistics[key] += duration
+
+      result
+    end
+
+    def duration_statistics
+      @duration_statistics ||= {}
+    end
+
+    def log_refresh_service_duration_enabled?
+      strong_memoize(:log_refresh_service_duration_enabled) do
+        Feature.enabled?(:log_refresh_service_duration, @current_user)
+      end
+    end
+
+    def log_duration_data(hash)
+      return if hash.empty?
+
+      # Round all durations at the end
+      rounded_hash = hash.transform_values do |duration|
+        duration.round(Gitlab::InstrumentationHelper::DURATION_PRECISION)
+      end
+
+      total_duration = rounded_hash.values.sum
+      hash_with_total = rounded_hash.merge(notify_about_push_total_duration_s: total_duration)
+
+      Gitlab::AppJsonLogger.info(
+        event: 'merge_requests_refresh_service_notify_about_push',
+        **hash_with_total
+      )
+    end
+
+    def current_monotonic_time
+      Gitlab::Metrics::System.monotonic_time
     end
   end
 end
