@@ -149,9 +149,8 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
         body = Nokogiri::HTML::DocumentFragment.parse(mail.body.parts.last.to_s)
         confirmation_link = body.css('#cta a').attribute('href').value
 
-        # for some reason, the flash message about email confirmation does not appear reliably
-        # here, but the confirmed_at seems to update reliably
         expect { visit confirmation_link }.to change { user.reload.confirmed_at }
+        expect(page).to have_content('Your email address has been successfully confirmed.')
       end
 
       it 'with the incorrect password fails to update' do

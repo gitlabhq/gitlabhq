@@ -4895,6 +4895,9 @@ msgstr ""
 msgid "Add to merge train when all merge checks pass"
 msgstr ""
 
+msgid "Add to merge train when ready"
+msgstr ""
+
 msgid "Add to review"
 msgstr ""
 
@@ -4991,6 +4994,9 @@ msgstr ""
 msgid "Added in this version"
 msgstr ""
 
+msgid "Added to merge train."
+msgstr ""
+
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission."
 msgstr ""
 
@@ -5048,6 +5054,12 @@ msgid "Adds a to-do item."
 msgstr ""
 
 msgid "Adds email participants that don't have a GitLab account."
+msgstr ""
+
+msgid "Adds this merge request to merge train when ready."
+msgstr ""
+
+msgid "Adds this merge request to merge train."
 msgstr ""
 
 msgid "AdherenceReport|%{pendingCount}/%{totalCount} control is pending"
@@ -41917,9 +41929,6 @@ msgstr ""
 msgid "Merge Requests merged"
 msgstr ""
 
-msgid "Merge automatically (%{strategy})"
-msgstr ""
-
 msgid "Merge blocked: Merge all open dependent merge requests, and remove all closed dependencies."
 msgstr ""
 
@@ -59298,16 +59307,10 @@ msgstr ""
 msgid "Scheduled pipelines cannot run more frequently than once per %{limit} minutes. A pipeline configured to run more frequently only starts after %{limit} minutes have elapsed since the last time it ran."
 msgstr ""
 
-msgid "Scheduled to merge this merge request (%{strategy})."
-msgstr ""
-
 msgid "ScheduledJob|delayed manual action (%{remainingTime})"
 msgstr ""
 
 msgid "Schedules"
-msgstr ""
-
-msgid "Schedules to merge this merge request (%{strategy})."
 msgstr ""
 
 msgid "Scope"
@@ -64267,7 +64270,13 @@ msgstr ""
 msgid "Set to 0 to disable timeout."
 msgstr ""
 
+msgid "Set to add to merge train when ready."
+msgstr ""
+
 msgid "Set to auto-merge"
+msgstr ""
+
+msgid "Set to auto-merge."
 msgstr ""
 
 msgid "Set up"
@@ -64367,6 +64376,9 @@ msgid "Sets the milestone to %{milestone_reference}."
 msgstr ""
 
 msgid "Sets the severity"
+msgstr ""
+
+msgid "Sets this merge request to auto-merge when ready."
 msgstr ""
 
 msgid "Sets time estimate to %{time_estimate}."

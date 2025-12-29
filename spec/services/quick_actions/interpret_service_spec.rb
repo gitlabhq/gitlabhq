@@ -606,7 +606,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         expect(updates).to eq(merge: merge_request.diff_head_sha)
 
-        expect(message).to eq(_('Scheduled to merge this merge request (Merge when checks pass).'))
+        expect(message).to eq(_('Set to auto-merge.'))
       end
     end
 
@@ -4668,6 +4668,78 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         it 'does not recognize the action' do
           expect(service.available_commands(target).pluck(:name)).not_to include(:move, :clone)
         end
+      end
+    end
+  end
+
+  describe '#auto_merge_strategy_copy' do
+    # Define expected copy for each strategy. All strategies must be explicitly
+    # listed here - if a new strategy is added, this test will fail until the
+    # expected copy is added, ensuring we don't forget to update the copy.
+    let(:strategy_copies) do
+      copies = {
+        AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS => {
+          desc: 'Set to auto-merge',
+          explanation: 'Sets this merge request to auto-merge when ready.',
+          feedback: 'Set to auto-merge.'
+        }
+      }
+
+      if Gitlab.ee?
+        copies[AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS] = {
+          desc: 'Add to merge train when ready',
+          explanation: 'Adds this merge request to merge train when ready.',
+          feedback: 'Set to add to merge train when ready.'
+        }
+        copies[EE::AutoMergeService::STRATEGY_MERGE_TRAIN] = {
+          desc: 'Add to merge train',
+          explanation: 'Adds this merge request to merge train.',
+          feedback: 'Added to merge train.'
+        }
+      end
+
+      copies
+    end
+
+    AutoMergeService.all_strategies_ordered_by_preference.each do |strategy|
+      context "with #{strategy} strategy" do
+        it 'has expected copy defined in strategy_copies' do
+          expect(strategy_copies).to have_key(strategy),
+            "Missing expected copy for strategy '#{strategy}'. " \
+              "Please add the expected desc, explanation, and feedback to strategy_copies."
+        end
+
+        it 'returns correct desc copy' do
+          expect(service.auto_merge_strategy_copy(strategy, :desc)).to eq(strategy_copies.dig(strategy, :desc))
+        end
+
+        it 'returns correct explanation copy' do
+          expect(service.auto_merge_strategy_copy(strategy, :explanation)).to eq(strategy_copies.dig(strategy, :explanation))
+        end
+
+        it 'returns correct feedback copy' do
+          expect(service.auto_merge_strategy_copy(strategy, :feedback)).to eq(strategy_copies.dig(strategy, :feedback))
+        end
+      end
+    end
+
+    context 'with unknown strategy' do
+      it 'returns default desc copy' do
+        expect(service.auto_merge_strategy_copy('unknown_strategy', :desc)).to eq('Set to auto-merge')
+      end
+
+      it 'returns default explanation copy' do
+        expect(service.auto_merge_strategy_copy('unknown_strategy', :explanation)).to eq('Sets this merge request to auto-merge when ready.')
+      end
+
+      it 'returns default feedback copy' do
+        expect(service.auto_merge_strategy_copy('unknown_strategy', :feedback)).to eq('Set to auto-merge.')
+      end
+    end
+
+    context 'with unknown type' do
+      it 'returns nil' do
+        expect(service.auto_merge_strategy_copy(AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS, :unknown)).to be_nil
       end
     end
   end
