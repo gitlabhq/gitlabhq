@@ -9,13 +9,30 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
   before do
     sign_in(user)
 
-    allow(described_class).to receive(:current_user).and_return(user)
+    allow_next_instance_of(described_class) do |instance|
+      allow(instance).to receive(:current_user).and_return(user)
+    end
   end
 
   shared_examples 'user must enter a valid current password' do
     it "validates password attempts" do
       expect { bad }.to change { user.failed_attempts }.from(0).to(1)
       expect { go }.not_to change { user.failed_attempts }
+    end
+
+    context 'when the user is on their last sign in attempt' do
+      it 'locks the user`s account' do
+        User.maximum_attempts.pred.times { bad }
+
+        expect(user.reload.failed_attempts).to eq(User.maximum_attempts.pred)
+
+        bad
+
+        user.reload
+
+        expect(user.failed_attempts).to eq(User.maximum_attempts)
+        expect(user).to be_access_locked
+      end
     end
 
     context 'when user authenticates with an external service' do
