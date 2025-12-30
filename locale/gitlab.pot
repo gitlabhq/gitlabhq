@@ -7107,6 +7107,9 @@ msgstr ""
 msgid "AiPowered|AI logs"
 msgstr ""
 
+msgid "AiPowered|Add Group"
+msgstr ""
+
 msgid "AiPowered|After the conversation was created"
 msgstr ""
 
@@ -7281,10 +7284,19 @@ msgstr ""
 msgid "AiPowered|GitLab Duo Agent Platform is an AI-native coding agent."
 msgstr ""
 
+msgid "AiPowered|GitLab Duo Agents"
+msgstr ""
+
 msgid "AiPowered|GitLab Duo Chat conversations"
 msgstr ""
 
+msgid "AiPowered|GitLab Duo Classic"
+msgstr ""
+
 msgid "AiPowered|GitLab Duo Core available to all users"
+msgstr ""
+
+msgid "AiPowered|GitLab Duo Flows and External Agents"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Model Selection"
@@ -7302,10 +7314,16 @@ msgstr ""
 msgid "AiPowered|GitLab Duo with Amazon Q"
 msgstr ""
 
+msgid "AiPowered|Group"
+msgstr ""
+
 msgid "AiPowered|Help make the next releases of GitLab better. As a member of the GitLab Early Access Program, you can take part in shaping GitLab by letting us know what you think of GitLab Duo experimental and beta features. How does this program work?"
 msgstr ""
 
 msgid "AiPowered|Indirect connections through GitLab Self-Managed"
+msgstr ""
+
+msgid "AiPowered|Learn more"
 msgstr ""
 
 msgid "AiPowered|Local AI Gateway URL"
@@ -7326,6 +7344,12 @@ msgstr ""
 msgid "AiPowered|Maximum time in seconds to wait for responses from the AI Gateway (up to 600 seconds).%{br}Increasing this value might result in degraded user experience."
 msgstr ""
 
+msgid "AiPowered|Member Access"
+msgstr ""
+
+msgid "AiPowered|Membership grants access to"
+msgstr ""
+
 msgid "AiPowered|Minimum role required to create, duplicate, edit, delete, and show agents and flows."
 msgstr ""
 
@@ -7344,6 +7368,9 @@ msgstr ""
 msgid "AiPowered|Never allow GitLab to process your code and project data for AI-powered features. Your data will not be sent to GitLab Duo anywhere in this namespace."
 msgstr ""
 
+msgid "AiPowered|No access rules configured."
+msgstr ""
+
 msgid "AiPowered|Not enabled"
 msgstr ""
 
@@ -7353,10 +7380,16 @@ msgstr ""
 msgid "AiPowered|On by default"
 msgstr ""
 
+msgid "AiPowered|Only members of these groups will have access to selected AI features."
+msgstr ""
+
 msgid "AiPowered|Participate in the Early Access Program and help make GitLab better"
 msgstr ""
 
 msgid "AiPowered|Purchase Duo Pro seats"
+msgstr ""
+
+msgid "AiPowered|Remove"
 msgstr ""
 
 msgid "AiPowered|Self-hosted beta models and features"
