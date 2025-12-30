@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-12-22 11:01\n"
+"PO-Revision-Date: 2025-12-30 13:09\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} à %{end}"
@@ -4023,6 +4023,9 @@ msgstr "Au moins une portée est requise."
 msgid "AccessTokens|Broad-access token"
 msgstr ""
 
+msgid "AccessTokens|Consider reducing scope"
+msgstr ""
+
 msgid "AccessTokens|Copy feed token"
 msgstr "Copier le jeton de flux"
 
@@ -4140,6 +4143,9 @@ msgstr ""
 msgid "AccessTokens|Group and project access"
 msgstr ""
 
+msgid "AccessTokens|Group and project permissions"
+msgstr ""
+
 msgid "AccessTokens|How do I use DPoP?"
 msgstr "Comment utiliser DPoP ?"
 
@@ -4156,6 +4162,9 @@ msgstr "Inactif"
 
 msgid "AccessTokens|Incoming email token"
 msgstr "Jeton de courriel entrant"
+
+msgid "AccessTokens|Instance permissions"
+msgstr ""
 
 msgid "AccessTokens|Instance token prefix"
 msgstr "Préfixe du jeton d'instance"
@@ -4209,6 +4218,9 @@ msgid "AccessTokens|Not eligible to rotate tokens with permissions not held by t
 msgstr "Impossible de remplacer les jetons lorsque les autorisations ne sont pas détenues par l'utilisateur ou l'utilisatrice"
 
 msgid "AccessTokens|Only personal projects"
+msgstr ""
+
+msgid "AccessTokens|Only specific group or projects that I'm a member of"
 msgstr ""
 
 msgid "AccessTokens|Only specific groups or projects that I'm a member of"
@@ -4322,6 +4334,9 @@ msgstr ""
 msgid "AccessTokens|Tokens expiring in 2 weeks"
 msgstr "Jetons expirant dans 2 semaines"
 
+msgid "AccessTokens|Type"
+msgstr ""
+
 msgid "AccessTokens|Usage"
 msgstr "Utilisation"
 
@@ -4330,6 +4345,9 @@ msgstr "Utilisez DPoP pour protéger votre accès à l'API REST ou GraphQL lorsq
 
 msgid "AccessTokens|Use Demonstrating Proof of Possession (DPoP)"
 msgstr "Utiliser la preuve de possession (DPoP)"
+
+msgid "AccessTokens|User permissions"
+msgstr ""
 
 msgid "AccessTokens|View details"
 msgstr ""
@@ -4877,6 +4895,9 @@ msgstr "Ajouter au train de fusion"
 msgid "Add to merge train when all merge checks pass"
 msgstr "Ajouter au train de fusion lorsque toutes les vérifications de fusion sont fructueuses"
 
+msgid "Add to merge train when ready"
+msgstr ""
+
 msgid "Add to review"
 msgstr "Ajouter à la revue de code"
 
@@ -4973,6 +4994,9 @@ msgstr "Ajoutée pour cette requête de fusion"
 msgid "Added in this version"
 msgstr "Ajoutée dans cette version"
 
+msgid "Added to merge train."
+msgstr ""
+
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission."
 msgstr "L'ajout de nouvelles applications est désactivé dans votre instance GitLab. Veuillez contacter votre administrateur GitLab pour en obtenir la permission."
 
@@ -5031,6 +5055,12 @@ msgstr "Ajoute une tâche à faire."
 
 msgid "Adds email participants that don't have a GitLab account."
 msgstr "Ajoute des participants par e-mail qui n'ont pas de compte GitLab."
+
+msgid "Adds this merge request to merge train when ready."
+msgstr ""
+
+msgid "Adds this merge request to merge train."
+msgstr ""
 
 msgid "AdherenceReport|%{pendingCount}/%{totalCount} control is pending"
 msgid_plural "AdherenceReport|%{pendingCount}/%{totalCount} controls are pending"
@@ -5135,9 +5165,6 @@ msgstr "Fonctionnalité"
 
 msgid "AdminAIPoweredFeatures|Features"
 msgstr ""
-
-msgid "AdminAIPoweredFeatures|GitLab AI vendor model"
-msgstr "Modèle de fournisseur IA GitLab"
 
 msgid "AdminAIPoweredFeatures|GitLab Duo Agent Platform"
 msgstr "GitLab Duo Agent Platform"
@@ -7080,6 +7107,9 @@ msgstr "Délai d'attente de la requête de la passerelle d'IA dépassé"
 msgid "AiPowered|AI logs"
 msgstr "Journaux d'IA"
 
+msgid "AiPowered|Add Group"
+msgstr ""
+
 msgid "AiPowered|After the conversation was created"
 msgstr "Après la création de la conversation"
 
@@ -7254,10 +7284,19 @@ msgstr ""
 msgid "AiPowered|GitLab Duo Agent Platform is an AI-native coding agent."
 msgstr "GitLab Duo Agent Platform est un agent de codage natif de l'IA."
 
+msgid "AiPowered|GitLab Duo Agents"
+msgstr ""
+
 msgid "AiPowered|GitLab Duo Chat conversations"
 msgstr "Conversations GitLab Duo Chat"
 
+msgid "AiPowered|GitLab Duo Classic"
+msgstr ""
+
 msgid "AiPowered|GitLab Duo Core available to all users"
+msgstr ""
+
+msgid "AiPowered|GitLab Duo Flows and External Agents"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Model Selection"
@@ -7275,11 +7314,17 @@ msgstr "Disponibilité de GitLab Duo"
 msgid "AiPowered|GitLab Duo with Amazon Q"
 msgstr "GitLab Duo avec Amazon Q"
 
+msgid "AiPowered|Group"
+msgstr ""
+
 msgid "AiPowered|Help make the next releases of GitLab better. As a member of the GitLab Early Access Program, you can take part in shaping GitLab by letting us know what you think of GitLab Duo experimental and beta features. How does this program work?"
 msgstr ""
 
 msgid "AiPowered|Indirect connections through GitLab Self-Managed"
 msgstr "Connexions indirectes via GitLab Self-Managed"
+
+msgid "AiPowered|Learn more"
+msgstr ""
 
 msgid "AiPowered|Local AI Gateway URL"
 msgstr "URL de la passerelle d'IA locale"
@@ -7299,6 +7344,12 @@ msgstr "Gérer"
 msgid "AiPowered|Maximum time in seconds to wait for responses from the AI Gateway (up to 600 seconds).%{br}Increasing this value might result in degraded user experience."
 msgstr "Durée maximale d'attente des réponses de la passerelle d'IA, en secondes (jusqu'à 600 secondes).%{br}L'augmentation de cette valeur peut entraîner une dégradation de l'expérience utilisateur."
 
+msgid "AiPowered|Member Access"
+msgstr ""
+
+msgid "AiPowered|Membership grants access to"
+msgstr ""
+
 msgid "AiPowered|Minimum role required to create, duplicate, edit, delete, and show agents and flows."
 msgstr "Rôle minimal requis pour créer, dupliquer, modifier, supprimer et afficher les agents et les flux."
 
@@ -7317,6 +7368,9 @@ msgstr "Suivre, gérer et personnaliser les fonctionnalités optimisées par l'I
 msgid "AiPowered|Never allow GitLab to process your code and project data for AI-powered features. Your data will not be sent to GitLab Duo anywhere in this namespace."
 msgstr "Ne jamais autoriser GitLab à traiter votre code et vos données de projet pour les fonctionnalités optimisées par l'IA. Vos données ne seront pas envoyées à GitLab Duo dans cet espace de nommage."
 
+msgid "AiPowered|No access rules configured."
+msgstr ""
+
 msgid "AiPowered|Not enabled"
 msgstr "Non activé"
 
@@ -7326,11 +7380,17 @@ msgstr "Désactivé(e) par défaut"
 msgid "AiPowered|On by default"
 msgstr "Activé(e) par défaut"
 
+msgid "AiPowered|Only members of these groups will have access to selected AI features."
+msgstr ""
+
 msgid "AiPowered|Participate in the Early Access Program and help make GitLab better"
 msgstr ""
 
 msgid "AiPowered|Purchase Duo Pro seats"
 msgstr "Acheter des sièges Duo Pro"
+
+msgid "AiPowered|Remove"
+msgstr ""
 
 msgid "AiPowered|Self-hosted beta models and features"
 msgstr "Modèles et fonctionnalités bêta auto-hébergés"
@@ -41902,9 +41962,6 @@ msgstr "requêtes de fusion en cours d'examen"
 msgid "Merge Requests merged"
 msgstr "Requêtes de fusion fusionnées"
 
-msgid "Merge automatically (%{strategy})"
-msgstr "Fusionner automatiquement (%{strategy})"
-
 msgid "Merge blocked: Merge all open dependent merge requests, and remove all closed dependencies."
 msgstr "Fusion bloquée : fusionnez toutes les requêtes de fusion ouvertes qui en dépendent puis supprimez toutes les dépendances fermées."
 
@@ -48586,8 +48643,11 @@ msgstr "Réussies"
 msgid "Passed on"
 msgstr "A réussi le"
 
-msgid "Passkey added successfully! Next time you sign in, select the sign-in with passkey option."
-msgstr "Clé d'accès ajoutée ! La prochaine fois que vous vous connecterez, sélectionnez l'option de connexion par clé d'accès."
+msgid "Passkey added successfully! Next time you sign in, select the sign-in with passkey option. For additional account security, enable two-factor authentication below."
+msgstr ""
+
+msgid "Passkey added successfully! Next time you sign in, select the sign-in with passkey option. Passkey is now your default 2FA method."
+msgstr ""
 
 msgid "Passkey deleted"
 msgstr "Clé d'accès supprimée"
@@ -55125,6 +55185,12 @@ msgstr "Afficher le fichier dans %{codeStart}%{commit}%{codeEnd}"
 msgid "RapidDiffs|View on %{environment}"
 msgstr "Afficher sur %{environment}"
 
+msgid "RapidDiffs|View plain diff"
+msgstr ""
+
+msgid "RapidDiffs|View rich diff"
+msgstr ""
+
 msgid "Rate Limits"
 msgstr "Limites de fréquence"
 
@@ -59274,17 +59340,11 @@ msgstr "Pipelines programmés"
 msgid "Scheduled pipelines cannot run more frequently than once per %{limit} minutes. A pipeline configured to run more frequently only starts after %{limit} minutes have elapsed since the last time it ran."
 msgstr "Les pipelines planifiés ne peuvent pas être exécutés plus d'une fois toutes les %{limit} minutes. Un pipeline configuré pour s'exécuter plus souvent ne va démarrer qu'après que %{limit} minutes se soient écoulées depuis sa dernière exécution."
 
-msgid "Scheduled to merge this merge request (%{strategy})."
-msgstr "Fusion programmée pour cette requête de fusion (%{strategy})."
-
 msgid "ScheduledJob|delayed manual action (%{remainingTime})"
 msgstr "action manuelle retardée (%{remainingTime})"
 
 msgid "Schedules"
 msgstr "Planifications"
-
-msgid "Schedules to merge this merge request (%{strategy})."
-msgstr "Programme la fusion pour cette requête de fusion (%{strategy})."
 
 msgid "Scope"
 msgstr "Portée"
@@ -64243,8 +64303,14 @@ msgstr "Choisissez 0 pour désactiver les limites."
 msgid "Set to 0 to disable timeout."
 msgstr "Définir à 0 pour désactiver le délai d'expiration."
 
+msgid "Set to add to merge train when ready."
+msgstr ""
+
 msgid "Set to auto-merge"
 msgstr "Configurer la fusion automatique"
+
+msgid "Set to auto-merge."
+msgstr ""
 
 msgid "Set up"
 msgstr "Configuration"
@@ -64344,6 +64410,9 @@ msgstr "Définit le jalon sur %{milestone_reference}."
 
 msgid "Sets the severity"
 msgstr "Définit la gravité"
+
+msgid "Sets this merge request to auto-merge when ready."
+msgstr ""
 
 msgid "Sets time estimate to %{time_estimate}."
 msgstr "Définit l'estimation du temps à %{time_estimate}."
@@ -64960,6 +65029,12 @@ msgstr "Clé de signature"
 
 msgid "SlackIntegration|Slack app not enabled on GitLab instance"
 msgstr "L'application Slack n'est pas activée sur l'instance GitLab"
+
+msgid "SlackIntegration|Slack slash commands integration is deprecated"
+msgstr ""
+
+msgid "SlackIntegration|Slack slash commands integration will be removed in GitLab 19.0. To run common GitLab operations from Slack, use the GitLab for Slack app instead."
+msgstr ""
 
 msgid "SlackIntegration|Step 1: Create your GitLab for Slack app"
 msgstr "Étape 1 : créez votre appli GitLab pour Slack"
@@ -67255,11 +67330,17 @@ msgstr "Éditer le message ciblé"
 msgid "TargetedMessages|Failed to assign namespaces due to error processing CSV: %{error_message}"
 msgstr "Échec de l'attribution d'espaces de nommage en raison d'une erreur dans le traitement du CSV : %{error_message}"
 
+msgid "TargetedMessages|Must have at least one targeted namespace"
+msgstr ""
+
 msgid "TargetedMessages|Namespace IDs"
 msgstr "ID des espaces de nommage"
 
 msgid "TargetedMessages|New targeted message"
 msgstr "Nouveau message ciblé"
+
+msgid "TargetedMessages|Scheduled deletion of targeted message with id: %{id}."
+msgstr ""
 
 msgid "TargetedMessages|Select a target type"
 msgstr "Sélectionner un type cible"
@@ -67267,17 +67348,11 @@ msgstr "Sélectionner un type cible"
 msgid "TargetedMessages|Target Type"
 msgstr "Type cible"
 
-msgid "TargetedMessages|Targeted message failed to delete. Please try again."
-msgstr "Impossible de supprimer le message ciblé. Veuillez réessayer."
-
 msgid "TargetedMessages|Targeted message was successfully created."
 msgstr "Le message ciblé a été créé avec succès."
 
 msgid "TargetedMessages|Targeted message was successfully created. But %{invalid_namespace_ids_message}"
 msgstr "Le message ciblé a bien été créé. Mais %{invalid_namespace_ids_message}"
-
-msgid "TargetedMessages|Targeted message was successfully deleted."
-msgstr "Le message ciblé a été supprimé avec succès."
 
 msgid "TargetedMessages|Targeted message was successfully updated."
 msgstr "Le message ciblé a été mis à jour avec succès."
@@ -72031,6 +72106,9 @@ msgstr "Impossible de configurer la branche par défaut"
 msgid "UpdateProject|Could not set the default branch. Do you have a branch named 'HEAD' in your repository? (%{linkStart}How do I fix this?%{linkEnd})"
 msgstr "Impossible de configurer la branche par défaut. Avez-vous une branche nommée « HEAD » dans votre dépôt ? (%{linkStart}Comment puis-je corriger cela ?%{linkEnd})"
 
+msgid "UpdateProject|Job token scope cannot be disabled for this project because it is enforced for the instance. Contact your administrator to modify this setting."
+msgstr ""
+
 msgid "UpdateProject|Learn more."
 msgstr "En savoir plus."
 
@@ -75862,18 +75940,6 @@ msgstr "+ Masquer une autre partie de l'URL"
 msgid "Webhooks|A URL is required."
 msgstr "Une URL est requise."
 
-msgid "Webhooks|A group member is created, updated, or removed."
-msgstr "Un membre de groupe est créé, mis à jour ou supprimé."
-
-msgid "Webhooks|A project is created or removed."
-msgstr ""
-
-msgid "Webhooks|A subgroup is created or removed."
-msgstr "Un sous-groupe est créé ou supprimé."
-
-msgid "Webhooks|A vulnerability is created or updated."
-msgstr "Une vulnérabilité est créée ou mise à jour."
-
 msgid "Webhooks|A webhook in this group was automatically disabled after it was retried multiple times."
 msgstr "Un crochet Web de ce groupe a été désactivé automatiquement après plusieurs tentatives de ré-exécution."
 
@@ -76809,6 +76875,9 @@ msgid_plural "WorkItem|+%d more items"
 msgstr[0] "+%d autre élément"
 msgstr[1] "+%d autres éléments"
 
+msgid "WorkItem|140 characters max"
+msgstr ""
+
 msgid "WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}."
 msgstr "Un(e) %{workItemType} non-confidentiel(le) ne peut pas assigné(e) à un(e) %{parentWorkItemType} parent confidentiel(le)."
 
@@ -76850,6 +76919,9 @@ msgstr ""
 
 msgid "WorkItem|Add up to 10 items at a time."
 msgstr "Ajoutez jusqu'à 10 éléments à la fois."
+
+msgid "WorkItem|Add view"
+msgstr ""
 
 msgid "WorkItem|All activity"
 msgstr "Toute activité"
@@ -76898,6 +76970,9 @@ msgstr "Ancêtre"
 
 msgid "WorkItem|Ancestor not available"
 msgstr "Ancêtre non disponible"
+
+msgid "WorkItem|Anyone with access to this project can add the view, and those with the Planner and above roles can edit it."
+msgstr ""
 
 msgid "WorkItem|Apply template"
 msgstr "Appliquer le modèle"
@@ -77076,6 +77151,9 @@ msgstr "Créer un cycle de vie"
 msgid "WorkItem|Create new work item by email"
 msgstr "Créer un nouvel élément de travail par courriel"
 
+msgid "WorkItem|Create view"
+msgstr ""
+
 msgid "WorkItem|Created %{timeago}"
 msgstr "Crée %{timeago}"
 
@@ -77189,6 +77267,9 @@ msgstr "%{workItemName} existant"
 
 msgid "WorkItem|Existing task"
 msgstr "Tâche existante"
+
+msgid "WorkItem|Existing view"
+msgstr ""
 
 msgid "WorkItem|Export as CSV"
 msgstr ""
@@ -77443,6 +77524,9 @@ msgstr "Nouvelle tâche"
 msgid "WorkItem|New type"
 msgstr "Nouveau type"
 
+msgid "WorkItem|New view"
+msgstr ""
+
 msgid "WorkItem|No assignees"
 msgstr "Aucune personne assignée"
 
@@ -77539,6 +77623,9 @@ msgstr "Seuls les membres de %{namespaceType} peuvent ajouter des métadonnées.
 msgid "WorkItem|Only 10 items can be added at a time."
 msgstr "Seuls 10 éléments peuvent être ajoutés à la fois."
 
+msgid "WorkItem|Only you can see and edit this view."
+msgstr ""
+
 msgid "WorkItem|Open"
 msgstr "Ouvert"
 
@@ -77567,6 +77654,9 @@ msgid "WorkItem|Please review the %{linkStart}contribution guidelines%{linkEnd} 
 msgstr "Veuillez consulter les %{linkStart}directives de contribution%{linkEnd} de ce projet."
 
 msgid "WorkItem|Please select a file to import."
+msgstr ""
+
+msgid "WorkItem|Private"
 msgstr ""
 
 msgid "WorkItem|Progress"
@@ -77688,6 +77778,9 @@ msgstr "Sélectionnez dans quel type vous souhaitez convertir cet élément."
 
 msgid "WorkItem|Send email"
 msgstr "Envoyer par courriel"
+
+msgid "WorkItem|Shared"
+msgstr ""
 
 msgid "WorkItem|Show all ancestors"
 msgstr "Afficher tous les ancêtres"
@@ -77919,6 +78012,9 @@ msgstr "Ticket"
 
 msgid "WorkItem|Time tracking"
 msgstr "Suivi du temps"
+
+msgid "WorkItem|Title is required."
+msgstr ""
 
 msgid "WorkItem|To do"
 msgstr "À faire"

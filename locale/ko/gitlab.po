@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-12-22 11:22\n"
+"PO-Revision-Date: 2025-12-30 13:19\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 에서 %{end}"
@@ -3845,6 +3845,9 @@ msgstr "적어도 하나 이상의 스코프가 요구됩니다."
 msgid "AccessTokens|Broad-access token"
 msgstr "광역 억세스 토큰"
 
+msgid "AccessTokens|Consider reducing scope"
+msgstr "범위를 축소해 보십시오"
+
 msgid "AccessTokens|Copy feed token"
 msgstr "피드 토큰 복사"
 
@@ -3962,6 +3965,9 @@ msgstr "토큰 생성"
 msgid "AccessTokens|Group and project access"
 msgstr "그룹과 프로젝트 접근"
 
+msgid "AccessTokens|Group and project permissions"
+msgstr "그룹과 프로젝트 권한"
+
 msgid "AccessTokens|How do I use DPoP?"
 msgstr "DPoP를 어떻게 사용하나요?"
 
@@ -3977,6 +3983,9 @@ msgstr "비활성"
 
 msgid "AccessTokens|Incoming email token"
 msgstr "수신 이메일 토큰"
+
+msgid "AccessTokens|Instance permissions"
+msgstr "인스턴스 권한"
 
 msgid "AccessTokens|Instance token prefix"
 msgstr "인스턴스 토큰 접두어"
@@ -4031,6 +4040,9 @@ msgstr "사용자가 보유하지 않은 권한으로 토큰을 교체할 수 �
 
 msgid "AccessTokens|Only personal projects"
 msgstr "개인 프로젝트만"
+
+msgid "AccessTokens|Only specific group or projects that I'm a member of"
+msgstr "내가 멤버인 특정 그룹 또는 프로젝트만"
 
 msgid "AccessTokens|Only specific groups or projects that I'm a member of"
 msgstr "내가 멤버인 특정 그룹과 프로젝트"
@@ -4143,6 +4155,9 @@ msgstr "토큰 범위"
 msgid "AccessTokens|Tokens expiring in 2 weeks"
 msgstr "2주내에 만료되는 토큰"
 
+msgid "AccessTokens|Type"
+msgstr "유형"
+
 msgid "AccessTokens|Usage"
 msgstr "사용량"
 
@@ -4151,6 +4166,9 @@ msgstr "개인 액세스 토큰을 사용하는 경우 DPoP를 사용하여 REST
 
 msgid "AccessTokens|Use Demonstrating Proof of Possession (DPoP)"
 msgstr "소유 증명(DPoP)을 사용"
+
+msgid "AccessTokens|User permissions"
+msgstr "사용자 권한"
 
 msgid "AccessTokens|View details"
 msgstr "상세 보기"
@@ -4698,6 +4716,9 @@ msgstr "머지 트레인에 추가"
 msgid "Add to merge train when all merge checks pass"
 msgstr "모든 머지 검사가 통과되면 머지 트레인에 추가"
 
+msgid "Add to merge train when ready"
+msgstr ""
+
 msgid "Add to review"
 msgstr "리뷰 추가"
 
@@ -4794,6 +4815,9 @@ msgstr "머지 리퀘스트에 추가됨"
 msgid "Added in this version"
 msgstr "이 버전에 추가됨"
 
+msgid "Added to merge train."
+msgstr ""
+
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission."
 msgstr "GitLab 인스턴스에서 새 애플리케이션 추가가 비활성화되어 있습니다. 권한을 얻으려면 GitLab 운영자에게 문의하십시오."
 
@@ -4851,6 +4875,12 @@ msgstr "할 일 항목 추가."
 
 msgid "Adds email participants that don't have a GitLab account."
 msgstr "GitLab 계정이 없는 이메일 참가자를 추가하세요."
+
+msgid "Adds this merge request to merge train when ready."
+msgstr ""
+
+msgid "Adds this merge request to merge train."
+msgstr ""
 
 msgid "AdherenceReport|%{pendingCount}/%{totalCount} control is pending"
 msgid_plural "AdherenceReport|%{pendingCount}/%{totalCount} controls are pending"
@@ -4954,9 +4984,6 @@ msgstr "기능"
 
 msgid "AdminAIPoweredFeatures|Features"
 msgstr "기능"
-
-msgid "AdminAIPoweredFeatures|GitLab AI vendor model"
-msgstr "GitLab AI 공급업체"
 
 msgid "AdminAIPoweredFeatures|GitLab Duo Agent Platform"
 msgstr "GitLab Duo 에이전트 플랫폼"
@@ -6899,6 +6926,9 @@ msgstr "AI 게이트웨이 요청 타임아웃"
 msgid "AiPowered|AI logs"
 msgstr "AI 로그"
 
+msgid "AiPowered|Add Group"
+msgstr ""
+
 msgid "AiPowered|After the conversation was created"
 msgstr "대화가 생성된 이후"
 
@@ -7073,11 +7103,20 @@ msgstr "GitLab Duo Agent 플랫폼 복합 ID"
 msgid "AiPowered|GitLab Duo Agent Platform is an AI-native coding agent."
 msgstr "GitLab Duo 에이진트 플랫폼은 AI-네이티브 코딩 에이전트 입니다."
 
+msgid "AiPowered|GitLab Duo Agents"
+msgstr ""
+
 msgid "AiPowered|GitLab Duo Chat conversations"
 msgstr "GitLab Duo Chat 대화"
 
+msgid "AiPowered|GitLab Duo Classic"
+msgstr ""
+
 msgid "AiPowered|GitLab Duo Core available to all users"
 msgstr "GitLab Duo Core가 모든 사용자에게 사용가능합니다"
+
+msgid "AiPowered|GitLab Duo Flows and External Agents"
+msgstr ""
 
 msgid "AiPowered|GitLab Duo Model Selection"
 msgstr "GitLab Duo 모델 선택"
@@ -7094,11 +7133,17 @@ msgstr "GitLab Duo 가용성"
 msgid "AiPowered|GitLab Duo with Amazon Q"
 msgstr "Amazon Q와 GitLab Duo"
 
+msgid "AiPowered|Group"
+msgstr ""
+
 msgid "AiPowered|Help make the next releases of GitLab better. As a member of the GitLab Early Access Program, you can take part in shaping GitLab by letting us know what you think of GitLab Duo experimental and beta features. How does this program work?"
 msgstr "GitLab의 다음 릴리스를 개선하는 데 도움을 주세요. GitLab 먼저 체험하기 프로그램의 멤버로서 GitLab Duo 실험기능 및 베타 기능에 대한 의견을 알려주시면 GitLab을 형성하는 데 참여할 수 있습니다. 이 프로그램은 어떻게 작동하나요?"
 
 msgid "AiPowered|Indirect connections through GitLab Self-Managed"
 msgstr "자체 관리 GitLab을 통한 간접 연결"
+
+msgid "AiPowered|Learn more"
+msgstr ""
 
 msgid "AiPowered|Local AI Gateway URL"
 msgstr "로컬 AI 게이트웨이 URL"
@@ -7118,6 +7163,12 @@ msgstr "관리"
 msgid "AiPowered|Maximum time in seconds to wait for responses from the AI Gateway (up to 600 seconds).%{br}Increasing this value might result in degraded user experience."
 msgstr "AI 게이트웨이에서 응답을 기다리는 최대 시간(최대 600초). %{br} 이 값을 증가시키면 사용자 경험이 나빠질 수 있습니다."
 
+msgid "AiPowered|Member Access"
+msgstr ""
+
+msgid "AiPowered|Membership grants access to"
+msgstr ""
+
 msgid "AiPowered|Minimum role required to create, duplicate, edit, delete, and show agents and flows."
 msgstr "에이전트와 플로우를 생성, 복제, 편집, 삭제 및 표시하기 위해 필요한 최소 권한."
 
@@ -7136,6 +7187,9 @@ msgstr "AI 기반 기능을 모니터링, 관리 및 커스터마이징 하여 �
 msgid "AiPowered|Never allow GitLab to process your code and project data for AI-powered features. Your data will not be sent to GitLab Duo anywhere in this namespace."
 msgstr "GitLab이 AI 기반 기능을 위해 당신의 코드와 프로젝트 데이터를 처리하지 않도록 합니다. 이 네임스페이스 내에서 당신의 데이터는 GitLab Duo로 전송되지 않습니다."
 
+msgid "AiPowered|No access rules configured."
+msgstr ""
+
 msgid "AiPowered|Not enabled"
 msgstr "활성화되지 않음"
 
@@ -7145,11 +7199,17 @@ msgstr "기본적으로 꺼짐"
 msgid "AiPowered|On by default"
 msgstr "기본적으로 켜짐"
 
+msgid "AiPowered|Only members of these groups will have access to selected AI features."
+msgstr ""
+
 msgid "AiPowered|Participate in the Early Access Program and help make GitLab better"
 msgstr "먼저 체험하기 프로그램에 참여하여 GitLab을 더욱 개선하는 데 도움을 주세요."
 
 msgid "AiPowered|Purchase Duo Pro seats"
 msgstr "Duo Pro 좌석 구매"
+
+msgid "AiPowered|Remove"
+msgstr ""
 
 msgid "AiPowered|Self-hosted beta models and features"
 msgstr "자체 호스팅 베타 모델과 기능"
@@ -41602,9 +41662,6 @@ msgstr "검토 중인 머지 리퀘스트"
 msgid "Merge Requests merged"
 msgstr "머지된 머지 리퀘스트"
 
-msgid "Merge automatically (%{strategy})"
-msgstr "자동 머지 (%{strategy})"
-
 msgid "Merge blocked: Merge all open dependent merge requests, and remove all closed dependencies."
 msgstr "머지를 차단했습니다: 열려 있는 모든 머지 리퀘스트를 머지하고, 닫혀 있는 모든 의존성을 제거합니다."
 
@@ -48268,8 +48325,11 @@ msgstr "합격"
 msgid "Passed on"
 msgstr "통과됨"
 
-msgid "Passkey added successfully! Next time you sign in, select the sign-in with passkey option."
-msgstr "패스키가 성공적으로 추가되었습니다! 다음에 로그인할 때, 패스키로 로그인 옵션을 선택하세요."
+msgid "Passkey added successfully! Next time you sign in, select the sign-in with passkey option. For additional account security, enable two-factor authentication below."
+msgstr "패스키가 성공적으로 추가되었습니다! 다음 로그인부터는 패스키로 로그인 옵션을 선택해 주시기 바랍니다. 계정 보안을 강화하려면 아래 이중 인증을 활성화할 수 있습니다."
+
+msgid "Passkey added successfully! Next time you sign in, select the sign-in with passkey option. Passkey is now your default 2FA method."
+msgstr "패스키가 성공적으로 추가되었습니다! 다음 로그인부터는 패스키로 로그인 옵션을 선택해 주시기 바랍니다. 지금부터 패스키가 당신의 기본값 이중 인증 수단이 됩니다."
 
 msgid "Passkey deleted"
 msgstr "패스키 삭제됨"
@@ -54800,6 +54860,12 @@ msgstr "%{codeStart}%{commit}%{codeEnd}의 파일 보기"
 msgid "RapidDiffs|View on %{environment}"
 msgstr "%{environment}에서 보기"
 
+msgid "RapidDiffs|View plain diff"
+msgstr "Plain Diff 보기"
+
+msgid "RapidDiffs|View rich diff"
+msgstr "Rich Diff 보기"
+
 msgid "Rate Limits"
 msgstr "속도 제한"
 
@@ -58922,17 +58988,11 @@ msgstr "예약된 파이프라인"
 msgid "Scheduled pipelines cannot run more frequently than once per %{limit} minutes. A pipeline configured to run more frequently only starts after %{limit} minutes have elapsed since the last time it ran."
 msgstr "예약된 파이프라인은 %{limit} 분에 한 번 이상 실행할 수 없습니다. 더 자주 실행하도록 설정된 파이프라인은 마지막으로 실행한 후 %{limit} 분이 경과한 후에만 시작됩니다."
 
-msgid "Scheduled to merge this merge request (%{strategy})."
-msgstr "이 머지 리퀘스르트에 대한 머지가 예약되었습니다 (%{strategy})."
-
 msgid "ScheduledJob|delayed manual action (%{remainingTime})"
 msgstr "지연된 수동 작업 (%{remainingTime})"
 
 msgid "Schedules"
 msgstr "일정"
-
-msgid "Schedules to merge this merge request (%{strategy})."
-msgstr "이 머지 리퀘스트의 머지가 예약되었습니다 (%{strategy})."
 
 msgid "Scope"
 msgstr "범위"
@@ -63865,8 +63925,14 @@ msgstr "제한을 비활성화하려면 0으로 설정합니다."
 msgid "Set to 0 to disable timeout."
 msgstr "시간 초과를 비활성화하려면 0으로 설정합니다."
 
+msgid "Set to add to merge train when ready."
+msgstr ""
+
 msgid "Set to auto-merge"
 msgstr "자동 병합으로 설정"
+
+msgid "Set to auto-merge."
+msgstr ""
 
 msgid "Set up"
 msgstr "설정"
@@ -63966,6 +64032,9 @@ msgstr "마일스톤을 %{milestone_reference}로 설정합니다."
 
 msgid "Sets the severity"
 msgstr "심각도 설정"
+
+msgid "Sets this merge request to auto-merge when ready."
+msgstr ""
 
 msgid "Sets time estimate to %{time_estimate}."
 msgstr "추정 시간을 %{time_estimate}로 설정합니다."
@@ -64580,6 +64649,12 @@ msgstr "서명 비밀"
 
 msgid "SlackIntegration|Slack app not enabled on GitLab instance"
 msgstr "Slack 앱이 GitLab 인스턴스에서 활성화되지 않았습니다."
+
+msgid "SlackIntegration|Slack slash commands integration is deprecated"
+msgstr "Slack 슬래시 명령 통합은 더 이상 지원하지 않음"
+
+msgid "SlackIntegration|Slack slash commands integration will be removed in GitLab 19.0. To run common GitLab operations from Slack, use the GitLab for Slack app instead."
+msgstr "GitLab 19.0 버전에서는 Slack 슬래시 명령어 통합이 제거됩니다. Slack에서 일반적인 GitLab 작업을 실행하려면 GitLab for Slack 앱을 대신 사용하세요."
 
 msgid "SlackIntegration|Step 1: Create your GitLab for Slack app"
 msgstr "1 단계: Slack용 GitLab 앱 만들기"
@@ -66874,11 +66949,17 @@ msgstr "대상지정 메시지 편집"
 msgid "TargetedMessages|Failed to assign namespaces due to error processing CSV: %{error_message}"
 msgstr "CSV 처리 중 오류로 인해 네임스페이스를 할당하지 못했습니다: %{error_message}"
 
+msgid "TargetedMessages|Must have at least one targeted namespace"
+msgstr "적어도 하나의 대상 지정 네임스페이스가 있어야 합니다."
+
 msgid "TargetedMessages|Namespace IDs"
 msgstr "네임스페이스 ID"
 
 msgid "TargetedMessages|New targeted message"
 msgstr "새 대상지정 메시지"
+
+msgid "TargetedMessages|Scheduled deletion of targeted message with id: %{id}."
+msgstr "ID가 %{id}인 대상지정 메시지의 삭제가 예약됨."
 
 msgid "TargetedMessages|Select a target type"
 msgstr "대상 유형 선택"
@@ -66886,17 +66967,11 @@ msgstr "대상 유형 선택"
 msgid "TargetedMessages|Target Type"
 msgstr "대상 유형"
 
-msgid "TargetedMessages|Targeted message failed to delete. Please try again."
-msgstr "대상지정 메시지를 삭제하지 못했습니다. 다시 시도해 주세요."
-
 msgid "TargetedMessages|Targeted message was successfully created."
 msgstr "대상지정 메시지가 성공적으로 생성되었습니다."
 
 msgid "TargetedMessages|Targeted message was successfully created. But %{invalid_namespace_ids_message}"
 msgstr "타케팅된 메시지가 성공적으로 생성되었습니다. 하지만 %{invalid_namespace_ids_message} 입니다"
-
-msgid "TargetedMessages|Targeted message was successfully deleted."
-msgstr "대상지정 메시지가 성공적으로 삭제 되었습니다."
 
 msgid "TargetedMessages|Targeted message was successfully updated."
 msgstr "대상지정 메시지가 성공적으로 업데이트 되었습니다."
@@ -71608,6 +71683,9 @@ msgstr "기본 브랜치를 설정할 수 없습니다."
 msgid "UpdateProject|Could not set the default branch. Do you have a branch named 'HEAD' in your repository? (%{linkStart}How do I fix this?%{linkEnd})"
 msgstr "기본 브랜치를 설정할 수 없습니다. 리포지토리에 'HEAD'라는 브랜치가 있습니까? (%{linkStart}이 문제를 어떻게 해결합니까?%{linkEnd})"
 
+msgid "UpdateProject|Job token scope cannot be disabled for this project because it is enforced for the instance. Contact your administrator to modify this setting."
+msgstr ""
+
 msgid "UpdateProject|Learn more."
 msgstr "자세히 알아보세요"
 
@@ -75418,18 +75496,6 @@ msgstr "+ URL의 다른 부분 마스킹"
 msgid "Webhooks|A URL is required."
 msgstr "URL이 필요합니다."
 
-msgid "Webhooks|A group member is created, updated, or removed."
-msgstr "그룹 구성원을 생성, 업데이트 또는 제거"
-
-msgid "Webhooks|A project is created or removed."
-msgstr "프로젝트가 생성되거나 제거됨."
-
-msgid "Webhooks|A subgroup is created or removed."
-msgstr "하위 그룹이 생성되거나 제거됨."
-
-msgid "Webhooks|A vulnerability is created or updated."
-msgstr "취약점이 생성되거나 업데이트되었습니다."
-
 msgid "Webhooks|A webhook in this group was automatically disabled after it was retried multiple times."
 msgstr "이 그룹의 웹훅은 여러 번 재시도한 후 자동으로 비활성화되었습니다."
 
@@ -76358,6 +76424,9 @@ msgid "WorkItem|+%d more item"
 msgid_plural "WorkItem|+%d more items"
 msgstr[0] "+%d 항목"
 
+msgid "WorkItem|140 characters max"
+msgstr "최대 140 글자"
+
 msgid "WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}."
 msgstr "공개 %{workItemType}은 비공개 상위 %{parentWorkItemType}에 할당할 수 없습니다."
 
@@ -76399,6 +76468,9 @@ msgstr "다음에 추가"
 
 msgid "WorkItem|Add up to 10 items at a time."
 msgstr "한 번에 최대 10개 항목 추가합니다."
+
+msgid "WorkItem|Add view"
+msgstr "뷰 추가"
 
 msgid "WorkItem|All activity"
 msgstr "모든 활동"
@@ -76447,6 +76519,9 @@ msgstr "선행항목"
 
 msgid "WorkItem|Ancestor not available"
 msgstr "선행항목을 사용할 수 없음"
+
+msgid "WorkItem|Anyone with access to this project can add the view, and those with the Planner and above roles can edit it."
+msgstr "이 프로젝트에 접근할 수 있는 누구나 뷰를 추가할 수 있으며, 플래너 이상의 역할을 가진 사람들은 이를 편집할 수 있습니다."
 
 msgid "WorkItem|Apply template"
 msgstr "템플릿 적용"
@@ -76625,6 +76700,9 @@ msgstr "라이프사이클 생성"
 msgid "WorkItem|Create new work item by email"
 msgstr "이메일로 새 작업 항목 생성"
 
+msgid "WorkItem|Create view"
+msgstr "뷰 생성"
+
 msgid "WorkItem|Created %{timeago}"
 msgstr "%{timeago}에 생성됨"
 
@@ -76738,6 +76816,9 @@ msgstr "기존 %{workItemName}"
 
 msgid "WorkItem|Existing task"
 msgstr "기존 작업"
+
+msgid "WorkItem|Existing view"
+msgstr "기존 뷰"
 
 msgid "WorkItem|Export as CSV"
 msgstr "CSV로 내보내기"
@@ -76990,6 +77071,9 @@ msgstr "새 작업"
 msgid "WorkItem|New type"
 msgstr "새 유형"
 
+msgid "WorkItem|New view"
+msgstr "새 뷰"
+
 msgid "WorkItem|No assignees"
 msgstr "담당자 없음"
 
@@ -77086,6 +77170,9 @@ msgstr "%{namespaceType} 멤버만 메타데이터를 추가할 수 있습니다
 msgid "WorkItem|Only 10 items can be added at a time."
 msgstr "한 번에 10개의 항목만 추가할 수 있습니다."
 
+msgid "WorkItem|Only you can see and edit this view."
+msgstr "이 뷰는 당신만 보고 편집할 수 있습니다."
+
 msgid "WorkItem|Open"
 msgstr "열림"
 
@@ -77115,6 +77202,9 @@ msgstr "이 프로젝트에 대한 %{linkStart}기여 지침%{linkEnd} 을 검�
 
 msgid "WorkItem|Please select a file to import."
 msgstr "가져올 파일을 선택하세요."
+
+msgid "WorkItem|Private"
+msgstr "비공개"
 
 msgid "WorkItem|Progress"
 msgstr "진행 상황"
@@ -77235,6 +77325,9 @@ msgstr "이 아이템을 변경하고자 하는 유형을 선택하세요"
 
 msgid "WorkItem|Send email"
 msgstr "이메일 보내기"
+
+msgid "WorkItem|Shared"
+msgstr "공유됨"
 
 msgid "WorkItem|Show all ancestors"
 msgstr "모든 상위 항목 표시"
@@ -77466,6 +77559,9 @@ msgstr "티켓"
 
 msgid "WorkItem|Time tracking"
 msgstr "시간 추적"
+
+msgid "WorkItem|Title is required."
+msgstr "제목이 필요합니다."
 
 msgid "WorkItem|To do"
 msgstr "할일"

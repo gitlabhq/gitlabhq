@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-12-22 11:03\n"
+"PO-Revision-Date: 2025-12-30 13:10\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} по %{end}"
@@ -4379,6 +4379,9 @@ msgstr "Необходимо выбрать хотя бы одну област�
 msgid "AccessTokens|Broad-access token"
 msgstr ""
 
+msgid "AccessTokens|Consider reducing scope"
+msgstr ""
+
 msgid "AccessTokens|Copy feed token"
 msgstr "Скопировать токен канала"
 
@@ -4496,6 +4499,9 @@ msgstr ""
 msgid "AccessTokens|Group and project access"
 msgstr ""
 
+msgid "AccessTokens|Group and project permissions"
+msgstr ""
+
 msgid "AccessTokens|How do I use DPoP?"
 msgstr "Как использовать DPoP?"
 
@@ -4514,6 +4520,9 @@ msgstr "Неактивный"
 
 msgid "AccessTokens|Incoming email token"
 msgstr "Токен входящей электронной почты"
+
+msgid "AccessTokens|Instance permissions"
+msgstr ""
 
 msgid "AccessTokens|Instance token prefix"
 msgstr "Префикс токена экземпляра"
@@ -4567,6 +4576,9 @@ msgid "AccessTokens|Not eligible to rotate tokens with permissions not held by t
 msgstr ""
 
 msgid "AccessTokens|Only personal projects"
+msgstr ""
+
+msgid "AccessTokens|Only specific group or projects that I'm a member of"
 msgstr ""
 
 msgid "AccessTokens|Only specific groups or projects that I'm a member of"
@@ -4680,6 +4692,9 @@ msgstr ""
 msgid "AccessTokens|Tokens expiring in 2 weeks"
 msgstr "Токены, срок действия которых истекает в течение 2 недель"
 
+msgid "AccessTokens|Type"
+msgstr ""
+
 msgid "AccessTokens|Usage"
 msgstr "Использование"
 
@@ -4688,6 +4703,9 @@ msgstr "Используйте DPoP для защиты доступа к ваш
 
 msgid "AccessTokens|Use Demonstrating Proof of Possession (DPoP)"
 msgstr "Используйте демонстрацию владения (DPoP)"
+
+msgid "AccessTokens|User permissions"
+msgstr ""
 
 msgid "AccessTokens|View details"
 msgstr ""
@@ -5235,6 +5253,9 @@ msgstr "Добавить в цепочку слияний"
 msgid "Add to merge train when all merge checks pass"
 msgstr "Добавить в цепочку слияний когда все слияния пройдут проверку"
 
+msgid "Add to merge train when ready"
+msgstr ""
+
 msgid "Add to review"
 msgstr "Добавить к рецензированию"
 
@@ -5331,6 +5352,9 @@ msgstr ""
 msgid "Added in this version"
 msgstr "Добавлено в этой версии"
 
+msgid "Added to merge train."
+msgstr ""
+
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission."
 msgstr "Добавление новых приложений отключено в вашем экземпляре GitLab. Обратитесь к администратору GitLab, чтобы получить разрешение."
 
@@ -5391,6 +5415,12 @@ msgstr "Добавляет напоминание."
 
 msgid "Adds email participants that don't have a GitLab account."
 msgstr "Добавляет участников по электронной почте, у которых нет учетной записи GitLab."
+
+msgid "Adds this merge request to merge train when ready."
+msgstr ""
+
+msgid "Adds this merge request to merge train."
+msgstr ""
 
 msgid "AdherenceReport|%{pendingCount}/%{totalCount} control is pending"
 msgid_plural "AdherenceReport|%{pendingCount}/%{totalCount} controls are pending"
@@ -5496,9 +5526,6 @@ msgid "AdminAIPoweredFeatures|Feature"
 msgstr "Функция"
 
 msgid "AdminAIPoweredFeatures|Features"
-msgstr ""
-
-msgid "AdminAIPoweredFeatures|GitLab AI vendor model"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|GitLab Duo Agent Platform"
@@ -7442,6 +7469,9 @@ msgstr ""
 msgid "AiPowered|AI logs"
 msgstr "Журналы ИИ"
 
+msgid "AiPowered|Add Group"
+msgstr ""
+
 msgid "AiPowered|After the conversation was created"
 msgstr ""
 
@@ -7616,11 +7646,20 @@ msgstr ""
 msgid "AiPowered|GitLab Duo Agent Platform is an AI-native coding agent."
 msgstr ""
 
+msgid "AiPowered|GitLab Duo Agents"
+msgstr ""
+
 msgid "AiPowered|GitLab Duo Chat conversations"
+msgstr ""
+
+msgid "AiPowered|GitLab Duo Classic"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Core available to all users"
 msgstr "GitLab Duo Core доступен всем пользователям"
+
+msgid "AiPowered|GitLab Duo Flows and External Agents"
+msgstr ""
 
 msgid "AiPowered|GitLab Duo Model Selection"
 msgstr ""
@@ -7637,10 +7676,16 @@ msgstr ""
 msgid "AiPowered|GitLab Duo with Amazon Q"
 msgstr "GitLab Duo с Amazon Q"
 
+msgid "AiPowered|Group"
+msgstr ""
+
 msgid "AiPowered|Help make the next releases of GitLab better. As a member of the GitLab Early Access Program, you can take part in shaping GitLab by letting us know what you think of GitLab Duo experimental and beta features. How does this program work?"
 msgstr "Помогите сделать следующие релизы GitLab лучше. Как участник программы раннего доступа GitLab, вы можете повлиять на развитие GitLab, поделившись своим мнением о экспериментальных и бета-функциях GitLab Duo. Как работает эта программа?"
 
 msgid "AiPowered|Indirect connections through GitLab Self-Managed"
+msgstr ""
+
+msgid "AiPowered|Learn more"
 msgstr ""
 
 msgid "AiPowered|Local AI Gateway URL"
@@ -7661,6 +7706,12 @@ msgstr ""
 msgid "AiPowered|Maximum time in seconds to wait for responses from the AI Gateway (up to 600 seconds).%{br}Increasing this value might result in degraded user experience."
 msgstr ""
 
+msgid "AiPowered|Member Access"
+msgstr ""
+
+msgid "AiPowered|Membership grants access to"
+msgstr ""
+
 msgid "AiPowered|Minimum role required to create, duplicate, edit, delete, and show agents and flows."
 msgstr ""
 
@@ -7679,6 +7730,9 @@ msgstr ""
 msgid "AiPowered|Never allow GitLab to process your code and project data for AI-powered features. Your data will not be sent to GitLab Duo anywhere in this namespace."
 msgstr ""
 
+msgid "AiPowered|No access rules configured."
+msgstr ""
+
 msgid "AiPowered|Not enabled"
 msgstr "Отключён"
 
@@ -7688,11 +7742,17 @@ msgstr "Отключено по умолчанию"
 msgid "AiPowered|On by default"
 msgstr "Включено по умолчанию"
 
+msgid "AiPowered|Only members of these groups will have access to selected AI features."
+msgstr ""
+
 msgid "AiPowered|Participate in the Early Access Program and help make GitLab better"
 msgstr "Участвуйте в программе раннего доступа и помогите улучшить GitLab"
 
 msgid "AiPowered|Purchase Duo Pro seats"
 msgstr "Приобрести лицензии Duo Pro"
+
+msgid "AiPowered|Remove"
+msgstr ""
 
 msgid "AiPowered|Self-hosted beta models and features"
 msgstr "Бета-модели и функции для автономной работы"
@@ -42502,9 +42562,6 @@ msgstr "Запросы на слияние на рецензировании"
 msgid "Merge Requests merged"
 msgstr "Запросы на слияние объединены"
 
-msgid "Merge automatically (%{strategy})"
-msgstr "Автоматическое слияние (%{strategy})"
-
 msgid "Merge blocked: Merge all open dependent merge requests, and remove all closed dependencies."
 msgstr "Слияние заблокировано: объедините все открытые зависимые запросы на слияние и удалите все закрытые зависимости."
 
@@ -49222,7 +49279,10 @@ msgstr "Пройден"
 msgid "Passed on"
 msgstr ""
 
-msgid "Passkey added successfully! Next time you sign in, select the sign-in with passkey option."
+msgid "Passkey added successfully! Next time you sign in, select the sign-in with passkey option. For additional account security, enable two-factor authentication below."
+msgstr ""
+
+msgid "Passkey added successfully! Next time you sign in, select the sign-in with passkey option. Passkey is now your default 2FA method."
 msgstr ""
 
 msgid "Passkey deleted"
@@ -55775,6 +55835,12 @@ msgstr ""
 msgid "RapidDiffs|View on %{environment}"
 msgstr ""
 
+msgid "RapidDiffs|View plain diff"
+msgstr ""
+
+msgid "RapidDiffs|View rich diff"
+msgstr ""
+
 msgid "Rate Limits"
 msgstr "Ограничения на частоту запросов"
 
@@ -59978,17 +60044,11 @@ msgstr ""
 msgid "Scheduled pipelines cannot run more frequently than once per %{limit} minutes. A pipeline configured to run more frequently only starts after %{limit} minutes have elapsed since the last time it ran."
 msgstr "Конвейеры, запланированные для запуска, не могут выполняться чаще, чем раз в %{limit} минут. Конвейер, настроенный на более частый запуск, начнёт выполнение только после того, как пройдет %{limit} минут с последнего запуска."
 
-msgid "Scheduled to merge this merge request (%{strategy})."
-msgstr "Запланировано слияние этого запроса на слияние (%{strategy})."
-
 msgid "ScheduledJob|delayed manual action (%{remainingTime})"
 msgstr ""
 
 msgid "Schedules"
 msgstr "Расписания"
-
-msgid "Schedules to merge this merge request (%{strategy})."
-msgstr "Планирует слияние этого запроса на слияние (%{strategy})."
 
 msgid "Scope"
 msgstr "Область"
@@ -64999,8 +65059,14 @@ msgstr "Установите значение 0 для отключения ог
 msgid "Set to 0 to disable timeout."
 msgstr ""
 
+msgid "Set to add to merge train when ready."
+msgstr ""
+
 msgid "Set to auto-merge"
 msgstr "Установить на авто-слияние"
+
+msgid "Set to auto-merge."
+msgstr ""
 
 msgid "Set up"
 msgstr ""
@@ -65100,6 +65166,9 @@ msgstr "Устанавить этап %{milestone_reference}."
 
 msgid "Sets the severity"
 msgstr "Устанавливает уровень серьёзности"
+
+msgid "Sets this merge request to auto-merge when ready."
+msgstr ""
 
 msgid "Sets time estimate to %{time_estimate}."
 msgstr "Задаёт оценку времени в %{time_estimate}."
@@ -65720,6 +65789,12 @@ msgstr ""
 
 msgid "SlackIntegration|Slack app not enabled on GitLab instance"
 msgstr "Приложение Slack отключено в экземпляре GitLab"
+
+msgid "SlackIntegration|Slack slash commands integration is deprecated"
+msgstr ""
+
+msgid "SlackIntegration|Slack slash commands integration will be removed in GitLab 19.0. To run common GitLab operations from Slack, use the GitLab for Slack app instead."
+msgstr ""
 
 msgid "SlackIntegration|Step 1: Create your GitLab for Slack app"
 msgstr "Шаг 1: Создайте ваше приложение GitLab для Slack"
@@ -68017,11 +68092,17 @@ msgstr "Редактирование целевого сообщения"
 msgid "TargetedMessages|Failed to assign namespaces due to error processing CSV: %{error_message}"
 msgstr "Не удалось назначить пространства имён из-за ошибки при обработке CSV: %{error_message}"
 
+msgid "TargetedMessages|Must have at least one targeted namespace"
+msgstr ""
+
 msgid "TargetedMessages|Namespace IDs"
 msgstr ""
 
 msgid "TargetedMessages|New targeted message"
 msgstr "Новое целевое сообщение"
+
+msgid "TargetedMessages|Scheduled deletion of targeted message with id: %{id}."
+msgstr ""
 
 msgid "TargetedMessages|Select a target type"
 msgstr "Выберите тип цели"
@@ -68029,16 +68110,10 @@ msgstr "Выберите тип цели"
 msgid "TargetedMessages|Target Type"
 msgstr "Тип цели"
 
-msgid "TargetedMessages|Targeted message failed to delete. Please try again."
-msgstr ""
-
 msgid "TargetedMessages|Targeted message was successfully created."
 msgstr "Целевое сообщение успешно создано."
 
 msgid "TargetedMessages|Targeted message was successfully created. But %{invalid_namespace_ids_message}"
-msgstr ""
-
-msgid "TargetedMessages|Targeted message was successfully deleted."
 msgstr ""
 
 msgid "TargetedMessages|Targeted message was successfully updated."
@@ -72877,6 +72952,9 @@ msgstr "Не удалось установить ветку по умолчан�
 msgid "UpdateProject|Could not set the default branch. Do you have a branch named 'HEAD' in your repository? (%{linkStart}How do I fix this?%{linkEnd})"
 msgstr "Не удалось установить ветку по умолчанию. У вас есть ветка с именем «HEAD» в вашем репозитории? (%{linkStart}Как это исправить?%{linkEnd})"
 
+msgid "UpdateProject|Job token scope cannot be disabled for this project because it is enforced for the instance. Contact your administrator to modify this setting."
+msgstr ""
+
 msgid "UpdateProject|Learn more."
 msgstr "Подробнее."
 
@@ -76750,18 +76828,6 @@ msgstr "+ cкрыть другую часть URL"
 msgid "Webhooks|A URL is required."
 msgstr "Требуется указать URL."
 
-msgid "Webhooks|A group member is created, updated, or removed."
-msgstr "Создан, обновлён или удалён участник группы."
-
-msgid "Webhooks|A project is created or removed."
-msgstr "Проект создан или удалён."
-
-msgid "Webhooks|A subgroup is created or removed."
-msgstr "Вложенная группа создана или удалена."
-
-msgid "Webhooks|A vulnerability is created or updated."
-msgstr "Уязвимость создана или обновлена."
-
 msgid "Webhooks|A webhook in this group was automatically disabled after it was retried multiple times."
 msgstr "Вебхук в этой группе был автоматически отключён после нескольких попыток повторного выполнения."
 
@@ -77711,6 +77777,9 @@ msgstr[1] "+%d элемента"
 msgstr[2] "+%d элементов"
 msgstr[3] "+%d элементов"
 
+msgid "WorkItem|140 characters max"
+msgstr ""
+
 msgid "WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}."
 msgstr ""
 
@@ -77752,6 +77821,9 @@ msgstr ""
 
 msgid "WorkItem|Add up to 10 items at a time."
 msgstr "Добавьте до 10 элементов за раз."
+
+msgid "WorkItem|Add view"
+msgstr ""
 
 msgid "WorkItem|All activity"
 msgstr "Вся активность"
@@ -77800,6 +77872,9 @@ msgstr "Предок"
 
 msgid "WorkItem|Ancestor not available"
 msgstr "Предок недоступен"
+
+msgid "WorkItem|Anyone with access to this project can add the view, and those with the Planner and above roles can edit it."
+msgstr ""
 
 msgid "WorkItem|Apply template"
 msgstr "Применить шаблон"
@@ -77978,6 +78053,9 @@ msgstr ""
 msgid "WorkItem|Create new work item by email"
 msgstr ""
 
+msgid "WorkItem|Create view"
+msgstr ""
+
 msgid "WorkItem|Created %{timeago}"
 msgstr "Создано %{timeago}"
 
@@ -78091,6 +78169,9 @@ msgstr ""
 
 msgid "WorkItem|Existing task"
 msgstr "Существующую задачу"
+
+msgid "WorkItem|Existing view"
+msgstr ""
 
 msgid "WorkItem|Export as CSV"
 msgstr ""
@@ -78349,6 +78430,9 @@ msgstr "Новую задачу"
 msgid "WorkItem|New type"
 msgstr ""
 
+msgid "WorkItem|New view"
+msgstr ""
+
 msgid "WorkItem|No assignees"
 msgstr "Нет исполнителей"
 
@@ -78445,6 +78529,9 @@ msgstr ""
 msgid "WorkItem|Only 10 items can be added at a time."
 msgstr "За раз можно добавить только 10 элементов."
 
+msgid "WorkItem|Only you can see and edit this view."
+msgstr ""
+
 msgid "WorkItem|Open"
 msgstr ""
 
@@ -78473,6 +78560,9 @@ msgid "WorkItem|Please review the %{linkStart}contribution guidelines%{linkEnd} 
 msgstr ""
 
 msgid "WorkItem|Please select a file to import."
+msgstr ""
+
+msgid "WorkItem|Private"
 msgstr ""
 
 msgid "WorkItem|Progress"
@@ -78593,6 +78683,9 @@ msgid "WorkItem|Select which type you would like to change this item to."
 msgstr ""
 
 msgid "WorkItem|Send email"
+msgstr ""
+
+msgid "WorkItem|Shared"
 msgstr ""
 
 msgid "WorkItem|Show all ancestors"
@@ -78824,6 +78917,9 @@ msgid "WorkItem|Ticket"
 msgstr ""
 
 msgid "WorkItem|Time tracking"
+msgstr ""
+
+msgid "WorkItem|Title is required."
 msgstr ""
 
 msgid "WorkItem|To do"

@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-12-22 11:00\n"
+"PO-Revision-Date: 2025-12-30 13:09\n"
 
 msgid " %{start} to %{end}"
 msgstr "从%{start}到%{end}"
@@ -3845,6 +3845,9 @@ msgstr "至少需要一个范围。"
 msgid "AccessTokens|Broad-access token"
 msgstr ""
 
+msgid "AccessTokens|Consider reducing scope"
+msgstr ""
+
 msgid "AccessTokens|Copy feed token"
 msgstr "复制 Feed 令牌"
 
@@ -3962,6 +3965,9 @@ msgstr ""
 msgid "AccessTokens|Group and project access"
 msgstr ""
 
+msgid "AccessTokens|Group and project permissions"
+msgstr ""
+
 msgid "AccessTokens|How do I use DPoP?"
 msgstr "我如何使用 DPoP？"
 
@@ -3977,6 +3983,9 @@ msgstr "未激活"
 
 msgid "AccessTokens|Incoming email token"
 msgstr "接收电子邮件令牌"
+
+msgid "AccessTokens|Instance permissions"
+msgstr ""
 
 msgid "AccessTokens|Instance token prefix"
 msgstr "实例令牌前缀"
@@ -4030,6 +4039,9 @@ msgid "AccessTokens|Not eligible to rotate tokens with permissions not held by t
 msgstr ""
 
 msgid "AccessTokens|Only personal projects"
+msgstr ""
+
+msgid "AccessTokens|Only specific group or projects that I'm a member of"
 msgstr ""
 
 msgid "AccessTokens|Only specific groups or projects that I'm a member of"
@@ -4143,6 +4155,9 @@ msgstr ""
 msgid "AccessTokens|Tokens expiring in 2 weeks"
 msgstr "两周内到期的令牌"
 
+msgid "AccessTokens|Type"
+msgstr ""
+
 msgid "AccessTokens|Usage"
 msgstr "用法"
 
@@ -4151,6 +4166,9 @@ msgstr "当使用个人访问令牌时，使用 DPoP 保护您的 REST 或 Graph
 
 msgid "AccessTokens|Use Demonstrating Proof of Possession (DPoP)"
 msgstr "使用持有证明演示 (DPoP)"
+
+msgid "AccessTokens|User permissions"
+msgstr ""
 
 msgid "AccessTokens|View details"
 msgstr ""
@@ -4698,6 +4716,9 @@ msgstr "添加到合并队列"
 msgid "Add to merge train when all merge checks pass"
 msgstr "在所有合并检查通过时添加到合并列车"
 
+msgid "Add to merge train when ready"
+msgstr ""
+
 msgid "Add to review"
 msgstr "添加到评审"
 
@@ -4794,6 +4815,9 @@ msgstr "已加入此合并请求设置"
 msgid "Added in this version"
 msgstr "此版本新增"
 
+msgid "Added to merge train."
+msgstr ""
+
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission."
 msgstr "您的 GitLab 实例禁止添加新应用。请联系您的 GitLab 管理员获取权限。"
 
@@ -4851,6 +4875,12 @@ msgstr "添加一个待办事项。"
 
 msgid "Adds email participants that don't have a GitLab account."
 msgstr "添加没有极狐GitLab 账户的电子邮件参与者"
+
+msgid "Adds this merge request to merge train when ready."
+msgstr ""
+
+msgid "Adds this merge request to merge train."
+msgstr ""
 
 msgid "AdherenceReport|%{pendingCount}/%{totalCount} control is pending"
 msgid_plural "AdherenceReport|%{pendingCount}/%{totalCount} controls are pending"
@@ -4953,9 +4983,6 @@ msgid "AdminAIPoweredFeatures|Feature"
 msgstr "功能"
 
 msgid "AdminAIPoweredFeatures|Features"
-msgstr ""
-
-msgid "AdminAIPoweredFeatures|GitLab AI vendor model"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|GitLab Duo Agent Platform"
@@ -6899,6 +6926,9 @@ msgstr ""
 msgid "AiPowered|AI logs"
 msgstr "AI 日志"
 
+msgid "AiPowered|Add Group"
+msgstr ""
+
 msgid "AiPowered|After the conversation was created"
 msgstr ""
 
@@ -7073,11 +7103,20 @@ msgstr ""
 msgid "AiPowered|GitLab Duo Agent Platform is an AI-native coding agent."
 msgstr ""
 
+msgid "AiPowered|GitLab Duo Agents"
+msgstr ""
+
 msgid "AiPowered|GitLab Duo Chat conversations"
+msgstr ""
+
+msgid "AiPowered|GitLab Duo Classic"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Core available to all users"
 msgstr "GitLab Duo Core 可供所有用户使用"
+
+msgid "AiPowered|GitLab Duo Flows and External Agents"
+msgstr ""
 
 msgid "AiPowered|GitLab Duo Model Selection"
 msgstr ""
@@ -7094,10 +7133,16 @@ msgstr ""
 msgid "AiPowered|GitLab Duo with Amazon Q"
 msgstr "GitLab Duo 与 Amazon Q"
 
+msgid "AiPowered|Group"
+msgstr ""
+
 msgid "AiPowered|Help make the next releases of GitLab better. As a member of the GitLab Early Access Program, you can take part in shaping GitLab by letting us know what you think of GitLab Duo experimental and beta features. How does this program work?"
 msgstr "帮助改进极狐GitLab 的下一个版本。作为极狐GitLab 早期访问计划的成员，您可以通过告诉我们您对 GitLab Duo 实验性和测试版功能的看法来参与极狐GitLab 的塑造。该计划如何运作？"
 
 msgid "AiPowered|Indirect connections through GitLab Self-Managed"
+msgstr ""
+
+msgid "AiPowered|Learn more"
 msgstr ""
 
 msgid "AiPowered|Local AI Gateway URL"
@@ -7118,6 +7163,12 @@ msgstr ""
 msgid "AiPowered|Maximum time in seconds to wait for responses from the AI Gateway (up to 600 seconds).%{br}Increasing this value might result in degraded user experience."
 msgstr ""
 
+msgid "AiPowered|Member Access"
+msgstr ""
+
+msgid "AiPowered|Membership grants access to"
+msgstr ""
+
 msgid "AiPowered|Minimum role required to create, duplicate, edit, delete, and show agents and flows."
 msgstr ""
 
@@ -7136,6 +7187,9 @@ msgstr ""
 msgid "AiPowered|Never allow GitLab to process your code and project data for AI-powered features. Your data will not be sent to GitLab Duo anywhere in this namespace."
 msgstr ""
 
+msgid "AiPowered|No access rules configured."
+msgstr ""
+
 msgid "AiPowered|Not enabled"
 msgstr "未启用"
 
@@ -7145,11 +7199,17 @@ msgstr "默认关闭"
 msgid "AiPowered|On by default"
 msgstr "默认启用"
 
+msgid "AiPowered|Only members of these groups will have access to selected AI features."
+msgstr ""
+
 msgid "AiPowered|Participate in the Early Access Program and help make GitLab better"
 msgstr "参与早期访问计划，帮助改进极狐GitLab"
 
 msgid "AiPowered|Purchase Duo Pro seats"
 msgstr "购买 Duo Pro 席位"
+
+msgid "AiPowered|Remove"
+msgstr ""
 
 msgid "AiPowered|Self-hosted beta models and features"
 msgstr "自托管测试版模型和功能"
@@ -41602,9 +41662,6 @@ msgstr "评审中的合并请求"
 msgid "Merge Requests merged"
 msgstr "合并请求已合并"
 
-msgid "Merge automatically (%{strategy})"
-msgstr "自动合并(%{strategy})"
-
 msgid "Merge blocked: Merge all open dependent merge requests, and remove all closed dependencies."
 msgstr "合并已屏蔽：合并所有开放依赖合并请求，并移除所有已关闭的依赖项。"
 
@@ -48268,7 +48325,10 @@ msgstr "通过"
 msgid "Passed on"
 msgstr "通过于"
 
-msgid "Passkey added successfully! Next time you sign in, select the sign-in with passkey option."
+msgid "Passkey added successfully! Next time you sign in, select the sign-in with passkey option. For additional account security, enable two-factor authentication below."
+msgstr ""
+
+msgid "Passkey added successfully! Next time you sign in, select the sign-in with passkey option. Passkey is now your default 2FA method."
 msgstr ""
 
 msgid "Passkey deleted"
@@ -54800,6 +54860,12 @@ msgstr ""
 msgid "RapidDiffs|View on %{environment}"
 msgstr ""
 
+msgid "RapidDiffs|View plain diff"
+msgstr ""
+
+msgid "RapidDiffs|View rich diff"
+msgstr ""
+
 msgid "Rate Limits"
 msgstr "速率限制"
 
@@ -58922,17 +58988,11 @@ msgstr ""
 msgid "Scheduled pipelines cannot run more frequently than once per %{limit} minutes. A pipeline configured to run more frequently only starts after %{limit} minutes have elapsed since the last time it ran."
 msgstr "计划的管道每次运行时间不能超过一次 %{limit} 分钟。 一个配置更频繁运行的管道仅在 %{limit} 分钟后才开始运行。"
 
-msgid "Scheduled to merge this merge request (%{strategy})."
-msgstr "已计划合并此合并请求 (%{strategy})。"
-
 msgid "ScheduledJob|delayed manual action (%{remainingTime})"
 msgstr ""
 
 msgid "Schedules"
 msgstr "计划"
-
-msgid "Schedules to merge this merge request (%{strategy})."
-msgstr "计划合并此合并请求 (%{strategy})。"
 
 msgid "Scope"
 msgstr "范围"
@@ -63865,8 +63925,14 @@ msgstr "设置为 0 以禁用限制。"
 msgid "Set to 0 to disable timeout."
 msgstr "设置为 0 以禁用超时。"
 
+msgid "Set to add to merge train when ready."
+msgstr ""
+
 msgid "Set to auto-merge"
 msgstr "设置为自动合并"
+
+msgid "Set to auto-merge."
+msgstr ""
 
 msgid "Set up"
 msgstr "设置"
@@ -63966,6 +64032,9 @@ msgstr "将里程碑设置为 %{milestone_reference}。"
 
 msgid "Sets the severity"
 msgstr "设置严重程度"
+
+msgid "Sets this merge request to auto-merge when ready."
+msgstr ""
 
 msgid "Sets time estimate to %{time_estimate}."
 msgstr "将时间估计设置为 %{time_estimate}。"
@@ -64580,6 +64649,12 @@ msgstr "签名 secret"
 
 msgid "SlackIntegration|Slack app not enabled on GitLab instance"
 msgstr "极狐GitLab 实例上未启用 Slack 应用程序"
+
+msgid "SlackIntegration|Slack slash commands integration is deprecated"
+msgstr ""
+
+msgid "SlackIntegration|Slack slash commands integration will be removed in GitLab 19.0. To run common GitLab operations from Slack, use the GitLab for Slack app instead."
+msgstr ""
 
 msgid "SlackIntegration|Step 1: Create your GitLab for Slack app"
 msgstr "第 1 步：创建 GitLab for Slack 应用"
@@ -66874,11 +66949,17 @@ msgstr "编辑定向消息"
 msgid "TargetedMessages|Failed to assign namespaces due to error processing CSV: %{error_message}"
 msgstr "由于处理 CSV 时出错：%{error_message}，无法分配命名空间"
 
+msgid "TargetedMessages|Must have at least one targeted namespace"
+msgstr ""
+
 msgid "TargetedMessages|Namespace IDs"
 msgstr ""
 
 msgid "TargetedMessages|New targeted message"
 msgstr "新的定向消息"
+
+msgid "TargetedMessages|Scheduled deletion of targeted message with id: %{id}."
+msgstr ""
 
 msgid "TargetedMessages|Select a target type"
 msgstr "选择目标类型"
@@ -66886,17 +66967,11 @@ msgstr "选择目标类型"
 msgid "TargetedMessages|Target Type"
 msgstr "目标类型"
 
-msgid "TargetedMessages|Targeted message failed to delete. Please try again."
-msgstr ""
-
 msgid "TargetedMessages|Targeted message was successfully created."
 msgstr "定向消息已成功创建。"
 
 msgid "TargetedMessages|Targeted message was successfully created. But %{invalid_namespace_ids_message}"
 msgstr "定向消息已成功创建。但%{invalid_namespace_ids_message}"
-
-msgid "TargetedMessages|Targeted message was successfully deleted."
-msgstr ""
 
 msgid "TargetedMessages|Targeted message was successfully updated."
 msgstr "定向消息已成功更新。"
@@ -71608,6 +71683,9 @@ msgstr "无法设置默认分支"
 msgid "UpdateProject|Could not set the default branch. Do you have a branch named 'HEAD' in your repository? (%{linkStart}How do I fix this?%{linkEnd})"
 msgstr "无法设置默认分支。您的代码库中是否有名为 “HEAD” 的分支？ （%{linkStart}我该如何解决这个问题？%{linkEnd}）"
 
+msgid "UpdateProject|Job token scope cannot be disabled for this project because it is enforced for the instance. Contact your administrator to modify this setting."
+msgstr ""
+
 msgid "UpdateProject|Learn more."
 msgstr "了解更多。"
 
@@ -75418,18 +75496,6 @@ msgstr "+ 隐藏 URL 的另一部分"
 msgid "Webhooks|A URL is required."
 msgstr "需要一个 URL。"
 
-msgid "Webhooks|A group member is created, updated, or removed."
-msgstr "已创建、更新或删除群组成员。"
-
-msgid "Webhooks|A project is created or removed."
-msgstr "项目创建或删除。"
-
-msgid "Webhooks|A subgroup is created or removed."
-msgstr "已创建或删除子组。"
-
-msgid "Webhooks|A vulnerability is created or updated."
-msgstr "漏洞创建或更新。"
-
 msgid "Webhooks|A webhook in this group was automatically disabled after it was retried multiple times."
 msgstr "此群组中的 webhook 在多次重试后被自动禁用。"
 
@@ -76358,6 +76424,9 @@ msgid "WorkItem|+%d more item"
 msgid_plural "WorkItem|+%d more items"
 msgstr[0] "+%d 更多项目"
 
+msgid "WorkItem|140 characters max"
+msgstr ""
+
 msgid "WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}."
 msgstr "一个非私密的 %{workItemType} 不能分配给一个私密的父级 %{parentWorkItemType}。"
 
@@ -76399,6 +76468,9 @@ msgstr ""
 
 msgid "WorkItem|Add up to 10 items at a time."
 msgstr "一次最多添加 10 个项目。"
+
+msgid "WorkItem|Add view"
+msgstr ""
 
 msgid "WorkItem|All activity"
 msgstr "所有活动"
@@ -76447,6 +76519,9 @@ msgstr "祖先"
 
 msgid "WorkItem|Ancestor not available"
 msgstr "祖先不可用"
+
+msgid "WorkItem|Anyone with access to this project can add the view, and those with the Planner and above roles can edit it."
+msgstr ""
 
 msgid "WorkItem|Apply template"
 msgstr "应用模板"
@@ -76625,6 +76700,9 @@ msgstr ""
 msgid "WorkItem|Create new work item by email"
 msgstr ""
 
+msgid "WorkItem|Create view"
+msgstr ""
+
 msgid "WorkItem|Created %{timeago}"
 msgstr "创建于%{timeago}"
 
@@ -76738,6 +76816,9 @@ msgstr "现有的 %{workItemName}"
 
 msgid "WorkItem|Existing task"
 msgstr "现有任务"
+
+msgid "WorkItem|Existing view"
+msgstr ""
 
 msgid "WorkItem|Export as CSV"
 msgstr ""
@@ -76990,6 +77071,9 @@ msgstr "新建任务"
 msgid "WorkItem|New type"
 msgstr ""
 
+msgid "WorkItem|New view"
+msgstr ""
+
 msgid "WorkItem|No assignees"
 msgstr "无受让人"
 
@@ -77086,6 +77170,9 @@ msgstr ""
 msgid "WorkItem|Only 10 items can be added at a time."
 msgstr "一次只能添加 10 个项目。"
 
+msgid "WorkItem|Only you can see and edit this view."
+msgstr ""
+
 msgid "WorkItem|Open"
 msgstr ""
 
@@ -77114,6 +77201,9 @@ msgid "WorkItem|Please review the %{linkStart}contribution guidelines%{linkEnd} 
 msgstr ""
 
 msgid "WorkItem|Please select a file to import."
+msgstr ""
+
+msgid "WorkItem|Private"
 msgstr ""
 
 msgid "WorkItem|Progress"
@@ -77234,6 +77324,9 @@ msgid "WorkItem|Select which type you would like to change this item to."
 msgstr "您希望将此项目更改为哪种类型。"
 
 msgid "WorkItem|Send email"
+msgstr ""
+
+msgid "WorkItem|Shared"
 msgstr ""
 
 msgid "WorkItem|Show all ancestors"
@@ -77466,6 +77559,9 @@ msgstr "工单"
 
 msgid "WorkItem|Time tracking"
 msgstr "时间追踪"
+
+msgid "WorkItem|Title is required."
+msgstr ""
 
 msgid "WorkItem|To do"
 msgstr ""
