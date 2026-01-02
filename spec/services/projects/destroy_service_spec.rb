@@ -16,6 +16,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
   before do
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])
+    stub_gitlab_api_client_to_support_gitlab_api(supported: false)
   end
 
   shared_examples 'deleting the project' do
@@ -47,10 +48,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
   end
 
   shared_examples 'deleting the project with pipeline and build' do
-    before do
-      stub_gitlab_api_client_to_support_gitlab_api(supported: false)
-    end
-
     context 'with pipeline and build related records', :sidekiq_inline do # which has optimistic locking
       let!(:pipeline) { create(:ci_pipeline, project: project) }
       let!(:build) { create(:ci_build, :artifacts, :with_runner_session, pipeline: pipeline) }
@@ -865,10 +862,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
   end
 
   context 'error while destroying', :sidekiq_inline do
-    before do
-      stub_gitlab_api_client_to_support_gitlab_api(supported: false)
-    end
-
     let!(:pipeline) { create(:ci_pipeline, project: project) }
     let!(:builds) { create_list(:ci_build, 2, :artifacts, pipeline: pipeline) }
     let!(:build_trace) { create(:ci_build_trace_chunk, build: builds[0]) }
