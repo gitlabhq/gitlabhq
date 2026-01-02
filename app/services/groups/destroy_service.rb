@@ -5,7 +5,7 @@ module Groups
     DestroyError = Class.new(StandardError)
 
     def async_execute
-      mark_deleted
+      mark_deletion_in_progress
 
       job_id = GroupDestroyWorker.perform_async(group.id, current_user.id)
       Gitlab::AppLogger.info("User #{current_user.id} scheduled a deletion of group ID #{group.id} with job ID #{job_id}")
@@ -13,10 +13,8 @@ module Groups
 
     # rubocop: disable CodeReuse/ActiveRecord
     def execute
-      # TODO - add a policy check here https://gitlab.com/gitlab-org/gitlab/-/issues/353082
-      raise DestroyError, "You can't delete this group because you're blocked." if current_user.blocked?
-
-      mark_deleted
+      authorize_group_deletion
+      mark_deletion_in_progress
 
       group.projects.includes(:project_feature).find_each do |project|
         # Execute the destruction of the models immediately to ensure atomic cleanup.
@@ -51,20 +49,47 @@ module Groups
       publish_event
 
       group
-    rescue Exception # rubocop:disable Lint/RescueException -- Namespace.transaction can raise Exception
-      unmark_deleted
-      raise
+    rescue Exception => e # rubocop:disable Lint/RescueException -- Namespace.transaction can raise Exception
+      log_payload = {
+        group_id: group.id,
+        current_user: current_user&.id,
+        error_class: e.class,
+        error_message: e.message,
+        error_backtrace: e.backtrace
+      }
+
+      reschedule_deletion
+      Gitlab::AppLogger.error(log_payload.merge(message: "Rescheduling group deletion"))
+
+      raise e
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     private
 
-    def mark_deleted
-      group.update_attribute(:deleted_at, Time.current)
+    def authorize_group_deletion
+      # TODO - add a policy check here https://gitlab.com/gitlab-org/gitlab/-/issues/353082
+      raise DestroyError, "You can't delete this group because you're blocked." if current_user.blocked?
     end
 
-    def unmark_deleted
-      group.update_attribute(:deleted_at, nil)
+    def mark_deletion_in_progress
+      Group.transaction do
+        if Feature.enabled?(:namespace_state_management, group.root_ancestor) && !group.deletion_in_progress?
+          group.start_deletion!(transition_user: current_user)
+        end
+
+        group.update_attribute(:deleted_at, Time.current)
+      end
+    end
+
+    def reschedule_deletion
+      Group.transaction do
+        if Feature.enabled?(:namespace_state_management, group.root_ancestor)
+          group.reschedule_deletion!(transition_user: current_user)
+        end
+
+        group.update_attribute(:deleted_at, nil)
+      end
     end
 
     def any_groups_shared_with_this_group?
@@ -101,7 +126,7 @@ module Groups
 
       group.run_after_commit do
         bot_ids.each do |user_id|
-          DeleteUserWorker.perform_async(current_user_id, user_id, skip_authorization: true)
+          DeleteUserWorker.perform_async(current_user_id, user_id, 'skip_authorization' => true)
         end
       end
     end

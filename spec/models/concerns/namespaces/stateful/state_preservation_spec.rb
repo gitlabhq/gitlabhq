@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Namespaces::Stateful::StatePreservation, feature_category: :groups_and_projects do
   include Namespaces::StatefulHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:namespace) { create(:namespace) }
@@ -11,7 +12,8 @@ RSpec.describe Namespaces::Stateful::StatePreservation, feature_category: :group
   describe 'STATE_MEMORY_CONFIG constant' do
     it 'defines state memory mappings' do
       expect(described_class::STATE_MEMORY_CONFIG).to eq({
-        schedule_deletion: :cancel_deletion
+        schedule_deletion: :cancel_deletion,
+        start_deletion: :reschedule_deletion
       })
     end
 
@@ -26,201 +28,241 @@ RSpec.describe Namespaces::Stateful::StatePreservation, feature_category: :group
     end
 
     describe '#preserve_previous_state?' do
-      it 'returns true for events that preserve state' do
-        result = namespace.send(:preserve_previous_state?, :schedule_deletion)
-        expect(result).to be true
+      subject { namespace.send(:preserve_previous_state?, event) }
+
+      where(:event, :result) do
+        :schedule_deletion | true
+        :start_deletion    | true
+        :archive           | false
+        :cancel_deletion   | false
       end
 
-      it 'returns false for events that do not preserve state' do
-        result = namespace.send(:preserve_previous_state?, :archive)
-        expect(result).to be false
+      with_them do
+        it { is_expected.to eq(result) }
+      end
+    end
+
+    describe '#preserve_event_for' do
+      subject { namespace.send(:preserve_event_for, restore_event) }
+
+      where(:restore_event, :result) do
+        :cancel_deletion     | :schedule_deletion
+        :reschedule_deletion | :start_deletion
+        :schedule_deletion   | nil
+        :archive             | nil
+      end
+
+      with_them do
+        it { is_expected.to eq(result) }
       end
     end
 
     describe '#preserved_state' do
-      it 'returns the preserved state for an event' do
-        namespace.namespace_details.update!(
-          state_metadata: {
-            preserved_states: {
-              'schedule_deletion' => 'archived'
-            }
-          }
-        )
+      subject { namespace.send(:preserved_state, event_key) }
 
-        result = namespace.send(:preserved_state, :schedule_deletion)
-        expect(result).to eq(:archived)
+      where(:event_key, :stored_state) do
+        'schedule_deletion' | :archived
+        'schedule_deletion' | :ancestor_inherited
+        'schedule_deletion' | nil
+        'start_deletion'    | :deletion_scheduled
       end
 
-      it 'returns nil when no preserved state exists' do
-        result = namespace.send(:preserved_state, :schedule_deletion)
-        expect(result).to be_nil
+      with_them do
+        before do
+          if stored_state
+            namespace.namespace_details.update!(
+              state_metadata: { preserved_states: { event_key => stored_state } }
+            )
+          end
+        end
+
+        it { is_expected.to eq(stored_state) }
       end
     end
 
     describe '#should_restore_to?' do
-      it 'returns true when preserved state matches target' do
-        namespace.namespace_details.update!(
-          state_metadata: {
-            preserved_states: {
-              'schedule_deletion' => 'archived'
-            }
-          }
-        )
+      subject { namespace.send(:should_restore_to?, event_key, target_state) }
 
-        result = namespace.send(:should_restore_to?, :schedule_deletion, :archived)
-        expect(result).to be true
+      where(:event_key, :stored_state, :target_state, :result) do
+        'schedule_deletion' | 'archived'           | :archived           | true
+        'schedule_deletion' | 'ancestor_inherited' | :archived           | false
+        'schedule_deletion' | 'ancestor_inherited' | :ancestor_inherited | true
+        'start_deletion'    | 'deletion_scheduled' | :archived           | false
+        'start_deletion'    | 'archived'           | :archived           | true
       end
 
-      it 'returns false when preserved state does not match target' do
-        namespace.namespace_details.update!(
-          state_metadata: {
-            preserved_states: {
-              'schedule_deletion' => 'ancestor_inherited'
-            }
-          }
-        )
+      with_them do
+        before do
+          namespace.namespace_details.update!(
+            state_metadata: { preserved_states: { event_key => stored_state } }
+          )
+        end
 
-        result = namespace.send(:should_restore_to?, :schedule_deletion, :archived)
-        expect(result).to be false
+        it { is_expected.to eq(result) }
       end
     end
 
-    describe '#restore_to_archived?' do
-      it 'returns true when schedule_deletion preserved archived state' do
-        namespace.namespace_details.update!(
-          state_metadata: {
-            preserved_states: {
-              'schedule_deletion' => 'archived'
-            }
-          }
-        )
+    describe 'restore_to helpers' do
+      subject { namespace.send(restore_to_method) }
 
-        result = namespace.send(:restore_to_archived?)
-        expect(result).to be true
+      where(:restore_to_method, :event_key, :preserved_state, :result) do
+        :restore_to_archived_on_cancel_deletion?               | 'schedule_deletion' | 'archived'           | true
+        :restore_to_archived_on_cancel_deletion?               | 'schedule_deletion' | 'ancestor_inherited' | false
+        :restore_to_archived_on_cancel_deletion?               | 'schedule_deletion' | nil                  | false
+        :restore_to_archived_on_reschedule_deletion?           | 'start_deletion'    | 'archived'           | true
+        :restore_to_archived_on_reschedule_deletion?           | 'start_deletion'    | 'deletion_scheduled' | false
+        :restore_to_archived_on_reschedule_deletion?           | 'start_deletion'    | nil                  | false
+        :restore_to_ancestor_inherited_on_reschedule_deletion? | 'start_deletion'    | 'ancestor_inherited' | true
+        :restore_to_ancestor_inherited_on_reschedule_deletion? | 'start_deletion'    | 'deletion_scheduled' | false
+        :restore_to_ancestor_inherited_on_reschedule_deletion? | 'start_deletion'    | nil                  | false
+        :restore_to_deletion_scheduled_on_reschedule_deletion? | 'start_deletion'    | 'deletion_scheduled' | true
+        :restore_to_deletion_scheduled_on_reschedule_deletion? | 'start_deletion'    | 'ancestor_inherited' | false
+        :restore_to_deletion_scheduled_on_reschedule_deletion? | 'start_deletion'    | nil                  | false
       end
 
-      it 'returns false when schedule_deletion preserved ancestor_inherited state' do
-        namespace.namespace_details.update!(
-          state_metadata: {
-            preserved_states: {
-              'schedule_deletion' => 'ancestor_inherited'
-            }
-          }
-        )
+      with_them do
+        before do
+          if preserved_state
+            namespace.namespace_details.update!(
+              state_metadata: { preserved_states: { event_key => preserved_state } }
+            )
+          end
+        end
 
-        result = namespace.send(:restore_to_archived?)
-        expect(result).to be false
+        it { is_expected.to eq(result) }
       end
     end
 
     describe 'state preservation workflow' do
-      it 'preserves state when scheduling deletion from archived' do
-        namespace.state = Namespaces::Stateful::STATES[:archived]
-        namespace.schedule_deletion!(transition_user: user)
+      describe 'preserves state on transition' do
+        subject { namespace.namespace_details.state_metadata['preserved_states'][event.to_s] }
 
-        namespace.namespace_details.reload
-        metadata = namespace.namespace_details.state_metadata
+        where(:initial_state, :event) do
+          :archived           | :schedule_deletion
+          :deletion_scheduled | :start_deletion
+          :ancestor_inherited | :start_deletion
+        end
 
-        expect(metadata['preserved_states']['schedule_deletion']).to eq('archived')
+        with_them do
+          before do
+            namespace.state = Namespaces::Stateful::STATES[initial_state]
+            namespace.send(:"#{event}!", transition_user: user)
+            namespace.namespace_details.reload
+          end
+
+          it { is_expected.to eq(initial_state.to_s) }
+        end
       end
 
-      it 'restores to archived when canceling deletion' do
-        namespace.state = Namespaces::Stateful::STATES[:deletion_scheduled]
-        namespace.namespace_details.update!(
-          state_metadata: {
-            preserved_states: {
-              'schedule_deletion' => 'archived'
+      describe 'restores state on transition' do
+        subject { namespace.state_name }
+
+        where(:initial_state, :preserved_key, :preserved_state) do
+          :deletion_scheduled   | :schedule_deletion | :archived
+          :deletion_scheduled   | :schedule_deletion | :ancestor_inherited
+          :deletion_in_progress | :start_deletion    | :deletion_scheduled
+          :deletion_in_progress | :start_deletion    | :ancestor_inherited
+          :deletion_in_progress | :start_deletion    | :archived
+        end
+
+        with_them do
+          let(:restore_event) { described_class::STATE_MEMORY_CONFIG[preserved_key] }
+
+          before do
+            namespace.state = Namespaces::Stateful::STATES[initial_state]
+            namespace.namespace_details.update!(
+              state_metadata: { preserved_states: { preserved_key => preserved_state } }
+            )
+            namespace.send(:"#{restore_event}!")
+          end
+
+          it { is_expected.to eq(preserved_state) }
+        end
+      end
+
+      describe 'clearing preserved states' do
+        before do
+          namespace.state = Namespaces::Stateful::STATES[:deletion_scheduled]
+          namespace.namespace_details.update_column(:state_metadata, {
+            'preserved_states' => preserved_states
+          })
+
+          namespace.cancel_deletion!
+          namespace.namespace_details.reload
+        end
+
+        let(:metadata) { namespace.namespace_details.state_metadata }
+
+        context 'when other preserved states exist' do
+          let(:preserved_states) do
+            {
+              'schedule_deletion' => 'archived',
+              'start_deletion' => 'deletion_scheduled'
             }
-          }
-        )
+          end
 
-        namespace.cancel_deletion!
+          it 'clears only the specific preserved state' do
+            expect(metadata['preserved_states']).not_to have_key('schedule_deletion')
+            expect(metadata['preserved_states']['start_deletion']).to eq('deletion_scheduled')
+          end
+        end
 
-        expect(namespace.state_name).to eq(:archived)
-      end
+        context 'when it was the only preserved state' do
+          let(:preserved_states) { { 'schedule_deletion' => 'archived' } }
 
-      it 'restores to ancestor_inherited when canceling deletion without preserved archived state' do
-        namespace.state = Namespaces::Stateful::STATES[:deletion_scheduled]
-        namespace.namespace_details.update!(
-          state_metadata: {
-            preserved_states: {
-              'schedule_deletion' => 'ancestor_inherited'
-            }
-          }
-        )
-
-        namespace.cancel_deletion!
-
-        expect(namespace.state_name).to eq(:ancestor_inherited)
-      end
-
-      it 'clears only the specific preserved state when other preserved states exist' do
-        namespace.state = Namespaces::Stateful::STATES[:deletion_scheduled]
-        namespace.namespace_details.update_column(:state_metadata, {
-          'preserved_states' => {
-            'schedule_deletion' => 'archived',
-            'other_event' => 'some_state'
-          }
-        })
-        # rubocop:disable RSpec/AnyInstanceOf -- Not the next instance
-        allow_any_instance_of(JsonSchemaValidator).to receive(:validate).and_return(true)
-        # rubocop:enable RSpec/AnyInstanceOf
-
-        namespace.cancel_deletion!
-
-        namespace.namespace_details.reload
-        metadata = namespace.namespace_details.state_metadata
-
-        expect(metadata['preserved_states']).not_to have_key('schedule_deletion')
-        expect(metadata['preserved_states']['other_event']).to eq('some_state')
-      end
-
-      it 'clears preserved state entirely when it was the only preserved state' do
-        namespace.state = Namespaces::Stateful::STATES[:deletion_scheduled]
-        namespace.namespace_details.update!(
-          state_metadata: {
-            preserved_states: {
-              'schedule_deletion' => 'archived'
-            }
-          }
-        )
-
-        namespace.cancel_deletion!
-
-        namespace.namespace_details.reload
-        metadata = namespace.namespace_details.state_metadata
-
-        expect(metadata['preserved_states']).to be_nil
+          it 'clears preserved state entirely' do
+            expect(metadata['preserved_states']).to be_nil
+          end
+        end
       end
 
       describe 'transitions history', :freeze_time do
         context 'for state preservation through the deletion lifecycle' do
-          shared_examples 'preserves state through deletion cycle' do |initial_state|
-            it "preserves #{initial_state} state through schedule -> start -> cancel cycle" do
+          where(:initial_state) do
+            [:archived, :ancestor_inherited]
+          end
+
+          with_them do
+            it 'preserves state through schedule -> start -> cancel cycle' do
               set_state(namespace, initial_state)
 
-              # Schedule deletion
               namespace.schedule_deletion(transition_user: user)
               expect(namespace.state_name).to eq(:deletion_scheduled)
               expect(namespace.state_metadata.dig('preserved_states', 'schedule_deletion')).to eq(initial_state.to_s)
               expect(namespace.namespace_details.deletion_scheduled_by_user_id).to eq(user.id)
               expect(namespace.namespace_details.deletion_scheduled_at).to eq(Time.current)
 
-              # Start deletion
               namespace.start_deletion(transition_user: user)
               expect(namespace.state_name).to eq(:deletion_in_progress)
+              expect(namespace.state_metadata.dig('preserved_states', 'start_deletion')).to eq('deletion_scheduled')
 
-              # Cancel deletion - should restore original state
               namespace.cancel_deletion(transition_user: user)
               expect(namespace.state_name).to eq(initial_state)
-              expect(namespace.state_metadata['preserved_states']).to be_nil
+              expect(namespace.state_metadata.dig('preserved_states', 'schedule_deletion')).to be_nil
               expect(namespace.namespace_details.deletion_scheduled_by_user_id).to be_nil
               expect(namespace.namespace_details.deletion_scheduled_at).to be_nil
             end
           end
+        end
 
-          it_behaves_like 'preserves state through deletion cycle', :archived
-          it_behaves_like 'preserves state through deletion cycle', :ancestor_inherited
+        context 'for state preservation through the reschedule lifecycle' do
+          where(:initial_state) do
+            [:deletion_scheduled, :ancestor_inherited]
+          end
+
+          with_them do
+            it 'preserves state through start -> reschedule cycle' do
+              set_state(namespace, initial_state)
+
+              namespace.start_deletion(transition_user: user)
+              expect(namespace.state_name).to eq(:deletion_in_progress)
+              expect(namespace.state_metadata.dig('preserved_states', 'start_deletion')).to eq(initial_state.to_s)
+
+              namespace.reschedule_deletion(transition_user: user)
+              expect(namespace.state_name).to eq(initial_state)
+              expect(namespace.state_metadata.dig('preserved_states', 'start_deletion')).to be_nil
+            end
+          end
         end
       end
     end

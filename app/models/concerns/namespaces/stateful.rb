@@ -49,19 +49,24 @@ module Namespaces
         end
 
         event :start_deletion do
-          transition deletion_scheduled: :deletion_in_progress
-          transition ancestor_inherited: :deletion_in_progress
+          transition %i[ancestor_inherited archived deletion_scheduled] => :deletion_in_progress
         end
 
         event :reschedule_deletion do
+          transition deletion_in_progress: :ancestor_inherited,
+            if: :restore_to_ancestor_inherited_on_reschedule_deletion?
+          transition deletion_in_progress: :archived, if: :restore_to_archived_on_reschedule_deletion?
+          transition deletion_in_progress: :deletion_scheduled,
+            if: :restore_to_deletion_scheduled_on_reschedule_deletion?
           transition deletion_in_progress: :deletion_scheduled
           transition ancestor_inherited: :deletion_scheduled
         end
 
         event :cancel_deletion do
-          transition %i[deletion_scheduled deletion_in_progress] => :archived, if: :restore_to_archived?
+          transition %i[deletion_scheduled deletion_in_progress] => :archived,
+            if: :restore_to_archived_on_cancel_deletion?
           transition %i[deletion_scheduled deletion_in_progress] => :ancestor_inherited
-          transition ancestor_inherited: :archived, if: :restore_to_archived?
+          transition ancestor_inherited: :archived, if: :restore_to_archived_on_cancel_deletion?
           transition ancestor_inherited: :ancestor_inherited
         end
 

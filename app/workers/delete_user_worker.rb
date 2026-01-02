@@ -12,7 +12,8 @@ class DeleteUserWorker # rubocop:disable Scalability/IdempotentWorker
 
   def perform(current_user_id, delete_user_id, options = {})
     # Deleting a user deletes many different resources, so a higher threshold is OK for now
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464672', new_threshold: 200)
+    # Reduce the threshold to 200 after https://gitlab.com/groups/gitlab-org/-/epics/17959 is closed
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464672', new_threshold: 204)
 
     delete_user = User.find_by_id(delete_user_id)
     return unless delete_user.present?

@@ -14,8 +14,12 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions|
       request
 
       expect(response).to have_gitlab_http_status(:forbidden)
-      expect(json_response['error']).to eq('insufficient_granular_scope')
-      expect(json_response['error_description']).to eq(message)
+
+      # Only check JSON body if present (GET/POST/etc have bodies, HEAD doesn't)
+      if response.body.present?
+        expect(json_response['error']).to eq('insufficient_granular_scope')
+        expect(json_response['error_description']).to eq(message)
+      end
     end
   end
 

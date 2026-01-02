@@ -1,0 +1,7 @@
+---
+name: delete_branch
+description: Grants the ability to delete a branch
+boundaries:
+  - project
+permissions:
+  - delete_branch

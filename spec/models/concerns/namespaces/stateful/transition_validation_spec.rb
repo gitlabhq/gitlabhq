@@ -114,7 +114,7 @@ RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :gr
             set_state(parent, parent_state)
             set_state(child, child_from)
 
-            allow(child).to receive(:restore_to_archived?).and_return(true) if child_to == :archived
+            allow(child).to receive(:restore_to_archived_on_cancel_deletion?).and_return(true) if child_to == :archived
           end
 
           it "allows #{params[:event]} when parent is #{params[:parent_state]}" do

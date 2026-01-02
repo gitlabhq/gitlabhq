@@ -449,7 +449,6 @@ read_all_workspaces
 read_analytics
 read_application_setting
 read_application_statistics
-read_approval_rule
 read_approvers
 read_attestation
 read_billable_member
@@ -767,7 +766,6 @@ unschedule_job
 update_admin_role
 update_alert_management_alert
 update_alert_management_metric_image
-update_approval_rule
 update_approvers
 update_branch_rule
 update_build

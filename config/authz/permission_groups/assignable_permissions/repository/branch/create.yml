@@ -1,0 +1,7 @@
+---
+name: create_branch
+description: Grants the ability to create a branch
+boundaries:
+  - project
+permissions:
+  - create_branch

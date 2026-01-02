@@ -44,8 +44,14 @@ module Namespaces
       # @example With schedule_deletion => cancel_deletion
       #   # When :schedule_deletion fires, the current state is saved
       #   # When :cancel_deletion fires, the saved state is restored and cleared
+      #
+      # @example With start_deletion => reschedule_deletion
+      #   # When :start_deletion fires on a child namespace (not explicitly scheduled),
+      #   # the current state is saved so it can be restored if deletion fails
+      #   # When :reschedule_deletion fires, the saved state is restored and cleared
       STATE_MEMORY_CONFIG = {
-        schedule_deletion: :cancel_deletion
+        schedule_deletion: :cancel_deletion,
+        start_deletion: :reschedule_deletion
       }.freeze
 
       private
@@ -137,9 +143,39 @@ module Namespaces
       # Determines if cancel_deletion should restore to :archived state.
       #
       # @return [Boolean] true if the namespace was archived before deletion was scheduled
-      def restore_to_archived?
+      def restore_to_archived_on_cancel_deletion?
         preserve_event = preserve_event_for(:cancel_deletion)
         should_restore_to?(preserve_event, :archived)
+      end
+
+      # Guard method used in state machine transition definitions.
+      # Determines if reschedule_deletion should restore to :archived state.
+      #
+      # @return [Boolean] true if the namespace was archived before deletion started
+      def restore_to_archived_on_reschedule_deletion?
+        preserve_event = preserve_event_for(:reschedule_deletion)
+        should_restore_to?(preserve_event, :archived)
+      end
+
+      # Guard method used in state machine transition definitions.
+      # Determines if reschedule_deletion should restore to :ancestor_inherited state.
+      # This is used for child namespaces that were not explicitly scheduled for deletion
+      # but were being deleted because their parent was scheduled.
+      #
+      # @return [Boolean] true if the namespace was in ancestor_inherited before deletion started
+      def restore_to_ancestor_inherited_on_reschedule_deletion?
+        preserve_event = preserve_event_for(:reschedule_deletion)
+        should_restore_to?(preserve_event, :ancestor_inherited)
+      end
+
+      # Guard method used in state machine transition definitions.
+      # Determines if reschedule_deletion should restore to :deletion_scheduled state.
+      # This is used for namespaces that were explicitly scheduled for deletion.
+      #
+      # @return [Boolean] true if the namespace was in deletion_scheduled before deletion started
+      def restore_to_deletion_scheduled_on_reschedule_deletion?
+        preserve_event = preserve_event_for(:reschedule_deletion)
+        should_restore_to?(preserve_event, :deletion_scheduled)
       end
     end
   end

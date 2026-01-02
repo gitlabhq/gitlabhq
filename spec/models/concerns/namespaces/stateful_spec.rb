@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
+  include Namespaces::StatefulHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:namespace) { create(:namespace) }
@@ -48,12 +49,17 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
     describe 'event handling' do
       it { is_expected.to handle_events :archive, when: :ancestor_inherited }
       it { is_expected.to handle_events :unarchive, when: :archived }
+      it { is_expected.to handle_events :unarchive, when: :ancestor_inherited }
       it { is_expected.to handle_events :schedule_deletion, when: :ancestor_inherited }
       it { is_expected.to handle_events :schedule_deletion, when: :archived }
+      it { is_expected.to handle_events :start_deletion, when: :ancestor_inherited }
+      it { is_expected.to handle_events :start_deletion, when: :archived }
       it { is_expected.to handle_events :start_deletion, when: :deletion_scheduled }
       it { is_expected.to handle_events :reschedule_deletion, when: :deletion_in_progress }
+      it { is_expected.to handle_events :reschedule_deletion, when: :ancestor_inherited }
       it { is_expected.to handle_events :cancel_deletion, when: :deletion_scheduled }
       it { is_expected.to handle_events :cancel_deletion, when: :deletion_in_progress }
+      it { is_expected.to handle_events :cancel_deletion, when: :ancestor_inherited }
       it { is_expected.to reject_events :archive, when: :archived }
       it { is_expected.to reject_events :schedule_deletion, when: :deletion_scheduled }
     end
@@ -64,8 +70,11 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
         :unarchive           | :archived             | :ancestor_inherited
         :schedule_deletion   | :ancestor_inherited   | :deletion_scheduled
         :schedule_deletion   | :archived             | :deletion_scheduled
+        :start_deletion      | :ancestor_inherited   | :deletion_in_progress
+        :start_deletion      | :archived             | :deletion_in_progress
         :start_deletion      | :deletion_scheduled   | :deletion_in_progress
         :reschedule_deletion | :deletion_in_progress | :deletion_scheduled
+        :reschedule_deletion | :ancestor_inherited   | :deletion_scheduled
       end
 
       with_them do
@@ -90,6 +99,38 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
               'last_error' => nil
             )
             expect(metadata['last_updated_at']).to be_present
+          end
+        end
+      end
+
+      context 'for transitions with state preservation' do
+        where(:event, :from_state, :preserve_event, :preserved_state) do
+          :cancel_deletion     | :deletion_scheduled   | :schedule_deletion | :ancestor_inherited
+          :cancel_deletion     | :deletion_scheduled   | :schedule_deletion | :archived
+          :cancel_deletion     | :deletion_in_progress | :schedule_deletion | :ancestor_inherited
+          :cancel_deletion     | :deletion_in_progress | :schedule_deletion | :archived
+          :reschedule_deletion | :deletion_in_progress | :start_deletion    | :ancestor_inherited
+          :reschedule_deletion | :deletion_in_progress | :start_deletion    | :archived
+          :reschedule_deletion | :deletion_in_progress | :start_deletion    | :deletion_scheduled
+        end
+
+        with_them do
+          before do
+            set_state(namespace, from_state)
+            namespace.namespace_details.update!(
+              state_metadata: {
+                preserved_states: {
+                  preserve_event.to_s => preserved_state.to_s
+                }
+              }
+            )
+          end
+
+          it "transitions from #{params[:from_state]} to #{params[:preserved_state]} on #{params[:event]}" do
+            expect { namespace.public_send(event, transition_user: user) }
+              .to change { namespace.state_name }
+                    .from(from_state)
+                    .to(preserved_state)
           end
         end
       end
@@ -118,12 +159,29 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
         :archive             | :creation_in_progress
         :archive             | :transfer_in_progress
         :archive             | :maintenance
-        :unarchive           | :ancestor_inherited
+        :unarchive           | :deletion_scheduled
+        :unarchive           | :deletion_in_progress
+        :unarchive           | :creation_in_progress
+        :unarchive           | :transfer_in_progress
+        :unarchive           | :maintenance
         :schedule_deletion   | :deletion_scheduled
         :schedule_deletion   | :deletion_in_progress
         :schedule_deletion   | :creation_in_progress
         :schedule_deletion   | :transfer_in_progress
         :schedule_deletion   | :maintenance
+        :start_deletion      | :deletion_in_progress
+        :start_deletion      | :creation_in_progress
+        :start_deletion      | :transfer_in_progress
+        :start_deletion      | :maintenance
+        :reschedule_deletion | :archived
+        :reschedule_deletion | :deletion_scheduled
+        :reschedule_deletion | :creation_in_progress
+        :reschedule_deletion | :transfer_in_progress
+        :reschedule_deletion | :maintenance
+        :cancel_deletion     | :archived
+        :cancel_deletion     | :creation_in_progress
+        :cancel_deletion     | :transfer_in_progress
+        :cancel_deletion     | :maintenance
       end
 
       with_them do

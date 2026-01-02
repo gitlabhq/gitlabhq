@@ -40,6 +40,14 @@
             "ancestor_inherited",
             "archived"
           ]
+        },
+        "start_deletion": {
+          "type": "string",
+          "enum": [
+            "ancestor_inherited",
+            "archived",
+            "deletion_scheduled"
+          ]
         }
       },
       "additionalProperties": false

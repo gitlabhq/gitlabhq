@@ -1,0 +1,5 @@
+---
+name: delete_approval_rule
+description: Grants the ability to delete approval rules
+boundaries:
+  - project

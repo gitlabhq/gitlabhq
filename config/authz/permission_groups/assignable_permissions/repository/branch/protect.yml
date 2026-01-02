@@ -1,0 +1,7 @@
+---
+name: protect_branch
+description: Grants the ability to protect a branch
+boundaries:
+  - project
+permissions:
+  - protect_branch

@@ -80,6 +80,8 @@ RSpec.describe SystemHook, feature_category: :webhooks do
     end
 
     it "project_destroy hook" do
+      project.save!
+
       Projects::DestroyService.new(project, user, {}).async_execute
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(

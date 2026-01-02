@@ -9,7 +9,7 @@ module Projects
     BATCH_SIZE = 100
 
     def async_execute
-      project.update_attribute(:pending_delete, true)
+      mark_deletion_in_progress
 
       job_id = ProjectDestroyWorker.perform_async(project.id, current_user.id, params)
       log_info("User #{current_user.id} scheduled destruction of project #{project.full_path} with job ID #{job_id}")
@@ -17,11 +17,11 @@ module Projects
 
     def execute
       unless can?(current_user, :remove_project, project)
-        project.update_attribute(:pending_delete, false) if project.pending_delete?
+        cancel_deletion
         return false
       end
 
-      project.update_attribute(:pending_delete, true)
+      mark_deletion_in_progress
 
       # There is a possibility of active repository move processes for
       # project and snippets. An attempt to delete the project at the same time
@@ -68,6 +68,34 @@ module Projects
     end
 
     private
+
+    def mark_deletion_in_progress
+      Project.transaction do
+        if Feature.enabled?(:namespace_state_management, project.root_ancestor) && !project.deletion_in_progress?
+          project.start_deletion!(transition_user: current_user)
+        end
+
+        project.update_attribute(:pending_delete, true)
+      end
+    end
+
+    def cancel_deletion
+      Project.transaction do
+        if Feature.enabled?(:namespace_state_management, project.root_ancestor)
+          project.cancel_deletion!(transition_user: current_user)
+        end
+
+        project.update_attribute(:pending_delete, false) if project.pending_delete?
+      end
+    end
+
+    def reschedule_deletion
+      Project.transaction do
+        if Feature.enabled?(:namespace_state_management, project.root_ancestor)
+          project.reschedule_deletion!(transition_user: current_user)
+        end
+      end
+    end
 
     def all_pipelines
       # We don't use `Project#all_pipelines` to skip the `build_enabled?` setting in order to get all pipelines.
@@ -152,6 +180,7 @@ module Projects
         # Restrict project visibility if the parent namespace visibility was made more restrictive while the project was scheduled for deletion.
         visibility_level = project.visibility_level_allowed_by_namespace? ? project.visibility_level : project.namespace.visibility_level
         project.update(delete_error: message, pending_delete: false, visibility_level: visibility_level)
+        reschedule_deletion
       end
 
       log_error("Deletion failed on #{project.full_path} with the following message: #{message}")

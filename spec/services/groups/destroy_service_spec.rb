@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
+  include Namespaces::StatefulHelpers
+  using RSpec::Parameterized::TableSyntax
+
   let!(:user)         { create(:user) }
   let!(:group)        { create(:group_with_deletion_schedule, deleted_at: Time.current) }
   let!(:nested_group) { create(:group, parent: group) }
@@ -101,17 +104,46 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
     end
   end
 
-  shared_examples 'marks the group as delete' do |async|
-    it 'marks the group as deleted', :freeze_time do
-      expect(group).to receive(:update_attribute).with(:deleted_at, Time.current)
-
-      destroy_group(group, user, async)
-    end
-  end
-
   describe 'asynchronous delete' do
     it_behaves_like 'group destruction', true
-    it_behaves_like 'marks the group as delete', true
+
+    context 'when namespace_state_management feature flag is enabled' do
+      before do
+        set_state(group, :deletion_scheduled)
+      end
+
+      it 'transitions the group state to deletion_in_progress' do
+        expect(group).to receive(:start_deletion!).with(transition_user: user).and_call_original
+
+        expect { destroy_group(group, user, true) }.to change { group.state }
+                                                         .from(Namespaces::Stateful::STATES[:deletion_scheduled])
+                                                         .to(Namespaces::Stateful::STATES[:deletion_in_progress])
+      end
+
+      context 'when group is already in deletion_in_progress state' do
+        before do
+          set_state(group, :deletion_in_progress)
+        end
+
+        it 'does not call start_deletion!' do
+          expect(group).not_to receive(:start_deletion!)
+
+          destroy_group(group, user, true)
+        end
+      end
+    end
+
+    context 'when namespace_state_management feature flag is disabled' do
+      before do
+        stub_feature_flags(namespace_state_management: false)
+      end
+
+      it 'does not call start_deletion!' do
+        expect(group).not_to receive(:start_deletion!)
+
+        destroy_group(group, user, true)
+      end
+    end
 
     context 'Sidekiq fake' do
       before do
@@ -130,7 +162,12 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
 
   describe 'synchronous delete' do
     it_behaves_like 'group destruction', false
-    it_behaves_like 'marks the group as delete', false
+
+    it 'marks the group as deleted', :freeze_time do
+      expect(group).to receive(:update_attribute).with(:deleted_at, Time.current)
+
+      destroy_group(group, user, false)
+    end
 
     context 'when destroying the group throws an error' do
       before do
@@ -141,6 +178,108 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
         expect { destroy_group(group, user, false) }.to raise_error(StandardError)
 
         expect(group.deleted_at).to be_nil
+      end
+
+      context 'when namespace_state_management feature flag is enabled' do
+        before do
+          set_state(group, :deletion_scheduled)
+        end
+
+        it 'reschedules the deletion by transitioning state back' do
+          expect(group).to receive(:reschedule_deletion!).with(transition_user: user).and_call_original
+
+          expect { destroy_group(group, user, false) }.to raise_error(StandardError)
+          expect(group.state).to eq(Namespaces::Stateful::STATES[:deletion_scheduled])
+        end
+
+        it 'logs the rescheduling error' do
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including(
+              group_id: group.id,
+              current_user: user.id,
+              error_class: StandardError,
+              message: "Rescheduling group deletion"
+            )
+          )
+
+          expect { destroy_group(group, user, false) }.to raise_error(StandardError)
+        end
+      end
+
+      context 'when namespace_state_management feature flag is disabled' do
+        before do
+          stub_feature_flags(namespace_state_management: false)
+        end
+
+        it 'does not call reschedule_deletion!' do
+          expect(group).not_to receive(:reschedule_deletion!)
+
+          expect { destroy_group(group, user, false) }.to raise_error(StandardError)
+          expect(group.state).to eq(Namespaces::Stateful::STATES[:ancestor_inherited])
+        end
+      end
+    end
+
+    context 'when namespace_state_management feature flag is enabled' do
+      before do
+        set_state(group, :deletion_scheduled)
+      end
+
+      it 'transitions the group state to deletion_in_progress' do
+        expect(group).to receive(:start_deletion!).with(transition_user: user).and_call_original
+
+        expect { destroy_group(group, user, false) }.to change { group.state }
+          .from(Namespaces::Stateful::STATES[:deletion_scheduled])
+          .to(Namespaces::Stateful::STATES[:deletion_in_progress])
+      end
+
+      context 'when group is already in deletion_in_progress state' do
+        before do
+          set_state(group, :deletion_in_progress)
+        end
+
+        it 'does not call start_deletion!' do
+          expect(group).not_to receive(:start_deletion!)
+
+          destroy_group(group, user, false)
+        end
+      end
+
+      context 'when deletion fails and reschedule_deletion is called' do
+        where(:group_state, :nested_group_state) do
+          :deletion_scheduled | :ancestor_inherited
+          :deletion_scheduled | :archived
+          :deletion_scheduled | :deletion_scheduled
+        end
+
+        with_them do
+          before do
+            set_state(group, group_state)
+            set_state(nested_group, nested_group_state)
+            allow_next_found_instance_of(Group) do |instance|
+              allow(instance).to receive(:destroy).and_raise(StandardError)
+            end
+          end
+
+          it 'restores each group to its original state before deletion started', :aggregate_failures do
+            expect { destroy_group(group, user, false) }.to raise_error(StandardError)
+
+            expect(group.reload.state).to eq(Namespaces::Stateful::STATES[group_state])
+            expect(nested_group.reload.state).to eq(Namespaces::Stateful::STATES[nested_group_state])
+          end
+        end
+      end
+    end
+
+    context 'when namespace_state_management feature flag is disabled' do
+      before do
+        stub_feature_flags(namespace_state_management: false)
+      end
+
+      it 'does not call start_deletion!' do
+        expect(group).not_to receive(:start_deletion!)
+
+        destroy_group(group, user, false)
       end
     end
   end
@@ -168,6 +307,7 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
   context 'when group owner is blocked' do
     before do
       user.block!
+      stub_feature_flags(namespace_state_management: false)
     end
 
     it 'returns a more descriptive error message' do

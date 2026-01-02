@@ -1,0 +1,7 @@
+---
+name: update_merge_request_approval_setting
+description: Grants the ability to update merge request approval settings
+boundaries:
+  - group
+  - project
+

@@ -23,6 +23,13 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
   describe "GET /projects/:id/repository/branches", :use_clean_rails_redis_caching, :clean_gitlab_redis_shared_state do
     let(:route) { "/projects/#{project_id}/repository/branches" }
 
+    it_behaves_like 'authorizing granular token permissions', :read_branch do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(route, personal_access_token: pat)
+      end
+    end
+
     it_behaves_like 'enforcing job token policies', :read_repositories,
       allow_public_access_for_enabled_project_features: :repository do
       let(:request) do
@@ -442,6 +449,20 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
   describe "GET /projects/:id/repository/branches/:branch" do
     let(:route) { "/projects/#{project_id}/repository/branches/#{branch_name}" }
 
+    it_behaves_like 'authorizing granular token permissions', :read_branch do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(route, personal_access_token: pat)
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_branch do
+      let(:boundary_object) { project }
+      let(:request) do
+        head api(route, personal_access_token: pat)
+      end
+    end
+
     shared_examples_for 'repository branch' do
       context 'HEAD request' do
         it 'returns 204 No Content' do
@@ -611,6 +632,13 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
   describe 'PUT /projects/:id/repository/branches/:branch/protect' do
     let(:route) { "/projects/#{project_id}/repository/branches/#{branch_name}/protect" }
 
+    it_behaves_like 'authorizing granular token permissions', :protect_branch do
+      let(:boundary_object) { project }
+      let(:request) do
+        put api(route, personal_access_token: pat)
+      end
+    end
+
     shared_examples_for 'repository new protected branch' do
       it 'protects a single branch' do
         put api(route, current_user)
@@ -778,6 +806,13 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
   describe 'PUT /projects/:id/repository/branches/:branch/unprotect' do
     let(:route) { "/projects/#{project_id}/repository/branches/#{branch_name}/unprotect" }
 
+    it_behaves_like 'authorizing granular token permissions', :protect_branch do
+      let(:boundary_object) { project }
+      let(:request) do
+        put api(route, personal_access_token: pat)
+      end
+    end
+
     shared_examples_for 'repository unprotected branch' do
       context 'when branch is protected' do
         let!(:protected_branch) { create(:protected_branch, project: project, name: protected_branch_name) }
@@ -895,6 +930,13 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
   describe 'POST /projects/:id/repository/branches' do
     let(:route) { "/projects/#{project_id}/repository/branches" }
 
+    it_behaves_like 'authorizing granular token permissions', :create_branch do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api(route, personal_access_token: pat), params: { branch: 'feature1', ref: branch_sha }
+      end
+    end
+
     shared_examples_for 'repository new branch' do
       it 'creates a new branch' do
         post api(route, current_user), params: { branch: 'feature1', ref: branch_sha }
@@ -988,6 +1030,13 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
       end
     end
 
+    it_behaves_like 'authorizing granular token permissions', :delete_branch do
+      let(:boundary_object) { project }
+      let(:request) do
+        delete api("/projects/#{project.id}/repository/branches/#{branch_name}", personal_access_token: pat)
+      end
+    end
+
     it 'removes branch' do
       delete api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
 
@@ -1024,6 +1073,13 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
     before do
       allow_next_instance_of(Repository) do |instance|
         allow(instance).to receive(:rm_branch).and_return(true)
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_merged_branch do
+      let(:boundary_object) { project }
+      let(:request) do
+        delete api("/projects/#{project.id}/repository/merged_branches", personal_access_token: pat)
       end
     end
 

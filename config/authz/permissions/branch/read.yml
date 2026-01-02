@@ -1,0 +1,5 @@
+---
+name: read_branch
+description: Grants the ability to read branches
+boundaries:
+  - project

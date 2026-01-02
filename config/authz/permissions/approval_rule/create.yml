@@ -1,0 +1,6 @@
+---
+name: create_approval_rule
+description: Grants the ability to create approval rules
+boundaries:
+  - group
+  - project
