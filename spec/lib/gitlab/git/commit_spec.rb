@@ -773,6 +773,35 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
     end
   end
 
+  describe '#parent_ids' do
+    let(:commit) { described_class.new(repository, commit_hash, nil, lazy_load_parents: true) }
+
+    context 'when commit sha does not exist' do
+      let(:commit_hash) { sample_commit_hash.merge(id: 'non-existent', parent_ids: commit_parent_ids) }
+
+      context 'when parent_ids = nil' do
+        let(:commit_parent_ids) { nil }
+
+        it { expect(commit.parent_ids).to eq([]) }
+      end
+
+      context 'when parent_ids = []' do
+        let(:commit_parent_ids) { [] }
+
+        it { expect(commit.parent_ids).to eq([]) }
+      end
+    end
+
+    context 'when parent_ids is already loaded' do
+      let(:commit_hash) { sample_commit_hash.merge(id: SeedRepo::Commit::ID, parent_ids: [SeedRepo::Commit::PARENT_ID]) }
+
+      it 'returns cached parent_ids without calling repository' do
+        expect(repository).not_to receive(:commit)
+        expect(commit.parent_ids).to eq([SeedRepo::Commit::PARENT_ID])
+      end
+    end
+  end
+
   describe 'SHA patterns' do
     shared_examples 'a SHA-matching pattern' do
       let(:expected_match) { sha }

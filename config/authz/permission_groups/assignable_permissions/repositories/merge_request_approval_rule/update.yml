@@ -1,0 +1,7 @@
+---
+name: update_merge_request_approval_rule
+description: Grants the ability to update merge request approval rules
+permissions:
+  - update_merge_request_approval_rule
+boundaries:
+  - project

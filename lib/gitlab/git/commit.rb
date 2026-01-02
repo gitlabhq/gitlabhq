@@ -270,7 +270,11 @@ module Gitlab
       def parent_ids
         return @parent_ids unless @lazy_load_parents
 
-        @parent_ids = @repository.commit(id).parent_ids if @parent_ids.nil? || @parent_ids.empty?
+        if @parent_ids.nil? || @parent_ids.empty?
+          commit = @repository.commit(id)
+
+          @parent_ids = commit&.parent_ids || []
+        end
 
         @parent_ids
       end
