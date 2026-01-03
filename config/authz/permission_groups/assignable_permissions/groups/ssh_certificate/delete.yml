@@ -1,0 +1,7 @@
+---
+name: delete_ssh_certificate
+description: Grants the ability to delete SSH certificates
+boundaries:
+  - group
+permissions:
+  - delete_ssh_certificate

@@ -1,0 +1,8 @@
+---
+name: read_push_rule
+description: Grants the ability to read push rules
+permissions:
+  - read_push_rule
+boundaries:
+  - group
+  - project

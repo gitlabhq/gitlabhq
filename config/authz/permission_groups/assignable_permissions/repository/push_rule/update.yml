@@ -1,0 +1,8 @@
+---
+name: update_push_rule
+description: Grants the ability to update push rules
+permissions:
+  - update_push_rule
+boundaries:
+  - group
+  - project
