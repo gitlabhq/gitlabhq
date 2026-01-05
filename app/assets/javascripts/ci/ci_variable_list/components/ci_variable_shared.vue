@@ -119,8 +119,9 @@ export default {
             this.fetchMoreVariables();
             this.loadingCounter += 1;
           } else {
-            createAlert({ message: this.$options.tooManyCallsError });
-            reportToSentry(this.componentName, new Error(this.$options.tooManyCallsError));
+            this.isLoadingMoreItems = false;
+            createAlert({ message: this.$options.i18n.tooManyCallsError });
+            reportToSentry(this.componentName, new Error(this.$options.i18n.tooManyCallsError));
           }
         }
       },
