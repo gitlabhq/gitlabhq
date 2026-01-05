@@ -284,7 +284,7 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/bulk_imports/ndjson_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/network_error_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/snippets_repository_pipeline_spec.rb'
-    - 'spec/lib/constraints/admin_constrainer_spec.rb'
+    - 'spec/constraints/authz/admin_constraint_spec.rb'
     - 'spec/lib/constraints/group_url_constrainer_spec.rb'
     - 'spec/lib/constraints/jira_encoded_url_constrainer_spec.rb'
     - 'spec/lib/constraints/project_url_constrainer_spec.rb'

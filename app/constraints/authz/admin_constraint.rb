@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Constraints
-  class AdminConstrainer
+module Authz
+  class AdminConstraint
     def matches?(request)
       if Gitlab::CurrentSettings.admin_mode
         admin_mode_enabled?(request)

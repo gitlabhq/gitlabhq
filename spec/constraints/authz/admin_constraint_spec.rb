@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-#
+
 require 'spec_helper'
 
-RSpec.describe Constraints::AdminConstrainer do
+RSpec.describe Authz::AdminConstraint do
   let(:user) { create(:user) }
 
   let(:session) { {} }

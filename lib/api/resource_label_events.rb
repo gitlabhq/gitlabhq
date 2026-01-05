@@ -21,6 +21,7 @@ module API
         desc "Get a list of #{human_eventable_str} resource label events" do
           success Entities::ResourceLabelEvent
           detail 'This feature was introduced in 11.3'
+          tags ['resource_label_events']
         end
         params do
           requires :eventable_id, types: [Integer, String], desc: "The #{details[:id_field]} of the #{human_eventable_str}"
@@ -38,6 +39,7 @@ module API
         desc "Get a single #{human_eventable_str} resource label event" do
           success Entities::ResourceLabelEvent
           detail 'This feature was introduced in 11.3'
+          tags ['resource_label_events']
         end
         params do
           requires :event_id, type: String, desc: 'The ID of a resource label event'

@@ -115,7 +115,25 @@ class SessionsController < Devise::SessionsController
     end
   end
 
+  def sign_in_path
+    return render_404 unless Feature.enabled?(:two_step_sign_in, Feature.current_request)
+
+    respond_to do |format|
+      format.json do
+        render json: { sign_in_path: determine_sign_in_path }
+      end
+      format.html do
+        render_404
+      end
+    end
+  end
+
   private
+
+  # Overridden in EE
+  def determine_sign_in_path
+    nil
+  end
 
   override :after_pending_invitations_hook
   def after_pending_invitations_hook

@@ -3745,7 +3745,6 @@ Gitlab/BoundedContexts:
     - 'lib/click_house/sync_cursor.rb'
     - 'lib/click_house/write_buffer.rb'
     - 'lib/constraints/activity_pub_constrainer.rb'
-    - 'lib/constraints/admin_constrainer.rb'
     - 'lib/constraints/group_url_constrainer.rb'
     - 'lib/constraints/jira_encoded_url_constrainer.rb'
     - 'lib/constraints/project_url_constrainer.rb'

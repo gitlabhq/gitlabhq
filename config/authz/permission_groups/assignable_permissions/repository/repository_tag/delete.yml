@@ -1,0 +1,7 @@
+---
+name: delete_repository_tag
+description: Grants the ability to delete repository tags
+permissions:
+  - delete_repository_tag
+boundaries:
+  - project

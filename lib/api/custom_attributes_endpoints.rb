@@ -30,6 +30,7 @@ module API
 
       desc "Get all custom attributes on a #{attributable_name}" do
         success Entities::CustomAttribute
+        tags ['custom_attributes']
       end
       get ':id/custom_attributes' do
         resource = find_resource(attributable_finder, params[:id])
@@ -40,6 +41,7 @@ module API
 
       desc "Get a custom attribute on a #{attributable_name}" do
         success Entities::CustomAttribute
+        tags ['custom_attributes']
       end
       params do
         use :custom_attributes_key
@@ -55,7 +57,10 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc "Set a custom attribute on a #{attributable_name}"
+      desc "Set a custom attribute on a #{attributable_name}" do
+        success Entities::CustomAttribute
+        tags ['custom_attributes']
+      end
       params do
         use :custom_attributes_key
         requires :value, type: String, desc: 'The value of the custom attribute'
@@ -78,7 +83,10 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc "Delete a custom attribute on a #{attributable_name}"
+      desc "Delete a custom attribute on a #{attributable_name}" do
+        success code: 204
+        tags ['custom_attributes']
+      end
       params do
         use :custom_attributes_key
       end

@@ -1,0 +1,5 @@
+---
+name: read_repository_tag
+description: Grants the ability to read repository tags
+boundaries:
+  - project

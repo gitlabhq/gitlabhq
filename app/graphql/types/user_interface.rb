@@ -260,6 +260,12 @@ module Types
       description: 'Type of the user.',
       method: :user_type
 
+    field :composite_identity_enforced,
+      type: GraphQL::Types::Boolean,
+      null: true,
+      description: 'Indicates if composite identity is enforced for the user.',
+      method: :composite_identity_enforced?
+
     field :personal_access_tokens,
       Types::Authz::PersonalAccessTokens::PersonalAccessTokenType.connection_type,
       null: true,

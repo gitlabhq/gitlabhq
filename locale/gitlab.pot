@@ -55218,6 +55218,12 @@ msgstr ""
 msgid "Rate limits can help reduce request volume (like from crawlers or abusive bots)."
 msgstr ""
 
+msgid "Rate limits for specific Groups API endpoints."
+msgstr ""
+
+msgid "Rate limits for specific Projects API endpoints."
+msgstr ""
+
 msgid "Rate limits for specific Users API endpoints."
 msgstr ""
 

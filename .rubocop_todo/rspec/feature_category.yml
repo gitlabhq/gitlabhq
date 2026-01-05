@@ -1891,7 +1891,7 @@ RSpec/FeatureCategory:
     - 'spec/lib/bulk_imports/pipeline/extracted_data_spec.rb'
     - 'spec/lib/bulk_imports/pipeline_spec.rb'
     - 'spec/lib/bulk_imports/retry_pipeline_error_spec.rb'
-    - 'spec/lib/constraints/admin_constrainer_spec.rb'
+    - 'spec/constraints/authz/admin_constraint_spec.rb'
     - 'spec/lib/constraints/group_url_constrainer_spec.rb'
     - 'spec/lib/constraints/jira_encoded_url_constrainer_spec.rb'
     - 'spec/lib/constraints/project_url_constrainer_spec.rb'

@@ -3,6 +3,8 @@
   - if rate_limits
     %li= link_to _('Rate Limits'), '#rate-limits'
     %li= link_to _('Users API rate limits'), '#users-api-rate-limits'
+    %li= link_to _('Groups API rate limits'), '#groups-api-rate-limits'
+    %li= link_to _('Projects API rate limits'), '#projects-api-rate-limits'
 
 - content_for :settings_content do
   - if rate_limits
@@ -56,4 +58,43 @@
           = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:id/keys/:key_id', rate_limit: rate_limits[:users_api_ssh_key]
           = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:id/gpg_keys', rate_limit: rate_limits[:users_api_gpg_keys]
           = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:id/gpg_keys/:key_id', rate_limit: rate_limits[:users_api_gpg_key]
+
+    %h2#groups-api-rate-limits= _('Groups API rate limits')
+    %p
+      = _('Rate limits for specific Groups API endpoints.')
+      = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_groups_api.md'), target: '_blank', rel: 'noopener noreferrer'
+    .table-responsive
+      %table
+        %thead
+          %tr
+            %th= _('Rate limit')
+            %th= _('Requests per period')
+            %th= _('Period in seconds')
+        %tbody
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /groups', rate_limit: rate_limits[:groups_api]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /groups/:id', rate_limit: rate_limits[:group_api]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /groups/:id/projects', rate_limit: rate_limits[:group_projects_api]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /groups/:id/groups/shared', rate_limit: rate_limits[:group_shared_groups_api]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /groups/:id/invited_groups', rate_limit: rate_limits[:group_invited_groups_api]
+          = render 'help/instance_configuration/rate_limit_row', title: 'POST /groups/:id/archive and POST /groups/:id/unarchive', rate_limit: rate_limits[:group_archive_unarchive_api]
+
+    %h2#projects-api-rate-limits= _('Projects API rate limits')
+    %p
+      = _('Rate limits for specific Projects API endpoints.')
+      = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_projects_api.md'), target: '_blank', rel: 'noopener noreferrer'
+    .table-responsive
+      %table
+        %thead
+          %tr
+            %th= _('Rate limit')
+            %th= _('Requests per period')
+            %th= _('Period in seconds')
+        %tbody
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /projects (Authenticated)', rate_limit: rate_limits[:projects_api]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /projects (Unauthenticated)', rate_limit: rate_limits[:projects_api_unauthenticated]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /projects/:id', rate_limit: rate_limits[:project_api]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:user_id/projects', rate_limit: rate_limits[:user_projects_api]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:user_id/contributed_projects', rate_limit: rate_limits[:user_contributed_projects_api]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:user_id/starred_projects', rate_limit: rate_limits[:user_starred_projects_api]
+          = render 'help/instance_configuration/rate_limit_row', title: 'GET /projects/:id/members/all', rate_limit: rate_limits[:project_members_api]
     %br

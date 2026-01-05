@@ -140,7 +140,20 @@ class InstanceConfiguration
       users_api_ssh_keys: application_setting_limit_per_minute(:users_api_limit_ssh_keys),
       users_api_ssh_key: application_setting_limit_per_minute(:users_api_limit_ssh_key),
       users_api_gpg_keys: application_setting_limit_per_minute(:users_api_limit_gpg_keys),
-      users_api_gpg_key: application_setting_limit_per_minute(:users_api_limit_gpg_key)
+      users_api_gpg_key: application_setting_limit_per_minute(:users_api_limit_gpg_key),
+      groups_api: application_setting_limit_per_minute(:groups_api_limit),
+      group_api: application_setting_limit_per_minute(:group_api_limit),
+      group_projects_api: application_setting_limit_per_minute(:group_projects_api_limit),
+      group_shared_groups_api: application_setting_limit_per_minute(:group_shared_groups_api_limit),
+      group_invited_groups_api: application_setting_limit_per_minute(:group_invited_groups_api_limit),
+      group_archive_unarchive_api: application_setting_limit_per_minute(:group_archive_unarchive_api_limit),
+      projects_api: application_setting_limit_per_minute(:projects_api_limit),
+      projects_api_unauthenticated: application_setting_limit_per_minute(:projects_api_rate_limit_unauthenticated),
+      project_api: application_setting_limit_per_minute(:project_api_limit),
+      user_projects_api: application_setting_limit_per_minute(:user_projects_api_limit),
+      user_contributed_projects_api: application_setting_limit_per_minute(:user_contributed_projects_api_limit),
+      user_starred_projects_api: application_setting_limit_per_minute(:user_starred_projects_api_limit),
+      project_members_api: application_setting_limit_per_minute(:project_members_api_limit)
     }
   end
 

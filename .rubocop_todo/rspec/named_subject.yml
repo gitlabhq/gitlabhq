@@ -1451,7 +1451,7 @@ RSpec/NamedSubject:
     - 'spec/lib/bulk_imports/projects/stage_spec.rb'
     - 'spec/lib/bulk_imports/source_url_builder_spec.rb'
     - 'spec/lib/bulk_imports/users_mapper_spec.rb'
-    - 'spec/lib/constraints/admin_constrainer_spec.rb'
+    - 'spec/constraints/authz/admin_constraint_spec.rb'
     - 'spec/lib/constraints/group_url_constrainer_spec.rb'
     - 'spec/lib/constraints/project_url_constrainer_spec.rb'
     - 'spec/lib/constraints/user_url_constrainer_spec.rb'

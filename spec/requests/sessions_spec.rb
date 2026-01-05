@@ -60,4 +60,42 @@ RSpec.describe 'Sessions', feature_category: :system_access do
       post(user_session_path(params: { user: user_params.merge(otp_attempt: otp_attempt) }))
     end
   end
+
+  describe 'GET /users/sign_in_path' do
+    shared_examples 'returns nil sign_in_path' do |login_value|
+      it 'returns nil' do
+        params = login_value.nil? ? {} : { login: login_value }
+        get users_sign_in_path_path, params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq({ 'sign_in_path' => nil })
+      end
+    end
+
+    context 'when requesting JSON format' do
+      context 'when login parameter is not provided' do
+        it_behaves_like 'returns nil sign_in_path', nil
+      end
+
+      context 'when login parameter is blank' do
+        it_behaves_like 'returns nil sign_in_path', ''
+      end
+
+      context 'when user is found by username' do
+        it_behaves_like 'returns nil sign_in_path', -> { user.username }
+      end
+
+      context 'when user is not found found' do
+        it_behaves_like 'returns nil sign_in_path', -> { 'nonexistent' }
+      end
+    end
+
+    context 'when requesting HTML format' do
+      it 'returns 404' do
+        get users_sign_in_path_path, as: :html
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
 end

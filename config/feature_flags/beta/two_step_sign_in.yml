@@ -1,0 +1,10 @@
+---
+name: two_step_sign_in
+description: GitLab.com 2-step sign-in
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/19425
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216203
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583981
+milestone: '18.8'
+group: group::organizations
+type: beta
+default_enabled: false

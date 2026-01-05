@@ -1,0 +1,10 @@
+---
+name: disable_trending_args
+description: Remove the functionality behind the `trending` args in the GraphQL Projects query
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/20317
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216959
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584497
+milestone: '18.8'
+group: group::organizations
+type: beta
+default_enabled: false

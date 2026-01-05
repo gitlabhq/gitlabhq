@@ -1,0 +1,5 @@
+---
+name: create_repository_tag
+description: Grants the ability to create repository tags
+boundaries:
+  - project

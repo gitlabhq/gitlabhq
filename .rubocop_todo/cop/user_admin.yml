@@ -22,6 +22,6 @@ Cop/UserAdmin:
     - 'ee/app/services/ee/projects/update_service.rb'
     - 'ee/lib/ee/api/helpers.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'
-    - 'lib/constraints/admin_constrainer.rb'
+    - 'app/constraints/authz/admin_constraint.rb'
     - 'lib/gitlab/import_export/members_mapper.rb'
     - 'lib/gitlab/performance_bar.rb'

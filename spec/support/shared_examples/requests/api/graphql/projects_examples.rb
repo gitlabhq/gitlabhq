@@ -191,24 +191,43 @@ RSpec.shared_examples 'getting a collection of projects' do
     before do
       create(:trending_project, project: trending_project1)
       create(:trending_project, project: trending_project2)
-
-      post_graphql(query, current_user: current_user)
     end
 
-    it 'returns only trending projects' do
+    it 'ignores argument' do
+      post_graphql(query, current_user: current_user)
+
       expect(graphql_data_at(field, :nodes))
-        .to contain_exactly(
+        .to include(
           a_graphql_entity_for(trending_project1),
-          a_graphql_entity_for(trending_project2)
+          a_graphql_entity_for(trending_project2),
+          a_graphql_entity_for(archived_project),
+          a_graphql_entity_for(test_project),
+          a_graphql_entity_for(other_project)
         )
     end
 
-    it 'excludes non-trending projects' do
-      expect(graphql_data_at(field, :nodes)).not_to include(
-        a_graphql_entity_for(archived_project),
-        a_graphql_entity_for(test_project),
-        a_graphql_entity_for(other_project)
-      )
+    context 'when `disable_trending_args` flag is disabled' do
+      before do
+        stub_feature_flags(disable_trending_args: false)
+
+        post_graphql(query, current_user: current_user)
+      end
+
+      it 'returns only trending projects' do
+        expect(graphql_data_at(field, :nodes))
+          .to contain_exactly(
+            a_graphql_entity_for(trending_project1),
+            a_graphql_entity_for(trending_project2)
+          )
+      end
+
+      it 'excludes non-trending projects' do
+        expect(graphql_data_at(field, :nodes)).not_to include(
+          a_graphql_entity_for(archived_project),
+          a_graphql_entity_for(test_project),
+          a_graphql_entity_for(other_project)
+        )
+      end
     end
   end
 

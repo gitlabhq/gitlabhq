@@ -19,6 +19,13 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
   describe 'GET /projects/:id/repository/tags', :use_clean_rails_memory_store_caching do
     let(:route) { "/projects/#{project_id}/repository/tags" }
 
+    it_behaves_like 'authorizing granular token permissions', :read_repository_tag do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(route, personal_access_token: pat)
+      end
+    end
+
     it_behaves_like 'enforcing job token policies', :read_repositories,
       allow_public_access_for_enabled_project_features: :repository do
       let(:request) do
@@ -331,6 +338,13 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
   describe 'GET /projects/:id/repository/tags/:tag_name' do
     let(:route) { "/projects/#{project_id}/repository/tags/#{tag_name}" }
 
+    it_behaves_like 'authorizing granular token permissions', :read_repository_tag do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(route, personal_access_token: pat)
+      end
+    end
+
     it_behaves_like 'enforcing job token policies', :read_repositories,
       allow_public_access_for_enabled_project_features: :repository do
       let(:request) do
@@ -434,6 +448,13 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
     let(:tag_name) { 'new_tag' }
     let(:route) { "/projects/#{project_id}/repository/tags" }
 
+    it_behaves_like 'authorizing granular token permissions', :create_repository_tag do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api(route, personal_access_token: pat), params: { tag_name: tag_name, ref: 'master' }
+      end
+    end
+
     shared_examples_for 'repository new tag' do
       it 'creates a new tag' do
         post api(route, current_user), params: { tag_name: tag_name, ref: 'master' }
@@ -535,6 +556,13 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
     before do
       allow_next_instance_of(Repository) do |instance|
         allow(instance).to receive(:rm_tag).and_return(true)
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_repository_tag do
+      let(:boundary_object) { project }
+      let(:request) do
+        delete api(route, personal_access_token: pat)
       end
     end
 
@@ -653,6 +681,13 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
       let(:signature) { tag.signature }
       let(:x509_certificate) { signature.x509_certificate }
       let(:x509_issuer) { x509_certificate.x509_issuer }
+
+      it_behaves_like 'authorizing granular token permissions', :read_repository_tag_signature do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(route, personal_access_token: pat)
+        end
+      end
 
       it 'returns correct JSON' do
         get api(route, current_user)

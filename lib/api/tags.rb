@@ -46,7 +46,8 @@ module API
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, job_token_policies: :read_repositories,
-        allow_public_access_for_enabled_project_features: :repository
+        allow_public_access_for_enabled_project_features: :repository,
+        permissions: :read_repository_tag, boundary_type: :project
       get ':id/repository/tags', feature_category: :source_code_management, urgency: :low do
         tags_finder = ::TagsFinder.new(user_project.repository,
           sort: "#{params[:order_by]}_#{params[:sort]}",
@@ -84,7 +85,8 @@ module API
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, job_token_policies: :read_repositories,
-        allow_public_access_for_enabled_project_features: :repository
+        allow_public_access_for_enabled_project_features: :repository,
+        permissions: :read_repository_tag, boundary_type: :project
       get ':id/repository/tags/:tag_name', requirements: TAG_ENDPOINT_REQUIREMENTS, feature_category: :source_code_management do
         tag = user_project.repository.find_tag(params[:tag_name])
         not_found!('Tag') unless tag
@@ -106,6 +108,7 @@ module API
         requires :ref, type: String, desc: 'The commit sha or branch name', documentation: { example: '2695effb5807a22ff3d138d593fd856244e155e7' }
         optional :message, type: String, desc: 'Specifying a message creates an annotated tag', documentation: { example: 'Release 1.0.0' }
       end
+      route_setting :authorization, permissions: :create_repository_tag, boundary_type: :project
       post ':id/repository/tags', :release_orchestration do
         authorize_admin_tag
 
@@ -135,6 +138,7 @@ module API
       params do
         requires :tag_name, type: String, desc: 'The name of the tag'
       end
+      route_setting :authorization, permissions: :delete_repository_tag, boundary_type: :project
       delete ':id/repository/tags/:tag_name', requirements: TAG_ENDPOINT_REQUIREMENTS, feature_category: :source_code_management do
         tag = user_project.repository.find_tag(params[:tag_name])
         not_found!('Tag') unless tag
@@ -161,6 +165,7 @@ module API
       params do
         requires :tag_name, type: String, desc: 'The name of the tag'
       end
+      route_setting :authorization, permissions: :read_repository_tag_signature, boundary_type: :project
       get ':id/repository/tags/:tag_name/signature', requirements: TAG_ENDPOINT_REQUIREMENTS, feature_category: :source_code_management do
         tag = user_project.repository.find_tag(params[:tag_name])
         not_found! 'Tag' unless tag

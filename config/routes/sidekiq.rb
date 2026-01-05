@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-constraints ::Constraints::AdminConstrainer.new do
+constraints ::Authz::AdminConstraint.new do
   mount Sidekiq::Web, at: '/admin/sidekiq', as: :sidekiq
 end

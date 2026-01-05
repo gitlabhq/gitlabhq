@@ -29,6 +29,8 @@ tags:
   description: Operations about award_emoji
 - name: badges
   description: Operations about badges
+- name: custom_attributes
+  description: Operations about custom_attributes
 - name: groups
   description: Operations about groups
 - name: ldap
@@ -950,7 +952,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_CustomAttribute"
       tags:
-      - groups
+      - custom_attributes
       operationId: getApiV4GroupsIdCustomAttributes
   "/api/v4/groups/{id}/custom_attributes/{key}":
     get:
@@ -974,7 +976,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_CustomAttribute"
       tags:
-      - groups
+      - custom_attributes
       operationId: getApiV4GroupsIdCustomAttributesKey
     put:
       description: Set a custom attribute on a group
@@ -1001,8 +1003,10 @@ paths:
       responses:
         '200':
           description: Set a custom attribute on a group
+          schema:
+            "$ref": "#/definitions/API_Entities_CustomAttribute"
       tags:
-      - groups
+      - custom_attributes
       operationId: putApiV4GroupsIdCustomAttributesKey
     delete:
       description: Delete a custom attribute on a group
@@ -1023,7 +1027,7 @@ paths:
         '204':
           description: Delete a custom attribute on a group
       tags:
-      - groups
+      - custom_attributes
       operationId: deleteApiV4GroupsIdCustomAttributesKey
   "/api/v4/groups":
     get:
@@ -34792,7 +34796,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_CustomAttribute"
       tags:
-      - projects
+      - custom_attributes
       operationId: getApiV4ProjectsIdCustomAttributes
   "/api/v4/projects/{id}/custom_attributes/{key}":
     get:
@@ -34816,7 +34820,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_CustomAttribute"
       tags:
-      - projects
+      - custom_attributes
       operationId: getApiV4ProjectsIdCustomAttributesKey
     put:
       description: Set a custom attribute on a project
@@ -34843,8 +34847,10 @@ paths:
       responses:
         '200':
           description: Set a custom attribute on a project
+          schema:
+            "$ref": "#/definitions/API_Entities_CustomAttribute"
       tags:
-      - projects
+      - custom_attributes
       operationId: putApiV4ProjectsIdCustomAttributesKey
     delete:
       description: Delete a custom attribute on a project
@@ -34865,7 +34871,7 @@ paths:
         '204':
           description: Delete a custom attribute on a project
       tags:
-      - projects
+      - custom_attributes
       operationId: deleteApiV4ProjectsIdCustomAttributesKey
   "/api/v4/projects/{id}/restore":
     post:
