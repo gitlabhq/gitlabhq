@@ -86,15 +86,9 @@ You can use GitLab Duo Chat in:
 - Ability for Chat to remember your most recent conversation [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203653) in GitLab 18.4.
 - New navigation and GitLab Duo sidebar introduced on GitLab.com in GitLab 18.6 with a [flag](../../administration/feature_flags/_index.md) named `paneled_view`. Enabled by default.
 - Classic navigation instructions removed in GitLab 18.7.
+- New navigation and GitLab Duo sidebar [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/574049) in GitLab 18.8. Feature flag `paneled_view` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of the new navigation and GitLab Duo sidebar is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 Prerequisites:
 

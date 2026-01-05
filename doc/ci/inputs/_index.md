@@ -269,7 +269,7 @@ spec:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/582671) in GitLab 18.7.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18546) in GitLab 18.7.
 
 {{< /history >}}
 

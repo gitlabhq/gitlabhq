@@ -12,6 +12,7 @@ module API
           { code: 404, message: 'Not found' },
           { code: 429, message: 'Too many requests' }
         ]
+        tags ['webhooks']
       end
       post ":hook_id/events/:hook_log_id/resend" do
         hook = find_hook

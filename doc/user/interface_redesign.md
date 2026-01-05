@@ -23,13 +23,6 @@ description: Learn about an upcoming redesign of GitLab user interface.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
 This interface redesign prepares the GitLab UI for AI-native workflows where intelligent agents
 work alongside development teams.
 This modernized interface centralizes AI interactions in a persistent sidebar, introduces
@@ -40,7 +33,7 @@ and reduces navigation complexity.
 
 ## What's new
 
-When you turn on the new UI, you get a modern design with more rounded edges and the following changes.
+With the new UI, you get a modern design with more rounded edges and the following changes.
 
 ### Search bar moves to the center
 

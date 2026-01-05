@@ -91,6 +91,8 @@ tags:
   description: Operations about pages_domains
 - name: project_avatar
   description: Operations about project_avatars
+- name: webhooks
+  description: Operations about webhooks
 - name: projects_job_token_scope
   description: Operations about projects_job_token_scopes
 - name: project_snippets
@@ -31513,7 +31515,7 @@ paths:
         '429':
           description: Too many requests
       tags:
-      - projects
+      - webhooks
       operationId: postApiV4ProjectsIdHooksHookIdTestTrigger
   "/api/v4/projects/{id}/hooks/{hook_id}/events/{hook_log_id}/resend":
     post:
@@ -31549,7 +31551,7 @@ paths:
         '429':
           description: Too many requests
       tags:
-      - projects
+      - webhooks
       operationId: postApiV4ProjectsIdHooksHookIdEventsHookLogIdResend
   "/api/v4/projects/import/authorize":
     post:

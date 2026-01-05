@@ -197,7 +197,8 @@ module API
         limit = [per_page, Kaminari.config.max_per_page].min
         offset = (page - 1) * limit
 
-        path = params[:path]
+        path = params[:path].presence || ''
+        path = path.sub(%r{^/+}, '') # remove the leading slashes
         before = params[:until]
         after = params[:since]
         ref = params[:ref_name].presence || user_project.default_branch unless params[:all]

@@ -245,6 +245,36 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           end
 
           context "path optional parameter" do
+            it "returns current directory commits when provided path parameter is '.'" do
+              path = '.'
+
+              get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
+
+              expect(json_response.size).to eq(20)
+              expect(json_response.first["id"]).to eq("498214de67004b1da3d820901307bed2a68a8ef6")
+              expect(response).to include_limited_pagination_headers
+            end
+
+            it "returns default project commits when provided path parameter is '/'" do
+              path = '/'
+
+              get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
+
+              expect(json_response.size).to eq(20)
+              expect(json_response.first["id"]).to eq("b83d6e391c22777fca1ed3012fce84f633d7fed0")
+              expect(response).to include_limited_pagination_headers
+            end
+
+            it "returns project commits matching provided path parameter that starts with '/'" do
+              path = '/files/ruby/popen.rb'
+
+              get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
+
+              expect(json_response.size).to eq(3)
+              expect(json_response.first["id"]).to eq("570e7b2abdd848b95f2f578043fc23bd6f6fd24d")
+              expect(response).to include_limited_pagination_headers
+            end
+
             it "returns project commits matching provided path parameter" do
               path = 'files/ruby/popen.rb'
 

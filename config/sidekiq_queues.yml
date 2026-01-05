@@ -1067,6 +1067,8 @@
   - 1
 - - security_scan_execution_policies_rule_schedule
   - 1
+- - security_scan_profiles_attach
+  - 1
 - - security_scan_profiles_clean_old_namespace_connections
   - 1
 - - security_scan_profiles_delete_scan_profiles

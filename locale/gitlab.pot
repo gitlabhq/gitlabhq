@@ -7344,7 +7344,7 @@ msgstr ""
 msgid "AiPowered|Maximum time in seconds to wait for responses from the AI Gateway (up to 600 seconds).%{br}Increasing this value might result in degraded user experience."
 msgstr ""
 
-msgid "AiPowered|Member Access"
+msgid "AiPowered|Member access"
 msgstr ""
 
 msgid "AiPowered|Membership grants access to"
@@ -7368,7 +7368,7 @@ msgstr ""
 msgid "AiPowered|Never allow GitLab to process your code and project data for AI-powered features. Your data will not be sent to GitLab Duo anywhere in this namespace."
 msgstr ""
 
-msgid "AiPowered|No access rules configured."
+msgid "AiPowered|No access rules configured"
 msgstr ""
 
 msgid "AiPowered|Not enabled"
