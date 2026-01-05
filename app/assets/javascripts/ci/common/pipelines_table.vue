@@ -129,7 +129,7 @@ export default {
 
       if (this.useFailedJobsWidget) {
         pipelines = pipelines.map((p) => {
-          return p.failed_builds_count > 0 ? { ...p, _showDetails: true } : p;
+          return this.failedJobsCount(p) > 0 ? { ...p, _showDetails: true } : p;
         });
       }
 
@@ -141,7 +141,7 @@ export default {
       return !item.isLoading && this.useFailedJobsWidget;
     },
     failedJobsCount(pipeline) {
-      return pipeline?.failed_builds_count || 0;
+      return pipeline?.failed_builds_count || pipeline?.failedJobsCount || 0;
     },
     getDownstreamPipelines(pipeline) {
       const downstream = pipeline.triggered || pipeline?.downstream?.nodes;
@@ -299,7 +299,7 @@ export default {
       <template #row-details="{ item }">
         <pipeline-failed-jobs-widget
           v-if="displayFailedJobsWidget(item)"
-          :pipeline-iid="item.iid"
+          :pipeline-iid="item.iid.toString()"
           :pipeline-path="item.path"
           :project-path="getProjectPath(item)"
           class="-gl-my-3 -gl-ml-4"

@@ -723,6 +723,12 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         it_behaves_like 'returns bad request - validation error', "actions is required"
       end
 
+      context 'when actions is not an array' do
+        let(:params) { super().merge(actions: 'not an array') }
+
+        it_behaves_like 'returns bad request - validation error', "actions must be an array"
+      end
+
       context 'actions validation' do
         context 'missing action' do
           let(:params) { super().merge(actions: [{ file_path: '/test.rb', content: 'puts 8' }]) }

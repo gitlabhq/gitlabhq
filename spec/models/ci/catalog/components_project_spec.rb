@@ -71,22 +71,23 @@ RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_compo
   end
 
   describe '#extract_spec' do
+    let(:path) { 'templates/secret-detection.yml' }
+
     context 'with a valid spec' do
       it 'extracts the spec from a blob' do
         blob = "spec:\n inputs:\n  website:\n---\nimage: alpine_1"
 
-        expect(components_project.extract_spec(blob)).to eq({ inputs: { website: nil } })
+        expect(components_project.extract_spec(blob, path: path)).to eq({ inputs: { website: nil } })
       end
     end
 
     context 'with an invalid spec' do
-      it 'raises InvalidFormatError' do
+      it 'raises FormatError with filename in message' do
         blob = "spec:\n inputs:\n  website:\n---\nsome: invalid: string"
 
         expect do
-          components_project.extract_spec(blob)
-        end.to raise_error(::Gitlab::Config::Loader::FormatError,
-          /mapping values are not allowed in this context/)
+          components_project.extract_spec(blob, path: path)
+        end.to raise_error(::Gitlab::Config::Loader::FormatError, %r{templates/secret-detection\.yml})
       end
     end
   end

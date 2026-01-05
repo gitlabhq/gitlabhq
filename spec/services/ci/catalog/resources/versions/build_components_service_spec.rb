@@ -158,10 +158,11 @@ RSpec.describe Ci::Catalog::Resources::Versions::BuildComponentsService, feature
         }
       end
 
-      it 'returns an error' do
+      it 'returns an error with filename' do
         response = execute
 
         expect(response).to be_error
+        expect(response.message).to include('templates/secret-detection.yml')
         expect(response.message).to include('mapping values are not allowed in this context')
       end
     end

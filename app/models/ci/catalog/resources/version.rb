@@ -56,7 +56,7 @@ module Ci
 
             for_catalog_resources(catalog_resources)
               .with_semver
-              .includes(:components)
+              .includes(:components, project: { namespace: :route })
               .order_by_semantic_version_desc
           end
         end

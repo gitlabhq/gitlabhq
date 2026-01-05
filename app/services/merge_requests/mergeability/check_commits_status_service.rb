@@ -3,8 +3,8 @@
 module MergeRequests
   module Mergeability
     class CheckCommitsStatusService < CheckBaseService
-      identifier :commits_status
-      description 'Checks source branch exists and contains commits.'
+      set_identifier :commits_status
+      set_description 'Checks source branch exists and contains commits.'
 
       def execute
         if merge_request.has_no_commits? || merge_request.branch_missing?

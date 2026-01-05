@@ -1,7 +1,1 @@
  files:
-   - reason: "Trending projects is scheduled for removal on the 19.0 release"
-     feature_issue: https://gitlab.com/groups/gitlab-org/-/work_items/18493
-     removal_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/583184
-     feature_category: groups_and_projects
-     paths:
-       - app/views/explore/projects/trending.html.haml

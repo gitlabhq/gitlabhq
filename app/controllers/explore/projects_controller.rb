@@ -15,10 +15,12 @@ class Explore::ProjectsController < Explore::ApplicationController
   before_action :set_non_archived_param
   before_action :set_sorting
 
-  # For background information on the limit, see:
-  #   https://gitlab.com/gitlab-org/gitlab/-/issues/38357
-  #   https://gitlab.com/gitlab-org/gitlab/-/issues/262682
   before_action only: [:index, :trending, :starred] do
+    push_frontend_feature_flag(:explore_projects_vue, current_user)
+
+    # For background information on the limit, see:
+    #   https://gitlab.com/gitlab-org/gitlab/-/issues/38357
+    #   https://gitlab.com/gitlab-org/gitlab/-/issues/262682
     limit_pages(PAGE_LIMIT)
   end
 
@@ -46,8 +48,8 @@ class Explore::ProjectsController < Explore::ApplicationController
   def trending
     if Feature.enabled?(:retire_trending_projects, current_user)
       respond_to do |format|
-        format.html { redirect_to explore_root_path }
-        format.json { redirect_to explore_root_path(format: :json), status: :found }
+        format.html { redirect_to starred_explore_projects_path }
+        format.json { redirect_to starred_explore_projects_path(format: :json), status: :found }
       end
       return
     end
@@ -56,7 +58,7 @@ class Explore::ProjectsController < Explore::ApplicationController
     @projects = load_projects
 
     respond_to do |format|
-      format.html
+      format.html { render :index }
       format.json do
         render json: {
           html: view_to_html_string("explore/projects/_projects", projects: @projects)
@@ -70,7 +72,7 @@ class Explore::ProjectsController < Explore::ApplicationController
     @projects = load_projects.reorder('star_count DESC')
 
     respond_to do |format|
-      format.html
+      format.html { render :index }
       format.json do
         render json: {
           html: view_to_html_string("explore/projects/_projects", projects: @projects)

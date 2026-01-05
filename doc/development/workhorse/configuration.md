@@ -174,8 +174,8 @@ SentinelMaster = "mymaster"
 Sentinel = [ "rediss://sentinel1:23456", "rediss://sentinel2:23456" ]
 SentinelMaster = "mymaster"
 [Sentinel.tls]
-  certificate = "/path/to/certificate"
-  key = "/path/to/private/key"
+  certificate = "/path/to/certificate"       # optional
+  key = "/path/to/private/key"               # optional
   ca_certificate = "/path/to/ca_certificate" # optional
   min_version = "tls1.2"                     # optional
   max_version = "tls1.3"                     # optional

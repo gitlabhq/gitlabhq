@@ -460,6 +460,11 @@ Gitlab/Json:
     - 'lib/quality/**/*'
     - 'tooling/danger/**/*'
 
+Gitlab/JsonSafeParse:
+  Description: 'Prefer Gitlab::Json.safe_parse over Gitlab::Json.parse for untrusted input'
+  Enabled: true
+  SafeAutoCorrect: false # Default parse_limits may not work always
+
 Gitlab/AvoidUploadedFileFromParams:
   Enabled: true
   Exclude:

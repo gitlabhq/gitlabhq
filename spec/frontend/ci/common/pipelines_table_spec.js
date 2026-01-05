@@ -218,7 +218,7 @@ describe('Pipelines Table', () => {
 
         it('passes the expected props', () => {
           expect(findPipelineFailureWidget().props()).toStrictEqual({
-            pipelineIid: firstPipeline.iid,
+            pipelineIid: firstPipeline.iid.toString(),
             pipelinePath: firstPipeline.path,
             // Make sure the forward slash was removed
             projectPath: 'frontend-fixtures/pipelines-project',

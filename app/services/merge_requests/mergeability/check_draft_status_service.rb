@@ -3,8 +3,8 @@
 module MergeRequests
   module Mergeability
     class CheckDraftStatusService < CheckBaseService
-      identifier :draft_status
-      description 'Checks whether the merge request is draft'
+      set_identifier :draft_status
+      set_description 'Checks whether the merge request is draft'
 
       def execute
         if merge_request.draft?

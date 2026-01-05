@@ -74,6 +74,7 @@ module API
         bad_request!('branch is required') if attrs[:branch].blank?
         bad_request!('commit_message is required') if attrs[:commit_message].blank?
         bad_request!('actions is required') if attrs[:actions].blank?
+        bad_request!('actions must be an array') unless attrs[:actions].is_a?(Array)
 
         if attrs.key?(:start_sha) && attrs.key?(:start_branch)
           bad_request!('start_branch, start_sha are mutually exclusive')

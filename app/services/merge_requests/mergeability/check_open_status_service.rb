@@ -3,8 +3,8 @@
 module MergeRequests
   module Mergeability
     class CheckOpenStatusService < CheckBaseService
-      identifier :not_open
-      description 'Checks whether the merge request is open'
+      set_identifier :not_open
+      set_description 'Checks whether the merge request is open'
 
       def execute
         if merge_request.open?

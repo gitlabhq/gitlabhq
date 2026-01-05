@@ -74,7 +74,7 @@ You might get an error that states `Permission denied (publickey)`.
 This issue occurs if you are using a non-default SSH key pair file path and attempt to
 [generate recovery codes using SSH](two_factor_authentication_troubleshooting.md#regenerate-recovery-codes-with-ssh).
 
-To resolve this, [configure SSH to point to a different directory](../../ssh.md#configure-ssh-to-point-to-a-different-directory) using `ssh-agent`.
+To resolve this, [configure SSH to point to a different directory](../../ssh_advanced.md#configure-ssh-to-point-to-a-different-directory) using `ssh-agent`.
 
 ## Email OTP troubleshooting
 

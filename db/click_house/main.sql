@@ -71,27 +71,6 @@ CREATE TABLE ci_finished_builds
     `runner_owner_namespace_id` UInt64 DEFAULT 0,
     `stage_id` UInt64 DEFAULT 0,
     `stage_name` String DEFAULT '',
-    PROJECTION build_stats_by_project_pipeline_name_stage
-    (
-        SELECT
-            project_id,
-            pipeline_id,
-            name,
-            stage_id,
-            countIf(status = 'success') AS success_count,
-            countIf(status = 'failed') AS failed_count,
-            countIf(status = 'canceled') AS canceled_count,
-            count() AS total_count,
-            sum(duration) AS sum_duration,
-            avg(duration) AS avg_duration,
-            quantile(0.95)(duration) AS p95_duration,
-            quantilesTDigest(0.5, 0.75, 0.9, 0.99)(duration) AS duration_quantiles
-        GROUP BY
-            project_id,
-            pipeline_id,
-            name,
-            stage_id
-    ),
     PROJECTION build_stats_by_project_pipeline_name_stage_name
     (
         SELECT

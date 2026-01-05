@@ -34,8 +34,8 @@ module Ci
         end
       end
 
-      def extract_spec(blob)
-        result = Gitlab::Ci::Config::Yaml::Loader.new(blob).load_uninterpolated_yaml
+      def extract_spec(blob, path)
+        result = Gitlab::Ci::Config::Yaml::Loader.new(blob, filename: path).load_uninterpolated_yaml
 
         raise result.error_class, result.error unless result.valid?
 

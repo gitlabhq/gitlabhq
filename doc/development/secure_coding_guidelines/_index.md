@@ -204,6 +204,91 @@ When working with regular expressions in Python, use `re2` when possible or alwa
 - [The impact of regular expression denial of service (ReDoS) in practice: an empirical study at the ecosystem scale](https://davisjam.github.io/files/publications/DavisCoghlanServantLee-EcosystemREDOS-ESECFSE18.pdf). This research paper discusses approaches to automatically detect ReDoS vulnerabilities.
 - [Freezing the web: A study of ReDoS vulnerabilities in JavaScript-based web servers](https://www.usenix.org/system/files/conference/usenixsecurity18/sec18-staicu.pdf). Another research paper about detecting ReDoS vulnerabilities.
 
+## JSON Parsing
+
+**Use `Gitlab::Json.safe_parse` instead of `Gitlab::Json.parse` when handling untrusted input.** When in doubt, prefer `safe_parse`.
+
+### Description
+
+Parsing untrusted JSON input without size or depth limits can lead to denial of service (DoS) vulnerabilities. Malicious payloads with deeply nested structures, extremely large arrays, or oversized documents can exhaust server memory or CPU resources.
+
+### Impact
+
+- **Memory exhaustion**: Large arrays or hashes can consume excessive memory, potentially crashing the application.
+- **Stack exhaustion**: Deeply nested structures can cause stack overflow errors.
+- **CPU exhaustion**: Processing extremely large JSON documents ties up server resources.
+- **Denial of service**: Attackers can exploit these weaknesses to make the application unavailable.
+
+### When to consider
+
+When parsing JSON from any untrusted source, including:
+
+- HTTP request bodies
+- User-supplied parameters
+- Webhook payloads
+- External API responses
+- User-uploaded files
+- Data from message queues
+
+### Mitigation
+
+Use `Gitlab::Json.safe_parse` instead of `Gitlab::Json.parse` when handling untrusted input. The `safe_parse` method enforces limits on:
+
+| Limit | Default | Description |
+|-------|---------|-------------|
+| `max_depth` | 32 | Maximum nesting depth |
+| `max_array_size` | 50,000 | Maximum elements per array |
+| `max_hash_size` | 50,000 | Maximum key-value pairs per hash |
+| `max_total_elements` | 100,000 | Maximum total elements across all arrays and hashes |
+| `max_json_size_bytes` | 20 MB | Maximum size of the JSON input |
+
+#### Examples
+
+```ruby
+# Bad - no protection against malicious payloads
+data = Gitlab::Json.parse(request.body.read)
+
+# Good - enforces default safety limits
+data = Gitlab::Json.safe_parse(request.body.read)
+
+# Good - with custom limits for specific use cases
+data = Gitlab::Json.safe_parse(
+  request.body.read,
+  parse_limits: { max_depth: 10, max_json_size_bytes: 1.megabyte }
+)
+```
+
+#### Handling parse errors
+
+`safe_parse` raises `JSON::ParserError` for both malformed JSON and limit violations. The error messages are user-safe and do not expose internal details. An internal facing error (`Gitlab::Json::StreamValidator::LimitExceededError`) will be logged for inspection.
+
+```ruby
+begin
+  data = Gitlab::Json.safe_parse(user_input)
+rescue JSON::ParserError => e
+  # Error messages are safe to display:
+  # - "Parameters nested too deeply"
+  # - "Array parameter too large"
+  # - "Hash parameter too large"
+  # - "Too many total parameters"
+  # - "JSON body too large"
+  render json: { error: e.message }, status: :bad_request
+end
+```
+
+### When to use `Gitlab::Json.parse`
+
+Use the standard `parse` method only when you have full control over the input source and trust its contents, such as:
+
+- Reading from internal configuration files
+- Parsing data from trusted internal services with established contracts
+- Processing data that has already been validated
+
+### Resources
+
+- [GitLab JSON development guidelines](../json.md)
+- [OWASP Input Validation Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html)
+
 ## JSON Web Tokens (JWT)
 
 ### Description

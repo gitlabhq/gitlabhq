@@ -26,6 +26,7 @@ export const generateMockPipeline = ({
   type: 'merge_request',
   hasManualActions: true,
   hasScheduledActions: false,
+  failedJobsCount: 0,
   __typename: 'Pipeline',
   commit: {
     id: 'gid://gitlab/Ci::Commit/1',

@@ -88,16 +88,6 @@ module SortingHelper
     }
   end
 
-  def tags_sort_options_hash
-    {
-      sort_value_name => sort_title_name,
-      sort_value_oldest_updated => sort_title_oldest_updated,
-      sort_value_recently_updated => sort_title_recently_updated,
-      sort_value_version_desc => sort_title_version_desc,
-      sort_value_version_asc => sort_title_version_asc
-    }
-  end
-
   def label_sort_options_hash
     options = {}
     options[sort_value_relevance] = sort_title_relevance if params[:search].present?

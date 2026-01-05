@@ -146,10 +146,10 @@ module Keeps
 
     def add_quarantine_for_shared_example(file_lines, line, flaky_test_file_issue)
       # To avoid rubocop exception RSpec/RepeatedExampleGroupBody
-      # use line number in quarantine context name to make it uniq within test file
+      # use line number and date in quarantine context name to make it uniq within test file
       file_lines[line].gsub(
         /(it_behaves_like|include_examples) .+/,
-        "context 'with quarantine test line was #{line}',\n" \
+        "context 'with quarantine id #{line}-#{Date.current.iso8601}',\n" \
           "quarantine: { issue: '#{flaky_test_file_issue['web_url']}', type: 'flaky' } do\n  \\0\nend"
       )
     end

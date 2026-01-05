@@ -211,5 +211,43 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
     end
 
     it_behaves_like 'avoids N+1 queries'
+
+    context 'when querying version paths' do
+      let(:query) do
+        <<~GQL
+          query {
+            ciCatalogResources {
+              nodes {
+                fullPath
+                versions(first: 1) {
+                  nodes {
+                    id
+                    path
+                  }
+                }
+                webPath
+              }
+            }
+          }
+        GQL
+      end
+
+      it 'avoids N+1 queries when accessing project namespace routes', :request_store, :use_sql_query_cache do
+        ctx = { current_user: user }
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          run_with_clean_state(query, context: ctx)
+        end
+
+        new_namespace = create(:group, developers: user)
+        new_project = create(:project, namespace: new_namespace)
+        new_resource = create(:ci_catalog_resource, :published, project: new_project)
+        create(:ci_catalog_resource_version, semver: '1.0.0', catalog_resource: new_resource)
+
+        expect do
+          run_with_clean_state(query, context: ctx)
+        end.not_to exceed_query_limit(control)
+      end
+    end
   end
 end

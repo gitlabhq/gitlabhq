@@ -5,8 +5,8 @@ module MergeRequests
     class CheckCiStatusService < CheckBaseService
       include Gitlab::Utils::StrongMemoize
 
-      identifier :ci_must_pass
-      description 'Checks whether CI has passed'
+      set_identifier :ci_must_pass
+      set_description 'Checks whether CI has passed'
 
       def execute
         return inactive unless merge_request.auto_merge_enabled? ||

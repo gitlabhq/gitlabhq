@@ -61,6 +61,9 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :navigation do
   context 'logged out', :with_current_organization do
     before do
       visit explore_root_path
+
+      # Feature test will be added separately in https://gitlab.com/gitlab-org/gitlab/-/issues/520596
+      stub_feature_flags(explore_projects_vue: false)
     end
 
     it 'navigates to pages' do

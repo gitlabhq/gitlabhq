@@ -8,6 +8,11 @@ RSpec.describe 'Root explore', :saas, feature_category: :shared do
   let_it_be(:internal_project) { create(:project, :internal) }
   let_it_be(:private_project) { create(:project, :private) }
 
+  before do
+    # Feature test will be added separately in https://gitlab.com/gitlab-org/gitlab/-/issues/520596
+    stub_feature_flags(explore_projects_vue: false)
+  end
+
   context 'when logged in' do
     let_it_be(:user) { create(:user) }
 

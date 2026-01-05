@@ -51,6 +51,9 @@ class SlackIntegration < ApplicationRecord
     length: 2..4096
   validates :user_id, presence: true
   validates :integration, presence: true
+  # Bot tokens follow the format: xoxb-#####-#####-##### (around 60 characters)
+  # A generous limit of 255 allows for potential future token format changes
+  validates :bot_access_token, length: { maximum: 255 }, if: :bot_access_token_changed?
 
   after_commit :update_active_status_of_integration, on: [:create, :destroy]
 

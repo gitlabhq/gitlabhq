@@ -43514,8 +43514,6 @@ CREATE INDEX index_oauth_access_grant_archived_records_on_organization_id ON oau
 
 CREATE INDEX index_oauth_access_grants_on_application_id ON oauth_access_grants USING btree (application_id);
 
-CREATE INDEX index_oauth_access_grants_on_created_at_expires_in ON oauth_access_grants USING btree (created_at, expires_in);
-
 CREATE INDEX index_oauth_access_grants_on_id_where_revoked ON oauth_access_grants USING btree (id) WHERE (revoked_at IS NOT NULL);
 
 CREATE INDEX index_oauth_access_grants_on_resource_owner_id ON oauth_access_grants USING btree (resource_owner_id, application_id, created_at);

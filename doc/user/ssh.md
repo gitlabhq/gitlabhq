@@ -2,7 +2,7 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Use SSH keys to communicate with GitLab
+title: Use SSH keys with GitLab
 description: Use SSH keys for secure authentication and communication with GitLab repositories.
 ---
 
@@ -13,12 +13,18 @@ description: Use SSH keys for secure authentication and communication with GitLa
 
 {{< /details >}}
 
-Git is a distributed version control system, which means you can work locally,
-then share or *push* your changes to a server. In this case, the server you push to is GitLab.
+Use SSH keys to securely authenticate with GitLab without entering your username and password
+each time you push or pull code.
 
-GitLab uses the SSH protocol to securely communicate with Git.
-When you use SSH keys to authenticate to the GitLab remote server,
-you don't need to supply your username and password each time.
+To use SSH keys with GitLab, you must: 
+
+1. Generate an SSH key pair on your local system.
+1. Add your SSH key to your GitLab account.
+1. Verify your connection to GitLab.
+
+> [!note]
+> For information on advanced SSH key configuration,
+> see [advanced SSH key configuration](ssh_advanced.md).
 
 ## What are SSH keys
 
@@ -112,7 +118,7 @@ If you do not have an existing SSH key pair, generate a new one:
 1. Accept the suggested filename and directory, unless you are generating a [deploy key](project/deploy_keys/_index.md)
    or want to save in a specific directory where you store other keys.
 
-   You can also dedicate the SSH key pair to a [specific host](#configure-ssh-to-point-to-a-different-directory).
+   You can also dedicate the SSH key pair to a [specific host](ssh_advanced.md#configure-ssh-to-point-to-a-different-directory).
 
 1. Specify a [passphrase](https://www.ssh.com/academy/ssh/passphrase):
 
@@ -125,38 +131,6 @@ If you do not have an existing SSH key pair, generate a new one:
 
 A public and private key are generated. [Add the public SSH key to your GitLab account](#add-an-ssh-key-to-your-gitlab-account)
 and keep the private key secure.
-
-### Configure SSH to point to a different directory
-
-If you did not save your SSH key pair in the default directory,
-configure your SSH client to point to the directory where the private key is stored.
-
-1. Open a terminal and run this command:
-
-   ```shell
-   eval $(ssh-agent -s)
-   ssh-add <directory to private SSH key>
-   ```
-
-1. Save these settings in the `~/.ssh/config` file. For example:
-
-   ```conf
-   # GitLab.com
-   Host gitlab.com
-     PreferredAuthentications publickey
-     IdentityFile ~/.ssh/gitlab_com_rsa
-
-   # Private GitLab instance
-   Host gitlab.company.com
-     PreferredAuthentications publickey
-     IdentityFile ~/.ssh/example_com_rsa
-   ```
-
-For more information on these settings, see the [`man ssh_config`](https://man.openbsd.org/ssh_config) page in the SSH configuration manual.
-
-Public SSH keys must be unique to GitLab because they bind to your account.
-Your SSH key is the only identifier you have when you push code with SSH.
-It must uniquely map to a single user.
 
 ## Add an SSH key to your GitLab account
 
@@ -260,132 +234,6 @@ can [change the username](https://docs.gitlab.com/omnibus/settings/configuration
    If the message doesn't appear, you can
    [troubleshoot your SSH connection](ssh_troubleshooting.md#general-ssh-troubleshooting).
 
-## Update your SSH key passphrase
-
-You can update the passphrase for your SSH key:
-
-1. Open a terminal and run this command:
-
-   ```shell
-   ssh-keygen -p -f /path/to/ssh_key
-   ```
-
-1. At the prompts, enter the passphrase and then press <kbd>Enter</kbd>.
-
-## Upgrade your RSA key pair to a more secure format
-
-If your version of OpenSSH is between 6.5 and 7.8, you can save your private
-RSA SSH keys in a more secure OpenSSH format by opening a terminal and running
-this command:
-
-```shell
-ssh-keygen -o -f ~/.ssh/id_rsa
-```
-
-Alternatively, you can generate a new RSA key with the more secure encryption format with
-the following command:
-
-```shell
-ssh-keygen -o -t rsa -b 4096 -C "<comment>"
-```
-
-## Generate an SSH key pair for a FIDO2 hardware security key
-
-To generate ED25519_SK or ECDSA_SK SSH keys, you must use OpenSSH 8.2 or later:
-
-1. Insert a hardware security key into your computer.
-1. Open a terminal.
-1. Run `ssh-keygen -t` with the key type and an optional comment to help identify the key later.
-   A common option is to use your email address as the comment.
-   The comment is included in the `.pub` file.
-
-   For example, for ED25519_SK:
-
-   ```shell
-   ssh-keygen -t ed25519-sk -C "<comment>"
-   ```
-
-   For ECDSA_SK:
-
-   ```shell
-   ssh-keygen -t ecdsa-sk -C "<comment>"
-   ```
-
-   If your security key supports FIDO2 resident keys, you can enable this when
-   creating your SSH key:
-
-   ```shell
-   ssh-keygen -t ed25519-sk -O resident -C "<comment>"
-   ```
-
-   `-O resident` indicates that the key should be stored on the FIDO authenticator itself.
-   Resident key is easier to import to a new computer because it can be loaded directly
-   from the security key by [`ssh-add -K`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-add.1#K)
-   or  [`ssh-keygen -K`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-keygen#K).
-
-1. Press <kbd>Enter</kbd>. Output similar to the following is displayed:
-
-   ```plaintext
-   Generating public/private ed25519-sk key pair.
-   You may need to touch your authenticator to authorize key generation.
-   ```
-
-1. Touch the button on the hardware security key.
-
-1. Accept the suggested filename and directory:
-
-   ```plaintext
-   Enter file in which to save the key (/home/user/.ssh/id_ed25519_sk):
-   ```
-
-1. Specify a [passphrase](https://www.ssh.com/academy/ssh/passphrase):
-
-   ```plaintext
-   Enter passphrase (empty for no passphrase):
-   Enter same passphrase again:
-   ```
-
-   A confirmation is displayed, including information about where your files are stored.
-
-A public and private key are generated.
-[Add the public SSH key to your GitLab account](#add-an-ssh-key-to-your-gitlab-account).
-
-## Generate an SSH key pair with 1Password
-
-You can use [1Password](https://1password.com/) and the [1Password browser extension](https://support.1password.com/getting-started-browser/) to either:
-
-- Automatically generate a new SSH key.
-- Use an existing SSH key in your 1Password vault to authenticate with GitLab.
-
-1. Sign in to GitLab.
-1. In the upper-right corner, select your avatar.
-1. Select **Edit profile**.
-1. On the left sidebar, select **SSH Keys**.
-1. Select **Add new key**.
-1. Select **Key**, and you should see the 1Password helper appear.
-1. Select the 1Password icon and unlock 1Password.
-1. You can then select **Create SSH Key** or select an existing SSH key to fill in the public key.
-1. In the **Title** box, enter a description, like `Work Laptop` or
-   `Home Workstation`.
-1. Optional. Select the **Usage type** of the key. It can be used either for `Authentication` or `Signing` or both. `Authentication & Signing` is the default value.
-1. Optional. Update **Expiration date** to modify the default expiration date.
-1. Select **Add key**.
-
-For more information about using 1Password with SSH keys, see the [1Password documentation](https://developer.1password.com/docs/ssh/get-started/).
-
-## Use different keys for different repositories
-
-You can use a different key for each repository.
-
-Open a terminal and run this command:
-
-```shell
-git config core.sshCommand "ssh -o IdentitiesOnly=yes -i ~/.ssh/private-key-filename-for-this-repository -F /dev/null"
-```
-
-This command does not use the SSH Agent and requires Git 2.10 or later. For more information
-on `ssh` command options, see the `man` pages for both `ssh` and `ssh_config`.
-
 ## View your SSH keys
 
 To view the SSH keys for your account:
@@ -457,117 +305,3 @@ GitLab checks daily for expiring SSH keys and sends notifications:
 
 - At 01:00 AM UTC, seven days before expiration.
 - At 02:00 AM UTC on the expiration date.
-
-## Use different accounts on a single GitLab instance
-
-You can use multiple accounts to connect to a single instance of GitLab. You
-can do this by using the command in the [previous topic](#use-different-keys-for-different-repositories).
-However, even if you set `IdentitiesOnly` to `yes`, you cannot sign in if an
-`IdentityFile` exists outside of a `Host` block.
-
-Instead, you can assign aliases to hosts in the `~/.ssh/config` file.
-
-- For the `Host`, use an alias like `user_1.gitlab.com` and
-  `user_2.gitlab.com`. Advanced configurations
-  are more difficult to maintain, and these strings are easier to
-  understand when you use tools like `git remote`.
-- For the `IdentityFile`, use the path the private key.
-
-```conf
-# User1 Account Identity
-Host <user_1.gitlab.com>
-  Hostname gitlab.com
-  PreferredAuthentications publickey
-  IdentityFile ~/.ssh/<example_ssh_key1>
-
-# User2 Account Identity
-Host <user_2.gitlab.com>
-  Hostname gitlab.com
-  PreferredAuthentications publickey
-  IdentityFile ~/.ssh/<example_ssh_key2>
-```
-
-Now, to clone a repository for `user_1`, use `user_1.gitlab.com` in the `git clone` command:
-
-```shell
-git clone git@<user_1.gitlab.com>:gitlab-org/gitlab.git
-```
-
-To update a previously-cloned repository that is aliased as `origin`:
-
-```shell
-git remote set-url origin git@<user_1.gitlab.com>:gitlab-org/gitlab.git
-```
-
-{{< alert type="note" >}}
-
-Private and public keys contain sensitive data. Ensure the permissions
-on the files make them readable to you but not accessible to others.
-
-{{< /alert >}}
-
-## Configure two-factor authentication (2FA)
-
-You can set up two-factor authentication (2FA) for
-[Git over SSH](../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations). You should use
-`ED25519_SK` or `ECDSA_SK` SSH keys. For more information, see [supported SSH key types](#supported-ssh-key-types).
-
-## Use EGit on Eclipse
-
-If you are using [EGit](https://projects.eclipse.org/projects/technology.egit), you can [add your SSH key to Eclipse](https://wiki.eclipse.org/EGit/User_Guide/#Eclipse_SSH_Configuration).
-
-## Use SSH on Microsoft Windows
-
-If you're running Windows 10, you can either use the [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install)
-with [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install#update-to-wsl-2) which
-has both `git` and `ssh` preinstalled, or install [Git for Windows](https://gitforwindows.org) to
-use SSH through PowerShell.
-
-The SSH key generated in WSL is not directly available for Git for Windows, and vice versa,
-as both have a different home directory:
-
-- WSL: `/home/<user>`
-- Git for Windows: `C:\Users\<user>`
-
-You can either copy over the `.ssh/` directory to use the same key, or generate a key in each environment.
-
-If you're running Windows 11 and using [OpenSSH for Windows](https://learn.microsoft.com/en-us/windows-server/administration/OpenSSH/openssh-overview), ensure the `HOME`
-environment variable is set correctly. Otherwise, your private SSH key might not be found.
-
-Alternative tools include:
-
-- [Cygwin](https://www.cygwin.com)
-- [PuTTYgen](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) 0.81 and later (earlier versions are [vulnerable to disclosure attacks](https://www.openwall.com/lists/oss-security/2024/04/15/6))
-
-## Disable SSH Keys for enterprise users
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30343) in GitLab 18.6 [with a flag](../administration/feature_flags/_index.md) named `enterprise_disable_ssh_keys`. Disabled by default.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-Prerequisites:
-
-- You must have the Owner role for the group that the enterprise user belongs to.
-
-Disabling the SSH Keys of a group's [enterprise users](enterprise_user/_index.md):
-
-- Stops the enterprise users from adding new SSH Keys. This behavior applies
-  even if an enterprise user is also an administrator of the group.
-- Disables the existing SSH Keys of the enterprise users.
-
-To disable the enterprise users' SSH Keys:
-
-1. On the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
-1. Expand **Permissions and group features**.
-1. Under **Enterprise users**, select **Disable SSH Keys**.
-1. Select **Save changes**.

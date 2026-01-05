@@ -23,7 +23,7 @@ export default {
   props: {
     pipelineIid: {
       required: true,
-      type: Number,
+      type: String,
     },
     pipelinePath: {
       required: true,

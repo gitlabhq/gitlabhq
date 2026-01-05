@@ -29,7 +29,7 @@ This indicates that something is wrong with your SSH setup.
 - Try to manually register your private SSH key by using `ssh-agent`.
 - Try to debug the connection by running `ssh -Tv git@example.com`.
   Replace `example.com` with your GitLab URL.
-- Ensure you followed all the instructions in [Use SSH on Microsoft Windows](ssh.md#use-ssh-on-microsoft-windows).
+- Ensure you followed all the instructions in [Use SSH on Microsoft Windows](ssh_advanced.md#use-ssh-on-microsoft-windows).
 - Ensure that you have [verified GitLab SSH ownership and permissions](../security/ssh_keys_restrictions.md#verify-gitlab-ssh-ownership-and-permissions). If you have several hosts ensure that permissions are correct in all hosts.
 
 ## `Could not resolve hostname` error
@@ -44,7 +44,7 @@ If you receive this error, restart your terminal and try the command again.
 
 ### `Key enrollment failed: invalid format` error
 
-You may receive the following error when [generating an SSH key pair for a FIDO2 hardware security key](ssh.md#generate-an-ssh-key-pair-for-a-fido2-hardware-security-key):
+You may receive the following error when [generating an SSH key pair for a FIDO2 hardware security key](ssh_advanced.md#generate-an-ssh-key-pair-for-a-fido2-hardware-security-key):
 
 ```shell
 Key enrollment failed: invalid format
@@ -70,7 +70,7 @@ The `Permission denied (publickey)` error usually indicates one or more of the f
 - Wrong private key being used: If you have
   [multiple local SSH keys](ssh.md#see-if-you-have-an-existing-ssh-key-pair), verify the
   correct key is being used. SSH defaults to `~/.ssh/id_rsa` or `id_ed25519`. You might need
-  to [define which key to use](ssh.md#configure-ssh-to-point-to-a-different-directory).
+  to [define which key to use](ssh_advanced.md#configure-ssh-to-point-to-a-different-directory).
 - Private key not accessible:
   [Verify](ssh.md#see-if-you-have-an-existing-ssh-key-pair) the private key is accessible on
   your local device.

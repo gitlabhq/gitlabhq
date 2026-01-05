@@ -87,17 +87,20 @@ In your support ticket, specify:
   and [GitLab agent server for Kubernetes](../../clusters/kas.md).
   For example, `registry.company.com` and `kas.company.com`.
 
-## Custom certificate authorities
+## Custom certificate authorities for external services
 
-By default, GitLab trusts only publicly recognized certificate authorities
-and rejects connections to services with certificates from untrusted sources.
+GitLab Dedicated validates certificates when connecting to external services over HTTPS.
+By default, GitLab Dedicated trusts only publicly recognized certificate authorities and rejects
+connections to services with certificates from untrusted certificate authorities.
 
-If your GitLab Dedicated instance needs to connect to external services
-with certificates from a private or internal certificate authority,
-you must add custom certificates to your instance.
+If your external services use certificates from a private or internal certificate
+authority, you must add that certificate authority to your GitLab Dedicated instance.
 
-For example, you might need to add custom certificates to connect to
-internal webhook endpoints or private container registries.
+You might need custom certificate authorities to:
+
+- Connect to internal webhook endpoints
+- Pull images from private container registries
+- Integrate with on-premises services behind corporate public key infrastructure
 
 ### Add a custom certificate
 

@@ -78343,20 +78343,28 @@ msgstr ""
 msgid "Workspaces|Creating"
 msgstr ""
 
-msgid "Workspaces|Defines the workspace's development environment."
-msgstr ""
-
 msgid "Workspaces|Devfile"
 msgstr ""
 
-msgid "Workspaces|Devfile location"
+msgid "Workspaces|Devfile Validation Rules."
+msgstr ""
+
+msgid "Workspaces|Devfile is invalid."
 msgstr ""
 
 msgid "Workspaces|Each workspace is a secure cloud environment for your GitLab project. Quickly switch between projects, live preview, and compile code on any device."
 msgstr ""
 
+msgid "Workspaces|Encountered error while attempting to validate the Devfile."
+msgstr ""
+
 msgid "Workspaces|Error"
 msgstr ""
+
+msgid "Workspaces|Error processing the Devfile."
+msgid_plural "Workspaces|%{count} errors processing the Devfile."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Workspaces|Failed"
 msgstr ""
@@ -78403,6 +78411,9 @@ msgstr ""
 msgid "Workspaces|Learn more."
 msgstr ""
 
+msgid "Workspaces|More Information."
+msgstr ""
+
 msgid "Workspaces|Name"
 msgstr ""
 
@@ -78427,16 +78438,10 @@ msgstr ""
 msgid "Workspaces|Open workspace"
 msgstr ""
 
-msgid "Workspaces|Path to devfile"
-msgstr ""
-
 msgid "Workspaces|Project"
 msgstr ""
 
 msgid "Workspaces|Project reference"
-msgstr ""
-
-msgid "Workspaces|Provide a relative path if the devfile is not in the project's root directory."
 msgstr ""
 
 msgid "Workspaces|Restart"
@@ -78488,9 +78493,6 @@ msgid "Workspaces|This group has no agents. Start by creating an agent."
 msgstr ""
 
 msgid "Workspaces|This group has no available agents. Select the %{strongStart}All agents%{strongEnd} tab and allow at least one agent."
-msgstr ""
-
-msgid "Workspaces|To create a workspace, add a devfile to this project. A devfile is a configuration file for your workspace."
 msgstr ""
 
 msgid "Workspaces|Unable to complete request. Please try again."
@@ -81005,9 +81007,6 @@ msgid "has too deep level of nesting"
 msgstr ""
 
 msgid "help"
-msgstr ""
-
-msgid "hours"
 msgstr ""
 
 msgid "http:"

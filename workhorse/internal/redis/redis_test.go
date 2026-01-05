@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"net"
 	"sync/atomic"
@@ -277,6 +278,8 @@ func TestSentinelTLSOptions(t *testing.T) {
 		description    string
 		sentinelConfig *config.SentinelConfig
 		expectedError  *error
+		expectedCerts  int
+		checkRootCAs   func(t *testing.T, tlsConfig *tls.Config)
 	}{
 		{
 			description:    "no tls defined",
@@ -294,8 +297,31 @@ func TestSentinelTLSOptions(t *testing.T) {
 			expectedError:  &errSentinelTLSKeyNotDefined,
 		},
 		{
-			description:    "tls defined",
+			description:    "tls defined with certificate and key",
 			sentinelConfig: &config.SentinelConfig{TLS: &config.TLSConfig{Certificate: certFile, Key: keyFile, CACertificate: caCert}},
+			expectedCerts:  1,
+			checkRootCAs: func(t *testing.T, tlsConfig *tls.Config) {
+				// When CA certificate is specified, RootCAs should be set
+				require.NotNil(t, tlsConfig.RootCAs)
+			},
+		},
+		{
+			description:    "tls defined with only CA certificate",
+			sentinelConfig: &config.SentinelConfig{TLS: &config.TLSConfig{CACertificate: caCert}},
+			expectedCerts:  0,
+			checkRootCAs: func(t *testing.T, tlsConfig *tls.Config) {
+				// When CA certificate is specified, RootCAs should be set
+				require.NotNil(t, tlsConfig.RootCAs)
+			},
+		},
+		{
+			description:    "tls defined without CA certificate uses system store",
+			sentinelConfig: &config.SentinelConfig{TLS: &config.TLSConfig{}},
+			expectedCerts:  0,
+			checkRootCAs: func(t *testing.T, tlsConfig *tls.Config) {
+				// When no CA certificate is specified, RootCAs should be nil (uses system store)
+				require.Nil(t, tlsConfig.RootCAs)
+			},
 		},
 	}
 
@@ -306,7 +332,88 @@ func TestSentinelTLSOptions(t *testing.T) {
 			if tc.expectedError != nil {
 				require.ErrorIs(t, *tc.expectedError, err)
 			} else {
-				require.Len(t, tlsConfig.Certificates, 1)
+				require.Len(t, tlsConfig.Certificates, tc.expectedCerts)
+				if tc.checkRootCAs != nil {
+					tc.checkRootCAs(t, tlsConfig)
+				}
+			}
+		})
+	}
+}
+
+func TestSentinelOptionsWithRedissSchemeTLS(t *testing.T) {
+	testCases := []struct {
+		description       string
+		inputSentinel     []string
+		sentinelTLSConfig *config.TLSConfig
+		expectedTLSConfig bool
+		expectedError     bool
+	}{
+		{
+			description:       "rediss:// scheme enables TLS",
+			inputSentinel:     []string{"rediss://localhost:26480"},
+			expectedTLSConfig: true,
+		},
+		{
+			description:       "redis:// scheme does not enable TLS",
+			inputSentinel:     []string{"redis://localhost:26480"},
+			expectedTLSConfig: false,
+		},
+		{
+			description:       "multiple rediss:// schemes",
+			inputSentinel:     []string{"rediss://localhost:26480", "rediss://localhost:26481"},
+			expectedTLSConfig: true,
+		},
+		{
+			description:       "multiple redis:// schemes",
+			inputSentinel:     []string{"redis://localhost:26480", "redis://localhost:26481"},
+			expectedTLSConfig: false,
+		},
+		{
+			description:   "mixed redis:// and rediss:// schemes fails without explicit TLS config",
+			inputSentinel: []string{"redis://localhost:26480", "rediss://localhost:26481"},
+			expectedError: true,
+		},
+		{
+			description:       "mixed schemes allowed with explicit TLS config",
+			inputSentinel:     []string{"redis://localhost:26480", "rediss://localhost:26481"},
+			sentinelTLSConfig: &config.TLSConfig{},
+			expectedTLSConfig: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.description, func(t *testing.T) {
+			sentinelUrls := make([]config.TomlURL, len(tc.inputSentinel))
+
+			for i, str := range tc.inputSentinel {
+				parsedURL := helper.URLMustParse(str)
+				sentinelUrls[i] = config.TomlURL{URL: *parsedURL}
+			}
+
+			redisCfg := &config.RedisConfig{
+				Sentinel: sentinelUrls,
+			}
+
+			sentinelCfg := &config.SentinelConfig{
+				TLS: tc.sentinelTLSConfig,
+			}
+
+			options, err := sentinelOptions(&config.Config{
+				Redis:    redisCfg,
+				Sentinel: sentinelCfg,
+			})
+
+			if tc.expectedError {
+				require.Error(t, err)
+				require.Contains(t, err.Error(), "inconsistent sentinel URL schemes")
+			} else {
+				require.NoError(t, err)
+				if tc.expectedTLSConfig {
+					require.NotNil(t, options.SentinelTLSConfig)
+				} else {
+					require.Nil(t, options.SentinelTLSConfig)
+				}
 			}
 		})
 	}

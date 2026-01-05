@@ -39,10 +39,11 @@ var (
 		[]string{"type", "dst"},
 	)
 
-	errSentinelTLSNotDefined            = fmt.Errorf("configuration Sentinel or Sentinel.tls not defined")
+	errSentinelTLSNotDefined            = fmt.Errorf("configuration Sentinel.tls not defined")
 	errSentinelTLSCertificateNotDefined = fmt.Errorf("configuration Sentinel.tls.certificate not defined")
 	errSentinelTLSKeyNotDefined         = fmt.Errorf("configuration Sentinel.tls.key not defined")
 	errSentinelTLSCannotAppendPEM       = fmt.Errorf("cannot append PEM certificate from CACertificate path")
+	errSentinelInconsistentSchemes      = fmt.Errorf("inconsistent sentinel URL schemes: use all non-TLS (redis:// or tcp://) or all TLS (rediss://)")
 )
 
 const (
@@ -239,16 +240,30 @@ func configureSentinel(cfg *config.Config) (*redis.Client, error) {
 // and addresses in <host>:<port> format.
 // the order of priority for the passwords is: SentinelPassword -> first password-in-url
 // SentinelUsername will be the username associated with SentinelPassword.
+// TLS is automatically enabled if any Sentinel URL uses the rediss:// scheme.
+// Explicit [Sentinel.tls] configuration takes precedence over scheme-based detection.
+// When auto-detecting TLS from schemes, all Sentinel URLs must use consistent schemes
+// (all redis:// or all rediss://). If explicit [Sentinel.tls] is defined, mixed schemes
+// are allowed since the user is explicitly requesting TLS for all connections.
 func sentinelOptions(cfg *config.Config) (SentinelOptions, error) {
 	redisCfg := cfg.Redis
 
 	sentinels := make([]string, len(redisCfg.Sentinel))
 	sentinelUsername := redisCfg.SentinelUsername
 	sentinelPassword := redisCfg.SentinelPassword
+	hasTLS := false
+	hasNonTLS := false
 
 	for i := range redisCfg.Sentinel {
 		sentinelDetails := redisCfg.Sentinel[i]
 		sentinels[i] = fmt.Sprintf("%s:%s", sentinelDetails.Hostname(), sentinelDetails.Port())
+
+		// Detect TLS from rediss:// scheme
+		if sentinelDetails.Scheme == "rediss" {
+			hasTLS = true
+		} else {
+			hasNonTLS = true
+		}
 
 		if pw, exist := sentinelDetails.User.Password(); exist && len(sentinelPassword) == 0 {
 			// sets password using the first non-empty password
@@ -266,10 +281,22 @@ func sentinelOptions(cfg *config.Config) (SentinelOptions, error) {
 	var sentinelTLSConfig *tls.Config
 	sentinelCfg := cfg.Sentinel
 
+	// Explicit TLS configuration takes precedence
 	if sentinelCfg != nil && sentinelCfg.TLS != nil {
 		sentinelTLSConfig, err = sentinelTLSOptions(sentinelCfg)
 		if err != nil {
 			return SentinelOptions{}, err
+		}
+	} else {
+		// Only validate scheme consistency when auto-detecting TLS from schemes
+		if hasTLS && hasNonTLS {
+			return SentinelOptions{}, errSentinelInconsistentSchemes
+		}
+
+		if hasTLS {
+			// Auto-enable TLS if rediss:// scheme is detected
+			// Use empty TLS config which will use system cert pool
+			sentinelTLSConfig = &tls.Config{} //nolint:gosec
 		}
 	}
 
@@ -277,45 +304,50 @@ func sentinelOptions(cfg *config.Config) (SentinelOptions, error) {
 }
 
 func sentinelTLSOptions(sentinelCfg *config.SentinelConfig) (*tls.Config, error) {
-	var tlsConfig *tls.Config
-
 	if sentinelCfg == nil || sentinelCfg.TLS == nil {
-		return tlsConfig, errSentinelTLSNotDefined
+		return nil, errSentinelTLSNotDefined
 	}
 
-	if sentinelCfg.TLS.Certificate == "" {
-		return tlsConfig, errSentinelTLSCertificateNotDefined
+	tlsConfig := &tls.Config{ //nolint:gosec
+		MinVersion: config.TLSVersions[sentinelCfg.TLS.MinVersion],
+		MaxVersion: config.TLSVersions[sentinelCfg.TLS.MaxVersion],
 	}
 
-	if sentinelCfg.TLS.Key == "" {
-		return tlsConfig, errSentinelTLSKeyNotDefined
-	}
-
-	cert, err := tls.LoadX509KeyPair(sentinelCfg.TLS.Certificate, sentinelCfg.TLS.Key)
-	if err != nil {
-		return tlsConfig, err
-	}
-
-	certPool := x509.NewCertPool()
-
+	// By default, use the system store if a CA certificate is not specified
 	if sentinelCfg.TLS.CACertificate != "" {
+		certPool := x509.NewCertPool()
+
 		certs, err := os.ReadFile(sentinelCfg.TLS.CACertificate)
 		if err != nil {
-			return tlsConfig, err
+			return nil, err
 		}
 
 		ok := certPool.AppendCertsFromPEM(certs)
 		if !ok {
-			return tlsConfig, errSentinelTLSCannotAppendPEM
+			return nil, errSentinelTLSCannotAppendPEM
 		}
+
+		tlsConfig.RootCAs = certPool
 	}
 
-	tlsConfig = &tls.Config{ //nolint:gosec
-		Certificates: []tls.Certificate{cert},
-		RootCAs:      certPool,
-		MinVersion:   config.TLSVersions[sentinelCfg.TLS.MinVersion],
-		MaxVersion:   config.TLSVersions[sentinelCfg.TLS.MaxVersion],
+	// Client certificates are optional
+	if sentinelCfg.TLS.Certificate == "" && sentinelCfg.TLS.Key == "" {
+		return tlsConfig, nil
 	}
+
+	if sentinelCfg.TLS.Certificate == "" {
+		return nil, errSentinelTLSCertificateNotDefined
+	}
+
+	if sentinelCfg.TLS.Key == "" {
+		return nil, errSentinelTLSKeyNotDefined
+	}
+
+	cert, err := tls.LoadX509KeyPair(sentinelCfg.TLS.Certificate, sentinelCfg.TLS.Key)
+	if err != nil {
+		return nil, err
+	}
+	tlsConfig.Certificates = []tls.Certificate{cert}
 
 	return tlsConfig, nil
 }

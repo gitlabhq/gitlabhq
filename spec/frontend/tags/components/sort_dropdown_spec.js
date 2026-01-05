@@ -1,89 +1,108 @@
-import { GlListboxItem, GlSearchBoxByClick } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import * as urlUtils from '~/lib/utils/url_utility';
+import { GlSearchBoxByClick, GlSorting } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { SORT_OPTION_NAME, SORT_OPTION_UPDATED, SORT_OPTION_VERSION } from '~/tags/constants';
+
+import { visitUrl } from '~/lib/utils/url_utility';
 import SortDropdown from '~/tags/components/sort_dropdown.vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
-describe('Tags sort dropdown', () => {
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn(),
+}));
+
+describe('SortDropdown', () => {
   let wrapper;
 
-  const createWrapper = (props = {}) => {
-    return extendedWrapper(
-      mount(SortDropdown, {
-        provide: {
-          filterTagsPath: '/root/ci-cd-project-demo/-/tags',
-          sortOptions: {
-            name_asc: 'Name',
-            updated_asc: 'Oldest updated',
-            updated_desc: 'Last updated',
-          },
-          ...props,
-        },
-      }),
-    );
+  const defaultPath = '/root/ci-cd-project-demo/-/tags';
+
+  const createComponent = (props = {}) => {
+    wrapper = shallowMountExtended(SortDropdown, {
+      provide: { filterTagsPath: defaultPath },
+      ...props,
+    });
   };
 
+  beforeEach(() => {
+    setWindowLocation(defaultPath);
+    createComponent();
+  });
+
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByClick);
-  const findTagsDropdown = () => wrapper.findByTestId('tags-dropdown');
+  const findSorting = () => wrapper.findComponent(GlSorting);
 
-  describe('default state', () => {
-    beforeEach(() => {
-      wrapper = createWrapper();
+  describe('default rendering', () => {
+    it('renders a search box with correct placeholder', () => {
+      expect(findSearchBox().props('placeholder')).toBe('Filter by tag name');
     });
 
-    it('should have a search box with a placeholder', () => {
-      const searchBox = findSearchBox();
-
-      expect(searchBox.exists()).toBe(true);
-      expect(searchBox.find('input').attributes('placeholder')).toBe('Filter by tag name');
+    it('renders a sorting component with SORT_OPTIONS', () => {
+      const SORT_OPTIONS = [
+        { value: SORT_OPTION_NAME, text: 'Name' },
+        { value: SORT_OPTION_UPDATED, text: 'Updated date' },
+        { value: SORT_OPTION_VERSION, text: 'Version' },
+      ];
+      expect(findSorting().props('sortOptions')).toEqual(SORT_OPTIONS);
     });
 
-    it('should have a sort order dropdown', () => {
-      const tagsDropdown = findTagsDropdown();
-
-      expect(tagsDropdown.exists()).toBe(true);
-    });
-  });
-
-  describe('when url contains a search param', () => {
-    const branchName = 'branch-1';
-
-    beforeEach(() => {
-      setWindowLocation(`/root/ci-cd-project-demo/-/branches?search=${branchName}`);
-      wrapper = createWrapper();
-    });
-
-    it('should set the default the input value to search param', () => {
-      expect(findSearchBox().props('value')).toBe(branchName);
+    it('has default sortBy=updated and order=desc', () => {
+      expect(findSorting().props('sortBy')).toBe('updated');
+      expect(findSorting().props('isAscending')).toBe(false);
     });
   });
 
-  describe('when submitting a search term', () => {
-    beforeEach(() => {
-      urlUtils.visitUrl = jest.fn();
-      wrapper = createWrapper();
+  describe('when URL contains query parameters', () => {
+    it.each([
+      ['name_asc', 'name', true],
+      ['name_desc', 'name', false],
+      ['updated_asc', 'updated', true],
+      ['updated_desc', 'updated', false],
+      ['version_asc', 'version', true],
+      ['version_desc', 'version', false],
+    ])(
+      'initializes state from URL params with sort=%s',
+      (sortParam, expectedOption, expectedAscending) => {
+        setWindowLocation(`${defaultPath}?search=release&sort=${sortParam}`);
+        createComponent();
+
+        expect(findSearchBox().props('value')).toBe('release');
+        expect(findSorting().props('sortBy')).toBe(expectedOption);
+        expect(findSorting().props('isAscending')).toBe(expectedAscending);
+      },
+    );
+  });
+
+  describe('on search submit', () => {
+    it('navigates with search, sort, and order params', async () => {
+      await findSearchBox().vm.$emit('input', 'frontend');
+      await findSearchBox().vm.$emit('submit');
+
+      expect(visitUrl).toHaveBeenCalledWith(`${defaultPath}?sort=updated_desc&search=frontend`);
     });
+  });
 
-    it('should call visitUrl', () => {
-      const searchTerm = 'branch-1';
-      const searchBox = findSearchBox();
-      searchBox.vm.$emit('input', searchTerm);
-      searchBox.vm.$emit('submit');
+  describe('on sort changes', () => {
+    it('calls visitUrl when sortBy changes', async () => {
+      await findSorting().vm.$emit('sort-by-change', 'version');
 
-      expect(urlUtils.visitUrl).toHaveBeenCalledWith(
-        '/root/ci-cd-project-demo/-/tags?search=branch-1&sort=updated_desc',
-      );
+      expect(visitUrl).toHaveBeenCalledWith(`${defaultPath}?sort=version_desc`);
     });
+  });
 
-    it('should send a sort parameter', () => {
-      const sortDropdownItem = findTagsDropdown().findAllComponents(GlListboxItem).at(0);
+  describe('when sortDirection changes', () => {
+    it('calls visitUrl when sort direction changes', async () => {
+      await findSorting().vm.$emit('sort-direction-change', true); // ascending
 
-      sortDropdownItem.trigger('click');
+      expect(visitUrl).toHaveBeenCalledWith(`${defaultPath}?sort=updated_asc`);
+    });
+  });
 
-      expect(urlUtils.visitUrl).toHaveBeenCalledWith(
-        '/root/ci-cd-project-demo/-/tags?sort=name_asc',
-      );
+  describe('when search term is empty', () => {
+    it('omits search parameter in URL', async () => {
+      await findSearchBox().vm.$emit('input', '');
+      wrapper.vm.visitUrlFromOption();
+
+      expect(visitUrl).toHaveBeenCalledWith(`${defaultPath}?sort=updated_desc`);
     });
   });
 });

@@ -3,6 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe 'User explores projects', feature_category: :user_profile do
+  before do
+    # Feature test will be added separately in https://gitlab.com/gitlab-org/gitlab/-/issues/520596
+    stub_feature_flags(explore_projects_vue: false)
+  end
+
   shared_examples 'an "Explore > Projects" page with sidebar and breadcrumbs' do |page_path, params|
     before do
       visit send(page_path, params)
@@ -150,9 +155,9 @@ RSpec.describe 'User explores projects', feature_category: :user_profile do
           TrendingProject.refresh!
         end
 
-        it 'redirects to root explore page' do
+        it 'redirects to most starred projects page' do
           visit trending_explore_projects_path
-          expect(page).to have_current_path(explore_root_path)
+          expect(page).to have_current_path(starred_explore_projects_path)
         end
 
         context 'when `retire_trending_projects` flag is disabled' do

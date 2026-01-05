@@ -199,6 +199,8 @@ Settings cascade from application to group to project. More specific settings ov
 You can create custom MR review instructions to ensure consistent and specific
 code review standards in your project.
 
+Both GitLab Duo Code Review (Classic) and Code Review Flow support custom code review instructions.
+
 For more information, see [customize review instructions for GitLab Duo](../../../user/gitlab_duo/customize_duo/review_instructions.md)
 
 ## Summarize a code review

@@ -3,8 +3,8 @@
 module MergeRequests
   module Mergeability
     class CheckMergeTimeService < CheckBaseService
-      identifier :merge_time
-      description 'Checks whether the merge is blocked due to a scheduled merge time'
+      set_identifier :merge_time
+      set_description 'Checks whether the merge is blocked due to a scheduled merge time'
 
       def execute
         merge_after = merge_request.merge_schedule&.merge_after

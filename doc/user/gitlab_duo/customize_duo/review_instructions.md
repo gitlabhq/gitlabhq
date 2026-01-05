@@ -22,8 +22,10 @@ title: Customize review instructions for GitLab Duo
 
 {{< /history >}}
 
-You can create custom merge request review instructions for GitLab Duo. 
-This ensures consistent and specific code review standards in your project.
+Create custom merge request review instructions to ensure that GitLab Duo applies consistent and
+specific code review standards to your project.
+
+Both GitLab Duo Code Review (Classic) and Code Review Flow support custom review instructions.
 
 For example, you can enforce Ruby style conventions only on Ruby files, and Go style
 conventions on Go files.

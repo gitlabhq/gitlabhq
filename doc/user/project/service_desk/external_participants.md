@@ -151,7 +151,7 @@ email for the comment that contains the `/add_email` quick action.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To add an external participant to an issue or ticket:
 
@@ -184,7 +184,7 @@ But they can still reply to emails they received before and create a new comment
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 - There must be at least one external participant on the issue or ticket.
 
 To remove an existing external participant from an issue or ticket:

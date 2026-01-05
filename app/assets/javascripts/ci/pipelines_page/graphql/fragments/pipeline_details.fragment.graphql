@@ -71,4 +71,5 @@ fragment PipelineDetails on Pipeline {
   }
   hasManualActions
   hasScheduledActions
+  failedJobsCount
 }

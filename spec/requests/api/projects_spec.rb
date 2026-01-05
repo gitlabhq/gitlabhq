@@ -344,7 +344,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           create(:project, :public, group: create(:group))
         end
 
-        it_behaves_like 'projects response without N + 1 queries', 1 do
+        it_behaves_like 'projects response without N + 1 queries', 3 do
           let(:current_user) { user }
           let(:additional_project) { create(:project, :public, group: create(:group)) }
         end
@@ -6686,10 +6686,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
 
     context 'with granular token permissions', :enable_admin_mode do
-      before do
-        project.add_developer(admin)
-      end
-
       it_behaves_like 'authorizing granular token permissions', :read_storage_project do
         let(:boundary_object) { project }
         let(:user) { admin }

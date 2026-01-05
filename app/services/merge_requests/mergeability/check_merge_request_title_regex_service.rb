@@ -5,8 +5,8 @@ module MergeRequests
     class CheckMergeRequestTitleRegexService < CheckBaseService
       include Gitlab::Utils::StrongMemoize
 
-      identifier :title_regex
-      description 'Checks whether the title matches the expected regex'
+      set_identifier :title_regex
+      set_description 'Checks whether the title matches the expected regex'
 
       def execute
         return inactive unless validate_title_regex?

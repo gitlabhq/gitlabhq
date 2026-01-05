@@ -163,6 +163,7 @@ module API
                  'Instance-level runner details via this endpoint are available to all signed in users.'
           success Entities::Ci::RunnerDetails
           failure [[401, 'Unauthorized'], [403, 'No access granted'], [404, 'Runner not found']]
+          tags %w[runners]
         end
         params do
           requires :id, type: Integer, desc: 'The ID of a runner'
@@ -178,6 +179,7 @@ module API
         desc "Get a list of all runner's managers" do
           success Entities::Ci::RunnerManager
           failure [[403, 'Forbidden']]
+          tags %w[runners]
         end
         params do
           requires :id, type: Integer, desc: 'The ID of a runner'
@@ -218,6 +220,7 @@ module API
           summary "Update details of a runner"
           success Entities::Ci::RunnerDetails
           failure [[400, 'Bad Request'], [401, 'Unauthorized'], [403, 'No access granted'], [404, 'Runner not found']]
+          tags %w[runners]
         end
         params do
           requires :id, type: Integer, desc: 'The ID of a runner'

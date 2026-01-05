@@ -4,7 +4,6 @@
     - .default-retry
     - .qa-cache
   stage: test
-  needs: []
   variables:
     USE_BUNDLE_INSTALL: "false"
     BUNDLE_GEMFILE: "Gemfile"
@@ -68,6 +67,28 @@
       optional: true
   when: always
 
+
+######## Adding these jobs just for a limited time
+##### We will merge these jobs once we rollout the changes to the "test" stage jobs
+##### See https://gitlab.com/gitlab-org/quality/analytics/team/-/work_items/134
+.needs-e2e-gem-cache-lint-base:
+  extends:
+    - .lint-base
+  needs:
+    - !reference [.lint-base, needs]
+    - job: cache:e2e-ruby-gems
+      optional: true
+  when: always # cache jobs failing or manual should not affect ability to run a job that depends on it
+
+.needs-orchestrator-gem-cache-lint-base:
+  extends:
+    - .lint-base
+  needs:
+    - !reference [.lint-base, needs]
+    - job: cache:orchestrator-gems
+      optional: true
+  when: always
+
 # ==========================================
 # /qa linting and unit testing
 # ==========================================
@@ -75,7 +96,7 @@
 qa:metadata-lint:
   extends:
     - .qa-job-base
-    - .needs-e2e-gem-cache
+    - .needs-e2e-gem-cache-lint-base
     - .qa:rules:metadata-lint
   stage: lint
   variables:
@@ -96,7 +117,7 @@ qa:metadata-lint:
 qa:selectors:
   extends:
     - .qa-job-base
-    - .needs-e2e-gem-cache
+    - .needs-e2e-gem-cache-lint-base
     - .qa:rules:selectors
   stage: lint
   script:
@@ -105,7 +126,7 @@ qa:selectors:
 qa:orchestrator-lint:
   extends:
     - .qa-orchestrator-job-base
-    - .needs-orchestrator-gem-cache
+    - .needs-orchestrator-gem-cache-lint-base
     - .qa:rules:gitlab-orchestrator
   stage: lint
   script:

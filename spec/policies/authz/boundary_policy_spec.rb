@@ -39,6 +39,12 @@ RSpec.describe Authz::BoundaryPolicy, feature_category: :permissions do
     let_it_be(:user) { create(:user) }
 
     it { is_expected.to be_disallowed(*permissions) }
+
+    context 'when the user is an admin', :enable_admin_mode do
+      let_it_be(:user) { create(:admin) }
+
+      it { is_expected.to be_allowed(*permissions) }
+    end
   end
 
   context 'with different boundary types' do

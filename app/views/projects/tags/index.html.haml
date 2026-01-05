@@ -30,7 +30,7 @@
           = s_('TagsPage|New tag')
 
   .row-content-block
-    #js-tags-sort-dropdown{ data: { filter_tags_path: filter_tags_path(search: @search, sort: @sort), sort_options: tags_sort_options_hash.to_json } }
+    #js-tags-sort-dropdown{ data: { filter_tags_path: filter_tags_path(search: @search, sort: @sort) } }
 
   = render_if_exists 'projects/commits/mirror_status'
 

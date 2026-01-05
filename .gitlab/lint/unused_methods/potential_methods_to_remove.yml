@@ -5,8 +5,6 @@
 # If it turns out that a method you are attempting to remove is in fact in use,
 #   remove it from this file and add it to `excluded_methods.yml`.
 #
-code_suggestions_self_hosted?:
-  file: ee/app/models/ai/feature_setting.rb
 compatible_self_hosted_models:
   file: ee/app/models/ai/feature_setting.rb
 create_new_key!:

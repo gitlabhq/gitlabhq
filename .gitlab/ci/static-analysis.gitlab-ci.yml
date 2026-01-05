@@ -1,9 +1,8 @@
 .static-analysis-base:
   extends:
-    - .default-retry
     - .default-before_script
+    - .lint-base
   stage: lint
-  needs: []
   variables:
     SETUP_DB: "false"
     ENABLE_SPRING: "1"
@@ -19,6 +18,7 @@ static-analysis:
     - .static-analysis:rules:static-analysis
     - .use-pg16
   needs:
+    - !reference [.lint-base, needs]
     - job: cache:ruby-gems
       optional: true
     - job: cache:node-modules
@@ -51,7 +51,9 @@ generate-apollo-graphql-schema:
   image:
     name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:apollo
     entrypoint: [""]
-  needs: ['graphql-schema-dump']
+  needs:
+    - !reference [.lint-base, needs]
+    - 'graphql-schema-dump'
   variables:
     USE_BUNDLE_INSTALL: "false"
   script:
@@ -66,6 +68,7 @@ generate-apollo-graphql-schema:
   extends:
     - .static-analysis-base
   needs:
+    - !reference [.lint-base, needs]
     - job: generate-apollo-graphql-schema
       optional: true
     - job: compile-fe-islands
@@ -137,6 +140,7 @@ haml-lint:
     - .ruby-cache
     - .static-analysis:rules:haml-lint
   needs:
+    - !reference [.lint-base, needs]
     - job: cache:ruby-gems
       optional: true
   script:
@@ -153,6 +157,7 @@ rubocop:
     - .rubocop-job-cache-push
     - .static-analysis:rules:rubocop
   needs:
+    - !reference [.lint-base, needs]
     - job: detect-tests
       optional: true
   variables:
@@ -212,6 +217,7 @@ rails-next-dependency-check:
   extends:
     - .ruby-cache
     - .rails:rules:rails-next-dependency-check
+    - .lint-base
   variables:
     BUNDLE_GEMFILE: Gemfile.next
   script:
@@ -256,12 +262,12 @@ semgrep-appsec-custom-rules:
   stage: lint
   extends:
     - .semgrep-appsec-custom-rules:rules
+    - .lint-base
   rules:
     - if: $CI_MERGE_REQUEST_DRAFT == "true"
       when: never
     - !reference [.semgrep-appsec-custom-rules:rules, rules]
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}returntocorp/semgrep:1.99.0
-  needs: []
   script:
     - git clone $CUSTOM_RULES_REPOSITORY sast-custom-rules
     - |
@@ -345,8 +351,10 @@ templates-shellcheck:
     - .default-retry
     - .ruby-cache
     - .use-pg17
+    - .lint-base
   stage: lint
   needs:
+    - !reference [.lint-base, needs]
     - setup-test-env
   script:
     - bundle exec scripts/lint_templates_bash.rb
@@ -356,6 +364,7 @@ ping-appsec-for-sast-findings:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
   extends:
     - .ping-appsec-for-sast-findings:rules
+    - .lint-base
   rules:
     - if: $CI_MERGE_REQUEST_DRAFT == "true"
       when: never
@@ -364,6 +373,7 @@ ping-appsec-for-sast-findings:
     # Project Access Token bot ID for /gitlab-com/gl-security/product-security/appsec/sast-custom-rules
     BOT_USER_ID: 19650678
   needs:
+    - !reference [.lint-base, needs]
     - semgrep-appsec-custom-rules
   script:
     - apk update
@@ -372,14 +382,16 @@ ping-appsec-for-sast-findings:
 
 ping-appsec-for-dependency-review:
   stage: lint
-  needs: []
   variables:
     GIT_CHECKOUT: "false"
     DISABLE_MENTIONS: "false"
     DISABLE_SCORING: "false"
     DISABLE_COMMENTING: "false"
     DEPENDENCY_REVIEW_BOT_CI_REG: "${CI_REGISTRY}/gitlab-com/gl-security/product-security/appsec/tooling/depscore/master"
-  extends: [".ping-appsec-for-dependency-review:rules", ".use-docker-in-docker"]
+  extends:
+    - .ping-appsec-for-dependency-review:rules
+    - .use-docker-in-docker
+    - .lint-base
   before_script:
     - apk add jq curl
     - DEPENDENCY_REVIEW_BOT_UNAME=$(curl --header "PRIVATE-TOKEN:$DEPENDENCY_REVIEW_PAT" "https://gitlab.com/api/v4/user" | jq -r '.username')

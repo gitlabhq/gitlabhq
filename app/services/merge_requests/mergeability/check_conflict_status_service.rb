@@ -3,8 +3,8 @@
 module MergeRequests
   module Mergeability
     class CheckConflictStatusService < CheckBaseService
-      identifier :conflict
-      description 'Checks whether the merge request has a conflict'
+      set_identifier :conflict
+      set_description 'Checks whether the merge request has a conflict'
 
       def execute
         # rubocop:disable Lint/DuplicateBranch -- Need to check this first

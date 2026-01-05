@@ -3,6 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projects do
+  shared_examples 'pushes feature flag' do |action|
+    render_views
+
+    it 'pushes explore_projects_vue feature flag' do
+      get action
+
+      expect(response.body).to have_pushed_frontend_feature_flags(exploreProjectsVue: true)
+    end
+  end
+
   shared_examples 'explore projects' do
     let(:expected_default_sort) { 'latest_activity_desc' }
 
@@ -24,10 +34,10 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
     describe 'GET #trending.json' do
       render_views
 
-      it 'redirects to explore root path with json format', :aggregate_failures do
+      it 'redirects to most starred projects with json format', :aggregate_failures do
         get :trending, format: :json
 
-        expect(response).to redirect_to(explore_root_path(format: :json))
+        expect(response).to redirect_to(starred_explore_projects_path(format: :json))
         expect(response).to have_gitlab_http_status(:found)
       end
 
@@ -61,17 +71,23 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
       end
     end
 
+    describe 'GET #index' do
+      it_behaves_like 'pushes feature flag', :index
+    end
+
     describe 'GET #trending' do
-      it 'redirects to explore root path' do
+      it 'redirects to most starred projects' do
         get :trending
 
-        expect(response).to redirect_to(explore_root_path)
+        expect(response).to redirect_to(starred_explore_projects_path)
       end
 
       context 'when `retire_trending_projects` flag is disabled' do
         before do
           stub_feature_flags(retire_trending_projects: false)
         end
+
+        it_behaves_like 'pushes feature flag', :trending
 
         context 'sorting by update date' do
           let(:project1) { create(:project, :public, updated_at: 3.days.ago) }
@@ -113,6 +129,10 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
           end
         end
       end
+    end
+
+    describe 'GET #starred' do
+      it_behaves_like 'pushes feature flag', :starred
     end
 
     describe 'GET #topic' do
@@ -272,7 +292,7 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
           end
 
           it { is_expected.to respond_with(:success) }
-          it { is_expected.to render_template("explore/projects/#{endpoint}") }
+          it { is_expected.to render_template('explore/projects/index') }
         end
 
         describe "GET #{endpoint}.json" do

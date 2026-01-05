@@ -367,7 +367,7 @@ If you are experiencing issues accessing Code Suggestions after setup, try the f
 1. Check if the necessary features are enabled and available:
 
    ```shell
-   ::Ai::FeatureSetting.code_suggestions_self_hosted? # Should be true
+   ::Ai::FeatureSetting.exists?(feature: [:code_generations, :code_completions], provider: :self_hosted) # Should be true
    ```
 
 ## Error A1000
