@@ -48,3 +48,14 @@ export const storageTypes = [
   { key: 'packages' },
   { key: 'wiki' },
 ];
+
+export const MOCK_REPOSITORY = {
+  project: {
+    id: 'gid://gitlab/Project/1',
+  },
+};
+
+export const MOCK_REPOSITORY_HEALTH_DETAILS = {
+  objects: {},
+  references: {},
+};

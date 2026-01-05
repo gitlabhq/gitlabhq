@@ -7,8 +7,8 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
       class FinishedBuildsFinder < ::ClickHouse::Models::BaseModel
         include ActiveRecord::Sanitization::ClassMethods
 
-        ALLOWED_TO_GROUP = %i[name stage_id].freeze
-        ALLOWED_TO_SELECT = %i[name stage_id].freeze
+        ALLOWED_TO_GROUP = %i[name stage_name].freeze
+        ALLOWED_TO_SELECT = %i[name stage_name].freeze
         ALLOWED_AGGREGATIONS = %i[
           mean_duration
           p50_duration

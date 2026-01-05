@@ -41,7 +41,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
       let(:to_time) { Time.current }
       let(:options) do
         {
-          select_fields: [:name, :stage_id],
+          select_fields: [:name, :stage_name],
           aggregations: [:mean_duration],
           sort: 'name_asc',
           source: 'web',
@@ -54,7 +54,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
 
       it 'sets all values correctly', :aggregate_failures do
         expect(instance.project).to eq(project)
-        expect(instance.select_fields).to contain_exactly(:name, :stage_id)
+        expect(instance.select_fields).to contain_exactly(:name, :stage_name)
         expect(instance.aggregations).to contain_exactly(:mean_duration)
         expect(instance.sort).to eq('name_asc')
         expect(instance.source).to eq('web')
@@ -89,9 +89,9 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
     end
 
     context 'with select fields only' do
-      let(:options) { { select_fields: [:name, :stage_id] } }
+      let(:options) { { select_fields: [:name, :stage_name] } }
 
-      it { expect(query_result.first.keys).to contain_exactly('name', 'stage_id') }
+      it { expect(query_result.first.keys).to contain_exactly('name', 'stage_name') }
     end
 
     context 'with aggregations only' do
@@ -310,10 +310,10 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
     end
 
     context 'with multiple select fields' do
-      let(:options) { { select_fields: [:name, :stage_id] } }
+      let(:options) { { select_fields: [:name, :stage_name] } }
 
       it 'includes multiple select fields' do
-        expect(query_result.first.keys).to contain_exactly('name', 'stage_id')
+        expect(query_result.first.keys).to contain_exactly('name', 'stage_name')
       end
     end
   end
@@ -488,7 +488,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
     context 'with comprehensive query' do
       let(:options) do
         {
-          select_fields: [:name, :stage_id],
+          select_fields: [:name, :stage_name],
           aggregations: [:mean_duration, :rate_of_success],
           sort: 'mean_duration_desc',
           name_search: 'compile',
@@ -500,7 +500,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
       it 'combines all features correctly', :aggregate_failures do
         expect(query_result).not_to be_empty
         expect(query_result.first.keys).to contain_exactly(
-          'name', 'stage_id', 'mean_duration', 'rate_of_success'
+          'name', 'stage_name', 'mean_duration', 'rate_of_success'
         )
         expect(query_result.pluck('name').uniq).to contain_exactly('compile', 'compile-slow')
 

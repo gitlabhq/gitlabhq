@@ -204,10 +204,11 @@
   }
 }
 
-.wiki-page-details {
+.wiki-page-details, .wiki-comments {
   @apply gl-w-full;
   @apply gl-mx-auto;
   @apply gl-px-2;
+  @apply gl-relative;
   max-width: $wiki-content-default-width;
   overflow-x: auto;
 }
@@ -245,10 +246,27 @@ ul.wiki-pages-list.content-list {
   }
 }
 
+.panel-content-inner:has(.wiki-form.immersive) {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.wiki-overview:has(.wiki-form.immersive) {
+  gap: 0;
+}
+
+.wiki-page-details:has(.wiki-form.immersive) {
+  max-width: none;
+}
+
 .wiki-form .markdown-area,
 .wiki-form .ProseMirror {
   min-height: min(20vh, 320px);
   max-height: 55vh;
+}
+
+.wiki-form.immersive {
+  --immersive-editor-text-width: #{$wiki-content-default-width};
 }
 
 .wiki-list {

@@ -35,6 +35,7 @@ module ClickHouseHelpers
         %i[id project_id pipeline_id status finished_at created_at started_at queued_at runner_id name
           stage_id]).symbolize_keys
           .merge(
+            stage_name: build.stage_name,
             runner_run_untagged: build.runner&.run_untagged,
             runner_type: Ci::Runner.runner_types[build.runner&.runner_type],
             runner_owner_namespace_id: build.runner&.owner_runner_namespace&.namespace_id,

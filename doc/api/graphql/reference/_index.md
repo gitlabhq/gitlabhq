@@ -3126,7 +3126,7 @@ Input type: `AiFlowTriggerCreateInput`
 | <a id="mutationaiflowtriggercreatedescription"></a>`description` | [`String!`](#string) | Description of the AI flow trigger. |
 | <a id="mutationaiflowtriggercreateeventtypes"></a>`eventTypes` | [`[Int!]`](#int) | Event types that triggers the AI flow. |
 | <a id="mutationaiflowtriggercreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the AI flow trigger is associated with. |
-| <a id="mutationaiflowtriggercreateuserid"></a>`userId` | [`UserID!`](#userid) | Owner of the AI flow trigger. |
+| <a id="mutationaiflowtriggercreateuserid"></a>`userId` | [`UserID!`](#userid) | Service account for the AI flow trigger. |
 
 #### Fields
 
@@ -3178,7 +3178,7 @@ Input type: `AiFlowTriggerUpdateInput`
 | <a id="mutationaiflowtriggerupdatedescription"></a>`description` | [`String`](#string) | Description of the AI flow trigger. |
 | <a id="mutationaiflowtriggerupdateeventtypes"></a>`eventTypes` | [`[Int!]`](#int) | Event types that triggers the AI flow. |
 | <a id="mutationaiflowtriggerupdateid"></a>`id` | [`AiFlowTriggerID!`](#aiflowtriggerid) | ID of the flow trigger to update. |
-| <a id="mutationaiflowtriggerupdateuserid"></a>`userId` | [`UserID`](#userid) | Owner of the AI flow trigger. |
+| <a id="mutationaiflowtriggerupdateuserid"></a>`userId` | [`UserID`](#userid) | Service account for the AI flow trigger. |
 
 #### Fields
 
@@ -25895,7 +25895,7 @@ Represents an AI flow trigger.
 | <a id="aiflowtriggertypeid"></a>`id` | [`ID!`](#id) | ID of the flow trigger. |
 | <a id="aiflowtriggertypeproject"></a>`project` | [`Project!`](#project) | Project of the flow trigger. |
 | <a id="aiflowtriggertypeupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the flow trigger was last updated. |
-| <a id="aiflowtriggertypeuser"></a>`user` | [`UserCore`](#usercore) | User who created the flow trigger. |
+| <a id="aiflowtriggertypeuser"></a>`user` | [`UserCore`](#usercore) | Service account of the flow trigger. |
 
 ### `AiFoundationalChatAgent`
 
@@ -28106,7 +28106,7 @@ CI/CD job analytics data.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cijobanalyticsname"></a>`name` | [`String`](#string) | Job name. |
-| <a id="cijobanalyticsstage"></a>`stage` | [`CiStage`](#cistage) | Stage information. |
+| <a id="cijobanalyticsstagename"></a>`stageName` | [`String`](#string) | Stage information. |
 | <a id="cijobanalyticsstatistics"></a>`statistics` | [`CiJobAnalyticsStatistics`](#cijobanalyticsstatistics) | Statistics for the jobs. |
 
 ### `CiJobAnalyticsStatistics`

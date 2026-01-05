@@ -302,15 +302,17 @@ RSpec.describe 'Query.project.jobAnalytics', :click_house, :freeze_time, feature
       it { expect_graphql_errors_to_include("Argument 'sort' on Field 'jobAnalytics' has an invalid value") }
     end
 
-    context 'with stage selection' do
+    context 'with stage_name selection' do
       let(:job_analytics_fields) do
         query_graphql_field(:nodes, nil, [
           :name,
-          query_graphql_field(:stage, nil, [:id, :name])
+          :stage_name
         ])
       end
 
-      it { expect(nodes).to all(have_key('stage')) }
+      it { expect(nodes).to all(have_key('stageName')) }
+
+      it { expect(nodes.pluck('stageName').uniq).to contain_exactly('build', 'test', 'source-stage', 'ref-stage') }
     end
 
     context 'when only name is requested' do

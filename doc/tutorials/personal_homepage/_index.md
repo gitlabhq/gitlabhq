@@ -52,7 +52,7 @@ The **Items that need your attention** list shows all work items across GitLab t
 The **Follow the latest updates** feed shows your activity across GitLab,
 and the activity of specific projects and users you're interested in.
 
-Go to the right side of the homepage to get a list of items you've recently viewed.
+Go to the right side of the homepage to access quick links to items you've recently viewed and projects you frequently visit.
 
 ## Use the homepage to start your day
 
@@ -67,7 +67,10 @@ You can also keep track of what you have been working on, for example:
 
 1. In the **Follow the latest updates** section, use the **Your activity** filter to see your recent work.
    Select the links to go directly to the issue or merge request, and pick up where you left off.
-1. Select any of the links in the **Recently viewed** section to get back to items you started working on.
+1. In the **Quick access** widget on the right:
+   - Select **Recently viewed** to see issues, merge requests, and epics you recently visited.
+   - Select **Projects** to see projects you frequently visit.
+   - Select any link to quickly return to items you were working on.
 
 ## Stay connected with team activity
 

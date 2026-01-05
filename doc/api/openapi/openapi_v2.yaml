@@ -31458,7 +31458,7 @@ paths:
         '403':
           description: Forbidden
       tags:
-      - projects
+      - webhooks
       operationId: getApiV4ProjectsIdHooksHookIdEvents
   "/api/v4/projects/{id}/hooks/{hook_id}/test/{trigger}":
     post:

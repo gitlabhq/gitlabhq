@@ -8,7 +8,7 @@ RSpec.describe Types::Ci::JobAnalyticsType, feature_category: :fleet_visibility 
   it 'exposes the expected fields' do
     expected_fields = %i[
       name
-      stage
+      stage_name
       statistics
     ]
 
@@ -20,30 +20,25 @@ RSpec.describe Types::Ci::JobAnalyticsType, feature_category: :fleet_visibility 
 
     let_it_be(:user) { create(:user) }
 
-    describe '#stage' do
-      let(:field_name) { :stage }
+    describe '#stage_name' do
+      let(:field_name) { :stage_name }
 
-      context 'when stage_id is nil' do
-        let(:object) { { 'name' => 'Test Job', 'stage_id' => nil } }
-
-        it { is_expected.to be_nil }
-      end
-
-      context 'when stage_id is 0' do
-        let(:object) { { 'name' => 'Test Job', 'stage_id' => 0 } }
+      context 'when stage_name is nil' do
+        let(:object) { { 'name' => 'Test Job', 'stage_name' => nil } }
 
         it { is_expected.to be_nil }
       end
 
-      context 'when stage_id is valid' do
-        let_it_be(:stage) { create(:ci_stage) }
+      context 'when stage_name is empty string' do
+        let(:object) { { 'name' => 'Test Job', 'stage_name' => '' } }
 
-        let(:object) { { 'name' => 'Test Job', 'stage_id' => stage.id } }
+        it { is_expected.to eq('') }
+      end
 
-        it 'fetches and returns the stage' do
-          expect(BatchLoader::GraphQL).to receive(:for).with(stage.id).and_call_original
-          expect(resolved_field.value).to eq(stage)
-        end
+      context 'when stage_name is valid' do
+        let(:object) { { 'name' => 'Test Job', 'stage_name' => 'build' } }
+
+        it { is_expected.to eq('build') }
       end
     end
 

@@ -494,12 +494,16 @@ export default {
     :action="formAction"
     method="post"
     class="wiki-form common-note-form js-quick-submit"
-    :class="{ 'gl-mt-5': !isEditingPath }"
+    :class="{
+      'gl-mt-5': !isEditingPath && !glFeatures.wikiImmersiveEditor,
+      immersive: glFeatures.wikiImmersiveEditor,
+    }"
     @submit="handleFormSubmit"
     @input="isFormDirty = true"
   >
-    <h1 class="gl-sr-only">{{ pageTitle }}</h1>
-
+    <h1 v-if="!glFeatures.wikiImmersiveEditor" class="gl-sr-only">
+      {{ pageTitle }}
+    </h1>
     <input :value="csrfToken" type="hidden" name="authenticity_token" />
     <input v-if="pageInfo.persisted" type="hidden" name="_method" value="put" />
     <input
@@ -509,7 +513,7 @@ export default {
       :value="pageInfo.lastCommitSha"
     />
 
-    <div class="row">
+    <div v-if="!glFeatures.wikiImmersiveEditor" class="row">
       <div class="gl-col-12">
         <gl-form-group
           :label="$options.i18n.title.label"
@@ -556,7 +560,7 @@ export default {
       </div>
     </div>
 
-    <div class="row">
+    <div v-if="!glFeatures.wikiImmersiveEditor" class="row">
       <div class="gl-col-sm-6">
         <gl-form-group :label="$options.i18n.format.label" label-for="wiki_format">
           <gl-form-select
@@ -581,7 +585,11 @@ export default {
 
     <div class="row">
       <div class="gl-col-sm-12 row-sm-5">
-        <gl-form-group :label="$options.i18n.content.label" label-for="wiki_content">
+        <gl-form-group
+          :label="$options.i18n.content.label"
+          label-for="wiki_content"
+          :label-sr-only="glFeatures.wikiImmersiveEditor"
+        >
           <markdown-editor
             ref="markdownEditor"
             v-model="content"
@@ -602,9 +610,39 @@ export default {
             @markdownField="notifyContentEditorInactive"
             @keydown.ctrl.enter="submitFormWithShortcut"
             @keydown.meta.enter="submitFormWithShortcut"
-          />
+          >
+            <template v-if="glFeatures.wikiImmersiveEditor" #header>
+              <div
+                class="gl-sticky gl-top-0 gl-z-3 gl-flex gl-items-start gl-gap-3 gl-bg-default gl-px-5 gl-pt-3"
+                data-testid="wiki-form-actions"
+              >
+                <h1
+                  class="gl-y-3 gl-heading-3 gl-line-clamp-2 gl-overflow-hidden gl-overflow-ellipsis md:gl-heading-2"
+                >
+                  {{ pageTitle }}
+                </h1>
+                <div class="gl-flex-grow"></div>
+                <div class="gl-my-3 gl-flex gl-shrink-0 gl-gap-3">
+                  <gl-button
+                    category="primary"
+                    variant="confirm"
+                    type="submit"
+                    data-testid="wiki-submit-button"
+                    >{{ submitButtonText }}</gl-button
+                  >
+                  <gl-button
+                    data-testid="wiki-cancel-button"
+                    :href="cancelFormHref"
+                    @click="cancelFormAction"
+                  >
+                    {{ $options.i18n.cancel }}</gl-button
+                  >
+                </div>
+              </div>
+            </template>
+          </markdown-editor>
           <input name="wiki[content]" type="hidden" :value="rawContent" />
-          <template #description>
+          <template v-if="!glFeatures.wikiImmersiveEditor" #description>
             <div class="gl-mt-3">
               <gl-sprintf
                 v-if="displayWikiSpecificMarkdownHelp && !isTemplate"
@@ -630,7 +668,7 @@ export default {
       </div>
     </div>
 
-    <div class="row">
+    <div v-if="!glFeatures.wikiImmersiveEditor" class="row">
       <div class="gl-col-sm-12 row-sm-5">
         <gl-form-group :label="$options.i18n.commitMessage.label" label-for="wiki_message">
           <gl-form-input
@@ -646,7 +684,11 @@ export default {
       </div>
     </div>
 
-    <div class="gl-flex gl-justify-between gl-gap-3" data-testid="wiki-form-actions">
+    <div
+      v-if="!glFeatures.wikiImmersiveEditor"
+      class="gl-flex gl-justify-between gl-gap-3"
+      data-testid="wiki-form-actions"
+    >
       <div class="gl-flex gl-gap-3">
         <gl-button
           category="primary"

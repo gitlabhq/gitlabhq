@@ -353,4 +353,39 @@ describe('~/api/projects_api.js', () => {
       ).rejects.toThrow('Image failed to upload');
     });
   });
+
+  describe('getProjectRepositoryHealth', () => {
+    const MOCK_RESPONSE = { objects: {}, references: {} };
+    const MOCK_PARAMS = { generate: true };
+
+    beforeEach(() => {
+      jest.spyOn(axios, 'get');
+    });
+
+    it("requests health status of a project's repository with no params by default", async () => {
+      const expectedUrl = `/api/${mockApiVersion}/projects/${projectId}/repository/health`;
+
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, MOCK_RESPONSE);
+
+      await expect(projectsApi.getProjectRepositoryHealth(projectId)).resolves.toMatchObject({
+        data: MOCK_RESPONSE,
+      });
+
+      expect(axios.get).toHaveBeenCalledWith(expectedUrl, { params: {} });
+    });
+
+    it("requests health status of a project's repository and passes along parameters", async () => {
+      const expectedUrl = `/api/${mockApiVersion}/projects/${projectId}/repository/health`;
+
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, MOCK_RESPONSE);
+
+      await expect(
+        projectsApi.getProjectRepositoryHealth(projectId, MOCK_PARAMS),
+      ).resolves.toMatchObject({
+        data: MOCK_RESPONSE,
+      });
+
+      expect(axios.get).toHaveBeenCalledWith(expectedUrl, { params: MOCK_PARAMS });
+    });
+  });
 });

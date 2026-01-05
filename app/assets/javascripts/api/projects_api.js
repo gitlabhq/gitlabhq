@@ -14,6 +14,7 @@ const PROJECT_UPLOADS_PATH = '/api/:version/projects/:id/uploads';
 const PROJECT_RESTORE_PATH = '/api/:version/projects/:id/restore';
 const PROJECT_ARCHIVE_PATH = '/api/:version/projects/:id/archive';
 const PROJECT_UNARCHIVE_PATH = '/api/:version/projects/:id/unarchive';
+const PROJECT_REPOSITORY_HEALTH_PATH = '/api/:version/projects/:id/repository/health';
 
 export function getProjects(query, options, callback = () => {}) {
   const url = buildApiUrl(PROJECTS_PATH);
@@ -140,3 +141,9 @@ export async function uploadImageToProject({ filename, blobData, projectId }) {
 
   return new URL(result.data.full_path, document.baseURI).href;
 }
+
+export const getProjectRepositoryHealth = (projectId, params = {}) => {
+  const url = buildApiUrl(PROJECT_REPOSITORY_HEALTH_PATH).replace(':id', projectId);
+
+  return axios.get(url, { params });
+};

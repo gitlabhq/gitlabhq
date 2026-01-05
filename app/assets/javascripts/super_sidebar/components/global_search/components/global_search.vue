@@ -179,7 +179,14 @@ export default {
   },
   methods: {
     ...mapActions(['setSearch', 'setCommand', 'fetchAutocompleteOptions', 'clearAutocomplete']),
-    showModal() {
+    showModal(event) {
+      const searchText = event?.detail?.searchText;
+      if (searchText) {
+        this.searchText = searchText;
+        this.$nextTick(() => {
+          this.getAutocompleteOptions(searchText);
+        });
+      }
       this.$refs.modal?.show();
     },
     getAutocompleteOptions: debounce(function debouncedSearch(searchTerm) {

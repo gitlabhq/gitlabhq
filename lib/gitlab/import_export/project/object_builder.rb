@@ -145,6 +145,14 @@ module Gitlab
 
             row['merge_request_commits_metadata'] = merge_request_commits_metadata ||
               find_or_create_merge_request_commits_metadata(commit_metadata_attrs)
+
+            unless row['merge_request_commits_metadata'].present?
+              Gitlab::ErrorTracking.track_exception(
+                MergeRequestDiffCommit::CouldNotCreateMetadataError.new,
+                message: 'Failed to create metadata during import',
+                project_id: project.id
+              )
+            end
           end
 
           MergeRequestDiffCommit.new(row)

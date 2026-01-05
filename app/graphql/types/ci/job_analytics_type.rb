@@ -10,7 +10,7 @@ module Types
         null: true,
         description: 'Job name.'
 
-      field :stage,  Types::Ci::StageType,
+      field :stage_name,  GraphQL::Types::String,
         null: true,
         description: 'Stage information.'
 
@@ -20,16 +20,6 @@ module Types
 
       def statistics
         object
-      end
-
-      def stage
-        return if (stage_id = object['stage_id']).nil? || stage_id.to_i == 0
-
-        BatchLoader::GraphQL.for(stage_id).batch do |stage_ids, loader|
-          ::Ci::Stage.id_in(stage_ids).preload_pipeline.each do |stage|
-            loader.call(stage.id, stage)
-          end
-        end
       end
     end
   end

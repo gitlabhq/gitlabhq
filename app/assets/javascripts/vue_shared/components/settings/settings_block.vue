@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlCollapse, GlAnimatedChevronLgRightDownIcon } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
+import { historyPushState } from '~/lib/utils/common_utils';
 
 import { __ } from '~/locale';
 
@@ -52,6 +53,16 @@ export default {
   watch: {
     expanded(newValue) {
       this.localExpanded = newValue;
+    },
+    localExpanded(isExpanded) {
+      // IMPORTANT: Keep this implementation in sync with app/assets/javascripts/settings_panels.js
+      // Both files handle settings block behavior and must maintain consistency.
+      if (isExpanded) {
+        historyPushState(`${window.location.pathname}${window.location.search}#${this.collapseId}`);
+        window.location.hash = this.collapseId;
+      } else {
+        historyPushState(window.location.pathname + window.location.search);
+      }
     },
   },
   methods: {

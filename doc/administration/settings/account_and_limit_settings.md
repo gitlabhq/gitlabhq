@@ -420,6 +420,7 @@ Custom token prefixes apply only to the following tokens:
 - [Personal access tokens](../../user/profile/personal_access_tokens.md)
 - [Pipeline trigger tokens](../../ci/triggers/_index.md#create-a-pipeline-trigger-token)
 - [Runner authentication tokens](../../security/tokens/_index.md#runner-authentication-tokens)
+- [SCIM tokens](../../security/tokens/_index.md#token-prefixes)
 
 Prerequisites:
 

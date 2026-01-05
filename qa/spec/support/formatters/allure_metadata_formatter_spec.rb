@@ -52,7 +52,8 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
       expect(rspec_example).to have_received(:add_link).with(name: "Job(#{ci_job})", url: ci_job_url)
       expect(rspec_example).to have_received(:issue).with(
         'Failure issues',
-        'https://gitlab.com/gitlab-org/quality/e2e-test-issues/-/issues?sort=updated_desc&scope=all&' \
+        'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/' \
+          'issues?sort=updated_desc&scope=all&' \
           'state=opened&search=spec.rb&search=Some%20failure%0Amessage'
       )
     end
@@ -71,7 +72,8 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
 
         expect(rspec_example).to have_received(:issue).with(
           'Failure issues',
-          'https://gitlab.com/gitlab-org/quality/e2e-test-issues/-/issues?sort=updated_desc&scope=all&' \
+          'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/' \
+            'issues?sort=updated_desc&scope=all&' \
             'state=opened&search=spec.rb&search=Some%20failure%20message'
         )
       end
@@ -92,7 +94,8 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
 
         # The first 20 lines joined with newlines
         expected_truncated_message = (1..20).map { |i| "Error line #{i}" }.join("\n")
-        expected_url = 'https://gitlab.com/gitlab-org/quality/e2e-test-issues/-/issues?sort=updated_desc&scope=all&' \
+        expected_url = 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/' \
+          'issues?sort=updated_desc&scope=all&' \
           "state=opened&search=spec.rb&search=#{ERB::Util.url_encode(expected_truncated_message)}"
 
         expect(rspec_example).to have_received(:issue).with('Failure issues', expected_url)
@@ -113,7 +116,8 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
         formatter.example_finished(rspec_example_notification)
 
         expected_message = (1..20).map { |i| "Error line #{i}" }.join("\n")
-        expected_url = 'https://gitlab.com/gitlab-org/quality/e2e-test-issues/-/issues?sort=updated_desc&scope=all&' \
+        expected_url = 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/' \
+          'issues?sort=updated_desc&scope=all&' \
           "state=opened&search=spec.rb&search=#{ERB::Util.url_encode(expected_message)}"
 
         expect(rspec_example).to have_received(:issue).with('Failure issues', expected_url)

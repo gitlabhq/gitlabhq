@@ -25216,6 +25216,9 @@ msgstr ""
 msgid "Display view"
 msgstr ""
 
+msgid "Displaying frequently visited projects"
+msgstr ""
+
 msgid "Do not display content for customer experience improvement and offers from third parties"
 msgstr ""
 
@@ -34499,6 +34502,9 @@ msgid "HomePageMergeRequestsWidget|The number of merge requests is not available
 msgstr ""
 
 msgid "HomePageMergeRequestsWidget|Waiting for your review"
+msgstr ""
+
+msgid "HomePageProjectsWidget|Your projects are not available. Please refresh the page to try again."
 msgstr ""
 
 msgid "HomePageRecentlyViewedWidget|Your recently viewed items are not available. Please refresh the page to try again."
@@ -53720,6 +53726,9 @@ msgstr ""
 msgid "Projects with write access"
 msgstr ""
 
+msgid "Projects you visit will appear here."
+msgstr ""
+
 msgid "ProjectsEdit|An error occurred updating this project. Please try again."
 msgstr ""
 
@@ -55077,6 +55086,9 @@ msgid "QualitySummary|Project quality"
 msgstr ""
 
 msgid "Queued"
+msgstr ""
+
+msgid "Quick access"
 msgstr ""
 
 msgid "Quick actions can be used in description and comment boxes."
@@ -72470,10 +72482,19 @@ msgstr ""
 msgid "UsageQuota|Excess storage usage"
 msgstr ""
 
+msgid "UsageQuota|Failed to fetch repository health, try again later."
+msgstr ""
+
+msgid "UsageQuota|Failed to parse Project ID from Repository."
+msgstr ""
+
 msgid "UsageQuota|Filter charts by year"
 msgstr ""
 
 msgid "UsageQuota|Filter projects data by month"
+msgstr ""
+
+msgid "UsageQuota|Generate Report"
 msgstr ""
 
 msgid "UsageQuota|Git repository."
@@ -72573,6 +72594,9 @@ msgid "UsageQuota|Recalculate repository usage"
 msgstr ""
 
 msgid "UsageQuota|Registry"
+msgstr ""
+
+msgid "UsageQuota|Repository Health report was not found"
 msgstr ""
 
 msgid "UsageQuota|Seat utilization"
@@ -72687,6 +72711,9 @@ msgid "UsageQuota|User settings %{gt} Usage quotas"
 msgstr ""
 
 msgid "UsageQuota|Wiki content."
+msgstr ""
+
+msgid "UsageQuota|You can generate a new report at any time by clicking the button below."
 msgstr ""
 
 msgid "UsageQuota|You have used %{percentageUsed}%% of your total storage."

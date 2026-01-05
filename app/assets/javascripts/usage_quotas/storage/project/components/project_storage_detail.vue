@@ -3,10 +3,12 @@ import { GlIcon, GlButton, GlLink, GlSprintf, GlTableLite, GlPopover } from '@gi
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
 import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 import StorageTypeIcon from './storage_type_icon.vue';
+import RepositoryHealthDetailsSection from './repository_health_details/repository_health_details_section.vue';
 
 export const STATISTICS_DETAILS_COMPONENTS = {
-  repository: true, // TODO: Replace with real Vue component in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216337
+  repository: markRaw(RepositoryHealthDetailsSection),
 };
 
 export default {
@@ -171,7 +173,11 @@ export default {
     </template>
 
     <template #row-details="{ item }">
-      <div :data-testid="`${item.id}-row-details`">{{ item }}</div>
+      <component
+        :is="item.detailsComponent"
+        :repository="item"
+        :data-testid="`${item.id}-row-details`"
+      />
     </template>
   </gl-table-lite>
 </template>

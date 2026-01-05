@@ -41,14 +41,14 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
       end
 
       context 'with multiple columns selection' do
-        let(:selected_fields) { [:name, :stage_id] }
+        let(:selected_fields) { [:name, :stage_name] }
 
         it 'returns the selections' do
-          expect(result.first.keys).to match_array(%w[name stage_id])
+          expect(result.first.keys).to match_array(%w[name stage_name])
           # assert grouping
           compile_results = result.select { |r| r['name'] == 'compile' }
           expect(compile_results.size).to eq(1)
-          expect(compile_results.first['stage_id']).to eq(stage1.id)
+          expect(compile_results.first['stage_name']).to eq(stage1.name)
         end
       end
     end
@@ -59,7 +59,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
       it 'raises ArgumentError' do
         expect do
           result
-        end.to raise_error(ArgumentError, "Cannot select columns: [:invalid_column]. Allowed: name, stage_id")
+        end.to raise_error(ArgumentError, "Cannot select columns: [:invalid_column]. Allowed: name, stage_name")
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
 
         it 'loads *' do
           expect(result.size).to eq(13)
-          expect(result.first.keys).to include('name', 'stage_id', 'status', 'project_id')
+          expect(result.first.keys).to include('name', 'stage_name', 'status', 'project_id')
         end
       end
 
@@ -78,7 +78,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
 
         it 'loads *' do
           expect(result.size).to eq(13)
-          expect(result.first.keys).to include('name', 'stage_id', 'status', 'project_id')
+          expect(result.first.keys).to include('name', 'stage_name', 'status', 'project_id')
         end
       end
 
@@ -248,7 +248,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
       describe "#rate_of_#{status}" do
         subject(:result) do
           instance.for_project(project.id)
-            .select(:stage_id)
+            .select(:stage_name)
             .public_send(:"rate_of_#{status}")
             .execute
         end
@@ -262,7 +262,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
       describe "#count_#{status}" do
         subject(:result) do
           instance.for_project(project.id)
-            .select(:stage_id)
+            .select(:stage_name)
             .public_send(:"count_#{status}")
             .execute
         end
@@ -421,16 +421,17 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
 
     context 'with valid columns' do
       context 'with single column' do
-        let(:selected_fields) { [:stage_id] }
+        let(:selected_fields) { [:stage_name] }
 
         it 'groups by single column correctly' do
           expect(result.size).to eq(4) # stage1, stage2, ref_stage, source_stage
-          expect(result.pluck('stage_id')).to match_array([stage1.id, stage2.id, ref_stage.id, source_stage.id])
+          expect(result.pluck('stage_name')).to match_array([stage1.name, stage2.name, ref_stage.name,
+            source_stage.name])
         end
       end
 
       context 'with multiple columns' do
-        let(:selected_fields) { [:name, :stage_id] }
+        let(:selected_fields) { [:name, :stage_name] }
 
         it 'groups by multiple columns correctly' do
           expect(result.size).to eq(6) # Each unique name-stage combination
@@ -451,7 +452,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
       it 'raises error for invalid columns' do
         expect do
           instance.group_by(:invalid_column).execute
-        end.to raise_error(ArgumentError, "Cannot group by column: invalid_column. Allowed: name, stage_id")
+        end.to raise_error(ArgumentError, "Cannot group by column: invalid_column. Allowed: name, stage_name")
       end
     end
   end
@@ -459,7 +460,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
   describe 'method chaining' do
     subject(:result) do
       instance.for_project(project.id)
-              .select([:name, :stage_id])
+              .select([:name, :stage_name])
               .mean_duration
               .p95_duration
               .rate_of_success
@@ -472,7 +473,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     it 'combines multiple operations correctly' do
       expect(result.size).to be <= 3
       expect(result.first.keys).to include(
-        'name', 'stage_id', 'mean_duration',
+        'name', 'stage_name', 'mean_duration',
         'p95_duration', 'rate_of_success', 'rate_of_failed'
       )
 
@@ -498,13 +499,13 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
 
     it 'calculates build success rates by stage' do
       result = instance.for_project(project.id)
-                       .select(:stage_id)
+                       .select(:stage_name)
                        .rate_of_success
                        .rate_of_failed
                        .execute
 
-      stage1_result = result.find { |r| r['stage_id'] == stage1.id }
-      stage2_result = result.find { |r| r['stage_id'] == stage2.id }
+      stage1_result = result.find { |r| r['stage_name'] == stage1.name }
+      stage2_result = result.find { |r| r['stage_name'] == stage2.name }
 
       # Stage1 has only successful builds
       expect(stage1_result['rate_of_success']).to eq(100.0)

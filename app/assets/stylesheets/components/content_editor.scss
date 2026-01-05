@@ -412,3 +412,26 @@
   position: relative;
   z-index: 0;
 }
+
+.immersive {
+  .rte-text-box>* {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: var(--immersive-editor-text-width, $immersive-editor-text-width);
+  }
+
+  .rte-text-box:focus {
+    background: inherit;
+    box-shadow: none;
+  }
+
+  .md-area, .md-area:hover {
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .rte-text-box {
+    position: relative;
+    max-height: none !important;
+  }
+}

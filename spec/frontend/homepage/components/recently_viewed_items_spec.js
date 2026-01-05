@@ -4,11 +4,10 @@ import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import RecentlyViewedWidget from '~/homepage/components/recently_viewed_widget.vue';
+import RecentlyViewedItems from '~/homepage/components/recently_viewed_items.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import RecentlyViewedItemsQuery from 'ee_else_ce/homepage/graphql/queries/recently_viewed_items.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import BaseWidget from '~/homepage/components/base_widget.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import {
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
@@ -21,7 +20,7 @@ jest.mock('~/sentry/sentry_browser_wrapper', () => ({
   captureException: jest.fn(),
 }));
 
-describe('RecentlyViewedWidget', () => {
+describe('RecentlyViewedItems', () => {
   let wrapper;
 
   const mockRecentlyViewedResponse = {
@@ -76,10 +75,10 @@ describe('RecentlyViewedWidget', () => {
   const recentlyViewedQuerySuccessHandler = jest.fn().mockResolvedValue(mockRecentlyViewedResponse);
   const recentlyViewedQueryErrorHandler = jest.fn().mockRejectedValue(new Error('GraphQL Error'));
 
-  const createComponent = ({ queryHandler = recentlyViewedQuerySuccessHandler } = {}) => {
-    const mockApollo = createMockApollo([[RecentlyViewedItemsQuery, queryHandler]]);
+  const createComponent = ({ recentlyViewedHandler = recentlyViewedQuerySuccessHandler } = {}) => {
+    const mockApollo = createMockApollo([[RecentlyViewedItemsQuery, recentlyViewedHandler]]);
 
-    wrapper = shallowMountExtended(RecentlyViewedWidget, {
+    wrapper = shallowMountExtended(RecentlyViewedItems, {
       apolloProvider: mockApollo,
     });
   };
@@ -98,7 +97,6 @@ describe('RecentlyViewedWidget', () => {
   const findItemLinks = () => wrapper.findAll('a[href^="/"]');
   const findItemIcons = () => wrapper.findAllComponents(GlIcon);
   const findTooltipComponents = () => wrapper.findAllComponents(TooltipOnTruncate);
-  const findBaseWidget = () => wrapper.findComponent(BaseWidget);
 
   describe('loading state', () => {
     it('shows skeleton loaders while fetching data', () => {
@@ -119,7 +117,7 @@ describe('RecentlyViewedWidget', () => {
 
   describe('error state', () => {
     beforeEach(async () => {
-      createComponent({ queryHandler: recentlyViewedQueryErrorHandler });
+      createComponent({ recentlyViewedHandler: recentlyViewedQueryErrorHandler });
       await waitForPromises();
     });
 
@@ -148,25 +146,11 @@ describe('RecentlyViewedWidget', () => {
       };
 
       const emptyQueryHandler = jest.fn().mockResolvedValue(emptyResponse);
-      createComponent({ queryHandler: emptyQueryHandler });
+      createComponent({ recentlyViewedHandler: emptyQueryHandler });
       await waitForPromises();
 
       expect(findEmptyState().exists()).toBe(true);
       expect(findItemsList().exists()).toBe(false);
-    });
-
-    it('does not show empty state when loading', () => {
-      createComponent();
-
-      expect(findEmptyState().exists()).toBe(false);
-    });
-
-    it('does not show empty state when there are items', async () => {
-      createComponent();
-      await waitForPromises();
-
-      expect(findEmptyState().exists()).toBe(false);
-      expect(findItemsList().exists()).toBe(true);
     });
   });
 
@@ -195,26 +179,10 @@ describe('RecentlyViewedWidget', () => {
       };
 
       const emptyQueryHandler = jest.fn().mockResolvedValue(emptyResponse);
-      createComponent({ queryHandler: emptyQueryHandler });
+      createComponent({ recentlyViewedHandler: emptyQueryHandler });
       await waitForPromises();
 
       expect(wrapper.vm.items).toEqual([]);
-    });
-  });
-
-  describe('refresh functionality', () => {
-    beforeEach(async () => {
-      createComponent();
-      await waitForPromises();
-    });
-
-    it('refreshes on becoming visible again', async () => {
-      const refetchSpy = jest.spyOn(wrapper.vm.$apollo.queries.items, 'refetch');
-      findBaseWidget().vm.$emit('visible');
-      await waitForPromises();
-
-      expect(refetchSpy).toHaveBeenCalled();
-      refetchSpy.mockRestore();
     });
   });
 
@@ -259,7 +227,7 @@ describe('RecentlyViewedWidget', () => {
       };
 
       const manyItemsHandler = jest.fn().mockResolvedValue(manyItemsResponse);
-      createComponent({ queryHandler: manyItemsHandler });
+      createComponent({ recentlyViewedHandler: manyItemsHandler });
       await waitForPromises();
 
       expect(findItemLinks()).toHaveLength(10);
@@ -344,6 +312,21 @@ describe('RecentlyViewedWidget', () => {
         },
         undefined,
       );
+    });
+  });
+
+  describe('refresh functionality', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('refreshes on becoming visible again', async () => {
+      const refetchSpy = jest.spyOn(wrapper.vm.$apollo.queries.items, 'refetch');
+
+      await wrapper.trigger('visible');
+
+      expect(refetchSpy).toHaveBeenCalled();
     });
   });
 });

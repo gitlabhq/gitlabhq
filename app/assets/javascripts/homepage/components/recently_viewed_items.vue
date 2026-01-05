@@ -2,18 +2,23 @@
 import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { InternalEvents } from '~/tracking';
+import { __ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import RecentlyViewedItemsQuery from 'ee_else_ce/homepage/graphql/queries/recently_viewed_items.query.graphql';
 import {
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
   TRACKING_LABEL_RECENTLY_VIEWED,
 } from '../tracking_constants';
-import BaseWidget from './base_widget.vue';
 
 const MAX_ITEMS = 10;
 
 export default {
-  components: { GlIcon, GlSkeletonLoader, BaseWidget, TooltipOnTruncate },
+  name: 'RecentlyViewedItems',
+  components: {
+    GlIcon,
+    GlSkeletonLoader,
+    TooltipOnTruncate,
+  },
   mixins: [InternalEvents.mixin()],
   data() {
     return {
@@ -45,6 +50,9 @@ export default {
     isLoading() {
       return this.$apollo.queries.items.loading;
     },
+    emptyStateMessage() {
+      return __('Issues and merge requests you visit will appear here.');
+    },
   },
   methods: {
     reload() {
@@ -72,9 +80,7 @@ export default {
 </script>
 
 <template>
-  <base-widget data-testid="homepage-recently-viewed-widget" @visible="reload">
-    <h2 class="gl-heading-4 gl-mb-3">{{ __('Recently viewed') }}</h2>
-
+  <div data-testid="homepage-quick-access-widget" @visible="reload">
     <p v-if="error" class="gl-mb-0">
       {{
         s__(
@@ -90,7 +96,7 @@ export default {
     </template>
 
     <p v-else-if="!items.length" class="gl-my-0 gl-mb-3">
-      {{ __('Issues and merge requests you visit will appear here.') }}
+      {{ emptyStateMessage }}
     </p>
     <ul v-else class="gl-m-0 gl-list-none gl-p-0">
       <li v-for="item in items" :key="item.id">
@@ -109,5 +115,5 @@ export default {
         </a>
       </li>
     </ul>
-  </base-widget>
+  </div>
 </template>

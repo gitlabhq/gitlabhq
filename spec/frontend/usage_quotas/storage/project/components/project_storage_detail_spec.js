@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ProjectStorageDetail from '~/usage_quotas/storage/project/components/project_storage_detail.vue';
+import RepositoryHealthDetailsSection from '~/usage_quotas/storage/project/components/repository_health_details/repository_health_details_section.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 
 describe('ProjectStorageDetail', () => {
@@ -139,8 +140,7 @@ describe('ProjectStorageDetail', () => {
     describe('toggling show details component', () => {
       const findShowDetailsButton = () =>
         wrapper.findByTestId(`${STORAGE_TYPE_WITH_DETAILS.id}-show-details-button`);
-      const findRowDetails = () =>
-        wrapper.findByTestId(`${STORAGE_TYPE_WITH_DETAILS.id}-row-details`);
+      const findRowDetails = () => wrapper.findComponent(RepositoryHealthDetailsSection);
       const findRowData = () => wrapper.findByTestId('storage-type-row').find('td');
 
       const toggleDetailsSection = async () => {

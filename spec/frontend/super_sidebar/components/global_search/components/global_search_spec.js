@@ -42,6 +42,7 @@ import {
   HOME_KEY,
   NUMPAD_ENTER_KEY,
 } from '~/lib/utils/keys';
+import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
 import {
   MOCK_SEARCH,
   MOCK_SEARCH_QUERY,
@@ -810,6 +811,15 @@ describe('GlobalSearchModal', () => {
       await nextTick();
 
       expect(modalStub.show).toHaveBeenCalled();
+    });
+
+    it('opens modal and populates search text when event is dispatched with searchText detail', async () => {
+      const searchText = 'dropped text';
+      document.dispatchEvent(new CustomEvent(EVENT_OPEN_GLOBAL_SEARCH, { detail: { searchText } }));
+      await nextTick();
+
+      expect(modalStub.show).toHaveBeenCalled();
+      expect(actionSpies.setSearch).toHaveBeenCalledWith(expect.any(Object), searchText);
     });
   });
 });
