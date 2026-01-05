@@ -3,7 +3,7 @@
   removal_milestone: "15.0"
   breaking_change: true
   body: |
-    The API Fuzzing configuration snippet is now being generated client-side and does not require an
+    The API fuzzing configuration snippet is now being generated client-side and does not require an
     API request anymore. We are therefore deprecating the `apiFuzzingCiConfigurationCreate` mutation
     which isn't being used in GitLab anymore.
   stage: Secure

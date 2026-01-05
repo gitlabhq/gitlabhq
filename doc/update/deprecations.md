@@ -6860,7 +6860,7 @@ In milestone 15.0, we will completely remove `Version` from `PackageType`.
 
 </div>
 
-The API Fuzzing configuration snippet is now being generated client-side and does not require an
+The API fuzzing configuration snippet is now being generated client-side and does not require an
 API request anymore. We are therefore deprecating the `apiFuzzingCiConfigurationCreate` mutation
 which isn't being used in GitLab anymore.
 

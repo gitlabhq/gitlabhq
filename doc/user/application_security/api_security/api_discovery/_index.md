@@ -18,7 +18,7 @@ title: API Discovery
 
 {{< /history >}}
 
-API Discovery analyzes your application and produces an OpenAPI document describing the web APIs it exposes. This schema document can then be used by the [API security testing analyzer](../../api_security_testing/_index.md) or [API Fuzzing](../../api_fuzzing/_index.md) to perform security scans of the web API.
+API Discovery analyzes your application and produces an OpenAPI document describing the web APIs it exposes. This schema document can then be used by the [API security testing analyzer](../../api_security_testing/_index.md) or [API fuzzing](../../api_fuzzing/_index.md) to perform security scans of the web API.
 
 ## Supported frameworks
 

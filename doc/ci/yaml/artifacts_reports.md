@@ -110,7 +110,7 @@ The following is an example of what a job annotations report might look like:
 
 {{< /details >}}
 
-The `api_fuzzing` report collects [API Fuzzing bugs](../../user/application_security/api_fuzzing/_index.md)
+The `api_fuzzing` report collects [API fuzzing bugs](../../user/application_security/api_fuzzing/_index.md)
 as artifacts.
 
 GitLab can display the results of one or more reports in:

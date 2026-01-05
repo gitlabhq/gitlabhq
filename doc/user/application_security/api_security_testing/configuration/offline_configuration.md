@@ -25,7 +25,7 @@ Once the Docker image is hosted locally, the `SECURE_ANALYZERS_PREFIX` variable 
 
 {{< alert type="note" >}}
 
-API security testing and API Fuzzing both use the same underlying Docker image `api-security:2`.
+API security testing and API fuzzing both use the same underlying Docker image `api-security:2`.
 
 {{< /alert >}}
 

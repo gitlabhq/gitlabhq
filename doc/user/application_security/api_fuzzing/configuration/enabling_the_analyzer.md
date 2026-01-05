@@ -461,7 +461,7 @@ The following is a summary of the variable scopes supported by the Postman Clien
   The Postman Client supports a single active environment along with the global environment. The variables defined in an active user-created environment take precedence over variables defined in the global environment. The Postman Client allows exporting your environment into a JSON file, which can be used with API fuzzing.
 - **Collection scope** is a group of variables declared in a given collection. The collection variables are available to the collection where they have been declared and the nested requests or collections. Variables defined in the collection scope take precedence over the global environment scope and also the environment scope.
   The Postman Client can export one or more collections into a JSON file, this JSON file contains selected collections, requests, and collection variables.
-- **API fuzzing scope** is a new scope added by API fuzzing to allow users to provide extra variables, or override variables defined in other supported scopes. This scope is not supported by Postman. The API Fuzzing Scope variables are provided using a [custom JSON file format](#api-fuzzing-scope-custom-json-file-format).
+- **API fuzzing scope** is a new scope added by API fuzzing to allow users to provide extra variables, or override variables defined in other supported scopes. This scope is not supported by Postman. The API fuzzing scope variables are provided using a [custom JSON file format](#api-fuzzing-scope-custom-json-file-format).
   - Override values defined in the environment or collection
   - Defining variables from scripts
   - Define a single row of data from the unsupported _data scope_
@@ -503,7 +503,7 @@ For more details on exporting variables in different supported scopes, see:
 
 The custom JSON file format is a JSON object where each object property represents a variable name and the property value represents the variable value. This file can be created using your favorite text editor, or it can be produced by an earlier job in your pipeline.
 
-This example defines two variables `base_url` and `token` in the API Fuzzing scope:
+This example defines two variables `base_url` and `token` in the API fuzzing scope:
 
 ```json
 {
@@ -900,7 +900,7 @@ Follow these steps to view details of a fuzzing fault:
      page. This page shows all vulnerabilities from the default branch only.
    - In a merge request, go the merge request's **Security** section and select the **Expand**
      button. API fuzzing faults are available in a section labeled
-     **API Fuzzing detected N potential vulnerabilities**. Select the title to display the fault
+     **API fuzzing detected N potential vulnerabilities**. Select the title to display the fault
      details.
 
 1. Select the fault's title to display the fault's details. The table below describes these details.

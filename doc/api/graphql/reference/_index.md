@@ -4861,9 +4861,9 @@ Input type: `ConfigureContainerScanningInput`
 
 ### `Mutation.configureDependencyScanning`
 
-Configure Dependency Scanning for a project by enabling Dependency Scanning in a new or modified
-`.gitlab-ci.yml` file in a new branch. The new branch and a URL to
-create a Merge Request are a part of the response.
+Enable dependency scanning `.gitlab-ci.yml` file in a new branch.
+The new branch and a URL to create a merge request are a part of
+the response.
 
 Input type: `ConfigureDependencyScanningInput`
 
@@ -26401,7 +26401,7 @@ Data associated with configuring API fuzzing scans in GitLab CI.
 
 ### `ApiFuzzingScanProfile`
 
-An API Fuzzing scan profile.
+An API fuzzing scan profile.
 
 #### Fields
 
