@@ -78,6 +78,30 @@ includes the relationships between them. It's differentiated from a lock file be
 not be required by a [package manager](#package-managers) during installation like in the case of a `pipdeptree graph`
 [export](https://github.com/tox-dev/pipdeptree/blob/28ed57c8e96ed1fce13a7abbf167e850625a835c/README.md#visualizing-the-dependency-graph).
 
+## Dependency version conflict
+
+A dependency version conflict occurs when dependency version constraints cannot be satisfied.
+
+Consider the following:
+
+- Dependency X requires `packageA` at exactly version 1.0.0
+- Dependency Y requires `packageA` version 1.0.1 or higher
+
+In this example, no version of `packageA` can satisfy both constraints, resulting in a dependency
+version conflict.
+
+## Dependency version incompatibility
+
+A dependency version incompatibility occurs when a package's version does not satisfy a version constraint.
+
+Consider the following:
+
+- `packageA` has versions `1.0.0` and `1.0.1`
+- Dependency X requires `packageA` version 1.0.1 or higher
+
+In this example, `packageA` version `1.0.0` does not satisfy the version constraint, and so is incompatible.
+However, `packageA` version `1.0.1` does satisfy the constraint.
+
 ## Duplicate finding
 
 A legitimate finding that is reported multiple times. This can occur when different scanners

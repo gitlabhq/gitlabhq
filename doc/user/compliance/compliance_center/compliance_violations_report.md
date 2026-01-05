@@ -35,6 +35,28 @@ Use the compliance violations report to see a comprehensive view of compliance v
 your group. The report provides detailed information about violated controls, associated audit events, and allows you
 to manage violation statuses.
 
+## Enable compliance violations report
+
+Before violations appear in the compliance violations report, you must:
+
+1. [Create a compliance framework with controls](../compliance_frameworks/_index.md).
+1. [Apply the framework to your projects](../compliance_frameworks/_index.md#apply-a-compliance-framework-to-a-project).
+
+When you've completed these steps, violations appear in the compliance violations report as they are detected.
+
+Violations are automatically detected when audit events violate the controls defined in your framework. The system continuously monitors audit events and compares them against your framework's control definitions to identify non-compliance.
+
+### Supported controls
+
+The following compliance controls are supported for violation detection:
+
+- `minimum_approvals_required_1`
+- `minimum_approvals_required_2`
+- `merge_request_prevent_author_approval`
+- `merge_request_prevent_committers_approval`
+
+For more information about compliance controls, see [Compliance frameworks](../compliance_frameworks/_index.md).
+
 ## View the compliance violations report
 
 Prerequisites:
