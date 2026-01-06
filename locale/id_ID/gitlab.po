@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: id\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-12-30 13:09\n"
+"PO-Revision-Date: 2026-01-05 20:44\n"
 
 msgid " %{start} to %{end}"
 msgstr ""
@@ -7163,7 +7163,7 @@ msgstr ""
 msgid "AiPowered|Maximum time in seconds to wait for responses from the AI Gateway (up to 600 seconds).%{br}Increasing this value might result in degraded user experience."
 msgstr ""
 
-msgid "AiPowered|Member Access"
+msgid "AiPowered|Member access"
 msgstr ""
 
 msgid "AiPowered|Membership grants access to"
@@ -7187,7 +7187,7 @@ msgstr ""
 msgid "AiPowered|Never allow GitLab to process your code and project data for AI-powered features. Your data will not be sent to GitLab Duo anywhere in this namespace."
 msgstr ""
 
-msgid "AiPowered|No access rules configured."
+msgid "AiPowered|No access rules configured"
 msgstr ""
 
 msgid "AiPowered|Not enabled"
@@ -24970,6 +24970,9 @@ msgstr ""
 msgid "Display view"
 msgstr ""
 
+msgid "Displaying frequently visited projects"
+msgstr ""
+
 msgid "Do not display content for customer experience improvement and offers from third parties"
 msgstr ""
 
@@ -34226,6 +34229,9 @@ msgid "HomePageMergeRequestsWidget|The number of merge requests is not available
 msgstr ""
 
 msgid "HomePageMergeRequestsWidget|Waiting for your review"
+msgstr ""
+
+msgid "HomePageProjectsWidget|Your projects are not available. Please refresh the page to try again."
 msgstr ""
 
 msgid "HomePageRecentlyViewedWidget|Your recently viewed items are not available. Please refresh the page to try again."
@@ -53400,6 +53406,9 @@ msgstr ""
 msgid "Projects with write access"
 msgstr ""
 
+msgid "Projects you visit will appear here."
+msgstr ""
+
 msgid "ProjectsEdit|An error occurred updating this project. Please try again."
 msgstr ""
 
@@ -54754,6 +54763,9 @@ msgid "QualitySummary|Project quality"
 msgstr ""
 
 msgid "Queued"
+msgstr ""
+
+msgid "Quick access"
 msgstr ""
 
 msgid "Quick actions can be used in description and comment boxes."
@@ -72045,10 +72057,19 @@ msgstr ""
 msgid "UsageQuota|Excess storage usage"
 msgstr ""
 
+msgid "UsageQuota|Failed to fetch repository health, try again later."
+msgstr ""
+
+msgid "UsageQuota|Failed to parse Project ID from Repository."
+msgstr ""
+
 msgid "UsageQuota|Filter charts by year"
 msgstr ""
 
 msgid "UsageQuota|Filter projects data by month"
+msgstr ""
+
+msgid "UsageQuota|Generate Report"
 msgstr ""
 
 msgid "UsageQuota|Git repository."
@@ -72148,6 +72169,9 @@ msgid "UsageQuota|Recalculate repository usage"
 msgstr ""
 
 msgid "UsageQuota|Registry"
+msgstr ""
+
+msgid "UsageQuota|Repository Health report was not found"
 msgstr ""
 
 msgid "UsageQuota|Seat utilization"
@@ -72262,6 +72286,9 @@ msgid "UsageQuota|User settings %{gt} Usage quotas"
 msgstr ""
 
 msgid "UsageQuota|Wiki content."
+msgstr ""
+
+msgid "UsageQuota|You can generate a new report at any time by clicking the button below."
 msgstr ""
 
 msgid "UsageQuota|You have used %{percentageUsed}%% of your total storage."
@@ -74824,7 +74851,10 @@ msgstr ""
 msgid "Vulnerability|AI detected false positive"
 msgstr ""
 
-msgid "Vulnerability|AI false positive Confidence Score"
+msgid "Vulnerability|AI false positive assessment details"
+msgstr ""
+
+msgid "Vulnerability|AI false positive confidence score"
 msgstr ""
 
 msgid "Vulnerability|AI has created a merge request to resolve this vulnerability"
@@ -77860,20 +77890,27 @@ msgstr ""
 msgid "Workspaces|Creating"
 msgstr ""
 
-msgid "Workspaces|Defines the workspace's development environment."
-msgstr ""
-
 msgid "Workspaces|Devfile"
 msgstr ""
 
-msgid "Workspaces|Devfile location"
+msgid "Workspaces|Devfile Validation Rules."
+msgstr ""
+
+msgid "Workspaces|Devfile is invalid."
 msgstr ""
 
 msgid "Workspaces|Each workspace is a secure cloud environment for your GitLab project. Quickly switch between projects, live preview, and compile code on any device."
 msgstr ""
 
+msgid "Workspaces|Encountered error while attempting to validate the Devfile."
+msgstr ""
+
 msgid "Workspaces|Error"
 msgstr ""
+
+msgid "Workspaces|Error processing the Devfile."
+msgid_plural "Workspaces|%{count} errors processing the Devfile."
+msgstr[0] ""
 
 msgid "Workspaces|Failed"
 msgstr ""
@@ -77920,6 +77957,9 @@ msgstr ""
 msgid "Workspaces|Learn more."
 msgstr ""
 
+msgid "Workspaces|More Information."
+msgstr ""
+
 msgid "Workspaces|Name"
 msgstr ""
 
@@ -77944,16 +77984,10 @@ msgstr ""
 msgid "Workspaces|Open workspace"
 msgstr ""
 
-msgid "Workspaces|Path to devfile"
-msgstr ""
-
 msgid "Workspaces|Project"
 msgstr ""
 
 msgid "Workspaces|Project reference"
-msgstr ""
-
-msgid "Workspaces|Provide a relative path if the devfile is not in the project's root directory."
 msgstr ""
 
 msgid "Workspaces|Restart"
@@ -78005,9 +78039,6 @@ msgid "Workspaces|This group has no agents. Start by creating an agent."
 msgstr ""
 
 msgid "Workspaces|This group has no available agents. Select the %{strongStart}All agents%{strongEnd} tab and allow at least one agent."
-msgstr ""
-
-msgid "Workspaces|To create a workspace, add a devfile to this project. A devfile is a configuration file for your workspace."
 msgstr ""
 
 msgid "Workspaces|Unable to complete request. Please try again."
@@ -80498,9 +80529,6 @@ msgid "has too deep level of nesting"
 msgstr ""
 
 msgid "help"
-msgstr ""
-
-msgid "hours"
 msgstr ""
 
 msgid "http:"

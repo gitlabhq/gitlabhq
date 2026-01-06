@@ -605,6 +605,10 @@ class Namespace < ApplicationRecord
     all_projects.not_aimed_for_deletion
   end
 
+  def all_active_project_ids
+    all_projects.not_aimed_for_deletion.non_archived.select(:id)
+  end
+
   def has_parent?
     parent_id.present? || parent.present?
   end

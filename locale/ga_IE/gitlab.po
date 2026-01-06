@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ga-IE\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-12-30 13:09\n"
+"PO-Revision-Date: 2026-01-05 20:51\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} go %{end}"
@@ -4558,7 +4558,7 @@ msgid "AccessTokens|Broad-access token"
 msgstr "Comhartha rochtana leathan"
 
 msgid "AccessTokens|Consider reducing scope"
-msgstr ""
+msgstr "Smaoinigh ar an raon feidhme a laghdú"
 
 msgid "AccessTokens|Copy feed token"
 msgstr "Cóipeáil comhartha beatha"
@@ -4678,7 +4678,7 @@ msgid "AccessTokens|Group and project access"
 msgstr "Rochtain ghrúpa agus tionscadail"
 
 msgid "AccessTokens|Group and project permissions"
-msgstr ""
+msgstr "Ceadanna grúpa agus tionscadail"
 
 msgid "AccessTokens|How do I use DPoP?"
 msgstr "Conas a úsáidim DPoP?"
@@ -4701,7 +4701,7 @@ msgid "AccessTokens|Incoming email token"
 msgstr "Comhartha ríomhphoist atá ag teacht isteach"
 
 msgid "AccessTokens|Instance permissions"
-msgstr ""
+msgstr "Ceadanna sampla"
 
 msgid "AccessTokens|Instance token prefix"
 msgstr "Réimír chomhartha sampla"
@@ -4758,7 +4758,7 @@ msgid "AccessTokens|Only personal projects"
 msgstr "Tionscadail phearsanta amháin"
 
 msgid "AccessTokens|Only specific group or projects that I'm a member of"
-msgstr ""
+msgstr "Grúpa nó tionscadail shonracha amháin a bhfuilim i mo bhall díobh"
 
 msgid "AccessTokens|Only specific groups or projects that I'm a member of"
 msgstr "Grúpaí nó tionscadail shonracha amháin a bhfuilim i mo bhall díobh"
@@ -4872,7 +4872,7 @@ msgid "AccessTokens|Tokens expiring in 2 weeks"
 msgstr "Comharthaí ag dul in éag i 2 sheachtain"
 
 msgid "AccessTokens|Type"
-msgstr ""
+msgstr "Cineál"
 
 msgid "AccessTokens|Usage"
 msgstr "Úsáid"
@@ -4884,7 +4884,7 @@ msgid "AccessTokens|Use Demonstrating Proof of Possession (DPoP)"
 msgstr "Úsáid Cruthúnas Seilbhe a Thaispeánann (DPoP)"
 
 msgid "AccessTokens|User permissions"
-msgstr ""
+msgstr "Ceadanna úsáideora"
 
 msgid "AccessTokens|View details"
 msgstr "Féach sonraí"
@@ -5433,7 +5433,7 @@ msgid "Add to merge train when all merge checks pass"
 msgstr "Cuir leis an traein a chumasc nuair a théann na seiceálacha"
 
 msgid "Add to merge train when ready"
-msgstr ""
+msgstr "Cuir leis an traein chumasc nuair a bheidh sé réidh"
 
 msgid "Add to review"
 msgstr "Cuir leis an léirmheas"
@@ -5532,7 +5532,7 @@ msgid "Added in this version"
 msgstr "Cuireadh leis sa leagan seo"
 
 msgid "Added to merge train."
-msgstr ""
+msgstr "Curtha leis an traein chumasc."
 
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission."
 msgstr "Tá feidhmchláir nua a chur faoi dhíchumasú i do shampla GitLab. Téigh i dteagmháil le do riarthóir GitLab chun an cead a fháil."
@@ -5597,10 +5597,10 @@ msgid "Adds email participants that don't have a GitLab account."
 msgstr "Cuireann sé rannpháirtithe ríomhphoist leis nach bhfuil cuntas GitLab acu."
 
 msgid "Adds this merge request to merge train when ready."
-msgstr ""
+msgstr "Cuireann sé an t-iarratas cumaisc seo leis an traein chumaisc nuair a bheidh sé réidh."
 
 msgid "Adds this merge request to merge train."
-msgstr ""
+msgstr "Cuireann sé an t-iarratas cumaisc seo leis an traein chumaisc."
 
 msgid "AdherenceReport|%{pendingCount}/%{totalCount} control is pending"
 msgid_plural "AdherenceReport|%{pendingCount}/%{totalCount} controls are pending"
@@ -7651,7 +7651,7 @@ msgid "AiPowered|AI logs"
 msgstr "Logaí AI"
 
 msgid "AiPowered|Add Group"
-msgstr ""
+msgstr "Cuir Grúpa leis"
 
 msgid "AiPowered|After the conversation was created"
 msgstr "Tar éis an comhrá a chruthú"
@@ -7828,19 +7828,19 @@ msgid "AiPowered|GitLab Duo Agent Platform is an AI-native coding agent."
 msgstr "Is gníomhaire códaithe dúchasach d'Intleacht Shaorga é Ardán Gníomhaire GitLab Duo."
 
 msgid "AiPowered|GitLab Duo Agents"
-msgstr ""
+msgstr "Gníomhairí GitLab Duo"
 
 msgid "AiPowered|GitLab Duo Chat conversations"
 msgstr "Comhráite GitLab Duo Chat"
 
 msgid "AiPowered|GitLab Duo Classic"
-msgstr ""
+msgstr "GitLab Duo Clasaiceach"
 
 msgid "AiPowered|GitLab Duo Core available to all users"
 msgstr "GitLab Duo Core ar fáil do gach úsáideoir"
 
 msgid "AiPowered|GitLab Duo Flows and External Agents"
-msgstr ""
+msgstr "Sreafaí GitLab Duo agus Gníomhairí Seachtracha"
 
 msgid "AiPowered|GitLab Duo Model Selection"
 msgstr "Roghnú Samhail GitLab Duo"
@@ -7858,7 +7858,7 @@ msgid "AiPowered|GitLab Duo with Amazon Q"
 msgstr "GitLab Duo le Amazon Q"
 
 msgid "AiPowered|Group"
-msgstr ""
+msgstr "Grúpa"
 
 msgid "AiPowered|Help make the next releases of GitLab better. As a member of the GitLab Early Access Program, you can take part in shaping GitLab by letting us know what you think of GitLab Duo experimental and beta features. How does this program work?"
 msgstr "Cuidigh leis na chéad eisiúintí eile de GitLab a fheabhsú. Mar bhall den Chlár Luathrochtana GitLab, is féidir leat páirt a ghlacadh i GitLab a mhúnlú trí chur in iúl dúinn cad a cheapann tú faoi ghnéithe turgnamhacha agus béite GitLab Duo. Conas a oibríonn an clár seo?"
@@ -7867,7 +7867,7 @@ msgid "AiPowered|Indirect connections through GitLab Self-Managed"
 msgstr "Naisc indíreacha trí GitLab Féinbhainistithe"
 
 msgid "AiPowered|Learn more"
-msgstr ""
+msgstr "Foghlaim níos mó"
 
 msgid "AiPowered|Local AI Gateway URL"
 msgstr "URL Gateway AI Áitiúil"
@@ -7887,11 +7887,11 @@ msgstr "Bainistigh"
 msgid "AiPowered|Maximum time in seconds to wait for responses from the AI Gateway (up to 600 seconds).%{br}Increasing this value might result in degraded user experience."
 msgstr "Uasmhéid ama i soicindí le fanacht le freagraí ón AI Gateway (suas le 600 soicind).%{br}D’fhéadfadh sé go mbeadh taithí an úsáideora lagaithe mar thoradh ar an luach seo a mhéadú."
 
-msgid "AiPowered|Member Access"
+msgid "AiPowered|Member access"
 msgstr ""
 
 msgid "AiPowered|Membership grants access to"
-msgstr ""
+msgstr "Tugann ballraíocht rochtain ar"
 
 msgid "AiPowered|Minimum role required to create, duplicate, edit, delete, and show agents and flows."
 msgstr "An ról íosta atá ag teastáil chun gníomhairí agus sreafaí a chruthú, a dhúbailt, a chur in eagar, a scriosadh agus a thaispeáint."
@@ -7911,7 +7911,7 @@ msgstr "Déan monatóireacht, bainistigh agus saincheap gnéithe faoi thiomáint
 msgid "AiPowered|Never allow GitLab to process your code and project data for AI-powered features. Your data will not be sent to GitLab Duo anywhere in this namespace."
 msgstr "Ná lig do GitLab riamh do chód agus do shonraí tionscadail a phróiseáil le haghaidh gnéithe atá faoi thiomáint ag AI. Ní sheolfar do shonraí chuig GitLab Duo áit ar bith sa spás ainm seo."
 
-msgid "AiPowered|No access rules configured."
+msgid "AiPowered|No access rules configured"
 msgstr ""
 
 msgid "AiPowered|Not enabled"
@@ -7924,7 +7924,7 @@ msgid "AiPowered|On by default"
 msgstr "Ar de réir réamhshocraithe"
 
 msgid "AiPowered|Only members of these groups will have access to selected AI features."
-msgstr ""
+msgstr "Ní bheidh rochtain ag ach baill de na grúpaí seo ar ghnéithe roghnaithe de chuid na hintleachta saorga."
 
 msgid "AiPowered|Participate in the Early Access Program and help make GitLab better"
 msgstr "Páirt a ghlacadh sa Chlár Luathrochtana agus cuidigh le GitLab a dhéanamh níos fearr"
@@ -7933,7 +7933,7 @@ msgid "AiPowered|Purchase Duo Pro seats"
 msgstr "Ceannaigh suíocháin Duo Pro"
 
 msgid "AiPowered|Remove"
-msgstr ""
+msgstr "Bain"
 
 msgid "AiPowered|Self-hosted beta models and features"
 msgstr "Samhlacha agus gnéithe béite féin-óstáilte"
@@ -25954,6 +25954,9 @@ msgstr "Taispeáin rianú ama in eisiúintí sna huaireanta iomlána amháin. %{
 msgid "Display view"
 msgstr "Radharc taispeána"
 
+msgid "Displaying frequently visited projects"
+msgstr ""
+
 msgid "Do not display content for customer experience improvement and offers from third parties"
 msgstr "Ná taispeáint ábhar chun feabhas a chur ar eispéireas custaiméirí agus tairiscint"
 
@@ -35319,6 +35322,9 @@ msgstr "Níl líon na n-iarratas cumaisc ar fáil. Athnuachan an leathanach le t
 
 msgid "HomePageMergeRequestsWidget|Waiting for your review"
 msgstr "Ag fanacht le d'athbhreithniú"
+
+msgid "HomePageProjectsWidget|Your projects are not available. Please refresh the page to try again."
+msgstr ""
 
 msgid "HomePageRecentlyViewedWidget|Your recently viewed items are not available. Please refresh the page to try again."
 msgstr "Níl na míreanna a chonaic tú le déanaí ar fáil. Athnuaigh an leathanach le triail eile a bhaint as."
@@ -54680,6 +54686,9 @@ msgstr "Tionscadail leis an ábhar seo"
 msgid "Projects with write access"
 msgstr "Tionscadail a bhfuil rochtain acu"
 
+msgid "Projects you visit will appear here."
+msgstr ""
+
 msgid "ProjectsEdit|An error occurred updating this project. Please try again."
 msgstr "Tharla earráid ag nuashonrú an tionscadal seo. Bain triail as arís."
 
@@ -56047,6 +56056,9 @@ msgstr "Cáilíocht tionscadail"
 
 msgid "Queued"
 msgstr "Ciúáilte"
+
+msgid "Quick access"
+msgstr ""
 
 msgid "Quick actions can be used in description and comment boxes."
 msgstr "Is féidir gníomhartha gasta a úsáid i mboscaí tuairisc agus tráchtaireachta."
@@ -65438,13 +65450,13 @@ msgid "Set to 0 to disable timeout."
 msgstr "Socraigh go 0 chun an t-am a dhíchumasú."
 
 msgid "Set to add to merge train when ready."
-msgstr ""
+msgstr "Socraigh le cur leis an traein chumasc nuair a bheidh sé réidh."
 
 msgid "Set to auto-merge"
 msgstr "Socraigh go huath-chumasc"
 
 msgid "Set to auto-merge."
-msgstr ""
+msgstr "Socraigh le cumasc uathoibríoch."
 
 msgid "Set up"
 msgstr "Socraigh"
@@ -65546,7 +65558,7 @@ msgid "Sets the severity"
 msgstr "Socraíonn sé an déine"
 
 msgid "Sets this merge request to auto-merge when ready."
-msgstr ""
+msgstr "Socraíonn sé seo an t-iarratas cumaisc seo chun cumasc uathoibríoch a dhéanamh nuair a bheidh sé réidh."
 
 msgid "Sets time estimate to %{time_estimate}."
 msgstr "Socraíonn meastachán ama go %{time_estimate}."
@@ -66171,10 +66183,10 @@ msgid "SlackIntegration|Slack app not enabled on GitLab instance"
 msgstr "Níl aip Slack cumasaithe ar shampla GitLab"
 
 msgid "SlackIntegration|Slack slash commands integration is deprecated"
-msgstr ""
+msgstr "Tá comhtháthú orduithe slais Slack imithe i léig"
 
 msgid "SlackIntegration|Slack slash commands integration will be removed in GitLab 19.0. To run common GitLab operations from Slack, use the GitLab for Slack app instead."
-msgstr ""
+msgstr "Bainfear comhtháthú orduithe slaise Slack i GitLab 19.0. Chun oibríochtaí coitianta GitLab a rith ó Slack, bain úsáid as an aip GitLab do Slack ina ionad."
 
 msgid "SlackIntegration|Step 1: Create your GitLab for Slack app"
 msgstr "Céim 1: Cruthaigh do aip GitLab le haghaidh Slack"
@@ -68474,7 +68486,7 @@ msgid "TargetedMessages|Failed to assign namespaces due to error processing CSV:
 msgstr "Theip ar shannadh spásanna ainm de bharr earráide a phróiseáil CSV: %{error_message}"
 
 msgid "TargetedMessages|Must have at least one targeted namespace"
-msgstr ""
+msgstr "Ní mór ainmspás spriocdhírithe amháin ar a laghad a bheith ann"
 
 msgid "TargetedMessages|Namespace IDs"
 msgstr "Aitheantóirí Ainmspáis"
@@ -73376,7 +73388,7 @@ msgid "UpdateProject|Could not set the default branch. Do you have a branch name
 msgstr "Ní fhéadfaí an brainse réamhshocraithe a shocrú. An bhfuil brainse agat darb ainm 'HEAD' i do stór? (%{linkStart} Conas is féidir liom é seo a shocrú? %{linkEnd})"
 
 msgid "UpdateProject|Job token scope cannot be disabled for this project because it is enforced for the instance. Contact your administrator to modify this setting."
-msgstr ""
+msgstr "Ní féidir raon feidhme an chomhartha poist a dhíchumasú don tionscadal seo mar go bhfuil sé i bhfeidhm don chás. Téigh i dteagmháil le do riarthóir chun an socrú seo a mhodhnú."
 
 msgid "UpdateProject|Learn more."
 msgstr "Faigh tuilleadh eolais."
@@ -73745,11 +73757,20 @@ msgstr "Seachfhreastalaí spleáchais"
 msgid "UsageQuota|Excess storage usage"
 msgstr "Úsáid stórála iomarcach"
 
+msgid "UsageQuota|Failed to fetch repository health, try again later."
+msgstr ""
+
+msgid "UsageQuota|Failed to parse Project ID from Repository."
+msgstr ""
+
 msgid "UsageQuota|Filter charts by year"
 msgstr "Scagaire cairteacha de réir bliana"
 
 msgid "UsageQuota|Filter projects data by month"
 msgstr "Scagaigh sonraí tionscadail de réir míosa"
+
+msgid "UsageQuota|Generate Report"
+msgstr ""
 
 msgid "UsageQuota|Git repository."
 msgstr "Stóras Git."
@@ -73849,6 +73870,9 @@ msgstr "Úsáid stórais a athríomh"
 
 msgid "UsageQuota|Registry"
 msgstr "Clárlann"
+
+msgid "UsageQuota|Repository Health report was not found"
+msgstr ""
 
 msgid "UsageQuota|Seat utilization"
 msgstr "Úsáid suíochán"
@@ -73963,6 +73987,9 @@ msgstr "Socruithe úsáideora %{gt} Cuótaí úsáide"
 
 msgid "UsageQuota|Wiki content."
 msgstr "Ábhar wiki."
+
+msgid "UsageQuota|You can generate a new report at any time by clicking the button below."
+msgstr ""
 
 msgid "UsageQuota|You have used %{percentageUsed}%% of your total storage."
 msgstr "D'úsáid tú %{percentageUsed}%% de do stóráil iomlán."
@@ -76600,8 +76627,11 @@ msgstr "Scór Muiníne AI"
 msgid "Vulnerability|AI detected false positive"
 msgstr "Bhraith AI dearfach bréagach"
 
-msgid "Vulnerability|AI false positive Confidence Score"
-msgstr "Scór Muiníne dearfach bréagach AI"
+msgid "Vulnerability|AI false positive assessment details"
+msgstr "Sonraí measúnaithe dearfacha bréagacha AI"
+
+msgid "Vulnerability|AI false positive confidence score"
+msgstr "Scór muiníne dearfach bréagach AI"
 
 msgid "Vulnerability|AI has created a merge request to resolve this vulnerability"
 msgstr "Chruthaigh AI iarratas cumaisc chun an leochaileacht seo a réiteach"
@@ -78229,7 +78259,7 @@ msgstr[3] "+%d míranna níos mó"
 msgstr[4] "+%d míranna níos mó"
 
 msgid "WorkItem|140 characters max"
-msgstr ""
+msgstr "140 carachtar ar a mhéad"
 
 msgid "WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}."
 msgstr "Ní féidir %{workItemType} neamh-rúnda a shannadh do thuismitheoir rúnda %{parentWorkItemType}."
@@ -78274,7 +78304,7 @@ msgid "WorkItem|Add up to 10 items at a time."
 msgstr "Cuir suas le 10 mír leis ag an am."
 
 msgid "WorkItem|Add view"
-msgstr ""
+msgstr "Cuir radharc leis"
 
 msgid "WorkItem|All activity"
 msgstr "Gach gníomhaíocht"
@@ -78325,7 +78355,7 @@ msgid "WorkItem|Ancestor not available"
 msgstr "Níl sinsear ar fáil"
 
 msgid "WorkItem|Anyone with access to this project can add the view, and those with the Planner and above roles can edit it."
-msgstr ""
+msgstr "Is féidir le duine ar bith a bhfuil rochtain aige ar an tionscadal seo an radharc a chur leis, agus is féidir leo siúd a bhfuil róil an Phleanálaí agus thuas acu é a chur in eagar."
 
 msgid "WorkItem|Apply template"
 msgstr "Cuir teimpléad i bhfeidhm"
@@ -78505,7 +78535,7 @@ msgid "WorkItem|Create new work item by email"
 msgstr "Cruthaigh mír oibre nua trí ríomhphost"
 
 msgid "WorkItem|Create view"
-msgstr ""
+msgstr "Cruthaigh radharc"
 
 msgid "WorkItem|Created %{timeago}"
 msgstr "Cruthaíodh %{timeago}"
@@ -78622,7 +78652,7 @@ msgid "WorkItem|Existing task"
 msgstr "Tasc atá ann cheana"
 
 msgid "WorkItem|Existing view"
-msgstr ""
+msgstr "Radharc atá ann cheana féin"
 
 msgid "WorkItem|Export as CSV"
 msgstr "Easpórtáil mar CSV"
@@ -78884,7 +78914,7 @@ msgid "WorkItem|New type"
 msgstr "Cineál nua"
 
 msgid "WorkItem|New view"
-msgstr ""
+msgstr "Radharc nua"
 
 msgid "WorkItem|No assignees"
 msgstr "Gan sannaithe"
@@ -78983,7 +79013,7 @@ msgid "WorkItem|Only 10 items can be added at a time."
 msgstr "Ní féidir ach 10 n-earraí a chur leis ag an am."
 
 msgid "WorkItem|Only you can see and edit this view."
-msgstr ""
+msgstr "Ní féidir ach leatsa an radharc seo a fheiceáil agus a chur in eagar."
 
 msgid "WorkItem|Open"
 msgstr "Oscail"
@@ -79016,7 +79046,7 @@ msgid "WorkItem|Please select a file to import."
 msgstr "Roghnaigh comhad le hallmhairiú le do thoil."
 
 msgid "WorkItem|Private"
-msgstr ""
+msgstr "Príobháideach"
 
 msgid "WorkItem|Progress"
 msgstr "Dul chun cinn"
@@ -79139,7 +79169,7 @@ msgid "WorkItem|Send email"
 msgstr "Seol ríomhphost"
 
 msgid "WorkItem|Shared"
-msgstr ""
+msgstr "Roinnte"
 
 msgid "WorkItem|Show all ancestors"
 msgstr "Taispeáin gach sinsear"
@@ -79373,7 +79403,7 @@ msgid "WorkItem|Time tracking"
 msgstr "Rianú ama"
 
 msgid "WorkItem|Title is required."
-msgstr ""
+msgstr "Tá teideal ag teastáil."
 
 msgid "WorkItem|To do"
 msgstr "Le déanamh"
@@ -79672,20 +79702,31 @@ msgstr "Cruthaithe"
 msgid "Workspaces|Creating"
 msgstr "Ag cruthú"
 
-msgid "Workspaces|Defines the workspace's development environment."
-msgstr "Sainmhíníonn timpeallacht forbartha an spás oibre."
-
 msgid "Workspaces|Devfile"
 msgstr "Devfile"
 
-msgid "Workspaces|Devfile location"
-msgstr "Suíomh Devfile"
+msgid "Workspaces|Devfile Validation Rules."
+msgstr ""
+
+msgid "Workspaces|Devfile is invalid."
+msgstr ""
 
 msgid "Workspaces|Each workspace is a secure cloud environment for your GitLab project. Quickly switch between projects, live preview, and compile code on any device."
 msgstr "Is timpeallacht scamall slán é gach spás oibre do do thionscadal GitLab. Athraigh go tapa idir tionscadail, réamhamharc beo, agus cód a thiomsú ar aon ghléas."
 
+msgid "Workspaces|Encountered error while attempting to validate the Devfile."
+msgstr ""
+
 msgid "Workspaces|Error"
 msgstr "Earráid"
+
+msgid "Workspaces|Error processing the Devfile."
+msgid_plural "Workspaces|%{count} errors processing the Devfile."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
 
 msgid "Workspaces|Failed"
 msgstr "Theip"
@@ -79732,6 +79773,9 @@ msgstr "Foghlaim tuilleadh faoi ghníomhairí."
 msgid "Workspaces|Learn more."
 msgstr "Foghlaim níos mó."
 
+msgid "Workspaces|More Information."
+msgstr ""
+
 msgid "Workspaces|Name"
 msgstr "Ainm"
 
@@ -79756,17 +79800,11 @@ msgstr "Gan cheangal"
 msgid "Workspaces|Open workspace"
 msgstr "Spás oibre oscailte"
 
-msgid "Workspaces|Path to devfile"
-msgstr "Cosán chuig devfile"
-
 msgid "Workspaces|Project"
 msgstr "Tionscadal"
 
 msgid "Workspaces|Project reference"
 msgstr "Tagairt tionscadail"
-
-msgid "Workspaces|Provide a relative path if the devfile is not in the project's root directory."
-msgstr "Cuir cosán coibhneasta ar fáil mura bhfuil an devfile i bhfréamheolaire an tionscadail."
 
 msgid "Workspaces|Restart"
 msgstr "Athosaigh"
@@ -79818,9 +79856,6 @@ msgstr "Níl aon ghníomhairí ag an ngrúpa seo. Tosaigh trí ghníomhaire a ch
 
 msgid "Workspaces|This group has no available agents. Select the %{strongStart}All agents%{strongEnd} tab and allow at least one agent."
 msgstr "Níl aon ghníomhairí ar fáil ag an ngrúpa seo. Roghnaigh an cluaisín %{strongStart} Gach gníomhaire %{strongEnd} agus lig gníomhaire amháin ar a laghad."
-
-msgid "Workspaces|To create a workspace, add a devfile to this project. A devfile is a configuration file for your workspace."
-msgstr "Chun spás oibre a chruthú, cuir devfile leis an tionscadal seo. Is comhad cumraíochta é devfile do do spás oibre."
 
 msgid "Workspaces|Unable to complete request. Please try again."
 msgstr "Ní féidir an t-iarratas a chríochnú. Déan iarracht arís."
@@ -82407,9 +82442,6 @@ msgstr "tá leibhéal neadaithe ró-dhomhain aige"
 
 msgid "help"
 msgstr "cabhair"
-
-msgid "hours"
-msgstr "uaireanta"
 
 msgid "http:"
 msgstr "http:"

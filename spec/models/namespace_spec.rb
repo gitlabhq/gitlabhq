@@ -2240,6 +2240,37 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#all_active_project_ids' do
+    let_it_be(:namespace) { create(:group) }
+    let_it_be(:child) { create(:group, parent: namespace) }
+    let_it_be(:active_project1) { create(:project, namespace: namespace) }
+    let_it_be(:active_project2) { create(:project, namespace: child) }
+    let_it_be(:archived_project) { create(:project, :archived, namespace: namespace) }
+    let_it_be(:pending_deletion_project) { create(:project, namespace: child, marked_for_deletion_at: Date.current) }
+
+    before do
+      reload_models(namespace, child)
+    end
+
+    it 'returns only active project IDs excluding archived and pending deletion' do
+      expect(namespace.all_active_project_ids.pluck(:id)).to match_array([active_project1.id, active_project2.id])
+    end
+
+    it 'excludes archived projects' do
+      expect(namespace.all_active_project_ids.pluck(:id)).not_to include(archived_project.id)
+    end
+
+    it 'excludes projects pending deletion' do
+      expect(namespace.all_active_project_ids.pluck(:id)).not_to include(pending_deletion_project.id)
+    end
+
+    context 'for child namespace' do
+      it 'returns only active projects in that namespace' do
+        expect(child.all_active_project_ids.pluck(:id)).to match_array([active_project2.id])
+      end
+    end
+  end
+
   describe '#all_projects' do
     include_examples '#all_projects'
 

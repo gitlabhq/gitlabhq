@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-12-30 13:19\n"
+"PO-Revision-Date: 2026-01-05 20:44\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 에서 %{end}"
@@ -4717,7 +4717,7 @@ msgid "Add to merge train when all merge checks pass"
 msgstr "모든 머지 검사가 통과되면 머지 트레인에 추가"
 
 msgid "Add to merge train when ready"
-msgstr ""
+msgstr "준비가 되면 머지 트레인에 추가"
 
 msgid "Add to review"
 msgstr "리뷰 추가"
@@ -4816,7 +4816,7 @@ msgid "Added in this version"
 msgstr "이 버전에 추가됨"
 
 msgid "Added to merge train."
-msgstr ""
+msgstr "머지 트레인에 추가되었습니다."
 
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission."
 msgstr "GitLab 인스턴스에서 새 애플리케이션 추가가 비활성화되어 있습니다. 권한을 얻으려면 GitLab 운영자에게 문의하십시오."
@@ -4877,10 +4877,10 @@ msgid "Adds email participants that don't have a GitLab account."
 msgstr "GitLab 계정이 없는 이메일 참가자를 추가하세요."
 
 msgid "Adds this merge request to merge train when ready."
-msgstr ""
+msgstr "준비가 되면 이 머지 리퀘스트를 머지 트레인에 추가합니다."
 
 msgid "Adds this merge request to merge train."
-msgstr ""
+msgstr "이 머지 리퀘스트를 머지 트레인에 추가합니다."
 
 msgid "AdherenceReport|%{pendingCount}/%{totalCount} control is pending"
 msgid_plural "AdherenceReport|%{pendingCount}/%{totalCount} controls are pending"
@@ -5553,7 +5553,7 @@ msgid "AdminSettings|Configure when dormant projects should be automatically del
 msgstr "휴면 프로젝트를 자동으로 삭제할 시점를 구성. %{linkStart}휴면 프로젝트란 무엇인가요?%{linkEnd}"
 
 msgid "AdminSettings|Control which projects can publish components to the CI/CD Catalog. Enter one project path or regular expression pattern per line.  For example: %{code_start}gitlab-org/my-project%{code_end}, %{code_start}gitlab-org/.*%{code_end}, or %{code_start}gitlab-org/security-.*%{code_end}. If empty, any project can publish."
-msgstr ""
+msgstr "어떤 프로젝트가 CI/CD 카탈로그에 컴포넌트를 게시할 수 있는지 제어합니다. 한 줄에 하나의 프로젝트 경로 또는 정규표현식 패턴을 입력하세요.  예:%{code_start}gitlab-org/my-project%{code_end}, %{code_start}gitlab-org/.*%{code_end}, %{code_start}}gitlab-org/security-.*%{code_end}. 비워 두면 모든 프로젝트가 게시할 수 있습니다."
 
 msgid "AdminSettings|Could not update extension host domain"
 msgstr "확장 호스트 도메인을 업데이트 할 수 없습니다"
@@ -6927,7 +6927,7 @@ msgid "AiPowered|AI logs"
 msgstr "AI 로그"
 
 msgid "AiPowered|Add Group"
-msgstr ""
+msgstr "그룹 추가"
 
 msgid "AiPowered|After the conversation was created"
 msgstr "대화가 생성된 이후"
@@ -7104,19 +7104,19 @@ msgid "AiPowered|GitLab Duo Agent Platform is an AI-native coding agent."
 msgstr "GitLab Duo 에이진트 플랫폼은 AI-네이티브 코딩 에이전트 입니다."
 
 msgid "AiPowered|GitLab Duo Agents"
-msgstr ""
+msgstr "GitLab Duo 에이전트"
 
 msgid "AiPowered|GitLab Duo Chat conversations"
 msgstr "GitLab Duo Chat 대화"
 
 msgid "AiPowered|GitLab Duo Classic"
-msgstr ""
+msgstr "GitLab Duo 클래식"
 
 msgid "AiPowered|GitLab Duo Core available to all users"
 msgstr "GitLab Duo Core가 모든 사용자에게 사용가능합니다"
 
 msgid "AiPowered|GitLab Duo Flows and External Agents"
-msgstr ""
+msgstr "GitLab Duo 플로우와 외부 에이전트"
 
 msgid "AiPowered|GitLab Duo Model Selection"
 msgstr "GitLab Duo 모델 선택"
@@ -7134,7 +7134,7 @@ msgid "AiPowered|GitLab Duo with Amazon Q"
 msgstr "Amazon Q와 GitLab Duo"
 
 msgid "AiPowered|Group"
-msgstr ""
+msgstr "그룹"
 
 msgid "AiPowered|Help make the next releases of GitLab better. As a member of the GitLab Early Access Program, you can take part in shaping GitLab by letting us know what you think of GitLab Duo experimental and beta features. How does this program work?"
 msgstr "GitLab의 다음 릴리스를 개선하는 데 도움을 주세요. GitLab 먼저 체험하기 프로그램의 멤버로서 GitLab Duo 실험기능 및 베타 기능에 대한 의견을 알려주시면 GitLab을 형성하는 데 참여할 수 있습니다. 이 프로그램은 어떻게 작동하나요?"
@@ -7143,7 +7143,7 @@ msgid "AiPowered|Indirect connections through GitLab Self-Managed"
 msgstr "자체 관리 GitLab을 통한 간접 연결"
 
 msgid "AiPowered|Learn more"
-msgstr ""
+msgstr "자세히 알아보기"
 
 msgid "AiPowered|Local AI Gateway URL"
 msgstr "로컬 AI 게이트웨이 URL"
@@ -7163,11 +7163,11 @@ msgstr "관리"
 msgid "AiPowered|Maximum time in seconds to wait for responses from the AI Gateway (up to 600 seconds).%{br}Increasing this value might result in degraded user experience."
 msgstr "AI 게이트웨이에서 응답을 기다리는 최대 시간(최대 600초). %{br} 이 값을 증가시키면 사용자 경험이 나빠질 수 있습니다."
 
-msgid "AiPowered|Member Access"
+msgid "AiPowered|Member access"
 msgstr ""
 
 msgid "AiPowered|Membership grants access to"
-msgstr ""
+msgstr "억세스가 허가된 멤버쉽"
 
 msgid "AiPowered|Minimum role required to create, duplicate, edit, delete, and show agents and flows."
 msgstr "에이전트와 플로우를 생성, 복제, 편집, 삭제 및 표시하기 위해 필요한 최소 권한."
@@ -7187,7 +7187,7 @@ msgstr "AI 기반 기능을 모니터링, 관리 및 커스터마이징 하여 �
 msgid "AiPowered|Never allow GitLab to process your code and project data for AI-powered features. Your data will not be sent to GitLab Duo anywhere in this namespace."
 msgstr "GitLab이 AI 기반 기능을 위해 당신의 코드와 프로젝트 데이터를 처리하지 않도록 합니다. 이 네임스페이스 내에서 당신의 데이터는 GitLab Duo로 전송되지 않습니다."
 
-msgid "AiPowered|No access rules configured."
+msgid "AiPowered|No access rules configured"
 msgstr ""
 
 msgid "AiPowered|Not enabled"
@@ -7200,7 +7200,7 @@ msgid "AiPowered|On by default"
 msgstr "기본적으로 켜짐"
 
 msgid "AiPowered|Only members of these groups will have access to selected AI features."
-msgstr ""
+msgstr "이 그룹의 멤버만 선택된 AI 기능에 접근할 수 있습니다."
 
 msgid "AiPowered|Participate in the Early Access Program and help make GitLab better"
 msgstr "먼저 체험하기 프로그램에 참여하여 GitLab을 더욱 개선하는 데 도움을 주세요."
@@ -7209,7 +7209,7 @@ msgid "AiPowered|Purchase Duo Pro seats"
 msgstr "Duo Pro 좌석 구매"
 
 msgid "AiPowered|Remove"
-msgstr ""
+msgstr "삭제"
 
 msgid "AiPowered|Self-hosted beta models and features"
 msgstr "자체 호스팅 베타 모델과 기능"
@@ -24970,6 +24970,9 @@ msgstr "문제의 추적시간을 총 시간으로만 표시합니다. %{link_st
 msgid "Display view"
 msgstr "뷰 표시"
 
+msgid "Displaying frequently visited projects"
+msgstr ""
+
 msgid "Do not display content for customer experience improvement and offers from third parties"
 msgstr "고객 경험 개선 및 제3자의 제안을 위한 콘텐츠를 표시하지 마십시오."
 
@@ -34227,6 +34230,9 @@ msgstr "머지 리퀘스트 수를 확인할 수 없습니다. 페이지를 새�
 
 msgid "HomePageMergeRequestsWidget|Waiting for your review"
 msgstr "당신의 검토를 기다림"
+
+msgid "HomePageProjectsWidget|Your projects are not available. Please refresh the page to try again."
+msgstr ""
 
 msgid "HomePageRecentlyViewedWidget|Your recently viewed items are not available. Please refresh the page to try again."
 msgstr "최근에 본 항목을 확인할 수 없습니다. 페이지를 새로 고침하여 다시 시도해 주세요."
@@ -53400,6 +53406,9 @@ msgstr "이 주제의 프로젝트"
 msgid "Projects with write access"
 msgstr "쓰기 권한이 있는 프로젝트"
 
+msgid "Projects you visit will appear here."
+msgstr ""
+
 msgid "ProjectsEdit|An error occurred updating this project. Please try again."
 msgstr "이 프로젝트를 업데이트하는 동안 오류가 발생했습니다. 다시 시도해 주세요."
 
@@ -54755,6 +54764,9 @@ msgstr "프로젝트 품질"
 
 msgid "Queued"
 msgstr "대기열에 추가됨"
+
+msgid "Quick access"
+msgstr ""
 
 msgid "Quick actions can be used in description and comment boxes."
 msgstr "빠른 동작은 설명 및 댓글 상자에서 사용할 수 있습니다."
@@ -63926,13 +63938,13 @@ msgid "Set to 0 to disable timeout."
 msgstr "시간 초과를 비활성화하려면 0으로 설정합니다."
 
 msgid "Set to add to merge train when ready."
-msgstr ""
+msgstr "준비가 되면 머지 트레인에 추가하도록 설정합니다."
 
 msgid "Set to auto-merge"
 msgstr "자동 병합으로 설정"
 
 msgid "Set to auto-merge."
-msgstr ""
+msgstr "자동 머지로 설정합니다."
 
 msgid "Set up"
 msgstr "설정"
@@ -64034,7 +64046,7 @@ msgid "Sets the severity"
 msgstr "심각도 설정"
 
 msgid "Sets this merge request to auto-merge when ready."
-msgstr ""
+msgstr "이 머지 리퀘스트를 준비가 되면 자동 머지로 설정합니다."
 
 msgid "Sets time estimate to %{time_estimate}."
 msgstr "추정 시간을 %{time_estimate}로 설정합니다."
@@ -71684,7 +71696,7 @@ msgid "UpdateProject|Could not set the default branch. Do you have a branch name
 msgstr "기본 브랜치를 설정할 수 없습니다. 리포지토리에 'HEAD'라는 브랜치가 있습니까? (%{linkStart}이 문제를 어떻게 해결합니까?%{linkEnd})"
 
 msgid "UpdateProject|Job token scope cannot be disabled for this project because it is enforced for the instance. Contact your administrator to modify this setting."
-msgstr ""
+msgstr "인스턴스에 강제 적용되어 있어 이 프로젝트의 작업 토큰 범위를 비활성화 할 수 없습니다. 이 설정을 변경하려면 관리자에게 문의하십시오."
 
 msgid "UpdateProject|Learn more."
 msgstr "자세히 알아보세요"
@@ -72045,11 +72057,20 @@ msgstr "의존성 프록시"
 msgid "UsageQuota|Excess storage usage"
 msgstr "초과 스토리지 사용량"
 
+msgid "UsageQuota|Failed to fetch repository health, try again later."
+msgstr ""
+
+msgid "UsageQuota|Failed to parse Project ID from Repository."
+msgstr ""
+
 msgid "UsageQuota|Filter charts by year"
 msgstr "연도별 차트 필터링"
 
 msgid "UsageQuota|Filter projects data by month"
 msgstr "월별 프로젝트 데이터 필터"
+
+msgid "UsageQuota|Generate Report"
+msgstr ""
 
 msgid "UsageQuota|Git repository."
 msgstr "Git 레포지토리"
@@ -72149,6 +72170,9 @@ msgstr "리포지토리 사용량 다시 계산"
 
 msgid "UsageQuota|Registry"
 msgstr "레지스트리"
+
+msgid "UsageQuota|Repository Health report was not found"
+msgstr ""
 
 msgid "UsageQuota|Seat utilization"
 msgstr "좌석 활용도"
@@ -72263,6 +72287,9 @@ msgstr "사용자 설정 %{gt} 사용 할당량"
 
 msgid "UsageQuota|Wiki content."
 msgstr "위키 컨텐츠."
+
+msgid "UsageQuota|You can generate a new report at any time by clicking the button below."
+msgstr ""
 
 msgid "UsageQuota|You have used %{percentageUsed}%% of your total storage."
 msgstr "전체 저장 공간의 %{percentageUsed}%%를 사용했습니다."
@@ -74824,8 +74851,11 @@ msgstr "AI 신뢰도 점수"
 msgid "Vulnerability|AI detected false positive"
 msgstr "AI가 거짓 양성을 감지함"
 
-msgid "Vulnerability|AI false positive Confidence Score"
-msgstr "AI 거짓 양성 신뢰 점수"
+msgid "Vulnerability|AI false positive assessment details"
+msgstr ""
+
+msgid "Vulnerability|AI false positive confidence score"
+msgstr ""
 
 msgid "Vulnerability|AI has created a merge request to resolve this vulnerability"
 msgstr "AI는 현재 이 취약점을 해결하기 위해 머지 리퀘스트를 생성했습니다"
@@ -77860,20 +77890,27 @@ msgstr "생성됨"
 msgid "Workspaces|Creating"
 msgstr "생성중"
 
-msgid "Workspaces|Defines the workspace's development environment."
-msgstr "작업 공간의 개발 환경을 정의."
-
 msgid "Workspaces|Devfile"
 msgstr "Devfile"
 
-msgid "Workspaces|Devfile location"
-msgstr "Devfile 위치"
+msgid "Workspaces|Devfile Validation Rules."
+msgstr ""
+
+msgid "Workspaces|Devfile is invalid."
+msgstr ""
 
 msgid "Workspaces|Each workspace is a secure cloud environment for your GitLab project. Quickly switch between projects, live preview, and compile code on any device."
 msgstr "각 작업 공간은 GitLab 프로젝트를 위한 안전한 클라우드 환경입니다. 모든 기기에서 프로젝트 간을 빠르게 전환하고, 라이브 미리보기를 하고, 코드를 컴파일하세요."
 
+msgid "Workspaces|Encountered error while attempting to validate the Devfile."
+msgstr ""
+
 msgid "Workspaces|Error"
 msgstr "오류"
+
+msgid "Workspaces|Error processing the Devfile."
+msgid_plural "Workspaces|%{count} errors processing the Devfile."
+msgstr[0] ""
 
 msgid "Workspaces|Failed"
 msgstr "실패"
@@ -77920,6 +77957,9 @@ msgstr "에이전트에 대해 좀더 알아보기."
 msgid "Workspaces|Learn more."
 msgstr "자세히 알아보세요."
 
+msgid "Workspaces|More Information."
+msgstr ""
+
 msgid "Workspaces|Name"
 msgstr "이름"
 
@@ -77944,17 +77984,11 @@ msgstr "연결되지 않음"
 msgid "Workspaces|Open workspace"
 msgstr "작업공간 열기"
 
-msgid "Workspaces|Path to devfile"
-msgstr "devfile 경로"
-
 msgid "Workspaces|Project"
 msgstr "프로젝트"
 
 msgid "Workspaces|Project reference"
 msgstr "프로젝트 참조"
-
-msgid "Workspaces|Provide a relative path if the devfile is not in the project's root directory."
-msgstr "개발 파일이 프로젝트의 루트 디렉토리에 없는 경우 상대 경로를 제공하세요."
 
 msgid "Workspaces|Restart"
 msgstr "다시 시작"
@@ -78006,9 +78040,6 @@ msgstr "이 그룹에는 에이전트가 없습니다. 에이전트를 생성하
 
 msgid "Workspaces|This group has no available agents. Select the %{strongStart}All agents%{strongEnd} tab and allow at least one agent."
 msgstr "이 그룹에는 사용 가능한 에이전트가 없습니다. %{strongStart}모든 에이전트%{strongEnd} 탭을 선택하고 하나 이상의 에이전트를 허용합니다."
-
-msgid "Workspaces|To create a workspace, add a devfile to this project. A devfile is a configuration file for your workspace."
-msgstr "작업 공간을 만들려면 이 프로젝트에 devfile을 추가하십시오. devfile은 작업공간의 구성 파일입니다."
 
 msgid "Workspaces|Unable to complete request. Please try again."
 msgstr "요청사항을 완료할 수 없습니다. 다시 시도해 보세요."
@@ -80499,9 +80530,6 @@ msgstr "네스팅 수준이 너무 높음"
 
 msgid "help"
 msgstr "도움"
-
-msgid "hours"
-msgstr "시간"
 
 msgid "http:"
 msgstr "http:"

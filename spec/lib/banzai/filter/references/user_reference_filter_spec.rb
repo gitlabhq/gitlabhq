@@ -201,12 +201,26 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter, feature_category
 
       expect(doc.css('a').first.attr('href')).to eq urls.user_url(group)
     end
+
+    it 'adds data-original for the redactor, preserving the input' do
+      reference = group.to_reference
+      entered = reference.upcase
+      expect(entered).not_to eq(reference)
+
+      doc = reference_filter("Hey #{entered}", context)
+      a = doc.css('a').first
+
+      expect(a.content).to eq(reference) # Text content is canonicalised (when visible) ...
+      expect(a.attr('data-original')).to eq(entered) # ... but original input is preserved for redaction.
+    end
   end
 
   describe '#namespaces' do
     it 'returns a Hash containing all Namespaces' do
-      document = Nokogiri::HTML.fragment("<p>#{get_reference(user)}</p>")
-      filter = described_class.new(document, project: project)
+      frag = Nokogiri::HTML.fragment("<p></p>")
+      frag.css('p').first.content = get_reference(user)
+
+      filter = described_class.new(frag, project: project)
       ns = user.namespace
 
       expect(filter.send(:namespaces)).to eq({ ns.path => ns })
@@ -215,10 +229,36 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter, feature_category
 
   describe '#usernames' do
     it 'returns the usernames mentioned in a document' do
-      document = Nokogiri::HTML.fragment("<p>#{get_reference(user)}</p>")
-      filter = described_class.new(document, project: project)
+      frag = Nokogiri::HTML.fragment("<p></p>")
+      frag.css('p').first.content = get_reference(user)
+
+      filter = described_class.new(frag, project: project)
 
       expect(filter.send(:usernames)).to eq([user.username])
+    end
+
+    it 'correctly locates username mentions in hrefs' do
+      frag = Nokogiri::HTML.fragment("<p></p>")
+
+      a = frag.document.create_element('a')
+      frag.css('p').first.add_child(a)
+      a['href'] = get_reference(user)
+
+      filter = described_class.new(frag, project: project)
+
+      expect(filter.send(:usernames)).to eq([user.username])
+    end
+
+    it 'does not locate username mentions where it ought not look' do
+      frag = Nokogiri::HTML.fragment("<p></p>")
+
+      a = frag.document.create_element('a')
+      frag.css('p').first.add_child(a)
+      a['data-elsewhere'] = get_reference(user)
+
+      filter = described_class.new(frag, project: project)
+
+      expect(filter.send(:usernames)).to eq([])
     end
   end
 

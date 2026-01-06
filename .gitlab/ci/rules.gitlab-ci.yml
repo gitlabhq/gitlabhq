@@ -1629,7 +1629,7 @@
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       changes: *setup-test-env-patterns
     - <<: *if-default-refs
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
 
 .frontend:rules:default-frontend-jobs-with-docs-changes:
   rules:
@@ -1651,14 +1651,14 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-fork-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
     - if: '$ENABLE_RSPEC_FRONTEND_FIXTURE == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     # From .frontend:rules:jest
     - <<: *if-automated-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
     - <<: *if-security-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       changes: *setup-test-env-patterns
@@ -1676,7 +1676,7 @@
       when: never
     # From .frontend:rules:default-frontend-jobs
     - <<: *if-default-refs
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
 
 # .frontend:rules:default-frontend-jobs, with a additional rules when MR is not approved
 .frontend:rules:compile-storybook:
@@ -1695,7 +1695,7 @@
       when: never
     # From .frontend:rules:default-frontend-jobs
     - <<: *if-default-refs
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
 
 .frontend:rules:test-storybook:
   rules:
@@ -1745,9 +1745,9 @@
       when: never
     - if: '$ENABLE_JEST == "true"'
     - <<: *if-automated-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
     - <<: *if-security-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       changes: *setup-test-env-patterns
@@ -1758,7 +1758,7 @@
     - <<: *if-merge-request-not-approved
       when: never
     - <<: *if-default-refs
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
 
 .frontend:rules:fe-islands:
   rules:
@@ -1772,7 +1772,7 @@
 .frontend:rules:jest:predictive:
   rules:
     - <<: *if-fork-merge-request
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
     - !reference [".frontend:rules:predictive-default-rules", rules]
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       when: never
@@ -1803,7 +1803,7 @@
       when: never
     # From .frontend:rules:default-frontend-jobs
     - <<: *if-default-refs
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
 
 .frontend:rules:coverage-frontend:
   rules:
@@ -1815,7 +1815,7 @@
       when: never
     - <<: *if-export-coverage
     - <<: *if-default-branch-refs
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
 
 .frontend:rules:bundle-size-review:
   rules:
@@ -1878,7 +1878,7 @@
 .frontend:rules:update-frontend-fixtures:
   rules:
     - if: $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"
-      changes: *code-backstage-patterns
+      changes: *code-backstage-spec-patterns
 
 .frontend:rules:update-fe-islands:
   rules:

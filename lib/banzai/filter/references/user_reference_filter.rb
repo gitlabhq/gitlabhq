@@ -53,14 +53,14 @@ module Banzai
         def object_link_filter(text, pattern, link_content_html: nil, link_reference: false)
           references_in(text, pattern) do |match_text, username|
             if Feature.disabled?(:disable_all_mention) && username == 'all' && !skip_project_check?
-              link_to_all(link_content_html: link_content_html)
+              link_to_all(match_text:, link_content_html:)
             else
-              cached_call(:banzai_url_for_object, match_text, path: [User, username.downcase]) do
+              cached_call(:banzai_url_for_object, match_text, path: [User, username]) do
                 # order is important: per-organization usernames should be checked before global namespace
                 if org_user_detail = org_user_details[username.downcase]
-                  link_to_org_user_detail(org_user_detail)
+                  link_to_org_user_detail(org_user_detail, match_text:, link_content_html:)
                 elsif namespace = namespaces[username.downcase]
-                  link_to_namespace(namespace, link_content_html: link_content_html)
+                  link_to_namespace(namespace, match_text:, link_content_html:)
                 end
               end
             end
@@ -97,9 +97,16 @@ module Banzai
         def usernames
           refs = Set.new
 
+          ref_pattern = User.reference_pattern
+          ref_pattern_anchor = /\A#{ref_pattern}\z/
+
           nodes.each do |node|
-            node.to_html.scan(User.reference_pattern) do
+            node.content.scan(ref_pattern) do
               refs << $~[:user]
+            end
+
+            yield_valid_link(node) do |link|
+              refs << $~[:user] if link.match(ref_pattern_anchor)
             end
           end
 
@@ -114,50 +121,52 @@ module Banzai
           [reference_class(:project_member, tooltip: false), "js-user-link"].join(" ")
         end
 
-        def link_to_all(link_content_html: nil)
+        def link_to_all(match_text:, link_content_html:)
           author = context[:author]
 
           if author && !team_member?(author)
             link_content_html
           else
-            parent_url(link_content_html, author)
+            parent_url(author, match_text:, link_content_html:)
           end
         end
 
-        def link_to_namespace(namespace, link_content_html: nil)
+        def link_to_namespace(namespace, match_text:, link_content_html:)
           if namespace.is_a?(Group)
-            link_to_group(namespace.full_path, namespace, link_content_html: link_content_html)
+            link_to_group(namespace.full_path, namespace, match_text:, link_content_html:)
           else
-            link_to_user(namespace.path, namespace, link_content_html: link_content_html)
+            link_to_user(namespace.path, namespace, match_text:, link_content_html:)
           end
         end
 
-        def link_to_group(group, namespace, link_content_html: nil)
+        def link_to_group(group, namespace, match_text:, link_content_html:)
           url = urls.group_url(group, only_path: context[:only_path])
-          data = data_attribute(group: namespace.id)
+          data_attributes = data_attributes_for(match_text, link_content_html, group: namespace.id)
           html_content = link_content_html || CGI.escapeHTML(Group.reference_prefix + group)
 
-          link_tag(url, data, html_content, namespace.full_name)
+          link_tag(url, data_attributes, html_content, namespace.full_name)
         end
 
-        def link_to_user(user, namespace, link_content_html: nil)
+        def link_to_user(user, namespace, match_text:, link_content_html:)
           url = urls.user_url(user, only_path: context[:only_path])
-          data = data_attribute(user: namespace.owner_id)
+          data_attributes = data_attributes_for(match_text, link_content_html, user: namespace.owner_id)
           html_content = link_content_html || CGI.escapeHTML(User.reference_prefix + user)
 
-          link_tag(url, data, html_content, namespace.owner_name)
+          link_tag(url, data_attributes, html_content, namespace.owner_name)
         end
 
-        def link_to_org_user_detail(org_user_detail, link_content_html: nil)
+        def link_to_org_user_detail(org_user_detail, match_text:, link_content_html:)
           user = org_user_detail.user
           url = urls.user_url(user, only_path: context[:only_path])
-          data = data_attribute(user: user.id)
+          data_attributes = data_attributes_for(match_text, link_content_html, user: user.id)
           html_content = link_content_html || CGI.escapeHTML(org_user_detail.to_reference)
 
-          link_tag(url, data, html_content, org_user_detail.username)
+          link_tag(url, data_attributes, html_content, org_user_detail.username)
         end
 
-        def link_tag(url, data, link_content_html, title)
+        def link_tag(url, data_attributes, link_content_html, title)
+          data = data_attribute(data_attributes)
+
           write_opening_tag("a", {
             "href" => url,
             "title" => title,
@@ -185,17 +194,19 @@ module Banzai
           parent.member?(user)
         end
 
-        def parent_url(link_content_html, author)
+        def parent_url(author, match_text:, link_content_html:)
           if parent_group?
             url = urls.group_url(parent, only_path: context[:only_path])
-            data = data_attribute(group: group.id, author: author.try(:id))
+            data_attributes = data_attributes_for(match_text, link_content_html, group: group.id,
+              author: author.try(:id))
           else
             url = urls.project_url(parent, only_path: context[:only_path])
-            data = data_attribute(project: project.id, author: author.try(:id))
+            data_attributes = data_attributes_for(match_text, link_content_html, project: project.id,
+              author: author.try(:id))
           end
 
           html_content = link_content_html || CGI.escapeHTML(User.reference_prefix + 'all')
-          link_tag(url, data, html_content, 'All Project and Group Members')
+          link_tag(url, data_attributes, html_content, 'All Project and Group Members')
         end
       end
     end
