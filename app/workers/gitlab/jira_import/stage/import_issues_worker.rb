@@ -9,7 +9,10 @@ module Gitlab
         private
 
         def import(project)
-          jobs_waiter = Gitlab::JiraImport::IssuesImporter.new(project).execute
+          jobs_waiter = Gitlab::JiraImport::IssuesImporter.new(
+            project,
+            project.jira_integration.client(read_timeout: 2.minutes)
+          ).execute
 
           project.latest_jira_import.refresh_jid_expiration
 
@@ -21,8 +24,7 @@ module Gitlab
         end
 
         def next_stage(project)
-          pagination_state = Gitlab::JiraImport.get_pagination_state(project.id)
-          pagination_state[:is_last] ? :attachments : :issues
+          Gitlab::JiraImport.get_issues_next_start_at(project.id) < 0 ? :attachments : :issues
         end
       end
     end

@@ -365,7 +365,7 @@ func configureRoutes(u *upstream) {
 		// Duo Workflow websocket
 		u.wsRoute(
 			newRoute(apiPattern+`v4/ai/duo_workflows/ws\z`, "duo_workflow_ws", railsBackend),
-			duoworkflow.Handler(api, u)),
+			duoworkflow.Handler(api)),
 
 		// Long poll and limit capacity given to jobs/request and builds/register.json
 		u.route("",

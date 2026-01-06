@@ -19,6 +19,7 @@ module Banzai
         allow_id_attributes(allowlist)
         allow_class_attributes(allowlist)
         allow_section_footnotes(allowlist)
+        allow_tasklists(allowlist)
 
         allowlist
       end
@@ -61,7 +62,11 @@ module Banzai
         allowlist[:attributes]['p'] = %w[class]
         allowlist[:attributes]['span'].push('class')
         allowlist[:attributes]['code'].push('class')
-        allowlist[:transformers].push(self.class.remove_unsafe_classes)
+        allowlist[:attributes]['ul'] = %w[class]
+        allowlist[:attributes]['ol'] = %w[class]
+        allowlist[:attributes]['li'].push('class')
+        allowlist[:attributes]['input'] = %w[class]
+        allowlist[:transformers].push(self.class.method(:remove_unsafe_classes))
       end
 
       def allow_section_footnotes(allowlist)
@@ -69,6 +74,12 @@ module Banzai
         allowlist[:elements].push('section')
         allowlist[:attributes]['section'] = %w[data-footnotes]
         allowlist[:attributes]['a'].push('data-footnote-ref', 'data-footnote-backref', 'data-footnote-backref-idx')
+      end
+
+      def allow_tasklists(allowlist)
+        allowlist[:elements].push('input')
+        allowlist[:attributes]['input'].push('data-inapplicable')
+        allowlist[:transformers].push(self.class.method(:remove_non_tasklist_inputs))
       end
 
       class << self
@@ -87,24 +98,28 @@ module Banzai
           end
         end
 
-        def remove_unsafe_classes
-          ->(env) do
-            node = env[:node]
+        def remove_unsafe_classes(env) # rubocop:disable Metrics/CyclomaticComplexity -- dispatch method.
+          node = env[:node]
 
-            return unless node.has_attribute?('class')
+          return unless node.has_attribute?('class')
 
-            case node.name
-            when 'a'
-              node.remove_attribute('class') if remove_link_class?(node)
-            when 'div'
-              node.remove_attribute('class') if remove_div_class?(node)
-            when 'p'
-              node.remove_attribute('class') if remove_p_class?(node)
-            when 'span'
-              node.remove_attribute('class') if remove_span_class?(node)
-            when 'code'
-              node.remove_attribute('class') if remove_code_class?(node)
-            end
+          case node.name
+          when 'a'
+            node.remove_attribute('class') if remove_link_class?(node)
+          when 'div'
+            node.remove_attribute('class') if remove_div_class?(node)
+          when 'p'
+            node.remove_attribute('class') if remove_p_class?(node)
+          when 'span'
+            node.remove_attribute('class') if remove_span_class?(node)
+          when 'code'
+            node.remove_attribute('class') if remove_code_class?(node)
+          when 'ul', 'ol'
+            node.remove_attribute('class') if remove_ul_ol_class?(node)
+          when 'li'
+            node.remove_attribute('class') if remove_li_class?(node)
+          when 'input'
+            node.remove_attribute('class') if remove_input_class?(node)
           end
         end
 
@@ -152,6 +167,29 @@ module Banzai
 
             node.remove_attribute('id')
           end
+        end
+
+        def remove_ul_ol_class?(node)
+          node['class'] != 'task-list'
+        end
+
+        def remove_li_class?(node)
+          node['class'] != 'task-list-item' &&
+            node['class'] != 'inapplicable task-list-item'
+        end
+
+        def remove_input_class?(node)
+          node['class'] != 'task-list-item-checkbox'
+        end
+
+        def remove_non_tasklist_inputs(env)
+          node = env[:node]
+
+          return unless node.name == 'input'
+
+          return if node['type'] == 'checkbox' && node['class'] == 'task-list-item-checkbox' && node.parent.name == 'li'
+
+          node.remove
         end
       end
     end

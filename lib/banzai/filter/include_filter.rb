@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'gitlab-glfm-markdown'
+
 module Banzai
   module Filter
     # Detect include / transclusion syntax. Include the specified file/url, replacing
