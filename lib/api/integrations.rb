@@ -135,6 +135,7 @@ module API
       failure [
         { code: 401, message: 'Unauthorized' }
       ]
+      tags INTEGRATIONS_TAGS
     end
     params do
       requires :text, type: String, desc: 'Text of the slack command'

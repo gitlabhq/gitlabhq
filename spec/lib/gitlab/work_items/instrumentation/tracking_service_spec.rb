@@ -7,6 +7,8 @@ RSpec.describe Gitlab::WorkItems::Instrumentation::TrackingService, feature_cate
   let_it_be(:project) { create(:project, developers: user) }
   let_it_be(:work_item) { create(:work_item, project: project) }
 
+  let(:other_user) { create(:user) }
+
   let(:service) { described_class.new(**service_params) }
   let(:service_params) { base_params.merge(additional_params) }
   let(:base_params) { { work_item: work_item, current_user: user } }
@@ -41,7 +43,8 @@ RSpec.describe Gitlab::WorkItems::Instrumentation::TrackingService, feature_cate
           described_class.new(
             work_item: work_item,
             current_user: user,
-            event: nil
+            event: nil,
+            old_associations: {}
           )
         end.not_to raise_error
       end
@@ -77,22 +80,32 @@ RSpec.describe Gitlab::WorkItems::Instrumentation::TrackingService, feature_cate
           )
         end.to raise_error(ArgumentError)
       end
+
+      it 'raises ArgumentError when both event and old_associations are provided' do
+        expect do
+          described_class.new(
+            work_item: work_item,
+            current_user: user,
+            event: Gitlab::WorkItems::Instrumentation::EventActions::NOTE_CREATE,
+            old_associations: { status: 'open' }
+          )
+        end.to raise_error(ArgumentError)
+      end
+
+      it 'raises ArgumentError when neither event nor old_associations are provided' do
+        expect do
+          described_class.new(
+            work_item: work_item,
+            current_user: user,
+            event: nil,
+            old_associations: nil
+          )
+        end.to raise_error(ArgumentError)
+      end
     end
   end
 
   describe '#execute', :clean_gitlab_redis_shared_state do
-    context 'when event is nil' do
-      let(:additional_params) { { event: nil } }
-
-      it 'does not trigger any events and returns early' do
-        expect(service).not_to receive(:track_internal_event)
-
-        result = service.execute
-
-        expect(result).to be_nil
-      end
-    end
-
     context 'when event is provided directly' do
       let(:additional_params) { { event: ::Gitlab::WorkItems::Instrumentation::EventActions::NOTE_DESTROY } }
 
@@ -100,6 +113,38 @@ RSpec.describe Gitlab::WorkItems::Instrumentation::TrackingService, feature_cate
         expect { service.execute }
           .to trigger_internal_events('work_item_note_destroy')
           .with(expected_properties)
+      end
+    end
+
+    context 'when detecting changes automatically' do
+      let(:additional_params) { { old_associations: {} } }
+      let(:events_from_mappings) { [] }
+
+      before do
+        allow(Gitlab::WorkItems::Instrumentation::EventMappings)
+          .to receive(:events_for)
+          .with(work_item: work_item, old_associations: anything)
+          .and_return(events_from_mappings)
+      end
+
+      context 'when EventMappings returns no events' do
+        let(:events_from_mappings) { [] }
+
+        it 'does not trigger any events' do
+          expect { service.execute }.not_to trigger_internal_events
+        end
+      end
+
+      context 'when EventMappings returns events' do
+        let(:events_from_mappings) { %w[work_item_title_update work_item_description_update] }
+
+        it 'triggers all returned events' do
+          expect { service.execute }
+            .to trigger_internal_events(
+              'work_item_title_update',
+              'work_item_description_update'
+            ).with(expected_properties)
+        end
       end
     end
   end

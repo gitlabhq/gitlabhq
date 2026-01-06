@@ -17,13 +17,24 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
-    it 'returns a list of remote mirrors' do
-      project.add_maintainer(user)
+    context 'with sufficient permissions' do
+      before do
+        project.add_maintainer(user)
+      end
 
-      get api(route, user)
+      it 'returns a list of remote mirrors' do
+        get api(route, user)
 
-      expect(response).to have_gitlab_http_status(:success)
-      expect(response).to match_response_schema('remote_mirrors')
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response).to match_response_schema('remote_mirrors')
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_remote_mirror do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(route, personal_access_token: pat)
+        end
+      end
     end
   end
 
@@ -37,27 +48,36 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
-    it 'returns a remote mirror' do
-      project.add_maintainer(user)
-
-      get api(route, user)
-
-      expect(response).to have_gitlab_http_status(:success)
-      expect(response).to match_response_schema('remote_mirror')
-      expect(json_response['host_keys']).to be_present
-    end
-
-    context "when remote mirror doesn't have host_keys" do
-      let(:mirror) { create(:remote_mirror, project: project) }
-
-      it 'returns an empty host_keys array' do
+    context 'with sufficient permissions' do
+      before do
         project.add_maintainer(user)
+      end
 
+      it 'returns a remote mirror' do
         get api(route, user)
 
         expect(response).to have_gitlab_http_status(:success)
         expect(response).to match_response_schema('remote_mirror')
-        expect(json_response['host_keys']).to be_empty
+        expect(json_response['host_keys']).to be_present
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_remote_mirror do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(route, personal_access_token: pat)
+        end
+      end
+
+      context "when remote mirror doesn't have host_keys" do
+        let(:mirror) { create(:remote_mirror, project: project) }
+
+        it 'returns an empty host_keys array' do
+          get api(route, user)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(response).to match_response_schema('remote_mirror')
+          expect(json_response['host_keys']).to be_empty
+        end
       end
     end
   end
@@ -84,6 +104,13 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
         post api(route, user)
 
         expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :sync_remote_mirror do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api(route, personal_access_token: pat)
+        end
       end
 
       context 'when some error occurs' do
@@ -114,83 +141,88 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
   describe 'POST /projects/:id/remote_mirrors' do
     let(:route) { "/projects/#{project.id}/remote_mirrors" }
 
-    shared_examples 'creates a remote mirror' do
-      it 'creates a remote mirror and returns response' do
-        project.add_maintainer(user)
-
-        post api(route, user), params: params
-
-        enabled = params.fetch(:enabled, false)
-        auth_method = params.fetch(:auth_method, 'password')
-        expect(response).to have_gitlab_http_status(:success)
-        expect(response).to match_response_schema('remote_mirror')
-        expect(json_response['enabled']).to eq(enabled)
-        expect(json_response['auth_method']).to eq(auth_method)
-      end
-    end
-
     it 'requires `admin_remote_mirror` permission' do
       post api(route, developer)
 
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
-    context 'creates a remote mirror' do
-      context 'disabled by default' do
-        let(:params) { { url: 'https://foo:bar@test.com' } }
-
-        it_behaves_like 'creates a remote mirror'
-      end
-
-      context 'enabled' do
-        let(:params) { { url: 'https://foo:bar@test.com', enabled: true } }
-
-        it_behaves_like 'creates a remote mirror'
-      end
-
-      context 'auth method' do
-        let(:params) { { url: 'https://foo:bar@test.com', enabled: true, auth_method: 'ssh_public_key' } }
-
-        it_behaves_like 'creates a remote mirror'
-      end
-    end
-
-    it 'returns error if url is invalid' do
-      project.add_maintainer(user)
-
-      post api(route, user), params: {
-        url: 'ftp://foo:bar@test.com'
-      }
-
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['message']['url']).to match_array(
-        ["is blocked: Only allowed schemes are http, https, ssh, git"]
-      )
-    end
-
-    context 'when auth method is invalid' do
-      let(:params) { { url: 'https://foo:bar@test.com', enabled: true, auth_method: 'invalid' } }
-
-      it 'returns an error' do
+    context 'with sufficient permissions' do
+      before do
         project.add_maintainer(user)
+      end
 
-        post api(route, user), params: params
+      shared_examples 'creates a remote mirror' do
+        it 'creates a remote mirror and returns response' do
+          post api(route, user), params: params
+
+          enabled = params.fetch(:enabled, false)
+          auth_method = params.fetch(:auth_method, 'password')
+          expect(response).to have_gitlab_http_status(:success)
+          expect(response).to match_response_schema('remote_mirror')
+          expect(json_response['enabled']).to eq(enabled)
+          expect(json_response['auth_method']).to eq(auth_method)
+        end
+      end
+
+      context 'creates a remote mirror' do
+        context 'disabled by default' do
+          let(:params) { { url: 'https://foo:bar@test.com' } }
+
+          it_behaves_like 'creates a remote mirror'
+        end
+
+        context 'enabled' do
+          let(:params) { { url: 'https://foo:bar@test.com', enabled: true } }
+
+          it_behaves_like 'creates a remote mirror'
+        end
+
+        context 'auth method' do
+          let(:params) { { url: 'https://foo:bar@test.com', enabled: true, auth_method: 'ssh_public_key' } }
+
+          it_behaves_like 'creates a remote mirror'
+        end
+      end
+
+      it 'returns error if url is invalid' do
+        post api(route, user), params: {
+          url: 'ftp://foo:bar@test.com'
+        }
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq('auth_method does not have a valid value')
+        expect(json_response['message']['url']).to match_array(
+          ["is blocked: Only allowed schemes are http, https, ssh, git"]
+        )
       end
-    end
 
-    context 'when only_protected_branches is not set' do
-      let(:params) { { url: 'https://foo:bar@test.com', enabled: true, only_protected_branches: nil } }
+      context 'when auth method is invalid' do
+        let(:params) { { url: 'https://foo:bar@test.com', enabled: true, auth_method: 'invalid' } }
 
-      it 'returns an error' do
-        project.add_maintainer(user)
+        it 'returns an error' do
+          post api(route, user), params: params
 
-        post api(route, user), params: params
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to eq('auth_method does not have a valid value')
+        end
+      end
 
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']['only_protected_branches']).to match_array(["can't be blank"])
+      context 'when only_protected_branches is not set' do
+        let(:params) { { url: 'https://foo:bar@test.com', enabled: true, only_protected_branches: nil } }
+
+        it 'returns an error' do
+          post api(route, user), params: params
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']['only_protected_branches']).to match_array(["can't be blank"])
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :create_remote_mirror do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api(route, personal_access_token: pat), params: { url: 'https://foo:bar@test.com' }
+        end
       end
     end
   end
@@ -205,44 +237,51 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
-    it 'updates a remote mirror' do
-      project.add_maintainer(user)
-
-      put api(route, user), params: {
-        enabled: '0',
-        only_protected_branches: 'true',
-        keep_divergent_refs: 'true'
-      }
-
-      expect(response).to have_gitlab_http_status(:success)
-      expect(json_response['enabled']).to eq(false)
-      expect(json_response['only_protected_branches']).to eq(true)
-      expect(json_response['keep_divergent_refs']).to eq(true)
-    end
-
-    context 'when auth method is invalid' do
-      let(:params) { { enabled: true, auth_method: 'invalid' } }
-
-      it 'returns an error' do
+    context 'with sufficient permissions' do
+      before do
         project.add_maintainer(user)
-
-        put api(route, user), params: params
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']['auth_method']).to match_array(['is not included in the list'])
       end
-    end
 
-    context 'when only_protected_branches is not set' do
-      let(:params) { { enabled: true, only_protected_branches: nil } }
+      it 'updates a remote mirror' do
+        put api(route, user), params: {
+          enabled: '0',
+          only_protected_branches: 'true',
+          keep_divergent_refs: 'true'
+        }
 
-      it 'returns an error' do
-        project.add_maintainer(user)
+        expect(response).to have_gitlab_http_status(:success)
+        expect(json_response['enabled']).to eq(false)
+        expect(json_response['only_protected_branches']).to eq(true)
+        expect(json_response['keep_divergent_refs']).to eq(true)
+      end
 
-        put api(route, user), params: params
+      context 'when auth method is invalid' do
+        let(:params) { { enabled: true, auth_method: 'invalid' } }
 
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']['only_protected_branches']).to match_array(["can't be blank"])
+        it 'returns an error' do
+          put api(route, user), params: params
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']['auth_method']).to match_array(['is not included in the list'])
+        end
+      end
+
+      context 'when only_protected_branches is not set' do
+        let(:params) { { enabled: true, only_protected_branches: nil } }
+
+        it 'returns an error' do
+          put api(route, user), params: params
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']['only_protected_branches']).to match_array(["can't be blank"])
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :update_remote_mirror do
+        let(:boundary_object) { project }
+        let(:request) do
+          put api(route, personal_access_token: pat), params: { enabled: true }
+        end
       end
     end
   end
@@ -284,6 +323,13 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
 
         expect(response).to have_gitlab_http_status(:no_content)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_remote_mirror do
+        let(:boundary_object) { project }
+        let(:request) do
+          delete api(route[mirror.id], personal_access_token: pat)
+        end
+      end
     end
   end
 
@@ -309,18 +355,28 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
     end
 
     context 'when auth_method is ssh_public_key' do
+      before do
+        project.add_maintainer(user)
+      end
+
       let(:mirror) do
         project.remote_mirrors.create!(url: 'ssh://foo.com', enabled: true, auth_method: 'ssh_public_key')
       end
 
       it 'returns the remote mirror public key' do
-        project.add_maintainer(user)
-
         get api(route, user)
 
         expect(mirror.auth_method).to eq('ssh_public_key')
         expect(response).to have_gitlab_http_status(:success)
         expect(json_response['public_key']).to eq(mirror.ssh_public_key)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_remote_mirror_public_key do
+        let(:boundary_object) { project }
+
+        let(:request) do
+          get api(route, personal_access_token: pat)
+        end
       end
     end
   end

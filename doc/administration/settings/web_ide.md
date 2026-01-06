@@ -44,36 +44,41 @@ These instructions are for a [Linux package installation](../../install/package/
 the default NGINX installation. GitLab administrators and DevOps engineers
 should adapt this guide to other installation methods.
 
-1. Follow the guide to [insert custom settings into the NGINX configuration](https://docs.gitlab.com/omnibus/settings/nginx/#insert-custom-settings-into-the-nginx-configuration) to create a `server` block that handles requests for the
-   extension host domain. You can use the [GitLab NGINX configuration file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/support/nginx/gitlab)
-   as a starting point. Make sure to scope the configuration by defining a `location` block only handles requests
-   for the `/assets/` path, for example:
+1. Follow the guide to [insert custom settings into the NGINX configuration](https://docs.gitlab.com/omnibus/settings/nginx/#insert-custom-settings-into-the-nginx-configuration) to add a `server` block. This block configures NGINX to handle requests for the extension host domain. The following code snippet provides a reference configuration. Replace `<extension-host-domain-placeholder>` with the wildcard domain name for your Web IDE extension host domain:
 
    ```nginx
-   location /assets/ {
-     client_max_body_size 0;
-     gzip off;
+   server {
+     listen *:443 ssl;
+     server_name *.<extension-host-domain-placeholder>;
 
-     ## https://github.com/gitlabhq/gitlabhq/issues/694
-     ## Some requests take more than 30 seconds.
-     proxy_read_timeout      300;
-     proxy_connect_timeout   300;
-     proxy_redirect          off;
+     ssl_certificate /etc/gitlab/ssl/<extension-host-domain-placeholder>.pem;
+     ssl_certificate_key /etc/gitlab/ssl/<extension-host-domain-placeholder>-key.pem;
 
-     proxy_http_version 1.1;
+     ## Individual nginx logs for this GitLab vhost
+     access_log  /var/log/gitlab/nginx/gitlab_access.log gitlab_access;
+     error_log   /var/log/gitlab/nginx/gitlab_error.log;
 
-     proxy_set_header    Host                $http_host;
-     proxy_set_header    X-Real-IP           $remote_addr;
-     proxy_set_header    X-Forwarded-For     $remote_addr;
-     proxy_set_header    X-Forwarded-Proto   $scheme;
-     proxy_set_header    Upgrade             $http_upgrade;
-     proxy_set_header    Connection          $connection_upgrade_gitlab;
+     location /assets/ {
+       client_max_body_size 0;
+       gzip off;
 
-     proxy_pass http://gitlab-workhorse;
+       proxy_read_timeout      300;
+       proxy_connect_timeout   300;
+       proxy_redirect          off;
+
+       proxy_http_version 1.1;
+
+       proxy_set_header    Host                $http_host;
+       proxy_set_header    X-Real-IP           $remote_addr;
+       proxy_set_header    X-Forwarded-For     $remote_addr;
+       proxy_set_header    X-Forwarded-Proto   $scheme;
+
+       proxy_pass http://gitlab-workhorse;
+     }
    }
    ```
 
-1. After NGINX is configured, open the GitLab application.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect. Then, open the GitLab application.
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Web IDE**.

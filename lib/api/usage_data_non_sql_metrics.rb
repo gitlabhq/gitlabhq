@@ -20,6 +20,7 @@ module API
           { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not Found' }
         ]
+        tags ['usage_data']
       end
 
       get 'non_sql_metrics' do

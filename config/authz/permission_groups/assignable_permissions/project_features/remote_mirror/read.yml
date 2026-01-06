@@ -1,0 +1,7 @@
+---
+name: read_remote_mirror
+description: Grants the ability to read remote mirrors
+boundaries:
+  - project
+permissions:
+  - read_remote_mirror

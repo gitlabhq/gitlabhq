@@ -1,0 +1,7 @@
+---
+name: update_remote_mirror
+description: Grants the ability to update remote mirrors
+boundaries:
+  - project
+permissions:
+  - update_remote_mirror

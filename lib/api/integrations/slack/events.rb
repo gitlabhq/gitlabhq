@@ -21,6 +21,7 @@ module API
             failure [
               { code: 401, message: 'Unauthorized' }
             ]
+            tags ['integrations']
           end
 
           # Params are based on the JSON schema spec for Slack events https://api.slack.com/types/event.

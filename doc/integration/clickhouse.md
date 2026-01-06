@@ -546,7 +546,7 @@ bundle exec rake gitlab:clickhouse:setup RAILS_ENV=production
 
 You can use environment variables to control Rake task behavior:
 
-| Environment Variable | Data Type | Description |
+| Environment variable | Data type | Description |
 |---------------------|-----------|-------------|
 | `VERBOSE` | Boolean | Set to `true` to see detailed output during migrations. Example: `VERBOSE=true sudo gitlab-rake gitlab:clickhouse:migrate` |
 
@@ -681,7 +681,7 @@ The recommended system requirements change depending on the number of users.
 
 ### Deployment decision matrix quick reference
 
-| Users | Primary Recommendation | Comparable AWS ARM Instance | Comparable GCP ARM Instance | Comparable Azure ARM Instance | Deployment Type |
+| Users | Primary recommendation | Comparable AWS ARM instance | Comparable GCP ARM instance | Comparable Azure ARM instance | Deployment type |
 |---|---|---|---|---|---|
 | 1K | ClickHouse Cloud Basic | - | - | - | Managed |
 | 2K | ClickHouse Cloud Basic | `m8g.xlarge` | `c4a-standard-4` |  `Standard_D4ps_v6` | Managed or Single Node |

@@ -19,6 +19,7 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
 
   before do
     stub_feature_flags(hide_incident_management_features: false)
+    stub_feature_flags(slsa_provenance_statement: false)
     stub_feature_flags(visual_ci_editor: false)
     sign_in(user)
 
@@ -85,6 +86,18 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
 
       before do
         insert_harbor_registry_nav
+
+        visit project_path(project)
+      end
+
+      it_behaves_like 'verified navigation bar'
+    end
+
+    context 'when slsa_provenance_statement feature flag is turned on' do
+      before do
+        stub_feature_flags(slsa_provenance_statement: true)
+
+        insert_slsa_provenance_statement_nav
 
         visit project_path(project)
       end

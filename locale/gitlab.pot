@@ -10192,6 +10192,9 @@ msgstr ""
 msgid "Attempted to update the pipeline trigger token but failed"
 msgstr ""
 
+msgid "Attestations"
+msgstr ""
+
 msgid "Attestations|Attestations"
 msgstr ""
 

@@ -40,7 +40,9 @@ module WorkItems
     override :associations_before_update
     def associations_before_update(work_item)
       super.merge(
-        work_item_parent_id: work_item.work_item_parent&.id
+        work_item_parent_id: work_item.work_item_parent&.id,
+        confidential: work_item.confidential
+        # confidentiality is cleared from work_item.previous_changes before events are tracked
       )
     end
 
@@ -48,6 +50,11 @@ module WorkItems
     def after_update(work_item, old_associations)
       super
 
+      ::Gitlab::WorkItems::Instrumentation::TrackingService.new(
+        work_item: work_item,
+        current_user: current_user,
+        old_associations: old_associations
+      ).execute
       GraphqlTriggers.issuable_title_updated(work_item) if work_item.previous_changes.key?(:title)
     end
 

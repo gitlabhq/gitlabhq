@@ -1,0 +1,7 @@
+---
+name: sync_remote_mirror
+description: Grants the ability to sync remote mirrors
+boundaries:
+  - project
+permissions:
+  - sync_remote_mirror

@@ -34,6 +34,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_remote_mirror, boundary_type: :project
       get ':id/remote_mirrors' do
         present paginate(user_project.remote_mirrors),
           with: Entities::RemoteMirror
@@ -50,6 +51,7 @@ module API
       params do
         requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
       end
+      route_setting :authorization, permissions: :read_remote_mirror, boundary_type: :project
       get ':id/remote_mirrors/:mirror_id' do
         mirror = find_remote_mirror
 
@@ -68,6 +70,7 @@ module API
       params do
         requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
       end
+      route_setting :authorization, permissions: :sync_remote_mirror, boundary_type: :project
       post ':id/remote_mirrors/:mirror_id/sync' do
         mirror = find_remote_mirror
 
@@ -98,6 +101,7 @@ module API
           documentation: { example: false }
         use :mirror_branches_setting
       end
+      route_setting :authorization, permissions: :create_remote_mirror, boundary_type: :project
       post ':id/remote_mirrors' do
         service = ::RemoteMirrors::CreateService.new(
           user_project,
@@ -131,6 +135,7 @@ module API
           documentation: { example: false }
         use :mirror_branches_setting
       end
+      route_setting :authorization, permissions: :update_remote_mirror, boundary_type: :project
       put ':id/remote_mirrors/:mirror_id' do
         mirror = find_remote_mirror
 
@@ -160,6 +165,7 @@ module API
       params do
         requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
       end
+      route_setting :authorization, permissions: :delete_remote_mirror, boundary_type: :project
       delete ':id/remote_mirrors/:mirror_id' do
         mirror = find_remote_mirror
 
@@ -181,6 +187,7 @@ module API
       params do
         requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
       end
+      route_setting :authorization, permissions: :read_remote_mirror_public_key, boundary_type: :project
       get ':id/remote_mirrors/:mirror_id/public_key' do
         mirror = find_remote_mirror
 

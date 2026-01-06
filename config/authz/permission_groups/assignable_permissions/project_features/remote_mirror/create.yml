@@ -1,0 +1,7 @@
+---
+name: create_remote_mirror
+description: Grants the ability to create remote mirrors
+boundaries:
+  - project
+permissions:
+  - create_remote_mirror

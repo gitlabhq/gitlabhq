@@ -24,6 +24,7 @@ API/DescriptionSuccessResponse:
     - 'ee/lib/api/scim/group_scim.rb'
     - 'ee/lib/api/scim/instance_scim.rb'
     - 'ee/lib/api/virtual_registries/cleanup/policies.rb'
+    - 'ee/lib/api/vulnerability_archive_exports.rb'
     - 'ee/lib/ee/api/group_milestones.rb'
     - 'ee/lib/ee/api/internal/kubernetes.rb'
     - 'ee/lib/ee/api/project_milestones.rb'

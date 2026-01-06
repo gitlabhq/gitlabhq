@@ -174,6 +174,14 @@ module NavbarStructureHelper
     )
   end
 
+  def insert_slsa_provenance_statement_nav
+    insert_after_sub_nav_item(
+      _('Artifacts'),
+      within: _('Build'),
+      new_sub_nav_item_name: s_('Attestations')
+    )
+  end
+
   def project_analytics_sub_nav_item
     [
       _('Value stream analytics'),

@@ -49649,6 +49649,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="workitemdescription"></a>`description` | [`String`](#string) | Description of the work item. |
 | <a id="workitemdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="workitemduplicatedtoworkitemurl"></a>`duplicatedToWorkItemUrl` | [`String`](#string) | URL of the work item that the work item is marked as a duplicate of. |
+| <a id="workitemexternalauthor"></a>`externalAuthor` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.8. **Status**: Experiment. Email address of non-GitLab user reporting the issue. For guests, the email address is obfuscated. |
 | <a id="workitemhidden"></a>`hidden` | [`Boolean`](#boolean) | Indicates the work item is hidden because the author has been banned. |
 | <a id="workitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="workitemiid"></a>`iid` | [`String!`](#string) | Internal ID of the work item. |
