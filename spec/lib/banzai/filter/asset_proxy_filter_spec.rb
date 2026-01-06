@@ -42,6 +42,7 @@ RSpec.describe Banzai::Filter::AssetProxyFilter, feature_category: :markdown do
     context 'when allowlist is empty' do
       it 'defaults to the install domain' do
         stub_application_setting(asset_proxy_enabled: true)
+        stub_application_setting(asset_proxy_url: 'https://assets.example.com')
         stub_application_setting(asset_proxy_allowlist: [])
 
         described_class.initialize_settings
@@ -52,6 +53,7 @@ RSpec.describe Banzai::Filter::AssetProxyFilter, feature_category: :markdown do
 
     it 'supports deprecated whitelist settings' do
       stub_application_setting(asset_proxy_enabled: true)
+      stub_application_setting(asset_proxy_url: 'https://assets.example.com')
       stub_application_setting(asset_proxy_whitelist: %w[foo.com bar.com])
       stub_application_setting(asset_proxy_allowlist: [])
 
@@ -69,7 +71,8 @@ RSpec.describe Banzai::Filter::AssetProxyFilter, feature_category: :markdown do
       stub_asset_proxy_setting(secret_key: 'shared-secret')
       stub_asset_proxy_setting(url: 'https://assets.example.com')
       stub_asset_proxy_setting(allowlist: %W[gitlab.com *.mydomain.com #{Gitlab.config.gitlab.host}])
-      stub_asset_proxy_setting(domain_regexp: described_class.compile_allowlist(Gitlab.config.asset_proxy.allowlist))
+      stub_asset_proxy_setting(
+        domain_regexp: described_class.host_regexp_for_allowlist(Gitlab.config.asset_proxy.allowlist))
       @context = described_class.transform_context({})
     end
 

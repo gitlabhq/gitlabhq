@@ -391,6 +391,48 @@ You can change this limit by using the GitLab Rails console or use the
 ApplicationSetting.update(max_http_response_json_depth: 100)
 ```
 
+### Maximum allowed object count in XML HTTP responses from outbound requests
+
+{{< history >}}
+
+- Introduced in GitLab 18.4.
+
+{{< /history >}}
+
+This setting restricts the maximum allowed object count in XML HTTP
+responses from outbound requests. The number of objects is estimated based on
+the number of occurrences of `<`, `=` in the response.
+
+The default maximum count is 250,000 objects. To disable this limit, set the value to 0.
+
+You can change this limit by using the GitLab Rails console or use the
+[application setting API](../api/settings.md):
+
+```ruby
+ApplicationSetting.update(max_http_response_xml_structural_chars: 500000)
+```
+
+### Maximum allowed object count in CSV HTTP responses from outbound requests
+
+{{< history >}}
+
+- Introduced in GitLab 18.4.
+
+{{< /history >}}
+
+This setting restricts the maximum allowed object count in CSV HTTP
+responses from outbound requests. The number of objects is estimated based on
+the number of occurrences of `,`, `;`, `\t` and `\n` in the response.
+
+The default maximum count is 250,000 objects. To disable this limit, set the value to 0.
+
+You can change this limit by using the GitLab Rails console or use the
+[application setting API](../api/settings.md):
+
+```ruby
+ApplicationSetting.update(max_http_response_csv_structural_chars: 500000)
+```
+
 ## HTTP request limits
 
 By default, JSON parameters in requests are limited. For more information, see [JSON validation limits by endpoint](#json-validation-limits-by-endpoint).

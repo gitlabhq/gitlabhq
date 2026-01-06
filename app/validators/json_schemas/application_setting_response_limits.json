@@ -33,6 +33,16 @@
       "type": "integer",
       "minimum": 0,
       "description": "Maximum allowed object count in JSON HTTP API responses. Count is an estimate based on the number of occurrences of ':', ',', '{', and '[' in the response."
+    },
+    "max_http_response_xml_structural_chars": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum allowed object count in XML HTTP API responses. Count is an estimate based on the number of occurrences of '<' and '=' in the response."
+    },
+    "max_http_response_csv_structural_chars": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum allowed object count in CSV HTTP API responses. Count is an estimate based on the number of occurrences of ',', ';', '\t' and '\n' in the response."
     }
   }
 }

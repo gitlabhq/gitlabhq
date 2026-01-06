@@ -150,6 +150,8 @@ module ApplicationSettingImplementation
         max_http_response_size_limit: 100,
         max_http_response_json_depth: 32,
         max_http_response_json_structural_chars: 1_000_000,
+        max_http_response_xml_structural_chars: 250_000,
+        max_http_response_csv_structural_chars: 250_000,
         max_import_size: 0,
         max_import_remote_file_size: 10240,
         max_login_attempts: nil,

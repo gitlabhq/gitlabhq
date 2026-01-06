@@ -401,6 +401,8 @@ module ApplicationSettingsHelper
       :max_http_response_size_limit,
       :max_http_response_json_depth,
       :max_http_response_json_structural_chars,
+      :max_http_response_xml_structural_chars,
+      :max_http_response_csv_structural_chars,
       :max_import_size,
       :max_import_remote_file_size,
       :max_login_attempts,
