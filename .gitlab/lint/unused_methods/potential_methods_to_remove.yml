@@ -343,8 +343,6 @@ saved_change_to_parent?:
   file: app/models/namespace.rb
 saved_change_to_path_or_parent?:
   file: app/models/namespace.rb
-user_admin?:
-  file: app/models/personal_access_token.rb
 import_scheduled?:
   file: app/models/project.rb
 updating_remote_mirror?:

@@ -1,5 +1,4 @@
 <script>
-import { computed } from 'vue';
 import {
   GlButton,
   GlFilteredSearchToken,
@@ -129,7 +128,6 @@ import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
   NAME_TO_ENUM_MAP,
   STATE_CLOSED,
-  STATE_OPEN,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
   METADATA_KEYS,
@@ -162,11 +160,6 @@ const WorkItemParentToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/work_item_parent_token.vue');
 const WorkItemTypeToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/work_item_type_token.vue');
-
-const statusMap = {
-  [STATUS_OPEN]: STATE_OPEN,
-  [STATUS_CLOSED]: STATE_CLOSED,
-};
 
 const CONSOLIDATED_LIST_FEEDBACK_PROMPT_EXPIRY = '2026-01-01';
 const FEATURE_NAME = 'work_item_consolidated_list_feedback';
@@ -205,11 +198,6 @@ export default {
     GlModal: GlModalDirective,
   },
   mixins: [glFeatureFlagMixin()],
-  provide() {
-    return {
-      showExportButton: computed(() => this.showImportExportButtons && this.workItems.length > 0),
-    };
-  },
   inject: [
     'autocompleteAwardEmojisPath',
     'canBulkUpdate',
@@ -893,8 +881,8 @@ export default {
     hiddenMetadataKeys() {
       return this.displaySettings?.namespacePreferences?.hiddenMetadataKeys || [];
     },
-    showImportExportButtons() {
-      return !this.isGroup && this.isLoggedIn;
+    canExport() {
+      return !this.isGroup && this.isLoggedIn && this.workItems.length > 0;
     },
     currentTabCount() {
       return this.tabCounts[this.state] ?? 0;
@@ -1213,7 +1201,8 @@ export default {
       if (this.state === STATUS_ALL) {
         return;
       }
-      if (statusMap[this.state] !== workItem.state) {
+
+      if (this.state !== workItem.state) {
         this.refetchItems({ refetchCounts: true });
       }
     },
@@ -1551,7 +1540,7 @@ export default {
               :group-id="groupId"
             />
             <work-item-list-actions
-              :show-import-export-buttons="showImportExportButtons"
+              :can-export="canExport"
               :show-work-item-by-email-button="showWorkItemByEmail"
               :work-item-count="currentTabCount"
               :query-variables="csvExportQueryVariables"
@@ -1607,7 +1596,7 @@ export default {
                     :group-id="groupId"
                   />
                   <work-item-list-actions
-                    :show-import-export-buttons="showImportExportButtons"
+                    :can-export="canExport"
                     :show-work-item-by-email-button="showWorkItemByEmail"
                     :work-item-count="workItemsCount"
                     :query-variables="csvExportQueryVariables"
@@ -1624,7 +1613,7 @@ export default {
               <work-items-saved-views-selectors>
                 <template #header-area>
                   <work-item-list-actions
-                    :show-import-export-buttons="showImportExportButtons"
+                    :can-export="canExport"
                     :show-work-item-by-email-button="showWorkItemByEmail"
                     :work-item-count="currentTabCount"
                     :query-variables="csvExportQueryVariables"

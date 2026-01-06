@@ -518,7 +518,7 @@ The scopes: global, environment, collection, and GitLab API fuzzing are supporte
 
 The following table provides a quick reference for mapping scope files/URLs to API fuzzing configuration variables:
 
-| Scope              |  How to Provide |
+| Scope              |  How to provide |
 | ------------------ | --------------- |
 | Global environment | FUZZAPI_POSTMAN_COLLECTION_VARIABLES |
 | Environment        | FUZZAPI_POSTMAN_COLLECTION_VARIABLES |

@@ -299,7 +299,7 @@ After you're comfortable using coverage-guided fuzz testing in a single project,
 
 You can use the following fuzzing engines to test the specified languages.
 
-| Language                                    | Fuzzing Engine                                                                                       | Example                                                                                                                         |
+| Language                                    | Fuzzing engine                                                                                       | Example                                                                                                                         |
 |---------------------------------------------|------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | C/C++                                       | [libFuzzer](https://llvm.org/docs/LibFuzzer.html)                                                    | [c-cpp-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/c-cpp-fuzzing-example)                   |
 | Go                                          | [go-fuzz (libFuzzer support)](https://github.com/dvyukov/go-fuzz)                                    | [go-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example)                 |

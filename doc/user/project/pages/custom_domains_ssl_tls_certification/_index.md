@@ -104,7 +104,7 @@ Root domains (`example.com`) require:
   - A [DNS `AAAA` record](dns_concepts.md#aaaa-record) pointing your domain to the Pages server.
 - A [`TXT` record](dns_concepts.md#txt-record) to verify your domain's ownership.
 
-| From                                          | DNS Record | To              |
+| From                                          | DNS record | To              |
 | --------------------------------------------- | ---------- | --------------- |
 | `example.com`                                 | `A`        | `35.185.44.232` |
 | `example.com`                                 | `AAAA`     | `2600:1901:0:7b8a::` |

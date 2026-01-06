@@ -46,7 +46,8 @@ module Users
       repository_premium_message_callout: 34, # EE-only
       mrs_premium_message_callout: 35, # EE-only
       virtual_registry_permission_change_alert: 36, # EE-only
-      end_of_trial_modal: 37 # EE-only
+      end_of_trial_modal: 37, # EE-only
+      foundational_items_available: 38 # EE-only
     }
 
     validates :group, presence: true

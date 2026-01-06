@@ -2655,6 +2655,9 @@ msgstr ""
 msgid "AICatalog|Configuration is required."
 msgstr ""
 
+msgid "AICatalog|Configure"
+msgstr ""
+
 msgid "AICatalog|Connects to an AI model provider outside GitLab."
 msgstr ""
 
@@ -2892,6 +2895,9 @@ msgstr ""
 msgid "AICatalog|Foundational agent"
 msgstr ""
 
+msgid "AICatalog|Foundational agents and flows are built, tested, and supported by GitLab, and can help accelerate your productivity. Get started by configuring them now."
+msgstr ""
+
 msgid "AICatalog|Foundational flow"
 msgstr ""
 
@@ -2959,6 +2965,9 @@ msgid "AICatalog|New agent"
 msgstr ""
 
 msgid "AICatalog|New flow"
+msgstr ""
+
+msgid "AICatalog|New foundational agents and flows now available"
 msgstr ""
 
 msgid "AICatalog|No triggers configured. %{linkStart}Add a trigger%{linkEnd} to make this %{itemType} available."

@@ -15,16 +15,11 @@ description: Security dashboards, vulnerability trends, project ratings, and met
 
 {{< history >}}
 
-- New dashboard with Elasticsearch integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/570504) in GitLab 18.6 [with flags](../../../administration/feature_flags/_index.md) named `project_security_dashboard_new` and `group_security_dashboard_new`. The flags are disabled by default.
-- New dashboard with Elasticsearch integration [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215574) in GitLab 18.7.
+- New dashboard with advanced search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/570504) in GitLab 18.6 [with flags](../../../administration/feature_flags/_index.md) named `project_security_dashboard_new` and `group_security_dashboard_new`. The flags are disabled by default.
+- New dashboard with advanced search [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215574) in GitLab 18.7.
+- New dashboard with advanced search [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107661) in GitLab 18.8. Feature flags `project_security_dashboard_new` and `group_security_dashboard_new` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
 
 GitLab 18.6 introduced an improved version of the security dashboards that use [advanced vulnerability management](../vulnerability_report/_index.md#advanced-vulnerability-management). For details, see [new security dashboards](#new-security-dashboards).
 
@@ -140,15 +135,9 @@ To view group security dashboard:
 
 - New dashboard that uses [advanced vulnerability management](../vulnerability_report/_index.md#advanced-vulnerability-management) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/570504) in GitLab 18.6 [with flags](../../../administration/feature_flags/_index.md) named `project_security_dashboard_new` and `group_security_dashboard_new`. The flags are disabled by default.
 - New dashboard [enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215574) in GitLab 18.7.
+- New dashboard [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107661) in GitLab 18.8. Feature flags `project_security_dashboard_new` and `group_security_dashboard_new` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 Use security dashboards to assess the security posture of your applications. GitLab provides
 you with a collection of metrics, ratings, and charts for the vulnerabilities detected by the [security scanners](../detect/_index.md) run on your project. The security dashboard provides data such as:

@@ -129,7 +129,7 @@ Inherited project membership from parent groups is not sufficient for protected 
 You can specify a wildcard protected tag, which protects all tags
 matching the wildcard. For example:
 
-| Wildcard Protected Tag | Matching Tags                 |
+| Wildcard protected tag | Matching tags                 |
 |------------------------|-------------------------------|
 | `v*`                   | `v1.0.0`, `version-9.1`       |
 | `*-deploy`             | `march-deploy`, `1.0-deploy`  |

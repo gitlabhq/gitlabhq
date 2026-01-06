@@ -12,7 +12,7 @@ module Types
 
       field :stage_name,  GraphQL::Types::String,
         null: true,
-        description: 'Stage information.'
+        description: 'Stage name.'
 
       field :statistics, Types::Ci::JobAnalyticsStatisticsType,
         null: true,

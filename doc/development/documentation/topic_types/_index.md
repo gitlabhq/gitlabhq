@@ -54,6 +54,7 @@ In general, for topic titles:
 - Follow [capitalization](../styleguide/_index.md#topic-titles) guidelines.
 - Do not repeat text from earlier topic titles. For example, if the page is about merge requests,
   instead of `Troubleshooting merge requests`, use only `Troubleshooting`.
+- Review the specific guidance for the topic type. For example, do not use `Overview` or `Introduction` for [concept topic titles](concept.md#concept-topic-titles).
 - Avoid using hyphens to separate information.
   For example, instead of `Internal analytics - Architecture`, use `Internal analytics architecture` or `Architecture of internal analytics`.
 

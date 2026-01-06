@@ -329,14 +329,17 @@ module Types
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27536#note_871009675
     field :group, 'Types::GroupType',
       null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Group of the project.'
 
     field :root_group, 'Types::GroupType',
       null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Top-level group of the project.'
 
     field :namespace, Types::NamespaceType,
       null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Namespace of the project.'
 
     field :statistics, Types::ProjectStatisticsType,

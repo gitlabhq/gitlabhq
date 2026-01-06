@@ -121,7 +121,7 @@ Frontend frameworks are not supported.
 
 While the end-to-end static reachability feature is at Limited Availability level, individual language support has different maturity levels:
 
-| Maturity | Languages | Additional Information |
+| Maturity | Languages | Additional information |
 |----------|-----------|-------------|
 | Beta | Python | Not applicable |
 | Beta | JavaScript, TypeScript | No support for frontend frameworks. |

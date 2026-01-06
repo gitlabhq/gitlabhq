@@ -306,7 +306,6 @@ Style/GuardClause:
     - 'lib/bulk_imports/projects/pipelines/project_pipeline.rb'
     - 'lib/container_registry/client.rb'
     - 'lib/feature/definition.rb'
-    - 'lib/gem_extensions/active_record/association.rb'
     - 'lib/gitlab/analytics/cycle_analytics/request_params.rb'
     - 'lib/gitlab/auth.rb'
     - 'lib/gitlab/auth/ldap/adapter.rb'

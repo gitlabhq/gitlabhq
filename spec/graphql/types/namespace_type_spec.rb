@@ -10,7 +10,7 @@ RSpec.describe GitlabSchema.types['Namespace'], feature_category: :shared do
   it 'has the expected fields' do
     expected_fields = %w[
       id name path full_name full_path achievements_path description description_html visibility
-      lfs_enabled request_access_enabled projects root_storage_statistics shared_runners_setting
+      lfs_enabled request_access_enabled projects root_storage_statistics root_namespace shared_runners_setting
       timelog_categories achievements work_item pages_deployments import_source_users work_item_types
       work_items_widgets sidebar work_item_description_templates ci_cd_settings avatar_url link_paths
       metadata licensed_features available_features merge_requests_enabled saved_views subscribed_saved_view_limit
@@ -28,7 +28,7 @@ RSpec.describe GitlabSchema.types['Namespace'], feature_category: :shared do
   end
 
   describe 'fields with :ai_workflows scope' do
-    %w[id name description fullPath workItem workItems webUrl workItemTypes].each do |field_name|
+    %w[id name description fullPath workItem workItems webUrl workItemTypes rootNamespace].each do |field_name|
       it "includes :ai_workflows scope for the #{field_name} field" do
         field = described_class.fields[field_name]
         expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)

@@ -199,7 +199,7 @@ fmt: install-goimports
 .PHONY:	goimports
 install-goimports:
 	$(call message,$@)
-	go install golang.org/x/tools/cmd/goimports
+	go install golang.org/x/tools/cmd/goimports@v0.38.0
 
 .PHONY: deps-check
 deps-check:

@@ -39,9 +39,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   inject: {
-    showExportButton: {
-      default: false,
-    },
     projectImportJiraPath: {
       default: null,
     },
@@ -69,7 +66,7 @@ export default {
       required: false,
       default: () => ({}),
     },
-    showImportExportButtons: {
+    canExport: {
       type: Boolean,
       required: false,
       default: false,
@@ -164,11 +161,11 @@ export default {
     isJiraImportVisible() {
       return Boolean(this.projectImportJiraPath) && this.canEdit;
     },
+    canImport() {
+      return this.isJiraImportVisible || this.canImportWorkItems;
+    },
     hasImportExportOptions() {
-      return Boolean(
-        this.showImportExportButtons &&
-          (this.isJiraImportVisible || this.showExportButton || this.canImportWorkItems),
-      );
+      return Boolean(this.canExport || this.canImport);
     },
     shouldShowDropdown() {
       return (
@@ -224,7 +221,7 @@ export default {
       />
 
       <gl-disclosure-dropdown-item
-        v-if="showExportButton"
+        v-if="canExport"
         v-gl-modal="$options.exportModalId"
         data-testid="export-as-csv-button"
         :item="exportAsCSV"
@@ -238,7 +235,7 @@ export default {
       />
 
       <work-item-csv-export-modal
-        v-if="showExportButton"
+        v-if="canExport"
         :modal-id="$options.exportModalId"
         :work-item-count="workItemCount"
         :query-variables="queryVariables"

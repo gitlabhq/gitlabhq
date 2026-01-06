@@ -426,7 +426,7 @@ if os.getenv('GITLAB_CI'):
 GitLab supports the following methods from the MLflow client. More information can be found in the [MLflow Documentation](https://mlflow.org/docs/latest/index.html). The MlflowClient counterparts
 of the methods below are also supported with the same caveats.
 
-| Method                   | Supported       | Version Added | Comments                                                                                     |
+| Method                   | Supported       | Version added | Comments                                                                                     |
 |--------------------------|-----------------|---------------|----------------------------------------------------------------------------------------------|
 | `create_experiment`      | Yes             | 15.11         |                                                                                              |
 | `get_experiment`         | Yes             | 15.11         |                                                                                              |

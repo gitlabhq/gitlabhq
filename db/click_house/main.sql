@@ -71,6 +71,8 @@ CREATE TABLE ci_finished_builds
     `runner_owner_namespace_id` UInt64 DEFAULT 0,
     `stage_id` UInt64 DEFAULT 0,
     `stage_name` String DEFAULT '',
+    `version` DateTime64(6, 'UTC') DEFAULT now(),
+    `deleted` Bool DEFAULT false,
     PROJECTION build_stats_by_project_pipeline_name_stage_name
     (
         SELECT

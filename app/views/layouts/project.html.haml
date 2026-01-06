@@ -29,5 +29,6 @@
 = dispensable_render_if_exists "shared/web_hooks/web_hook_disabled_alert"
 = dispensable_render_if_exists "projects/free_user_cap_alert", project: @project
 = dispensable_render_if_exists 'shared/unlimited_members_during_trial_alert', resource: @project unless content_for(:hide_unlimited_members_during_trial_alert).present?
+= dispensable_render_if_exists "shared/ai_catalog_foundational_items_available", group: @project.root_group
 
 = render template: "layouts/application"

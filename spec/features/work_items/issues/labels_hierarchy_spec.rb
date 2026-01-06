@@ -29,6 +29,10 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
   end
 
   shared_examples 'assigning labels from sidebar' do
+    before do
+      scroll_to(find_by_testid('work-item-labels'))
+    end
+
     it 'can assign all ancestors labels' do
       [grandparent_group_label, parent_group_label, project_label_1].each do |label|
         within_testid('work-item-labels') do

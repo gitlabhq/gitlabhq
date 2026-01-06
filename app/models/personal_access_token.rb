@@ -205,10 +205,6 @@ class PersonalAccessToken < ApplicationRecord
     self.scopes = Gitlab::Auth::DEFAULT_SCOPES if self.scopes.empty?
   end
 
-  def user_admin?
-    user.admin? # rubocop: disable Cop/UserAdmin
-  end
-
   def prefix_from_application_current_settings
     self.class.token_prefix
   end

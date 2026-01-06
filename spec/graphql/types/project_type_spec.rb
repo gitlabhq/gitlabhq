@@ -1864,7 +1864,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'fields with :ai_workflows scope' do
-    %w[id fullPath workItems languages statisticsDetailsPaths].each do |field_name|
+    %w[id fullPath workItems languages statisticsDetailsPaths namespace group rootGroup].each do |field_name|
       it "includes :ai_workflows scope for the #{field_name} field" do
         field = described_class.fields[field_name]
         expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)
