@@ -2,7 +2,7 @@
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
 
 query getMrParticipants($fullPath: ID!, $iid: String!, $getStatus: Boolean = false) {
-  workspace: project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     id
     issuable: mergeRequest(iid: $iid) {
       id

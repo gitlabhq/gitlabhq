@@ -232,7 +232,7 @@ describe('WorkItemAssignees component', () => {
 
         it('shows the assignees in dropdown', () => {
           expect(findSidebarDropdownWidget().props('listItems')).toHaveLength(
-            projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users.length,
+            projectMembersAutocompleteResponseWithCurrentUser.data.namespace.users.length,
           );
         });
       });
@@ -375,7 +375,7 @@ describe('WorkItemAssignees component', () => {
 
     it('sorts selected assignees first', async () => {
       const [unselected, selected] =
-        projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users;
+        projectMembersAutocompleteResponseWithCurrentUser.data.namespace.users;
 
       createComponent({
         assignees: [selected],
@@ -393,7 +393,7 @@ describe('WorkItemAssignees component', () => {
 
     it('shows current user above other users', async () => {
       const [unselected, currentUser] = cloneDeep(
-        projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users,
+        projectMembersAutocompleteResponseWithCurrentUser.data.namespace.users,
       );
 
       createComponent({
@@ -412,7 +412,7 @@ describe('WorkItemAssignees component', () => {
 
     it('does not move newly selected assignees to the top until dropdown is closed', async () => {
       const [unselected, currentUser] = cloneDeep(
-        projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users,
+        projectMembersAutocompleteResponseWithCurrentUser.data.namespace.users,
       );
 
       createComponent({

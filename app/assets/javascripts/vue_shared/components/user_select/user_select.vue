@@ -122,7 +122,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.issuable?.participants.nodes.map((node) => ({
+        return data.namespace?.issuable?.participants.nodes.map((node) => ({
           ...node,
           canMerge: false,
         }));
@@ -146,7 +146,7 @@ export default {
           return this.customSearchUsersProcessor(data);
         }
         return (
-          data.workspace?.users
+          data.namespace?.users
             .filter((user) => user)
             .map((user) => ({
               ...user,

@@ -18,6 +18,7 @@ RSpec.describe Packages::Debian::GenerateDistributionService, feature_category: 
         let(:subject3) { described_class.new(distribution).execute }
 
         it_behaves_like 'Generate Debian Distribution and component files'
+        it_behaves_like 'Debian Distribution key generation error'
       end
 
       describe '#lease_key' do

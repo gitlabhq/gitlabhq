@@ -34,7 +34,8 @@ module Gitlab
             .to_return(body: 'build2: { script: echo Hello World }')
         end
 
-        it 'returns builds from included files' do
+        it 'returns builds from included files',
+          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/7359' do
           expect(builds.pluck(:name)).to eq %w[build1 build2]
         end
 

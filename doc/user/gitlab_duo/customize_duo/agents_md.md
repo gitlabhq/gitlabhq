@@ -214,3 +214,7 @@ To use `AGENTS.md` in a subdirectory:
 1. Save the file.
 1. To apply the instructions, start a new conversation that involves files in that directory. You
    must do this every time you change the `AGENTS.md` file.
+
+## Related topics
+
+- [Custom rules](custom_rules.md)

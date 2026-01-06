@@ -29,8 +29,7 @@ RSpec.shared_context 'with Organization URL helpers' do
 
       unless current_organization
         rack_env = (last_request_headers.presence || {}).transform_keys do |key|
-          upcased = key.to_s.upcase
-          ActionDispatch::Http::Headers::CGI_VARIABLES.include?(upcased) ? upcased : "HTTP_#{upcased}"
+          ActionDispatch::Http::Headers.new(nil).send(:env_name, key)
         end
 
         context = {

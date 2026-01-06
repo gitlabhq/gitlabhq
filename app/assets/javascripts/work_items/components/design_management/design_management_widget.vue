@@ -595,7 +595,7 @@ export default {
             @end="onDragEnd"
             @change="onDesignsReorder"
             @input="onDesignMove"
-            @pointerup.native="onPointerUp"
+            @pointerup="onPointerUp"
           >
             <li
               v-for="design in designs"

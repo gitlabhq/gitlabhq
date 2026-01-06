@@ -681,15 +681,15 @@ The recommended system requirements change depending on the number of users.
 
 ### Deployment decision matrix quick reference
 
-| Users | Primary Recommendation | Comparable AWS ARM Instance | Comparable GCP ARM Instance | Deployment Type |
-|---|---|---|---|---|
-| 1K | ClickHouse Cloud Basic | - | - | Managed |
-| 2K | ClickHouse Cloud Basic | `m8g.xlarge` | `c4a-standard-4` |  Managed or Single Node |
-| 3K | ClickHouse Cloud Scale | `m8g.2xlarge` | `c4a-standard-8` | Managed or Single Node |
-| 5K | ClickHouse Cloud Scale | `m8g.4xlarge` | `c4a-standard-16` | Managed or Single Node |
-| 10K | ClickHouse Cloud Scale | `m8g.4xlarge` | `c4a-standard-16` |  Managed or Single Node/HA |
-| 25K | ClickHouse for GitLab Self-Managed or ClickHouse Cloud Scale | `m8g.8xlarge` or 3×`m8g.4xlarge` | `c4a-standard-32` or 3×`c4a-standard-16` | Managed or Single Node/HA |
-| 50K | ClickHouse for GitLab Self-Managed high availability (HA) or ClickHouse Cloud Scale | 3×`m8g.4xlarge` | 3×`c4a-standard-16` | Managed or HA Cluster |
+| Users | Primary Recommendation | Comparable AWS ARM Instance | Comparable GCP ARM Instance | Comparable Azure ARM Instance | Deployment Type |
+|---|---|---|---|---|---|
+| 1K | ClickHouse Cloud Basic | - | - | - | Managed |
+| 2K | ClickHouse Cloud Basic | `m8g.xlarge` | `c4a-standard-4` |  `Standard_D4ps_v6` | Managed or Single Node |
+| 3K | ClickHouse Cloud Scale | `m8g.2xlarge` | `c4a-standard-8` | `Standard_D8ps_v6` | Managed or Single Node |
+| 5K | ClickHouse Cloud Scale | `m8g.4xlarge` | `c4a-standard-16` | `Standard_D16ps_v6` | Managed or Single Node |
+| 10K | ClickHouse Cloud Scale | `m8g.4xlarge` | `c4a-standard-16` | `Standard_D16ps_v6` | Managed or Single Node/HA |
+| 25K | ClickHouse for GitLab Self-Managed or ClickHouse Cloud Scale | `m8g.8xlarge` or 3×`m8g.4xlarge` | `c4a-standard-32` or 3×`c4a-standard-16` | `Standard_D32ps_v6` or 3x`Standard_D16ps_v6` | Managed or Single Node/HA |
+| 50K | ClickHouse for GitLab Self-Managed high availability (HA) or ClickHouse Cloud Scale | 3×`m8g.4xlarge` | 3×`c4a-standard-16` | 3x`Standard_D16ps_v6` | Managed or HA Cluster |
 
 ### 1K Users
 
@@ -703,6 +703,7 @@ Alternative recommendation for ClickHouse for GitLab Self-Managed deployment:
 
 - AWS: m8g.xlarge (4 vCPU, 16 GB)
 - GCP: c4a-standard-4 or n4-standard-4 (4 vCPU, 16 GB)
+- Azure: Standard_D4ps_v6 (4 vCPU, 16 GB)
 - Storage: 20 GB with low-medium performance tier
 
 ### 3K Users
@@ -713,6 +714,7 @@ Alternative recommendation for ClickHouse for GitLab Self-Managed deployment:
 
 - AWS: m8g.2xlarge (8 vCPU, 32 GB)
 - GCP: c4a-standard-8 or n4-standard-8 (8 vCPU, 32 GB)
+- Azure: Standard_D8ps_v6 (8 vCPU, 32 GB)
 - Storage: 100 GB with medium performance tier
 
 Note: HA deployments not cost-effective at this scale.
@@ -725,6 +727,7 @@ Alternative recommendation for ClickHouse for GitLab Self-Managed deployment:
 
 - AWS: m8g.4xlarge (16 vCPU, 64 GB)
 - GCP: c4a-standard-16 or n4-standard-16 (16 vCPU, 64 GB)
+- Azure: Standard_D16ps_v6 (16 vCPU, 64 GB)
 - Storage: 100 GB with high performance tier
 - Deployment: Single node recommended
 
@@ -736,6 +739,7 @@ Alternative recommendation for ClickHouse for GitLab Self-Managed deployment:
 
 - AWS: m8g.4xlarge (16 vCPU, 64 GB)
 - GCP: c4a-standard-16 or n4-standard-16 (16 vCPU, 64 GB)
+- Azure: Standard_D16ps_v6 (16 vCPU, 64 GB)
 - Storage: 200 GB with high performance tier
 - HA Option: 3-node cluster becomes viable for critical workloads
 
@@ -749,11 +753,13 @@ Recommendations for ClickHouse for GitLab Self-Managed deployment:
 
   - AWS: m8g.8xlarge (32 vCPU, 128 GB)
   - GCP: c4a-standard-32 or n4-standard-32 (32 vCPU, 128 GB)
+  - Azure: Standard_D32ps_v6 (32 vCPU, 128 GB)
 
 - HA Deployment:
 
   - AWS: 3 × m8g.4xlarge (16 vCPU, 64 GB each)
   - GCP: 3 × c4a-standard-16 or 3 × n4-standard-16 (16 vCPU, 64 GB each)
+  - Azure: 3 x Standard_D16ps_v6 (16 vCPU, 64 GB each)
 
 - Storage: 400 GB per node with high performance tier.
 
@@ -767,11 +773,13 @@ Recommendations for ClickHouse for GitLab Self-Managed deployment:
 
   - AWS: m8g.8xlarge (32 vCPU, 128 GB)
   - GCP: c4a-standard-32 or n4-standard-32 (32 vCPU, 128 GB)
+  - Azure: Standard_D32ps_v6 (32 vCPU, 128 GB)
 
 - HA Deployment (Preferred):
 
   - AWS: 3 × m8g.4xlarge (16 vCPU, 64 GB each)
   - GCP: 3 × c4a-standard-16 or 3 × n4-standard-16 (16 vCPU, 64 GB each)
+  - Azure: 3 x Standard_D16ps_v6 (16 vCPU, 64 GB each)
 
 - Storage: 1000 GB per node with high performance tier.
 

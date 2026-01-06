@@ -77,7 +77,7 @@ export const createLabelSuccessfulResponse = {
 
 export const workspaceLabelsQueryResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: 'gid://gitlab/Project/126',
       labels: {
         nodes: [
@@ -105,7 +105,7 @@ export const workspaceLabelsQueryResponse = {
 
 export const workspaceLabelsQueryEmptyResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: 'gid://gitlab/Project/126',
       labels: {
         nodes: [],

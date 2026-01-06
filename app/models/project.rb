@@ -3618,6 +3618,10 @@ class Project < ApplicationRecord
     user.present? && Feature.enabled?(:work_items_consolidated_list_user, user)
   end
 
+  def work_item_new_url_format_enabled?
+    work_items_consolidated_list_enabled? && (group&.work_item_new_url_format_enabled? || Feature.enabled?(:work_item_new_url_format, self, type: :gitlab_com_derisk))
+  end
+
   def enqueue_record_project_target_platforms
     return unless Gitlab.com?
 

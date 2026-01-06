@@ -3775,7 +3775,7 @@ export const searchWorkItemsResponse = ({ workItems = [], workItemsByIid = [] } 
 
 export const projectMembersAutocompleteResponseWithCurrentUser = {
   data: {
-    workspace: {
+    namespace: {
       id: 'gid://gitlab/Project/7',
       __typename: 'Project',
       users: [
@@ -3844,7 +3844,7 @@ export const currentUserNullResponse = {
 
 export const projectLabelsResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: '1',
       __typename: 'Project',
       labels: {
@@ -3856,7 +3856,7 @@ export const projectLabelsResponse = {
 
 export const groupLabelsResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: '1',
       __typename: 'Group',
       labels: {
@@ -3868,7 +3868,7 @@ export const groupLabelsResponse = {
 
 export const getProjectLabelsResponse = (labels) => ({
   data: {
-    workspace: {
+    namespace: {
       id: '1',
       __typename: 'Project',
       labels: {
@@ -4129,7 +4129,7 @@ export const mockAncestorWidgetResponse = {
 
 export const projectMilestonesResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: 'gid://gitlab/Project/1',
       attributes: {
         nodes: [
@@ -4163,7 +4163,7 @@ export const projectMilestonesResponse = {
 
 export const projectMilestonesResponseWithNoMilestones = {
   data: {
-    workspace: {
+    namespace: {
       id: 'gid://gitlab/Project/1',
       attributes: {
         nodes: [],

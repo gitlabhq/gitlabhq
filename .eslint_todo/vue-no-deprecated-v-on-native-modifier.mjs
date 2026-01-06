@@ -17,8 +17,6 @@ export default {
     'app/assets/javascripts/vue_shared/components/dropdown/dropdown_widget/dropdown_widget.vue',
     'app/assets/javascripts/vue_shared/components/user_select/user_select.vue',
     'app/assets/javascripts/vue_shared/issuable/list/components/issuable_item.vue',
-    'app/assets/javascripts/work_items/components/design_management/design_management_widget.vue',
-    'app/assets/javascripts/work_items/components/shared/work_item_token_input.vue',
     'app/assets/javascripts/work_items/components/work_item_dates.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_dates.vue',
   ],

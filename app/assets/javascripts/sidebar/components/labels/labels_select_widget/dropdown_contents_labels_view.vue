@@ -59,7 +59,7 @@ export default {
       skip() {
         return this.searchKey.length === 1 || !this.isVisible;
       },
-      update: (data) => data.workspace?.labels?.nodes || [],
+      update: (data) => data.namespace?.labels?.nodes || [],
       error() {
         createAlert({ message: __('Error fetching labels.') });
       },

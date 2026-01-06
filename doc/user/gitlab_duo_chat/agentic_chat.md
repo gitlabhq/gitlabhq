@@ -246,30 +246,16 @@ style, team practices, and project requirements.
 
 GitLab Duo Chat supports two approaches:
 
-- Custom rules in `chat-rules.md`: For GitLab only. Best for personal preferences and team
-  standards.
-- Shared rules in `AGENTS.md`: For GitLab and other AI tools that support the specification. Best
-  for project context, monorepo organization, and directory-specific conventions.
+- [Custom rules](../gitlab_duo/customize_duo/custom_rules.md) in `chat-rules.md`: For GitLab only.
+  Best for personal preferences and team standards.
+- [Shared rules in `AGENTS.md`](../gitlab_duo/customize_duo/agents_md.md): For GitLab and other AI
+  tools that support the `AGENTS.md` specification. Best for project context, monorepo organization,
+  and directory-specific conventions.
 
-You can use both files simultaneously. GitLab Duo Chat applies instructions from all available rule files.
+You can use both files simultaneously. GitLab Duo Chat applies instructions from all available rule
+files.
 
-### Create custom rules
-
-Use custom rules to specify instructions for GitLab Duo Chat to follow for every conversation in
-your IDE. You can only use custom rules with GitLab Duo Chat.
-
-For more information, see [Custom rules](../gitlab_duo/customize_duo/custom_rules.md).
-
-### Create `AGENTS.md` instruction files
-
-Use `AGENTS.md` files to provide instructions for GitLab Duo Chat to follow during conversations in
-your IDE. Unlike custom rules, these instructions are also available for other AI coding tools to
-use.
-
-This feature follows the [`AGENTS.md` specification](https://agents.md/), an emerging standard for
-providing context and instructions to AI coding assistants.
-
-For more information, see [`AGENTS.md` customization files](../gitlab_duo/customize_duo/agents_md.md).
+Learn more about how to [customize GitLab Duo](../gitlab_duo/customize_duo/_index.md).
 
 ## Select a model
 

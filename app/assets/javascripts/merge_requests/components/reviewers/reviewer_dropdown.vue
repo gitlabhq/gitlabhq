@@ -193,7 +193,7 @@ export default {
 
       const {
         data: {
-          workspace: { users = [] },
+          namespace: { users = [] },
         },
       } = await this.$apollo.query({
         query: userAutocompleteWithMRPermissionsQuery,

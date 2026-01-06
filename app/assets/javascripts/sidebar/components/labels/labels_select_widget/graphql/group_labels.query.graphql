@@ -1,7 +1,7 @@
 #import "~/graphql_shared/fragments/label.fragment.graphql"
 
 query groupLabels($fullPath: ID!, $searchTerm: String) {
-  workspace: group(fullPath: $fullPath) {
+  namespace: group(fullPath: $fullPath) {
     id
     labels(
       searchIn: TITLE

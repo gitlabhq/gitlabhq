@@ -57,6 +57,10 @@ RSpec.describe Packages::Debian::GenerateDistributionWorker, type: :worker, feat
 
             it_behaves_like 'Generate Debian Distribution and component files'
           end
+
+          # Error tests are outside the idempotent worker wrapper because
+          # errors prevent re-execution, causing the idempotent check to fail
+          it_behaves_like 'Debian Distribution key generation error'
         end
       end
     end

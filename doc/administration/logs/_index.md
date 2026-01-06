@@ -1239,7 +1239,7 @@ This log is located:
 
 {{< /history >}}
 
-The `secret_push_protection.log` file logs information related to [Secret Push Protection](../../user/application_security/secret_detection/secret_push_protection/_index.md) feature.
+The `secret_push_protection.log` file logs information related to [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md) feature.
 
 This log is located:
 

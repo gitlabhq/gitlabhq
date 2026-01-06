@@ -106,6 +106,27 @@ This setting does not override other GitLab Duo settings. For GitLab Duo Agent P
 - GitLab Duo must be enabled.
 - Experiment and beta features must be enabled because GitLab Duo Agent Platform is in beta.
 
+### On GitLab.com
+
+On GitLab.com, you can control GitLab Duo Agent Platform availability for your top-level group (namespace).
+
+Prerequisites:
+
+- You must have the Owner role for the top-level group.
+
+To change GitLab Duo Agent Platform availability:
+
+1. On the top bar, select **Search or go to** and find your top-level group.
+1. Select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **GitLab Duo Agent Platform**, select or clear the **Turn on GitLab Duo Chat (Agentic), agents, and flows** checkbox.
+1. Select **Save changes**.
+
+GitLab Duo Agent Platform availability changes for all subgroups and projects.
+
+When GitLab Duo Agent Platform is turned off, related settings for flows and
+[foundational agents](../duo_agent_platform/agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off) are hidden.
+
 ### On GitLab Self-Managed
 
 On GitLab Self-Managed, you can control GitLab Duo Agent Platform availability for the instance.
@@ -124,6 +145,25 @@ To change GitLab Duo Agent Platform availability:
 
 When GitLab Duo Agent Platform is turned off, related settings for flows and
 [foundational agents](../duo_agent_platform/agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off) are hidden.
+
+### On GitLab.com
+
+On GitLab.com, you can control GitLab Duo Agent Platform availability for your top-level group.
+
+Prerequisites:
+
+- You must have the Owner role for the top-level group.
+- Your group must have a Premium or Ultimate subscription.
+
+To change GitLab Duo Agent Platform availability:
+
+1. On the top bar, select **Search or go to** and find your top-level group.
+1. Select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **GitLab Duo Agent Platform**, select or clear the **Turn on GitLab Duo Chat (Agentic), agents, and flows** checkbox.
+1. Select **Save changes**.
+
+When GitLab Duo Agent Platform is turned off, related features like Agentic Chat and agent workflows are not available to group members.
 
 ## Turn GitLab Duo on or off
 

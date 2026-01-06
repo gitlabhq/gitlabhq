@@ -1,0 +1,6 @@
+---
+name: create_dependency_list_export
+description: Grants the ability to create dependency list exports
+boundaries:
+  - group
+  - project

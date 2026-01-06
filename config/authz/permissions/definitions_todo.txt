@@ -7,7 +7,7 @@ access_api
 access_code_suggestions
 access_description_composer
 access_duo_agentic_chat
-access_duo_chat
+access_duo_classic_chat
 access_duo_features
 access_generate_commit_message
 access_git
@@ -494,7 +494,6 @@ read_custom_field
 read_customizable_dashboards
 read_cycle_analytics
 read_dedicated_hosted_runner_usage
-read_dependency
 read_dependency_list_export
 read_dependency_proxy
 read_deploy_board

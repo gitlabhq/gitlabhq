@@ -147,11 +147,11 @@ export const referenceQueries = {
 export const workspaceLabelsQueries = {
   [WORKSPACE_PROJECT]: {
     query: projectLabelsQuery,
-    dataPath: 'workspace.labels',
+    dataPath: 'namespace.labels',
   },
   [WORKSPACE_GROUP]: {
     query: groupLabelsQuery,
-    dataPath: 'workspace.labels',
+    dataPath: 'namespace.labels',
   },
 };
 

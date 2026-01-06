@@ -48,6 +48,7 @@ no-jh-check:
     - scripts/no-dir-check jh
 
 .pipeline-tier-base:
+  needs: []
   extends:
     - .preflight-job-base
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest

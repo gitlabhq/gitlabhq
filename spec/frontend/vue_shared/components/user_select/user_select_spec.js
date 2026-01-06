@@ -315,7 +315,7 @@ describe('User select dropdown', () => {
   describe('when customSearchUsersProcessor prop provided', () => {
     it('uses custom query and processor', async () => {
       const customSearchUsersProcessor = jest.fn((data) => {
-        return data.workspace?.users.filter((user) => user?.username === 'francina.skiles') || [];
+        return data.namespace?.users.filter((user) => user?.username === 'francina.skiles') || [];
       });
       createComponent({
         props: {
@@ -487,7 +487,7 @@ describe('User select dropdown', () => {
 
     it('shows a message about no matches if search returned an empty list', async () => {
       const responseCopy = cloneDeep(searchAutocompleteQueryResponse);
-      responseCopy.data.workspace.users = [];
+      responseCopy.data.namespace.users = [];
 
       createComponent({
         searchQueryHandler: jest.fn().mockResolvedValue(responseCopy),
@@ -519,7 +519,7 @@ describe('User select dropdown', () => {
     it('clears search term and focuses search field after unselecting a user', async () => {
       createComponent({
         props: {
-          value: [searchAutocompleteQueryResponse.data.workspace.users[0]],
+          value: [searchAutocompleteQueryResponse.data.namespace.users[0]],
         },
         searchQueryHandler: jest.fn().mockResolvedValue(searchAutocompleteQueryResponse),
       });

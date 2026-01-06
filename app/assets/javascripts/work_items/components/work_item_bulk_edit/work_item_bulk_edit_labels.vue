@@ -69,7 +69,7 @@ export default {
         return !this.searchStarted;
       },
       update(data) {
-        return data.workspace?.labels?.nodes ?? [];
+        return data.namespace?.labels?.nodes ?? [];
       },
       error(error) {
         createAlert({

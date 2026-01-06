@@ -140,7 +140,7 @@ describe('WorkItemBulkEditAssignee component', () => {
         createComponent({
           searchQueryHandler: jest.fn().mockResolvedValue({
             data: {
-              workspace: {
+              namespace: {
                 id: 'gid://gitlab/Project/7',
                 __typename: 'Project',
                 users: [

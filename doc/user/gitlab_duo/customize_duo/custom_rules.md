@@ -97,3 +97,7 @@ conversation to apply the updated rules.
 You cannot use Chat to edit your custom rules file directly.
 
 To manage who must approve any changes to custom rules, use [Code Owners](../../project/codeowners/_index.md).
+
+## Related topics
+
+- [AGENTS.md customization files](agents_md.md)

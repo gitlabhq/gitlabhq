@@ -950,7 +950,7 @@ export const mockLabel2 = {
 
 export const mockProjectLabelsResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: 'gid://gitlab/Project/1',
       labels: {
         nodes: [mockLabel1, mockLabel2],
@@ -962,7 +962,7 @@ export const mockProjectLabelsResponse = {
 
 export const mockGroupLabelsResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: 'gid://gitlab/Group/1',
       labels: {
         nodes: [mockLabel1, mockLabel2],

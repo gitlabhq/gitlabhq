@@ -272,6 +272,107 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
         end
       end
     end
+
+    # rubocop:disable RSpec/MultipleMemoizedHelpers -- Inherits helpers from parent context
+    describe '.visible_to_user_with_access_level' do
+      let_it_be(:access_level_user) { create(:user) }
+      let_it_be(:maintainer_project) { create(:project, :private) }
+      let_it_be(:developer_project) { create(:project, :private) }
+      let_it_be(:reporter_project) { create(:project, :private) }
+      let_it_be(:guest_project) { create(:project, :private) }
+      let_it_be(:owner_project) { create(:project, :private) }
+      let_it_be(:maintainer_resource) { create(:ci_catalog_resource, project: maintainer_project) }
+      let_it_be(:developer_resource) { create(:ci_catalog_resource, project: developer_project) }
+      let_it_be(:reporter_resource) { create(:ci_catalog_resource, project: reporter_project) }
+      let_it_be(:guest_resource) { create(:ci_catalog_resource, project: guest_project) }
+      let_it_be(:owner_resource) { create(:ci_catalog_resource, project: owner_project) }
+
+      subject(:resources) { described_class.visible_to_user_with_access_level(access_level_user, min_access_level) }
+
+      before_all do
+        maintainer_project.add_maintainer(access_level_user)
+        developer_project.add_developer(access_level_user)
+        reporter_project.add_reporter(access_level_user)
+        guest_project.add_guest(access_level_user)
+        owner_project.add_owner(access_level_user)
+      end
+
+      context 'when min_access_level is MAINTAINER' do
+        let(:min_access_level) { Gitlab::Access::MAINTAINER }
+
+        it 'returns only resources where user has maintainer or higher access' do
+          expect(resources).to contain_exactly(maintainer_resource, owner_resource)
+        end
+      end
+
+      context 'when min_access_level is DEVELOPER' do
+        let(:min_access_level) { Gitlab::Access::DEVELOPER }
+
+        it 'returns resources where user has developer or higher access' do
+          expect(resources).to contain_exactly(developer_resource, maintainer_resource, owner_resource)
+        end
+      end
+
+      context 'when min_access_level is REPORTER' do
+        let(:min_access_level) { Gitlab::Access::REPORTER }
+
+        it 'returns resources where user has reporter or higher access' do
+          expect(resources).to contain_exactly(reporter_resource, developer_resource, maintainer_resource,
+            owner_resource)
+        end
+      end
+
+      context 'when min_access_level is GUEST' do
+        let(:min_access_level) { Gitlab::Access::GUEST }
+
+        it 'returns resources where user has guest or higher access' do
+          expect(resources).to contain_exactly(guest_resource, reporter_resource, developer_resource,
+            maintainer_resource, owner_resource)
+        end
+      end
+
+      context 'when min_access_level is OWNER' do
+        let(:min_access_level) { Gitlab::Access::OWNER }
+
+        it 'returns only resources where user has owner access' do
+          expect(resources).to contain_exactly(owner_resource)
+        end
+      end
+
+      context 'when min_access_level is nil' do
+        let(:min_access_level) { nil }
+
+        it 'falls back to visible_to_user behavior' do
+          expect(resources).to contain_exactly(guest_resource, reporter_resource, developer_resource,
+            maintainer_resource, owner_resource)
+        end
+      end
+
+      context 'when user is nil' do
+        subject(:resources) { described_class.visible_to_user_with_access_level(nil, Gitlab::Access::MAINTAINER) }
+
+        it 'returns none' do
+          expect(resources).to be_empty
+        end
+      end
+
+      context 'with a different user' do
+        let_it_be(:different_user) { create(:user) }
+        let_it_be(:different_user_project) { create(:project, :private) }
+        let_it_be(:different_user_resource) { create(:ci_catalog_resource, project: different_user_project) }
+
+        subject(:resources) { described_class.visible_to_user_with_access_level(different_user, Gitlab::Access::GUEST) }
+
+        before_all do
+          different_user_project.add_guest(different_user)
+        end
+
+        it "returns resources where the different user has guest or higher access" do
+          expect(resources).to contain_exactly(different_user_resource)
+        end
+      end
+    end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
   end
 
   describe '#archived' do

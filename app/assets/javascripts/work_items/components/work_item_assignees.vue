@@ -94,14 +94,14 @@ export default {
         return !this.searchStarted;
       },
       update(data) {
-        return this.isGroup ? data.groupWorkspace?.users : data.workspace?.users;
+        return this.isGroup ? data.groupNamespace?.users : data.namespace?.users;
       },
       result({ data }) {
         if (!data) {
           // when data is not available, skip the update
           return;
         }
-        const users = this.isGroup ? data?.groupWorkspace?.users : data?.workspace?.users;
+        const users = this.isGroup ? data?.groupNamespace?.users : data?.namespace?.users;
         this.localUsers = unionBy(this.localUsers, users, 'id');
       },
       error() {

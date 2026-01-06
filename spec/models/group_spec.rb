@@ -4324,6 +4324,44 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#work_item_new_url_format_enabled?' do
+    context 'when work_item_planning_view is enabled' do
+      before do
+        stub_feature_flags(work_item_planning_view: group)
+      end
+
+      context 'when work_item_new_url_format is enabled for the group' do
+        before do
+          stub_feature_flags(work_item_new_url_format: group)
+        end
+
+        it 'returns true' do
+          expect(group.work_item_new_url_format_enabled?).to eq(true)
+        end
+      end
+
+      context 'when work_item_new_url_format is disabled' do
+        before do
+          stub_feature_flags(work_item_new_url_format: false)
+        end
+
+        it 'returns false' do
+          expect(group.work_item_new_url_format_enabled?).to eq(false)
+        end
+      end
+    end
+
+    context 'when work_item_planning_view is disabled' do
+      before do
+        stub_feature_flags(work_item_planning_view: false)
+      end
+
+      it 'returns false' do
+        expect(group.work_item_new_url_format_enabled?).to eq(false)
+      end
+    end
+  end
+
   describe '#work_items_saved_views_enabled?' do
     let_it_be(:user) { create(:user) }
 

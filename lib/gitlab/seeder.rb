@@ -98,13 +98,18 @@ module Gitlab
             # saves us about 30% of seeding time, and production seeds are minimal.
             if Rails.env.development?
               Gitlab::SafeRequestStore.ensure_request_store do
+                sidekiq_strict_mode = Sidekiq::Config::DEFAULTS[:on_complex_arguments]
                 disable_request_limits = ENV['GITALY_DISABLE_REQUEST_LIMITS']
                 # We need this because seeders shouldn't be limited by Gitaly
                 # since we're not actually in a request-response environment.
                 ENV['GITALY_DISABLE_REQUEST_LIMITS'] = 'true'
+                # Strict args just print annoying warnings during seeding.
+                # At this point, the developer can't do anything about this.
+                Sidekiq.strict_args!(false)
                 yield
               ensure
                 ENV['GITALY_DISABLE_REQUEST_LIMITS'] = disable_request_limits
+                Sidekiq.strict_args!(sidekiq_strict_mode)
               end
             else
               yield

@@ -93,6 +93,87 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
         is_expected.to contain_exactly(public_resource_a, public_resource_b, internal_resource,
           private_namespace_resource)
       end
+
+      # rubocop:disable RSpec/MultipleMemoizedHelpers -- Inherits helpers from parent context
+      context 'with min_access_level parameter' do
+        let_it_be(:access_level_user) { create(:user) }
+        let_it_be(:maintainer_project) { create(:project, :private, name: 'maintainer project') }
+        let_it_be(:developer_project) { create(:project, :private, name: 'developer project') }
+        let_it_be(:reporter_project) { create(:project, :private, name: 'reporter project') }
+        let_it_be(:owner_project) { create(:project, :private, name: 'owner project') }
+        let_it_be(:maintainer_resource) { create(:ci_catalog_resource, :published, project: maintainer_project) }
+        let_it_be(:developer_resource) { create(:ci_catalog_resource, :published, project: developer_project) }
+        let_it_be(:reporter_resource) { create(:ci_catalog_resource, :published, project: reporter_project) }
+        let_it_be(:owner_resource) { create(:ci_catalog_resource, :published, project: owner_project) }
+
+        let(:list) { described_class.new(access_level_user) }
+
+        before_all do
+          maintainer_project.add_maintainer(access_level_user)
+          developer_project.add_developer(access_level_user)
+          reporter_project.add_reporter(access_level_user)
+          owner_project.add_owner(access_level_user)
+        end
+
+        context 'when min_access_level is MAINTAINER' do
+          let(:params) { { scope: :namespaces, min_access_level: Gitlab::Access::MAINTAINER } }
+
+          it 'returns only resources where user has maintainer or higher access' do
+            is_expected.to contain_exactly(maintainer_resource, owner_resource)
+          end
+        end
+
+        context 'when min_access_level is DEVELOPER' do
+          let(:params) { { scope: :namespaces, min_access_level: Gitlab::Access::DEVELOPER } }
+
+          it 'returns resources where user has developer or higher access' do
+            is_expected.to contain_exactly(developer_resource, maintainer_resource, owner_resource)
+          end
+        end
+
+        context 'when min_access_level is REPORTER' do
+          let(:params) { { scope: :namespaces, min_access_level: Gitlab::Access::REPORTER } }
+
+          it 'returns resources where user has reporter or higher access' do
+            is_expected.to contain_exactly(reporter_resource, developer_resource, maintainer_resource, owner_resource)
+          end
+        end
+
+        context 'when min_access_level is OWNER' do
+          let(:params) { { scope: :namespaces, min_access_level: Gitlab::Access::OWNER } }
+
+          it 'returns only resources where user has owner access' do
+            is_expected.to contain_exactly(owner_resource)
+          end
+        end
+
+        context 'when min_access_level is nil' do
+          let(:params) { { scope: :namespaces, min_access_level: nil } }
+
+          it 'returns all visible resources regardless of access level' do
+            is_expected.to include(reporter_resource, developer_resource, maintainer_resource, owner_resource)
+          end
+        end
+
+        context 'when combining min_access_level with other filters' do
+          context 'with search parameter' do
+            let(:params) { { scope: :namespaces, min_access_level: Gitlab::Access::MAINTAINER, search: 'maintainer' } }
+
+            it 'returns resources matching both filters' do
+              is_expected.to contain_exactly(maintainer_resource)
+            end
+          end
+
+          context 'with sort parameter' do
+            let(:params) { { scope: :namespaces, min_access_level: Gitlab::Access::MAINTAINER, sort: :name_asc } }
+
+            it 'returns filtered resources in sorted order' do
+              expect(resources.pluck(:name)).to eq(['maintainer project', 'owner project'])
+            end
+          end
+        end
+      end
+      # rubocop:enable RSpec/MultipleMemoizedHelpers
     end
 
     context 'with a sort parameter' do

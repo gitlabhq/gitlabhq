@@ -47,7 +47,7 @@ function createComponent(
   ];
   autocompleteUsersMock = jest.fn().mockResolvedValue({
     data: {
-      workspace: {
+      namespace: {
         id: 1,
         users: customUsers || defaultUsers,
       },
@@ -324,7 +324,7 @@ describe('Reviewer dropdown component', () => {
 
           autocompleteUsersMock.mockResolvedValueOnce({
             data: {
-              workspace: {
+              namespace: {
                 id: 1,
                 users: [
                   createMockUser({ id: 3, name: 'Current User', username: 'currentuser' }),
@@ -679,7 +679,7 @@ describe('Reviewer dropdown component', () => {
           autocompleteUsersMock.mockReset();
           autocompleteUsersMock.mockResolvedValue({
             data: {
-              workspace: {
+              namespace: {
                 id: 1,
                 users: [createMockUser({ id: 3, name: 'Friend', username: 'coolguy' })],
               },

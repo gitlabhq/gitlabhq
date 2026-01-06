@@ -353,7 +353,7 @@ export const issuableStartDateResponse = (startDate = null) => ({
 
 export const epicParticipantsResponse = () => ({
   data: {
-    workspace: {
+    namespace: {
       id: '1',
       __typename: 'Group',
       issuable: {
@@ -525,7 +525,7 @@ export const searchQueryResponse = {
 
 export const searchAutocompleteQueryResponse = {
   data: {
-    workspace: {
+    namespace: {
       __typename: 'Project',
       id: '',
       users: [
@@ -677,7 +677,7 @@ export const searchResponseOnMR = {
 
 export const searchAutocompleteResponseOnMR = {
   data: {
-    workspace: {
+    namespace: {
       __typename: 'Project',
       id: '1',
       users: [
@@ -728,7 +728,7 @@ export const projectMembersResponse = {
 
 export const projectAutocompleteCustomResponse = {
   data: {
-    project: {
+    namespace: {
       id: '1',
       projectMembers: {
         nodes: [
@@ -745,7 +745,7 @@ export const projectAutocompleteCustomResponse = {
 
 export const projectAutocompleteMembersResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: '1',
       __typename: 'Project',
       users: [
@@ -833,7 +833,7 @@ export const groupMembersResponse = {
 
 export const participantsQueryResponse = {
   data: {
-    workspace: {
+    namespace: {
       __typename: 'Project',
       id: '1',
       issuable: {
@@ -944,7 +944,7 @@ export const mockMilestone2 = {
 
 export const mockProjectMilestonesResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: 'gid://gitlab/Project/1',
       attributes: {
         nodes: [mockMilestone1, mockMilestone2],
@@ -957,7 +957,7 @@ export const mockProjectMilestonesResponse = {
 
 export const mockGroupMilestonesResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: 'gid://gitlab/Group/1',
       attributes: {
         nodes: [mockMilestone1, mockMilestone2],

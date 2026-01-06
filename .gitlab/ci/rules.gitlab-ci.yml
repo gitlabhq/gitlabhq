@@ -2141,6 +2141,8 @@
     # Full suite is already executed against cng deployment which is a proper release environment
     - <<: *if-merge-request-targeting-stable-branch
       when: never
+    - <<: *if-security-merge-request
+      when: never
     - !reference [".qa:rules:e2e-blocking-base-before", rules]
     # Run tests automatically for MRs that touch Ruby version files
     - <<: *if-merge-request
