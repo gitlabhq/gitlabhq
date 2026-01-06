@@ -10,7 +10,7 @@ RSpec.describe Ci::GenerateCodequalityMrDiffReportService, feature_category: :co
     subject { service.execute(base_pipeline, head_pipeline) }
 
     context 'when head pipeline has codequality mr diff report' do
-      let!(:merge_request) { create(:merge_request, :with_codequality_mr_diff_reports, source_project: project, id: 123456789) }
+      let!(:merge_request) { create(:merge_request, :with_codequality_mr_diff_reports, source_project: project, id: 12345678) }
       let!(:service) { described_class.new(project, nil, id: merge_request.id) }
       let!(:head_pipeline) { merge_request.head_pipeline }
       let!(:base_pipeline) { nil }
