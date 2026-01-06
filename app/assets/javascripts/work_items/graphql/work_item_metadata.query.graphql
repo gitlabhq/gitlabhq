@@ -17,6 +17,11 @@ query workItemMetadata($fullPath: ID!) {
       adminIssue
       adminProject
       importWorkItems
+      readCrmContact
+      readCrmOrganization
+    }
+    metadata {
+      ...WorkItemMetadata
     }
   }
 }

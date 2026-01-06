@@ -10,6 +10,7 @@ import produce from 'immer';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import updateWorkItemsDisplaySettings from '~/work_items/graphql/update_user_preferences.mutation.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
@@ -29,7 +30,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [InternalEvents.mixin()],
-  inject: ['isSignedIn', 'isGroupIssuesList'],
+  inject: ['isGroupIssuesList'],
   i18n: {
     displayOptions: s__('WorkItems|Display options'),
     yourPreferences: s__('WorkItems|Your preferences'),
@@ -69,6 +70,7 @@ export default {
     return {
       isDropdownVisible: false,
       isLoading: false,
+      isLoggedIn: isLoggedIn(),
     };
   },
   computed: {
@@ -223,7 +225,7 @@ export default {
 </script>
 <template>
   <gl-disclosure-dropdown
-    v-if="isSignedIn"
+    v-if="isLoggedIn"
     v-gl-tooltip="tooltipText"
     icon="preferences"
     text-sr-only

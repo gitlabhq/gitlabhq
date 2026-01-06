@@ -14,7 +14,6 @@ import {
   ACCESS_PERSONAL_PROJECTS_ENUM,
   ACCESS_SELECTED_MEMBERSHIPS_ENUM,
   ACCESS_ALL_MEMBERSHIPS_ENUM,
-  ACCESS_USER_ENUM,
 } from '~/personal_access_tokens/constants';
 
 export default {
@@ -54,21 +53,10 @@ export default {
       ];
     },
   },
-  methods: {
-    onTabChange(index) {
-      if (index === 0) {
-        this.$emit('input', this.selectedGroupAccessOption);
-      }
-
-      if (index === 1) {
-        this.$emit('input', ACCESS_USER_ENUM);
-      }
-    },
-  },
   i18n: {
     defineScopeLabel: s__('AccessTokens|Define scope'),
     scopesDescription: s__(
-      'AccessTokens|Scopes set the permissions granted to your token. Add only the minimum permissions needed for your token. %{linkStart}Learn more here%{linkEnd}.',
+      'AccessTokens|Scopes set the permissions granted to your token. Add only the minimum permissions needed for your token. %{linkStart}Learn more%{linkEnd}.',
     ),
     groupTab: __('Group and project'),
     groupAccess: s__('AccessTokens|Group and project access'),
@@ -97,7 +85,7 @@ export default {
       </gl-sprintf>
     </p>
 
-    <gl-tabs @input="onTabChange">
+    <gl-tabs>
       <gl-tab :title="$options.i18n.groupTab" class="gl-mt-4 gl-pb-0">
         <gl-form-group
           :label="$options.i18n.groupAccess"
@@ -124,7 +112,6 @@ export default {
           </gl-form-radio-group>
         </gl-form-group>
       </gl-tab>
-      <gl-tab :title="$options.i18n.userTab" />
     </gl-tabs>
   </div>
 </template>

@@ -12,6 +12,7 @@ fragment WorkItemAvailableFeatures on NamespaceAvailableFeatures {
   hasBlockedIssuesFeature
   hasGroupBulkEditFeature
   hasCustomFieldsFeature
+  hasDuoRemoteFlowsFeature
 }
 
 fragment WorkItemLinkPaths on NamespacesLinkPaths {
@@ -32,10 +33,22 @@ fragment WorkItemLinkPaths on NamespacesLinkPaths {
   newTrialPath
   newIssuePath
   groupPath
+  namespaceFullPath
   ... on ProjectNamespaceLinks {
     newWorkItemEmailAddress
     releasesPath
     projectImportJiraPath
     exportCsvPath
+  }
+}
+
+fragment WorkItemMetadata on NamespaceMetadata {
+  timeTrackingLimitToHours
+  isIssueRepositioningDisabled
+  showNewWorkItem
+  maxAttachmentSize
+  groupId
+  ... on GroupNamespaceMetadata {
+    hasProjects
   }
 }

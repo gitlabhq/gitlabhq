@@ -3972,6 +3972,9 @@ msgstr ""
 msgid "AccessTokens|Add a %{type}"
 msgstr ""
 
+msgid "AccessTokens|Add group or project"
+msgstr ""
+
 msgid "AccessTokens|Add new token"
 msgstr ""
 
@@ -4015,6 +4018,12 @@ msgid "AccessTokens|Are you sure? Any RSS or calendar URLs currently in use will
 msgstr ""
 
 msgid "AccessTokens|Are you sure? Any issue email addresses currently in use will stop working."
+msgstr ""
+
+msgid "AccessTokens|At least one group or project is required."
+msgstr ""
+
+msgid "AccessTokens|At least one permission is required."
 msgstr ""
 
 msgid "AccessTokens|At least one scope is required."
@@ -4066,6 +4075,12 @@ msgid "AccessTokens|Disable personal, group, project and impersonation tokens. D
 msgstr ""
 
 msgid "AccessTokens|Enable DPoP"
+msgstr ""
+
+msgid "AccessTokens|Error loading groups and projects. Please refresh page."
+msgstr ""
+
+msgid "AccessTokens|Error loading permissions. Please refresh page."
 msgstr ""
 
 msgid "AccessTokens|Expiration date"
@@ -4140,10 +4155,16 @@ msgstr ""
 msgid "AccessTokens|Generate token"
 msgstr ""
 
+msgid "AccessTokens|Grant permissions only to specific resources in your groups or projects."
+msgstr ""
+
 msgid "AccessTokens|Group and project access"
 msgstr ""
 
 msgid "AccessTokens|Group and project permissions"
+msgstr ""
+
+msgid "AccessTokens|Group and project resources"
 msgstr ""
 
 msgid "AccessTokens|How do I use DPoP?"
@@ -4214,6 +4235,12 @@ msgstr ""
 msgid "AccessTokens|No description provided."
 msgstr ""
 
+msgid "AccessTokens|No groups or projects added."
+msgstr ""
+
+msgid "AccessTokens|No resources selected"
+msgstr ""
+
 msgid "AccessTokens|Not eligible to rotate tokens with permissions not held by the user"
 msgstr ""
 
@@ -4227,6 +4254,12 @@ msgid "AccessTokens|Only specific groups or projects that I'm a member of"
 msgstr ""
 
 msgid "AccessTokens|Personal access tokens"
+msgstr ""
+
+msgid "AccessTokens|Remove group %{name}"
+msgstr ""
+
+msgid "AccessTokens|Remove project %{name}"
 msgstr ""
 
 msgid "AccessTokens|Require expiration date for service accounts"
@@ -4268,13 +4301,19 @@ msgstr ""
 msgid "AccessTokens|Scopes set the permission levels granted to the token. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "AccessTokens|Scopes set the permissions granted to your token. Add only the minimum permissions needed for your token. %{linkStart}Learn more here%{linkEnd}."
+msgid "AccessTokens|Scopes set the permissions granted to your token. Add only the minimum permissions needed for your token. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "AccessTokens|Search for resources to add"
 msgstr ""
 
 msgid "AccessTokens|Search or filter access tokens…"
 msgstr ""
 
 msgid "AccessTokens|Select a role"
+msgstr ""
+
+msgid "AccessTokens|Select permissions"
 msgstr ""
 
 msgid "AccessTokens|Select scopes"
@@ -4320,6 +4359,9 @@ msgid "AccessTokens|Token description is required."
 msgstr ""
 
 msgid "AccessTokens|Token expires in less than two weeks."
+msgstr ""
+
+msgid "AccessTokens|Token generation unsuccessful. Please try again."
 msgstr ""
 
 msgid "AccessTokens|Token name"
@@ -44802,6 +44844,9 @@ msgstr ""
 msgid "No repository"
 msgstr ""
 
+msgid "No resources found"
+msgstr ""
+
 msgid "No results"
 msgstr ""
 
@@ -59485,6 +59530,9 @@ msgid "Search forks"
 msgstr ""
 
 msgid "Search groups"
+msgstr ""
+
+msgid "Search groups or projects"
 msgstr ""
 
 msgid "Search groups..."
@@ -80197,9 +80245,6 @@ msgstr ""
 msgid "can't be nil"
 msgstr ""
 
-msgid "can't be solely blank"
-msgstr ""
-
 msgid "can't be specified if a merge request was already provided"
 msgstr ""
 
@@ -81788,6 +81833,9 @@ msgid "must be set for a project namespace"
 msgstr ""
 
 msgid "must be specified"
+msgstr ""
+
+msgid "must be specified when channel is provided"
 msgstr ""
 
 msgid "must be unique by status and elapsed time within a policy"

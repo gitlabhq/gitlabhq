@@ -59,6 +59,19 @@ export default normalizeRender({
       canBulkUpdate: computed(() => Boolean(this.metadata?.adminIssue)),
       canEdit: computed(() => Boolean(this.metadata?.adminProject)),
       canImportWorkItems: computed(() => Boolean(this.metadata?.importWorkItems)),
+      groupId: computed(() => this.metadata?.groupId),
+      isIssueRepositioningDisabled: computed(() =>
+        Boolean(this.metadata?.isIssueRepositioningDisabled),
+      ),
+      maxAttachmentSize: computed(() => this.metadata?.maxAttachmentSize),
+      showNewWorkItem: computed(() => Boolean(this.metadata?.showNewWorkItem)),
+      showNewIssueLink: computed(() => Boolean(this.metadata?.showNewWorkItem)),
+      timeTrackingLimitToHours: computed(() => Boolean(this.metadata?.timeTrackingLimitToHours)),
+      duoRemoteFlowsAvailability: computed(() => Boolean(this.metadata?.hasDuoRemoteFlowsFeature)),
+      hasProjects: computed(() => Boolean(this.metadata?.hasProjects)),
+      canReadCrmOrganization: computed(() => Boolean(this.metadata?.readCrmOrganization)),
+      canReadCrmContact: computed(() => Boolean(this.metadata?.readCrmContact)),
+      projectNamespaceFullPath: computed(() => this.metadata?.namespaceFullPath),
     };
   },
   props: {
@@ -86,6 +99,7 @@ export default normalizeRender({
           ...(namespace.availableFeatures || {}),
           ...(namespace.linkPaths || {}),
           ...(namespace.userPermissions || {}),
+          ...(namespace.metadata || {}),
           id: namespace.id,
         };
       },

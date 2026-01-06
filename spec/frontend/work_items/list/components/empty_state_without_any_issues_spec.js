@@ -2,6 +2,9 @@ import { GlEmptyState } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import EmptyStateWithoutAnyIssues from '~/work_items/list/components/empty_state_without_any_issues.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
+import { isLoggedIn } from '~/lib/utils/common_utils';
+
+jest.mock('~/lib/utils/common_utils');
 
 describe('EmptyStateWithoutAnyIssues component', () => {
   let wrapper;
@@ -9,7 +12,6 @@ describe('EmptyStateWithoutAnyIssues component', () => {
   const defaultProvide = {
     canCreateProjects: false,
     fullPath: 'full/path',
-    isSignedIn: true,
     newIssuePath: 'new/issue/path',
     newProjectPath: 'new/project/path',
     showNewIssueLink: false,
@@ -26,7 +28,13 @@ describe('EmptyStateWithoutAnyIssues component', () => {
   const findCreateIssueLink = () => wrapper.findByRole('link', { name: 'Create issue' });
   const findNewProjectLink = () => wrapper.findByRole('link', { name: 'New project' });
 
-  const mountComponent = ({ props = {}, provide = {}, slots = {} } = {}) => {
+  const mountComponent = ({
+    props = {},
+    provide = {},
+    slots = {},
+    isLoggedInValue = true,
+  } = {}) => {
+    isLoggedIn.mockReturnValue(isLoggedInValue);
     wrapper = mountExtended(EmptyStateWithoutAnyIssues, {
       propsData: {
         ...props,
@@ -184,7 +192,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
 
   describe('when signed out', () => {
     beforeEach(() => {
-      mountComponent({ provide: { isSignedIn: false } });
+      mountComponent({ isLoggedInValue: false });
     });
 
     it('renders empty state', () => {

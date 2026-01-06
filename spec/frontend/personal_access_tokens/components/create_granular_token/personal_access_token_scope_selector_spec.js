@@ -18,7 +18,6 @@ describe('PersonalAccessTokenScopeSelector', () => {
   const findRadioButtons = () => wrapper.findAllComponents(GlFormRadio);
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findGroupTab = () => wrapper.findAllComponents(GlTab).at(0);
-  const findUserTab = () => wrapper.findAllComponents(GlTab).at(1);
 
   beforeEach(() => {
     createComponent();
@@ -33,9 +32,6 @@ describe('PersonalAccessTokenScopeSelector', () => {
 
     expect(findGroupTab().exists()).toBe(true);
     expect(findGroupTab().attributes('title')).toBe('Group and project');
-
-    expect(findUserTab().exists()).toBe(true);
-    expect(findUserTab().attributes('title')).toBe('User');
   });
 
   it('renders form group for group access options', () => {
@@ -62,30 +58,6 @@ describe('PersonalAccessTokenScopeSelector', () => {
     expect(findRadioButtons().at(2).text()).toContain(
       "Only specific groups or projects that I'm a member of",
     );
-  });
-
-  describe('events', () => {
-    it('emits input event when `User` tab is selected', async () => {
-      await findTabs().vm.$emit('input', 1);
-
-      expect(wrapper.emitted('input')[0]).toEqual(['USER']);
-    });
-
-    it('emits input event when radio group value changes', async () => {
-      await findRadioGroup().vm.$emit('input', 'PERSONAL_PROJECTS');
-
-      expect(wrapper.emitted('input')[0]).toEqual(['PERSONAL_PROJECTS']);
-    });
-
-    it('emits input event when `Group` tab is selected', async () => {
-      await findRadioGroup().vm.$emit('input', 'SELECTED_MEMBERSHIPS');
-      // change to User tab
-      await findTabs().vm.$emit('input', 1);
-      // back to the Group tab
-      await findTabs().vm.$emit('input', 0);
-
-      expect(wrapper.emitted('input')[2]).toEqual(['SELECTED_MEMBERSHIPS']);
-    });
   });
 
   describe('error handling', () => {

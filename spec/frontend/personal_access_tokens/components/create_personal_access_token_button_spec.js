@@ -8,7 +8,7 @@ describe('CreatePersonalAccessTokenButton', () => {
   const createComponent = () => {
     wrapper = shallowMountExtended(CreatePersonalAccessTokenButton, {
       provide: {
-        accessTokenGranularNew: '/granular/new',
+        accessTokenGranularNewUrl: '/granular/new',
       },
     });
   };

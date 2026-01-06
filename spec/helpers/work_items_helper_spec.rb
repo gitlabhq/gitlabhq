@@ -73,19 +73,12 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             group_path: nil,
             issues_list_path: project_issues_path(project),
             labels_manage_path: project_labels_path(project),
-            project_namespace_full_path: project.namespace.full_path,
             register_path: new_user_registration_path(redirect_to_referer: 'yes'),
             sign_in_path: user_session_path(redirect_to_referer: 'yes'),
             report_abuse_path: add_category_abuse_reports_path,
             default_branch: project.default_branch_or_main,
-            initial_sort: current_user&.user_preference&.issues_sort,
-            is_signed_in: current_user.present?.to_s,
-            is_issue_repositioning_disabled: 'false',
-            time_tracking_limit_to_hours: "false",
-            can_read_crm_organization: 'true',
             releases_path: project_releases_path(project, format: :json),
             project_import_jira_path: project_import_jira_path(project),
-            can_read_crm_contact: 'true',
             rss_path: project_work_items_path(project, format: :atom, feed_token: 'atom-feed-token'),
             calendar_path: project_work_items_path(project,
               format: :ics,
@@ -95,7 +88,6 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             can_import_work_items: "true",
             can_edit: "true",
             export_csv_path: export_csv_project_issues_path(project),
-            has_projects: 'false',
             new_issue_path: new_project_issue_path(project)
           }
         )
@@ -109,8 +101,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           expect(helper.work_items_data(group_project, current_user)).to include(
             {
               group_path: group_project.group.full_path,
-              show_new_work_item: 'true',
-              has_projects: 'false'
+              show_new_work_item: 'true'
             }
           )
         end
@@ -176,9 +167,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           {
             issues_list_path: issues_group_path(group),
             labels_manage_path: group_labels_path(group),
-            project_namespace_full_path: group.full_path,
             default_branch: nil,
-            is_issue_repositioning_disabled: 'false',
             rss_path: group_work_items_path(group, format: :atom, feed_token: 'atom-feed-token'),
             calendar_path: group_work_items_path(group,
               format: :ics,
@@ -277,22 +266,14 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           {
             full_path: project.full_path,
             issues_list_path: project_issues_path(project),
-            project_namespace_full_path: project.namespace.full_path,
-            default_branch: project.default_branch_or_main,
-            initial_sort: current_user&.user_preference&.issues_sort,
-            is_signed_in: current_user.present?.to_s,
-            is_issue_repositioning_disabled: 'false',
-            time_tracking_limit_to_hours: "false",
-            can_read_crm_organization: 'true',
-            can_read_crm_contact: 'true',
-            has_projects: 'false'
+            default_branch: project.default_branch_or_main
           }
         )
       end
 
       it 'does not include properties provided by GraphQL' do
         data = helper.work_item_views_only_data(project, current_user)
-        # These are provided by GraphQL metadata provider, not server
+        # These are now provided by GraphQL metadata provider, not server
         expect(data).not_to have_key(:can_admin_label)
         expect(data).not_to have_key(:can_create_projects)
         expect(data).not_to have_key(:labels_manage_path)
@@ -301,6 +282,14 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
         expect(data).not_to have_key(:new_comment_template_paths)
         expect(data).not_to have_key(:report_abuse_path)
         expect(data).not_to have_key(:new_project_path)
+        expect(data).not_to have_key(:project_namespace_full_path)
+        expect(data).not_to have_key(:initial_sort)
+        expect(data).not_to have_key(:is_signed_in)
+        expect(data).not_to have_key(:is_issue_repositioning_disabled)
+        expect(data).not_to have_key(:time_tracking_limit_to_hours)
+        expect(data).not_to have_key(:can_read_crm_organization)
+        expect(data).not_to have_key(:can_read_crm_contact)
+        expect(data).not_to have_key(:has_projects)
       end
     end
   end

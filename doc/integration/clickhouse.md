@@ -43,6 +43,10 @@ The supported ClickHouse version differs depending on your GitLab version:
 
 ClickHouse Cloud is always compatible with the latest stable GitLab release.
 
+{{< alert type="warning" >}}
+If you're using ClickHouse 25.12, note that it introduced a [backward-incompatible change](https://clickhouse.com/docs/whats-new/changelog#backward-incompatible-change) to `ALTER MODIFY COLUMN`. This breaks the migration process for the GitLab ClickHouse integration in versions prior to 18.8. It requires upgrading GitLab to version 18.8+.
+{{< /alert >}}
+
 ## Set up ClickHouse
 
 Choose your deployment type based on your operational requirements:

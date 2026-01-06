@@ -11,10 +11,12 @@ import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_i
 import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS, METADATA_KEYS } from '~/work_items/constants';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 
 Vue.use(VueApollo);
 
 jest.mock('~/alert');
+jest.mock('~/lib/utils/common_utils');
 
 // Mock data
 const mockDisplaySettings = {
@@ -76,6 +78,7 @@ describe('WorkItemUserPreferences', () => {
     provide = {},
     mutationHandler = successHandler,
     namespaceHandler = namespacePreferencesHandler,
+    isLoggedInValue = true,
   } = {}) => {
     mockApolloProvider = createMockApollo([
       [updateWorkItemsDisplaySettings, mutationHandler],
@@ -92,6 +95,8 @@ describe('WorkItemUserPreferences', () => {
       data: mockCacheData,
     });
 
+    isLoggedIn.mockReturnValue(isLoggedInValue);
+
     wrapper = mountFn(WorkItemUserPreferences, {
       apolloProvider: mockApolloProvider,
       propsData: {
@@ -104,7 +109,6 @@ describe('WorkItemUserPreferences', () => {
         ...props,
       },
       provide: {
-        isSignedIn: true,
         isGroupIssuesList: false,
         ...provide,
       },
@@ -341,7 +345,7 @@ describe('WorkItemUserPreferences', () => {
 
   describe('when user is not signed in', () => {
     it('does not render dropdown', () => {
-      createComponent({ provide: { isSignedIn: false } });
+      createComponent({ isLoggedInValue: false });
       expect(findDropdown().exists()).toBe(false);
     });
   });

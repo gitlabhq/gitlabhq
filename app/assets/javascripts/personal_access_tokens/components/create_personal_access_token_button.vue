@@ -8,14 +8,14 @@ export default {
     GlDisclosureDropdown,
     GlBadge,
   },
-  inject: ['accessTokenGranularNew'],
+  inject: ['accessTokenGranularNewUrl'],
   props: {},
   computed: {
     dropdownItems() {
       return [
         {
           text: this.$options.i18n.fineGrainedToken,
-          href: this.accessTokenGranularNew,
+          href: this.accessTokenGranularNewUrl,
           description: this.$options.i18n.fineGrainedTokenDescription,
           badge: this.$options.i18n.beta,
         },

@@ -79,6 +79,7 @@ import {
 } from '~/work_items/constants';
 import { routes } from '~/work_items/router/routes';
 import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import {
   workItemsQueryResponseCombined,
   workItemsQueryResponseNoLabels,
@@ -97,6 +98,7 @@ jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/alert');
+jest.mock('~/lib/utils/common_utils');
 
 const showToast = jest.fn();
 
@@ -177,6 +179,7 @@ const mountComponent = ({
   isIssueRepositioningDisabled = false,
   hasProjects = true,
   stubs = {},
+  isLoggedInValue = true,
 } = {}) => {
   window.gon = {
     ...window.gon,
@@ -192,6 +195,8 @@ const mountComponent = ({
       ...routes({ fullPath: '/work_item' }),
     ],
   });
+
+  isLoggedIn.mockReturnValue(isLoggedInValue);
 
   wrapper = shallowMountExtended(WorkItemsListApp, {
     router,
@@ -228,7 +233,6 @@ const mountComponent = ({
       hasCustomFieldsFeature: false,
       hasStatusFeature: false,
       isGroup: true,
-      isSignedIn: true,
       showNewWorkItem: true,
       workItemType: null,
       canCreateWorkItem: false,
@@ -1192,7 +1196,7 @@ describe('events', () => {
 
     describe('when user is signed out', () => {
       it('does not call mutation to save sort preference', async () => {
-        mountComponent({ provide: { isSignedIn: false } });
+        mountComponent({ isLoggedInValue: false });
         await waitForPromises();
 
         findIssuableList().vm.$emit('sort', CREATED_DESC);
@@ -1236,9 +1240,6 @@ describe('work item drawer', () => {
 
         mountComponent({
           mockPreferencesHandler: mockHandler,
-          provide: {
-            isSignedIn: true,
-          },
         });
 
         await waitForPromises();

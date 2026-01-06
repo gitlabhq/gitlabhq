@@ -24,7 +24,7 @@ export const initPersonalAccessTokenApp = () => {
     name: 'PersonalAccessTokensRoot',
     apolloProvider,
     provide: {
-      accessTokenGranularNew,
+      accessTokenGranularNewUrl: accessTokenGranularNew,
     },
     render(createElement) {
       return createElement(PersonalAccessTokensApp);
@@ -39,7 +39,7 @@ export const initCreateGranularTokenApp = () => {
     return null;
   }
 
-  const { accessTokenMaxDate, accessTokenMinDate } = el.dataset;
+  const { accessTokenMaxDate, accessTokenMinDate, accessTokenCreate } = el.dataset;
 
   return new Vue({
     el,
@@ -48,6 +48,7 @@ export const initCreateGranularTokenApp = () => {
     provide: {
       accessTokenMaxDate,
       accessTokenMinDate,
+      accessTokenTableUrl: accessTokenCreate,
     },
     render(createElement) {
       return createElement(CreateGranularPersonalAccessTokenForm);

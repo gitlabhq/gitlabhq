@@ -1,0 +1,5 @@
+mutation createGranularPersonalAccessToken($input: PersonalAccessTokenCreateInput!) {
+  personalAccessTokenCreate(input: $input) {
+    errors
+  }
+}

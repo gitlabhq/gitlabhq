@@ -6,6 +6,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__ } from '~/locale';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import searchProjectsQuery from '../graphql/search_projects.query.graphql';
 
 export default {
@@ -25,7 +26,6 @@ export default {
   inject: [
     'canCreateProjects',
     'fullPath',
-    'isSignedIn',
     'newIssuePath',
     'newProjectPath',
     'showNewIssueLink',
@@ -46,6 +46,11 @@ export default {
       required: false,
       default: false,
     },
+  },
+  data() {
+    return {
+      isLoggedIn: isLoggedIn(),
+    };
   },
   computed: {
     newIssueDropdownQueryVariables() {
@@ -89,7 +94,7 @@ export default {
 
 <template>
   <div
-    v-if="isSignedIn"
+    v-if="isLoggedIn"
     data-testid="signed-in-empty-state-block"
     :data-track-action="isProject && 'render'"
     :data-track-label="isProject && 'project_issues_empty_list'"

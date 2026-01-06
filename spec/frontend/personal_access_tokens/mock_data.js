@@ -88,3 +88,135 @@ export const mockQueryResponse = {
     },
   },
 };
+
+export const mockCreateMutationInput = {
+  name: 'Test Token',
+  description: 'Test description',
+  expirationDate: '2025-12-31',
+  access: 'SELECTED_MEMBERSHIPS',
+  resourceIds: ['gid://gitlab/Project/1', 'gid://gitlab/Group/1'],
+  permissions: ['read_project', 'write_project'],
+};
+
+export const mockCreateMutationResponse = {
+  data: {
+    personalAccessTokenCreate: {
+      errors: [],
+      personalAccessToken: {
+        id: 'gid://gitlab/PersonalAccessToken/123',
+        token: 'xxxxxxxxxxxxxxxxxxxx',
+      },
+    },
+  },
+};
+
+export const mockGroups = [
+  {
+    id: 'gid://gitlab/Group/1',
+    name: 'Test Group 1',
+    fullPath: 'test-group-1',
+    descendantGroupsCount: 2,
+    projectsCount: 5,
+    __typename: 'Group',
+  },
+  {
+    id: 'gid://gitlab/Group/2',
+    name: 'Test Group 2',
+    fullPath: 'test-group-2',
+    descendantGroupsCount: 0,
+    projectsCount: 3,
+    __typename: 'Group',
+  },
+];
+
+export const mockProjects = [
+  {
+    id: 'gid://gitlab/Project/1',
+    name: 'Test Project 1',
+    nameWithNamespace: 'Test / Test Project 1',
+    fullPath: 'test-group-1/test-project-1',
+    __typename: 'Project',
+  },
+  {
+    id: 'gid://gitlab/Project/2',
+    name: 'Test Project 2',
+    nameWithNamespace: 'Test / Test Project 2',
+    fullPath: 'test-group-2/test-project-2',
+    __typename: 'Project',
+  },
+];
+
+export const mockSearchGroupsAndProjectsQueryResponse = {
+  data: {
+    projects: {
+      nodes: mockProjects,
+    },
+    user: {
+      id: 'gid://gitlab/User/123',
+      groups: {
+        nodes: mockGroups,
+      },
+    },
+  },
+};
+
+export const mockGroupPermissions = [
+  {
+    value: 'read_project',
+    description: 'Grants the ability to read projects',
+    text: 'read',
+    category: 'groups_and_projects',
+    resource: 'project',
+    boundaries: ['GROUP', 'PROJECT'],
+  },
+  {
+    value: 'write_project',
+    description: 'Grants the ability to write to projects',
+    text: 'write',
+    category: 'groups_and_projects',
+    resource: 'project',
+    boundaries: ['GROUP', 'PROJECT'],
+  },
+  {
+    value: 'read_repository',
+    description: 'Grants the ability to read repository',
+    text: 'read',
+    category: 'merge_request',
+    resource: 'repository',
+    boundaries: ['PROJECT'],
+  },
+];
+
+export const mockGroupResources = ['project', 'repository'];
+
+export const mockInstancePermissions = [
+  {
+    value: 'read_admin_member_role',
+    description: 'Grants the ability to read admin member roles',
+    text: 'read',
+    category: 'groups_and_projects',
+    resource: 'member_roles',
+    boundaries: ['INSTANCE'],
+  },
+];
+
+export const mockUserPermissions = [
+  {
+    value: 'read_user',
+    description: 'Grants the ability to read user data',
+    text: 'read',
+    category: 'user_access',
+    resource: 'user',
+    boundaries: ['USER'],
+  },
+];
+
+export const mockAccessTokenPermissionsQueryResponse = {
+  data: {
+    accessTokenPermissions: [
+      ...mockGroupPermissions,
+      ...mockUserPermissions,
+      ...mockInstancePermissions,
+    ],
+  },
+};

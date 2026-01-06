@@ -60,7 +60,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
-import { setPageFullWidth, setPageDefaultWidth } from '~/lib/utils/common_utils';
+import { setPageFullWidth, setPageDefaultWidth, isLoggedIn } from '~/lib/utils/common_utils';
 import { __, s__, n__, formatNumber } from '~/locale';
 import {
   OPERATOR_IS,
@@ -227,7 +227,6 @@ export default {
     'hasCustomFieldsFeature',
     'isGroup',
     'isProject',
-    'isSignedIn',
     'showNewWorkItem',
     'workItemType',
     'canReadCrmOrganization',
@@ -289,7 +288,8 @@ export default {
       namespaceId: null,
       displaySettings: {},
       workItemTypes: [],
-      isSortKeyInitialized: !this.isSignedIn,
+      isLoggedIn: isLoggedIn(),
+      isSortKeyInitialized: !this.isLoggedIn,
       hasWorkItems: null,
       workItemsCount: null,
     };
@@ -329,7 +329,7 @@ export default {
         this.isSortKeyInitialized = true;
       },
       skip() {
-        return !this.workItemTypeId || !this.isSignedIn;
+        return !this.workItemTypeId || !this.isLoggedIn;
       },
       error(error) {
         this.isSortKeyInitialized = true;
@@ -672,7 +672,7 @@ export default {
         });
       }
 
-      if (this.isSignedIn) {
+      if (this.isLoggedIn) {
         tokens.push({
           type: TOKEN_TYPE_CONFIDENTIAL,
           title: TOKEN_TITLE_CONFIDENTIAL,
@@ -894,7 +894,7 @@ export default {
       return this.displaySettings?.namespacePreferences?.hiddenMetadataKeys || [];
     },
     showImportExportButtons() {
-      return !this.isGroup && this.isSignedIn;
+      return !this.isGroup && this.isLoggedIn;
     },
     currentTabCount() {
       return this.tabCounts[this.state] ?? 0;
@@ -1157,7 +1157,7 @@ export default {
       this.sortKey = sortKey;
       this.pageParams = getInitialPageParams(this.pageSize);
 
-      if (this.isSignedIn) {
+      if (this.isLoggedIn) {
         this.saveSortPreference(sortKey);
       }
 

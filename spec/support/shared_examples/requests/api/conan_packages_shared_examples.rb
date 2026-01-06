@@ -348,8 +348,8 @@ RSpec.shared_examples 'handling empty values for username and channel' do |succe
 
   where(:username, :channel, :status) do
     'username' | 'channel' | success_status
-    'username' | '_'       | :bad_request
-    '_'        | 'channel' | :bad_request_or_not_found
+    'username' | '_'       | success_status
+    '_'        | 'channel' | :not_found
     '_'        | '_'       | :success_status_or_not_found
   end
 
@@ -372,8 +372,6 @@ RSpec.shared_examples 'handling empty values for username and channel' do |succe
       expected_status = case status
                         when :success_status_or_not_found
                           project_level ? success_status : :not_found
-                        when :bad_request_or_not_found
-                          project_level ? :bad_request : :not_found
                         else
                           status
                         end

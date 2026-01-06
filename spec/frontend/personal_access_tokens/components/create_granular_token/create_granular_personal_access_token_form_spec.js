@@ -1,18 +1,40 @@
 import { GlForm, GlFormGroup, GlFormInput, GlFormTextarea, GlButton } from '@gitlab/ui';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import { createAlert } from '~/alert';
+import { scrollTo } from '~/lib/utils/scroll_utils';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CreateGranularPersonalAccessTokenForm from '~/personal_access_tokens/components/create_granular_token/create_granular_personal_access_token_form.vue';
 import PersonalAccessTokenExpirationDate from '~/personal_access_tokens/components/create_granular_token/personal_access_token_expiration_date.vue';
 import PersonalAccessTokenScopeSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_scope_selector.vue';
+import PersonalAccessTokenNamespaceSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_namespace_selector.vue';
+import PersonalAccessTokenPermissionsSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_permissions_selector.vue';
+import createGranularPersonalAccessTokenMutation from '~/personal_access_tokens/graphql/create_granular_personal_access_token.mutation.graphql';
 import { MAX_DESCRIPTION_LENGTH } from '~/personal_access_tokens/constants';
+import { mockCreateMutationResponse, mockCreateMutationInput } from '../../mock_data';
+
+jest.mock('~/alert');
+jest.mock('~/lib/utils/scroll_utils');
+
+Vue.use(VueApollo);
 
 describe('CreateGranularPersonalAccessTokenForm', () => {
   let wrapper;
+  let mockApollo;
 
-  const createComponent = (provide = {}) => {
+  const mockMutationHandler = jest.fn().mockResolvedValue(mockCreateMutationResponse);
+
+  const createComponent = ({ mutationHandler = mockMutationHandler, provide = {} } = {}) => {
+    mockApollo = createMockApollo([[createGranularPersonalAccessTokenMutation, mutationHandler]]);
+
     wrapper = shallowMountExtended(CreateGranularPersonalAccessTokenForm, {
+      apolloProvider: mockApollo,
       provide: {
         accessTokenMaxDate: '2025-12-31',
+        accessTokenTableUrl: '/-/personal_access_tokens',
         ...provide,
       },
     });
@@ -27,8 +49,23 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
   const findExpirationDateComponent = () =>
     wrapper.findComponent(PersonalAccessTokenExpirationDate);
   const findScopeSelectorComponent = () => wrapper.findComponent(PersonalAccessTokenScopeSelector);
+  const findNamespaceSelector = () => wrapper.findComponent(PersonalAccessTokenNamespaceSelector);
+  const findPermissionsSelector = () =>
+    wrapper.findComponent(PersonalAccessTokenPermissionsSelector);
   const findCancelButton = () => wrapper.findAllComponents(GlButton).at(0);
   const findCreateButton = () => wrapper.findAllComponents(GlButton).at(1);
+
+  const fillFormWithValidData = async () => {
+    findNameInput().vm.$emit('input', mockCreateMutationInput.name);
+    findDescriptionTextarea().vm.$emit('input', mockCreateMutationInput.description);
+    findExpirationDateComponent().vm.$emit('input', mockCreateMutationInput.expirationDate);
+    findScopeSelectorComponent().vm.$emit('input', mockCreateMutationInput.access);
+
+    await nextTick();
+
+    findNamespaceSelector().vm.$emit('input', mockCreateMutationInput.resourceIds);
+    findPermissionsSelector().vm.$emit('input', mockCreateMutationInput.permissions);
+  };
 
   beforeEach(() => {
     createComponent();
@@ -70,18 +107,31 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     it('renders the scope selector component', () => {
       expect(findScopeSelectorComponent().exists()).toBe(true);
     });
+
+    it('renders namespace selector when access is `SELECTED_MEMBERSHIPS`', async () => {
+      expect(findNamespaceSelector().exists()).toBe(false);
+
+      await findScopeSelectorComponent().vm.$emit('input', 'SELECTED_MEMBERSHIPS');
+
+      expect(findNamespaceSelector().exists()).toBe(true);
+    });
+
+    it('renders permissions selector component', () => {
+      expect(findPermissionsSelector().exists()).toBe(true);
+    });
   });
 
   describe('form buttons', () => {
     it('renders the cancel button', () => {
       expect(findCancelButton().exists()).toBe(true);
       expect(findCancelButton().text()).toBe('Cancel');
+      expect(findCancelButton().attributes('href')).toBe('/-/personal_access_tokens');
     });
 
     it('renders the create button', () => {
       expect(findCreateButton().exists()).toBe(true);
       expect(findCreateButton().props('variant')).toBe('confirm');
-      expect(findCreateButton().text()).toBe('Create token');
+      expect(findCreateButton().text()).toBe('Generate token');
     });
   });
 
@@ -118,7 +168,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     });
 
     it('does not validation expiration date when `accessTokenMaxDate` is null', async () => {
-      createComponent({ accessTokenMaxDate: null });
+      createComponent({ provide: { accessTokenMaxDate: null } });
 
       await findCreateButton().vm.$emit('click');
 
@@ -129,6 +179,69 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
       await findCreateButton().vm.$emit('click');
 
       expect(findScopeSelectorComponent().props('error')).toBe('At least one scope is required.');
+    });
+
+    it('validates namespaces are required if access `SELECTED_MEMBERSHIPS`', async () => {
+      findScopeSelectorComponent().vm.$emit('input', 'SELECTED_MEMBERSHIPS');
+      await findCreateButton().vm.$emit('click');
+
+      expect(findNamespaceSelector().props('error')).toBe(
+        'At least one group or project is required.',
+      );
+    });
+
+    it('validates permissions are required', async () => {
+      await findCreateButton().vm.$emit('click');
+
+      expect(findPermissionsSelector().props('error')).toBe('At least one permission is required.');
+    });
+  });
+
+  describe('form submission', () => {
+    it('does not submit when form is invalid', async () => {
+      await fillFormWithValidData();
+      findNameInput().vm.$emit('input', '');
+
+      await findCreateButton().vm.$emit('click');
+
+      expect(mockMutationHandler).not.toHaveBeenCalled();
+    });
+
+    it('submits form with correct variables when valid', async () => {
+      await fillFormWithValidData();
+      await findCreateButton().vm.$emit('click');
+
+      expect(mockMutationHandler).toHaveBeenCalledWith({
+        input: {
+          name: mockCreateMutationInput.name,
+          description: mockCreateMutationInput.description,
+          expiresAt: mockCreateMutationInput.expirationDate,
+          granularScopes: [
+            {
+              access: mockCreateMutationInput.access,
+              resourceIds: mockCreateMutationInput.resourceIds,
+              permissions: mockCreateMutationInput.permissions,
+            },
+          ],
+        },
+      });
+    });
+
+    it('handles submission errors', async () => {
+      const errorMutationHandler = jest.fn().mockRejectedValue(new Error('Mutation failed'));
+      createComponent({ mutationHandler: errorMutationHandler });
+
+      await fillFormWithValidData();
+
+      await findCreateButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Token generation unsuccessful. Please try again.',
+        captureError: true,
+        error: expect.any(Error),
+      });
+      expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' }, wrapper.element);
     });
   });
 });

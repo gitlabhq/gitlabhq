@@ -295,7 +295,7 @@
   extends: .use-pg16
   services:
     - !reference [.db-services-with-auto-explain, services]
-    - name: clickhouse/clickhouse-server:25.4-alpine
+    - name: clickhouse/clickhouse-server:25.12-alpine
       alias: clickhouse
   variables:
     CLICKHOUSE_USER: default

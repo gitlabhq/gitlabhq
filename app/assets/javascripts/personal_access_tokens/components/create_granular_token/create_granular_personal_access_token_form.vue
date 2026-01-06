@@ -1,10 +1,18 @@
 <script>
 import { GlForm, GlFormGroup, GlFormInput, GlFormTextarea, GlButton } from '@gitlab/ui';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
+import { scrollTo } from '~/lib/utils/scroll_utils';
 import { s__, __ } from '~/locale';
-import { MAX_DESCRIPTION_LENGTH } from '~/personal_access_tokens/constants';
+import { createAlert } from '~/alert';
+import createGranularPersonalAccessTokenMutation from '~/personal_access_tokens/graphql/create_granular_personal_access_token.mutation.graphql';
+import {
+  ACCESS_SELECTED_MEMBERSHIPS_ENUM,
+  MAX_DESCRIPTION_LENGTH,
+} from '~/personal_access_tokens/constants';
 import PersonalAccessTokenExpirationDate from './personal_access_token_expiration_date.vue';
 import PersonalAccessTokenScopeSelector from './personal_access_token_scope_selector.vue';
+import PersonalAccessTokenNamespaceSelector from './personal_access_token_namespace_selector.vue';
+import PersonalAccessTokenPermissionsSelector from './personal_access_token_permissions_selector.vue';
 
 export default {
   name: 'CreateGranularPersonalAccessTokenForm',
@@ -16,9 +24,11 @@ export default {
     GlFormTextarea,
     PersonalAccessTokenExpirationDate,
     PersonalAccessTokenScopeSelector,
+    PersonalAccessTokenNamespaceSelector,
+    PersonalAccessTokenPermissionsSelector,
     GlButton,
   },
-  inject: ['accessTokenMaxDate'],
+  inject: ['accessTokenMaxDate', 'accessTokenTableUrl'],
   data() {
     return {
       form: {
@@ -26,18 +36,26 @@ export default {
         description: '',
         expirationDate: null,
         access: null,
+        namespaceIds: [],
+        permissions: [],
       },
       errors: {
         name: '',
         description: '',
         expirationDate: '',
         access: '',
+        namespaceIds: '',
+        permissions: '',
       },
+      isSubmitting: false,
     };
   },
   computed: {
     hasErrors() {
       return Object.values(this.errors).some((error) => error !== '');
+    },
+    renderNamespaceSelector() {
+      return this.form.access === ACCESS_SELECTED_MEMBERSHIPS_ENUM;
     },
   },
   methods: {
@@ -48,6 +66,8 @@ export default {
         description: '',
         expirationDate: '',
         access: '',
+        namespaceIds: '',
+        permissions: '',
       };
 
       if (!this.form.name) {
@@ -68,10 +88,56 @@ export default {
         this.errors.access = this.$options.i18n.scopeError;
       }
 
+      if (this.renderNamespaceSelector && !this.form.namespaceIds.length) {
+        this.errors.namespaceIds = this.$options.i18n.namespaceError;
+      }
+
+      if (!this.form.permissions.length) {
+        this.errors.permissions = this.$options.i18n.permissionsError;
+      }
+
       return this.hasErrors;
     },
     createGranularToken() {
-      this.validateForm();
+      if (this.validateForm()) {
+        return;
+      }
+
+      this.isSubmitting = true;
+
+      this.$apollo
+        .mutate({
+          mutation: createGranularPersonalAccessTokenMutation,
+          variables: {
+            input: {
+              name: this.form.name,
+              description: this.form.description,
+              expiresAt: this.form.expirationDate,
+              granularScopes: [
+                {
+                  access: this.form.access,
+                  resourceIds: this.form.namespaceIds,
+                  permissions: this.form.permissions,
+                },
+              ],
+            },
+          },
+          update: () => {
+            // TODO: in a follow-up show the user newly created token
+          },
+        })
+        .catch((error) => {
+          scrollTo({ top: 0, behavior: 'smooth' }, this.$el);
+
+          createAlert({
+            message: this.$options.i18n.createError,
+            captureError: true,
+            error,
+          });
+        })
+        .finally(() => {
+          this.isSubmitting = false;
+        });
     },
   },
   i18n: {
@@ -88,8 +154,11 @@ export default {
     ),
     expirationDateError: s__('AccessTokens|Expiration date is required.'),
     scopeError: s__('AccessTokens|At least one scope is required.'),
+    namespaceError: s__('AccessTokens|At least one group or project is required.'),
+    permissionsError: s__('AccessTokens|At least one permission is required.'),
     cancelButton: __('Cancel'),
-    createButton: s__('AccessTokens|Create token'),
+    createButton: s__('AccessTokens|Generate token'),
+    createError: s__('AccessTokens|Token generation unsuccessful. Please try again.'),
   },
 };
 </script>
@@ -103,7 +172,7 @@ export default {
     </page-heading>
 
     <gl-form class="js-quick-submit">
-      <section class="gl-w-1/2">
+      <section class="gl-w-full lg:gl-w-1/2">
         <gl-form-group
           :label="$options.i18n.nameLabel"
           label-for="token-name"
@@ -132,14 +201,27 @@ export default {
         />
 
         <personal-access-token-scope-selector v-model="form.access" :error="errors.access" />
+
+        <personal-access-token-namespace-selector
+          v-if="renderNamespaceSelector"
+          v-model="form.namespaceIds"
+          :error="errors.namespaceIds"
+        />
       </section>
 
-      <section class="gl-mt-4">
-        <gl-button>
+      <section>
+        <personal-access-token-permissions-selector
+          v-model="form.permissions"
+          :error="errors.permissions"
+        />
+      </section>
+
+      <section class="gl-mt-6">
+        <gl-button :href="accessTokenTableUrl">
           {{ $options.i18n.cancelButton }}
         </gl-button>
 
-        <gl-button variant="confirm" @click="createGranularToken">
+        <gl-button variant="confirm" :loading="isSubmitting" @click="createGranularToken">
           {{ $options.i18n.createButton }}
         </gl-button>
       </section>
