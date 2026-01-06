@@ -34,7 +34,7 @@ This indicates that something is wrong with your SSH setup.
 
 ## `Could not resolve hostname` error
 
-You may receive the following error when [verifying that you can connect](ssh.md#verify-that-you-can-connect):
+You may receive the following error when you [verify your SSH connection](ssh.md#verify-your-ssh-connection):
 
 ```shell
 ssh: Could not resolve hostname gitlab.example.com: nodename nor servname provided, or not known
@@ -68,11 +68,11 @@ The `Permission denied (publickey)` error usually indicates one or more of the f
 - Key type not supported: The key type is [unsupported](ssh.md#supported-ssh-key-types) or
   includes headers that GitLab doesn't recognize.
 - Wrong private key being used: If you have
-  [multiple local SSH keys](ssh.md#see-if-you-have-an-existing-ssh-key-pair), verify the
+  [multiple local SSH keys](ssh.md#check-for-existing-ssh-key-pairs), verify the
   correct key is being used. SSH defaults to `~/.ssh/id_rsa` or `id_ed25519`. You might need
-  to [define which key to use](ssh_advanced.md#configure-ssh-to-point-to-a-different-directory).
+  to [define which key to use](ssh_advanced.md#use-ssh-keys-in-another-directory).
 - Private key not accessible:
-  [Verify](ssh.md#see-if-you-have-an-existing-ssh-key-pair) the private key is accessible on
+  [Verify](ssh.md#check-for-existing-ssh-key-pairs) the private key is accessible on
   your local device.
 - Local permissions incorrect: Verify the permissions for your keys.
   The private key should use `600`, and the `.ssh` directory should use `700`.

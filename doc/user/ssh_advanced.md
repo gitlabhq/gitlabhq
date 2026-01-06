@@ -102,13 +102,7 @@ You can use [1Password](https://1password.com/) and the [1Password browser exten
 
 For more information about using 1Password with SSH keys, see the [1Password documentation](https://developer.1password.com/docs/ssh/get-started/).
 
-## Configure two-factor authentication (2FA)
-
-You can set up two-factor authentication (2FA) for
-[Git over SSH](../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations). You should use
-`ED25519_SK` or `ECDSA_SK` SSH keys. For more information, see [supported SSH key types](ssh.md#supported-ssh-key-types).
-
-## Disable SSH Keys for enterprise users
+## Disable SSH keys for enterprise users
 
 {{< history >}}
 
@@ -140,38 +134,6 @@ To disable the enterprise users' SSH Keys:
 1. Expand **Permissions and group features**.
 1. Under **Enterprise users**, select **Disable SSH Keys**.
 1. Select **Save changes**.
-
-## Configure SSH to point to a different directory
-
-If you did not save your SSH key pair in the default directory,
-configure your SSH client to point to the directory where the private key is stored.
-
-1. Open a terminal and run this command:
-
-   ```shell
-   eval $(ssh-agent -s)
-   ssh-add <directory to private SSH key>
-   ```
-
-1. Save these settings in the `~/.ssh/config` file. For example:
-
-   ```conf
-   # GitLab.com
-   Host gitlab.com
-     PreferredAuthentications publickey
-     IdentityFile ~/.ssh/gitlab_com_rsa
-
-   # Private GitLab instance
-   Host gitlab.company.com
-     PreferredAuthentications publickey
-     IdentityFile ~/.ssh/example_com_rsa
-   ```
-
-For more information on these settings, see the [`man ssh_config`](https://man.openbsd.org/ssh_config) page in the SSH configuration manual.
-
-Public SSH keys must be unique to GitLab because they bind to your account.
-Your SSH key is the only identifier you have when you push code with SSH.
-It must uniquely map to a single user.
 
 ## Upgrade your RSA key pair to a more secure format
 
@@ -263,13 +225,44 @@ git config core.sshCommand "ssh -o IdentitiesOnly=yes -i ~/.ssh/private-key-file
 This command does not use the SSH Agent and requires Git 2.10 or later. For more information
 on `ssh` command options, see the `man` pages for both `ssh` and `ssh_config`.
 
-## Use EGit on Eclipse
+## Use SSH keys in another directory
 
-If you are using [EGit](https://projects.eclipse.org/projects/technology.egit), you can [add your SSH key to Eclipse](https://wiki.eclipse.org/EGit/User_Guide/#Eclipse_SSH_Configuration).
+If your SSH key pair is not in the default directory, configure your SSH client to point to where you stored the private key.
+
+1. Open a terminal and run this command:
+
+   ```shell
+   eval $(ssh-agent -s)
+   ssh-add <directory to private SSH key>
+   ```
+
+1. Save these settings in the `~/.ssh/config` file. For example:
+
+   ```conf
+   # GitLab.com
+   Host gitlab.com
+     PreferredAuthentications publickey
+     IdentityFile ~/.ssh/gitlab_com_rsa
+
+   # Private GitLab instance
+   Host gitlab.company.com
+     PreferredAuthentications publickey
+     IdentityFile ~/.ssh/example_com_rsa
+   ```
+
+For more information on these settings, see the [`man ssh_config`](https://man.openbsd.org/ssh_config) page in the SSH configuration manual.
+
+Public SSH keys must be unique to GitLab because they bind to your account.
+Your SSH key is the only identifier you have when you push code with SSH.
+It must uniquely map to a single user.
+
+## Use SSH with EGit on Eclipse
+
+If you use [EGit](https://projects.eclipse.org/projects/technology.egit), you can [add your SSH key to Eclipse](https://wiki.eclipse.org/EGit/User_Guide/#Eclipse_SSH_Configuration).
 
 ## Use SSH on Microsoft Windows
 
-If you're running Windows 10, you can either use the [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install)
+On Windows 10, you can either use the [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install)
 with [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install#update-to-wsl-2) which
 has both `git` and `ssh` preinstalled, or install [Git for Windows](https://gitforwindows.org) to
 use SSH through PowerShell.
@@ -289,3 +282,9 @@ Alternative tools include:
 
 - [Cygwin](https://www.cygwin.com)
 - [PuTTYgen](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) 0.81 and later (earlier versions are [vulnerable to disclosure attacks](https://www.openwall.com/lists/oss-security/2024/04/15/6))
+
+## Use two-factor authentication for Git over SSH
+
+You can use two-factor authentication (2FA) for
+[Git over SSH](../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations). You should use
+`ED25519_SK` or `ECDSA_SK` SSH keys. For more information, see [supported SSH key types](ssh.md#supported-ssh-key-types).

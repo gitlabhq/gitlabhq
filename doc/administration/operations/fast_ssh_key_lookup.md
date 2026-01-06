@@ -125,7 +125,7 @@ To set up fast lookup with OpenSSH:
       ssh -T git@gitlab.example.com
       ```
 
-      A successful pull or [welcome message](../../user/ssh.md#verify-that-you-can-connect)
+      A successful pull or [welcome message](../../user/ssh.md#verify-your-ssh-connection)
       means that GitLab found the key in the database because the key is not present in the file.
 
 If there are lookup failures, the `authorized_keys` file is still scanned.

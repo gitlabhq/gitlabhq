@@ -36825,6 +36825,9 @@ msgstr ""
 msgid "Invalid name %{input} was given for this default stage, allowed names: %{names}"
 msgstr ""
 
+msgid "Invalid name for the compliance control %{name}"
+msgstr ""
+
 msgid "Invalid passkey data received. Try creating a new passkey."
 msgstr ""
 
@@ -59013,6 +59016,9 @@ msgstr ""
 msgid "ScanResultPolicy|For scanners that require builds, when a project does not have a build pipeline."
 msgstr ""
 
+msgid "ScanResultPolicy|Global Settings"
+msgstr ""
+
 msgid "ScanResultPolicy|Grant bypass permissions to users based on their organizational role or custom role assignments."
 msgstr ""
 
@@ -59250,6 +59256,9 @@ msgstr ""
 msgid "ScanResultPolicy|Service accounts"
 msgstr ""
 
+msgid "ScanResultPolicy|Severity and status settings will apply to all scan rules"
+msgstr ""
+
 msgid "ScanResultPolicy|Severity is:"
 msgstr ""
 
@@ -59287,6 +59296,9 @@ msgid "ScanResultPolicy|When %{scanners} finds scanner-specific conditions in an
 msgstr ""
 
 msgid "ScanResultPolicy|When a %{scanType} with %{scanners} runs against %{branches} %{branchExceptions} and finds %{vulnerabilitiesNumber} %{boldDescription} all the following criteria:"
+msgstr ""
+
+msgid "ScanResultPolicy|When a %{scanType} with %{scanners} runs against %{branches} %{branchExceptions} and finds %{vulnerabilitiesNumber} vulnerability type that matches all the following criteria:"
 msgstr ""
 
 msgid "ScanResultPolicy|When a security policy fails for an unspecified reason."
@@ -74610,6 +74622,9 @@ msgstr ""
 msgid "VirtualRegistry|Failed to delete cache entry."
 msgstr ""
 
+msgid "VirtualRegistry|Failed to fetch cache entries count."
+msgstr ""
+
 msgid "VirtualRegistry|Failed to fetch cache entries."
 msgstr ""
 
@@ -74623,9 +74638,6 @@ msgid "VirtualRegistry|Failed to fetch upstream summary."
 msgstr ""
 
 msgid "VirtualRegistry|Failed to remove upstream. Try again."
-msgstr ""
-
-msgid "VirtualRegistry|Failed to search cache entries."
 msgstr ""
 
 msgid "VirtualRegistry|Failed to update position of the upstream. Try again."

@@ -146,25 +146,6 @@ To change GitLab Duo Agent Platform availability:
 When GitLab Duo Agent Platform is turned off, related settings for flows and
 [foundational agents](../duo_agent_platform/agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off) are hidden.
 
-### On GitLab.com
-
-On GitLab.com, you can control GitLab Duo Agent Platform availability for your top-level group.
-
-Prerequisites:
-
-- You must have the Owner role for the top-level group.
-- Your group must have a Premium or Ultimate subscription.
-
-To change GitLab Duo Agent Platform availability:
-
-1. On the top bar, select **Search or go to** and find your top-level group.
-1. Select **Settings** > **GitLab Duo**.
-1. Select **Change configuration**.
-1. Under **GitLab Duo Agent Platform**, select or clear the **Turn on GitLab Duo Chat (Agentic), agents, and flows** checkbox.
-1. Select **Save changes**.
-
-When GitLab Duo Agent Platform is turned off, related features like Agentic Chat and agent workflows are not available to group members.
-
 ## Turn GitLab Duo on or off
 
 GitLab Duo is on by default when you [have a subscription](../../subscriptions/subscription-add-ons.md).

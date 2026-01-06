@@ -16,7 +16,7 @@ description: Use SSH keys for secure authentication and communication with GitLa
 Use SSH keys to securely authenticate with GitLab without entering your username and password
 each time you push or pull code.
 
-To use SSH keys with GitLab, you must: 
+To use SSH keys with GitLab, you must:
 
 1. Generate an SSH key pair on your local system.
 1. Add your SSH key to your GitLab account.
@@ -48,7 +48,8 @@ To use SSH to communicate with GitLab, you need:
 - The OpenSSH client, which comes pre-installed on GNU/Linux, macOS, and Windows 10.
 - SSH version 6.5 or later. Earlier versions used an MD5 signature, which is not secure.
 
-To view the version of SSH installed on your system, run `ssh -V`.
+> [!note]
+> To view the version of SSH installed on your system, run `ssh -V`.
 
 ## Supported SSH key types
 
@@ -68,7 +69,7 @@ To communicate with GitLab, you can use the following SSH key types:
 | RSA                 | Less secure than ED25519. If used, GitLab recommends a key size of at least 2048 bits. Maximum key length is 8192 bits due to Go limitations. Default key size depends on your `ssh-keygen` version. |
 | ECDSA               | [Security issues](https://leanpub.com/gocrypto/read#leanpub-auto-ecdsa) related to DSA also apply to ECDSA keys. |
 
-## See if you have an existing SSH key pair
+## Check for existing SSH key pairs
 
 Before you create a key pair, see if a key pair already exists.
 
@@ -118,7 +119,7 @@ If you do not have an existing SSH key pair, generate a new one:
 1. Accept the suggested filename and directory, unless you are generating a [deploy key](project/deploy_keys/_index.md)
    or want to save in a specific directory where you store other keys.
 
-   You can also dedicate the SSH key pair to a [specific host](ssh_advanced.md#configure-ssh-to-point-to-a-different-directory).
+   You can also dedicate the SSH key pair to a [specific host](ssh_advanced.md#use-ssh-keys-in-another-directory).
 
 1. Specify a [passphrase](https://www.ssh.com/academy/ssh/passphrase):
 
@@ -200,7 +201,7 @@ To add an SSH key to your GitLab account:
    [SSH key expiration](#ssh-key-expiration).
 1. Select **Add key**.
 
-## Verify that you can connect
+## Verify your SSH connection
 
 Verify that your SSH key was added correctly, and that you can connect to the GitLab instance:
 

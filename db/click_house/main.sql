@@ -95,7 +95,7 @@ CREATE TABLE ci_finished_builds
             stage_name
     )
 )
-ENGINE = ReplacingMergeTree
+ENGINE = ReplacingMergeTree(version, deleted)
 PARTITION BY toYear(finished_at)
 ORDER BY (status, runner_type, project_id, finished_at, id)
 SETTINGS index_granularity = 8192, use_async_block_ids_cache = true, deduplicate_merge_projection_mode = 'rebuild';

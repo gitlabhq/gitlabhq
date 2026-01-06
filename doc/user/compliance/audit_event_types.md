@@ -50,6 +50,12 @@ An audit event type's scope limits the availability of the audit event type to e
 
 Audit event types belong to the following product categories.
 
+### Agent foundations
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`feature_access_rules_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217749) | Duo feature access rules were updated | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/584380) | Instance |
+
 ### Ai framework
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
