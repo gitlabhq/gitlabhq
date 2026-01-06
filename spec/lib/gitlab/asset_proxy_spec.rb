@@ -22,7 +22,7 @@ RSpec.describe Gitlab::AssetProxy do
         enabled: true,
         url: 'https://assets.example.com',
         secret_key: 'shared-secret',
-        domain_regexp: Banzai::Filter::AssetProxyFilter.compile_allowlist(Gitlab.config.asset_proxy.allowlist)
+        domain_regexp: Banzai::Filter::AssetProxyFilter.host_regexp_for_allowlist(Gitlab.config.asset_proxy.allowlist)
       )
     end
 
