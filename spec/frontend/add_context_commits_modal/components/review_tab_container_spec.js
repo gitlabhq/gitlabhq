@@ -44,4 +44,14 @@ describe('ReviewTabContainer', () => {
     createWrapper({ commits: [commit] });
     expect(wrapper.findAllComponents(CommitItem)).toHaveLength(1);
   });
+
+  it('emits handle-commit-select event when commit checkbox is changed', () => {
+    createWrapper({ commits: [commit] });
+    const commitItem = wrapper.findComponent(CommitItem);
+
+    commitItem.vm.$emit('handle-checkbox-change', true);
+
+    expect(wrapper.emitted('handle-commit-select')).toHaveLength(1);
+    expect(wrapper.emitted('handle-commit-select')[0]).toEqual([[0, true]]);
+  });
 });

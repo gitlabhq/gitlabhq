@@ -1,4 +1,3 @@
-import setWindowLocation from 'helpers/set_window_location_helper';
 import WebAuthnError from '~/authentication/webauthn/error';
 import { WEBAUTHN_AUTHENTICATE, WEBAUTHN_REGISTER } from '~/authentication/webauthn/constants';
 
@@ -20,7 +19,10 @@ describe('WebAuthnError', () => {
 
   describe('SecurityError', () => {
     it('returns a descriptive error if https is disabled', () => {
-      setWindowLocation('http://localhost');
+      Object.defineProperty(window, 'isSecureContext', {
+        configurable: true,
+        value: false,
+      });
 
       const expectedMessage =
         'WebAuthn only works with HTTPS-enabled websites. Contact your administrator for more details.';
@@ -30,7 +32,10 @@ describe('WebAuthnError', () => {
     });
 
     it('returns a generic error if https is enabled', () => {
-      setWindowLocation('https://localhost');
+      Object.defineProperty(window, 'isSecureContext', {
+        configurable: true,
+        value: true,
+      });
 
       const expectedMessage = 'Failed to connect to your device. Try again.';
       expect(

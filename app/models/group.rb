@@ -146,6 +146,7 @@ class Group < Namespace
   scope :self_or_ancestors_aimed_for_deletion, -> { where(self_or_ancestors_deletion_schedule_subquery.exists) }
 
   scope :not_aimed_for_deletion, -> { where.missing(:deletion_schedule) }
+  scope :self_not_aimed_for_deletion, -> { where.missing(:deletion_schedule) }
   scope :self_and_ancestors_not_aimed_for_deletion, -> { where.not(self_or_ancestors_deletion_schedule_subquery.exists) }
 
   scope :with_deletion_schedule, -> { preload(deletion_schedule: :deleting_user) }
@@ -249,9 +250,24 @@ class Group < Namespace
   scope :with_users, -> { includes(:users) }
 
   scope :active, -> { self_and_ancestors_active }
+  scope :self_active, -> { self_non_archived.self_not_aimed_for_deletion }
   scope :self_and_ancestors_active, -> { self_and_ancestors_non_archived.self_and_ancestors_not_aimed_for_deletion }
 
   scope :inactive, -> { self_or_ancestors_inactive }
+  scope :self_inactive, -> do
+    namespace_setting_reflection = reflect_on_association(:namespace_settings)
+    namespace_setting_table = Arel::Table.new(namespace_setting_reflection.table_name)
+
+    deletion_schedule_reflection = reflect_on_association(:deletion_schedule)
+    deletion_schedule_table = Arel::Table.new(deletion_schedule_reflection.table_name)
+
+    joins(:namespace_settings)
+      .left_joins(:deletion_schedule)
+      .where(
+        namespace_setting_table[:archived].eq(true)
+          .or(deletion_schedule_table[:group_id].not_eq(nil))
+      )
+  end
   scope :self_or_ancestors_inactive, -> { self_or_ancestors_archived.or(self_or_ancestors_aimed_for_deletion) }
 
   scope :with_non_archived_projects, -> { includes(:non_archived_projects) }

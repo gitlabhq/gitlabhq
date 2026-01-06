@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'hardware device for 2fa' do |device_type|
+# The point of this shared example is to confirm that WebAuthn authenticators worked independently of OTP devices.
+#
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/378844 for the reason.
+#
+RSpec.shared_examples 'OTP devices work independently of WebAuthn authenticators' do |device_type|
   include Features::TwoFactorHelpers
   include Spec::Support::Helpers::ModalHelpers
 
@@ -107,6 +111,36 @@ RSpec.shared_examples 'hardware device for 2fa' do |device_type|
         click_button(_('Sign in via 2FA code'))
 
         assert_fallback_ui(page)
+      end
+    end
+  end
+
+  describe 'authentication', :js do
+    let(:otp_required_for_login) { true }
+    let(:user) { create(:user, webauthn_xid: WebAuthn.generate_user_id, otp_required_for_login: otp_required_for_login) }
+    let!(:webauthn_device) do
+      add_webauthn_device(app_id, user)
+    end
+
+    describe 'when 2FA via OTP is disabled' do
+      let(:otp_required_for_login) { false }
+
+      it 'allows logging in with the WebAuthn device' do
+        gitlab_sign_in(user)
+
+        webauthn_device.respond_to_webauthn_authentication
+
+        expect(page).to have_css('.sign-out-link', visible: :hidden)
+      end
+    end
+
+    describe 'when 2FA via OTP is enabled' do
+      it 'allows logging in with the WebAuthn device' do
+        gitlab_sign_in(user)
+
+        webauthn_device.respond_to_webauthn_authentication
+
+        expect(page).to have_css('.sign-out-link', visible: :hidden)
       end
     end
   end

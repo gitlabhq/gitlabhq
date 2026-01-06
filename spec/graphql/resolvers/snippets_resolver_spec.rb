@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::SnippetsResolver do
+RSpec.describe Resolvers::SnippetsResolver, :with_current_organization, feature_category: :source_code_management do
   include GraphqlHelpers
 
   describe '#resolve' do
@@ -17,6 +17,8 @@ RSpec.describe Resolvers::SnippetsResolver do
 
     before do
       project.add_developer(current_user)
+      # Since this doesn't go through a request flow, we need to manually set Current.organization
+      Current.organization = current_organization
     end
 
     it 'calls SnippetsFinder' do
@@ -30,6 +32,26 @@ RSpec.describe Resolvers::SnippetsResolver do
     context 'when using no filter' do
       it 'returns expected snippets' do
         expect(resolve_snippets).to contain_exactly(personal_snippet, other_personal_snippet, project_snippet, other_project_snippet)
+      end
+    end
+
+    context 'organization filtering' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:snippet_in_other_org) { create(:personal_snippet, :public, author: current_user, organization: other_organization) }
+
+      it 'passes organization_id to SnippetsFinder' do
+        expect(SnippetsFinder).to receive(:new)
+                                    .with(current_user, hash_including(organization_id: current_organization.id))
+                                    .and_call_original
+
+        resolve_snippets
+      end
+
+      it 'only returns snippets from the current organization' do
+        snippets = resolve_snippets.items
+
+        expect(snippets).to contain_exactly(personal_snippet, other_personal_snippet, project_snippet, other_project_snippet)
+        expect(snippets).not_to include(snippet_in_other_org)
       end
     end
 

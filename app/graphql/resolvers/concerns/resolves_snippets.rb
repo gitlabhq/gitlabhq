@@ -23,7 +23,8 @@ module ResolvesSnippets
   private
 
   def resolve_snippets(args)
-    SnippetsFinder.new(context[:current_user], snippet_finder_params(args)).execute
+    SnippetsFinder.new(context[:current_user], organization_id: Current.organization.id,
+      **snippet_finder_params(args)).execute
   end
 
   def snippet_finder_params(args)

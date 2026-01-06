@@ -131,9 +131,9 @@ export default {
       );
     },
     disableSaveButton() {
-      // We should have a minimum of one commit selected and that should not be in the context commits list or we should have a context commit to delete
+      // We should have a minimum of one commit selected and that should not be in the context commits list, or we should have a context commit to delete
       return (
-        (this.selectedCommitsCount.length === 0 || this.uniqueCommits.length === 0) &&
+        (this.selectedCommitsCount === 0 || this.uniqueCommits.length === 0) &&
         this.toRemoveCommits.length === 0
       );
     },
@@ -329,7 +329,7 @@ export default {
             :loading-failed-text="__('Unable to load commits. Try again later.')"
             :commits="commits"
             :empty-list-text="__('Your search didn\'t match any commits. Try a different query.')"
-            @handleCommitSelect="handleCommitRowSelect"
+            @handle-commit-select="handleCommitRowSelect"
           />
         </div>
       </gl-tab>
@@ -348,7 +348,7 @@ export default {
               'Commits you select appear here. Go to the first tab and select commits to add to this merge request.',
             )
           "
-          @handleCommitSelect="handleCommitRowSelect"
+          @handle-commit-select="handleCommitRowSelect"
         />
       </gl-tab>
     </gl-tabs>

@@ -4,8 +4,8 @@ export function supported() {
   );
 }
 
-export function isHTTPS() {
-  return window.location.protocol.startsWith('https');
+export function isSecureContext() {
+  return window.isSecureContext;
 }
 
 /**

@@ -31,7 +31,7 @@ module API
         end
 
         def snippets_for_current_user
-          SnippetsFinder.new(current_user, project: user_project).execute
+          SnippetsFinder.new(current_user, organization_id: Current.organization.id, project: user_project).execute
         end
       end
 

@@ -241,9 +241,11 @@ class Namespace < ApplicationRecord
   scope :with_namespace_details, -> { preload(:namespace_details) }
 
   scope :archived, -> { self_or_ancestors_archived }
+  scope :self_archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: true }) }
   scope :self_or_ancestors_archived, -> { where(self_or_ancestors_archived_setting_subquery.exists) }
 
   scope :non_archived, -> { self_and_ancestors_non_archived }
+  scope :self_non_archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: false }) }
   scope :self_and_ancestors_non_archived, -> { where.not(self_or_ancestors_archived_setting_subquery.exists) }
 
   scope :with_statistics, -> do

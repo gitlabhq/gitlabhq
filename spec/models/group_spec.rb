@@ -1317,6 +1317,18 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.self_not_aimed_for_deletion' do
+      let_it_be(:group_not_marked_for_deletion) { create(:group) }
+      let_it_be(:group_marked_for_deletion) { create(:group_with_deletion_schedule) }
+
+      subject(:relation) { described_class.self_not_aimed_for_deletion }
+
+      it 'only includes groups not marked for deletion', :aggregate_failures do
+        is_expected.to include(group_not_marked_for_deletion)
+        is_expected.not_to include(group_marked_for_deletion)
+      end
+    end
+
     describe '.self_and_ancestors_not_aimed_for_deletion' do
       let_it_be(:group_not_marked_for_deletion) { create(:group) }
       let_it_be(:group_not_marked_for_deletion_subgroup) { create(:group, parent: group_not_marked_for_deletion) }
@@ -1711,6 +1723,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it_behaves_like 'ancestor aware active scope'
     end
 
+    describe '.self_active' do
+      let_it_be(:active_group) { create(:group) }
+      let_it_be(:inactive_group) { create(:group, :archived) }
+
+      subject { described_class.self_active }
+
+      it { is_expected.to include(active_group) }
+      it { is_expected.not_to include(inactive_group) }
+    end
+
     describe '.self_and_ancestors_active' do
       subject { described_class.self_and_ancestors_active }
 
@@ -1730,6 +1752,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       subject { described_class.inactive }
 
       it_behaves_like 'ancestor aware inactive scope'
+    end
+
+    describe '.self_inactive' do
+      let_it_be(:active_group) { create(:group) }
+      let_it_be(:inactive_group) { create(:group, :archived) }
+
+      subject { described_class.self_inactive }
+
+      it { is_expected.to include(inactive_group) }
+      it { is_expected.not_to include(active_group) }
     end
 
     describe '.self_or_ancestors_inactive' do

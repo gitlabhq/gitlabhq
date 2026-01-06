@@ -1,13 +1,13 @@
 import { __ } from '~/locale';
 import { WEBAUTHN_AUTHENTICATE, WEBAUTHN_REGISTER } from './constants';
-import { isHTTPS } from './util';
+import { isSecureContext } from './util';
 
 export default class WebAuthnError {
   constructor(error, flowType) {
     this.error = error;
     this.errorName = error.name || 'UnknownError';
     this.message = this.message.bind(this);
-    this.httpsDisabled = !isHTTPS();
+    this.httpsDisabled = !isSecureContext();
     this.flowType = flowType;
   }
 

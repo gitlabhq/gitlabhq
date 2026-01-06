@@ -53,7 +53,7 @@ describe('Registration', () => {
     it('shows an error if using unsecure scheme (HTTP)', () => {
       // `supported` function returns false for HTTP because `navigator.credentials` is undefined.
       WebAuthnUtils.supported.mockReturnValue(false);
-      WebAuthnUtils.isHTTPS.mockReturnValue(false);
+      WebAuthnUtils.isSecureContext.mockReturnValue(false);
       createComponent();
 
       const alert = wrapper.findComponent(GlAlert);
@@ -64,7 +64,7 @@ describe('Registration', () => {
 
     it('shows an error if using unsupported browser', () => {
       WebAuthnUtils.supported.mockReturnValue(false);
-      WebAuthnUtils.isHTTPS.mockReturnValue(true);
+      WebAuthnUtils.isSecureContext.mockReturnValue(true);
       createComponent();
 
       const alert = wrapper.findComponent(GlAlert);
@@ -88,7 +88,7 @@ describe('Registration', () => {
     };
 
     beforeEach(() => {
-      WebAuthnUtils.isHTTPS.mockReturnValue(true);
+      WebAuthnUtils.isSecureContext.mockReturnValue(true);
       WebAuthnUtils.supported.mockReturnValue(true);
       global.navigator.credentials = { create: mockCreate };
       gon.webauthn = { options: {} };

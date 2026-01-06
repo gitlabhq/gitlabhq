@@ -921,10 +921,34 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       it_behaves_like 'ancestor aware archived scope'
     end
 
+    describe '.self_archived' do
+      let_it_be(:non_archived) { create(:group) }
+      let_it_be(:archived) { create(:group, :archived) }
+
+      subject { described_class.self_archived }
+
+      it 'returns archived groups' do
+        is_expected.to include(archived)
+        is_expected.not_to include(non_archived)
+      end
+    end
+
     describe '.non_archived' do
       subject { described_class.non_archived }
 
       it_behaves_like 'ancestor aware unarchived scope'
+    end
+
+    describe '.self_non_archived' do
+      let_it_be(:non_archived) { create(:group) }
+      let_it_be(:archived) { create(:group, :archived) }
+
+      subject { described_class.self_non_archived }
+
+      it 'returns non archived groups' do
+        is_expected.to include(non_archived)
+        is_expected.not_to include(archived)
+      end
     end
 
     describe '.self_or_ancestors_archived' do

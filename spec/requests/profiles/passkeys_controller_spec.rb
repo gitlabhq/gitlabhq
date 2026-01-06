@@ -305,11 +305,11 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
               Base64.strict_encode64(SecureRandom.random_bytes(16)) # Throws a challenge error
             end
 
-            it "redirects back to the 2FA profile page with an alert" do
+            it "renders an alert" do
               go
 
               expect { response }.not_to change { user.passkeys.count }
-              expect(response).to redirect_to(profile_two_factor_auth_path)
+              expect(response).to render_template(:new)
               expect(flash[:alert]).to be_present
             end
           end

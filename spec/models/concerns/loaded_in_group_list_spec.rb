@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe LoadedInGroupList, feature_category: :groups_and_projects do
-  let_it_be(:parent) { create(:group) }
+  let_it_be_with_reload(:parent) { create(:group) }
   let_it_be(:group) { create(:group, parent: parent) }
   let_it_be(:project) { create(:project, namespace: parent) }
 
@@ -47,6 +47,26 @@ RSpec.describe LoadedInGroupList, feature_category: :groups_and_projects do
           expect(found_group.preloaded_project_count).to eq(2)
           expect(found_group.preloaded_subgroup_count).to eq(2)
         end
+
+        context 'when parent is archived' do
+          before do
+            parent.namespace_settings.update!(archived: true)
+          end
+
+          it 'counts all subgroups and projects' do
+            expect(found_group.preloaded_project_count).to eq(3)
+            expect(found_group.preloaded_subgroup_count).to eq(3)
+          end
+
+          context 'when `ignore_inherited_state` option is true' do
+            let_it_be(:params) { { archived: true, options: { ignore_inherited_state: true } } }
+
+            it 'ignores inherited archived state' do
+              expect(found_group.preloaded_project_count).to eq(2)
+              expect(found_group.preloaded_subgroup_count).to eq(2)
+            end
+          end
+        end
       end
 
       context 'when false' do
@@ -55,6 +75,26 @@ RSpec.describe LoadedInGroupList, feature_category: :groups_and_projects do
         it 'count non-archived subgroups and projects' do
           expect(found_group.preloaded_project_count).to eq(1)
           expect(found_group.preloaded_subgroup_count).to eq(1)
+        end
+
+        context 'when parent is archived' do
+          before do
+            parent.namespace_settings.update!(archived: true)
+          end
+
+          it 'does not count descendants' do
+            expect(found_group.preloaded_project_count).to eq(0)
+            expect(found_group.preloaded_subgroup_count).to eq(0)
+          end
+
+          context 'when `ignore_inherited_state` option is true' do
+            let_it_be(:params) { { archived: false, options: { ignore_inherited_state: true } } }
+
+            it 'ignores inherited archived state' do
+              expect(found_group.preloaded_project_count).to eq(1)
+              expect(found_group.preloaded_subgroup_count).to eq(1)
+            end
+          end
         end
       end
     end
@@ -73,6 +113,26 @@ RSpec.describe LoadedInGroupList, feature_category: :groups_and_projects do
           expect(found_group.preloaded_project_count).to eq(1)
           expect(found_group.preloaded_subgroup_count).to eq(1)
         end
+
+        context 'when parent is inactive' do
+          before do
+            parent.namespace_settings.update!(archived: true)
+          end
+
+          it 'does not count descendants' do
+            expect(found_group.preloaded_project_count).to eq(0)
+            expect(found_group.preloaded_subgroup_count).to eq(0)
+          end
+
+          context 'when `ignore_inherited_state` option is true' do
+            let_it_be(:params) { { active: true, options: { ignore_inherited_state: true } } }
+
+            it 'ignores inherited archived state' do
+              expect(found_group.preloaded_project_count).to eq(1)
+              expect(found_group.preloaded_subgroup_count).to eq(1)
+            end
+          end
+        end
       end
 
       context 'when false' do
@@ -81,6 +141,26 @@ RSpec.describe LoadedInGroupList, feature_category: :groups_and_projects do
         it 'counts inactive subgroups and projects' do
           expect(found_group.preloaded_project_count).to eq(2)
           expect(found_group.preloaded_subgroup_count).to eq(2)
+        end
+
+        context 'when parent is inactive' do
+          before do
+            parent.namespace_settings.update!(archived: true)
+          end
+
+          it 'counts all subgroups and projects' do
+            expect(found_group.preloaded_project_count).to eq(3)
+            expect(found_group.preloaded_subgroup_count).to eq(3)
+          end
+
+          context 'when `ignore_inherited_state` option is true' do
+            let_it_be(:params) { { active: false, options: { ignore_inherited_state: true } } }
+
+            it 'ignores inherited archived state' do
+              expect(found_group.preloaded_project_count).to eq(2)
+              expect(found_group.preloaded_subgroup_count).to eq(2)
+            end
+          end
         end
       end
     end

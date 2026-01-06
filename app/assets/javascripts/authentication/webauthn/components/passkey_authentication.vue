@@ -3,7 +3,7 @@ import { GlButton, GlForm, GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import csrf from '~/lib/utils/csrf';
 import { s__ } from '~/locale';
-import { supported, convertGetParams, convertGetResponse, isHTTPS } from '../util';
+import { supported, convertGetParams, convertGetResponse, isSecureContext } from '../util';
 import { WEBAUTHN_AUTHENTICATE } from '../constants';
 import WebAuthnError from '../error';
 
@@ -44,7 +44,7 @@ export default {
     if (supported()) {
       this.authenticate();
     } else {
-      const message = isHTTPS()
+      const message = isSecureContext()
         ? s__("PasskeyAuthentication|Your browser doesn't support passkeys.")
         : s__(
             'PasskeyAuthentication|Passkeys only works with HTTPS-enabled websites. Contact your administrator for more details.',

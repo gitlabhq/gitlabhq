@@ -51,7 +51,8 @@ module Profiles
           user: current_user
         )
 
-        redirect_to profile_two_factor_auth_path, status: :found, alert: result.message
+        flash.now[:alert] = result.message
+        render :new
       end
     end
 

@@ -6,7 +6,7 @@ import csrf from '~/lib/utils/csrf';
 import { s__ } from '~/locale';
 import { WEBAUTHN_REGISTER } from '../constants';
 import WebAuthnError from '../error';
-import { convertCreateParams, convertCreateResponse, isHTTPS, supported } from '../util';
+import { convertCreateParams, convertCreateResponse, isSecureContext, supported } from '../util';
 
 export default {
   name: 'PasskeyRegistration',
@@ -47,7 +47,7 @@ export default {
     } else if (supported()) {
       this.onRegister();
     } else {
-      const message = isHTTPS()
+      const message = isSecureContext()
         ? s__("Add passkey|Your browser doesn't support passkeys.")
         : s__(
             'Add passkey|Passkeys only works with HTTPS-enabled websites. Contact your administrator for more details.',

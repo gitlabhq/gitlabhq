@@ -2097,6 +2097,23 @@ Returns [`ContainerRegistryDetails`](#containerregistrydetails).
 | ---- | ---- | ----------- |
 | <a id="queryvirtualregistriescontainerregistryid"></a>`id` | [`VirtualRegistriesContainerRegistryID!`](#virtualregistriescontainerregistryid) | Global ID of the container virtual registry. |
 
+### `Query.virtualRegistriesContainerUpstream`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Finds a container upstream registry with details. Returns `null` if the `container_virtual_registry` feature flag is disabled.
+
+Returns [`ContainerUpstreamDetails`](#containerupstreamdetails).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryvirtualregistriescontainerupstreamid"></a>`id` | [`VirtualRegistriesContainerUpstreamID!`](#virtualregistriescontainerupstreamid) | Global ID of the container upstream. |
+
 ### `Query.virtualRegistriesPackagesMavenRegistry`
 
 {{< details >}}
@@ -29754,7 +29771,7 @@ Represents container upstream details.
 | <a id="containerupstreamdetailsid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.7. **Status**: Experiment. ID of the upstream registry. |
 | <a id="containerupstreamdetailsname"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Name of the upstream registry. |
 | <a id="containerupstreamdetailsregistriescount"></a>`registriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Number of registries using the upstream. |
-| <a id="containerupstreamdetailsregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[ContainerRegistryUpstreamWithRegistry!]!`](#containerregistryupstreamwithregistry) | **Introduced** in GitLab 18.8. **Status**: Experiment. Shows the connected registry for the upstream, and its list position. |
+| <a id="containerupstreamdetailsregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[ContainerRegistryUpstreamWithRegistry!]!`](#containerregistryupstreamwithregistry) | **Introduced** in GitLab 18.8. **Status**: Experiment. Represents the connected upstream registry for an upstream and the upstream position data. |
 | <a id="containerupstreamdetailsurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. URL of the upstream registry. |
 | <a id="containerupstreamdetailsusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Username to sign in to the upstream registry. |
 
@@ -56803,6 +56820,12 @@ An example `UsersSavedReplyID` is: `"gid://gitlab/Users::SavedReply/1"`.
 A `VirtualRegistriesContainerRegistryID` is a global ID. It is encoded as a string.
 
 An example `VirtualRegistriesContainerRegistryID` is: `"gid://gitlab/VirtualRegistries::Container::Registry/1"`.
+
+### `VirtualRegistriesContainerUpstreamID`
+
+A `VirtualRegistriesContainerUpstreamID` is a global ID. It is encoded as a string.
+
+An example `VirtualRegistriesContainerUpstreamID` is: `"gid://gitlab/VirtualRegistries::Container::Upstream/1"`.
 
 ### `VirtualRegistriesPackagesMavenRegistryID`
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_category: :system_access do
+RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_access do
   include Features::TwoFactorHelpers
   let(:app_id) { "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}" }
 
@@ -10,198 +10,434 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
     WebAuthn.configuration.origin = app_id
   end
 
-  it_behaves_like 'hardware device for 2fa', 'WebAuthn'
+  it_behaves_like 'OTP devices work independently of WebAuthn authenticators', 'WebAuthn'
 
-  describe 'registration' do
-    let(:user) { create(:user) }
+  describe 'second factor' do
+    describe 'registration' do
+      let(:user) { create(:user) }
 
-    before do
-      gitlab_sign_in(user)
-    end
-
-    it 'shows an error when using a wrong password' do
-      visit profile_two_factor_auth_path
-
-      # First device
-      webauthn_device_registration(password: 'fake')
-      expect(page).to have_content(_('You must provide a valid current password.'))
-    end
-
-    it 'allows registering more than one device' do
-      visit profile_two_factor_auth_path
-
-      # First device
-      first_device = webauthn_device_registration(password: user.password)
-      expect(page).to have_content('Your WebAuthn device was registered!')
-      copy_recovery_codes
-
-      # Second device
-      second_device = webauthn_device_registration(name: 'My other device', password: user.password)
-      expect(page).to have_content('Your WebAuthn device was registered!')
-
-      expect(page).to have_content(first_device.name)
-      expect(page).to have_content(second_device.name)
-      expect(WebauthnRegistration.count).to eq(2)
-    end
-
-    it 'allows the same device to be registered for multiple users' do
-      # First user
-      visit profile_two_factor_auth_path
-      webauthn_device = webauthn_device_registration(password: user.password)
-      expect(page).to have_content('Your WebAuthn device was registered!')
-      gitlab_sign_out
-
-      # Second user
-      user = create(:user)
-      gitlab_sign_in(user)
-      visit profile_two_factor_auth_path
-      webauthn_device_registration(webauthn_device: webauthn_device, name: 'My other device', password: user.password)
-      expect(page).to have_content('Your WebAuthn device was registered!')
-
-      expect(WebauthnRegistration.count).to eq(2)
-    end
-
-    context 'when there are form errors' do
-      let(:mock_register_js) do
-        <<~JS
-          const mockResponse = {
-            type: 'public-key',
-            id: '',
-            rawId: '',
-            response: {
-              clientDataJSON: '',
-              attestationObject: '',
-            },
-            getClientExtensionResults: () => {},
-          };
-          navigator.credentials.create = () => Promise.resolve(mockResponse);
-        JS
+      before do
+        gitlab_sign_in(user)
       end
 
-      it "doesn't register the device if there are errors" do
-        visit profile_two_factor_auth_path
+      describe 'with valid registrations' do
+        context 'with second_factor WebAuthn authenticators' do
+          it 'allows a user to register more than one authenticator' do
+            visit profile_two_factor_auth_path
 
-        # Have the "webauthn device" respond with bad data
-        page.execute_script(mock_register_js)
-        click_on _('Register device')
-        click_on _('Set up new device')
-        webauthn_fill_form_and_submit(password: user.password)
-        expect(page).to have_content(_('Your WebAuthn device did not send a valid JSON response.'))
+            # First authenticator
+            first_device = webauthn_device_registration(password: user.password)
+            expect(page).to have_content('Your WebAuthn device was registered!')
+            copy_recovery_codes
 
-        expect(WebauthnRegistration.count).to eq(0)
+            # Second authenticator
+            second_device = webauthn_device_registration(name: 'My other device', password: user.password)
+            expect(page).to have_content('Your WebAuthn device was registered!')
+
+            expect(page).to have_content(first_device.name)
+            expect(page).to have_content(second_device.name)
+          end
+        end
+
+        context 'with passkeys' do
+          it 'allows a user to register multiple passkeys' do
+            visit profile_two_factor_auth_path
+
+            # First authenticator
+            first_authenticator = passkey_registration(password: user.password)
+            expect(page).to have_content(_('Passkey added successfully!'))
+
+            # Second authenticator
+            second_authenticator = passkey_registration(name: 'My other passkey', password: user.password)
+            expect(page).to have_content(_('Passkey added successfully!'))
+
+            expect(page).to have_content(first_authenticator.name)
+            expect(page).to have_content(second_authenticator.name)
+          end
+
+          context 'with second-factor WebAuthn authenticators (WebAuthn & OTP) and passkeys 2FA parity' do
+            it 'makes passkeys the default 2FA method when at least 1 2FA method is enabled' do
+              visit profile_two_factor_auth_path
+
+              # Add second_factor_authenticator (2FA enabled)
+              webauthn_device_registration(password: user.password)
+              expect(page).to have_content('Your WebAuthn device was registered!')
+              copy_recovery_codes
+
+              # Enables 2FA
+              expect(page).to have_css('span.gl-badge-content', text: 'WebAuthn device') # Default 2FA: WebAuthn
+
+              # Add passkey
+              passkey_registration(name: 'My other passkey', password: user.password)
+              expect(page).to have_content(_('Passkey added successfully!'))
+
+              expect(page).to have_css('span.gl-badge-content', text: 'Passkey') # Default 2FA: Passkey
+
+              # Delete last second_factor_authenticator but keep the passkey (passwordless-only usage)
+              delete_webauthn_device(password: user.password)
+              expect(page).to have_content('To use passkeys as your default two-factor authentication') # Disables 2FA
+
+              # Add OTP (2FA enabled)
+              user.otp_secret = User.generate_otp_secret(32)
+              otp_authenticator_registration_and_copy_codes(user.reload.current_otp, user.password)
+              expect(page).to have_text(_('2FA setup complete!'))
+
+              expect(page).to have_css('span.gl-badge-content', text: 'Passkey') # Default 2FA: Passkey
+
+              # Remove passkey
+              delete_passkey_device(password: user.password)
+              expect(page).to have_content('Passkey has been deleted!')
+
+              # Retains 2FA
+              expect(page).to have_css('span.gl-badge-content', text: 'One-time password authenticator') # Default 2FA: OTP
+            end
+          end
+        end
       end
 
-      it 'allows retrying registration' do
-        visit profile_two_factor_auth_path
+      describe 'with invalid registrations' do
+        let(:bad_authenticator_response) do
+          <<~JS
+            const mockResponse = {
+              type: 'public-key',
+              id: '',
+              rawId: '',
+              response: {
+                clientDataJSON: '',
+                attestationObject: '',
+              },
+              getClientExtensionResults: () => {},
+            };
+            navigator.credentials.create = () => Promise.resolve(mockResponse);
+          JS
+        end
 
-        # Failed registration
-        page.execute_script(mock_register_js)
-        click_on _('Register device')
-        click_on _('Set up new device')
-        webauthn_fill_form_and_submit(password: user.password)
-        expect(page).to have_content(_('Your WebAuthn device did not send a valid JSON response.'))
+        context 'with an invalid authenticator response' do
+          it "shows an error and does not register the device" do
+            visit profile_two_factor_auth_path
 
-        # Successful registration
-        webauthn_device_registration(password: user.password)
+            # Have the "webauthn device" respond with bad data
+            page.execute_script(bad_authenticator_response)
 
-        expect(page).to have_content('Your WebAuthn device was registered!')
-        expect(WebauthnRegistration.count).to eq(1)
+            click_on _('Register device')
+            click_on _('Set up new device')
+            webauthn_fill_form_and_submit(password: user.password)
+
+            expect(page).to have_content(_('Your WebAuthn device did not send a valid JSON response.'))
+          end
+        end
+
+        context 'with invalid user UI inputs' do
+          it 'shows an error when using a wrong password' do
+            visit profile_two_factor_auth_path
+
+            webauthn_device_registration(password: 'fake')
+
+            expect(page).to have_content(_('You must provide a valid current password.'))
+          end
+        end
+
+        context 'with retries' do
+          it 'allows retrying registration' do
+            visit profile_two_factor_auth_path
+
+            # Failed registration
+            page.execute_script(bad_authenticator_response)
+            click_on _('Register device')
+            click_on _('Set up new device')
+            webauthn_fill_form_and_submit(password: user.password)
+            expect(page).to have_content(_('Your WebAuthn device did not send a valid JSON response.'))
+
+            # Successful registration
+            webauthn_device_registration(password: user.password)
+
+            expect(page).to have_content('Your WebAuthn device was registered!')
+          end
+        end
+
+        context 'with passkeys' do
+          context 'with an invalid authenticator response' do
+            it "shows an error and does not register the passkey" do
+              visit profile_two_factor_auth_path
+
+              passkey_registration(password: user.password) do
+                page.execute_script(bad_authenticator_response)
+              end
+
+              expect(page).to have_current_path(profile_passkeys_path) # Stays on POST request path of passkeys#new
+              expect(page).to have_content(_('Failed to connect to your device.'))
+            end
+          end
+
+          context 'with invalid user UI inputs' do
+            it 'shows an error when using a wrong password' do
+              visit profile_two_factor_auth_path
+
+              passkey_registration(password: 'fake')
+
+              expect(page).to have_current_path(profile_passkeys_path) # Stays on POST request path of passkeys#new
+              expect(page).to have_content(_('You must provide a valid current password.'))
+            end
+          end
+
+          context 'with retries' do
+            it 'allows retrying registration' do
+              visit profile_two_factor_auth_path
+
+              # Failed registration
+              passkey_registration(password: 'fake')
+              expect(page).to have_current_path(profile_passkeys_path) # Stays on POST request path of passkeys#new
+              expect(page).to have_content(_('You must provide a valid current password.'))
+
+              # Successful registration
+              passkey ||= FakeWebauthnDevice.new(page, name: 'Retried passkey')
+              passkey.respond_to_webauthn_registration
+              click_button _('Try again')
+              wait_for_requests
+              passkey_fill_form_and_submit(name: 'Retried passkey', password: user.password)
+              expect(page).to have_content(_('Passkey added successfully!'))
+              expect(page).to have_current_path(profile_two_factor_auth_path)
+            end
+          end
+
+          context 'when passkeys FF is disabled for 2FA registration' do
+            before do
+              stub_feature_flags(passkeys: false)
+            end
+
+            it 'does not render any passkeys content' do
+              visit profile_two_factor_auth_path
+
+              expect(page).not_to have_content("passkey")
+            end
+          end
+        end
+      end
+    end
+
+    describe 'authentication' do
+      let(:user) do
+        create(:user, :two_factor_via_otp, :two_factor_via_webauthn, :with_passkey, registrations_count: 1)
+      end
+
+      context 'with valid authentications' do
+        context 'with second_factor authenticators' do
+          it "allows a user to sign-in with an already registered WebAuthn authenticator" do
+            webauthn_authenticator = add_webauthn_device(app_id, user)
+
+            gitlab_sign_in(user)
+            webauthn_authenticator.respond_to_webauthn_authentication
+
+            expect(page).to have_current_path(root_path)
+          end
+
+          context 'when multiple authenticators have been registered by the same user' do
+            it 'allows a user to sign-in with either authenticator' do
+              first_device = add_webauthn_device(app_id, user)
+              second_device = add_webauthn_device(app_id, user)
+
+              # Authenticate as both devices
+              [first_device, second_device].each do |device|
+                gitlab_sign_in(user)
+
+                device.respond_to_webauthn_authentication
+
+                expect(page).to have_current_path(root_path)
+
+                gitlab_sign_out
+              end
+            end
+          end
+        end
+
+        context 'with passkeys' do
+          it 'allows a user to sign-in with passkey, second_factor & OTP authenticators' do
+            # with passkey
+            passkey = add_passkey(app_id, user)
+            gitlab_sign_in(user)
+            passkey.respond_to_webauthn_authentication
+            expect(page).to have_current_path(root_path)
+            gitlab_sign_out
+
+            # with WebAuthn
+            second_factor_authenticator = add_webauthn_device(app_id, user)
+            gitlab_sign_in(user)
+            second_factor_authenticator.respond_to_webauthn_authentication
+            expect(page).to have_current_path(root_path)
+            gitlab_sign_out
+
+            # with OTP
+            gitlab_sign_in(user)
+            add_otp(user)
+            expect(page).to have_current_path(root_path)
+            gitlab_sign_out
+          end
+        end
+      end
+
+      context 'with invalid authentications' do
+        let(:other_user) { create(:user, :two_factor_via_webauthn, registrations_count: 1) }
+
+        context 'when a given WebAuthn authenticator in GitLab is not owned by a user' do
+          it 'does not allow a user to sign-in in with that particular authenticator' do
+            webauthn_authenticator = add_webauthn_device(app_id, user)
+
+            # Sign-in with a 2FA enabled user & perform the user verification
+            gitlab_sign_in(other_user)
+            webauthn_authenticator.respond_to_webauthn_authentication
+
+            expect(page).to have_content('Authentication via WebAuthn device failed')
+          end
+        end
+
+        context 'with retries' do
+          it 'allows retrying authentication' do
+            webauthn_authenticator = add_webauthn_device(app_id, user)
+
+            # Failed authentication
+            gitlab_sign_in(other_user)
+            webauthn_authenticator.respond_to_webauthn_authentication
+
+            expect(page).to have_content('Authentication via WebAuthn device failed')
+
+            # Successful authentication
+            webauthn_authenticator2 = add_webauthn_device(app_id, other_user)
+            webauthn_authenticator2.respond_to_webauthn_authentication
+
+            expect(page).to have_current_path(root_path)
+          end
+        end
+
+        context 'with passkeys' do
+          context 'when a given passkey in GitLab is not owned by a user' do
+            it 'does not allow a user to sign-in in with that particular authenticator' do
+              passkey = add_passkey(app_id, user)
+
+              gitlab_sign_in(other_user)
+              passkey.respond_to_webauthn_authentication
+
+              expect(page).to have_content('Failed to connect to your device')
+            end
+          end
+
+          context 'with retries' do
+            it 'allows retrying authentication' do
+              passkey = add_passkey(app_id, user)
+
+              # Failed authentication
+              gitlab_sign_in(other_user)
+              passkey.respond_to_webauthn_authentication
+              expect(page).to have_content('Failed to connect to your device')
+
+              # Successful authentication
+              passkey_for_other_user = add_passkey(app_id, other_user)
+              passkey_for_other_user.respond_to_webauthn_authentication
+
+              expect(page).to have_current_path(root_path)
+            end
+          end
+
+          context 'when passkeys FF is disabled for 2FA authentication' do
+            before do
+              stub_feature_flags(passkeys: false)
+            end
+
+            it 'allows a user to sign-in with second_factor & OTP authenticators, not passkeys' do
+              # with passkey
+              passkey = add_passkey(app_id, user)
+              gitlab_sign_in(user)
+              passkey.respond_to_webauthn_authentication
+              expect(page).to have_current_path(new_user_session_path)
+
+              click_button('Try again?')
+
+              # with WebAuthn
+              second_factor_authenticator = add_webauthn_device(app_id, user)
+              gitlab_sign_in(user)
+              second_factor_authenticator.respond_to_webauthn_authentication
+              expect(page).to have_current_path(root_path)
+              gitlab_sign_out
+
+              # with OTP
+              gitlab_sign_in(user)
+              add_otp(user)
+              expect(page).to have_current_path(root_path)
+              gitlab_sign_out
+            end
+          end
+        end
       end
     end
   end
 
-  describe 'authentication' do
-    let(:otp_required_for_login) { true }
-    let(:user) { create(:user, webauthn_xid: WebAuthn.generate_user_id, otp_required_for_login: otp_required_for_login) }
-    let!(:webauthn_device) do
-      add_webauthn_device(app_id, user)
-    end
+  describe 'passwordless' do
+    describe 'authentication' do
+      context 'with passkeys' do
+        let(:user) { create(:user) }
 
-    describe 'when 2FA via OTP is disabled' do
-      let(:otp_required_for_login) { false }
+        context 'with valid authentications' do
+          it 'allows a user to sign-in without a password' do
+            passkey = add_passkey(app_id, user)
 
-      it 'allows logging in with the WebAuthn device' do
-        gitlab_sign_in(user)
+            visit root_path
 
-        webauthn_device.respond_to_webauthn_authentication
+            click_button(_('Passkey'))
+            expect(page).to have_current_path(users_passkeys_sign_in_path)
 
-        expect(page).to have_css('.sign-out-link', visible: :hidden)
-      end
-    end
+            passkey.respond_to_webauthn_authentication(passkey: true)
+            click_button _('Try again')
 
-    describe 'when 2FA via OTP is enabled' do
-      it 'allows logging in with the WebAuthn device' do
-        gitlab_sign_in(user)
-
-        webauthn_device.respond_to_webauthn_authentication
-
-        expect(page).to have_css('.sign-out-link', visible: :hidden)
-      end
-    end
-
-    describe 'when a given WebAuthn device has already been registered by another user' do
-      describe 'but not the current user' do
-        let(:other_user) { create(:user, webauthn_xid: WebAuthn.generate_user_id, otp_required_for_login: otp_required_for_login) }
-
-        it 'does not allow logging in with that particular device' do
-          # Register other user with a different WebAuthn device
-          other_device = add_webauthn_device(app_id, other_user)
-
-          # Try authenticating user with the old WebAuthn device
-          gitlab_sign_in(user)
-          other_device.respond_to_webauthn_authentication
-          expect(page).to have_content('Authentication via WebAuthn device failed')
+            expect(page).to have_current_path(root_path)
+          end
         end
-      end
 
-      describe "and also the current user" do
-        # TODO Uncomment once WebAuthn::FakeClient supports passing credential options
-        # (especially allow_credentials, as this is needed to specify which credential the
-        # fake client should use. Currently, the first credential is always used).
-        # There is an issue open for this: https://github.com/cedarcode/webauthn-ruby/issues/259
-        it "allows logging in with that particular device" do
-          pending("support for passing credential options in FakeClient")
-          # Register current user with the same WebAuthn device
-          current_user = create(:user)
-          gitlab_sign_in(current_user)
-          visit profile_two_factor_auth_path
-          webauthn_device_registration(webauthn_device: webauthn_device, password: current_user.password)
-          copy_recovery_codes
-          gitlab_sign_out
+        context 'with invalid authentications' do
+          context 'when a given passkey in GitLab is not owned by a user' do
+            it 'does not allow a user to sign-in in with that particular authenticator' do
+              passkey = add_passkey(app_id, user, save_passkey: false)
 
-          # Try authenticating user with the same WebAuthn device
-          gitlab_sign_in(current_user)
-          webauthn_device.respond_to_webauthn_authentication
+              visit root_path
+              click_button(_('Passkey'))
+              expect(page).to have_current_path(users_passkeys_sign_in_path)
 
-          expect(page).to have_css('.sign-out-link', visible: :hidden)
+              passkey.respond_to_webauthn_authentication(passkey: true)
+              click_button _('Try again')
+
+              expect(page).to have_content('Failed to connect to your device')
+            end
+          end
+
+          context 'with retries' do
+            it 'allows retrying authentication' do
+              # Failed authentication
+              passkey = add_passkey(app_id, user, save_passkey: false)
+              visit root_path
+              click_button(_('Passkey'))
+              expect(page).to have_current_path(users_passkeys_sign_in_path)
+              passkey.respond_to_webauthn_authentication(passkey: true)
+              click_button _('Try again')
+              expect(page).to have_content('Failed to connect to your device')
+
+              # Successful authentication
+              passkey = add_passkey(app_id, user)
+              passkey.respond_to_webauthn_authentication(passkey: true)
+              click_button _('Try again')
+
+              expect(page).to have_current_path(root_path)
+            end
+          end
         end
-      end
-    end
 
-    describe 'when a given WebAuthn device has not been registered' do
-      it 'does not allow logging in with that particular device' do
-        unregistered_device = FakeWebauthnDevice.new(page, 'My device')
-        gitlab_sign_in(user)
-        unregistered_device.respond_to_webauthn_authentication
+        context 'when passkeys FF is disabled' do
+          before do
+            stub_feature_flags(passkeys: false)
+          end
 
-        expect(page).to have_content('Authentication via WebAuthn device failed')
-      end
-    end
+          it 'does not show the Passkey button' do
+            visit root_path
 
-    describe 'when more than one device has been registered by the same user' do
-      it 'allows logging in with either device' do
-        first_device = add_webauthn_device(app_id, user)
-        second_device = add_webauthn_device(app_id, user)
-
-        # Authenticate as both devices
-        [first_device, second_device].each do |device|
-          gitlab_sign_in(user)
-
-          device.respond_to_webauthn_authentication
-
-          expect(page).to have_css('.sign-out-link', visible: :hidden)
-
-          gitlab_sign_out
+            expect(page).not_to have_button(_('Passkey'))
+          end
         end
       end
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Snippets, :aggregate_failures, factory_default: :keep, feature_category: :source_code_management do
+RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, factory_default: :keep, feature_category: :source_code_management do
   include SnippetHelpers
 
   let_it_be(:admin)            { create(:user, :admin) }
@@ -70,6 +70,16 @@ RSpec.describe API::Snippets, :aggregate_failures, factory_default: :keep, featu
 
     it_behaves_like "returns unauthorized when not authenticated"
     it_behaves_like "returns filtered snippets for user"
+
+    it 'passes organization_id to SnippetsFinder' do
+      expect(SnippetsFinder).to receive(:new)
+        .with(user, hash_including(organization_id: current_organization.id))
+        .and_call_original
+
+      get api(path, personal_access_token: user_token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
 
     it 'hides private snippets from regular user' do
       get api(path, personal_access_token: other_user_token)

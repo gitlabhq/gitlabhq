@@ -786,6 +786,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
+    describe '.self_aimed_for_deletion' do
+      let_it_be(:active_project) { create(:project) }
+      let_it_be(:for_deletion_project) { create(:project, marked_for_deletion_at: Date.current) }
+
+      it 'returns projects marked for deletion' do
+        result = described_class.self_aimed_for_deletion
+
+        expect(result).to include(for_deletion_project)
+        expect(result).not_to include(active_project)
+      end
+    end
+
     describe '.self_or_ancestors_aimed_for_deletion' do
       subject { described_class.self_or_ancestors_aimed_for_deletion }
 
@@ -798,6 +810,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it 'returns projects not marked for deletion' do
         result = described_class.not_aimed_for_deletion
+
+        expect(result).to include(active_project)
+        expect(result).not_to include(for_deletion_project)
+      end
+    end
+
+    describe '.self_not_aimed_for_deletion' do
+      let_it_be(:active_project) { create(:project) }
+      let_it_be(:for_deletion_project) { create(:project, marked_for_deletion_at: Date.current) }
+
+      it 'returns projects not marked for deletion' do
+        result = described_class.self_not_aimed_for_deletion
 
         expect(result).to include(active_project)
         expect(result).not_to include(for_deletion_project)
@@ -857,6 +881,19 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it_behaves_like 'includes projects in archived hierarchy'
     end
 
+    describe '.self_archived' do
+      let_it_be(:archived_group) { create(:group, :archived) }
+      let_it_be(:active_project) { create(:project, group: archived_group, archived: false) }
+      let_it_be(:archived_project) { create(:project, archived: true) }
+
+      it 'returns archived projects' do
+        result = described_class.self_archived
+
+        expect(result).to include(archived_project)
+        expect(result).not_to include(active_project)
+      end
+    end
+
     describe '.self_or_ancestors_archived' do
       subject { described_class.self_or_ancestors_archived }
 
@@ -872,10 +909,34 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it_behaves_like 'excludes projects in archived hierarchy'
     end
 
+    describe '.self_non_archived' do
+      let_it_be(:active_project) { create(:project, archived: false) }
+      let_it_be(:archived_project) { create(:project, archived: true) }
+
+      it 'returns non-archived projects' do
+        result = described_class.self_non_archived
+
+        expect(result).to include(active_project)
+        expect(result).not_to include(archived_project)
+      end
+    end
+
     describe '.self_and_ancestors_non_archived' do
       subject { described_class.self_and_ancestors_non_archived }
 
       it_behaves_like 'excludes projects in archived hierarchy'
+    end
+
+    describe '.self_active' do
+      let_it_be(:active_project) { create(:project, archived: false) }
+      let_it_be(:inactive_project) { create(:project, archived: true) }
+
+      it 'returns active projects' do
+        result = described_class.self_active
+
+        expect(result).to include(active_project)
+        expect(result).not_to include(inactive_project)
+      end
     end
 
     describe '.self_and_ancestors_active' do
@@ -883,6 +944,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it_behaves_like 'excludes projects in archived hierarchy'
       it_behaves_like 'excludes projects in hierarchy marked for deletion'
+    end
+
+    describe '.self_inactive' do
+      let_it_be(:active_project) { create(:project, archived: false) }
+      let_it_be(:inactive_project) { create(:project, archived: true) }
+
+      it 'returns inactive projects' do
+        result = described_class.self_inactive
+
+        expect(result).to include(inactive_project)
+        expect(result).not_to include(active_project)
+      end
     end
 
     describe '.self_or_ancestors_inactive' do

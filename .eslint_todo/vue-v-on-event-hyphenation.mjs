@@ -3,8 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue',
-    'app/assets/javascripts/add_context_commits_modal/components/review_tab_container.vue',
     'app/assets/javascripts/admin/abuse_report/components/abuse_report_app.vue',
     'app/assets/javascripts/admin/abuse_report/components/report_header.vue',
     'app/assets/javascripts/admin/abuse_reports/components/abuse_reports_filtered_search_bar.vue',

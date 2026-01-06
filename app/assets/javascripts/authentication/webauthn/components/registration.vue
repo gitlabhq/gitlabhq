@@ -35,7 +35,7 @@ import WebAuthnError from '~/authentication/webauthn/error';
 import {
   convertCreateParams,
   convertCreateResponse,
-  isHTTPS,
+  isSecureContext,
   supported,
 } from '~/authentication/webauthn/util';
 import csrf from '~/lib/utils/csrf';
@@ -104,7 +104,7 @@ export default {
       return;
     }
 
-    this.errorMessage = isHTTPS() ? I18N_ERROR_UNSUPPORTED_BROWSER : I18N_ERROR_HTTP;
+    this.errorMessage = isSecureContext() ? I18N_ERROR_UNSUPPORTED_BROWSER : I18N_ERROR_HTTP;
   },
   methods: {
     isCurrentState(state) {
