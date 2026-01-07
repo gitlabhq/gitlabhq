@@ -141,7 +141,7 @@ RSpec.describe 'Clusterable > Show page', feature_category: :deployment_manageme
 
         it 'can update the migration issue URL', :js do
           issue = create(:issue, project: configuration_project)
-          issue_url = project_issue_url(configuration_project, issue)
+          issue_url = ::Gitlab::UrlBuilder.instance.issue_url(issue)
 
           extractor_double = instance_double(Gitlab::ReferenceExtractor)
           allow(Gitlab::ReferenceExtractor).to receive(:new).and_return(extractor_double)
@@ -174,7 +174,7 @@ RSpec.describe 'Clusterable > Show page', feature_category: :deployment_manageme
         it 'shows the linked issue information' do
           expect(page).to have_content('Migration issue')
           expect(page).to have_link("#{issue.title} (##{issue.id})",
-            href: project_issue_path(configuration_project, issue))
+            href: ::Gitlab::UrlBuilder.instance.issue_path(issue))
           expect(page).not_to have_field('Migration issue URL')
           expect(page).not_to have_button('Save migration issue')
         end

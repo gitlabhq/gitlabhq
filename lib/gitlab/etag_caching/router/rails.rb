@@ -12,8 +12,8 @@ module Gitlab
         #     regex itself)
         #   - Ending in `issues/id`/realtime_changes` for the `issue_title` route
         USED_IN_ROUTES = %w[noteable issue issues realtime_changes
-                            commit pipelines merge_requests builds
-                            new environments].freeze
+          commit pipelines merge_requests builds
+          new environments].freeze
         RESERVED_WORDS = Gitlab::PathRegex::ILLEGAL_PROJECT_PATH_WORDS - USED_IN_ROUTES
         RESERVED_WORDS_REGEX = Regexp.union(*RESERVED_WORDS.map(&Regexp.method(:escape)))
         RESERVED_WORDS_PREFIX = %(^(?!.*\/(#{RESERVED_WORDS_REGEX})\/).*)

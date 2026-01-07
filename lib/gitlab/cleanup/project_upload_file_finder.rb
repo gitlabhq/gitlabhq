@@ -39,11 +39,11 @@ module Gitlab
 
       def build_find_command(search_dir)
         cmd = %W[find -L #{search_dir}
-                 -type f
-                 ! ( -path #{EXCLUDED_SYSTEM_UPLOADS_PATH} -prune )
-                 ! ( -path #{EXCLUDED_HASHED_UPLOADS_PATH} -prune )
-                 ! ( -path #{EXCLUDED_TMP_UPLOADS_PATH} -prune )
-                 -print0]
+          -type f
+          ! ( -path #{EXCLUDED_SYSTEM_UPLOADS_PATH} -prune )
+          ! ( -path #{EXCLUDED_HASHED_UPLOADS_PATH} -prune )
+          ! ( -path #{EXCLUDED_TMP_UPLOADS_PATH} -prune )
+          -print0]
 
         ionice = which_ionice
         cmd = %W[#{ionice} -c Idle] + cmd if ionice

@@ -23,7 +23,7 @@ RSpec.describe 'shared/milestones/_issuable.html.haml' do
     let(:issuable) { create(:issue, project: project, assignees: [user]) }
 
     it 'links to the page for the issue' do
-      expect(rendered).to have_css("a[href$='#{project_issue_path(project, issuable)}']", class: 'issue-link')
+      expect(rendered).to have_css("a[href$='#{::Gitlab::UrlBuilder.instance.issue_path(issuable)}']", class: 'issue-link')
     end
 
     it 'links to issues page for user' do

@@ -349,6 +349,7 @@ module API
 
       desc 'Restore a project' do
         success ::API::Entities::Project
+        tags ['projects']
       end
       route_setting :authorization, permissions: :restore_project, boundary_type: :project
       post ':id/restore', feature_category: :system_access do
@@ -475,6 +476,7 @@ module API
 
       desc 'Returns group that can be shared with the given project' do
         success Entities::Group
+        tags %w[projects groups]
       end
       params do
         requires :id, type: Integer, desc: 'The id of the project'

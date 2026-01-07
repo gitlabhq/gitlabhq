@@ -43,7 +43,7 @@ module Gitlab
 
       def restorers
         [repo_restorer, wiki_restorer, project_tree, avatar_restorer, design_repo_restorer,
-         uploads_restorer, lfs_restorer, statistics_restorer, snippets_repo_restorer]
+          uploads_restorer, lfs_restorer, statistics_restorer, snippets_repo_restorer]
       end
 
       def import_file

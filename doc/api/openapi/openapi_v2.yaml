@@ -95,6 +95,8 @@ tags:
   description: Operations about pages_domains
 - name: project_avatar
   description: Operations about project_avatars
+- name: project_events
+  description: Operations about project_events
 - name: webhooks
   description: Operations about webhooks
 - name: projects_job_token_scope
@@ -167,8 +169,8 @@ tags:
   description: Operations about imports
 - name: issue_statistics
   description: Operations about issue_statistics
-- name: topics
-  description: Operations about topics
+- name: project_topics
+  description: Operations about project_topics
 - name: web_commits
   description: Operations about web_commits
 - name: access_requests
@@ -30848,7 +30850,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Event"
       tags:
-      - projects
+      - project_events
       operationId: getApiV4ProjectsIdEvents
   "/api/v4/projects/{id}/export":
     get:
@@ -35236,6 +35238,7 @@ paths:
             "$ref": "#/definitions/API_Entities_Group"
       tags:
       - projects
+      - groups
       operationId: getApiV4ProjectsIdShareLocations
   "/api/v4/projects/{id}":
     get:
@@ -47592,7 +47595,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Projects_Topic"
       tags:
-      - topics
+      - project_topics
       operationId: getApiV4Topics
     post:
       summary: Create a topic
@@ -47613,7 +47616,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Projects_Topic"
       tags:
-      - topics
+      - project_topics
       operationId: postApiV4Topics
   "/api/v4/topics/{id}":
     get:
@@ -47634,7 +47637,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Projects_Topic"
       tags:
-      - topics
+      - project_topics
       operationId: getApiV4TopicsId
     put:
       summary: Update a topic
@@ -47661,7 +47664,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Projects_Topic"
       tags:
-      - topics
+      - project_topics
       operationId: putApiV4TopicsId
     delete:
       summary: Delete a topic
@@ -47679,7 +47682,7 @@ paths:
         '204':
           description: Delete a topic
       tags:
-      - topics
+      - project_topics
       operationId: deleteApiV4TopicsId
   "/api/v4/topics/merge":
     post:
@@ -47701,7 +47704,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Projects_Topic"
       tags:
-      - topics
+      - project_topics
       operationId: postApiV4TopicsMerge
   "/api/v4/web_commits/public_key":
     get:
@@ -48053,6 +48056,8 @@ definitions:
       web_based_commit_signing_enabled:
         type: string
       allow_personal_snippets:
+        type: string
+      duo_namespace_access_rules:
         type: string
     description: API_Entities_Group model
   API_Entities_Namespace_RootStorageStatistics:
@@ -48792,6 +48797,36 @@ definitions:
         type: boolean
         description: Allow creation of personal snippets for enterprise users of this
           group
+      duo_namespace_access_rules:
+        type: array
+        description: AI entity access rules for controlling Duo feature access
+        items:
+          type: object
+          properties:
+            through_namespace:
+              type: object
+              description: Object containing through namespace information
+              properties:
+                id:
+                  type: integer
+                  format: int32
+                  description: ID of the through namespace
+                name:
+                  type: string
+                  description: Name of the through namespace
+                full_path:
+                  type: string
+                  description: Full path of the through namespace
+              required:
+              - id
+            features:
+              type: array
+              description: List of accessible features
+              items:
+                type: string
+          required:
+          - through_namespace
+          - features
     description: Update a group. Available only for users who can administrate groups.
   API_Entities_GroupDetail:
     type: object
@@ -48915,6 +48950,8 @@ definitions:
       web_based_commit_signing_enabled:
         type: string
       allow_personal_snippets:
+        type: string
+      duo_namespace_access_rules:
         type: string
       shared_with_groups:
         type: string

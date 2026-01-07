@@ -12,8 +12,8 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
 
   let_it_be(:project) { create(:project, :public) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
-  let(:issue_path) { "/#{issue.project.namespace.path}/#{issue.project.path}/-/issues/#{issue.iid}" }
-  let(:issue_url) { "http://#{Gitlab.config.gitlab.host}#{issue_path}" }
+  let(:issue_path) { ::Gitlab::UrlBuilder.instance.issue_path(issue) }
+  let(:issue_url) { ::Gitlab::UrlBuilder.instance.issue_url(issue) }
 
   shared_examples 'a reference with issue type information' do
     it 'contains issue-type as a data attribute' do
@@ -597,7 +597,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
     subject { filter_instance }
 
     context 'the link does not go to the designs tab' do
-      let(:input_text) { Gitlab::Routing.url_helpers.project_issue_url(issue.project, issue) }
+      let(:input_text) { ::Gitlab::UrlBuilder.instance.issue_url(issue) }
 
       it 'does not include designs' do
         expect(extras).not_to include('designs')

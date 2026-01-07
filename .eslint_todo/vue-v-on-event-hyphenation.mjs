@@ -6,8 +6,6 @@ export default {
     'app/assets/javascripts/admin/abuse_report/components/abuse_report_app.vue',
     'app/assets/javascripts/admin/abuse_report/components/report_header.vue',
     'app/assets/javascripts/admin/abuse_reports/components/abuse_reports_filtered_search_bar.vue',
-    'app/assets/javascripts/alerts_settings/components/alerts_settings_form.vue',
-    'app/assets/javascripts/alerts_settings/components/alerts_settings_wrapper.vue',
     'app/assets/javascripts/analytics/cycle_analytics/components/base.vue',
     'app/assets/javascripts/analytics/cycle_analytics/components/filter_bar.vue',
     'app/assets/javascripts/analytics/cycle_analytics/components/value_stream_filters.vue',

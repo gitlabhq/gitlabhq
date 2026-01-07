@@ -41,10 +41,6 @@ module Gitlab
 
           validates :pause_ms, numericality: { greater_than_or_equal_to: MINIMUM_PAUSE_MS }
 
-          validates :job_arguments, uniqueness: {
-            scope: [:job_class_name, :table_name, :column_name]
-          }
-
           scope :for_partition, ->(partition) { where(partition: partition) }
           scope :unfinished, -> { with_statuses(:queued, :active, :paused) }
           scope :with_job_arguments, ->(args) { where("job_arguments = ?", args.to_json) } # rubocop:disable Rails/WhereEquals -- to override Rails comparison

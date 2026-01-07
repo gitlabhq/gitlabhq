@@ -328,14 +328,14 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
 
     context "with a cross-project URL" do
       it do
-        message = "Closes #{urls.project_issue_url(issue2.project, issue2)}"
+        message = "Closes #{::Gitlab::UrlBuilder.instance.issue_url(issue2)}"
         expect(subject.closed_by_message(message)).to eq([issue2])
       end
 
       context 'when multiple references are used for the same issue (also as work item)' do
         it 'only returns the same issue once' do
           message =
-            "Closes #{urls.project_issue_url(issue2.project, issue2)} " \
+            "Closes #{::Gitlab::UrlBuilder.instance.issue_url(issue2)} " \
             "Closes #{urls.project_work_item_url(issue2.project, issue2)}"
           expect(subject.closed_by_message(message).map(&:id)).to contain_exactly(issue2.id)
         end
@@ -378,7 +378,7 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
 
     context "with an invalid URL" do
       it do
-        message = "Closes https://google.com#{urls.project_issue_path(issue2.project, issue2)}"
+        message = "Closes https://google.com#{::Gitlab::UrlBuilder.instance.issue_path(issue2)}"
         expect(subject.closed_by_message(message)).to eq([])
       end
     end
@@ -469,14 +469,14 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
       end
 
       it "fetches cross-project URL references" do
-        message = "Closes #{urls.project_issue_url(issue2.project, issue2)}, #{reference} and #{urls.project_issue_url(other_issue.project, other_issue)}"
+        message = "Closes #{::Gitlab::UrlBuilder.instance.issue_url(issue2)}, #{reference} and #{::Gitlab::UrlBuilder.instance.issue_url(other_issue)}"
 
         expect(subject.closed_by_message(message))
             .to match_array([issue, issue2, other_issue])
       end
 
       it "ignores invalid cross-project URL references" do
-        message = "Closes https://google.com#{urls.project_issue_path(issue2.project, issue2)} and #{reference}"
+        message = "Closes https://google.com#{::Gitlab::UrlBuilder.instance.issue_path(issue2)} and #{reference}"
 
         expect(subject.closed_by_message(message))
             .to match_array([issue])

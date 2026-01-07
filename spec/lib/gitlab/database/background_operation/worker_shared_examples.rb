@@ -17,7 +17,6 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
     end
 
     it { is_expected.to validate_numericality_of(:pause_ms).is_greater_than_or_equal_to(100) }
-    it { is_expected.to validate_uniqueness_of(:job_arguments).scoped_to(:job_class_name, :table_name, :column_name) }
   end
 
   describe 'scopes' do

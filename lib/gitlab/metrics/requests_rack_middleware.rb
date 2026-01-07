@@ -27,9 +27,9 @@ module Gitlab
       # with an explosion in unused metric combinations, but we want the
       # most common ones to be always present.
       FEATURE_CATEGORIES_TO_INITIALIZE = ['system_access',
-                                          'code_review_workflow', 'continuous_integration',
-                                          'not_owned', 'source_code_management',
-                                          FEATURE_CATEGORY_DEFAULT].freeze
+        'code_review_workflow', 'continuous_integration',
+        'not_owned', 'source_code_management',
+        FEATURE_CATEGORY_DEFAULT].freeze
 
       REQUEST_URGENCY_KEY = 'gitlab.request_urgency'
 

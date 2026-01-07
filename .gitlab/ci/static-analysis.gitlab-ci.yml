@@ -212,6 +212,7 @@ rubocop:docs-site:
 rails-next-dependency-check:
   stage: lint
   needs:
+    - !reference [.lint-base, needs]
     - job: cache:ruby-gems
       optional: true
   extends:

@@ -158,11 +158,11 @@ RSpec.describe MergeRequestPresenter do
       subject { described_class.new(resource, current_user: user).closing_issues_links }
 
       it 'presents closing issues links' do
-        is_expected.to match("#{project.full_path}/-/issues/#{issue_a.iid}")
+        is_expected.to match(::Gitlab::UrlBuilder.instance.issue_path(issue_a))
       end
 
       it 'does not present related issues links' do
-        is_expected.not_to match("#{project.full_path}/-/issues/#{issue_b.iid}")
+        is_expected.not_to match(::Gitlab::UrlBuilder.instance.issue_path(issue_b))
       end
 
       it 'appends status when closing issue is already closed' do
@@ -178,11 +178,11 @@ RSpec.describe MergeRequestPresenter do
       end
 
       it 'presents related issues links' do
-        is_expected.to match("#{project.full_path}/-/issues/#{issue_b.iid}")
+        is_expected.to match(::Gitlab::UrlBuilder.instance.issue_path(issue_b))
       end
 
       it 'does not present closing issues links' do
-        is_expected.not_to match("#{project.full_path}/-/issues/#{issue_a.iid}")
+        is_expected.not_to match(::Gitlab::UrlBuilder.instance.issue_path(issue_a))
       end
 
       it 'appends status when mentioned issue is already closed' do

@@ -41,7 +41,7 @@ RSpec.describe LinkedProjectIssueEntity do
 
   describe 'path' do
     it 'returns an issue path' do
-      expect(serialized_entity).to include(path: project_issue_path(related_issue.project, related_issue.iid))
+      expect(serialized_entity).to include(path: ::Gitlab::UrlBuilder.instance.issue_path(related_issue))
     end
 
     context 'when related issue is a task' do

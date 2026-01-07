@@ -16,7 +16,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :markdown do
       link = result[:output].css('a').first
       text = result[:output].children.first
 
-      expect(link['href']).to eq(Gitlab::Routing.url_helpers.project_issue_path(project, issue))
+      expect(link['href']).to eq(::Gitlab::UrlBuilder.instance.issue_path(issue))
       expect(result[:reference_filter_nodes]).to eq([text])
     end
 
@@ -53,7 +53,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :markdown do
           link = result.css('a').first
 
           expect(link['href']).to eq(
-            Gitlab::Routing.url_helpers.project_issue_path(project, issue)
+            ::Gitlab::UrlBuilder.instance.issue_path(issue)
           )
         end
 
@@ -99,7 +99,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :markdown do
         link = result.css('a').first
 
         expect(link['href']).to eq(
-          Gitlab::Routing.url_helpers.project_issue_path(other_project, issue)
+          ::Gitlab::UrlBuilder.instance.issue_path(issue)
         )
       end
     end
@@ -137,7 +137,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :markdown do
         link = result.css('a').first
 
         expect(link['href']).to eq(
-          Gitlab::Routing.url_helpers.project_issue_path(other_project, issue)
+          ::Gitlab::UrlBuilder.instance.issue_path(issue)
         )
       end
     end

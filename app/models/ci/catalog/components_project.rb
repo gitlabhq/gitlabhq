@@ -67,6 +67,16 @@ module Ci
         version.components.template.find_by_name(component_name)
       end
 
+      def find_catalog_components(component_names)
+        return [] if component_names.empty?
+
+        # Multiple versions of a component can have the same sha, so we return the latest one.
+        version = project.catalog_resource_versions.by_sha(sha).latest
+        return [] unless version
+
+        version.components.template.where(name: component_names)
+      end
+
       private
 
       attr_reader :project, :sha

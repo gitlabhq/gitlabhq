@@ -41219,8 +41219,6 @@ CREATE INDEX index_background_operation_workers_by_status ON ONLY background_ope
 
 CREATE INDEX index_background_operation_workers_by_user ON ONLY background_operation_workers USING btree (user_id);
 
-CREATE UNIQUE INDEX index_background_operation_workers_on_unique_configuration ON ONLY background_operation_workers USING btree (partition, organization_id, job_class_name, table_name, column_name, job_arguments);
-
 CREATE INDEX index_backup_finding_evidences_on_fk ON ONLY backup_finding_evidences USING btree (finding_id);
 
 CREATE INDEX index_backup_finding_evidences_on_project_id ON ONLY backup_finding_evidences USING btree (project_id);
@@ -41387,7 +41385,9 @@ CREATE INDEX index_boards_on_project_id ON boards USING btree (project_id);
 
 CREATE INDEX index_bow_cell_local_by_status ON ONLY background_operation_workers_cell_local USING btree (status);
 
-CREATE UNIQUE INDEX index_bow_cell_local_on_unique_configuration ON ONLY background_operation_workers_cell_local USING btree (partition, job_class_name, table_name, column_name, job_arguments);
+CREATE UNIQUE INDEX index_bow_cell_local_on_unique_undone ON ONLY background_operation_workers_cell_local USING btree (partition, job_class_name, table_name, column_name, job_arguments) WHERE (status = ANY (ARRAY[0, 1, 2]));
+
+CREATE UNIQUE INDEX index_bow_on_unique_undone ON ONLY background_operation_workers USING btree (partition, organization_id, job_class_name, table_name, column_name, job_arguments) WHERE (status = ANY (ARRAY[0, 1, 2]));
 
 CREATE UNIQUE INDEX index_branch_rule_squash_options_on_protected_branch_id ON projects_branch_rules_squash_options USING btree (protected_branch_id);
 

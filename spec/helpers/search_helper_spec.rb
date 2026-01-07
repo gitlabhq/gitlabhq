@@ -229,7 +229,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
             category: 'Recent issues',
             id: issue1.id,
             label: 'issue 1',
-            url: Gitlab::Routing.url_helpers.project_issue_path(issue1.project, issue1),
+            url: ::Gitlab::UrlBuilder.instance.issue_path(issue1),
             avatar_url: project.avatar_url
           })
 
@@ -237,7 +237,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
             category: 'Recent issues',
             id: issue2.id,
             label: 'issue 2',
-            url: Gitlab::Routing.url_helpers.project_issue_path(issue2.project, issue2),
+            url: ::Gitlab::UrlBuilder.instance.issue_path(issue2),
             avatar_url: '' # This project didn't have an avatar so set this to ''
           })
 
@@ -266,7 +266,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
             category: 'Recent issues',
             id: issue1.id,
             label: 'issue same_name',
-            url: Gitlab::Routing.url_helpers.project_issue_path(issue1.project, issue1),
+            url: ::Gitlab::UrlBuilder.instance.issue_path(issue1),
             avatar_url: project3.avatar_url
           })
 
@@ -274,7 +274,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
             category: 'Recent issues',
             id: issue2.id,
             label: 'issue same_name',
-            url: Gitlab::Routing.url_helpers.project_issue_path(issue2.project, issue2),
+            url: ::Gitlab::UrlBuilder.instance.issue_path(issue2),
             avatar_url: '' # This project didn't have an avatar so set this to ''
           })
         end
@@ -405,7 +405,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
               category: 'In this project',
               id: issue.id,
               label: "test title (##{issue.iid})",
-              url: ::Gitlab::Routing.url_helpers.project_issue_path(issue.project, issue),
+              url: ::Gitlab::UrlBuilder.instance.issue_path(issue),
               avatar_url: '' # project has no avatar
             })
           end

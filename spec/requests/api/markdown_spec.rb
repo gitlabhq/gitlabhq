@@ -87,7 +87,7 @@ RSpec.describe API::Markdown, feature_category: :markdown do
       let_it_be(:issue) { create(:issue, project: project) }
 
       let(:user) { create(:user) }
-      let(:issue_url) { "http://#{Gitlab.config.gitlab.host}/#{issue.project.namespace.path}/#{issue.project.path}/-/issues/#{issue.iid}" }
+      let(:issue_url) { ::Gitlab::UrlBuilder.build(issue) }
       let(:text) { ":tada: Hello world! :100: #{issue.to_reference}" }
 
       context "when personal access token has only read_api scope" do

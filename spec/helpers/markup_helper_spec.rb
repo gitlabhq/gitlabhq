@@ -39,7 +39,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
       end
 
       it "links to the issue" do
-        expected = urls.project_issue_path(project, issue)
+        expected = ::Gitlab::UrlBuilder.instance.issue_path(issue)
         expect(helper.markdown(actual)).to match(expected)
       end
     end
@@ -51,7 +51,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
       let_it_be(:second_issue) { create(:issue, project: second_project) }
 
       it 'links to the issue' do
-        expected = urls.project_issue_path(second_project, second_issue)
+        expected = ::Gitlab::UrlBuilder.instance.issue_path(second_issue)
         expect(markdown(actual, project: second_project)).to match(expected)
       end
     end
@@ -218,7 +218,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
 
       # First issue link
       expect(doc.css('a')[1].attr('href'))
-        .to eq urls.project_issue_path(project, issues[0])
+        .to eq ::Gitlab::UrlBuilder.instance.issue_path(issues[0])
       expect(doc.css('a')[1].text).to eq issues[0].to_reference
 
       # Internal commit link
@@ -227,7 +227,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
 
       # Second issue link
       expect(doc.css('a')[3].attr('href'))
-        .to eq urls.project_issue_path(project, issues[1])
+        .to eq ::Gitlab::UrlBuilder.instance.issue_path(issues[1])
       expect(doc.css('a')[3].text).to eq issues[1].to_reference
 
       # Trailing commit link
@@ -253,7 +253,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
 
       # First issue link
       expect(doc.css('a')[1].attr('href'))
-        .to eq urls.project_issue_path(project, issues[0])
+        .to eq ::Gitlab::UrlBuilder.instance.issue_path(issues[0])
       expect(doc.css('a')[1].text).to eq issues[0].to_reference
 
       # Internal commit link
@@ -262,7 +262,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
 
       # Second issue link
       expect(doc.css('a')[3].attr('href'))
-        .to eq urls.project_issue_path(project, issues[1])
+        .to eq ::Gitlab::UrlBuilder.instance.issue_path(issues[1])
       expect(doc.css('a')[3].text).to eq issues[1].to_reference
 
       # Trailing commit link
@@ -308,7 +308,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
       doc = Nokogiri::HTML.parse(rendered)
 
       expect(doc.css('a')[0].attr('href'))
-        .to eq urls.project_issue_path(project, issue)
+        .to eq ::Gitlab::UrlBuilder.instance.issue_path(issue)
       expect(doc.css('a')[0].text).to eq issue.to_reference
 
       wrapped = helper.link_to_html(rendered, link)

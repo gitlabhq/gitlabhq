@@ -89,16 +89,18 @@ The logs for a given service may be managed and rotated by:
 - `logrotate` and `svlogd`
 - Or not at all
 
-The following table includes information about what's responsible for managing and rotating logs for
-the included services. Logs
-[managed by `svlogd`](https://docs.gitlab.com/omnibus/settings/logs.html#runit-logs)
-are written to a file called `current`. The `logrotate` service built into GitLab
-[manages all logs](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate)
-except those captured by `runit`.
+The following table includes information about which daemon is responsible for managing and rotating logs for
+the included services:
+
+- Logs [managed by `svlogd`](https://docs.gitlab.com/omnibus/settings/logs.html#runit-logs) are written to a file called `current`.
+  Their archived versions are compressed into `@<hexadecimal-ID>.s` files.
+- The `logrotate` service built into GitLab [manages all other logs](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate).
+  Their archived versions are compressed into `<original-name>.<number>.gz` files.
 
 | Log type                                        | Managed by logrotate    | Managed by svlogd/runit |
 |:------------------------------------------------|:------------------------|:------------------------|
 | [Alertmanager logs](#alertmanager-logs)         | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
+| [Consul logs](#consul-logs)                     | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [crond logs](#crond-logs)                       | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [Gitaly](#gitaly-logs)                          | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
 | [GitLab Exporter for Linux package installations](#gitlab-exporter-logs) | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
@@ -118,7 +120,10 @@ except those captured by `runit`.
 | [Redis logs](#redis-logs)                       | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [Registry logs](#registry-logs)                 | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [Sentinel logs](#sentinel-logs)                 | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
+| [Sidekiq logs](#sidekiq-logs)                   | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [Workhorse logs](#workhorse-logs)               | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
+
+For more information on the services that generate these logs, see the [GitLab architecture overview](../../development/architecture.md).
 
 ## Accessing logs on Helm chart installations
 
@@ -732,8 +737,6 @@ Example log entries for `/var/log/gitlab/gitaly/current`:
 This file is in `/var/log/gitlab/gitaly/current` and is produced by [runit](https://smarden.org/runit/).
 `runit` is packaged with the Linux package and a brief explanation of its purpose
 is available [in the Linux package documentation](https://docs.gitlab.com/omnibus/architecture/#runit).
-[Log files are rotated](https://smarden.org/runit/svlogd.8), renamed in
-Unix timestamp format, and `gzip`-compressed (like `@1584057562.s`).
 
 ### `grpc.log`
 
@@ -1499,6 +1502,10 @@ For Linux package installations, Sentinel logs are in `/var/log/gitlab/sentinel/
 ## Alertmanager logs
 
 For Linux package installations, Alertmanager logs are in `/var/log/gitlab/alertmanager/current`.
+
+## Consul logs
+
+For Linux package installations, Consul logs are in `/var/log/gitlab/consul/current`.
 
 <!-- vale gitlab_base.Spelling = NO -->
 

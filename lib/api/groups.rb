@@ -758,6 +758,7 @@ The following criteria must be met:
 
 This feature is gated by the :group_agnostic_token_revocation feature flag.
         DETAIL
+        tags ['groups']
       end
       params do
         requires :id, type: String, desc: 'The ID of a top-level group'

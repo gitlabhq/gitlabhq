@@ -96,9 +96,10 @@ RSpec.describe Banzai::Pipeline::IncidentManagement::TimelineEventPipeline do
     context 'when markdown contains a reference to an issue' do
       let!(:issue) { create(:issue, project: project) }
       let(:markdown) { "issue ##{issue.iid}" }
+      let(:issue_path) { ::Gitlab::UrlBuilder.instance.issue_path(issue) }
 
       it 'contains a link to the issue' do
-        is_expected.to match(%r{<p>issue <a href="[\w\-/]+-/issues/#{issue.iid}".*>##{issue.iid}</a></p>})
+        is_expected.to match(%r{<p>issue <a href="#{issue_path}".*>##{issue.iid}</a></p>})
       end
     end
 

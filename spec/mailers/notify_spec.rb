@@ -784,7 +784,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
       describe 'on an issue' do
         let(:note) { create_note }
-        let(:note_on_issue_path) { project_issue_path(project, issue, anchor: "note_#{note.id}") }
+        let(:note_on_issue_path) { "#{::Gitlab::UrlBuilder.instance.issue_path(issue)}#note_#{note.id}" }
 
         def create_note
           create(:discussion_note_on_issue, noteable: issue, project: project, author: note_author)

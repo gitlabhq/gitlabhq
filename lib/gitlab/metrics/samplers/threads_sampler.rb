@@ -6,8 +6,8 @@ module Gitlab
       class ThreadsSampler < BaseSampler
         DEFAULT_SAMPLING_INTERVAL_SECONDS = 5
         KNOWN_PUMA_THREAD_NAMES = ['puma worker check pipe', 'puma server',
-                                   'puma threadpool reaper', 'puma threadpool trimmer',
-                                   'puma worker check pipe', 'puma stat payload'].freeze
+          'puma threadpool reaper', 'puma threadpool trimmer',
+          'puma worker check pipe', 'puma stat payload'].freeze
 
         SIDEKIQ_WORKER_THREAD_NAME = 'sidekiq_worker_thread'
 

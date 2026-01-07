@@ -45,9 +45,9 @@ module Gitlab
         files.each(&:lines)
         files.any?
       rescue Gitlab::Git::CommandError,
-             Gitlab::Git::Conflict::Parser::UnresolvableError,
-             Gitlab::Git::Conflict::Resolver::ConflictSideMissing,
-             Gitlab::Git::Conflict::File::UnsupportedEncoding
+        Gitlab::Git::Conflict::Parser::UnresolvableError,
+        Gitlab::Git::Conflict::Resolver::ConflictSideMissing,
+        Gitlab::Git::Conflict::File::UnsupportedEncoding
         false
       end
       cache_method :can_be_resolved_in_ui?

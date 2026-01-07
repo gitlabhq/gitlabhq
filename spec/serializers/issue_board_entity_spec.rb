@@ -55,15 +55,7 @@ RSpec.describe IssueBoardEntity do
 
   describe 'real_path' do
     it 'has an issue path' do
-      expect(subject[:real_path]).to eq(project_issue_path(project, resource.iid))
-    end
-
-    context 'when issue is of type task' do
-      let(:resource) { create(:issue, :task, project: project) }
-
-      it 'has a work item path with iid' do
-        expect(subject[:real_path]).to eq(project_work_item_path(project, resource.iid))
-      end
+      expect(subject[:real_path]).to eq(::Gitlab::UrlBuilder.instance.issue_path(resource))
     end
   end
 end

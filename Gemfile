@@ -38,9 +38,9 @@ gem 'bootsnap', '~> 1.18.6', require: false, feature_category: :shared # rubocop
 # Avoid the precompiled native gems because Omnibus needs to build this to ensure
 # LD_LIBRARY_PATH is correct: https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/7730
 if RUBY_PLATFORM.include?('darwin')
-  gem 'ffi', '~> 1.17.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+  gem 'ffi', '~> 1.17.3', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 else
-  gem 'ffi', '~> 1.17.2', force_ruby_platform: true, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+  gem 'ffi', '~> 1.17.3', force_ruby_platform: true, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 end
 
 gem 'openssl', '~> 3.3.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839

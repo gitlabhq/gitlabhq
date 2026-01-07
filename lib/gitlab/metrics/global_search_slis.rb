@@ -74,7 +74,7 @@ module Gitlab
 
         def endpoint_ids
           api_endpoints = ['GET /api/:version/search', 'GET /api/:version/projects/:id/(-/)search',
-                           'GET /api/:version/groups/:id/(-/)search']
+            'GET /api/:version/groups/:id/(-/)search']
           web_endpoints = ['SearchController#show']
 
           endpoints = []

@@ -93,7 +93,7 @@ export default {
       };
 
       this.setGitlabFields(fieldIndex, updatedField);
-      this.$emit('onMappingUpdate', transformForSave(this.mappingData));
+      this.$emit('on-mapping-update', transformForSave(this.mappingData));
     },
     setSearchTerm(search = '', searchFieldKey, gitlabKey) {
       const fieldIndex = this.gitlabFields.findIndex((field) => field.name === gitlabKey);

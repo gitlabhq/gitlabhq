@@ -151,11 +151,15 @@ review and distribute your pipeline schedules:
    sudo gitlab-psql --command "
     COPY (SELECT
         ci_pipeline_schedules.cron,
+        ci_pipeline_schedules.cron_timezone,
+        namespaces.path AS group,
         projects.path   AS project,
         users.email
     FROM ci_pipeline_schedules
     JOIN projects ON projects.id = ci_pipeline_schedules.project_id
+    JOIN namespaces ON namespaces.id = projects.namespace_id
     JOIN users    ON users.id    = ci_pipeline_schedules.owner_id
+    WHERE ci_pipeline_schedules.active = 't'
     ) TO '$outfile' CSV HEADER DELIMITER E'\t' ;"
    sort  "$outfile" | uniq -c | sort -n
    ```
