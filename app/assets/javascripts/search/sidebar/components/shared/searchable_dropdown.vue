@@ -72,18 +72,27 @@ export default {
       searchText: '',
       hasBeenOpened: false,
       showableItems: [],
-      searchInProgress: false,
     };
   },
   watch: {
     items() {
       if (this.searchText === '') {
         this.showableItems = this.defaultItems();
+      } else {
+        this.showableItems = this.convertItemsFormat([...this.items]);
       }
     },
   },
   created() {
     this.showableItems = this.defaultItems();
+    this.debouncedSearch = debounce((searchText) => {
+      this.searchHandler(searchText);
+    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+  },
+  beforeDestroy() {
+    if (this.debouncedSearch) {
+      this.debouncedSearch.cancel();
+    }
   },
   methods: {
     defaultItems() {
@@ -117,14 +126,9 @@ export default {
     },
     search(search) {
       this.searchText = search;
-      this.searchInProgress = true;
 
       if (search !== '') {
-        debounce(() => {
-          this.searchHandler(this.searchText);
-          this.showableItems = this.convertItemsFormat([...this.items]);
-        }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS)();
-
+        this.debouncedSearch(search);
         return;
       }
 
