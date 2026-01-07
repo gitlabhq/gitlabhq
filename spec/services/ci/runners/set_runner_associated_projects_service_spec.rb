@@ -11,8 +11,9 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
   end
 
   let_it_be(:organization1) { create(:common_organization) }
-  let_it_be(:owner_project) { create(:project, organization: organization1) }
-  let_it_be(:project2) { create(:project, organization: organization1) }
+  let_it_be(:group) { create(:group, organization: organization1) }
+  let_it_be(:owner_project) { create(:project, organization: organization1, group: group) }
+  let_it_be(:project2) { create(:project, organization: organization1, group: group) }
 
   let(:original_projects) { [owner_project, project2] }
   let(:ordered_runner_project_ids) { runner.runner_projects.order(:id).pluck(:project_id) }
@@ -261,6 +262,28 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
             expect(runner.projects.ids).to be_empty
           end
         end
+      end
+    end
+
+    context 'when removing from a project it does not affect other runners from project' do
+      let_it_be(:runner_a) { create(:ci_runner, :project, projects: [owner_project, project2]) }
+      let_it_be(:runner_b) { create(:ci_runner, :project, projects: [project2, project3]) } # Should stay intact
+
+      let(:runner) { runner_a }
+      let(:new_projects) { [owner_project] }
+      let(:projects_with_maintainer_access) { [owner_project, project2, project3] }
+      let(:organizations) { projects_with_maintainer_access.map(&:organization).uniq }
+      let(:user) { create(:user, :admin, organizations: organizations) }
+
+      it 'only removes the project from the specified runner' do
+        expect(execute).to be_success
+        expect(execute.payload).to eq({
+          added_to_projects: [],
+          deleted_from_projects: [project2]
+        })
+
+        expect(runner_a.reload.project_ids).to contain_exactly(owner_project.id)
+        expect(runner_b.reload.project_ids).to contain_exactly(project2.id, project3.id)
       end
     end
   end

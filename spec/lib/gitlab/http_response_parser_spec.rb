@@ -3,19 +3,26 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::HttpResponseParser, feature_category: :importers do
+  describe '.supported_formats' do
+    it 'returns the expected formats from HTTParty' do
+      safe_formats = [:html, :plain]
+      overridden_formats = [:csv, :json, :xml]
+
+      expect(described_class.supported_formats).to match_array(safe_formats + overridden_formats)
+    end
+  end
+
   describe '#json' do
-    let(:json_parser) { described_class.new(body, :json).json }
+    let(:parsed_json) { described_class.new(body, :json).json }
     let(:body) { '{"key1": "value1", "key2": ["item1", "item2"], "key3": {"nested": "value"}}' }
 
     it 'parses the response body into a hash' do
-      result = json_parser
-
-      expect(result['key1']).to eq('value1')
-      expect(result['key2']).to be_an(Array)
-      expect(result['key2'].size).to eq(2)
-      expect(result['key3']).to be_an(Hash)
-      expect(result['key3'].size).to eq(1)
-      expect(result['key3']['nested']).to eq('value')
+      expect(parsed_json['key1']).to eq('value1')
+      expect(parsed_json['key2']).to be_an(Array)
+      expect(parsed_json['key2'].size).to eq(2)
+      expect(parsed_json['key3']).to be_an(Hash)
+      expect(parsed_json['key3'].size).to eq(1)
+      expect(parsed_json['key3']['nested']).to eq('value')
     end
 
     context 'when body content exceeds the number of JSON structural characters' do
@@ -26,11 +33,23 @@ RSpec.describe Gitlab::HttpResponseParser, feature_category: :importers do
       it 'logs oversize response and raises JSON::ParserError' do
         expect(Gitlab::AppJsonLogger).to receive(:error).with(
           message: 'Large HTTP JSON response',
-          number_of_fields: 10,
+          structural_chars: 10,
           caller: anything
         )
 
-        expect { json_parser }.to raise_error(JSON::ParserError)
+        expect { parsed_json }.to raise_error(JSON::ParserError)
+      end
+    end
+
+    context 'when max_http_response_json_structural_chars is 0' do
+      before do
+        stub_application_setting(max_http_response_json_structural_chars: 0)
+      end
+
+      it 'parses the response without size limit' do
+        expect(parsed_json['key1']).to eq('value1')
+        expect(parsed_json['key2']).to be_an(Array)
+        expect(parsed_json['key3']).to be_an(Hash)
       end
     end
 
@@ -48,7 +67,7 @@ RSpec.describe Gitlab::HttpResponseParser, feature_category: :importers do
 
       with_them do
         it 'raises JSON::ParserError' do
-          expect { json_parser }.to raise_error(JSON::ParserError)
+          expect { parsed_json }.to raise_error(JSON::ParserError)
         end
       end
     end
@@ -86,7 +105,7 @@ RSpec.describe Gitlab::HttpResponseParser, feature_category: :importers do
 
       with_them do
         it 'parses literal strings' do
-          expect(json_parser).to eq(expected)
+          expect(parsed_json).to eq(expected)
         end
       end
     end
@@ -100,7 +119,7 @@ RSpec.describe Gitlab::HttpResponseParser, feature_category: :importers do
         let(:body) { { a: { b: { c: { d: 1 } } } }.to_json }
 
         it 'raises JSON::NestingError' do
-          expect { json_parser }.to raise_error(JSON::NestingError)
+          expect { parsed_json }.to raise_error(JSON::NestingError)
         end
       end
 
@@ -108,108 +127,148 @@ RSpec.describe Gitlab::HttpResponseParser, feature_category: :importers do
         let(:body) { { a: { b: { c: 3 } } }.to_json }
 
         it 'parses the response body into a hash' do
-          result = json_parser
-
-          expect(result).to eq({ "a" => { "b" => { "c" => 3 } } })
+          expect(parsed_json).to eq({ "a" => { "b" => { "c" => 3 } } })
         end
       end
     end
   end
 
   describe '#xml' do
-    let(:xml_parser) { described_class.new(body, :xml).xml }
+    subject(:parsed_xml) { described_class.new(body, :xml).xml }
+
     let(:body) { '<root><item>value</item></root>' }
 
     it 'parses the response body into a hash' do
-      result = xml_parser
-
-      expect(result).to be_a(Hash)
-      expect(result['root']).to be_a(Hash)
-      expect(result['root']['item']).to eq('value')
-    end
-
-    it 'logs the parse method call with the number of angle brackets' do
-      expect(Gitlab::AppJsonLogger).to receive(:info).with(
-        message: 'HttpResponseParser method called',
-        parse_method: :xml,
-        structural_element_count: 2,
-        caller: anything
-      )
-
-      xml_parser
+      expect(parsed_xml).to be_a(Hash)
+      expect(parsed_xml['root']).to be_a(Hash)
+      expect(parsed_xml['root']['item']).to eq('value')
     end
 
     context 'with XML attributes' do
       let(:body) { '<root><item id="1" type="test">value</item></root>' }
 
       it 'parses attributes correctly' do
-        result = xml_parser
+        expect(parsed_xml['root']['item']).to be_a(Hash)
+        expect(parsed_xml['root']['item']['id']).to eq('1')
+        expect(parsed_xml['root']['item']['type']).to eq('test')
+        expect(parsed_xml['root']['item']['__content__']).to eq('value')
+      end
+    end
 
-        expect(result['root']['item']).to be_a(Hash)
-        expect(result['root']['item']['id']).to eq('1')
-        expect(result['root']['item']['type']).to eq('test')
-        expect(result['root']['item']['__content__']).to eq('value')
+    context 'when body content exceeds the number of XML structural characters' do
+      before do
+        stub_application_setting(max_http_response_xml_structural_chars: 1)
       end
 
-      it 'logs the parse method call with the number of angle brackets' do
-        expect(Gitlab::AppJsonLogger).to receive(:info).with(
-          message: 'HttpResponseParser method called',
-          parse_method: :xml,
-          structural_element_count: 4,
+      it 'logs oversize response and raises MultiXml::ParseError' do
+        expect(Gitlab::AppJsonLogger).to receive(:error).with(
+          message: 'Large HTTP XML response',
+          structural_chars: 2,
           caller: anything
         )
 
-        xml_parser
+        expect { parsed_xml }.to raise_error(MultiXml::ParseError)
+      end
+    end
+
+    context 'when max_http_response_xml_structural_chars is 0' do
+      before do
+        stub_application_setting(max_http_response_xml_structural_chars: 0)
+      end
+
+      it 'parses the response without size limit' do
+        expect(parsed_xml).to be_a(Hash)
+        expect(parsed_xml['root']).to be_a(Hash)
+        expect(parsed_xml['root']['item']).to eq('value')
       end
     end
   end
 
   describe '#csv' do
-    let(:csv_parser) { described_class.new(body, :csv).csv }
+    subject(:parsed_csv) { described_class.new(body, :csv).csv }
+
     let(:body) { "name,age,city\nJohn,30,NYC\nJane,25,LA" }
 
     it 'parses the response body into an array of arrays' do
-      result = csv_parser
-
-      expect(result).to be_an(Array)
-      expect(result.size).to eq(3)
-      expect(result[0]).to eq(%w[name age city])
-      expect(result[1]).to eq(%w[John 30 NYC])
-      expect(result[2]).to eq(%w[Jane 25 LA])
+      expect(parsed_csv).to be_an(Array)
+      expect(parsed_csv.size).to eq(3)
+      expect(parsed_csv[0]).to eq(%w[name age city])
+      expect(parsed_csv[1]).to eq(%w[John 30 NYC])
+      expect(parsed_csv[2]).to eq(%w[Jane 25 LA])
     end
 
-    it 'logs the parse method call with the number of commas and newlines' do
-      expect(Gitlab::AppJsonLogger).to receive(:info).with(
-        message: 'HttpResponseParser method called',
-        parse_method: :csv,
-        structural_element_count: 8,
-        caller: anything
-      )
+    context 'with tab-separated values' do
+      let(:body) { "name\tage\tcity\nJohn\t30\tNYC\nJane\t25\tLA" }
 
-      csv_parser
+      it 'counts tabs in structural characters' do
+        expect(parsed_csv).to be_an(Array)
+        expect(parsed_csv.size).to eq(3)
+      end
     end
 
     context 'with semicolon-separated values' do
       let(:body) { "name;age;city\nJohn;30;NYC\nJane;25;LA" }
 
-      it 'parses semicolon-separated CSV correctly' do
-        result = csv_parser
+      it 'counts semicolons in structural characters' do
+        expect(parsed_csv).to be_an(Array)
+        expect(parsed_csv.size).to eq(3)
+      end
+    end
 
-        expect(result).to be_an(Array)
-        expect(result.size).to eq(3)
-        expect(result[0]).to eq(['name;age;city'])
-        expect(result[1]).to eq(['John;30;NYC'])
+    context 'when body content exceeds the number of CSV structural characters' do
+      before do
+        stub_application_setting(max_http_response_csv_structural_chars: 5)
       end
 
-      it 'counts only newlines when no commas present' do
-        expect(Gitlab::AppJsonLogger).to receive(:info).with(
-          message: 'HttpResponseParser method called',
-          parse_method: :csv,
-          structural_element_count: 2,
+      it 'logs oversize response and raises CSV::MalformedCSVError with correct arguments' do
+        expect(Gitlab::AppJsonLogger).to receive(:error).with(
+          message: 'Large HTTP CSV response',
+          structural_chars: 8,
           caller: anything
         )
 
-        csv_parser
+        expect { parsed_csv }.to raise_error(CSV::MalformedCSVError) do |error|
+          expect(error.message).to eq('CSV response exceeded the maximum number of objects in line 1.')
+        end
+      end
+    end
+
+    context 'when max_http_response_csv_structural_chars is 0' do
+      before do
+        stub_application_setting(max_http_response_csv_structural_chars: 0)
+      end
+
+      it 'parses the response without size limit' do
+        expect(parsed_csv).to be_an(Array)
+        expect(parsed_csv.size).to eq(3)
+        expect(parsed_csv[0]).to eq(%w[name age city])
+        expect(parsed_csv[1]).to eq(%w[John 30 NYC])
+        expect(parsed_csv[2]).to eq(%w[Jane 25 LA])
+      end
+    end
+  end
+
+  describe 'private methods' do
+    let(:parser) { described_class.new('{}', :json) }
+
+    describe '#total_structural_chars_for' do
+      it 'raises ArgumentError for unsupported type' do
+        expect { parser.send(:total_structural_chars_for, :unsupported) }
+          .to raise_error(ArgumentError, 'Unsupported type: unsupported')
+      end
+    end
+
+    describe '#max_structural_chars_for' do
+      it 'raises ArgumentError for unsupported type' do
+        expect { parser.send(:max_structural_chars_for, :unsupported) }
+          .to raise_error(ArgumentError, 'Unsupported type: unsupported')
+      end
+    end
+
+    describe '#oversize_response_error_for' do
+      it 'raises ArgumentError for unsupported type' do
+        expect { parser.send(:oversize_response_error_for, :unsupported) }
+          .to raise_error(ArgumentError, 'Unsupported type: unsupported')
       end
     end
   end

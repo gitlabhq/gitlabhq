@@ -7,6 +7,13 @@ class SandboxController < ApplicationController # rubocop:disable Gitlab/Namespa
 
   feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
+  content_security_policy(only: :mermaid) do |p|
+    next if !Gitlab.config.asset_proxy.enabled || !Gitlab.config.asset_proxy.csp_directives
+
+    p.img_src(*Gitlab.config.asset_proxy.csp_directives)
+    p.media_src(*Gitlab.config.asset_proxy.csp_directives)
+  end
+
   def mermaid
     render layout: false
   end

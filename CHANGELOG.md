@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.7.1 (2026-01-07)
+
+### Fixed (1 change)
+
+- [Remove search_glql_fix_null_field_pagination feature flag](https://gitlab.com/gitlab-org/security/gitlab/-/commit/739045bf71d2d6631cb763a502478bd5d11f2d80) **GitLab Enterprise Edition**
+
+### Security (8 changes)
+
+- [Fix 404 errors for Duo Workflow WS connection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8f611a6ed9ab78db1f0d5ebb1329867f4689d76f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5633))
+- [Only delete runner projects scoped to the intended runner](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3c26e9f8669d43ed3e25100adb190488a77132b1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5616))
+- [Add base authorization check to update feature settings mutation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dcc442150b40e86a915bc2fcc41bb33be01ab85d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5509))
+- [Don't do arbitrary placeholder replacement on HTML](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3e9ac4b689c7be319dbf54e356b9903aa0debec7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5605))
+- [Pass Mermaid images through asset proxy, apply CSP to deny leaks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3eeb3448f3062c9a9119fe7d4826f6c6282678e3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5606))
+- [Fix security issue related to namespace context](https://gitlab.com/gitlab-org/security/gitlab/-/commit/507d2064f4679c02de2b0771ec6f8299d85d8dbd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5599))
+- [backport(18.7): Fix XSS vulnerability in Web IDE VSCode assets](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f34dd0fddc0d015f3c6cd53d9c0a93d1d39926f5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5604))
+- [Limit XML and CSV HTTP responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f7bb8670028df4a810ed725472dc6a971e8dfcc6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5602))
+
 ## 18.7.0 (2025-12-17)
 
 ### Added (198 changes)

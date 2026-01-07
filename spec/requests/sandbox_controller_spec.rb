@@ -38,5 +38,59 @@ RSpec.describe SandboxController, feature_category: :shared do
         end
       end
     end
+
+    describe 'Content-Security-Policy' do
+      let(:directives) do
+        # This won't work well if any directive has '; ' in it, but practically speaking, none do.
+        response['Content-Security-Policy'].split('; ').group_by { |d| d.split(' ', 2).first }
+      end
+
+      context 'with asset proxy disabled' do
+        before do
+          stub_asset_proxy_setting(enabled: false)
+        end
+
+        it 'does not modify the default CSPs for img-src and media-src' do
+          get_mermaid
+
+          # Different test environments produce different values for these by default;
+          # commonly "'self' data: blob: http: https:", sometimes "* data: blob:",
+          # sometimes unset (disabled).  Instead of asserting the exact expected
+          # value, assert instead that we haven't inserted the asset proxy host.
+          %w[img-src media-src].each do |directive|
+            if directives[directive]
+              expect(directives[directive].length).to eq(1)
+              expect(directives[directive].first).not_to include("assets.example.com")
+            end
+          end
+        end
+      end
+
+      context 'with asset proxy enabled' do
+        before do
+          # TODO: refactor this (and similar usages elsewhere) so we don't have to
+          # manually recapitulate the work of AssetProxy.initialize_settings.
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/582610
+          allowlist = %W[gitlab.com *.mydomain.com #{Gitlab.config.gitlab.host}]
+          stub_asset_proxy_setting(
+            enabled: true,
+            secret_key: 'shared-secret',
+            url: 'https://assets.example.com',
+            allowlist: allowlist)
+          stub_asset_proxy_setting(
+            domain_regexp: Banzai::Filter::AssetProxyFilter.host_regexp_for_allowlist(allowlist),
+            csp_directives: Banzai::Filter::AssetProxyFilter.csp_for_allowlist(allowlist))
+        end
+
+        it 'overrides the img-src and media-src CSPs to self, the allowlist, and the asset proxy' do
+          get_mermaid
+
+          expect(directives['img-src']).to eq(
+            ["img-src 'self' https://assets.example.com/ http://gitlab.com:* http://*.mydomain.com:* http://localhost:*"])
+          expect(directives['media-src']).to eq(
+            ["media-src 'self' https://assets.example.com/ http://gitlab.com:* http://*.mydomain.com:* http://localhost:*"])
+        end
+      end
+    end
   end
 end

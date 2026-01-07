@@ -86,6 +86,9 @@ export function getSandboxFrameSrc() {
 }
 
 function renderMermaidEl(el, source) {
+  // Added in MermaidFilter if the asset proxy is enabled.
+  const proxiedUrls = el.dataset.proxiedUrls ? JSON.parse(el.dataset.proxiedUrls) : null;
+
   const iframeEl = document.createElement('iframe');
   setAttributes(iframeEl, {
     src: getSandboxFrameSrc(),
@@ -108,7 +111,7 @@ function renderMermaidEl(el, source) {
   iframeEl.addEventListener('load', () => {
     // Potential risk associated with '*' discussed in below thread
     // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74414#note_735183398
-    iframeEl.contentWindow.postMessage(source, '*');
+    iframeEl.contentWindow.postMessage({ source, proxiedUrls }, '*');
   });
 
   window.addEventListener(
