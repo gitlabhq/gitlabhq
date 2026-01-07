@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas,
           expected_allowed_gitlab_schemas: {
             no_schema: :dml_not_allowed,
             gitlab_main: :success,
-            gitlab_main_clusterwide: :success,
+            gitlab_main_user: :success,
             gitlab_main_cell: :success,
             gitlab_main_org: :success,
             gitlab_ci: :dml_access_denied # cross-schema access
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas,
           expected_allowed_gitlab_schemas: {
             no_schema: :dml_not_allowed,
             gitlab_main: :success,
-            gitlab_main_clusterwide: :success,
+            gitlab_main_user: :success,
             gitlab_main_cell: :success,
             gitlab_main_org: :success,
             gitlab_ci: :dml_access_denied # cross-schema access
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas,
           expected_allowed_gitlab_schemas: {
             no_schema: :dml_not_allowed,
             gitlab_main: :success,
-            gitlab_main_clusterwide: :success,
+            gitlab_main_user: :success,
             gitlab_main_cell: :success,
             gitlab_main_org: :success,
             gitlab_ci: :dml_access_denied # cross-schema access
@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas,
           expected_allowed_gitlab_schemas: {
             no_schema: :dml_not_allowed,
             gitlab_main: :success,
-            gitlab_main_clusterwide: :success,
+            gitlab_main_user: :success,
             gitlab_main_cell: :success,
             gitlab_main_org: :success,
             gitlab_ci: :dml_access_denied # cross-schema access

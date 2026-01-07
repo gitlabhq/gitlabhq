@@ -27200,6 +27200,26 @@ CREATE SEQUENCE security_categories_id_seq
 
 ALTER SEQUENCE security_categories_id_seq OWNED BY security_categories.id;
 
+CREATE TABLE security_finding_enrichments (
+    id bigint NOT NULL,
+    finding_uuid uuid NOT NULL,
+    project_id bigint NOT NULL,
+    cve_enrichment_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    cve text NOT NULL,
+    CONSTRAINT check_1f198c362f CHECK ((char_length(cve) <= 24))
+);
+
+CREATE SEQUENCE security_finding_enrichments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_finding_enrichments_id_seq OWNED BY security_finding_enrichments.id;
+
 CREATE TABLE security_finding_token_statuses (
     security_finding_id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -33472,6 +33492,8 @@ ALTER TABLE ONLY security_attributes ALTER COLUMN id SET DEFAULT nextval('securi
 
 ALTER TABLE ONLY security_categories ALTER COLUMN id SET DEFAULT nextval('security_categories_id_seq'::regclass);
 
+ALTER TABLE ONLY security_finding_enrichments ALTER COLUMN id SET DEFAULT nextval('security_finding_enrichments_id_seq'::regclass);
+
 ALTER TABLE ONLY security_findings ALTER COLUMN id SET DEFAULT nextval('security_findings_id_seq'::regclass);
 
 ALTER TABLE ONLY security_inventory_filters ALTER COLUMN id SET DEFAULT nextval('security_inventory_filters_id_seq'::regclass);
@@ -37265,6 +37287,9 @@ ALTER TABLE ONLY security_attributes
 
 ALTER TABLE ONLY security_categories
     ADD CONSTRAINT security_categories_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY security_finding_enrichments
+    ADD CONSTRAINT security_finding_enrichments_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY security_finding_token_statuses
     ADD CONSTRAINT security_finding_token_statuses_pkey PRIMARY KEY (security_finding_id);
@@ -44698,6 +44723,14 @@ CREATE UNIQUE INDEX index_scim_identities_on_user_id_and_group_id ON scim_identi
 CREATE UNIQUE INDEX index_scim_oauth_access_tokens_on_group_id_and_token_encrypted ON scim_oauth_access_tokens USING btree (group_id, token_encrypted);
 
 CREATE INDEX index_scim_oauth_access_tokens_on_organization_id ON scim_oauth_access_tokens USING btree (organization_id);
+
+CREATE INDEX index_sec_finding_enrichments_on_created_at ON security_finding_enrichments USING btree (created_at);
+
+CREATE INDEX index_sec_finding_enrichments_on_cve_enrichment_id ON security_finding_enrichments USING btree (cve_enrichment_id);
+
+CREATE UNIQUE INDEX index_sec_finding_enrichments_on_finding_and_cve ON security_finding_enrichments USING btree (finding_uuid, cve);
+
+CREATE INDEX index_sec_finding_enrichments_on_project_id ON security_finding_enrichments USING btree (project_id);
 
 CREATE INDEX index_secret_rotation_infos_on_next_reminder_at ON secret_rotation_infos USING btree (next_reminder_at);
 

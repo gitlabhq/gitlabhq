@@ -115,7 +115,7 @@ module Authz
     end
 
     def visible_result?(resource)
-      return true unless resource.respond_to?(:to_ability_name) && DeclarativePolicy.has_policy?(resource)
+      return false unless resource.respond_to?(:to_ability_name) && DeclarativePolicy.has_policy?(resource)
 
       Ability.allowed?(user, :"read_#{resource.to_ability_name}", resource)
     end

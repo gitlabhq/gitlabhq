@@ -321,9 +321,9 @@ RSpec.describe Authz::RedactionService, feature_category: :permissions do
         })
       end
 
-      it 'allows access for resources without to_ability_name' do
+      it 'denies access for resources without to_ability_name (fail safe)' do
         result = service.execute
-        expect(result).to eq({ 'issues' => { 999 => true } })
+        expect(result).to eq({ 'issues' => { 999 => false } })
       end
     end
 
@@ -341,9 +341,9 @@ RSpec.describe Authz::RedactionService, feature_category: :permissions do
         allow(DeclarativePolicy).to receive(:has_policy?).with(object_without_policy).and_return(false)
       end
 
-      it 'allows access for resources without policy' do
+      it 'denies access for resources without policy (fail safe)' do
         result = service.execute
-        expect(result).to eq({ 'issues' => { 888 => true } })
+        expect(result).to eq({ 'issues' => { 888 => false } })
       end
     end
   end

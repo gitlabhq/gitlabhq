@@ -48,58 +48,6 @@ RSpec.describe Tooling::Danger::GitlabSchemaValidationSuggestion, feature_catego
     end
   end
 
-  context 'for discouraging the use of gitlab_main_clusterwide schema' do
-    let(:schema) { 'gitlab_main_clusterwide' }
-
-    context 'when the file path matches' do
-      it 'adds the comment' do
-        expected_comment = "\n#{described_class::SUGGESTION.chomp}"
-
-        expect(gitlab_schema_validation).to receive(:markdown).with(expected_comment, file: filename, line: 10)
-
-        gitlab_schema_validation.add_suggestions_on_using_clusterwide_schema
-      end
-    end
-
-    context 'when the file path does not match' do
-      let(:filename) { 'some_path/application_settings.yml' }
-
-      it_behaves_like 'does not add a comment'
-    end
-
-    context 'for EE' do
-      let(:filename) { 'ee/db/docs/application_settings.yml' }
-
-      it_behaves_like 'does not add a comment'
-    end
-
-    context 'for a deleted table' do
-      let(:filename) { 'db/docs/deleted_tables/application_settings.yml' }
-
-      it_behaves_like 'does not add a comment'
-    end
-  end
-
-  context 'on removing the gitlab_main_clusterwide schema' do
-    let(:file_diff) do
-      [
-        "+---",
-        "+table_name: application_settings",
-        "+classes:",
-        "+- ApplicationSetting",
-        "+feature_categories:",
-        "+- continuous_integration",
-        "+description: GitLab application settings",
-        "+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/8589b4e137f50293952923bb07e2814257d7784d",
-        "+milestone: '7.7'",
-        "-gitlab_schema: gitlab_main_clusterwide",
-        "+gitlab_schema: gitlab_main_org"
-      ]
-    end
-
-    it_behaves_like 'does not add a comment'
-  end
-
   context 'when a different schema is added' do
     let(:schema) { 'gitlab_main' }
 

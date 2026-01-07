@@ -27,7 +27,6 @@ module Gitlab
       # It maps table names prefixes to gitlab_schemas.
       # The order of keys matter. Prefixes that contain other prefixes should come first.
       IMPLICIT_GITLAB_SCHEMAS = {
-        '_test_gitlab_main_clusterwide_' => :gitlab_main_clusterwide,
         '_test_gitlab_main_cell_' => :gitlab_main_cell,
         '_test_gitlab_main_org_' => :gitlab_main_org,
         '_test_gitlab_main_' => :gitlab_main,

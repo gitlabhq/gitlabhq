@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
     allow(Gitlab::Database::LockWritesManager).to receive(:new).with(any_args).and_return(default_lock_writes_manager)
     # Limiting the scope of the tests to a subset of the database tables
     allow(Gitlab::Database::GitlabSchema).to receive(:tables_to_schema).and_return({
-      'application_setttings' => :gitlab_main_clusterwide,
+      'application_setttings' => :gitlab_main_user,
       'projects' => :gitlab_main,
       'zoekt_tasks' => :gitlab_main,
       'ci_builds' => :gitlab_ci,
@@ -197,7 +197,7 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
 
       it_behaves_like 'unlock tables', :gitlab_main, 'main'
       it_behaves_like 'unlock tables', :gitlab_ci, 'main'
-      it_behaves_like 'unlock tables', :gitlab_main_clusterwide, 'main'
+      it_behaves_like 'unlock tables', :gitlab_main_user, 'main'
       it_behaves_like 'unlock tables', :gitlab_shared, 'main'
       it_behaves_like 'unlock tables', :gitlab_internal, 'main'
     end
@@ -227,9 +227,9 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
 
       it_behaves_like 'lock tables', :gitlab_ci, 'main'
       it_behaves_like 'lock tables', :gitlab_main, 'ci'
-      it_behaves_like 'lock tables', :gitlab_main_clusterwide, 'ci'
+      it_behaves_like 'lock tables', :gitlab_main_user, 'ci'
 
-      it_behaves_like 'unlock tables', :gitlab_main_clusterwide, 'main'
+      it_behaves_like 'unlock tables', :gitlab_main_user, 'main'
       it_behaves_like 'unlock tables', :gitlab_main, 'main'
       it_behaves_like 'unlock tables', :gitlab_ci, 'ci'
       it_behaves_like 'unlock tables', :gitlab_shared, 'main'
@@ -250,7 +250,7 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
 
         it_behaves_like 'lock tables', :gitlab_ci, 'main'
 
-        it_behaves_like 'unlock tables', :gitlab_main_clusterwide, 'main'
+        it_behaves_like 'unlock tables', :gitlab_main_user, 'main'
         it_behaves_like 'unlock tables', :gitlab_main, 'main'
         it_behaves_like 'unlock tables', :gitlab_shared, 'main'
         it_behaves_like 'unlock tables', :gitlab_internal, 'main'

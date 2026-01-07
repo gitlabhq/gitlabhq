@@ -61938,7 +61938,7 @@ definitions:
       milestone_id:
         type: integer
         format: int32
-        description: The global ID of a milestone to assign the merge reques to.
+        description: The global ID of a milestone to assign the merge request to.
       remove_source_branch:
         type: boolean
         description: Flag indicating if a merge request should remove the source branch
@@ -62384,7 +62384,7 @@ definitions:
       milestone_id:
         type: integer
         format: int32
-        description: The global ID of a milestone to assign the merge reques to.
+        description: The global ID of a milestone to assign the merge request to.
       remove_source_branch:
         type: boolean
         description: Flag indicating if a merge request should remove the source branch

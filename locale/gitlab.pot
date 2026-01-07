@@ -11430,7 +11430,7 @@ msgstr ""
 msgid "BillingPlans|You have successfully started an Ultimate and GitLab Duo Enterprise trial that will expire on %{exp_date}. To give members access to new GitLab Duo Enterprise features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Enterprise seats."
 msgstr ""
 
-msgid "BillingPlans|Your group is on %{planName}"
+msgid "BillingPlans|Your %{platform} is on %{planName}"
 msgstr ""
 
 msgid "BillingPlans|a trial of Ultimate + Duo Enterprise"
@@ -11440,6 +11440,12 @@ msgid "BillingPlans|billed annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|group"
+msgstr ""
+
+msgid "BillingPlans|groups"
+msgstr ""
+
+msgid "BillingPlans|instance"
 msgstr ""
 
 msgid "BillingPlans|monthly"
@@ -11452,6 +11458,12 @@ msgid "BillingPlans|per user"
 msgstr ""
 
 msgid "BillingPlans|per user/month,"
+msgstr ""
+
+msgid "BillingPlans|projects"
+msgstr ""
+
+msgid "BillingPlans|users"
 msgstr ""
 
 msgid "BillingPlan|Upgrade"
@@ -62110,6 +62122,9 @@ msgid "SecurityOrchestration|The schedule is snoozed until %{until} for reason: 
 msgstr ""
 
 msgid "SecurityOrchestration|The schedule is snoozed until %{until}."
+msgstr ""
+
+msgid "SecurityOrchestration|The security findings remain in their current status and are still visible, but will no longer block the merge request."
 msgstr ""
 
 msgid "SecurityOrchestration|Then automatically %{boldStart}dismiss%{boldEnd} these vulnerabilities with the %{reason} reason."

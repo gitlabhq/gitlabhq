@@ -190,6 +190,53 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         )
       end
 
+      it 'returns create_merge_request tool with correct structure' do
+        tools = json_response['result']['tools']
+        create_mr_tool = tools.find { |tool| tool['name'] == 'create_merge_request' }
+
+        expect(create_mr_tool).to include(
+          'name' => 'create_merge_request',
+          'description' => 'Create merge request'
+        )
+        expect(create_mr_tool['inputSchema']).to include(
+          'type' => 'object',
+          'required' => %w[id title source_branch target_branch],
+          'additionalProperties' => false
+        )
+        expect(create_mr_tool['inputSchema']['properties']).to include(
+          'id' => { 'type' => 'string', 'description' => 'The ID or URL-encoded path of the project.' },
+          'title' => { 'type' => 'string', 'description' => 'The title of the merge request.' },
+          'source_branch' => { 'type' => 'string', 'description' => 'The source branch.' },
+          'target_branch' => { 'type' => 'string', 'description' => 'The target branch.' }
+        )
+        properties = create_mr_tool['inputSchema']['properties']
+        expect(properties['assignee_ids']).to include(
+          'type' => 'array',
+          'description' => 'The IDs of the users to assign the merge request to, as a comma-separated list. ' \
+            'Set to 0 or provide an empty value to unassign all assignees.'
+        )
+        expect(properties['assignee_ids']['items']).to include('type' => 'integer')
+        expect(properties['reviewer_ids']).to include(
+          'type' => 'array',
+          'description' => 'The IDs of the users to review the merge request, as a comma-separated list. ' \
+            'Set to 0 or provide an empty value to unassign all reviewers.'
+        )
+        expect(properties['reviewer_ids']['items']).to include('type' => 'integer')
+        expect(properties['description']).to include(
+          'type' => 'string',
+          'description' => 'Description of the merge request. Limited to 1,048,576 characters.'
+        )
+        expect(properties['labels']).to include({
+          'description' => 'Comma-separated label names for a merge request. ' \
+            'Set to an empty string to unassign all labels.',
+          'type' => 'string'
+        })
+        expect(properties['milestone_id']).to include(
+          'type' => 'integer',
+          'description' => 'The global ID of a milestone to assign the merge request to.'
+        )
+      end
+
       it 'returns get_merge_request tool with correct structure' do
         tools = json_response['result']['tools']
         get_merge_request_tool = tools.find { |tool| tool['name'] == 'get_merge_request' }
