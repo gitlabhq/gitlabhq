@@ -81,7 +81,11 @@ export default {
           data-css-area="user"
         >
           <div class="gl-ml-3 gl-grid gl-items-center gl-leading-normal" data-testid="username">
-            <user-name-with-status :name="user.name" :availability="userAvailability(user)" />
+            <user-name-with-status
+              :name="user.name"
+              :availability="userAvailability(user)"
+              :composite-identity-enforced="user.compositeIdentityEnforced"
+            />
           </div>
         </assignee-avatar-link>
       </div>

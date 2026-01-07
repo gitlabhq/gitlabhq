@@ -15,6 +15,7 @@ query alertAssignees(
         nodes {
           ...User
           ...UserAvailability
+          compositeIdentityEnforced @gl_introduced(version: "18.8.0")
         }
       }
     }

@@ -2,8 +2,8 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
-description: Configure GitLab Secret Detection with centralized custom rulesets to automatically detect PII and plaintext passwords across all projects in a top-level group.
-title: Secret Detection
+description: Configure GitLab secret detection with centralized custom rulesets to automatically detect PII and plaintext passwords across all projects in a top-level group.
+title: Secret detection
 ---
 
 {{< details >}}
@@ -24,17 +24,17 @@ title: Secret Detection
 
 - GitLab Ultimate tier
 - Administrator access to your GitLab instance or group
-- [Secret Detection](../../user/application_security/secret_detection/_index.md) enabled for your projects
+- [Secret detection](../../user/application_security/secret_detection/_index.md) enabled for your projects
 
-## Configure Secret Detection Custom Rules
+## Configure secret detection custom rules
 
-This guide helps you implement Secret Detection Policy at the global level. This solution extends the default secret detection rules to include the detection of PII data elements like Social Security Number and passwords in clear text. The rule extension is considered as the remote ruleset.
+This guide helps you implement secret detection policy at the global level. This solution extends the default secret detection rules to include the detection of PII data elements like Social Security Number and passwords in clear text. The rule extension is considered as the remote ruleset.
 
 ### Configure Custom Ruleset
 
 You can set up custom ruleset with the following steps
 
-1. Create a top level group `Secret Detection`
+1. Create a top-level group `Secret Detection`
 1. From your downloaded component, copy the project `Secret Detection Custom Ruleset` into your newly created `Secret Detection` group.
 
 This custom ruleset extends GitLab pre-build rules. The extension can detect and alert secrets including:
@@ -92,7 +92,7 @@ To set the access and authentication, follow these steps:
 
 This guide covers the steps to configure the policy to run secret detection for all projects using centralized custom ruleset.
 
-### Configure Secret Detection Policy
+### Configure secret detection policy
 
 To run secret detection automatically in the pipeline as the enforced global policy,
 set up the policy at the highest level (in this case, for the top-level group).
@@ -103,7 +103,7 @@ To create the new secret detection policy:
 1. Select **Scan execution policy**.
 1. Configure the policy: Give the policy name `Secret Detection Policy` and enter a description and select `Secret Detection` scan
 1. Set the **Policy scope** by selecting either "All projects in this group" (and optionally set exceptions) or "Specific projects" (and select the projects from the dropdown).
-1. Under the **Actions** section, "Secret Detection" is shown as default.
+1. Under the **Actions** section, secret detection is shown as default.
 1. Under the **Conditions** section, you can optionally change "Triggers:" to "Schedules:" if you want to run the scan on a schedule instead of at every commit.
 1. Setup access to the custom ruleset: add CI variables with the value of the bot user, group variable and the URL of the custom ruleset project.
 

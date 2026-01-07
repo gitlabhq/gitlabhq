@@ -28,6 +28,11 @@ export default {
       required: false,
       default: '',
     },
+    compositeIdentityEnforced: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     hasPronouns() {
@@ -35,6 +40,9 @@ export default {
     },
     isBusy() {
       return isUserBusy(this.availability);
+    },
+    isAgent() {
+      return this.compositeIdentityEnforced;
     },
   },
 };
@@ -49,10 +57,18 @@ export default {
         ></template
       >
       <template #badge="{ content }">
-        <gl-badge v-if="isBusy" variant="warning" class="gl-ml-2">
+        <gl-badge v-if="isBusy" variant="warning" class="gl-ml-2" data-testid="busy-badge">
           {{ content }}
         </gl-badge>
       </template>
     </gl-sprintf>
+    <gl-badge
+      v-if="isAgent"
+      variant="neutral"
+      class="gl-ml-2"
+      data-testid="user-name-with-status-agent-badge"
+    >
+      {{ __('AI') }}
+    </gl-badge>
   </span>
 </template>

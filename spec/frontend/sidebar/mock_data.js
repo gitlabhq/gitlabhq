@@ -438,6 +438,7 @@ export const issuableQueryResponse = {
           webPath: '/root',
           status: null,
           type: userTypes.human,
+          compositeIdentityEnforced: false,
         },
         assignees: {
           nodes: [
@@ -452,6 +453,7 @@ export const issuableQueryResponse = {
               webPath: '/franc',
               status: null,
               type: userTypes.human,
+              compositeIdentityEnforced: false,
             },
           ],
         },
@@ -583,6 +585,7 @@ export const updateIssueAssigneesMutationResponse = {
               webPath: '/root',
               status: null,
               type: userTypes.human,
+              compositeIdentityEnforced: false,
             },
           ],
           __typename: 'UserConnection',
@@ -615,6 +618,7 @@ export const subscriptionResponse = {
             webUrl: '/root',
             webPath: '/root',
             status: null,
+            compositeIdentityEnforced: false,
           },
         ],
       },
@@ -896,6 +900,7 @@ export const mrAssigneesQueryResponse = {
           webPath: '/root',
           status: null,
           type: userTypes.human,
+          compositeIdentityEnforced: false,
           mergeRequestInteraction: {
             canMerge: true,
           },

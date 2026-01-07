@@ -9,7 +9,7 @@ This document explains how to develop [CI/CD components](../../ci/components/_in
 
 The location for all official GitLab component projects is the [`gitlab.com/components`](https://gitlab.com/components) group.
 This group contains all components that are designed to be generic, served to all GitLab users, and maintained by GitLab.
-For example: SAST, Secret Detection and Code Quality components.
+For example: SAST, secret detection and code quality components.
 A component project can initially be created under a different group (for example `gitlab-org`)
 but it needs to be moved into the `components` group before the first version gets published to the catalog. All projects under [`gitlab.com/components`](https://gitlab.com/components) group must be public
 
@@ -28,7 +28,7 @@ Components must be kept up to date, monitored for security vulnerabilities, and 
 Each component project must have a set of owners and maintainers that are also domain experts.
 Experts can be from any department in GitLab, from Engineering to Support, Customer Success, and Developer Relations.
 
-If a component is related to a GitLab feature (for example Secret Detection), the team that owns the
+If a component is related to a GitLab feature (for example secret detection), the team that owns the
 feature category or is most closely related to it should maintain the project.
 In this case, the Engineering Manager for the feature category is assigned as the project owner.
 

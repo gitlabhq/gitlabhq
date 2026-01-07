@@ -890,7 +890,7 @@ No other tokens should have configurable token prefixes.
 Add the new prefix to:
 
 - [`gitlab/app/assets/javascripts/lib/utils/secret_detection.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/utils/secret_detection.js)
-- The [GitLab Secret Detection rules](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules)
+- The [GitLab secret detection rules](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules)
 - GitLab [secrets SAST analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)
 - [Tokinator](https://gitlab.com/gitlab-com/gl-security/appsec/tokinator/-/blob/main/CONTRIBUTING.md?ref_type=heads) (internal tool / team members only)
 - [Token Overview](../../security/tokens/_index.md) documentation

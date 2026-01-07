@@ -3,9 +3,14 @@
 module API
   class Discussions < ::API::Base
     include PaginationParams
+    include APIGuard
 
     helpers ::API::Helpers::NotesHelpers
     helpers ::RendersNotes
+
+    allow_access_with_scope :ai_workflows, if: ->(request) do
+      request.get? || request.head? || request.post?
+    end
 
     before { authenticate! }
 
@@ -167,6 +172,7 @@ module API
           noteable = find_noteable(noteable_type, params[:noteable_id])
           notes = readable_discussion_notes(noteable, params[:discussion_id])
           first_note = notes.first
+          validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
 
           break not_found!("Discussion") if notes.empty?
 
@@ -178,9 +184,14 @@ module API
             note: params[:body],
             type: 'DiscussionNote',
             in_reply_to_discussion_id: params[:discussion_id],
-            created_at: params[:created_at]
+            created_at: params[:created_at],
+            scope_validator: validator
           }
-          note = create_note(noteable, opts)
+          begin
+            note = create_note(noteable, opts)
+          rescue QuickActions::InterpretService::QuickActionsNotAllowedError => error
+            forbidden!(error.message)
+          end
 
           process_note_creation_result(note) do
             present note, with: Entities::Note

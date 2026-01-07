@@ -23,6 +23,7 @@ export default () => {
       shouldRenderVirtualRegistriesSetting: parseBoolean(
         el.dataset.shouldRenderVirtualRegistriesSetting,
       ),
+      virtualRegistryCleanupPolicyPath: el.dataset.virtualRegistryCleanupPolicyPath,
     },
     render(createElement) {
       return createElement(SettingsApp);

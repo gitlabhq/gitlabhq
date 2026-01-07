@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags, feature_category: :sc
   end
 
   before do
-    allow(cop).to receive(:defined_feature_flags).and_return(defined_feature_flags)
+    allow(RuboCop::FeatureFlags).to receive(:all_feature_flag_names).and_return(defined_feature_flags)
     allow(cop).to receive(:usage_data_counters_known_event_feature_flags).and_return([])
     described_class.feature_flags_already_tracked = false
   end

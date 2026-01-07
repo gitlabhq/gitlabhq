@@ -143,7 +143,7 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
   end
 
   describe 'fields with :ai_workflows scope' do
-    %w[author body createdAt id].each do |field_name|
+    %w[author body createdAt discussion id].each do |field_name|
       it "includes :ai_workflows scope for the #{field_name} field" do
         field = described_class.fields[field_name]
         expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)

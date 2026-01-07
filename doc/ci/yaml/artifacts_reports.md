@@ -407,7 +407,7 @@ For more information, see:
 ## `artifacts:reports:secret_detection`
 
 The `secret-detection` report collects [detected secrets](../../user/application_security/secret_detection/pipeline/_index.md).
-The collected Secret Detection report is uploaded to GitLab.
+The collected secret detection report is uploaded to GitLab.
 
 GitLab can display the results of one or more reports in:
 

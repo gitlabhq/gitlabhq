@@ -52,7 +52,7 @@ export default {
   },
   i18n: {
     busy: __('Busy'),
-    agent: __('Agent'),
+    agent: __('AI'),
   },
 };
 </script>
@@ -81,7 +81,7 @@ export default {
       <gl-badge v-if="isBusy" variant="warning" data-testid="busy-badge">
         {{ $options.i18n.busy }}
       </gl-badge>
-      <gl-badge v-if="isAgent" variant="neutral" data-testid="agent-badge">
+      <gl-badge v-if="isAgent" variant="neutral" data-testid="sidebar-participant-agent-badge">
         {{ $options.i18n.agent }}
       </gl-badge>
     </div>

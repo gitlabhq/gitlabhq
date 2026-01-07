@@ -10,7 +10,7 @@ title: GitLab Duo Self-Hosted
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
-- Offering: GitLab Self-Managed, GitLab Dedicated for Government
+- Offering: GitLab Self-Managed
 
 {{< /details >}}
 
@@ -22,7 +22,6 @@ title: GitLab Duo Self-Hosted
 - Feature flag `ai_custom_model` removed in GitLab 17.8.
 - Generally available in GitLab 17.9.
 - Changed to include Premium in GitLab 18.0.
-- [Enabled on GitLab Dedicated for Government](https://gitlab.com/gitlab-org/gitlab/-/issues/569874) in GitLab 18.5.
 
 {{< /history >}}
 

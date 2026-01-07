@@ -1,7 +1,7 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlCollapsibleListbox } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
@@ -20,7 +20,12 @@ let setReviewersMutationMock;
 
 Vue.use(VueApollo);
 
-const createMockUser = ({ id = 1, name = 'Administrator', username = 'root' } = {}) => ({
+const createMockUser = ({
+  id = 1,
+  name = 'Administrator',
+  username = 'root',
+  compositeIdentityEnforced = false,
+} = {}) => ({
   __typename: 'UserCore',
   id: `gid://gitlab/User/${id}`,
   avatarUrl:
@@ -28,6 +33,7 @@ const createMockUser = ({ id = 1, name = 'Administrator', username = 'root' } = 
   webUrl: `/${username}`,
   webPath: `/${username}`,
   status: null,
+  compositeIdentityEnforced,
   mergeRequestInteraction: {
     canMerge: true,
     applicableApprovalRules: [],
@@ -36,11 +42,12 @@ const createMockUser = ({ id = 1, name = 'Administrator', username = 'root' } = 
   name,
 });
 
-function createComponent(
+function createComponent({
   adminMergeRequest = true,
   propsData = { selectedReviewers: [createMockUser()] },
   customUsers = null,
-) {
+  mountFn = shallowMount,
+} = {}) {
   const defaultUsers = [
     createMockUser(),
     createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
@@ -83,7 +90,7 @@ function createComponent(
     },
   );
 
-  wrapper = shallowMount(ReviewerDropdown, {
+  wrapper = mountFn(ReviewerDropdown, {
     apolloProvider,
     propsData,
     provide: {
@@ -100,7 +107,7 @@ const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
 describe('Reviewer dropdown component', () => {
   describe('when user does not have permission', () => {
     beforeEach(async () => {
-      createComponent(false);
+      createComponent({ adminMergeRequest: false });
 
       await waitForPromises();
     });
@@ -112,7 +119,7 @@ describe('Reviewer dropdown component', () => {
 
   describe('when user has permission', () => {
     beforeEach(async () => {
-      createComponent(true);
+      createComponent({ adminMergeRequest: true });
 
       await waitForPromises();
     });
@@ -176,7 +183,7 @@ describe('Reviewer dropdown component', () => {
 
     describe('with the user not already selected', () => {
       beforeEach(async () => {
-        createComponent(true, {});
+        createComponent({ adminMergeRequest: true, propsData: {} });
 
         await waitForPromises();
       });
@@ -225,11 +232,15 @@ describe('Reviewer dropdown component', () => {
       describe('when current user is not selected', () => {
         describe('when current user is in the first page of query results', () => {
           beforeEach(async () => {
-            createComponent(true, { selectedReviewers: [] }, [
-              createMockUser(),
-              createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
-              createMockUser({ id: 3, name: 'Current User', username: 'currentuser' }),
-            ]);
+            createComponent({
+              adminMergeRequest: true,
+              propsData: { selectedReviewers: [] },
+              customUsers: [
+                createMockUser(),
+                createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+                createMockUser({ id: 3, name: 'Current User', username: 'currentuser' }),
+              ],
+            });
             await waitForPromises();
 
             findDropdown().vm.$emit('shown');
@@ -250,10 +261,14 @@ describe('Reviewer dropdown component', () => {
 
         describe('when current user is not in the first page of query results', () => {
           beforeEach(async () => {
-            createComponent(true, { selectedReviewers: [] }, [
-              createMockUser(),
-              createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
-            ]);
+            createComponent({
+              adminMergeRequest: true,
+              propsData: { selectedReviewers: [] },
+              customUsers: [
+                createMockUser(),
+                createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+              ],
+            });
             await waitForPromises();
 
             findDropdown().vm.$emit('shown');
@@ -281,18 +296,18 @@ describe('Reviewer dropdown component', () => {
             username: 'currentuser',
           });
 
-          createComponent(
-            true,
-            {
+          createComponent({
+            adminMergeRequest: true,
+            propsData: {
               selectedReviewers: [currentUser],
               eligibleReviewers: [currentUser],
             },
-            [
+            customUsers: [
               createMockUser(),
               createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
               currentUser,
             ],
-          );
+          });
           await waitForPromises();
 
           findDropdown().vm.$emit('shown');
@@ -316,10 +331,14 @@ describe('Reviewer dropdown component', () => {
 
       describe('when searching', () => {
         beforeEach(async () => {
-          createComponent(true, { selectedReviewers: [] }, [
-            createMockUser(),
-            createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
-          ]);
+          createComponent({
+            adminMergeRequest: true,
+            propsData: { selectedReviewers: [] },
+            customUsers: [
+              createMockUser(),
+              createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+            ],
+          });
           await waitForPromises();
 
           autocompleteUsersMock.mockResolvedValueOnce({
@@ -349,11 +368,15 @@ describe('Reviewer dropdown component', () => {
 
       describe('when current user is already first', () => {
         beforeEach(async () => {
-          createComponent(true, { selectedReviewers: [] }, [
-            createMockUser({ id: 3, name: 'Current User', username: 'currentuser' }),
-            createMockUser(),
-            createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
-          ]);
+          createComponent({
+            adminMergeRequest: true,
+            propsData: { selectedReviewers: [] },
+            customUsers: [
+              createMockUser({ id: 3, name: 'Current User', username: 'currentuser' }),
+              createMockUser(),
+              createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+            ],
+          });
           await waitForPromises();
 
           findDropdown().vm.$emit('shown');
@@ -390,8 +413,11 @@ describe('Reviewer dropdown component', () => {
       let trackEventSpy;
 
       beforeEach(async () => {
-        createComponent(true, {
-          users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+        createComponent({
+          adminMergeRequest: true,
+          propsData: {
+            users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+          },
         });
 
         await waitForPromises();
@@ -417,9 +443,12 @@ describe('Reviewer dropdown component', () => {
       });
 
       it('tracks which position any selected users were in - discounting already selected reviewers - as a telemetry event', async () => {
-        createComponent(true, {
-          users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
-          selectedReviewers: [createMockUser()],
+        createComponent({
+          adminMergeRequest: true,
+          propsData: {
+            users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+            selectedReviewers: [createMockUser()],
+          },
         });
 
         await waitForPromises();
@@ -473,9 +502,15 @@ describe('Reviewer dropdown component', () => {
 
       describe('simple sidebar usage (without using the reviewers panel)', () => {
         it('sends the "simple sidebar" tracking event when reviewers are added', async () => {
-          createComponent(true, {
-            users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
-            usage: 'simple',
+          createComponent({
+            adminMergeRequest: true,
+            propsData: {
+              users: [
+                createMockUser(),
+                createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+              ],
+              usage: 'simple',
+            },
           });
 
           await waitForPromises();
@@ -493,10 +528,16 @@ describe('Reviewer dropdown component', () => {
         });
 
         it('does not send the "simple sidebar" tracking event when reviewers are removed', async () => {
-          createComponent(true, {
-            users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
-            selectedReviewers: [createMockUser()],
-            usage: 'simple',
+          createComponent({
+            adminMergeRequest: true,
+            propsData: {
+              users: [
+                createMockUser(),
+                createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+              ],
+              selectedReviewers: [createMockUser()],
+              usage: 'simple',
+            },
           });
 
           await waitForPromises();
@@ -514,13 +555,19 @@ describe('Reviewer dropdown component', () => {
         });
 
         it('tracks reviewer removal', async () => {
-          createComponent(true, {
-            users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
-            selectedReviewers: [
-              createMockUser(),
-              createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
-            ],
-            usage: 'simple',
+          createComponent({
+            adminMergeRequest: true,
+            propsData: {
+              users: [
+                createMockUser(),
+                createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+              ],
+              selectedReviewers: [
+                createMockUser(),
+                createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+              ],
+              usage: 'simple',
+            },
           });
 
           await waitForPromises();
@@ -541,12 +588,15 @@ describe('Reviewer dropdown component', () => {
       });
 
       it('tracks reviewer removal events', async () => {
-        createComponent(true, {
-          users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
-          selectedReviewers: [
-            createMockUser(),
-            createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
-          ],
+        createComponent({
+          adminMergeRequest: true,
+          propsData: {
+            users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+            selectedReviewers: [
+              createMockUser(),
+              createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+            ],
+          },
         });
 
         await waitForPromises();
@@ -566,12 +616,15 @@ describe('Reviewer dropdown component', () => {
       });
 
       it('tracks multiple reviewer removals', async () => {
-        createComponent(true, {
-          users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
-          selectedReviewers: [
-            createMockUser(),
-            createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
-          ],
+        createComponent({
+          adminMergeRequest: true,
+          propsData: {
+            users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+            selectedReviewers: [
+              createMockUser(),
+              createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+            ],
+          },
         });
 
         await waitForPromises();
@@ -592,9 +645,12 @@ describe('Reviewer dropdown component', () => {
       });
 
       it('does not track removal events when no reviewers are removed', async () => {
-        createComponent(true, {
-          users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
-          selectedReviewers: [createMockUser()],
+        createComponent({
+          adminMergeRequest: true,
+          propsData: {
+            users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+            selectedReviewers: [createMockUser()],
+          },
         });
 
         await waitForPromises();
@@ -613,8 +669,11 @@ describe('Reviewer dropdown component', () => {
 
       describe('"suggested" historical position', () => {
         it('reports the correct prior suggested position', async () => {
-          createComponent(true, {
-            selectedReviewers: [],
+          createComponent({
+            adminMergeRequest: true,
+            propsData: {
+              selectedReviewers: [],
+            },
           });
 
           await waitForPromises();
@@ -640,8 +699,11 @@ describe('Reviewer dropdown component', () => {
         });
 
         it('reports the correct prior suggested position - discounting already selected reviewers', async () => {
-          createComponent(true, {
-            selectedReviewers: [createMockUser()],
+          createComponent({
+            adminMergeRequest: true,
+            propsData: {
+              selectedReviewers: [createMockUser()],
+            },
           });
 
           await waitForPromises();
@@ -667,8 +729,11 @@ describe('Reviewer dropdown component', () => {
         });
 
         it("reports 0 as the prior suggested position of the reviewer if they weren't in the initial suggested list", async () => {
-          createComponent(true, {
-            selectedReviewers: [],
+          createComponent({
+            adminMergeRequest: true,
+            propsData: {
+              selectedReviewers: [],
+            },
           });
 
           await waitForPromises();
@@ -710,7 +775,10 @@ describe('Reviewer dropdown component', () => {
     describe('multipleSelectionEnabled prop', () => {
       describe('when multipleSelectionEnabled is false (default)', () => {
         beforeEach(async () => {
-          createComponent(true, { selectedReviewers: [createMockUser()] });
+          createComponent({
+            adminMergeRequest: true,
+            propsData: { selectedReviewers: [createMockUser()] },
+          });
           await waitForPromises();
         });
 
@@ -729,9 +797,12 @@ describe('Reviewer dropdown component', () => {
 
       describe('when multipleSelectionEnabled is true', () => {
         beforeEach(async () => {
-          createComponent(true, {
-            selectedReviewers: [createMockUser()],
-            multipleSelectionEnabled: true,
+          createComponent({
+            adminMergeRequest: true,
+            propsData: {
+              selectedReviewers: [createMockUser()],
+              multipleSelectionEnabled: true,
+            },
           });
           await waitForPromises();
         });
@@ -749,11 +820,50 @@ describe('Reviewer dropdown component', () => {
         });
       });
     });
+
+    describe('compositeIdentityEnforced badge', () => {
+      it('renders AI badge for users with compositeIdentityEnforced', async () => {
+        createComponent({
+          adminMergeRequest: true,
+          propsData: {},
+          customUsers: [
+            createMockUser({ id: 1, compositeIdentityEnforced: true }),
+            createMockUser({
+              id: 2,
+              name: 'Test User',
+              username: 'testuser',
+              compositeIdentityEnforced: false,
+            }),
+          ],
+          mountFn: (component, options) =>
+            mount(component, {
+              ...options,
+              stubs: {
+                'gl-emoji': true,
+              },
+            }),
+        });
+
+        await waitForPromises();
+
+        findDropdown().vm.$emit('shown');
+        await waitForPromises();
+        await nextTick();
+
+        // Find the badge in the rendered list of reviewers
+        const badges = wrapper.findAll('[data-testid="reviewer-agent-badge"]');
+        expect(badges).toHaveLength(1);
+        expect(badges.at(0).text()).toBe('AI');
+      });
+    });
   });
 
   describe('when users are passed as a prop', () => {
     beforeEach(async () => {
-      createComponent(true, { users: [createMockUser()] });
+      createComponent({
+        adminMergeRequest: true,
+        propsData: { users: [createMockUser()] },
+      });
 
       await waitForPromises();
     });

@@ -176,7 +176,7 @@ The jobs are separated into stages:
     ([Auto dependency scanning](../stages.md#auto-dependency-scanning))
   - Jobs suffixed with `-sast` run static analysis on the current code to check for potential
     security issues, and are allowed to fail ([Auto SAST](../stages.md#auto-sast))
-  - The `secret-detection` job checks for leaked secrets and is allowed to fail ([Auto Secret Detection](../stages.md#auto-secret-detection))
+  - The `secret-detection` job checks for leaked secrets and is allowed to fail ([auto secret detection](../stages.md#auto-secret-detection))
 
 - **Review** - Pipelines on the default branch include this stage with a `dast_environment_deploy` job.
   To learn more, see [dynamic application security testing (DAST)](../../../user/application_security/dast/_index.md).

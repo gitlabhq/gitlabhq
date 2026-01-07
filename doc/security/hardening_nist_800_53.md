@@ -607,9 +607,9 @@ application code include:
 
 - [Static application security testing (SAST)](../user/application_security/sast/_index.md)
 
-- [Secret Detection](../user/application_security/secret_detection/_index.md)
+- [Secret detection](../user/application_security/secret_detection/_index.md)
 
-- [API Security](../user/application_security/api_security/_index.md)
+- [API security](../user/application_security/api_security/_index.md)
 
 #### Patch Management
 

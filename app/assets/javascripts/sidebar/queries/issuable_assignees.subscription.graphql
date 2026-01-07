@@ -7,6 +7,7 @@ subscription issuableAssigneesUpdated($issuableId: IssuableID!) {
       assignees {
         nodes {
           ...User
+          compositeIdentityEnforced @gl_introduced(version: "18.8.0")
           status {
             availability
           }

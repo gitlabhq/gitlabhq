@@ -195,16 +195,16 @@ warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
 For more information, see [SAST](../../user/application_security/sast/_index.md).
 
-## Auto Secret Detection
+## Auto secret detection
 
-Secret Detection uses the
-[Secret Detection Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/secrets) to run Secret Detection on the current code, and checks for leaked secrets.
+Secret detection uses the
+[secret detection Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/secrets) to scan the current code and check for leaked secrets.
 
 After creating the report, it's uploaded as an artifact which you can later
 download and evaluate. The merge request widget also displays any security
 warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
-For more information, see [Secret Detection](../../user/application_security/secret_detection/_index.md).
+For more information, see [secret detection](../../user/application_security/secret_detection/_index.md).
 
 ## Auto dependency scanning
 

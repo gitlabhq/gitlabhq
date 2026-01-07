@@ -6,15 +6,15 @@ title: Token Revocation API
 ---
 
 The Token Revocation API is an externally-deployed HTTP API that interfaces with GitLab
-to receive and revoke API tokens and other secrets detected by GitLab Secret Detection.
+to receive and revoke API tokens and other secrets detected by GitLab secret detection.
 See the [high-level architecture](../../user/application_security/secret_detection/automatic_response.md)
-to understand the Secret Detection post-processing and revocation flow.
+to understand the secret detection post-processing and revocation flow.
 
 GitLab.com uses the internally-maintained [Secret Revocation Service](https://gitlab.com/gitlab-com/gl-security/engineering-and-research/automation-team/secret-revocation-service)
 (team-members only) as its Token Revocation API. For GitLab Self-Managed, you can create
 your own API and configure GitLab to use it.
 
-## Implement a Token Revocation API for self-managed
+## Implement a Token Revocation API for GitLab Self-Managed
 
 GitLab Self-Managed instances interested in using the revocation capabilities must:
 

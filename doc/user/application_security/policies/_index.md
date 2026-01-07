@@ -83,7 +83,7 @@ subgroups and their projects), excluding the project with ID `64`.
 
 ```yaml
 - name: Enforce specified scans in every default branch pipeline
-  description: This policy enforces Secret Detection and SAST scans for the default branch
+  description: This policy enforces secret detection and SAST scans for the default branch
   enabled: true
   rules:
   - type: pipeline

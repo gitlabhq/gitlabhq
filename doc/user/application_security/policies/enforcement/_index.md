@@ -81,17 +81,17 @@ The following example illustrates two groups and their structure:
 - Security Policy Management
 - Security Policy Management - security policy project
   - SAST policy
-  - Secret Detection policy
+  - Secret detection policy
 
 Assuming no policies are enforced, consider the following examples:
 
 - If the "SAST" policy is enforced at group Alpha, the policy applies to both of Alpha's subgroups, Finance and
-  Engineering, and all their projects and subgroups. If the "Secret Detection" policy is enforced
+  Engineering, and all their projects and subgroups. If the secret detection policy is enforced
   also at subgroup "Accounts receiving", both policies apply to projects B and C. However, only the
   "SAST" policy applies to project A.
 - If the "SAST" policy is enforced at subgroup "Accounts receiving", it applies only to projects B
   and C. No policy applies to project A.
-- If the "Secret Detection" policy is enforced at project K, it applies only to project K. No other
+- If the secret detection policy is enforced at project K, it applies only to project K. No other
   subgroups or projects have a policy apply to them.
 
 #### Scope

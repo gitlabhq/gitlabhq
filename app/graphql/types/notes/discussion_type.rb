@@ -7,6 +7,10 @@ module Types
 
       authorize :read_note
 
+      def self.authorization_scopes
+        super + [:ai_workflows]
+      end
+
       implements Types::Notes::BaseDiscussionInterface
       expose_permissions ::Types::PermissionTypes::Notes::Discussion
 

@@ -518,7 +518,7 @@ directory at the root of the analyzer's repository. The `testdata` directory sho
 contain two subdirectories: `expect` and `reports`. The `reports` directory should
 contain sample SAST/DAST scanner reports which are passed into the `convert` function
 during the test setup. The `expect` directory should contain the expected GitLab Security Report
-that the `convert` returns. See Secret Detection for an
+that the `convert` returns. See secret detection for an
 [example](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/160424589ef1eed7b91b59484e019095bc7233bd/convert_test.go#L13-66).
 
 If the scanner report is small, less than 35 lines, then feel free to

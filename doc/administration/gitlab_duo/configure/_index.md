@@ -8,13 +8,13 @@ title: Configure GitLab Duo
 
 {{< details >}}
 
-- Offering: GitLab Self-Managed, GitLab Dedicated for Government
+- Offering: GitLab Self-Managed
 
 {{< /details >}}
 
 GitLab Duo is an AI-native assistant that helps you across the software development lifecycle.
 
-You can configure GitLab Duo on GitLab Self-Managed and GitLab Dedicated for Government.
+You can configure GitLab Duo on GitLab Self-Managed.
 
 ## GitLab Self-Managed
 
@@ -27,15 +27,6 @@ For GitLab Self-Managed, you can configure GitLab Duo to use:
   and cloud-based models for others.
 
 For more information, see [configure GitLab Duo on GitLab Self-Managed](gitlab_self_managed.md).
-
-## GitLab Dedicated for Government
-
-For GitLab Dedicated for Government, you must use
-GitLab Duo Self-Hosted with FedRAMP-approved models.
-The cloud-based AI Gateway and vendor models are not available for GitLab Dedicated for Government.
-
-For more information, see
-[configure GitLab Duo on GitLab Dedicated for Government](gitlab_dedicated_for_government.md).
 
 ## Related topics
 

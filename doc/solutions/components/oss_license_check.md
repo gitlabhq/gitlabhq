@@ -62,7 +62,7 @@ If you don't have a security policy project yet, you'll need to create one and t
 1. Enter a name for your policy (for example, "Dependency scanning policy").
 1. Enter a description (for example, "Enforces dependency scanning to get a list of OSS licenses used").
 1. Set the **Policy scope** by selecting either "All projects in this group" (and optionally set exceptions) or "Specific projects" (and select the projects from the dropdown).
-1. Under the **Actions** section, select "Dependency scanning" instead of "Secret Detection" (default).
+1. Under the **Actions** section, select **Dependency scanning** instead of **Secret Detection** (default).
 1. Under the **Conditions** section, you can optionally change "Triggers:" to "Schedules:" if you want to run the scan on a schedule instead of at every commit.
 1. Click **Create policy**.
 

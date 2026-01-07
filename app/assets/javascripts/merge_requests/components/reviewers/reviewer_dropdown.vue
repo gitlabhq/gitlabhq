@@ -1,6 +1,6 @@
 <script>
 import { debounce, difference } from 'lodash';
-import { GlCollapsibleListbox, GlButton, GlAvatar, GlIcon, GlSprintf } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlButton, GlAvatar, GlIcon, GlBadge, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -45,6 +45,7 @@ export default {
     GlButton,
     GlAvatar,
     GlIcon,
+    GlBadge,
     GlSprintf,
     InviteMembersTrigger,
   },
@@ -347,7 +348,7 @@ export default {
     <template #list-item="{ item }">
       <span class="gl-flex gl-items-center">
         <div class="gl-relative gl-mr-3">
-          <gl-avatar :size="32" :src="item.avatarUrl" :entity-name="item.value" />
+          <gl-avatar :size="32" :src="item.avatarUrl" :entity-name="item.value" :alt="item.value" />
           <gl-icon
             v-if="item.mergeRequestInteraction && !item.mergeRequestInteraction.canMerge"
             name="warning-solid"
@@ -355,9 +356,14 @@ export default {
             class="reviewer-merge-icon"
           />
         </div>
-        <span class="gl-flex gl-flex-col gl-gap-1">
+        <span class="gl-flex gl-min-w-0 gl-flex-col gl-gap-1">
           <span class="gl-whitespace-nowrap gl-font-bold">{{ item.text }}</span>
-          <span class="gl-text-subtle"> {{ item.secondaryText }}</span>
+          <span class="gl-break-words gl-text-subtle"> {{ item.secondaryText }}</span>
+          <div v-if="item.compositeIdentityEnforced" class="gl-mt-2">
+            <gl-badge variant="neutral" size="sm" data-testid="reviewer-agent-badge">
+              {{ __('AI') }}
+            </gl-badge>
+          </div>
           <span
             v-if="approvalRulesCount(item)"
             class="gl-flex gl-text-sm"

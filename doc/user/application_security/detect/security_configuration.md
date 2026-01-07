@@ -52,7 +52,7 @@ To enable the following security scanning tools, with default settings, enable
 [Auto DevOps](../../../topics/autodevops/_index.md):
 
 - [Auto SAST](../../../topics/autodevops/stages.md#auto-sast)
-- [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection)
+- [Auto secret detection](../../../topics/autodevops/stages.md#auto-secret-detection)
 - [Auto DAST](../../../topics/autodevops/stages.md#auto-dast)
 - [Auto dependency scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning)
 - [Auto container scanning](../../../topics/autodevops/stages.md#auto-container-scanning)
@@ -198,7 +198,7 @@ For more information about overriding security jobs, see:
 - [Overriding SAST jobs](../sast/_index.md#overriding-sast-jobs).
 - [Overriding dependency scanning jobs](../dependency_scanning/_index.md#overriding-dependency-scanning-jobs).
 - [Overriding container scanning jobs](../container_scanning/_index.md#overriding-the-container-scanning-template).
-- [Overriding Secret Detection jobs](../secret_detection/pipeline/configure.md).
+- [Overriding secret detection jobs](../secret_detection/pipeline/configure.md).
 - [Overriding DAST jobs](../dast/browser/_index.md).
 
 ## Troubleshooting

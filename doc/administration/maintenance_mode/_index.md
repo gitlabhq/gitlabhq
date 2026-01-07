@@ -208,7 +208,7 @@ Exporting a vulnerability list from a vulnerability report page does not work.
 
 Changing the status on a finding or vulnerability object does not work, even though no error is shown in the UI.
 
-SAST and Secret Detection cannot be initiated because they depend on passing CI jobs to create artifacts.
+SAST and secret detection cannot be initiated because they depend on passing CI/CD jobs to create artifacts.
 
 ## An example use case: a planned failover
 

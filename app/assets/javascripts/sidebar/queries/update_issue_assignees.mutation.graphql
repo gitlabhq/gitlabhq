@@ -11,6 +11,7 @@ mutation issueSetAssignees($iid: String!, $assigneeUsernames: [String!]!, $fullP
         nodes {
           ...UserWithType
           ...UserAvailability
+          compositeIdentityEnforced @gl_introduced(version: "18.8.0")
         }
       }
     }

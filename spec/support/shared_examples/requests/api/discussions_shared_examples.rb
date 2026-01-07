@@ -61,6 +61,18 @@ RSpec.shared_examples 'with cross-reference system notes' do
 end
 
 RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name, can_reply_to_individual_notes: false|
+  shared_examples 'ai_workflows scope' do
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'is successful' do
+        note_action
+
+        expect(response).to have_gitlab_http_status(expected_status)
+      end
+    end
+  end
+
   describe "GET /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions" do
     it "returns an array of discussions" do
       get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user)
@@ -84,6 +96,11 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
+
+    it_behaves_like 'ai_workflows scope' do
+      let(:note_action) { get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", oauth_access_token: oauth_token) }
+      let(:expected_status) { :ok }
+    end
   end
 
   describe "GET /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id" do
@@ -99,6 +116,11 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
       get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it_behaves_like 'ai_workflows scope' do
+      let(:note_action) { get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{note.discussion_id}", oauth_access_token: oauth_token) }
+      let(:expected_status) { :ok }
     end
   end
 
@@ -199,6 +221,11 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
         end
       end
     end
+
+    it_behaves_like 'ai_workflows scope' do
+      let(:note_action) { post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", oauth_access_token: oauth_token), params: { body: 'hi!' } }
+      let(:expected_status) { :created }
+    end
   end
 
   describe "POST /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id/notes" do
@@ -249,6 +276,11 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
           expect(response).to have_gitlab_http_status(:bad_request)
         end
       end
+    end
+
+    it_behaves_like 'ai_workflows scope' do
+      let(:note_action) { post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{note.discussion_id}/notes", oauth_access_token: oauth_token), params: { body: 'hi!' } }
+      let(:expected_status) { :created }
     end
   end
 

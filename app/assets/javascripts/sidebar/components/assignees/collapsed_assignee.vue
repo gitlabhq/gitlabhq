@@ -34,6 +34,7 @@ export default {
     <user-name-with-status
       :name="user.name"
       :availability="availability"
+      :composite-identity-enforced="user.compositeIdentityEnforced"
       container-classes="author"
     />
   </gl-button>

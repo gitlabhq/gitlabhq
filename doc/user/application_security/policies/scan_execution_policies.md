@@ -556,8 +556,8 @@ scan_execution_policy:
   - scan: secret_detection
     scan_settings:
       ignore_default_before_after_script: true
-- name: Enforce Secret Detection and container scanning in every default branch pipeline
-  description: This policy enforces pipeline configuration to have a job with Secret Detection and container scanning scans for the default branch
+- name: Enforce secret detection and container scanning in every default branch pipeline
+  description: This policy enforces pipeline configuration to have a job with secret detection and container scanning scans for the default branch
   enabled: true
   rules:
   - type: pipeline
@@ -587,8 +587,8 @@ You can use this example in the YAML mode of the [scan execution policy editor](
 It corresponds to a single object from the previous example.
 
 ```yaml
-name: Enforce Secret Detection and container scanning in every default branch pipeline
-description: This policy enforces pipeline configuration to have a job with Secret Detection and container scanning scans for the default branch
+name: Enforce secret detection and container scanning in every default branch pipeline
+description: This policy enforces pipeline configuration to have a job with secret detection and container scanning scans for the default branch
 enabled: true
 rules:
   - type: pipeline
