@@ -20,6 +20,9 @@ module Gitlab
               return build_simple_array_from_bracket_notation(param_options)
             end
 
+            # Handle file types (e.g., API::Validations::Types::WorkhorseFile)
+            return build_file_schema(param_options) if type_str.include?('API::Validations::Types::WorkhorseFile')
+
             # Handle union types (e.g., [String, Integer])
             return build_union_type_schema(param_options) if type_str.start_with?('[')
 
@@ -50,6 +53,12 @@ module Gitlab
             # Handle types like [String] or [Integer]
             item_type = param_options[:type].to_s.delete('[').delete(']')
             schema = { type: 'array', items: { type: Converters::TypeResolver.resolve_type(item_type) } }
+            schema[:description] = param_options[:desc] if param_options[:desc]
+            schema
+          end
+
+          def build_file_schema(param_options)
+            schema = { type: 'string', format: 'binary' }
             schema[:description] = param_options[:desc] if param_options[:desc]
             schema
           end

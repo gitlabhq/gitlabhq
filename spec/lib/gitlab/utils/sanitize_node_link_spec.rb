@@ -132,6 +132,19 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
         expect(node[:href]).to be_nil
       end
     end
+
+    context 'when URI normalization causes PunycodeBigOutput error' do
+      let(:url_overflow) { '%E3%80%8D%E4%B8%BA%E7%9B%AE' * 100 }
+      let(:url) { "https://example.com#{url_overflow}" }
+      let(:doc) { Banzai::PipelineBase.parse("<a href='#{url}'>foo</a>") }
+      let(:node) { doc.children.first }
+
+      it 'removes the link' do
+        subject
+
+        expect(node[:href]).to be_nil
+      end
+    end
   end
 
   describe "#safe_protocol?" do

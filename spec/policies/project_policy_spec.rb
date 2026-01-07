@@ -1276,7 +1276,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     context 'with service desk disabled' do
       it { expect_allowed(:public_access) }
-      it { expect_disallowed(:guest_access, :create_note, :read_project) }
+      it { expect_disallowed(:guest_access, :create_note, :read_project, :create_ticket) }
     end
 
     context 'with service desk enabled' do
@@ -1284,7 +1284,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
       end
 
-      it { expect_allowed(:reporter_access, :create_note, :read_issue, :read_work_item) }
+      it { expect_allowed(:reporter_access, :create_note, :read_issue, :read_work_item, :create_ticket) }
 
       context 'when issues are protected members only' do
         before do

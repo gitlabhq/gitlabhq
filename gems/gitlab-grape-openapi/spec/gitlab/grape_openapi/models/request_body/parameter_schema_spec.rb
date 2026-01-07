@@ -83,6 +83,50 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
       end
     end
 
+    describe 'when type is a file' do
+      let(:key) { :file }
+
+      context 'with only workhorse uploads' do
+        let(:param_options) do
+          {
+            type: 'API::Validations::Types::WorkhorseFile',
+            desc: 'User profile picture',
+            required: false
+          }
+        end
+
+        it 'returns the expected parameter schema' do
+          expect(method_call).to eq(
+            {
+              type: 'string',
+              format: 'binary',
+              description: 'User profile picture'
+            }
+          )
+        end
+      end
+
+      context 'with multiple file upload options' do
+        let(:param_options) do
+          {
+            type: %w[API::Validations::Types::WorkhorseFile Rack::Multipart::UploadedFile],
+            desc: 'User profile picture',
+            required: false
+          }
+        end
+
+        it 'returns the expected parameter schema' do
+          expect(method_call).to eq(
+            {
+              type: 'string',
+              format: 'binary',
+              description: 'User profile picture'
+            }
+          )
+        end
+      end
+    end
+
     describe 'when values is a Range' do
       let(:key) { :position }
 

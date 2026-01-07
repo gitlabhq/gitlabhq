@@ -2785,7 +2785,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/models/ee/project_setting.rb'
     - 'ee/app/models/ee/project_statistics.rb'
     - 'ee/app/models/ee/project_team.rb'
-    - 'ee/app/models/ee/push_event_payload.rb'
     - 'ee/app/models/ee/release.rb'
     - 'ee/app/models/ee/remote_mirror.rb'
     - 'ee/app/models/ee/remote_mirrors/attributes.rb'

@@ -6,6 +6,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_category: :continuous_integration do
   before do
     Ci::ApplicationRecord.connection.execute(<<~SQL)
+      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_pipelines_101
+        PARTITION OF p_ci_pipelines FOR VALUES IN (101);
+
       CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_builds_101
         PARTITION OF p_ci_builds FOR VALUES IN (101);
 
@@ -17,6 +20,15 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
 
       CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_builds_metadata_101
         PARTITION OF p_ci_builds_metadata FOR VALUES IN (101);
+
+      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_job_artifacts_101
+        PARTITION OF p_ci_job_artifacts FOR VALUES IN (101);
+
+      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_builds_execution_configs_101
+        PARTITION OF p_ci_builds_execution_configs FOR VALUES IN (101);
+
+      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_build_tags_101
+        PARTITION OF p_ci_build_tags FOR VALUES IN (101);
     SQL
   end
 
@@ -643,6 +655,36 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
         end
 
         it 'ignores data created more than 1 year ago' do
+          expect { migration.perform }.not_to raise_error
+          [artifact_a, artifact_b, artifact_c, artifact_meta_a, artifact_meta_b, artifact_meta_c].each(&:reload)
+
+          expect(artifact_a.exposed_as).to be_nil
+          expect(artifact_a.exposed_paths).to be_nil
+          expect(artifact_meta_a.exposed_as).to be_nil
+          expect(artifact_meta_a.exposed_paths).to be_nil
+
+          expect(artifact_b.exposed_as).to be_nil
+          expect(artifact_b.exposed_paths).to be_nil
+          expect(artifact_meta_b.exposed_as).to be_nil
+          expect(artifact_meta_b.exposed_paths).to be_nil
+
+          expect(artifact_c.exposed_as).to be_nil
+          expect(artifact_c.exposed_paths).to be_nil
+          expect(artifact_meta_c.exposed_as).to eq('artif_string')
+          expect(artifact_meta_c.exposed_paths).to eq(['artif/path/1', 'artif/path/2'])
+        end
+      end
+
+      context 'with json null paths' do
+        let!(:metadata_b) do
+          artifacts_options = { config_options: { artifacts: { expose_as: nil, paths: nil } } }
+          builds_metadata_table.create!(
+            partition_id: job_b.partition_id, project_id: project.id, build_id: job_b.id,
+            **duplicate_configs.deep_merge(artifacts_options)
+          )
+        end
+
+        it 'updates metadata type artifacts from metadata attributes' do
           expect { migration.perform }.not_to raise_error
           [artifact_a, artifact_b, artifact_c, artifact_meta_a, artifact_meta_b, artifact_meta_c].each(&:reload)
 

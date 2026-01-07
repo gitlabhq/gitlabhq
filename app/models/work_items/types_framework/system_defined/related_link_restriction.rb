@@ -16,6 +16,7 @@ module WorkItems
         OBJECTIVE_ID = ::WorkItems::Type::BASE_TYPES[:objective][:id]
         KEY_RESULT_ID = ::WorkItems::Type::BASE_TYPES[:key_result][:id]
         INCIDENT_ID = ::WorkItems::Type::BASE_TYPES[:incident][:id]
+        TICKET_ID = ::WorkItems::Type::BASE_TYPES[:ticket][:id]
 
         ITEMS = [
           { id: 1, source_type_id: EPIC_ID, target_type_id: EPIC_ID,
@@ -126,6 +127,49 @@ module WorkItems
           { id: 55, source_type_id: INCIDENT_ID, target_type_id: OBJECTIVE_ID,
             link_type: Enums::IssuableLink::TYPE_BLOCKS },
           { id: 56, source_type_id: INCIDENT_ID, target_type_id: KEY_RESULT_ID,
+            link_type: Enums::IssuableLink::TYPE_BLOCKS },
+          # Tickets can relate to all types
+          { id: 57, source_type_id: EPIC_ID, target_type_id: TICKET_ID,
+            link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+          { id: 58, source_type_id: ISSUE_ID, target_type_id: TICKET_ID,
+            link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+          { id: 59, source_type_id: TASK_ID, target_type_id: TICKET_ID,
+            link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+          { id: 60, source_type_id: OBJECTIVE_ID, target_type_id: TICKET_ID,
+            link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+          { id: 61, source_type_id: KEY_RESULT_ID, target_type_id: TICKET_ID,
+            link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+          { id: 62, source_type_id: INCIDENT_ID, target_type_id: TICKET_ID,
+            link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+          { id: 63, source_type_id: TICKET_ID, target_type_id: TICKET_ID,
+            link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+          # Tickets can block all types
+          { id: 64, source_type_id: EPIC_ID, target_type_id: TICKET_ID,
+            link_type: Enums::IssuableLink::TYPE_BLOCKS },
+          { id: 65, source_type_id: ISSUE_ID, target_type_id: TICKET_ID,
+            link_type: Enums::IssuableLink::TYPE_BLOCKS },
+          { id: 66, source_type_id: TASK_ID, target_type_id: TICKET_ID,
+            link_type: Enums::IssuableLink::TYPE_BLOCKS },
+          { id: 67, source_type_id: OBJECTIVE_ID, target_type_id: TICKET_ID,
+            link_type: Enums::IssuableLink::TYPE_BLOCKS },
+          { id: 68, source_type_id: KEY_RESULT_ID, target_type_id: TICKET_ID,
+            link_type: Enums::IssuableLink::TYPE_BLOCKS },
+          { id: 69, source_type_id: INCIDENT_ID, target_type_id: TICKET_ID,
+            link_type: Enums::IssuableLink::TYPE_BLOCKS },
+          { id: 70, source_type_id: TICKET_ID, target_type_id: TICKET_ID,
+            link_type: Enums::IssuableLink::TYPE_BLOCKS },
+          # Tickets can be blocked by all types
+          { id: 71, source_type_id: TICKET_ID, target_type_id: EPIC_ID,
+            link_type: Enums::IssuableLink::TYPE_BLOCKS },
+          { id: 72, source_type_id: TICKET_ID, target_type_id: ISSUE_ID,
+            link_type: Enums::IssuableLink::TYPE_BLOCKS },
+          { id: 73, source_type_id: TICKET_ID, target_type_id: TASK_ID,
+            link_type: Enums::IssuableLink::TYPE_BLOCKS },
+          { id: 74, source_type_id: TICKET_ID, target_type_id: OBJECTIVE_ID,
+            link_type: Enums::IssuableLink::TYPE_BLOCKS },
+          { id: 75, source_type_id: TICKET_ID, target_type_id: KEY_RESULT_ID,
+            link_type: Enums::IssuableLink::TYPE_BLOCKS },
+          { id: 76, source_type_id: TICKET_ID, target_type_id: INCIDENT_ID,
             link_type: Enums::IssuableLink::TYPE_BLOCKS }
         ].freeze
       end

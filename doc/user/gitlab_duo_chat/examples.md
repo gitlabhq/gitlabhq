@@ -747,7 +747,7 @@ To troubleshoot a failed CI/CD job from the job log:
 {{< collapsible title="Editor and model information" >}}
 
 - Editors: GitLab UI
-- Default LLM: Anthropic [Claude Sonnet 3.7](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- Default LLM: Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 

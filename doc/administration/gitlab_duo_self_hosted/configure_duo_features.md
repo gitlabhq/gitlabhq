@@ -166,16 +166,16 @@ To set a model identifier for an Amazon Bedrock model:
 1. Add the region prefix to the model's inference profile ID for cross-region inferencing.
 1. Use the `bedrock/` prefix region as the prefix for the model identifier.
 
-   For example, for the Anthropic Claude 3.5 v2 model in the Tokyo region:
+   For example, for the Anthropic Claude 4.0 model in the Tokyo region:
 
    - The `AWS_REGION` is `ap-northeast-1`.
    - The cross-region inferencing prefix is `apac.`.
-   - The model identifier is `bedrock/apac.anthropic.claude-3-5-sonnet-20241022-v2:0`.
+   - The model identifier is `bedrock/apac.anthropic.claude-sonnet-4-20250514-v1:0`.
 
 Some regions are not supported by cross-region inferencing. For these regions, do not specify a region prefix in the model identifier. For example:
 
 - The `AWS_REGION` is `eu-west-2`.
-- The model identifier is `bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0`.
+- The model identifier is `anthropic.claude-sonnet-4-5-20250929-v1:0`.
 
 ## Turn on self-hosted beta models and features
 

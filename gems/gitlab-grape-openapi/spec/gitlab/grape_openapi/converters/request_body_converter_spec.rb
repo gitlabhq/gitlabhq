@@ -103,8 +103,9 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
         context "with #{http_method} request" do
           let(:method) { http_method }
 
-          it 'generates request body when body params exist' do
+          it 'generates request body' do
             expect(request_body).not_to be_nil
+            expect(request_body).to have_key(:content)
           end
         end
       end
@@ -114,16 +115,16 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
       let(:method) { 'POST' }
       let(:params) { {} }
 
-      it 'returns nil when no parameters are defined' do
+      it 'returns nil' do
         expect(request_body).to be_nil
       end
 
-      it 'does not call Parameters when params hash is empty' do
+      it 'does not call Parameters' do
         request_body
         expect(Gitlab::GrapeOpenapi::Models::RequestBody::Parameters).not_to have_received(:new)
       end
 
-      it 'does not call ParameterSchema when params hash is empty' do
+      it 'does not call ParameterSchema' do
         request_body
         expect(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema).not_to have_received(:new)
       end
@@ -164,6 +165,11 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
           .to receive(:build)
           .with(:email, body_params[:email])
           .and_return({ type: 'string', description: 'User email' })
+
+        allow(parameter_schema_instance)
+          .to receive(:build)
+          .with(:file, body_params[:file])
+          .and_return({ type: 'string', format: 'binary', description: 'User email' })
       end
 
       it 'returns a request body hash' do
@@ -178,6 +184,38 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
 
       it 'includes application/json content type' do
         expect(request_body[:content]).to have_key('application/json')
+      end
+
+      context 'when the endpoint allows file uploads' do
+        let(:body_params) do
+          {
+            name: { type: 'String', desc: 'User name', required: true },
+            email: { type: 'String', desc: 'User email', required: false },
+            file: { type: 'API::Validations::Types::WorkhorseFile', desc: 'User profile picture', required: false }
+          }
+        end
+
+        it 'includes multipart/form-data content type' do
+          expect(request_body[:content]).to have_key('multipart/form-data')
+        end
+      end
+
+      context 'when the endpoint allows file uploads in multiple ways' do
+        let(:body_params) do
+          {
+            name: { type: 'String', desc: 'User name', required: true },
+            email: { type: 'String', desc: 'User email', required: false },
+            file: {
+              type: %w[API::Validations::Types::WorkhorseFile Rack::Multipart::UploadedFile],
+              desc: 'User profile picture',
+              required: true
+            }
+          }
+        end
+
+        it 'includes multipart/form-data content type' do
+          expect(request_body[:content]).to have_key('multipart/form-data')
+        end
       end
 
       it 'includes schema with object type' do

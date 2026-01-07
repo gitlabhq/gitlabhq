@@ -2,7 +2,7 @@
 
 require "fast_spec_helper"
 
-RSpec.describe Gitlab::Fp::Settings::DefaultSettingsParser, feature_category: :shared do
+RSpec.describe Gitlab::Fp::Settings::DefaultSettingsParser, feature_category: :workspaces do
   let(:module_name) { "My Module" }
   let(:requested_setting_names) { [:setting] }
   let(:default_settings_class) do

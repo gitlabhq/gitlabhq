@@ -577,8 +577,15 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       is_expected.to match({
         resource_type: 'group',
         resource_id: group.id,
-        resource_path: including(group.full_path)
+        resource_path: including(group.full_path),
+        marked_for_deletion: 'false'
       })
+    end
+
+    context 'when group is marked for deletion' do
+      let_it_be(:group) { create(:group_with_deletion_schedule) }
+
+      it { is_expected.to match(hash_including(marked_for_deletion: 'true')) }
     end
   end
 

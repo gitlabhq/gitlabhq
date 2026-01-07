@@ -77,6 +77,8 @@ tags:
   description: Operations about cargo_packages
 - name: commits
   description: Operations about commits
+- name: commit_statuses
+  description: Operations about commit_statuses
 - name: draft_notes
   description: Operations about draft_notes
 - name: issues
@@ -14749,7 +14751,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - commit_statuses
       operationId: getApiV4ProjectsIdRepositoryCommitsShaStatuses
   "/api/v4/projects/{id}/statuses/{sha}":
     post:
@@ -14791,7 +14793,7 @@ paths:
         '409':
           description: Another update to this commit status is in progress
       tags:
-      - projects
+      - commit_statuses
       operationId: postApiV4ProjectsIdStatusesSha
   "/api/v4/projects/{id}/packages/composer":
     post:

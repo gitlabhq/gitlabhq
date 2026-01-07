@@ -397,7 +397,6 @@ Lint/UnusedMethodArgument:
     - 'lib/gitlab/sidekiq_middleware/request_store_middleware.rb'
     - 'lib/gitlab/sidekiq_middleware/size_limiter/client.rb'
     - 'lib/gitlab/sidekiq_middleware/size_limiter/server.rb'
-    - 'lib/gitlab/sidekiq_status/server_middleware.rb'
     - 'lib/gitlab/sidekiq_versioning/middleware.rb'
     - 'lib/gitlab/slash_commands/incident_management/incident_command.rb'
     - 'lib/gitlab/slash_commands/presenters/issue_new.rb'

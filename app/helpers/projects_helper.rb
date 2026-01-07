@@ -578,7 +578,7 @@ module ProjectsHelper
   def archiving_available?(project)
     return false unless project
 
-    project.persisted? && !project.self_deletion_scheduled? && can?(current_user, :archive_project, project)
+    project.persisted? && can?(current_user, :archive_project, project)
   end
 
   def show_inactive_project_deletion_banner?(project)
@@ -742,6 +742,7 @@ module ProjectsHelper
       resource_type: 'project',
       resource_id: project.id,
       resource_path: project_path(project),
+      marked_for_deletion: project.scheduled_for_deletion_in_hierarchy_chain?.to_s,
       help_path: help_page_path('user/project/working_with_projects.md', anchor: 'archive-a-project')
     }
   end

@@ -3128,7 +3128,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         end
       end
 
-      let_it_be_with_reload(:item) { create(:issue, project: project) }
+      let_it_be_with_reload(:item) { create(:work_item, :issue, project: project) }
       let_it_be(:original_author) { item.author }
 
       let(:content) { '/convert_to_ticket' }
@@ -3198,15 +3198,23 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
             it_behaves_like 'a successful command execution'
           end
 
-          context 'when item is a work item of type issue' do
-            let_it_be_with_reload(:item) { create(:work_item, :issue, project: project) }
+          context 'when item is a legacy issue' do
+            let_it_be_with_reload(:item) { create(:issue, project: project) }
 
             it_behaves_like 'a successful command execution'
           end
         end
+
+        context 'when item is ticket' do
+          let_it_be_with_reload(:item) { create(:work_item, :ticket, project: project) }
+
+          let(:expected_message) { "Could not apply convert_to_ticket command." }
+
+          it_behaves_like 'a failed command execution'
+        end
       end
 
-      context 'when issue is Service Desk issue' do
+      context 'when item is Service Desk issue' do
         before do
           item.update!(
             author: support_bot,
@@ -3219,7 +3227,23 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         end
       end
 
-      context 'with non-persisted issue' do
+      context 'when item is ticket' do
+        let_it_be_with_reload(:item) { create(:work_item, :ticket, project: project) }
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(item)).not_to include(a_hash_including(name: :convert_to_ticket))
+        end
+      end
+
+      context 'with non-persisted work item' do
+        let(:item) { build(:work_item, :issue) }
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(item)).not_to include(a_hash_including(name: :convert_to_ticket))
+        end
+      end
+
+      context 'with non-persisted legacy issue' do
         let(:item) { build(:issue) }
 
         it 'is not part of the available commands' do

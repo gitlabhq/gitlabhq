@@ -2,7 +2,7 @@
 
 require "fast_spec_helper"
 
-RSpec.describe Gitlab::Fp::Settings::SettingsDependencyResolver, feature_category: :shared do
+RSpec.describe Gitlab::Fp::Settings::SettingsDependencyResolver, feature_category: :workspaces do
   using RSpec::Parameterized::TableSyntax
 
   describe '.resolve' do

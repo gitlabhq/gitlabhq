@@ -5,6 +5,7 @@ module Gitlab
     module Converters
       class RequestBodyConverter
         DEFAULT_CONTENT_TYPE = 'application/json'
+        MULTIPART_FORM_DATA_CONTENT_TYPE = 'multipart/form-data'
         GET_METHOD = 'GET'
         DELETE_METHOD = 'DELETE'
 
@@ -56,11 +57,26 @@ module Gitlab
           {
             required: required_params.any?,
             content: {
-              DEFAULT_CONTENT_TYPE => {
+              content_type(body_params) => {
                 schema: schema
               }
             }
           }
+        end
+
+        # TODO: not all endpoints use the MULTIPART_FORM_DATA_CONTENT_TYPE or DEFAULT_CONTENT_TYPE
+        #   content types. Come up with a way to find which one each endpoint uses, e.g., get it from
+        #   the endpoint's docs.
+        def content_type(body_params)
+          return MULTIPART_FORM_DATA_CONTENT_TYPE if allows_file_upload?(body_params)
+
+          DEFAULT_CONTENT_TYPE
+        end
+
+        def allows_file_upload?(body_params)
+          body_params.any? do |_key, param_options|
+            param_options[:type]&.include?('API::Validations::Types::WorkhorseFile')
+          end
         end
       end
     end

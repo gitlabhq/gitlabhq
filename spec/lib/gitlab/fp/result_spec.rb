@@ -14,7 +14,7 @@ require 'fast_spec_helper'
 #
 # rubocop:disable RSpec/DescribedClass, Lint/ConstantDefinitionInBlock, RSpec/LeakyConstantDeclaration -- intentionally disabled per comment above
 # noinspection MissingYardReturnTag, MissingYardParamTag - intentionally disabled per comment above
-RSpec.describe Gitlab::Fp::Result, feature_category: :shared do
+RSpec.describe Gitlab::Fp::Result, feature_category: :workspaces do
   describe 'usage of Gitlab::Fp::Result.ok and Gitlab::Fp::Result.err' do
     context 'when checked with .ok? and .err?' do
       it 'works with ok result' do

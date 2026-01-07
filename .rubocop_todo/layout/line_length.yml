@@ -618,7 +618,6 @@ Layout/LineLength:
     - 'ee/app/services/ee/ip_restrictions/update_service.rb'
     - 'ee/app/services/ee/issues/base_service.rb'
     - 'ee/app/services/ee/merge_requests/merge_base_service.rb'
-    - 'ee/app/services/ee/merge_requests/refresh_service.rb'
     - 'ee/app/services/ee/personal_access_tokens/revoke_service.rb'
     - 'ee/app/services/ee/projects/create_from_template_service.rb'
     - 'ee/app/services/ee/projects/create_service.rb'

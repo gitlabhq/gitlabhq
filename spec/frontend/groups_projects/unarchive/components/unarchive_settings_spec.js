@@ -168,13 +168,14 @@ describe('UnarchiveSettings', () => {
       });
 
       it('renders cancel icon with tooltip', () => {
+        const expectedText = `To unarchive this ${resourceType}, you must unarchive its parent group.`;
+
         const icon = findGlIcon();
         const tooltipDirective = getBinding(icon.element, 'gl-tooltip');
 
         expect(icon.props('name')).toBe('cancel');
-        expect(tooltipDirective.value).toBe(
-          `To unarchive this ${resourceType}, you must unarchive its parent group.`,
-        );
+        expect(icon.props('ariaLabel')).toBe(expectedText);
+        expect(tooltipDirective.value).toBe(expectedText);
       });
 
       it('does not render unarchive button', () => {

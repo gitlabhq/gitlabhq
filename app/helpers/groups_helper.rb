@@ -167,7 +167,8 @@ module GroupsHelper
     {
       resource_type: 'group',
       resource_id: group.id,
-      resource_path: group_path(group)
+      resource_path: group_path(group),
+      marked_for_deletion: group.scheduled_for_deletion_in_hierarchy_chain?.to_s
     }
   end
 

@@ -4,29 +4,65 @@ require 'spec_helper'
 
 RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk do
   shared_examples 'a successful service execution' do
-    it 'converts issue to Service Desk issue', :aggregate_failures do
-      original_author = issue.author
+    it 'converts issue to ticket', :aggregate_failures do
+      original_author = work_item.author
 
       response = service.execute
       expect(response).to be_success
       expect(response.message).to eq(success_message)
 
-      issue.reset
+      work_item.reset
 
-      expect(issue).to have_attributes(
+      expect(work_item).to have_attributes(
         confidential: expected_confidentiality,
         author: support_bot,
         service_desk_reply_to: 'user@example.com'
       )
 
-      external_participant = issue.issue_email_participants.last
+      expect(work_item.work_item_type.base_type).to eq('ticket')
+
+      external_participant = work_item.issue_email_participants.last
       expect(external_participant.email).to eq(email)
 
-      note = issue.notes.last
+      note = work_item.notes.last
       expect(note.author).to eq(support_bot)
       expect(note).to be_confidential
       expect(note.note).to include(email)
       expect(note.note).to include(original_author.to_reference)
+    end
+
+    # Example duplication for easy feature flag cleanup
+    context 'when service_desk_ticket feature flag is disabled' do
+      before do
+        stub_feature_flags(service_desk_ticket: false)
+      end
+
+      it 'converts issue to Service Desk issue', :aggregate_failures do
+        original_author = work_item.author
+
+        response = service.execute
+        expect(response).to be_success
+        expect(response.message).to eq(success_message)
+
+        work_item.reset
+
+        expect(work_item).to have_attributes(
+          confidential: expected_confidentiality,
+          author: support_bot,
+          service_desk_reply_to: 'user@example.com'
+        )
+
+        expect(work_item.work_item_type.base_type).to eq('issue')
+
+        external_participant = work_item.issue_email_participants.last
+        expect(external_participant.email).to eq(email)
+
+        note = work_item.notes.last
+        expect(note.author).to eq(support_bot)
+        expect(note).to be_confidential
+        expect(note.note).to include(email)
+        expect(note.note).to include(original_author.to_reference)
+      end
     end
   end
 
@@ -42,10 +78,10 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
     let_it_be_with_reload(:project) { create(:project, :private) }
     let_it_be(:user) { create(:user) }
     let_it_be(:support_bot) { Users::Internal.in_organization(project.organization_id).support_bot }
-    let_it_be_with_reload(:issue) { create(:issue, project: project) }
+    let_it_be_with_reload(:work_item) { create(:work_item, :issue, project: project) }
 
     let(:email) { nil }
-    let(:service) { described_class.new(target: issue, current_user: user, email: email) }
+    let(:service) { described_class.new(target: work_item, current_user: user, email: email) }
     let(:expected_confidentiality) { true }
 
     let(:error_service_desk_disabled) { s_("ServiceDesk|Cannot convert to ticket because Service Desk is disabled.") }
@@ -91,16 +127,16 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
 
         it_behaves_like 'a successful service execution'
 
-        context 'when issue already is confidential' do
+        context 'when work item already is confidential' do
           before do
-            issue.update!(confidential: true)
+            work_item.update!(confidential: true)
           end
 
           it_behaves_like 'a successful service execution'
         end
 
-        context 'with work item of type issue' do
-          let_it_be_with_reload(:issue) { create(:work_item, :issue, project: project) }
+        context 'with legacy issue' do
+          let_it_be_with_reload(:work_item) { create(:issue, project: project) }
 
           it_behaves_like 'a successful service execution'
         end
@@ -139,11 +175,11 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
             end
 
             context 'when issue already is confidential' do
-              # Do not change the confidentiality of an already confidential issue
+              # Do not change the confidentiality of an already confidential work item
               let(:expected_confidentiality) { true }
 
               before do
-                issue.update!(confidential: true)
+                work_item.update!(confidential: true)
               end
 
               it_behaves_like 'a successful service execution'
@@ -151,11 +187,58 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
           end
         end
 
-        context 'when issue is Service Desk issue' do
+        context 'when work item is Service Desk issue' do
+          before do
+            work_item.update!(
+              author: support_bot,
+              service_desk_reply_to: 'user@example.com'
+            )
+          end
+
+          it 'converts issue to ticket', :aggregate_failures do
+            original_author = work_item.author
+
+            response = service.execute
+            expect(response).to be_success
+            expect(response.message).to eq(success_message)
+
+            work_item.reset
+
+            expect(work_item).to have_attributes(
+              confidential: expected_confidentiality,
+              author: support_bot,
+              service_desk_reply_to: 'user@example.com'
+            )
+
+            expect(work_item.work_item_type.base_type).to eq('ticket')
+
+            external_participant = work_item.issue_email_participants.last
+            expect(external_participant.email).to eq(email)
+
+            note = work_item.notes.last
+            expect(note.author).to eq(support_bot)
+            expect(note).to be_confidential
+            expect(note.note).to include(email)
+            expect(note.note).to include(original_author.to_reference)
+          end
+
+          context 'when service_desk_ticket feature flag is disabled' do
+            let(:error_message) { error_already_ticket }
+
+            before do
+              stub_feature_flags(service_desk_ticket: false)
+            end
+
+            it_behaves_like 'a failed service execution'
+          end
+        end
+
+        context 'when work item is ticket' do
           let(:error_message) { error_already_ticket }
 
           before do
-            issue.update!(
+            work_item.update!(
+              work_item_type_id: 9,
               author: support_bot,
               service_desk_reply_to: 'user@example.com'
             )

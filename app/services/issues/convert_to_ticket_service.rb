@@ -5,7 +5,8 @@ module Issues
     def initialize(target:, current_user:, email:)
       super(container: target.resource_parent, current_user: current_user)
 
-      @target = target
+      # We need a work item here and not an issue object
+      @target = target.becomes(WorkItem) # rubocop:disable Cop/AvoidBecomes -- reason above
       @email = email
       @original_author = target.author
     end
@@ -27,16 +28,22 @@ module Issues
     attr_reader :target, :email, :original_author
 
     def update_target
-      target.update!(
-        service_desk_reply_to: email,
-        author: support_bot,
-        confidential: target_confidentiality
-      )
+      ::WorkItems::UpdateService.new(
+        container: container,
+        current_user: support_bot,
+        params: {
+          work_item_type: work_item_type,
+          issue_type: work_item_type.base_type,
+          author: support_bot,
+          confidential: target_confidentiality,
+          service_desk_reply_to: email
+        }
+      ).execute(target)
 
       # Migrate to IssueEmailParticipants::CreateService
       # once :issue_email_participants feature flag has been removed
       # https://gitlab.com/gitlab-org/gitlab/-/issues/440456
-      IssueEmailParticipant.create!(issue: target, email: email)
+      IssueEmailParticipant.create!(issue_id: target.id, email: email)
     end
 
     def add_note
@@ -57,11 +64,14 @@ module Issues
     end
 
     def ticket?
-      target.from_service_desk?
+      return target.from_service_desk? unless Feature.enabled?(:service_desk_ticket, container)
+
+      # Ensure we also convert Service Desk issues to ticket work items
+      target.from_service_desk? && target.work_item_type.base_type == 'ticket'
     end
 
     def valid_email?
-      email.present? && IssueEmailParticipant.new(issue: target, email: email).valid?
+      email.present? && IssueEmailParticipant.new(issue_id: target.id, email: email).valid?
     end
 
     def target_confidentiality
@@ -71,6 +81,14 @@ module Issues
       return true if target.confidential?
 
       project.service_desk_setting.tickets_confidential_by_default?
+    end
+
+    def work_item_type
+      return WorkItems::Type.default_issue_type unless Feature.enabled?(:service_desk_ticket, container)
+
+      # Replace with configuration check
+      # See https://gitlab.com/groups/gitlab-org/-/work_items/19879
+      WorkItems::Type.default_by_type(:ticket)
     end
 
     def error(message)

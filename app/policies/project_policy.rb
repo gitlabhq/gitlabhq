@@ -1177,6 +1177,11 @@ class ProjectPolicy < BasePolicy
     prevent :guest_access
   end
 
+  # For now only the support bot should be allowed to create tickets.
+  rule { support_bot & service_desk_enabled }.policy do
+    enable :create_ticket
+  end
+
   rule { project_bot }.enable :project_bot_access
 
   rule { can?(:read_all_resources) & resource_access_token_feature_available }.enable :read_resource_access_tokens

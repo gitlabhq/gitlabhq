@@ -17,6 +17,8 @@ module Tooling
 
       def check
         filenames.each do |filename|
+          next if filename.nil? || filename.strip.empty?
+
           check_filename(filename)
         end
       end

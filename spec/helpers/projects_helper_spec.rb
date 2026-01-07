@@ -1379,25 +1379,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         it { is_expected.to be(true) }
       end
     end
-
-    context 'with a project marked for deletion' do
-      before do
-        project.marked_for_deletion_at = Time.current
-        project.save!
-      end
-
-      context 'when current user cannot manage archiving' do
-        include_context 'with current user :archive_project permission', false
-
-        it { is_expected.to be(false) }
-      end
-
-      context 'when current user can manage archiving' do
-        include_context 'with current user :archive_project permission', true
-
-        it { is_expected.to be(false) }
-      end
-    end
   end
 
   describe '#show_inactive_project_deletion_banner?' do
@@ -2040,7 +2021,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#project_archive_settings_app_data' do
-    let_it_be(:project) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     subject { helper.project_archive_settings_app_data(project) }
 
@@ -2049,8 +2030,17 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         resource_type: 'project',
         resource_id: project.id,
         resource_path: including(project.full_path),
-        help_path: '/help/user/project/working_with_projects.md#archive-a-project'
+        help_path: '/help/user/project/working_with_projects.md#archive-a-project',
+        marked_for_deletion: 'false'
       })
+    end
+
+    context 'when project is marked for deletion' do
+      before do
+        project.update!(marked_for_deletion_at: Date.current)
+      end
+
+      it { is_expected.to match(hash_including(marked_for_deletion: 'true')) }
     end
   end
 

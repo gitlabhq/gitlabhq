@@ -64,14 +64,6 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
         expect(instance.name_search).to eq('test')
       end
     end
-
-    context 'with invalid project argument' do
-      let(:project) { nil }
-
-      it 'raises an error' do
-        expect { instance }.to raise_error(ArgumentError, 'project must be a valid Project instance')
-      end
-    end
   end
 
   describe '#execute' do
@@ -165,9 +157,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
         allow(::Gitlab::ClickHouse).to receive(:configured?).and_return(false)
       end
 
-      it 'returns nil' do
-        expect(execute).to be_nil
-      end
+      it { is_expected.to be_nil }
     end
 
     context 'when clickhouse is not enabled for analytics' do
@@ -175,16 +165,24 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
         stub_application_setting(use_clickhouse_for_analytics: false)
       end
 
-      it 'returns nil' do
-        expect(execute).to be_nil
-      end
+      it { is_expected.to be_nil }
     end
 
     context 'when the user does not have read_build access to the project' do
       let(:project) { project2 } # user is not part of project2
 
-      it 'returns nil' do
-        expect(execute).to be_nil
+      it { is_expected.to be_nil }
+    end
+
+    context 'when no user is specified' do
+      let(:user) { nil }
+
+      it { is_expected.to be_nil }
+
+      context 'when the project is public' do
+        let_it_be(:project, freeze: true) { create(:project, :public) }
+
+        it { is_expected.to be_a(ClickHouse::Client::QueryBuilder) }
       end
     end
   end

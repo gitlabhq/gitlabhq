@@ -120,7 +120,6 @@ RSpec/VerifiedDoubles:
     - 'ee/spec/services/ee/merge_requests/base_service_spec.rb'
     - 'ee/spec/services/ee/merge_requests/build_service_spec.rb'
     - 'ee/spec/services/ee/merge_requests/post_merge_service_spec.rb'
-    - 'ee/spec/services/ee/merge_requests/refresh_service_spec.rb'
     - 'ee/spec/services/ee/notification_service_spec.rb'
     - 'ee/spec/services/ee/post_receive_service_spec.rb'
     - 'ee/spec/services/geo/blob_download_service_spec.rb'

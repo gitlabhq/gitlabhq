@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlCard, GlLink } from '@gitlab/ui';
+import { GlButton, GlCard, GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
@@ -14,6 +14,10 @@ export default {
     GlCard,
     GlLink,
     GlButton,
+    GlIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [InternalEvents.mixin()],
   props: {
@@ -30,6 +34,10 @@ export default {
       type: String,
       required: true,
     },
+    markedForDeletion: {
+      type: Boolean,
+      required: true,
+    },
     helpPath: {
       type: String,
       required: false,
@@ -39,6 +47,9 @@ export default {
   resourceStrings: {
     [RESOURCE_TYPES.GROUP]: {
       header: s__('GroupProjectArchiveSettings|Archive group'),
+      disabledTooltip: s__(
+        'GroupProjectArchiveSettings|To archive this group, you must restore it from deletion.',
+      ),
       description: s__(
         'GroupProjectArchiveSettings|Make your group read-only. You can still access its data, work items, and merge requests.',
       ),
@@ -49,6 +60,9 @@ export default {
     },
     [RESOURCE_TYPES.PROJECT]: {
       header: s__('GroupProjectArchiveSettings|Archive project'),
+      disabledTooltip: s__(
+        'GroupProjectArchiveSettings|To archive this project, you must restore it from deletion.',
+      ),
       description: s__(
         'GroupProjectArchiveSettings|Make your project read-only. You can still access its data, work items, and merge requests.',
       ),
@@ -90,21 +104,33 @@ export default {
 <template>
   <gl-card>
     <template #header>
-      <h4 class="gl-m-0 gl-text-base">{{ i18n.header }}</h4>
+      <h4 class="gl-m-0 gl-flex gl-items-center gl-gap-3 gl-text-base">
+        {{ i18n.header }}
+        <gl-icon
+          v-if="markedForDeletion"
+          v-gl-tooltip="i18n.disabledTooltip"
+          :aria-label="i18n.disabledTooltip"
+          :size="16"
+          name="cancel"
+          class="gl-cursor-pointer"
+        />
+      </h4>
     </template>
     <template #default>
-      <p>
+      <p class="gl-mb-0">
         {{ i18n.description }}
         <gl-link v-if="helpPath" :href="helpPath" target="_blank">
           {{ i18n.helpLink }}
         </gl-link>
       </p>
       <gl-button
-        :loading="loading"
+        v-if="!markedForDeletion"
         data-testid="archive-button"
         data-event-tracking="archive_namespace_in_settings"
         data-event-property="archive"
+        class="gl-mt-5"
         :data-event-label="resourceType"
+        :loading="loading"
         @click="archive"
       >
         {{ s__('GroupProjectArchiveSettings|Archive') }}

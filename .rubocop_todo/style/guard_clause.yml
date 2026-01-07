@@ -274,7 +274,6 @@ Style/GuardClause:
     - 'ee/lib/ee/gitlab/omniauth_initializer.rb'
     - 'ee/lib/ee/sidebars/projects/panel.rb'
     - 'ee/lib/gitlab/analytics/cycle_analytics/summary/base_time.rb'
-    - 'ee/lib/gitlab/ci/config/security_orchestration_policies/processor.rb'
     - 'ee/lib/gitlab/ci/minutes/cost_factor.rb'
     - 'ee/lib/gitlab/compliance_management/violations/approved_by_insufficient_users.rb'
     - 'ee/lib/gitlab/compliance_management/violations/approved_by_merge_request_author.rb'

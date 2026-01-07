@@ -62,7 +62,7 @@ module Gitlab
             next if safe_protocol?(uri.scheme)
 
             node.remove_attribute(attr)
-          rescue Addressable::URI::InvalidURIError
+          rescue Addressable::URI::InvalidURIError, Addressable::IDNA::PunycodeBigOutput
             node.remove_attribute(attr) if remove_invalid_links
           end
         end
