@@ -51,7 +51,13 @@ unique name and a sequential value:
   notifications are still shown to the user in other groups.
 
 - Project context: `app/models/users/project_callout.rb`. Callouts dismissed by a user in a given project. Related
-  notifications are still shown to the user in other projects.
+  notifications are still shown to the user in other projects.  
+
+After adding a new callout ID to any of the enum files above, you must update the GraphQL documentation by running:
+ 
+```shell
+bundle exec rake gitlab:graphql:compile_docs
+```
 
 **NOTE**: do not reuse old enum values, as it may lead to false-positive dismissals. Instead, create a new sequential
 number.

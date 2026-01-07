@@ -5,6 +5,10 @@ module Ci
     include EachBatch
     include Ci::Partitionable
 
+    MAX_TAGS_IDS = 50
+
+    TooManyTagsError = Class.new(StandardError)
+
     belongs_to :project
 
     belongs_to :build, # rubocop: disable Rails/InverseOf -- this relation is not present on build
@@ -64,7 +68,11 @@ module Ci
       end
 
       def build_tags_ids(build)
-        Ci::Tag.find_or_create_all_with_like_by_name(build.tag_list).map(&:id).sort
+        build.tag_list.then do |tag_list|
+          raise TooManyTagsError if tag_list.size >= MAX_TAGS_IDS
+
+          Ci::Tag.find_or_create_all_with_like_by_name(tag_list).map(&:id).sort
+        end
       end
 
       def shared_runners_enabled?(project)

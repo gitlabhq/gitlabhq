@@ -5009,6 +5009,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: projects_import_export_remove_relation_export_upload
+  :worker_name: Projects::ImportExport::RemoveRelationExportUploadWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: projects_import_export_wait_relation_exports
   :worker_name: Projects::ImportExport::WaitRelationExportsWorker
   :feature_category: :importers

@@ -259,7 +259,8 @@ module Ci
 
     add_authentication_token_field :token,
       encrypted: :required,
-      format_with_prefix: :prefix_and_partition_for_token
+      format_with_prefix: :prefix_and_partition_for_token,
+      encrypted_token_finder: 'Ci::Jobs::PartitionedTokenFinder'
 
     after_save :stick_build_if_status_changed
 

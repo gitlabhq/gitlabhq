@@ -8,6 +8,10 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
 
   let(:build) { create(:ci_build, :created, pipeline: pipeline) }
 
+  it 'keeps MAX_TAGS_IDS in sync with TAGS_LIMIT' do
+    expect(described_class::MAX_TAGS_IDS).to eq(Gitlab::Ci::Config::Entry::Tags::TAGS_LIMIT)
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to belong_to :build }
@@ -38,11 +42,13 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
     describe '.for_tags' do
       subject(:pending_builds) { described_class.for_tags(tag_ids) }
 
-      let_it_be(:pending_build_with_tags) { create(:ci_pending_build, tag_ids: [1, 2]) }
-      let_it_be(:pending_build_without_tags) { create(:ci_pending_build) }
+      let_it_be(:build_with_tags) { create(:ci_build, :tags, :pending, :queued) }
+      let_it_be(:build_without_tags) { create(:ci_build, :pending, :queued) }
+      let_it_be(:pending_build_with_tags) { build_with_tags.queuing_entry }
+      let_it_be(:pending_build_without_tags) { build_without_tags.queuing_entry }
 
       context 'when tag_ids match pending builds' do
-        let(:tag_ids) { [1, 2] }
+        let(:tag_ids) { build_with_tags.tags.ids }
 
         it 'returns matching pending builds' do
           expect(pending_builds).to contain_exactly(pending_build_with_tags, pending_build_without_tags)
@@ -187,6 +193,16 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
           upsert_from_build
 
           expect(ci_pending_build.tag_ids).to eq([])
+        end
+      end
+
+      context 'when build has more tags than MAX_TAGS_IDS' do
+        before do
+          stub_const("#{described_class}::MAX_TAGS_IDS", build.tag_list.count - 1)
+        end
+
+        it 'raises TooManyTagsError' do
+          expect { upsert_from_build }.to raise_error(described_class::TooManyTagsError)
         end
       end
     end

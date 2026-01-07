@@ -317,6 +317,7 @@ class Project < ApplicationRecord
   has_many :relation_import_trackers, class_name: 'Projects::ImportExport::RelationImportTracker', inverse_of: :project
   has_many :export_jobs, class_name: 'ProjectExportJob'
   has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :project
+  has_many :relation_export_uploads, class_name: 'Projects::ImportExport::RelationExportUpload', inverse_of: :project
   has_one :project_repository, inverse_of: :project
   has_one :incident_management_setting, inverse_of: :project, class_name: 'IncidentManagement::ProjectIncidentManagementSetting'
   has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'

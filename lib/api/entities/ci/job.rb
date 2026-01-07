@@ -19,7 +19,7 @@ module API
           :tag_list,
           documentation: { type: 'String', is_array: true, example: ['ubuntu18', 'docker runner'] }
         ) do |job|
-          job.tags.map(&:name).sort
+          job.tag_list.sort
         end
       end
     end

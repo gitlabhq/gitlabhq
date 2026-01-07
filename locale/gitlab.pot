@@ -7338,9 +7338,6 @@ msgstr ""
 msgid "AiPowered|GitLab Duo Agent Platform is an AI-native coding agent."
 msgstr ""
 
-msgid "AiPowered|GitLab Duo Agents"
-msgstr ""
-
 msgid "AiPowered|GitLab Duo Chat conversations"
 msgstr ""
 
@@ -7348,9 +7345,6 @@ msgid "AiPowered|GitLab Duo Classic"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Core available to all users"
-msgstr ""
-
-msgid "AiPowered|GitLab Duo Flows and External Agents"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Model Selection"
@@ -27429,6 +27423,12 @@ msgstr ""
 msgid "EnvironmentsDashboard|This dashboard displays 3 environments per project, and is linked to the Operations Dashboard. When you add or remove a project from one dashboard, GitLab adds or removes the project from the other. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
+msgid "Environments|%{requestLinkStart}Request version support%{requestLinkEnd} or %{apiLinkStart}use API%{apiLinkEnd} to set resource path."
+msgstr ""
+
+msgid "Environments|(available version - %{version})"
+msgstr ""
+
 msgid "Environments|A freeze period is in effect from %{startTime} to %{endTime}. Deployments might fail during this time. For more information, see the %{docsLinkStart}deploy freeze documentation%{docsLinkEnd}."
 msgstr ""
 
@@ -27636,6 +27636,9 @@ msgstr ""
 msgid "Environments|The description is displayed to anyone who can see this environment."
 msgstr ""
 
+msgid "Environments|The preferred version of your resource is not supported:"
+msgstr ""
+
 msgid "Environments|There are no deployments for this environment yet. %{linkStart}Learn more about setting up deployments.%{linkEnd}"
 msgstr ""
 
@@ -27646,6 +27649,9 @@ msgid "Environments|This action will %{docsStart}roll back this environment%{doc
 msgstr ""
 
 msgid "Environments|Unable to access the following resources from this environment. Check your authorization on the following and try again:"
+msgstr ""
+
+msgid "Environments|Unable to discover supported Flux resource versions."
 msgstr ""
 
 msgid "Environments|Updating"
@@ -77147,6 +77153,9 @@ msgstr ""
 msgid "WorkItem|Add view"
 msgstr ""
 
+msgid "WorkItem|Added"
+msgstr ""
+
 msgid "WorkItem|All activity"
 msgstr ""
 
@@ -77262,6 +77271,9 @@ msgid "WorkItem|Blocking"
 msgstr ""
 
 msgid "WorkItem|Blue"
+msgstr ""
+
+msgid "WorkItem|Browse views"
 msgstr ""
 
 msgid "WorkItem|Cancel"
@@ -77462,6 +77474,9 @@ msgstr ""
 msgid "WorkItem|Edit work item"
 msgstr ""
 
+msgid "WorkItem|Edit your search and try again."
+msgstr ""
+
 msgid "WorkItem|Email participants"
 msgstr ""
 
@@ -77490,9 +77505,6 @@ msgid "WorkItem|Existing %{workItemName}"
 msgstr ""
 
 msgid "WorkItem|Existing task"
-msgstr ""
-
-msgid "WorkItem|Existing view"
 msgstr ""
 
 msgid "WorkItem|Export as CSV"
@@ -77730,6 +77742,9 @@ msgstr ""
 msgid "WorkItem|New %{workItemType}"
 msgstr ""
 
+msgid "WorkItem|New View"
+msgstr ""
+
 msgid "WorkItem|New custom field"
 msgstr ""
 
@@ -77808,7 +77823,13 @@ msgstr ""
 msgid "WorkItem|No parent"
 msgstr ""
 
+msgid "WorkItem|No results found"
+msgstr ""
+
 msgid "WorkItem|No template"
+msgstr ""
+
+msgid "WorkItem|No views currently exist"
 msgstr ""
 
 msgid "WorkItem|None"
@@ -77883,6 +77904,9 @@ msgstr ""
 msgid "WorkItem|Private"
 msgstr ""
 
+msgid "WorkItem|Private: only you can see and edit this view."
+msgstr ""
+
 msgid "WorkItem|Progress"
 msgstr ""
 
@@ -77929,6 +77953,9 @@ msgid "WorkItem|Rose"
 msgstr ""
 
 msgid "WorkItem|Save and overwrite"
+msgstr ""
+
+msgid "WorkItem|Search by view name or description"
 msgstr ""
 
 msgid "WorkItem|Search existing items or enter an item's URL or reference ID"
@@ -78325,6 +78352,12 @@ msgid "WorkItem|View current version"
 msgstr ""
 
 msgid "WorkItem|View on a roadmap"
+msgstr ""
+
+msgid "WorkItem|Views"
+msgstr ""
+
+msgid "WorkItem|Views created by you or shared by others will show up here."
 msgstr ""
 
 msgid "WorkItem|Weight"

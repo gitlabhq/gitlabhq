@@ -78,5 +78,11 @@ FactoryBot.define do
       model { association(:bulk_import_export_upload) }
       uploader { BulkImports::ExportUploader.name }
     end
+
+    trait :import_export_uploader do
+      mount_point { :export_file }
+      model { association(:relation_export_upload) }
+      uploader { ImportExportUploader.name }
+    end
   end
 end

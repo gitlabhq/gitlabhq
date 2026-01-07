@@ -157,6 +157,61 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
     end
   end
 
+  describe 'pipeline logger tag counts' do
+    let(:stage) { build(:ci_stage, pipeline: pipeline, project: project) }
+    let(:job1) do
+      build(:ci_build, :without_job_definition, ci_stage: stage, pipeline: pipeline, project: project,
+        tag_list: %w[ruby docker])
+    end
+
+    let(:job2) do
+      build(:ci_build, :without_job_definition, ci_stage: stage, pipeline: pipeline, project: project,
+        tag_list: %w[docker postgres])
+    end
+
+    let(:logger) { Gitlab::Ci::Pipeline::Logger.new(project: project) }
+
+    before do
+      pipeline.stages = [stage]
+      stage.statuses = [job1, job2]
+
+      # Set temp_job_definition as it would be set by Seed::Build
+      config1 = { options: { script: ['echo test'] }, tag_list: %w[ruby docker] }
+      config2 = { options: { script: ['echo different'] }, tag_list: %w[docker postgres] }
+
+      job_def1 = Ci::JobDefinition.fabricate(
+        config: config1,
+        project_id: project.id,
+        partition_id: pipeline.partition_id
+      )
+      job_def2 = Ci::JobDefinition.fabricate(
+        config: config2,
+        project_id: project.id,
+        partition_id: pipeline.partition_id
+      )
+
+      job1.temp_job_definition = job_def1
+      job2.temp_job_definition = job_def2
+
+      allow(command).to receive(:logger).and_return(logger)
+    end
+
+    it 'does not execute SQL queries when calculating tag counts for logger' do
+      step.perform!
+
+      expect(pipeline).to be_persisted
+
+      recorder = ActiveRecord::QueryRecorder.new do
+        logger.commit(pipeline: pipeline, caller: 'test')
+      end
+
+      # The logger should not make any SQL queries for pipeline_builds_tags_count
+      # and pipeline_builds_distinct_tags_count because it uses the cached tag_list
+      # from already-loaded builds
+      expect(recorder.count).to eq(0)
+    end
+  end
+
   describe 'job definitions persistence' do
     let(:stage) do
       build(:ci_stage, pipeline: pipeline, project: project)

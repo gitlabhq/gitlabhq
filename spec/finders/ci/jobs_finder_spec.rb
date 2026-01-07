@@ -345,18 +345,12 @@ RSpec.describe Ci::JobsFinder, '#execute', feature_category: :continuous_integra
       let_it_be(:runner_matching_tags) { %w[tag1 tag2 tag3] }
 
       let_it_be(:job) do
-        create(:ci_build, :pending, name: 'pending_job', project: projects.first,
+        create(:ci_build, :pending, :queued, name: 'pending_job', project: projects.first,
           tag_list: runner_matching_tags.sample(2))
       end
 
-      let_it_be(:pending_job) { create(:ci_pending_build, project: projects.first, build: job) }
-
       let_it_be(:different_project_job) do
-        create(:ci_build, :pending, project: projects.second, tag_list: runner_matching_tags)
-      end
-
-      let_it_be(:different_project_pending_job) do
-        create(:ci_pending_build, project: projects.second, build: different_project_job)
+        create(:ci_build, :pending, :queued, project: projects.second, tag_list: runner_matching_tags)
       end
 
       let_it_be(:instance_runner) { create(:ci_runner, tag_list: runner_matching_tags, run_untagged: false) }
@@ -370,9 +364,8 @@ RSpec.describe Ci::JobsFinder, '#execute', feature_category: :continuous_integra
       end
 
       before_all do
-        # Add job with non-matching tags to check for this does not return unrelated jobs
-        create(:ci_pending_build, project: projects.first,
-          build: create(:ci_build, :pending, project: projects.first, tag_list: %w[tag1 tag4]))
+        # Add job with non-matching tags to confirm that this does not return unrelated jobs
+        create(:ci_build, :pending, :queued, project: projects.first, tag_list: %w[tag1 tag4])
       end
 
       context 'with instance runner' do
@@ -383,7 +376,7 @@ RSpec.describe Ci::JobsFinder, '#execute', feature_category: :continuous_integra
             let(:user) { admin }
 
             it 'returns the pending jobs' do
-              expect(execute).to contain_exactly(job, different_project_job)
+              is_expected.to contain_exactly(job, different_project_job)
             end
           end
         end

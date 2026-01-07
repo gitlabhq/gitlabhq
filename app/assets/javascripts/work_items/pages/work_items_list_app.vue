@@ -1610,7 +1610,7 @@ export default {
             </template>
 
             <template v-if="workItemsSavedViewsEnabled">
-              <work-items-saved-views-selectors>
+              <work-items-saved-views-selectors :full-path="rootPageFullPath">
                 <template #header-area>
                   <work-item-list-actions
                     :can-export="canExport"

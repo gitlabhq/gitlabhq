@@ -13,6 +13,8 @@ import k8sDeploymentsQuery from './queries/k8s_deployments.query.graphql';
 import k8sNamespacesQuery from './queries/k8s_namespaces.query.graphql';
 import fluxKustomizationQuery from './queries/flux_kustomization.query.graphql';
 import fluxHelmReleaseQuery from './queries/flux_helm_release.query.graphql';
+import discoverFluxKustomizationsQuery from './queries/discover_flux_kustomizations.query.graphql';
+import discoverFluxHelmReleasesQuery from './queries/discover_flux_helm_releases.query.graphql';
 import k8sEventsQuery from './queries/k8s_events.query.graphql';
 import k8sPodLogsWatcherQuery from './queries/k8s_pod_logs_watcher.query.graphql';
 import { resolvers } from './resolvers';
@@ -129,6 +131,20 @@ export const apolloProvider = (endpoint) => {
       metadata: {
         name: null,
       },
+    },
+  });
+  cache.writeQuery({
+    query: discoverFluxKustomizationsQuery,
+    data: {
+      supportedVersion: '',
+      preferredVersion: '',
+    },
+  });
+  cache.writeQuery({
+    query: discoverFluxHelmReleasesQuery,
+    data: {
+      supportedVersion: '',
+      preferredVersion: '',
     },
   });
   cache.writeQuery({

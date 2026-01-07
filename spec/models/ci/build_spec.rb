@@ -6539,4 +6539,67 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       expect(definition.partition_id).to eq(build_attributes[:partition_id])
     end
   end
+
+  describe 'partition pruning' do
+    describe '.find_by_token' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:job) { create(:ci_build, pipeline: pipeline, status: :running) }
+      let_it_be(:token) { job.token }
+
+      it 'uses partition_id filter in query' do
+        recorder = ActiveRecord::QueryRecorder.new do
+          expect(described_class.find_by_token(token)).to eq(job)
+        end
+
+        expect(recorder.count).to eq(1)
+        expect(recorder.log.first).to match(/"p_ci_builds"."token_encrypted" IN/)
+        expect(recorder.log.first).to match(/"p_ci_builds"."partition_id" =/)
+      end
+
+      context 'when ci_build_find_token_authenticatable feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_build_find_token_authenticatable: false)
+        end
+
+        it 'does not use partition_id filter in query' do
+          recorder = ActiveRecord::QueryRecorder.new do
+            expect(described_class.find_by_token(token)).to eq(job)
+          end
+
+          expect(recorder.count).to eq(1)
+          expect(recorder.log.first).to match(/"p_ci_builds"."token_encrypted" IN/)
+          expect(recorder.log.first).not_to match(/"p_ci_builds"."partition_id" =/)
+        end
+      end
+    end
+
+    describe 'for persisting record' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:job) { FactoryBot.build(:ci_build, pipeline: pipeline, status: :running) }
+
+      it 'uses partition_id filter in query' do
+        recorder = ActiveRecord::QueryRecorder.new do
+          job.save!
+        end
+
+        expect(recorder.log).to include(/"p_ci_builds"."partition_id" =/)
+      end
+
+      context 'when ci_build_find_token_authenticatable feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_build_find_token_authenticatable: false)
+        end
+
+        it 'does not use partition_id filter in query' do
+          recorder = ActiveRecord::QueryRecorder.new do
+            job.save!
+          end
+
+          expect(recorder.log).not_to include(/"p_ci_builds"."partition_id" =/)
+        end
+      end
+    end
+  end
 end

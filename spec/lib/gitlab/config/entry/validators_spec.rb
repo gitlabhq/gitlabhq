@@ -302,6 +302,7 @@ RSpec.describe Gitlab::Config::Entry::Validators, feature_category: :pipeline_co
           '2h'        | false | 'should not exceed the limit'
           'invalid'   | false | 'should be a duration'
           '$DURATION' | false | 'should be a duration'
+          ''          | false | 'should be a duration'
         end
 
         with_them do
@@ -310,6 +311,23 @@ RSpec.describe Gitlab::Config::Entry::Validators, feature_category: :pipeline_co
 
             expect(instance.errors.messages_for(:config)).to include(/#{error_message}/) unless valid_result
           end
+        end
+      end
+
+      context 'when both limit and value are empty' do
+        before do
+          klass.instance_eval do
+            validates :config, duration: { limit: '' }
+          end
+
+          allow(instance).to receive(:config).and_return('')
+        end
+
+        it 'validates duration and applies limit' do
+          expect(instance).to be_invalid
+
+          expect(instance.errors.messages_for(:config)).to include(/should be a duration/)
+                                                       .and include(/should not exceed the limit/)
         end
       end
     end

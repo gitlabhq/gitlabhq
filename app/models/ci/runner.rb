@@ -10,7 +10,6 @@ module Ci
     include TokenAuthenticatable
     include FeatureGate
     include Gitlab::Utils::StrongMemoize
-    include TaggableQueries
     include Presentable
     include EachBatch
     include Ci::HasRunnerStatus
@@ -322,6 +321,13 @@ module Ci
       else
         order_created_at_desc
       end
+    end
+
+    def self.arel_tag_names_array
+      taggings_join_model
+        .scoped_taggables
+        .joins(:tag)
+        .select('COALESCE(array_agg(tags.name ORDER BY tags.name), ARRAY[]::text[])')
     end
 
     def self.runner_matchers

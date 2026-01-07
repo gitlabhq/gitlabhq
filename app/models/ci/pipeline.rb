@@ -730,14 +730,6 @@ module Ci
       statuses.count(:id)
     end
 
-    def tags_count
-      Ci::BuildTag.in_partition(self).where(build: builds).count
-    end
-
-    def distinct_tags_count
-      Ci::BuildTag.in_partition(self).where(build: builds).count('distinct(tag_id)')
-    end
-
     def stages_names
       stages.order(:position).pluck(:name)
     end

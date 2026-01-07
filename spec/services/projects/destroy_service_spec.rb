@@ -1173,6 +1173,44 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     end
   end
 
+  describe '#destroy_relation_export_uploads!' do
+    let(:service) { described_class.new(project, user) }
+
+    context 'when project has relation export uploads' do
+      let!(:export_job) { create(:project_export_job, project: project) }
+      let!(:relation_export) { create(:project_relation_export, project_export_job: export_job) }
+      let!(:relation_export_upload) { create(:relation_export_upload, relation_export: relation_export) }
+
+      it 'calls the RemoveRelationExportUploadsService' do
+        expect(Projects::ImportExport::RemoveRelationExportUploadsService)
+          .to receive(:new).with(project).and_call_original
+        expect_any_instance_of(Projects::ImportExport::RemoveRelationExportUploadsService)
+          .to receive(:execute).and_call_original
+
+        service.send(:destroy_relation_export_uploads!)
+      end
+
+      it 'enqueues workers for each upload', :sidekiq_inline do
+        relation_export_upload.update!(export_file: fixture_file_upload('spec/fixtures/gitlab/import_export/labels.tar.gz'))
+        upload_id = relation_export_upload.uploads.first.id
+
+        expect(Projects::ImportExport::RemoveRelationExportUploadWorker)
+          .to receive(:perform_async).with(upload_id)
+
+        service.send(:destroy_relation_export_uploads!)
+      end
+    end
+
+    context 'when project has no relation export uploads' do
+      it 'does not enqueue any workers' do
+        expect(Projects::ImportExport::RemoveRelationExportUploadWorker)
+          .not_to receive(:perform_async)
+
+        service.send(:destroy_relation_export_uploads!)
+      end
+    end
+  end
+
   def destroy_project(project, user, params = {})
     described_class.new(project, user, params).public_send(async ? :async_execute : :execute)
   end

@@ -1,13 +1,25 @@
 <script>
-import { GlFormGroup, GlCollapsibleListbox, GlAlert, GlTooltipDirective } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import {
+  GlFormGroup,
+  GlCollapsibleListbox,
+  GlAlert,
+  GlTooltipDirective,
+  GlLink,
+  GlSprintf,
+} from '@gitlab/ui';
+import { s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import fluxKustomizationsQuery from '../graphql/queries/flux_kustomizations.query.graphql';
 import fluxHelmReleasesQuery from '../graphql/queries/flux_helm_releases.query.graphql';
+import discoverFluxKustomizationsQuery from '../graphql/queries/discover_flux_kustomizations.query.graphql';
+import discoverFluxHelmReleasesQuery from '../graphql/queries/discover_flux_helm_releases.query.graphql';
 import {
   HELM_RELEASES_RESOURCE_TYPE,
   KUSTOMIZATIONS_RESOURCE_TYPE,
   KUSTOMIZATION,
   HELM_RELEASE,
+  SUPPORTED_HELM_RELEASES,
+  SUPPORTED_KUSTOMIZATIONS,
 } from '../constants';
 
 export default {
@@ -15,6 +27,8 @@ export default {
     GlFormGroup,
     GlCollapsibleListbox,
     GlAlert,
+    GlLink,
+    GlSprintf,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -35,36 +49,41 @@ export default {
       default: '',
     },
   },
-  i18n: {
-    fluxResourceLabel: s__('Environments|Select Flux resource (optional)'),
-    kustomizationsGroupLabel: s__('Environments|Kustomizations'),
-    helmReleasesGroupLabel: s__('Environments|HelmReleases'),
-    fluxResourcesHelpText: s__('Environments|Select Flux resource'),
-    fluxResourceSelectorDescription: s__(
-      'Environments|If a Flux resource is specified, its reconciliation status is reflected in GitLab.',
-    ),
-    errorTitle: s__(
-      'Environments|Unable to access the following resources from this environment. Check your authorization on the following and try again:',
-    ),
-    reset: __('Reset'),
-    tooltipTitle: s__('Environments|Select a namespace to see available Flux resources.'),
-  },
   data() {
     return {
       fluxResourceSearchTerm: '',
       kustomizationsError: '',
       helmReleasesError: '',
+      discoverError: false,
+      fluxKustomizations: [],
+      fluxHelmReleases: [],
+      discoverFluxKustomizations: {},
+      discoverFluxHelmReleases: {},
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
-    fluxKustomizations: {
-      query: fluxKustomizationsQuery,
+    discoverFluxKustomizations: {
+      query: discoverFluxKustomizationsQuery,
       variables() {
-        return this.variables;
+        return { configuration: this.configuration };
       },
       skip() {
         return !this.namespace;
+      },
+      update(data) {
+        return data?.discoverFluxKustomizations || {};
+      },
+      error() {
+        this.discoverError = true;
+      },
+    },
+    fluxKustomizations: {
+      query: fluxKustomizationsQuery,
+      variables() {
+        return { ...this.variables, version: this.kustomizationsVersion };
+      },
+      skip() {
+        return !this.namespace || !this.kustomizationsVersion;
       },
       update(data) {
         return data?.fluxKustomizations || [];
@@ -78,14 +97,28 @@ export default {
         }
       },
     },
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
-    fluxHelmReleases: {
-      query: fluxHelmReleasesQuery,
+    discoverFluxHelmReleases: {
+      query: discoverFluxHelmReleasesQuery,
       variables() {
-        return this.variables;
+        return { configuration: this.configuration };
       },
       skip() {
         return !this.namespace;
+      },
+      update(data) {
+        return data?.discoverFluxHelmReleases || {};
+      },
+      error() {
+        this.discoverError = true;
+      },
+    },
+    fluxHelmReleases: {
+      query: fluxHelmReleasesQuery,
+      variables() {
+        return { ...this.variables, version: this.helmReleasesVersion };
+      },
+      skip() {
+        return !this.namespace || !this.helmReleasesVersion;
       },
       update(data) {
         return data?.fluxHelmReleases || [];
@@ -107,6 +140,29 @@ export default {
         namespace: this.namespace,
       };
     },
+    kustomizationsVersion() {
+      if (this.$apollo.queries.discoverFluxKustomizations.loading) return null;
+      return this.discoverFluxKustomizations.supportedVersion || SUPPORTED_KUSTOMIZATIONS[0];
+    },
+    helmReleasesVersion() {
+      if (this.$apollo.queries.discoverFluxHelmReleases.loading) return null;
+      return this.discoverFluxHelmReleases.supportedVersion || SUPPORTED_HELM_RELEASES[0];
+    },
+    unsupportedVersions() {
+      const items = [];
+      const resources = [this.discoverFluxKustomizations, this.discoverFluxHelmReleases];
+
+      for (const data of resources) {
+        if (data.preferredVersion && data.preferredVersion !== data.supportedVersion) {
+          items.push({
+            preferredVersion: data.preferredVersion,
+            supportedVersion: data.supportedVersion || null,
+          });
+        }
+      }
+
+      return items;
+    },
     loadingFluxResourcesList() {
       return this.$apollo.loading;
     },
@@ -124,7 +180,7 @@ export default {
       const selectedResourceParts = this.fluxResourcePath ? this.fluxResourcePath.split('/') : [];
       return selectedResourceParts.length
         ? selectedResourceParts.at(-1)
-        : this.$options.i18n.fluxResourcesHelpText;
+        : s__('Environments|Select Flux resource');
     },
     fluxKustomizationsList() {
       return (
@@ -162,14 +218,14 @@ export default {
       const list = [];
       if (this.filteredKustomizationsList?.length) {
         list.push({
-          text: this.$options.i18n.kustomizationsGroupLabel,
+          text: s__('Environments|Kustomizations'),
           options: this.filteredKustomizationsList,
         });
       }
 
       if (this.filteredHelmResourcesList?.length) {
         list.push({
-          text: this.$options.i18n.helmReleasesGroupLabel,
+          text: s__('Environments|HelmReleases'),
           options: this.filteredHelmResourcesList,
         });
       }
@@ -187,25 +243,80 @@ export default {
       this.fluxResourceSearchTerm = search;
     },
   },
+  requestIssueUrl: 'https://gitlab.com/gitlab-org/gitlab/-/issues/584823',
+  apiDocUrl: helpPagePath('api/environments.md', { anchor: 'update-an-existing-environment' }),
 };
 </script>
 <template>
   <gl-form-group
-    :description="$options.i18n.fluxResourceSelectorDescription"
-    :label="$options.i18n.fluxResourceLabel"
+    :description="
+      s__(
+        'Environments|If a Flux resource is specified, its reconciliation status is reflected in GitLab.',
+      )
+    "
+    :label="s__('Environments|Select Flux resource (optional)')"
     label-for="environment_flux_resource"
   >
-    <gl-alert v-if="kubernetesErrors.length" variant="warning" :dismissible="false" class="gl-mb-5">
-      {{ $options.i18n.errorTitle }}
-      <ul class="gl-mb-0 gl-pl-6">
-        <li v-for="(error, index) of kubernetesErrors" :key="index">{{ error }}</li>
-      </ul>
+    <gl-alert
+      v-if="kubernetesErrors.length || unsupportedVersions.length || discoverError"
+      variant="warning"
+      :dismissible="false"
+      class="gl-mb-5"
+    >
+      <template v-if="kubernetesErrors.length">
+        {{
+          s__(
+            'Environments|Unable to access the following resources from this environment. Check your authorization on the following and try again:',
+          )
+        }}
+        <ul class="gl-pl-6" :class="{ 'gl-mb-0': !unsupportedVersions.length }">
+          <li v-for="(error, index) of kubernetesErrors" :key="index">{{ error }}</li>
+        </ul>
+      </template>
+
+      <template v-if="discoverError">
+        {{ s__('Environments|Unable to discover supported Flux resource versions.') }}
+      </template>
+
+      <template v-if="unsupportedVersions.length">
+        {{ s__('Environments|The preferred version of your resource is not supported:') }}
+        <ul class="gl-mb-3 gl-pl-6">
+          <li v-for="(item, index) in unsupportedVersions" :key="index">
+            {{ item.preferredVersion }}
+            <gl-sprintf
+              v-if="item.supportedVersion"
+              :message="s__('Environments|(available version - %{version})')"
+            >
+              <template #version>{{ item.supportedVersion }}</template>
+            </gl-sprintf>
+          </li>
+        </ul>
+
+        <gl-sprintf
+          :message="
+            s__(
+              'Environments|%{requestLinkStart}Request version support%{requestLinkEnd} or %{apiLinkStart}use API%{apiLinkEnd} to set resource path.',
+            )
+          "
+        >
+          <template #requestLink="{ content }"
+            ><gl-link :href="$options.requestIssueUrl" data-testid="request-version-support-link">{{
+              content
+            }}</gl-link></template
+          >
+          <template #apiLink="{ content }"
+            ><gl-link :href="$options.apiDocUrl" data-testid="api-docs-link">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+      </template>
     </gl-alert>
 
     <gl-collapsible-listbox
       id="environment_flux_resource_path"
       v-gl-tooltip.hover.top="{
-        title: isDisabled ? $options.i18n.tooltipTitle : '',
+        title: isDisabled
+          ? s__('Environments|Select a namespace to see available Flux resources.')
+          : '',
       }"
       class="gl-w-full"
       block
@@ -214,8 +325,8 @@ export default {
       :items="fluxResourcesList"
       :loading="loadingFluxResourcesList"
       :toggle-text="fluxResourcesDropdownToggleText"
-      :header-text="$options.i18n.fluxResourcesHelpText"
-      :reset-button-label="$options.i18n.reset"
+      :header-text="s__('Environments|Select Flux resource')"
+      :reset-button-label="__('Reset')"
       searchable
       @search="onSearch"
       @select="onChange"

@@ -1,0 +1,14 @@
+query savedViews($fullPath: ID!) {
+  namespace(fullPath: $fullPath) @client {
+    id
+    savedViews {
+      nodes {
+        id
+        title
+        description
+        isSubscribed
+        isPrivate
+      }
+    }
+  }
+}

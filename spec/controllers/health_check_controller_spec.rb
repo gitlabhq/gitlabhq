@@ -82,6 +82,24 @@ RSpec.describe HealthCheckController, :request_store, :use_clean_rails_memory_st
         expect(json_response['healthy']).to be true
       end
 
+      it 'maps migrations check to all-migrations' do
+        expect(HealthCheck::Utils).to receive(:process_checks)
+          .with(['all-migrations']).and_call_original
+
+        get :index, params: { checks: 'migrations' }, format: :json
+
+        expect(response).to be_successful
+      end
+
+      it 'maps migrations check in combined checks' do
+        expect(HealthCheck::Utils).to receive(:process_checks)
+          .with(%w[database all-migrations cache]).and_call_original
+
+        get :index, params: { checks: 'database_migrations_cache' }, format: :json
+
+        expect(response).to be_successful
+      end
+
       context 'if the request IP was mapped to an IPv6' do
         before do
           allow(Gitlab::RequestContext.instance)

@@ -200,6 +200,7 @@ module Projects
       destroy_deployments!
       destroy_mr_diff_relations!
       destroy_bulk_import_uploads!
+      destroy_relation_export_uploads!
 
       destroy_merge_request_diffs!
       delete_environments
@@ -390,6 +391,10 @@ module Projects
 
     def destroy_bulk_import_uploads!
       ::Import::BulkImports::RemoveExportUploadsService.new(project).execute
+    end
+
+    def destroy_relation_export_uploads!
+      ::Projects::ImportExport::RemoveRelationExportUploadsService.new(project).execute
     end
 
     def remove_registry_tags

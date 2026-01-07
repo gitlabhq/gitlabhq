@@ -7,7 +7,6 @@ class CommitStatus < Ci::ApplicationRecord
   include AfterCommitQueue
   include Presentable
   include BulkInsertableAssociations
-  include TaggableQueries
 
   ignore_column :environment_auto_stop_in, remove_with: '18.4', remove_after: '2025-09-01'
 

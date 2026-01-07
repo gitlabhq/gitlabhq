@@ -6880,25 +6880,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe 'tags count' do
-    let_it_be_with_refind(:pipeline) do
-      create(:ci_empty_pipeline, project: project)
-    end
-
-    it { expect(pipeline.tags_count).to eq(0) }
-    it { expect(pipeline.distinct_tags_count).to eq(0) }
-
-    context 'with builds' do
-      before do
-        create(:ci_build, pipeline: pipeline, tag_list: %w[a b])
-        create(:ci_build, pipeline: pipeline, tag_list: %w[b c])
-      end
-
-      it { expect(pipeline.tags_count).to eq(4) }
-      it { expect(pipeline.distinct_tags_count).to eq(3) }
-    end
-  end
-
   context 'loose foreign key on ci_pipelines.merge_request_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:merge_request) }

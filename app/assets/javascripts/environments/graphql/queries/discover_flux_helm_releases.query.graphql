@@ -1,0 +1,6 @@
+query discoverFluxHelmReleasesQuery($configuration: LocalConfiguration) {
+  discoverFluxHelmReleases(configuration: $configuration) @client {
+    supportedVersion
+    preferredVersion
+  }
+}

@@ -13,6 +13,12 @@ export default {
   i18n: {
     defaultViewtitle: s__('WorkItem|All items'),
   },
+  props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
+  },
 };
 </script>
 
@@ -28,7 +34,7 @@ export default {
           }}</span>
         </template>
       </gl-tab>
-      <work-items-create-saved-view-dropdown />
+      <work-items-create-saved-view-dropdown :full-path="fullPath" />
     </gl-tabs>
     <div class="!gl-flex gl-items-center gl-justify-end gl-gap-3">
       <slot name="header-area"></slot>

@@ -1,5 +1,10 @@
-query getFluxHelmReleasesQuery($configuration: LocalConfiguration, $namespace: String) {
-  fluxHelmReleases(configuration: $configuration, namespace: $namespace) @client {
+query getFluxHelmReleasesQuery(
+  $configuration: LocalConfiguration
+  $namespace: String
+  $version: String
+) {
+  fluxHelmReleases(configuration: $configuration, namespace: $namespace, version: $version)
+    @client {
     apiVersion
     metadata {
       name
