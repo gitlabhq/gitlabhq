@@ -189,6 +189,9 @@ func verifyCorsHeaders(t *testing.T, w *httptest.ResponseRecorder, expectedHeade
 		"Access-Control-Allow-Methods",
 		"Access-Control-Allow-Headers",
 		"Access-Control-Allow-Credentials",
+		"Cross-Origin-Opener-Policy",
+		"Content-Security-Policy",
+		"Cross-Origin-Resource-Policy",
 		"Vary",
 	}
 	for _, header := range allCorsHeaders {
@@ -202,28 +205,41 @@ func verifyCorsHeaders(t *testing.T, w *httptest.ResponseRecorder, expectedHeade
 func TestResolveCorsHeaders(t *testing.T) {
 	dir := t.TempDir()
 
-	// Create a test file in the assets directory
-	assetsDir := filepath.Join(dir, "assets")
-	err := os.MkdirAll(assetsDir, 0755)
+	// Create test files in the assets directory for different paths
+	fileContent := "STATIC ASSET"
+
+	// Create webpack/gitlab-web-ide-vscode-workbench path
+	vscodeDir := filepath.Join(dir, "assets", "webpack", "gitlab-web-ide-vscode-workbench")
+	err := os.MkdirAll(vscodeDir, 0755)
+	require.NoError(t, err)
+	err = os.WriteFile(filepath.Join(vscodeDir, "test.js"), []byte(fileContent), 0600)
 	require.NoError(t, err)
 
-	fileContent := "STATIC ASSET"
-	err = os.WriteFile(filepath.Join(assetsDir, "test.js"), []byte(fileContent), 0600)
+	// Create gitlab-mono path
+	gitlabMonoDir := filepath.Join(dir, "assets", "gitlab-mono")
+	err = os.MkdirAll(gitlabMonoDir, 0755)
+	require.NoError(t, err)
+	err = os.WriteFile(filepath.Join(gitlabMonoDir, "test.woff2"), []byte(fileContent), 0600)
+	require.NoError(t, err)
+
+	// Create other assets path (should not get CORS headers)
+	otherDir := filepath.Join(dir, "assets", "other")
+	err = os.MkdirAll(otherDir, 0755)
+	require.NoError(t, err)
+	err = os.WriteFile(filepath.Join(otherDir, "test.js"), []byte(fileContent), 0600)
 	require.NoError(t, err)
 
 	testCases := []struct {
 		desc            string
 		path            string
 		method          string
-		hasOriginHeader bool
 		railsHeaders    map[string]string
 		expectedHeaders map[string]string
 	}{
 		{
-			desc:            "CORS headers returned for GET request on /assets/ with Origin header",
-			path:            "/assets/test.js",
-			method:          "GET",
-			hasOriginHeader: true,
+			desc:   "CORS headers returned for GET request on /assets/webpack/gitlab-web-ide-vscode-workbench path",
+			path:   "/assets/webpack/gitlab-web-ide-vscode-workbench/test.js",
+			method: "GET",
 			railsHeaders: map[string]string{
 				"Access-Control-Allow-Origin":      "https://example.com",
 				"Access-Control-Allow-Methods":     "GET, HEAD, OPTIONS",
@@ -240,10 +256,9 @@ func TestResolveCorsHeaders(t *testing.T) {
 			},
 		},
 		{
-			desc:            "CORS headers returned for OPTIONS request on /assets/ with Origin header",
-			path:            "/assets/test.js",
-			method:          "OPTIONS",
-			hasOriginHeader: true,
+			desc:   "CORS headers returned for OPTIONS request on /assets/gitlab-mono path",
+			path:   "/assets/gitlab-mono/test.woff2",
+			method: "OPTIONS",
 			railsHeaders: map[string]string{
 				"Access-Control-Allow-Origin":  "https://example.com",
 				"Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
@@ -254,10 +269,9 @@ func TestResolveCorsHeaders(t *testing.T) {
 			},
 		},
 		{
-			desc:            "CORS headers returned for HEAD request on /assets/ with Origin header",
-			path:            "/assets/test.js",
-			method:          "HEAD",
-			hasOriginHeader: true,
+			desc:   "CORS headers returned for HEAD request on /assets/webpack/gitlab-web-ide-vscode-workbench path",
+			path:   "/assets/webpack/gitlab-web-ide-vscode-workbench/test.js",
+			method: "HEAD",
 			railsHeaders: map[string]string{
 				"Access-Control-Allow-Origin":  "https://example.com",
 				"Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
@@ -268,40 +282,53 @@ func TestResolveCorsHeaders(t *testing.T) {
 			},
 		},
 		{
-			desc:            "No CORS headers when Origin header is missing",
-			path:            "/assets/test.js",
-			method:          "GET",
-			hasOriginHeader: false,
+			desc:   "New security headers are returned for /assets/webpack/gitlab-web-ide-vscode-workbench path",
+			path:   "/assets/webpack/gitlab-web-ide-vscode-workbench/test.js",
+			method: "GET",
+			railsHeaders: map[string]string{
+				"Access-Control-Allow-Origin":  "https://example.com",
+				"Cross-Origin-Opener-Policy":   "same-origin",
+				"Content-Security-Policy":      "default-src 'self'",
+				"Cross-Origin-Resource-Policy": "cross-origin",
+			},
+			expectedHeaders: map[string]string{
+				"Access-Control-Allow-Origin":  "https://example.com",
+				"Cross-Origin-Opener-Policy":   "same-origin",
+				"Content-Security-Policy":      "default-src 'self'",
+				"Cross-Origin-Resource-Policy": "cross-origin",
+			},
+		},
+		{
+			desc:   "No CORS headers for POST request (not in allowed methods)",
+			path:   "/assets/webpack/gitlab-web-ide-vscode-workbench/test.js",
+			method: "POST",
 			railsHeaders: map[string]string{
 				"Access-Control-Allow-Origin": "https://example.com",
 			},
 			expectedHeaders: map[string]string{},
 		},
 		{
-			desc:            "No CORS headers for POST request (not in allowed methods)",
-			path:            "/assets/test.js",
-			method:          "POST",
-			hasOriginHeader: true,
+			desc:   "No CORS headers for non-target assets path (not webpack/gitlab-web-ide-vscode-workbench or gitlab-mono)",
+			path:   "/assets/other/test.js",
+			method: "GET",
 			railsHeaders: map[string]string{
 				"Access-Control-Allow-Origin": "https://example.com",
 			},
 			expectedHeaders: map[string]string{},
 		},
 		{
-			desc:            "No CORS headers for non-assets path",
-			path:            "/other/test.js",
-			method:          "GET",
-			hasOriginHeader: true,
+			desc:   "No CORS headers for non-assets path",
+			path:   "/other/test.js",
+			method: "GET",
 			railsHeaders: map[string]string{
 				"Access-Control-Allow-Origin": "https://example.com",
 			},
 			expectedHeaders: map[string]string{},
 		},
 		{
-			desc:            "Only allowed CORS headers are copied",
-			path:            "/assets/test.js",
-			method:          "GET",
-			hasOriginHeader: true,
+			desc:   "Only allowed CORS headers are copied",
+			path:   "/assets/gitlab-mono/test.woff2",
+			method: "GET",
 			railsHeaders: map[string]string{
 				"Access-Control-Allow-Origin": "https://example.com",
 				"X-Custom-Header":             "should-not-be-copied",
@@ -330,20 +357,17 @@ func TestResolveCorsHeaders(t *testing.T) {
 			httpRequest, err := http.NewRequest(tc.method, tc.path, nil)
 			require.NoError(t, err)
 
-			if tc.hasOriginHeader {
-				httpRequest.Header.Set("Origin", "https://example.com")
-			}
-
 			// Create static handler with API client
 			w := httptest.NewRecorder()
 			st := &Static{DocumentRoot: dir, API: apiClient}
 			st.ServeExisting("/", CacheDisabled, nil).ServeHTTP(w, httpRequest)
 
-			// For paths where the file exists, we get 200
-			// For paths outside /assets or without origin, we get 200 but no CORS headers
-			// For valid cases with CORS, we should get 200 with CORS headers
-			if tc.path == "/assets/test.js" && (tc.method == "GET" || tc.method == "OPTIONS") {
-				require.Equal(t, 200, w.Code, "Request should succeed when file exists")
+			// For paths where the file exists and method is allowed, we should get 200
+			if tc.method == "GET" || tc.method == "HEAD" || tc.method == "OPTIONS" {
+				// Check if the path should return 200 or 404
+				if tc.path != "/other/test.js" {
+					require.Equal(t, 200, w.Code, "Request should succeed when file exists")
+				}
 			}
 
 			// Verify CORS headers

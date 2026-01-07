@@ -85,7 +85,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_multipart_tempfile_factory')
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_attack_headers')
     require_dependency Rails.root.join('lib/gitlab/middleware/secure_headers')
-    require_dependency Rails.root.join('lib/gitlab/middleware/cors_static_assets')
+    require_dependency Rails.root.join('lib/gitlab/middleware/static_assets_authorization')
     require_dependency Rails.root.join('lib/gitlab/runtime')
     require_dependency Rails.root.join('lib/gitlab/patch/database_config')
     require_dependency Rails.root.join('lib/gitlab/patch/redis_cache_store')
@@ -455,7 +455,7 @@ module Gitlab
     config.middleware.insert_after ActionDispatch::ShowExceptions, ::Gitlab::Middleware::JsonValidation
 
     # Insert this early in the middleware stack to bypass ActionDispatch::HostAuthorization
-    config.middleware.unshift ::Gitlab::Middleware::CorsStaticAssets
+    config.middleware.unshift ::Gitlab::Middleware::StaticAssetsAuthorization
 
     # Allow access to GitLab API from other domains
     config.middleware.insert_before Warden::Manager, Rack::Cors do
