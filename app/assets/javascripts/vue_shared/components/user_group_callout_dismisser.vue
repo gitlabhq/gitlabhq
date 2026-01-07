@@ -77,8 +77,6 @@ export default normalizeRender({
       // initialized with true so that apollo does not pre-emptively run the query
       // until after the created hook checks and sets isDismissedLocal
       isDismissedLocal: true,
-      isLoadingMutation: false,
-      mutationError: null,
       queryError: null,
     };
   },
@@ -147,7 +145,6 @@ export default normalizeRender({
   },
   methods: {
     async dismiss() {
-      this.isLoadingMutation = true;
       this.isDismissedLocal = true;
 
       try {
@@ -166,7 +163,6 @@ export default normalizeRender({
           // eslint-disable-next-line @gitlab/require-i18n-strings
           const errorMessage = `User group callout dismissal failed: ${errors.join(', ')}`;
           Sentry.captureException(new Error(errorMessage));
-          this.onDismissalError(errors);
           return;
         }
 
@@ -178,13 +174,7 @@ export default normalizeRender({
       } catch (err) {
         logError(err);
         Sentry.captureException(err);
-        this.onDismissalError([err.message]);
-      } finally {
-        this.isLoadingMutation = false;
       }
-    },
-    onDismissalError(errors) {
-      this.mutationError = errors;
     },
   },
   render() {

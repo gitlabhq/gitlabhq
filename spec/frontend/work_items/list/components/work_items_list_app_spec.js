@@ -366,7 +366,7 @@ describe('when work items are fetched', () => {
         sort: CREATED_DESC,
         state: STATUS_OPEN,
         firstPageSize: 20,
-        types: ['ISSUE', 'INCIDENT', 'TASK'],
+        types: ['ISSUE', 'INCIDENT', 'TASK', 'TICKET'],
         excludeGroupWorkItems: false,
       }),
     );

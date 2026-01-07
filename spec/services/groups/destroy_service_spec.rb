@@ -107,7 +107,7 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
   describe 'asynchronous delete' do
     it_behaves_like 'group destruction', true
 
-    context 'when namespace_state_management feature flag is enabled' do
+    context 'when group state is deletion_scheduled' do
       before do
         set_state(group, :deletion_scheduled)
       end
@@ -130,18 +130,6 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
 
           destroy_group(group, user, true)
         end
-      end
-    end
-
-    context 'when namespace_state_management feature flag is disabled' do
-      before do
-        stub_feature_flags(namespace_state_management: false)
-      end
-
-      it 'does not call start_deletion!' do
-        expect(group).not_to receive(:start_deletion!)
-
-        destroy_group(group, user, true)
       end
     end
 
@@ -180,7 +168,7 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
         expect(group.deleted_at).to be_nil
       end
 
-      context 'when namespace_state_management feature flag is enabled' do
+      context 'when group state is deletion_scheduled' do
         before do
           set_state(group, :deletion_scheduled)
         end
@@ -205,22 +193,9 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
           expect { destroy_group(group, user, false) }.to raise_error(StandardError)
         end
       end
-
-      context 'when namespace_state_management feature flag is disabled' do
-        before do
-          stub_feature_flags(namespace_state_management: false)
-        end
-
-        it 'does not call reschedule_deletion!' do
-          expect(group).not_to receive(:reschedule_deletion!)
-
-          expect { destroy_group(group, user, false) }.to raise_error(StandardError)
-          expect(group.state).to eq(Namespaces::Stateful::STATES[:ancestor_inherited])
-        end
-      end
     end
 
-    context 'when namespace_state_management feature flag is enabled' do
+    context 'when group state is deletion_scheduled' do
       before do
         set_state(group, :deletion_scheduled)
       end
@@ -270,18 +245,6 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
         end
       end
     end
-
-    context 'when namespace_state_management feature flag is disabled' do
-      before do
-        stub_feature_flags(namespace_state_management: false)
-      end
-
-      it 'does not call start_deletion!' do
-        expect(group).not_to receive(:start_deletion!)
-
-        destroy_group(group, user, false)
-      end
-    end
   end
 
   context 'projects in pending_delete' do
@@ -307,12 +270,11 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
   context 'when group owner is blocked' do
     before do
       user.block!
-      stub_feature_flags(namespace_state_management: false)
     end
 
     it 'returns a more descriptive error message' do
       expect { destroy_group(group, user, false) }
-      .to raise_error(described_class::DestroyError, "You can't delete this group because you're blocked.")
+        .to raise_error(described_class::DestroyError, "You can't delete this group because you're blocked.")
     end
   end
 

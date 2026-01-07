@@ -3,6 +3,11 @@
 module Mcp
   module Tools
     class BaseService
+      # override this method when renaming tools
+      def self.tool_aliases
+        []
+      end
+
       def initialize(name:)
         @name = name
       end

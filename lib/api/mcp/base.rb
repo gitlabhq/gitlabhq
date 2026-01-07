@@ -107,10 +107,16 @@ module API
             allow_blank: false, values: [JSONRPC_VERSION]
           requires :method, type: String, desc: 'Name of the JSON-RPC method invoked on the MCP server.',
             allow_blank: false
-          optional :id, desc: 'ID of the JSON-RPC request returned in the response.',
-            allow_blank: false # NOTE: JSON-RPC server must reply with same value and type for "id" member
+          optional :id, types: [String, Integer], desc: 'ID of the JSON-RPC request returned in the response.',
+            allow_blank: false
           optional :params, desc: 'Object or array that contains parameters passed to the specified JSON-RPC method',
             types: [Hash, Array]
+
+          # Validate that string IDs are non-empty per MCP spec
+          given id: ->(val) { val.is_a?(String) } do
+            requires :id, types: [String, Integer], desc: 'ID of the JSON-RPC request returned in the response.',
+              allow_blank: false
+          end
         end
 
         rescue_from Grape::Exceptions::ValidationErrors do |e|

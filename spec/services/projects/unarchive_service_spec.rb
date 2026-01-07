@@ -89,16 +89,6 @@ RSpec.describe Projects::UnarchiveService, feature_category: :groups_and_project
               .from(Namespaces::Stateful::STATES[:archived]).to(Namespaces::Stateful::STATES[:ancestor_inherited])
           end
 
-          context 'with namespace_state_management feature flag disabled' do
-            before do
-              stub_feature_flags(namespace_state_management: false)
-            end
-
-            it 'does not update the project_namespace state' do
-              expect { service.execute }.not_to change { project.project_namespace.state }
-            end
-          end
-
           it 'updates the project archived status to false' do
             expect { service.execute }.to change { project.reload.archived }.from(true).to(false)
           end

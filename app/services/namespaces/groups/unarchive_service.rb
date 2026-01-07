@@ -43,10 +43,7 @@ module Namespaces
 
       def unarchive_group
         Namespace.transaction do
-          if Feature.enabled?(:namespace_state_management, group.root_ancestor)
-            group.unarchive!(transition_user: current_user)
-          end
-
+          group.unarchive!(transition_user: current_user)
           group.namespace_settings.update!(archived: false)
         end
       end

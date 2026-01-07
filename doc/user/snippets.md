@@ -30,11 +30,14 @@ You can create and manage your snippets with:
 
 GitLab provides two types of snippets:
 
-- Personal snippets: Created independent of any project.
-  You can set a [visibility level](public_access.md)
-  for your snippet: public or private.
-- Project snippets: Always related to a specific project.
-  Project snippets can be visible publicly, or to only project members.
+- Personal snippets: Independent of any project. You can set the
+  [visibility level](public_access.md) to public or private.
+- Project snippets: Associated with a specific project. You can set the visibility
+  to public or visible to project members only.
+
+On GitLab.com, group Owners can
+[restrict personal snippet creation](group/manage.md#restrict-personal-snippets-for-enterprise-users)
+for [enterprise users](enterprise_user/_index.md).
 
 {{< alert type="note" >}}
 

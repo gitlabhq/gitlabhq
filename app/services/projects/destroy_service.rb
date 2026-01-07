@@ -71,30 +71,20 @@ module Projects
 
     def mark_deletion_in_progress
       Project.transaction do
-        if Feature.enabled?(:namespace_state_management, project.root_ancestor) && !project.deletion_in_progress?
-          project.start_deletion!(transition_user: current_user)
-        end
-
+        project.start_deletion!(transition_user: current_user) unless project.deletion_in_progress?
         project.update_attribute(:pending_delete, true)
       end
     end
 
     def cancel_deletion
       Project.transaction do
-        if Feature.enabled?(:namespace_state_management, project.root_ancestor)
-          project.cancel_deletion!(transition_user: current_user)
-        end
-
+        project.cancel_deletion!(transition_user: current_user)
         project.update_attribute(:pending_delete, false) if project.pending_delete?
       end
     end
 
     def reschedule_deletion
-      Project.transaction do
-        if Feature.enabled?(:namespace_state_management, project.root_ancestor)
-          project.reschedule_deletion!(transition_user: current_user)
-        end
-      end
+      project.reschedule_deletion!(transition_user: current_user)
     end
 
     def all_pipelines

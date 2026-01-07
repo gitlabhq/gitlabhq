@@ -12,6 +12,17 @@ def each_database(databases, include_geo: false)
   end
 end
 
+# Exclude OpenBao tables in case they're created in a database managed by Rails
+def filter_openbao_tables(tables)
+  # Hardcoded list of tables to exclude from database operations
+  # See: https://openbao.org/docs/configuration/storage/postgresql/#manually-creating-tables
+  excluded_tables = %w[openbao_kv_store openbao_ha_locks]
+
+  tables.reject do |table_name|
+    excluded_tables.include?(table_name)
+  end
+end
+
 namespace :gitlab do
   namespace :db do
     desc 'GitLab | DB | Manually insert schema migration version on all configured databases'
@@ -68,6 +79,7 @@ namespace :gitlab do
     def drop_tables(only_on: nil)
       Gitlab::Database::EachDatabase.each_connection(only: only_on) do |connection, name|
         # In PostgreSQLAdapter, data_sources returns both views and tables, so use tables instead
+        # OpenBao tables can be dropped when they are stored in one of the databases managed by Rails
         tables = connection.tables
 
         # Views that are dependencies to PG_EXTENSION (like pg_stat_statements) should be ignored
@@ -178,7 +190,10 @@ namespace :gitlab do
 
     def configure_database(connection, database_name: nil)
       database_name = ":#{database_name}" if database_name
-      load_database = connection.tables.count <= 1
+
+      # OpenBao tables should not prevent the database from being configured
+      # when they're created in a database managed by Rails
+      load_database = filter_openbao_tables(connection.tables).count <= 1
 
       ActiveRecord::Base.connection_handler.clear_all_connections!
 
@@ -692,7 +707,7 @@ namespace :gitlab do
         classes = {}
 
         Gitlab::Database.database_base_models.each do |_, model_class|
-          tables = model_class.connection.tables
+          tables = filter_openbao_tables(model_class.connection.tables)
 
           views = model_class.connection.views
 

@@ -45,10 +45,11 @@ module Mcp
         'get_workitem_notes' => ::Mcp::Tools::WorkItems::GraphqlGetWorkItemNotesService
       }.freeze
 
-      attr_reader :tools
+      attr_reader :tools, :alias_map
 
       def initialize
         @tools = build_tools
+        @alias_map = build_alias_map
       end
 
       def list_tools
@@ -58,13 +59,15 @@ module Mcp
       def get_tool(name:, version: nil)
         raise InvalidVersionFormatError, version if version && !validate_semantic_version(version)
 
-        return get_custom_tool(name, version) if CUSTOM_TOOLS.key?(name)
+        canonical_name = resolve_alias(name)
 
-        return get_graphql_tool(name, version) if GRAPHQL_TOOLS.key?(name)
+        return get_custom_tool(canonical_name, version) if CUSTOM_TOOLS.key?(canonical_name)
 
-        return get_api_tool(name, version) if discover_api_tools.key?(name)
+        return get_graphql_tool(canonical_name, version) if GRAPHQL_TOOLS.key?(canonical_name)
 
-        return get_aggregated_api_tool(name, version) if discover_aggregated_api_tools.key?(name)
+        return get_api_tool(canonical_name, version) if discover_api_tools.key?(canonical_name)
+
+        return get_aggregated_api_tool(canonical_name, version) if discover_aggregated_api_tools.key?(canonical_name)
 
         raise ToolNotFoundError, name
       end
@@ -108,6 +111,22 @@ module Mcp
         raise VersionNotFoundError.new(name, version, [tool_version]) if version && version != tool_version
 
         tool
+      end
+
+      def resolve_alias(name)
+        alias_map[name] || name
+      end
+
+      def build_alias_map
+        map = {}
+
+        tools.each do |tool_name, tool|
+          next unless tool.class.respond_to?(:tool_aliases)
+
+          tool.class.tool_aliases.each { |alias_name| map[alias_name] = tool_name }
+        end
+
+        map
       end
 
       def build_tools

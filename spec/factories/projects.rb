@@ -540,6 +540,16 @@ FactoryBot.define do
       end
     end
 
+    trait :wiki_repo_with_page do
+      after(:create) do |project|
+        stub_feature_flags(main_branch_over_master: false)
+
+        raise 'Failed to create wiki repository!' unless project.create_wiki
+
+        project.wiki.create_page('Home', 'This is the home page')
+      end
+    end
+
     trait :read_only do
       repository_read_only { true }
     end

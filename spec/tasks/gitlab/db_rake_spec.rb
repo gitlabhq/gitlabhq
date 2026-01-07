@@ -259,6 +259,20 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
           end
         end
 
+        context 'when only OpenBao tables exist' do
+          it 'loads the schema and seeds the database' do
+            allow(connection).to receive(:tables).and_return(%w[openbao_kv_store openbao_ha_locks])
+
+            expect(Rake::Task['db:schema:load']).to receive(:invoke)
+            expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
+            expect(Rake::Task['db:seed_fu']).to receive(:invoke)
+            expect(Rake::Task['db:migrate']).not_to receive(:invoke)
+            expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).to receive(:invoke).with(1, 1000)
+
+            run_rake_task('gitlab:db:configure')
+          end
+        end
+
         context 'when only a single table is present' do
           it 'loads the schema and seeds the database' do
             allow(connection).to receive(:tables).and_return(['default'])
@@ -938,12 +952,14 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
     let(:base_models) { { 'fake_db' => model }.with_indifferent_access }
 
-    let(:tables) { %w[table1 _test_dictionary_table_name] }
+    let(:tables) { %w[table1 _test_dictionary_table_name openbao_kv_store openbao_ha_locks] }
     let(:views) { %w[view1] }
 
     let(:table_file_path) { 'db/docs/table1.yml' }
     let(:view_file_path) { 'db/docs/views/view1.yml' }
     let(:test_table_path) { 'db/docs/_test_dictionary_table_name.yml' }
+    let(:openbao_kv_store_table_path) { 'db/docs/openbao_kv_store.yml' }
+    let(:openbao_ha_locks_table_path) { 'db/docs/openbao_ha_locks.yml' }
 
     before do
       allow(Gitlab::Database).to receive(:db_config_for_connection).and_return(db_config)
@@ -970,6 +986,13 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         run_rake_task('gitlab:db:dictionary:generate')
 
         expect(File).not_to exist(File.join(test_table_path))
+      end
+
+      it 'do not generate the dictionary files for OpenBao tables' do
+        run_rake_task('gitlab:db:dictionary:generate')
+
+        expect(File).not_to exist(File.join(openbao_kv_store_table_path))
+        expect(File).not_to exist(File.join(openbao_ha_locks_table_path))
       end
     end
 

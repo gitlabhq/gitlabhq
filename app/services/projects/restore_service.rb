@@ -26,11 +26,9 @@ module Projects
 
     def rename_resource
       Project.transaction do
-        if Feature.enabled?(:namespace_state_management, resource.root_ancestor)
-          transition_success = resource.cancel_deletion(transition_user: current_user)
-          unless transition_success
-            next ServiceResponse.error(message: resource.project_namespace.errors.full_messages.to_sentence)
-          end
+        transition_success = resource.cancel_deletion(transition_user: current_user)
+        unless transition_success
+          next ServiceResponse.error(message: resource.project_namespace.errors.full_messages.to_sentence)
         end
 
         update_service_response = ::Projects::UpdateService.new(

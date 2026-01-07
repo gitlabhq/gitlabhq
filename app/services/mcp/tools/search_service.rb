@@ -2,19 +2,23 @@
 
 module Mcp
   module Tools
-    class GitlabSearchService < AggregatedService
+    class SearchService < AggregatedService
       include Gitlab::Utils::StrongMemoize
       extend ::Gitlab::Utils::Override
 
-      register_version '0.1.0', {
-        # description and input_schema
-        # rely upon the database and are defined
-        # as methods for lazy loading
-      }
+      # description and input_schema
+      # rely upon the database and are defined
+      # as methods for lazy loading
+      register_version '0.1.0', {}
 
       override :tool_name
       def self.tool_name
-        'gitlab_search'
+        'search'
+      end
+
+      override :tool_aliases
+      def self.tool_aliases
+        ['gitlab_search']
       end
 
       override :description
@@ -186,4 +190,4 @@ module Mcp
   end
 end
 
-Mcp::Tools::GitlabSearchService.prepend_mod
+Mcp::Tools::SearchService.prepend_mod

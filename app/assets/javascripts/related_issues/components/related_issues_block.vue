@@ -2,6 +2,7 @@
 import { GlLink } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { __, sprintf } from '~/locale';
+import { TYPE_ISSUE } from '~/issues/constants';
 import {
   issuableIconMap,
   linkedIssueTypesMap,
@@ -140,7 +141,9 @@ export default {
       return this.hasRelatedIssues || this.isFetching;
     },
     headerTextDisplay() {
-      return this.headerText ? this.headerText : issuablesBlockHeaderTextMap[this.issuableType];
+      return this.headerText
+        ? this.headerText
+        : issuablesBlockHeaderTextMap[this.issuableType] || issuablesBlockHeaderTextMap[TYPE_ISSUE];
     },
     addButtonTextDisplay() {
       if (!this.canAdmin) {

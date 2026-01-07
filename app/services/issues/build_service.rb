@@ -109,10 +109,14 @@ module Issues
     end
 
     def build_issue_params
-      { author: current_user }
+      { author: }
         .merge(issue_params_with_info_from_discussions)
         .merge(public_params)
         .with_indifferent_access
+    end
+
+    def author
+      Gitlab::Auth::Identity.invert_composite_identity(current_user)
     end
   end
 end

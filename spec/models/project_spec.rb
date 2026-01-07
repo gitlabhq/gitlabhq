@@ -4096,7 +4096,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#create_repository' do
-    let_it_be(:project) { build(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     context 'using a regular repository' do
       it 'creates the repository' do

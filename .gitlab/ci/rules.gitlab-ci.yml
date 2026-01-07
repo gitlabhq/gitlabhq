@@ -2051,18 +2051,10 @@
 .qa:e2e-test-schedule-variables: &qa-e2e-test-schedule-variables
   CREATE_TEST_FAILURE_ISSUES: "true"
   PROCESS_TEST_RESULTS: "true"
-
-.qa:rules:e2e-schedule-nightly:
-  rules:
-    - <<: *if-default-branch-schedule-nightly
-      variables:
-        <<: *qa-e2e-test-schedule-variables
-        QA_RUN_IN_PARALLEL: "false"
-        COVERBAND_ENABLED: "false"
+  OMNIBUS_GITLAB_CACHE_UPDATE: "true"
 
 .qa:rules:e2e-schedule-blocking:
   rules:
-    - !reference [".qa:rules:e2e-schedule-nightly", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       variables: *qa-e2e-test-schedule-variables
 

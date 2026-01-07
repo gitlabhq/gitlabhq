@@ -38,6 +38,7 @@ import {
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_TASK,
+  WORK_ITEM_TYPE_ENUM_TICKET,
 } from '~/work_items/constants';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 import { BoardType } from '~/boards/constants';
@@ -87,7 +88,7 @@ import {
 
 /**
  * Get the types of work items that should be displayed on issues lists.
- * This should be consistent with `Issue::TYPES_FOR_LIST` in the backend.
+ * This should be consistent with `TYPES_FOR_LIST` in the backend.
  *
  * @returns {Array<string>}
  */
@@ -95,6 +96,7 @@ export const getDefaultWorkItemTypes = () => [
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_TASK,
+  WORK_ITEM_TYPE_ENUM_TICKET,
 ];
 
 export const getTypeTokenOptions = () => [

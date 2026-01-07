@@ -340,7 +340,7 @@ export default {
         '-gl-mt-2': isLabelList && (!list.collapsed || (list.collapsed && isSwimlanesHeader)),
         'gl-pt-3': isLabelList && list.collapsed && isSwimlanesHeader,
       }"
-      class="board-title gl-m-0 gl-flex gl-h-9 gl-items-center gl-px-3 gl-text-base"
+      class="board-title gl-m-0 gl-flex gl-h-9 gl-items-center gl-px-3 gl-text-base gl-will-change-transform"
     >
       <gl-button
         v-gl-tooltip

@@ -12,6 +12,13 @@ title: Storage
 
 {{< /details >}}
 
+GitLab projects have a storage limit for their Git repository and Large File Storage (LFS).
+Only the project's repository and LFS are included in the storage limit.
+The container registry, package registry, and build artifacts are not included in the limit.
+
+When a project's repository and LFS exceed the limit, the project is set to a [read-only state](read_only_namespaces.md)
+and some actions become restricted.
+
 ## Free limit
 
 {{< details >}}
@@ -20,15 +27,32 @@ title: Storage
 
 {{< /details >}}
 
-Each project in a Free tier namespace on GitLab.com has 10 GiB of free storage for its Git repository and Large File Storage (LFS).
+Each project in a Free tier namespace on GitLab.com has 10 GiB of free storage.
 
-When a project's repository and LFS exceed 10 GiB, the project is set to a read-only state.
-You cannot push changes to a read-only project.
 To increase storage of the project's repository and LFS to more than 10 GiB,
 you must purchase more storage.
 
-Only the project's repository and LFS are included in the storage limit.
-The container registry, package registry, and build artifacts are not included in the limit.
+## Fixed project limit
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+Each project in a Premium or Ultimate tier on GitLab.com has 500 GiB of storage.
+
+When a project exceeds the storage limit, owners of the group and top-level namespace
+receive notifications through the UI and email.
+
+To manage storage usage, contact your account team or GitLab Support.
+
+## Expired storage
+
+Expired storage can exist when purchased storage is not de-provisioned at the end of your subscription period.
+If you experience an unexpected drop in purchased storage, expired storage could have been
+removed from your account.
+For more information and solutions, contact support.
 
 ## View storage
 
@@ -245,24 +269,3 @@ To confirm the available storage, follow the first three steps listed previously
 
 The **Purchased storage available** total is incremented by the amount purchased. All locked
 projects are unlocked and their excess usage is deducted from the additional storage.
-
-## Fixed project limit
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-
-{{< /details >}}
-
-When a project's repository and LFS exceed 500 GiB, GitLab places the project in a read-only state.
-You cannot push changes to a read-only project.
-
-When a project exceeds the storage limit, owners of the group and top-level namespace
-receive notifications through the UI and email. To manage storage usage, contact your
-account team or GitLab Support.
-
-## Expired storage
-
-Expired storage can exist on a subscription when storage is mistakenly not de-provisioned at the end of your subscription period.
-If you experience an unexpected drop in purchased storage, expired storage could have been removed from your account.
-For more information and solutions, contact support.

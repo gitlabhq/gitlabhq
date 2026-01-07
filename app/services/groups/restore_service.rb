@@ -46,10 +46,7 @@ module Groups
 
     def destroy_deletion_schedule!
       deletion_schedule_destroyed = ApplicationRecord.transaction do
-        result = Feature.disabled?(:namespace_state_management, resource.root_ancestor) ||
-          resource.cancel_deletion(transition_user: current_user)
-
-        result && resource.deletion_schedule.destroy
+        resource.cancel_deletion(transition_user: current_user) && resource.deletion_schedule.destroy
       end
 
       return if deletion_schedule_destroyed

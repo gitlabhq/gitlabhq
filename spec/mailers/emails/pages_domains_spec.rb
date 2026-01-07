@@ -62,7 +62,7 @@ RSpec.describe Emails::PagesDomains do
 
   describe '#pages_domain_enabled_email' do
     let(:email_subject) { "#{project.name} | GitLab Pages domain '#{domain.domain}' has been enabled" }
-    let(:docs_url) { help_page_url('user/project/pages/custom_domains_ssl_tls_certification/_index.md', anchor: 'steps') }
+    let(:docs_url) { help_page_url('user/project/pages/custom_domains_ssl_tls_certification/_index.md', anchor: 'set-up-a-custom-domain') }
 
     subject { Notify.pages_domain_enabled_email(domain, user) }
 
@@ -72,7 +72,7 @@ RSpec.describe Emails::PagesDomains do
 
   describe '#pages_domain_disabled_email' do
     let(:email_subject) { "#{project.name} | GitLab Pages domain '#{domain.domain}' has been disabled" }
-    let(:docs_url) { help_page_url('user/project/pages/custom_domains_ssl_tls_certification/_index.md', anchor: '4-verify-the-domains-ownership') }
+    let(:docs_url) { help_page_url('user/project/pages/custom_domains_ssl_tls_certification/_index.md', anchor: 'step-4-verify-the-domains-ownership') }
 
     subject { Notify.pages_domain_disabled_email(domain, user) }
 
@@ -85,7 +85,7 @@ RSpec.describe Emails::PagesDomains do
 
   describe '#pages_domain_verification_succeeded_email' do
     let(:email_subject) { "#{project.name} | Verification succeeded for GitLab Pages domain '#{domain.domain}'" }
-    let(:docs_url) { help_page_url('user/project/pages/custom_domains_ssl_tls_certification/_index.md', anchor: 'steps') }
+    let(:docs_url) { help_page_url('user/project/pages/custom_domains_ssl_tls_certification/_index.md', anchor: 'set-up-a-custom-domain') }
 
     subject { Notify.pages_domain_verification_succeeded_email(domain, user) }
 
@@ -96,7 +96,7 @@ RSpec.describe Emails::PagesDomains do
 
   describe '#pages_domain_verification_failed_email' do
     let(:email_subject) { "#{project.name} | ACTION REQUIRED: Verification failed for GitLab Pages domain '#{domain.domain}'" }
-    let(:docs_url) { help_page_url('user/project/pages/custom_domains_ssl_tls_certification/_index.md', anchor: 'steps') }
+    let(:docs_url) { help_page_url('user/project/pages/custom_domains_ssl_tls_certification/_index.md', anchor: 'set-up-a-custom-domain') }
 
     subject { Notify.pages_domain_verification_failed_email(domain, user) }
 

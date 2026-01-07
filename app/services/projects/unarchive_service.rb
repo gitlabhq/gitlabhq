@@ -33,9 +33,7 @@ module Projects
 
     def unarchive_project
       ApplicationRecord.transaction do
-        result = Feature.disabled?(:namespace_state_management, project.root_ancestor) ||
-          project.unarchive(transition_user: current_user)
-        result && project.update(archived: false)
+        project.unarchive(transition_user: current_user) && project.update(archived: false)
       end
     end
 

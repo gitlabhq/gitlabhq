@@ -332,6 +332,41 @@ To disable group mentions:
 1. Select **Group mentions are disabled**.
 1. Select **Save changes**.
 
+## Restrict personal snippets for enterprise users
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200575) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `allow_personal_snippets_setting`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+You can prevent [enterprise users](../enterprise_user/_index.md) in your group from creating
+[snippets](../snippets.md) in their personal namespace. When disabled, enterprise users
+can still create project snippets.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To restrict personal snippets for enterprise users:
+
+1. On the top bar, select **Search or go to** and find your group.
+1. Select **Settings** > **General**.
+1. Expand the **Permissions and group features** section.
+1. Clear the **Allow personal snippets** checkbox.
+1. Select **Save changes**.
+
 ## Prevent invitations to a group
 
 {{< history >}}

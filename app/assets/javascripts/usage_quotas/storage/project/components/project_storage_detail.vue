@@ -1,9 +1,9 @@
 <script>
+import { markRaw } from 'vue';
 import { GlIcon, GlButton, GlLink, GlSprintf, GlTableLite, GlPopover } from '@gitlab/ui';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
 import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 import StorageTypeIcon from './storage_type_icon.vue';
 import RepositoryHealthDetailsSection from './repository_health_details/repository_health_details_section.vue';
 

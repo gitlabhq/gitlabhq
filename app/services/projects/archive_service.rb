@@ -37,9 +37,7 @@ module Projects
 
     def archive_project
       ApplicationRecord.transaction do
-        result = Feature.disabled?(:namespace_state_management, project.root_ancestor) ||
-          project.archive(transition_user: current_user)
-        result && project.update(archived: true)
+        project.archive(transition_user: current_user) && project.update(archived: true)
       end
     end
 

@@ -41,7 +41,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
 
       expect(tool_names).to include(
         'get_pipeline_jobs',
-        'gitlab_search',
+        'search',
         'get_issue',
         'create_issue',
         'create_merge_request',
@@ -99,9 +99,9 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         post_list_tools
 
         tools = json_response['result']['tools']
-        gitlab_search_tool = tools.find { |tool| tool['name'] == 'gitlab_search' }
+        search_tool = tools.find { |tool| tool['name'] == 'search' }
 
-        fields_property = gitlab_search_tool['inputSchema']['properties']['fields']
+        fields_property = search_tool['inputSchema']['properties']['fields']
 
         expect(fields_property).to be_present
         expect(fields_property['type']).to eq('array')

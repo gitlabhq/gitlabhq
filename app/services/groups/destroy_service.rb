@@ -74,20 +74,14 @@ module Groups
 
     def mark_deletion_in_progress
       Group.transaction do
-        if Feature.enabled?(:namespace_state_management, group.root_ancestor) && !group.deletion_in_progress?
-          group.start_deletion!(transition_user: current_user)
-        end
-
+        group.start_deletion!(transition_user: current_user) unless group.deletion_in_progress?
         group.update_attribute(:deleted_at, Time.current)
       end
     end
 
     def reschedule_deletion
       Group.transaction do
-        if Feature.enabled?(:namespace_state_management, group.root_ancestor)
-          group.reschedule_deletion!(transition_user: current_user)
-        end
-
+        group.reschedule_deletion!(transition_user: current_user)
         group.update_attribute(:deleted_at, nil)
       end
     end

@@ -194,6 +194,12 @@ reduce the security footprint of your users.
 - [Disable SSH Keys](../../user/ssh_advanced.md#disable-ssh-keys-for-enterprise-users).
 - [Disable two-factor authentication](../../security/two_factor_authentication.md#enterprise-users).
 
+### Restrict personal snippets
+
+You can prevent enterprise users from creating [personal snippets](../snippets.md) in their
+personal namespace. For more information, see
+[Restrict personal snippets for enterprise users](../group/manage.md#restrict-personal-snippets-for-enterprise-users).
+
 ### Restrict group and project creation
 
 You can restrict group and project creation for enterprise users, which helps you define:

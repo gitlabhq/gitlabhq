@@ -1,11 +1,11 @@
 <script>
 import { debounce } from 'lodash';
+import { markRaw } from 'vue';
 import { isDocument } from 'yaml';
 import { CONTENT_UPDATE_DEBOUNCE } from '~/editor/constants';
 import SourceEditor from '~/editor/source_editor';
 import { YamlEditorExtension } from '~/editor/extensions/source_editor_yaml_ext';
 import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
-import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 
 export default {
   name: 'YamlEditor',

@@ -159,8 +159,8 @@ tags:
   description: Operations about users
 - name: user
   description: Operations about users
-- name: application
-  description: Operations about applications
+- name: appearance
+  description: Operations about appearances
 - name: application_statistics
   description: Operations about application_statistics
 - name: imports
@@ -46841,7 +46841,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Appearance"
       tags:
-      - application
+      - appearance
       operationId: getApiV4ApplicationAppearance
     put:
       description: Modify appearance
@@ -46941,7 +46941,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Appearance"
       tags:
-      - application
+      - appearance
       operationId: putApiV4ApplicationAppearance
   "/api/v4/application/statistics":
     get:

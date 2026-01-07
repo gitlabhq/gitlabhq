@@ -158,8 +158,23 @@ module HasRepository
   def after_repository_change_head
     reload_default_branch
 
-    Gitlab::EventStore.publish(
-      ::Repositories::DefaultBranchChangedEvent.new(data: { container_id: id, container_type: self.class.name }))
+    container_type = self.class.name
+
+    run_after_commit_or_now do
+      Gitlab::EventStore.publish(
+        ::Repositories::DefaultBranchChangedEvent.new(data: { container_id: id, container_type: container_type }))
+    end
+  end
+
+  def after_create_repository
+    container_type = self.class.name
+    container_id = id
+
+    run_after_commit_or_now do
+      Gitlab::EventStore.publish(
+        ::Repositories::RepositoryCreatedEvent.new(data: { container_id: container_id,
+                                                           container_type: container_type }))
+    end
   end
 
   def after_change_head_branch_does_not_exist(branch)

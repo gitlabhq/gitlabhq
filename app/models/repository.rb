@@ -37,6 +37,7 @@ class Repository
   attr_accessor :full_path, :shard, :disk_path, :container, :repo_type
 
   delegate :lfs_enabled?, to: :container
+  delegate :run_after_commit_or_now, to: :container
 
   delegate_missing_to :raw_repository
 
@@ -502,6 +503,8 @@ class Repository
     expire_status_cache
 
     repository_event(:create_repository)
+
+    container.after_create_repository
   end
 
   # Runs code just before a repository is deleted.

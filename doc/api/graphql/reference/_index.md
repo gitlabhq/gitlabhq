@@ -5028,6 +5028,36 @@ Input type: `ContainerUpstreamCreateInput`
 | <a id="mutationcontainerupstreamcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationcontainerupstreamcreateupstream"></a>`upstream` | [`ContainerUpstreamDetails`](#containerupstreamdetails) | Container upstream after the mutation. |
 
+### `Mutation.containerUpstreamUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.8.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `ContainerUpstreamUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainerupstreamupdatecachevalidityhours"></a>`cacheValidityHours` | [`Int`](#int) | Cache validity period. Defaults to 24 hours. |
+| <a id="mutationcontainerupstreamupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainerupstreamupdatedescription"></a>`description` | [`String`](#string) | Description of the upstream registry. |
+| <a id="mutationcontainerupstreamupdateid"></a>`id` | [`VirtualRegistriesContainerUpstreamID!`](#virtualregistriescontainerupstreamid) | ID of the container virtual registry upstream. |
+| <a id="mutationcontainerupstreamupdatename"></a>`name` | [`String`](#string) | Name of upstream registry. |
+| <a id="mutationcontainerupstreamupdatepassword"></a>`password` | [`String`](#string) | Password of the upstream registry. |
+| <a id="mutationcontainerupstreamupdateurl"></a>`url` | [`String`](#string) | URL of the upstream registry. |
+| <a id="mutationcontainerupstreamupdateusername"></a>`username` | [`String`](#string) | Username of the upstream registry. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainerupstreamupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainerupstreamupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationcontainerupstreamupdateupstream"></a>`upstream` | [`ContainerUpstreamDetails`](#containerupstreamdetails) | Container upstream after the mutation. |
+
 ### `Mutation.corpusCreate`
 
 Input type: `CorpusCreateInput`

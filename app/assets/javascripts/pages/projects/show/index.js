@@ -8,7 +8,6 @@ import initTerraformNotification from '~/projects/terraform_notification';
 import { initUploadFileTrigger } from '~/projects/upload_file';
 import initReadMore from '~/read_more';
 import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
-import initSourceCodeDropdowns from '~/vue_shared/components/download_dropdown/init_download_dropdowns';
 import EmptyProject from '~/pages/projects/show/empty_project';
 import initHeaderApp from '~/repository/init_header_app';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
@@ -129,7 +128,6 @@ const initWikiContent = () => {
 };
 
 initCodeDropdown();
-initSourceCodeDropdowns();
 initFindFileShortcut();
 initEmptyProjectTabs();
 initWebIdeLink({ el: document.getElementById('js-tree-web-ide-link') });

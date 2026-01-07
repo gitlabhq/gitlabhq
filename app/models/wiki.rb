@@ -94,6 +94,7 @@ class Wiki
   # Support run_after_commit callbacks, since we don't have a DB record
   # we delegate to the container.
   delegate :run_after_commit, to: :container
+  delegate :run_after_commit_or_now, to: :container
 
   class << self
     attr_accessor :container_class

@@ -2,7 +2,7 @@
 import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
 import { isEqual } from 'lodash';
-import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
+import { markRaw } from 'vue';
 import { __ } from '~/locale';
 import { VARIANT_DANGER } from '~/alert';
 import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';

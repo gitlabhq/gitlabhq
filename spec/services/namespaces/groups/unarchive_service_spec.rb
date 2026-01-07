@@ -81,19 +81,6 @@ RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_categor
         expect(group.state).to be(Namespaces::Stateful::STATES[:ancestor_inherited])
       end
 
-      context 'with namespace_state_management feature flag disabled' do
-        before do
-          stub_feature_flags(namespace_state_management: false)
-        end
-
-        it 'does not update the namespace state' do
-          group.update_column(:state, Namespaces::Stateful::STATES[:archived])
-          service_response
-
-          expect(group.state).to be(Namespaces::Stateful::STATES[:archived])
-        end
-      end
-
       it 'unarchives all descendant groups', :aggregate_failures do
         service_response
 

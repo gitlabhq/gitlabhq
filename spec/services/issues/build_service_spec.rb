@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::BuildService, feature_category: :team_planning do
+RSpec.describe Issues::BuildService, :request_store, feature_category: :team_planning do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project, :repository) }
@@ -201,6 +201,23 @@ RSpec.describe Issues::BuildService, feature_category: :team_planning do
             expect(issue.work_item_type_id).to eq(work_item_type_id)
           end
         end
+      end
+    end
+
+    context 'when a service account with composite identity is in use' do
+      let_it_be(:service_account) { create(:user, :service_account, composite_identity_enforced: true) }
+
+      # Use a separate let to prevent interference with other specs
+      let(:user) { create(:user) }
+
+      before do
+        ::Gitlab::Auth::Identity.link_from_scoped_user(service_account, user)
+      end
+
+      it 'attributes the change to the service account' do
+        issue = build_issue(title: 'What an issue')
+
+        expect(issue.author).to eq(service_account)
       end
     end
   end

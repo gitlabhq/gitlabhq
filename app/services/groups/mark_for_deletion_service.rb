@@ -68,10 +68,7 @@ module Groups
 
     def save_deletion_schedule!(deletion_schedule)
       deletion_schedule_saved = ApplicationRecord.transaction do
-        result = Feature.disabled?(:namespace_state_management, resource.root_ancestor) ||
-          resource.schedule_deletion(transition_user: current_user)
-
-        result && deletion_schedule.save
+        resource.schedule_deletion(transition_user: current_user) && deletion_schedule.save
       end
 
       return if deletion_schedule_saved

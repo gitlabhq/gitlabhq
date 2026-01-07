@@ -138,6 +138,16 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
         end
       end
 
+      context 'when optional id param is not present' do
+        it 'is successful for notifications' do
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '2.0', method: 'notifications/initialized' }
+
+          expect(response).to have_gitlab_http_status(:no_content)
+          expect(response.body).to be_empty
+        end
+      end
+
       context 'when method does not exist' do
         it 'returns JSON-RPC Method not found error' do
           post api('/mcp', user, oauth_access_token: access_token),

@@ -8,6 +8,7 @@ import {
   GlAnimatedChevronLgDownUpIcon,
 } from '@gitlab/ui';
 import { kebabCase } from 'lodash';
+import { markRaw } from 'vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
@@ -16,7 +17,6 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { sprintf, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import { EXTENSION_ICONS } from '../../constants';

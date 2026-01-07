@@ -51,9 +51,7 @@
     variables:
       - BUNDLE_WITHOUT
       - GLCI_EXPORT_TEST_METRICS
-      - OMNIBUS_GITLAB_CACHE_UPDATE
       - OMNIBUS_GITLAB_CACHE_EDITION
-      - OMNIBUS_GITLAB_BUILD_ON_ALL_OS
 
 .needs-e2e-gem-cache:
   needs:

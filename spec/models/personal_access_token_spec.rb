@@ -132,6 +132,21 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     it { is_expected.to have_many(:last_used_ips) }
     it { is_expected.to have_many(:personal_access_token_granular_scopes).class_name('Authz::PersonalAccessTokenGranularScope') }
     it { is_expected.to have_many(:granular_scopes).class_name('Authz::GranularScope') }
+
+    describe 'when destroying a PAT with associated granular scopes' do
+      it 'deletes the associated granular scopes and not unrelated granular scopes' do
+        pat = create(:personal_access_token)
+        associated_scope_1 = build(:granular_scope, boundary: ::Authz::Boundary.for(:instance))
+        associated_scope_2 = build(:granular_scope, boundary: ::Authz::Boundary.for(:user))
+        unrelated_scope = create(:granular_scope, boundary: ::Authz::Boundary.for(:user))
+        ::Authz::GranularScopeService.new(pat).add_granular_scopes([associated_scope_1, associated_scope_2])
+
+        expect { pat.destroy! }.to change { Authz::GranularScope.count }.by(-2)
+        expect { associated_scope_1.reload }.to raise_error { ActiveRecord::RecordNotFound }
+        expect { associated_scope_2.reload }.to raise_error { ActiveRecord::RecordNotFound }
+        expect { unrelated_scope.reload }.not_to raise_error { ActiveRecord::RecordNotFound }
+      end
+    end
   end
 
   describe 'scopes' do

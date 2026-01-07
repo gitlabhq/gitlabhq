@@ -1,5 +1,7 @@
 ---
 table_name: granular_scopes
+classes:
+  - Authz::GranularScope
 feature_categories:
   - permissions
 description: Stores granular permissions for authorizing resource access

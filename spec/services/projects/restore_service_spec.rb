@@ -100,9 +100,8 @@ RSpec.describe Projects::RestoreService, feature_category: :groups_and_projects 
         end
       end
 
-      context 'when namespace_state_management feature flag is enabled' do
+      context 'when project_namespace state is deletion_scheduled' do
         before do
-          stub_feature_flags(namespace_state_management: true)
           set_state(project.project_namespace, :deletion_scheduled)
         end
 
@@ -113,44 +112,16 @@ RSpec.describe Projects::RestoreService, feature_category: :groups_and_projects 
         end
       end
 
-      context 'when namespace_state_management feature flag is disabled' do
-        before do
-          stub_feature_flags(namespace_state_management: false)
-        end
-
-        it 'does not change the state of the project' do
-          expect { execute }.not_to change { project.project_namespace.state }
-        end
-      end
-
       context 'when deletion schedule creation fails' do
         before do
-          stub_feature_flags(namespace_state_management: false)
-          allow_next_instance_of(Projects::UpdateService) do |project_update_service|
-            allow(project_update_service).to receive(:execute)
-                                               .and_return({ status: :error, message: 'error message' })
-            allow(project).to receive_message_chain(:errors, :full_messages)
-                                .and_return(['error message'])
-          end
+          allow(project).to receive(:cancel_deletion).and_return(false)
+          allow(project.project_namespace).to receive_message_chain(:errors, :full_messages)
+                                                .and_return(['state transition error'])
         end
 
-        it 'returns error' do
+        it 'returns error with resource errors' do
           expect(execute).to be_error
-          expect(execute.errors).to eq(['error message'])
-        end
-
-        context 'when namespace_state_management feature flag is enabled' do
-          before do
-            stub_feature_flags(namespace_state_management: true)
-            allow(project).to receive(:cancel_deletion).and_return(false)
-            allow(project.project_namespace).to receive_message_chain(:errors, :full_messages)
-                                                  .and_return(['state transition error'])
-          end
-
-          it 'returns error with resource errors' do
-            expect(execute).to be_error
-            expect(execute.message).to eq('state transition error')
-          end
+          expect(execute.message).to eq('state transition error')
         end
       end
     end

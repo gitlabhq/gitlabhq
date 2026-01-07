@@ -230,12 +230,13 @@ Example:
 Show me all comments on work item 42 in project gitlab-org/gitlab
 ```
 
-## `gitlab_search`
+## `search`
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/566143) in GitLab 18.4.
 - Searching groups and projects and ordering and sorting results [added](https://gitlab.com/gitlab-org/gitlab/-/issues/571132) in GitLab 18.6.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214734) from `gitlab_search` to `search` in GitLab 18.8.
 
 {{< /history >}}
 

@@ -1,10 +1,8 @@
 import { GlDisclosureDropdownItem, GlSorting, GlFilteredSearch, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { nextTick, markRaw } from 'vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-
-import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import {

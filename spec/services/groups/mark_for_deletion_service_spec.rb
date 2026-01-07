@@ -60,29 +60,11 @@ RSpec.describe Groups::MarkForDeletionService, feature_category: :groups_and_pro
       result
     end
 
-    context 'when namespace_state_management feature flag is enabled' do
-      before do
-        stub_feature_flags(namespace_state_management: true)
-      end
+    it 'changes the state of the group' do
+      expect { result }.to change { group.state }
+        .from(Namespaces::Stateful::STATES[:ancestor_inherited]).to(Namespaces::Stateful::STATES[:deletion_scheduled])
 
-      it 'changes the state of the group' do
-        expect { result }.to change { group.state }
-          .from(Namespaces::Stateful::STATES[:ancestor_inherited]).to(Namespaces::Stateful::STATES[:deletion_scheduled])
-
-        result
-      end
-    end
-
-    context 'when namespace_state_management feature flag is disabled' do
-      before do
-        stub_feature_flags(namespace_state_management: false)
-      end
-
-      it 'does not change the state of the group' do
-        expect { result }.not_to change { group.state }
-
-        result
-      end
+      result
     end
 
     shared_examples 'handles failure gracefully' do
@@ -112,32 +94,23 @@ RSpec.describe Groups::MarkForDeletionService, feature_category: :groups_and_pro
 
     context 'when deletion schedule creation fails' do
       before do
-        stub_feature_flags(namespace_state_management: false)
         group_deletion_schedule = instance_double(GroupDeletionSchedule)
         allow(group).to receive(:build_deletion_schedule).and_return(group_deletion_schedule)
         allow(group_deletion_schedule).to receive(:save).and_return(false)
         allow(group_deletion_schedule).to receive_message_chain(:errors, :full_messages)
           .and_return(['error message'])
+        allow(group).to receive_message_chain(:errors, :full_messages).and_return(['resource error'])
       end
 
-      it_behaves_like 'handles failure gracefully'
+      it 'returns error with resource errors' do
+        expect(result).to be_error
+        expect(result.message).to eq('resource error')
+      end
 
-      context 'when deletion schedule creation fails with combined errors' do
-        before do
-          allow(group).to receive_message_chain(:errors, :full_messages).and_return(['resource error'])
-          stub_feature_flags(namespace_state_management: true)
-        end
+      it 'does not send notification' do
+        expect(NotificationService).not_to receive(:new)
 
-        it 'returns error with resource errors' do
-          expect(result).to be_error
-          expect(result.message).to eq('resource error')
-        end
-
-        it 'does not send notification' do
-          expect(NotificationService).not_to receive(:new)
-
-          result
-        end
+        result
       end
     end
   end

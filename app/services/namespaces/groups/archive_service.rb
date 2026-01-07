@@ -51,10 +51,7 @@ module Namespaces
 
       def archive_group
         Namespace.transaction do
-          if Feature.enabled?(:namespace_state_management, group.root_ancestor)
-            group.archive!(transition_user: current_user)
-          end
-
+          group.archive!(transition_user: current_user)
           group.namespace_settings.update!(archived: true)
         end
       end

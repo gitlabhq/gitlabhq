@@ -14,6 +14,7 @@ module API
     end
 
     desc 'Get the current appearance' do
+      tags ['appearance']
       success Entities::Appearance
     end
     get "application/appearance" do
@@ -21,6 +22,7 @@ module API
     end
 
     desc 'Modify appearance' do
+      tags ['appearance']
       success Entities::Appearance
       consumes ['multipart/form-data']
     end

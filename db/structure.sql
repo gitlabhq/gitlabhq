@@ -259,6 +259,22 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION delete_orphaned_granular_scopes() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+DELETE FROM granular_scopes
+WHERE id = OLD.granular_scope_id
+AND NOT EXISTS (
+  SELECT 1
+  FROM personal_access_token_granular_scopes
+  WHERE granular_scope_id = OLD.granular_scope_id
+);
+RETURN OLD;
+
+END
+$$;
+
 CREATE FUNCTION ensure_note_diff_files_sharding_key() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -18753,7 +18769,6 @@ CREATE TABLE granular_scopes (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     permissions jsonb DEFAULT '[]'::jsonb NOT NULL,
-    all_membership_namespaces boolean DEFAULT false NOT NULL,
     access smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_permissions_is_array CHECK ((jsonb_typeof(permissions) = 'array'::text))
 );
@@ -50143,6 +50158,8 @@ CREATE TRIGGER trigger_dc13168b8025 BEFORE INSERT OR UPDATE ON vulnerability_fla
 CREATE TRIGGER trigger_de59b81d3044 BEFORE INSERT OR UPDATE ON bulk_import_export_batches FOR EACH ROW EXECUTE FUNCTION trigger_de59b81d3044();
 
 CREATE TRIGGER trigger_de99bb993511 BEFORE INSERT ON namespace_descendants FOR EACH ROW EXECUTE FUNCTION function_for_trigger_de99bb993511();
+
+CREATE TRIGGER trigger_delete_orphaned_granular_scopes AFTER DELETE ON personal_access_token_granular_scopes FOR EACH ROW EXECUTE FUNCTION delete_orphaned_granular_scopes();
 
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 

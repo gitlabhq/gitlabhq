@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mcp::Tools::GitlabSearchService, feature_category: :mcp_server do
+RSpec.describe Mcp::Tools::SearchService, feature_category: :mcp_server do
   let(:mock_tool_global) { instance_double(Mcp::Tools::ApiTool, name: :gitlab_search_in_instance) }
   let(:mock_tool_group) { instance_double(Mcp::Tools::ApiTool, name: :gitlab_search_in_group) }
   let(:mock_tool_project) { instance_double(Mcp::Tools::ApiTool, name: :gitlab_search_in_project) }
@@ -11,7 +11,13 @@ RSpec.describe Mcp::Tools::GitlabSearchService, feature_category: :mcp_server do
 
   describe '.tool_name' do
     it 'returns the correct tool name' do
-      expect(described_class.tool_name).to eq('gitlab_search')
+      expect(described_class.tool_name).to eq('search')
+    end
+  end
+
+  describe '.tool_aliases' do
+    it 'returns deprecated tool names' do
+      expect(described_class.tool_aliases).to eq(['gitlab_search'])
     end
   end
 
@@ -134,7 +140,7 @@ RSpec.describe Mcp::Tools::GitlabSearchService, feature_category: :mcp_server do
 
         expect(result[:isError]).to be true
 
-        expected_text = "Tool execution failed: Tool 'gitlab_search' not found."
+        expected_text = "Tool execution failed: Tool 'search' not found."
         expect(result[:content].first[:text]).to eq(expected_text)
       end
     end

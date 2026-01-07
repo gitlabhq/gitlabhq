@@ -6,7 +6,6 @@ import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
 import createStore from '~/code_navigation/store';
 import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
-import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue';
 import initFileTreeBrowser from '~/repository/file_tree_browser';
 import App from './components/app.vue';
 import Breadcrumbs from './components/header_area/breadcrumbs.vue';
@@ -136,47 +135,7 @@ export default function setupVueRepositoryList() {
       },
     });
 
-  const initCodeDropdown = () => {
-    const codeDropdownEl = document.getElementById('js-code-dropdown');
-
-    if (!codeDropdownEl) return false;
-
-    const {
-      sshUrl,
-      httpUrl,
-      kerberosUrl,
-      xcodeUrl,
-      directoryDownloadLinks,
-      newWorkspacePath,
-      projectId,
-      organizationId,
-    } = codeDropdownEl.dataset;
-
-    return new Vue({
-      el: codeDropdownEl,
-      router,
-      apolloProvider,
-      render(createElement) {
-        return createElement(CompactCodeDropdown, {
-          props: {
-            sshUrl,
-            httpUrl,
-            kerberosUrl,
-            xcodeUrl,
-            currentPath: this.$route.params.path,
-            directoryDownloadLinks: JSON.parse(directoryDownloadLinks),
-            projectId,
-            projectPath,
-            newWorkspacePath,
-            organizationId,
-          },
-        });
-      },
-    });
-  };
-
   initHeaderApp({ router });
-  initCodeDropdown();
   initLastCommitApp();
   initForkInfo();
 
