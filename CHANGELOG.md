@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.5.5 (2026-01-07)
+
+### Fixed (4 changes)
+
+- [Handle 429s during github LFS import](https://gitlab.com/gitlab-org/security/gitlab/-/commit/25c1c4f96f3289ad76cf55cf6da84f7ee48a51df)
+- [Backport of Dependency export](https://gitlab.com/gitlab-org/security/gitlab/-/commit/aee50942e82b712beab04626fc0a2b99fdb6cc03) **GitLab Enterprise Edition**
+- [Fix undercoverage for github importer specs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/500b2117f6ac194a42fd23b2a3ce0fb4faea6f57)
+- [Improve handling of attachment urls and filenames](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6af08f56e6d847cf60418f8bca7a73b7b73c17ff)
+
+### Security (8 changes)
+
+- [Fix 404 errors for Duo Workflow WS connection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/775d921f86810762ffe579553e69409096e77c21) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5632))
+- [Only delete runner projects scoped to the intended runner](https://gitlab.com/gitlab-org/security/gitlab/-/commit/46f677a0a000957fe395378f5eba028b7c306aa3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5618))
+- [Add base authorization check to update feature settings mutation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/38039944d972b980568b3030daca3c0b86994c9a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5560))
+- [Don't do arbitrary placeholder replacement on HTML](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c29b6df00a97d9a7cb474b411765829131a6c8b3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5537))
+- [Pass Mermaid images through asset proxy, apply CSP to deny leaks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a0390537c14352d5f0850e92a23486c2adc114ba) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5579))
+- [Fix security issue related to namespace context](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cdfa3f7707cb543b6139c94794f314f57ed5eb49) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5555))
+- [Limit XML and CSV HTTP responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c6d0c137d76c09d19d36fd3e9e1750fe6a195e5d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5588))
+- [Fix token leak in nginx access logs for Terraform registry](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c273a68260e9e0c43beff82d0ec868e8b3620914) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5498))
+
 ## 18.5.4 (2025-12-10)
 
 ### Fixed (2 changes)
