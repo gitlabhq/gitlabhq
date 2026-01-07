@@ -5,6 +5,7 @@ import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
+import { simulateRapidTyping } from 'helpers/simulate_typing';
 import { MOCK_GROUPS, MOCK_QUERY } from 'jest/search/mock_data';
 import SearchableDropdown from '~/search/sidebar/components/shared/searchable_dropdown.vue';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -130,6 +131,72 @@ describe('Global Search Searchable Dropdown', () => {
     it('calls fetchGroups with the search paramter', () => {
       expect(defaultProps.searchHandler).toHaveBeenCalledTimes(1);
       expect(defaultProps.searchHandler).toHaveBeenCalledWith(search);
+    });
+  });
+
+  describe('debounce behavior', () => {
+    beforeAll(() => {
+      global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
+    });
+
+    afterAll(() => {
+      global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = undefined;
+    });
+
+    beforeEach(() => {
+      defaultProps.searchHandler.mockClear();
+    });
+
+    it('debounces rapid searches - only calls searchHandler once for rapid typing', async () => {
+      createComponent();
+
+      simulateRapidTyping(findGlDropdown().vm, 'test');
+
+      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+      await waitForPromises();
+
+      expect(defaultProps.searchHandler).toHaveBeenCalledTimes(1);
+      expect(defaultProps.searchHandler).toHaveBeenCalledWith('test');
+    });
+  });
+
+  describe('beforeDestroy', () => {
+    beforeAll(() => {
+      global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
+    });
+
+    afterAll(() => {
+      global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = undefined;
+    });
+
+    beforeEach(() => {
+      defaultProps.searchHandler.mockClear();
+    });
+
+    it('cancels pending debounced search when component is destroyed', async () => {
+      createComponent();
+
+      findGlDropdown().vm.$emit('search', 'test');
+
+      wrapper.destroy();
+
+      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+      await waitForPromises();
+
+      expect(defaultProps.searchHandler).not.toHaveBeenCalled();
+    });
+
+    it('cancels rapid typing search when component is destroyed mid-typing', async () => {
+      createComponent();
+
+      simulateRapidTyping(findGlDropdown().vm, 'test');
+
+      wrapper.destroy();
+
+      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+      await waitForPromises();
+
+      expect(defaultProps.searchHandler).not.toHaveBeenCalled();
     });
   });
 });
