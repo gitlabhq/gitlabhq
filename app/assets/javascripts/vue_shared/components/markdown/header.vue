@@ -140,6 +140,7 @@ export default {
         find: '',
         replace: '',
         shouldShowBar: false,
+        shouldShowReplaceInput: false,
         totalMatchCount: 0,
         highlightedMatchIndex: 0,
       },
@@ -182,6 +183,9 @@ export default {
       return (
         this.glFeatures.findAndReplace && !this.restrictedToolBarItems.includes('find-and-replace')
       );
+    },
+    findAndReplace_ToggleIcon() {
+      return this.findAndReplace.shouldShowReplaceInput ? 'chevron-down' : 'chevron-right';
     },
     findAndReplace_MatchCountText() {
       if (!this.findAndReplace.totalMatchCount) {
@@ -857,9 +861,21 @@ export default {
     </div>
     <div
       v-if="findAndReplace.shouldShowBar"
-      class="gl-border gl-absolute gl-right-0 gl-z-3 gl-flex gl-items-start gl-rounded-bl-base gl-border-r-0 gl-bg-section gl-p-3 gl-shadow-sm"
+      class="gl-border gl-absolute gl-right-0 gl-z-3 gl-flex gl-items-baseline gl-rounded-bl-base gl-border-r-0 gl-bg-section gl-p-3 gl-shadow-sm"
       data-testid="find-and-replace"
     >
+      <div class="gl-mr-3">
+        <gl-button
+          category="tertiary"
+          size="small"
+          data-testid="replace-toggle"
+          aria-controls="replace-section"
+          :aria-expanded="findAndReplace.shouldShowReplaceInput"
+          :icon="findAndReplace_ToggleIcon"
+          :aria-label="s__('MarkdownEditor|Toggle section')"
+          @click="findAndReplace.shouldShowReplaceInput = !findAndReplace.shouldShowReplaceInput"
+        />
+      </div>
       <div>
         <gl-form-input
           v-model="findAndReplace.find"
@@ -870,20 +886,22 @@ export default {
           @keydown="findAndReplace_handleKeyDown"
           @keyup="findAndReplace_handleKeyUp"
         />
-        <gl-form-input
-          v-model="findAndReplace.replace"
-          :placeholder="s__('MarkdownEditor|Replace')"
-          class="gl-mb-3"
-          data-testid="replace-input"
-        />
-        <gl-button @click="findAndReplace_replaceNext">
-          {{ s__('MarkdownEditor|Replace') }}
-        </gl-button>
+        <div v-if="findAndReplace.shouldShowReplaceInput" aria-describedby="replace-section">
+          <gl-form-input
+            v-model="findAndReplace.replace"
+            :placeholder="s__('MarkdownEditor|Replace')"
+            class="gl-mb-3"
+            data-testid="replace-input"
+          />
+          <gl-button @click="findAndReplace_replaceNext">
+            {{ s__('MarkdownEditor|Replace') }}
+          </gl-button>
+        </div>
       </div>
       <div class="gl-ml-4 gl-min-w-12 gl-whitespace-nowrap" data-testid="find-and-replace-matches">
         {{ findAndReplace_MatchCountText }}
       </div>
-      <div class="gl-ml-2 gl-flex gl-items-center">
+      <div class="gl-ml-2">
         <gl-button
           category="tertiary"
           icon="arrow-up"
@@ -900,15 +918,15 @@ export default {
           :aria-label="s__('MarkdownEditor|Find next')"
           @click="findAndReplace_handleNext"
         />
+        <gl-button
+          category="tertiary"
+          icon="close"
+          size="small"
+          data-testid="find-and-replace-close"
+          :aria-label="s__('MarkdownEditor|Close find and replace bar')"
+          @click="findAndReplace_close"
+        />
       </div>
-      <gl-button
-        category="tertiary"
-        icon="close"
-        size="small"
-        data-testid="find-and-replace-close"
-        :aria-label="s__('MarkdownEditor|Close find and replace bar')"
-        @click="findAndReplace_close"
-      />
     </div>
   </div>
 </template>

@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2026-01-05 20:43\n"
+"PO-Revision-Date: 2026-01-06 11:00\n"
 
 msgid " %{start} to %{end}"
 msgstr "从%{start}到%{end}"
@@ -54892,6 +54892,12 @@ msgstr "速率限制周期（秒）"
 
 msgid "Rate limits can help reduce request volume (like from crawlers or abusive bots)."
 msgstr "速率限制有助于减少请求量（例如来自爬虫或滥用机器人的请求）。"
+
+msgid "Rate limits for specific Groups API endpoints."
+msgstr ""
+
+msgid "Rate limits for specific Projects API endpoints."
+msgstr ""
 
 msgid "Rate limits for specific Users API endpoints."
 msgstr ""

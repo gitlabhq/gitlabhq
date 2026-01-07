@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2026-01-05 20:44\n"
+"PO-Revision-Date: 2026-01-06 11:02\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} по %{end}"
@@ -55867,6 +55867,12 @@ msgstr "Период ограничения частоты запросов (в 
 
 msgid "Rate limits can help reduce request volume (like from crawlers or abusive bots)."
 msgstr "Ограничения на частоту запросов могут помочь уменьшить объём запросов (например, от поисковых роботов или злоумышленников)."
+
+msgid "Rate limits for specific Groups API endpoints."
+msgstr ""
+
+msgid "Rate limits for specific Projects API endpoints."
+msgstr ""
 
 msgid "Rate limits for specific Users API endpoints."
 msgstr ""

@@ -928,11 +928,8 @@ In case this is not possible you can choose one of the following ways:
 
 ### Using the `latest` template
 
-{{< alert type="warning" >}}
-
-The `latest` template is not considered stable and may include breaking changes. See [template editions](../../detect/security_configuration.md#template-editions).
-
-{{< /alert >}}
+> [!warning]
+> The `latest` template is not considered stable and may include breaking changes. See [template editions](../../detect/security_configuration.md#template-editions).
 
 Use the `latest` dependency scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml` to enable a GitLab provided analyzer.
 
@@ -991,11 +988,8 @@ When using the dependency scanning CI/CD component, the analyzer can be customiz
 
 ### Bringing your own SBOM
 
-{{< alert type="warning" >}}
-
-Third-party SBOM support is technically possible but highly subject to change as we complete official support with this [epic](https://www.gitlab.com/groups/gitlab-org/-/epics/14760).
-
-{{< /alert >}}
+> [!warning]
+> Third-party SBOM support is technically possible but highly subject to change as we complete official support with this [epic](https://www.gitlab.com/groups/gitlab-org/-/epics/14760).
 
 Use your own CycloneDX SBOM document generated with a 3rd party CycloneDX SBOM generator or a custom tool as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) in a custom CI job.
 

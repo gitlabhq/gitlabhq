@@ -84,11 +84,8 @@ You can also download the security scan results:
 
 For more details, see the [pipeline security report](../detect/security_scanning_results.md).
 
-{{< alert type="note" >}}
-
-Findings are generated on feature branches. When they are merged into the default branch, they become vulnerabilities. This distinction is important when evaluating your security posture.
-
-{{< /alert >}}
+> [!note]
+> Findings are generated on feature branches. When they are merged into the default branch, they become vulnerabilities. This distinction is important when evaluating your security posture.
 
 ## Optimization
 
@@ -220,11 +217,8 @@ When experiencing a behavior not working as expected, consider providing context
 - Full job console output.
 - Scanner log file available as a job artifact named `gl-api-security-scanner.log`.
 
-{{< alert type="warning" >}}
-
-Do not include sensitive information when you submit an issue. Remove credentials like passwords, tokens, and keys.
-
-{{< /alert >}}
+> [!warning]
+> Do not include sensitive information when you submit an issue. Remove credentials like passwords, tokens, and keys.
 
 ## Glossary
 

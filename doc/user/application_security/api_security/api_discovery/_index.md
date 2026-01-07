@@ -186,8 +186,5 @@ When experiencing a behavior not working as expected, consider providing context
 - Language runtime with version (for example "Eclipse Temurin v17.0.1").
 <!-- - Scanner log file is available as a job artifact named `gl-api-discovery.log`. -->
 
-{{< alert type="warning" >}}
-
-**Sanitize data attached to a support issue**. Remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
-
-{{< /alert >}}
+> [!warning]
+> **Sanitize data attached to a support issue**. Remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.

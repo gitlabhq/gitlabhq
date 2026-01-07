@@ -444,11 +444,8 @@ Optionally:
 
 - `FUZZAPI_PRE_SCRIPT`: Script to install runtimes or dependencies before the analyzer starts.
 
-{{< alert type="warning" >}}
-
-To execute scripts in Alpine Linux you must first use the command [`chmod`](https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html) to set the [execution permission](https://www.gnu.org/software/coreutils/manual/html_node/Setting-Permissions.html). For example, to set the execution permission of `script.py` for everyone, use the command: `sudo chmod a+x script.py`. If needed, you can version your `script.py` with the execution permission already set.
-
-{{< /alert >}}
+> [!warning]
+> To execute scripts in Alpine Linux you must first use the command [`chmod`](https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html) to set the [execution permission](https://www.gnu.org/software/coreutils/manual/html_node/Setting-Permissions.html). For example, to set the execution permission of `script.py` for everyone, use the command: `sudo chmod a+x script.py`. If needed, you can version your `script.py` with the execution permission already set.
 
 ```yaml
 stages:
@@ -905,11 +902,8 @@ In your job output you can check if any URLs matched any provided regular expres
 2021-05-27 21:51:08 [INF] API Fuzzing: ------------------------------------------------
 ```
 
-{{< alert type="note" >}}
-
-Each value in `FUZZAPI_EXCLUDE_URLS` is a regular expression. Characters such as `.` , `*` and `$` among many others have special meanings in [regular expressions](https://en.wikipedia.org/wiki/Regular_expression#Standards).
-
-{{< /alert >}}
+> [!note]
+> Each value in `FUZZAPI_EXCLUDE_URLS` is a regular expression. Characters such as `.` , `*` and `$` among many others have special meanings in [regular expressions](https://en.wikipedia.org/wiki/Regular_expression#Standards).
 
 ### Examples
 

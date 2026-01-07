@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2026-01-05 20:44\n"
+"PO-Revision-Date: 2026-01-06 11:01\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 에서 %{end}"
@@ -54893,6 +54893,12 @@ msgstr "요청 속도 제한 주기 (초 단위)"
 msgid "Rate limits can help reduce request volume (like from crawlers or abusive bots)."
 msgstr "속도 제한은 크롤러 또는 악의적인 봇의 요청 볼륨을 줄이는 데 도움이 될 수 있습니다."
 
+msgid "Rate limits for specific Groups API endpoints."
+msgstr ""
+
+msgid "Rate limits for specific Projects API endpoints."
+msgstr ""
+
 msgid "Rate limits for specific Users API endpoints."
 msgstr "특정 사용자 API 엔드포인트에 대한 속도 제한."
 
@@ -77958,7 +77964,7 @@ msgid "Workspaces|Learn more."
 msgstr "자세히 알아보세요."
 
 msgid "Workspaces|More Information."
-msgstr ""
+msgstr "추가 정보."
 
 msgid "Workspaces|Name"
 msgstr "이름"

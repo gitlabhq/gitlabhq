@@ -105,11 +105,8 @@ Prerequisites:
 
 ### Group dashboards
 
-{{< alert type="note" >}}
-
-[Issue 411572](https://gitlab.com/gitlab-org/gitlab/-/issues/411572) proposes connecting this feature to group-level dashboards.
-
-{{< /alert >}}
+> [!note]
+> [Issue 411572](https://gitlab.com/gitlab-org/gitlab/-/issues/411572) proposes connecting this feature to group-level dashboards.
 
 To change the location of a group's custom dashboards:
 
@@ -127,11 +124,8 @@ dashboards are usually defined in the project where the analytics data is retrie
 However, you can also have a separate project for dashboards.
 This setup is recommended if you want to enforce specific access rules to the dashboard definitions or share dashboards across multiple projects.
 
-{{< alert type="note" >}}
-
-You can share dashboards only between projects that are located in the same group.
-
-{{< /alert >}}
+> [!note]
+> You can share dashboards only between projects that are located in the same group.
 
 To change the location of project dashboards:
 

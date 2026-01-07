@@ -10,7 +10,7 @@ module Gitlab
         attach_to :active_record
 
         DB_COUNTERS = %i[count write_count cached_count txn_count].freeze
-        SQL_COMMANDS_WITH_COMMENTS_REGEX = %r{\A(?:/\*.*\*/\s)?(?!.*[^\w'"](?:DELETE|UPDATE|INSERT INTO)[^\w'"])(?:WITH.*)?SELECT(?!.*(?:FOR UPDATE|FOR SHARE))}i
+        SQL_COMMANDS_WITH_COMMENTS_REGEX = %r{\A(?>/\*.*?\*/\s)?(?!.*[^\w'"](?:DELETE|UPDATE|INSERT INTO)[^\w'"])(?:WITH.*)?SELECT(?!.*(?:FOR UPDATE|FOR SHARE))}i
 
         SQL_DURATION_BUCKET = [0.05, 0.1, 0.25].freeze
         TRANSACTION_DURATION_BUCKET = [0.1, 0.25, 1].freeze

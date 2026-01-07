@@ -375,6 +375,7 @@ describe('Markdown field header component', () => {
     const findPrevButton = () => wrapper.findByTestId('find-prev');
     const findCloseButton = () => wrapper.findByTestId('find-and-replace-close');
     const findTextarea = () => document.querySelector('textarea');
+    const findToggleButton = () => wrapper.findByTestId('replace-toggle').findComponent(GlButton);
 
     const showFindAndReplace = async () => {
       $(document).triggerHandler('markdown-editor:find-and-replace:show', [$('form')]);
@@ -555,11 +556,34 @@ describe('Markdown field header component', () => {
       expect(findFindInput().exists()).toBe(false);
     });
 
+    it('hides replace section by default and enables it on click', async () => {
+      await showFindAndReplace();
+
+      expect(findToggleButton().props('icon')).toBe('chevron-right');
+      expect(findToggleButton().attributes('aria-expanded')).toBeUndefined();
+
+      expect(findReplaceInput().exists()).toBe(false);
+      expect(findReplaceButton().exists()).toBe(false);
+
+      findToggleButton().vm.$emit('click');
+
+      await nextTick();
+
+      expect(findToggleButton().props('icon')).toBe('chevron-down');
+      expect(findToggleButton().attributes('aria-expanded')).toBe('true');
+
+      expect(findReplaceInput().exists()).toBe(true);
+      expect(findReplaceButton().exists()).toBe(true);
+    });
+
     it('replaces the currently highlighted match when replace button is clicked', async () => {
       // This doesn't exist in the jest environment so mock it
       document.execCommand = jest.fn();
 
       await showFindAndReplace();
+
+      // Show the replace section
+      findToggleButton().vm.$emit('click');
 
       findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
 

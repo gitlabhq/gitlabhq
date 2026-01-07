@@ -148,11 +148,8 @@ To migrate to the dependency scanning using SBOM method, perform the following s
 
 For multi-language projects, complete all relevant language-specific migration steps.
 
-{{< alert type="note" >}}
-
-If you decide to migrate from the CI/CD template to the CI/CD component, review the [current limitations](../../../ci/components/_index.md#use-a-gitlabcom-component-on-gitlab-self-managed) for GitLab Self-Managed.
-
-{{< /alert >}}
+> [!note]
+> If you decide to migrate from the CI/CD template to the CI/CD component, review the [current limitations](../../../ci/components/_index.md#use-a-gitlabcom-component-on-gitlab-self-managed) for GitLab Self-Managed.
 
 ## Language-specific instructions
 
@@ -547,11 +544,8 @@ Keep the following CI/CD variables as they are applicable to the new dependency 
 - `DS_MAX_DEPTH`
 - `SECURE_ANALYZERS_PREFIX`
 
-{{< alert type="note" >}}
-
-The `PIP_REQUIREMENTS_FILE` is replaced with `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN` or `pipcompile_requirements_file_name_pattern` spec input in the new dependency scanning analyzer.
-
-{{< /alert >}}
+> [!note]
+> The `PIP_REQUIREMENTS_FILE` is replaced with `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN` or `pipcompile_requirements_file_name_pattern` spec input in the new dependency scanning analyzer.
 
 In order to have a smoother transition with user configurations (especially Scan Execution Policies), the `v2` template is backwards compatible with the following configuration variables (these variables take precedence over their corresponding `spec:inputs`).
 These variables are:

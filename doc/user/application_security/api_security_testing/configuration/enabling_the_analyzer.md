@@ -179,11 +179,8 @@ For details on how to enable introspection, see your GraphQL framework documenta
 
 The GraphQL support in API security testing is able to query a GraphQL endpoint for the schema.
 
-{{< alert type="note" >}}
-
-The GraphQL endpoint must support introspection queries for this method to work correctly.
-
-{{< /alert >}}
+> [!note]
+> The GraphQL endpoint must support introspection queries for this method to work correctly.
 
 To configure API security testing to use a GraphQL endpoint URL that provides information about the target API to test:
 

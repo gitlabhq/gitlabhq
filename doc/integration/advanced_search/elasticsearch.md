@@ -1176,6 +1176,12 @@ Make sure to prepare for this task by having a
 [scalable setup](../../administration/reference_architectures/_index.md) or by creating
 [extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
 
+Both Geo primary and secondary nodes point to the same Elasticsearch cluster.
+However, Elasticsearch indexing workers run only on the Sidekiq nodes of the primary site.
+
+For this reason, you must configure any [extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md)
+on the primary site's Sidekiq nodes.
+
 {{< /alert >}}
 
 If [enabling advanced search](#enable-advanced-search) causes problems

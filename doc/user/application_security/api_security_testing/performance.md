@@ -107,11 +107,8 @@ api_security:
     APISEC_EXCLUDE_PATHS: /api/large_response_json
 ```
 
-{{< alert type="warning" >}}
-
-Excluding operations from testing could allow some vulnerabilities to go undetected.
-
-{{< /alert >}}
+> [!warning]
+> Excluding operations from testing could allow some vulnerabilities to go undetected.
 
 ### Splitting a test into multiple jobs
 

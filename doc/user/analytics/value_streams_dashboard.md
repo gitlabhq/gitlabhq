@@ -413,11 +413,8 @@ Filters for the `usage_overview` visualization.
 
 #### Additional panel filters (deprecated)
 
-{{< alert type="warning" >}}
-
-The `dora_chart` visualization was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206417) in GitLab 18.5.
-
-{{< /alert >}}
+> [!warning]
+> The `dora_chart` visualization was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206417) in GitLab 18.5.
 
 Filters for the `dora_chart` visualization.
 

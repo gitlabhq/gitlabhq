@@ -200,6 +200,26 @@ The permissions to create protected tags define if a user can:
 These permissions ensure that only authorized users can trigger and manage
 CI/CD processes for protected tags.
 
+## Unprotect a protected tag
+
+You can unprotect a tag to remove the protection rule.
+The tag itself remains in the repository.
+
+Prerequisites:
+
+- You must have at least the Maintainer role.
+
+To unprotect a tag:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Settings** > **Repository**.
+1. Expand **Protected tags**.
+1. Next to the protected tag rule you want to remove, select **Unprotect**.
+
+> [!warning]
+> After you unprotect a tag pattern, any user with at least the Developer role
+> can delete tags matching that pattern.
+
 ## Delete a protected tag
 
 You can manually delete protected tags with the GitLab API, or the

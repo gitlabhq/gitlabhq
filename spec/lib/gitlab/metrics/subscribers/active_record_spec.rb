@@ -327,6 +327,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
         'SQL' | 'WITH archived_rows AS (SELECT * FROM users WHERE archived = true) INSERT INTO products_log SELECT * FROM archived_rows' | true | true | false
         'SQL' | 'DELETE FROM users where id = 10' | true | true | false
         'SQL' | 'INSERT INTO project_ci_cd_settings (project_id) SELECT id FROM projects' | true | true | false
+        'SQL' | "INSERT INTO blah (id, blah) VALUES (1, '/* this looks like a SELECT */ SELECT 1')" | true | true | false
         'SQL' | 'UPDATE users SET admin = true WHERE id = 10' | true | true | false
         'CACHE' | 'SELECT * FROM users WHERE id = 10' | true | false | true
         'SCHEMA' | "SELECT attr.attname FROM pg_attribute attr INNER JOIN pg_constraint cons ON attr.attrelid = cons.conrelid AND attr.attnum = any(cons.conkey) WHERE cons.contype = 'p' AND cons.conrelid = '\"projects\"'::regclass" | false | false | false

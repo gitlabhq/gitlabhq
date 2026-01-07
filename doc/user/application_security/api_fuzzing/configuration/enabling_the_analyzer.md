@@ -239,11 +239,8 @@ Introspection is enabled by default to allow tools like GraphiQL to work.
 
 The GraphQL support in API fuzzing is able to query a GraphQL endpoint for the schema.
 
-{{< alert type="note" >}}
-
-The GraphQL endpoint must support introspection queries for this method to work correctly.
-
-{{< /alert >}}
+> [!note]
+> The GraphQL endpoint must support introspection queries for this method to work correctly.
 
 To configure API fuzzing to use an GraphQL endpoint URL that provides information about the target API to test:
 

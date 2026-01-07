@@ -141,11 +141,8 @@ dast:
     DAST_PAGE_DOM_READY_TIMEOUT: "15s"
 ```
 
-{{< alert type="note" >}}
-
-Adjusting these values may impact scan time because they adjust how long each browser waits for various activities to complete.
-
-{{< /alert >}}
+> [!note]
+> Adjusting these values may impact scan time because they adjust how long each browser waits for various activities to complete.
 
 ### Page readiness timeouts
 

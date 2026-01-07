@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ga-IE\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2026-01-05 20:51\n"
+"PO-Revision-Date: 2026-01-06 11:01\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} go %{end}"
@@ -56192,6 +56192,12 @@ msgstr "Tréimhse teorann rátaí (i soicindí)"
 
 msgid "Rate limits can help reduce request volume (like from crawlers or abusive bots)."
 msgstr "Is féidir le teorainneacha rátaí cabhrú le líon na n-iarratas a laghdú (mar shampla ó shreangairí nó ó róbónna maslacha)."
+
+msgid "Rate limits for specific Groups API endpoints."
+msgstr ""
+
+msgid "Rate limits for specific Projects API endpoints."
+msgstr ""
 
 msgid "Rate limits for specific Users API endpoints."
 msgstr "Teorainneacha ráta do chríochphointí API Úsáideoirí sonracha."

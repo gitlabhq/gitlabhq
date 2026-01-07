@@ -40877,6 +40877,9 @@ msgstr ""
 msgid "MarkdownEditor|Suggest code changes which can be immediately applied in one click. Try it out!"
 msgstr ""
 
+msgid "MarkdownEditor|Toggle section"
+msgstr ""
+
 msgid "MarkdownEditor|header"
 msgstr ""
 

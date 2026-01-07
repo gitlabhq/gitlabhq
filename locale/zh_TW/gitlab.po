@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2026-01-05 20:51\n"
+"PO-Revision-Date: 2026-01-06 11:29\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 到 %{end}"
@@ -7164,7 +7164,7 @@ msgid "AiPowered|Maximum time in seconds to wait for responses from the AI Gatew
 msgstr "等待 AI 閘道響應的最長時間（秒），最多 600 秒。%{br}增加此值可能會導致使用者體驗下降。"
 
 msgid "AiPowered|Member access"
-msgstr ""
+msgstr "成員存取"
 
 msgid "AiPowered|Membership grants access to"
 msgstr "成員資格授予存取權"
@@ -7188,7 +7188,7 @@ msgid "AiPowered|Never allow GitLab to process your code and project data for AI
 msgstr "永不允許 GitLab 處理您的程式碼和專案資料以提供 AI 功能。您的資料將不會在此 namespace 中的任何地方傳送至 GitLab Duo。"
 
 msgid "AiPowered|No access rules configured"
-msgstr ""
+msgstr "未配置存取規則"
 
 msgid "AiPowered|Not enabled"
 msgstr "未啟用"
@@ -24971,7 +24971,7 @@ msgid "Display view"
 msgstr "顯示檢視"
 
 msgid "Displaying frequently visited projects"
-msgstr ""
+msgstr "顯示常訪問的專案"
 
 msgid "Do not display content for customer experience improvement and offers from third parties"
 msgstr "不要顯示用於改善客戶體驗的內容和來自第三方的優惠"
@@ -34232,7 +34232,7 @@ msgid "HomePageMergeRequestsWidget|Waiting for your review"
 msgstr "等待您审核"
 
 msgid "HomePageProjectsWidget|Your projects are not available. Please refresh the page to try again."
-msgstr ""
+msgstr "您的專案不可用。請重新整理頁面再試一次。"
 
 msgid "HomePageRecentlyViewedWidget|Your recently viewed items are not available. Please refresh the page to try again."
 msgstr "您最近檢視的項目無法使用。請重新整理頁面後再試一次。"
@@ -47680,7 +47680,7 @@ msgid "PackageRegistry|Duplicate packages"
 msgstr "重複的軟體包"
 
 msgid "PackageRegistry|Edit protection rule"
-msgstr ""
+msgstr "編輯保護規則"
 
 msgid "PackageRegistry|Enforce %{packageType} setting for all subgroups"
 msgstr "對所有子群組執行 %{packageType} 設定"
@@ -47749,7 +47749,7 @@ msgid "PackageRegistry|Gradle Kotlin DSL install command"
 msgstr "Gradle Kotlin DSL安裝指令"
 
 msgid "PackageRegistry|Group-level"
-msgstr ""
+msgstr "群組層級"
 
 msgid "PackageRegistry|Helm"
 msgstr "Helm"
@@ -47758,19 +47758,19 @@ msgid "PackageRegistry|Hidden"
 msgstr "隱藏"
 
 msgid "PackageRegistry|If you haven't already done so, add the configuration below to your %{codeStart}.pypirc%{codeEnd} file."
-msgstr ""
+msgstr "如果您尚未這麼做，請將以下配置添加到您的 %{codeStart}.pypirc%{codeEnd} 文件中。"
 
 msgid "PackageRegistry|If you haven't already, add the configuration below to your %{codeStart}pom.xml%{codeEnd} file."
-msgstr ""
+msgstr "如果您尚未這麼做，請將以下配置添加到您的 %{codeStart}pom.xml%{codeEnd} 文件中。"
 
 msgid "PackageRegistry|Install"
-msgstr ""
+msgstr "安裝"
 
 msgid "PackageRegistry|Install package version"
 msgstr "安裝軟體包版本"
 
 msgid "PackageRegistry|Installation Method"
-msgstr ""
+msgstr "安裝方法"
 
 msgid "PackageRegistry|Instance-level"
 msgstr "執行個體級別"
@@ -47794,13 +47794,13 @@ msgid "PackageRegistry|Machine learning model"
 msgstr "機器學習模型"
 
 msgid "PackageRegistry|Maintainer (default)"
-msgstr ""
+msgstr "維護者（預設）"
 
 msgid "PackageRegistry|Manage storage used by package assets"
 msgstr "管理軟體包資產中使用的儲存"
 
 msgid "PackageRegistry|Manually published"
-msgstr ""
+msgstr "手動發佈"
 
 msgid "PackageRegistry|Maven"
 msgstr "Maven"
@@ -47812,7 +47812,7 @@ msgid "PackageRegistry|Maven XML"
 msgstr "Maven XML"
 
 msgid "PackageRegistry|Minimum access level for delete"
-msgstr ""
+msgstr "刪除的最低存取層級"
 
 msgid "PackageRegistry|Minimum access level for push"
 msgstr "推送的最小存取級別"
@@ -47861,7 +47861,7 @@ msgid_plural "PackageRegistry|Package has %{updatesCount} archived updates"
 msgstr[0] "軟體包有 %{updatesCount} 個存檔更新"
 
 msgid "PackageRegistry|Package protection rule created."
-msgstr ""
+msgstr "已建立套件保護規則。"
 
 msgid "PackageRegistry|Package protection rule deleted."
 msgstr "已刪除軟體套件保護規則。"
@@ -47873,7 +47873,7 @@ msgid "PackageRegistry|Package updated by commit %{link} on branch %{branch}, bu
 msgstr "軟體包由分支%{branch}上的%{link}提交所更新，由流水線%{pipeline}構建並於%{datetime}發布到庫"
 
 msgid "PackageRegistry|Packages"
-msgstr ""
+msgstr "套件登錄"
 
 msgid "PackageRegistry|Packages and assets cleanup is ready to be executed when the next cleanup job runs."
 msgstr "軟體包和資產清理準備好在下一個清理作業執行時運作。"
@@ -47924,7 +47924,7 @@ msgid "PackageRegistry|Published to the %{project} Terraform Module Registry %{d
 msgstr "發佈到 %{project} Terraform 模組註冊表 %{datetime}"
 
 msgid "PackageRegistry|Published to the %{project} package registry %{datetime}"
-msgstr ""
+msgstr "已於 %{datetime} 發佈至 %{project} 套件登錄庫"
 
 msgid "PackageRegistry|PyPI"
 msgstr "PyPI"
@@ -47939,7 +47939,7 @@ msgid "PackageRegistry|Registry setup"
 msgstr "倉庫設定"
 
 msgid "PackageRegistry|Registry setup command"
-msgstr ""
+msgstr "登錄設置指令"
 
 msgid "PackageRegistry|Remove package"
 msgstr "刪除軟體包"
@@ -48044,7 +48044,7 @@ msgid "PackageRegistry|Validate these URLs manually to ensure malicious packages
 msgstr "請手動驗證這些網址，確保惡意套件不會上傳到 NuGet 套件庫。選擇並清除核取方塊可能導致套件庫中的記錄無效，而且您將無法更新。"
 
 msgid "PackageRegistry|Version %{version} was first created %{datetime}"
-msgstr ""
+msgstr "版本 %{version} 首次建立於 %{datetime}"
 
 msgid "PackageRegistry|When a package is protected, only certain user roles can push, update, and delete the protected package, which helps to avoid tampering with the package."
 msgstr "當套件受到保護時，只有某些使用者角色可以推送、更新和刪除受保護的套件，這有助於避免篡改套件。"
@@ -48056,10 +48056,10 @@ msgid "PackageRegistry|With the GitLab package registry, you can use GitLab as a
 msgstr "透過 GitLab 軟體套件註冊中心，您可以將 GitLab 用於各種 %{linkStart} 已支援的軟體套件管理器 %{linkEnd} 私有或公共註冊中心。 您可以發佈和分享套件，這些套件可以在下游專案中作為依賴項被使用。"
 
 msgid "PackageRegistry|Yarn"
-msgstr ""
+msgstr "Yarn"
 
 msgid "PackageRegistry|Yarn install command"
-msgstr ""
+msgstr "Yarn 安裝指令"
 
 msgid "PackageRegistry|Yes, delete package"
 msgstr "是，刪除軟體包"
@@ -48098,7 +48098,7 @@ msgid "PackageRegistry|npm"
 msgstr "npm"
 
 msgid "PackageRegistry|npm install command"
-msgstr ""
+msgstr "npm 安裝指令"
 
 msgid "PackageRegistry|published by %{author}"
 msgstr "由%{author}發布"
@@ -48203,13 +48203,13 @@ msgid "Pages|Files"
 msgstr "文件"
 
 msgid "Pages|Has error"
-msgstr ""
+msgstr "發生錯誤"
 
 msgid "Pages|Last updated"
 msgstr "最後更新"
 
 msgid "Pages|Never expires"
-msgstr ""
+msgstr "永不過期"
 
 msgid "Pages|No deployments yet"
 msgstr "尚未部署"
@@ -48263,13 +48263,13 @@ msgid "Pages|URL"
 msgstr "URL"
 
 msgid "Pages|Visit site"
-msgstr ""
+msgstr "造訪網站"
 
 msgid "Pages|We did not find any projects with parallel Pages deployments in this namespace."
 msgstr "我們並未在此命名空間中找到任何具有平行 Pages 部署的專案。"
 
 msgid "Pages|Your Pages site is live at"
-msgstr ""
+msgstr "您的 Pages 網站已上線，位於"
 
 msgid "Pagination|First"
 msgstr "首頁"
@@ -48314,10 +48314,10 @@ msgid "Parent"
 msgstr "上層"
 
 msgid "Parent item removed successfully."
-msgstr ""
+msgstr "功移除父項目。"
 
 msgid "Parent item set successfully."
-msgstr ""
+msgstr "成功設定父項目。"
 
 msgid "Participants"
 msgstr "參與者"
@@ -48332,46 +48332,46 @@ msgid "Passed on"
 msgstr "已通過於"
 
 msgid "Passkey added successfully! Next time you sign in, select the sign-in with passkey option. For additional account security, enable two-factor authentication below."
-msgstr ""
+msgstr "已成功新增通行金鑰！下次登入時，請選擇使用通行金鑰登入選項。為了提高帳戶安全性，請在下方啟用雙重驗證。"
 
 msgid "Passkey added successfully! Next time you sign in, select the sign-in with passkey option. Passkey is now your default 2FA method."
-msgstr ""
+msgstr "已成功新增通行金鑰！下次登入時，請選擇使用通行金鑰登入選項。通行金鑰現在是您的預設雙重驗證方法。"
 
 msgid "Passkey deleted"
-msgstr ""
+msgstr "通關密鑰已刪除"
 
 msgid "Passkey has been deleted!"
-msgstr ""
+msgstr "已刪除通關密鑰！"
 
 msgid "Passkey is now your default 2FA method. If you lose access to your 2FA method, use your %{doc_start}recovery codes%{doc_end}."
-msgstr ""
+msgstr "通關密鑰現在是您的預設雙因素驗證方法。如果您無法存取雙因素驗證方法，請使用您的 %{doc_start}恢復碼%{doc_end}。"
 
 msgid "Passkey may have been cloned. Contact your administrator."
-msgstr ""
+msgstr "通行金鑰可能已被複製。請聯繫您的管理員。"
 
 msgid "Passkey registered"
-msgstr ""
+msgstr "通行金鑰已註冊"
 
 msgid "Passkey successfully authenticated."
-msgstr ""
+msgstr "通行密鑰驗證成功。"
 
 msgid "PasskeyAuthentication|Back to sign-in"
-msgstr ""
+msgstr "返回登入"
 
 msgid "PasskeyAuthentication|Passkey"
-msgstr ""
+msgstr "通行密鑰"
 
 msgid "PasskeyAuthentication|Passkeys only works with HTTPS-enabled websites. Contact your administrator for more details."
-msgstr ""
+msgstr "通行密鑰僅適用於已啟用 HTTPS 的網站。請聯絡您的管理員以獲取更多詳情。"
 
 msgid "PasskeyAuthentication|Sign in with passkeys"
-msgstr ""
+msgstr "使用通關密鑰登入"
 
 msgid "PasskeyAuthentication|We heard back from your device. Authenticating..."
-msgstr ""
+msgstr "已收到您裝置的回覆。正在驗證中..."
 
 msgid "PasskeyAuthentication|Your browser doesn't support passkeys."
-msgstr ""
+msgstr "您的瀏覽器不支援通關密鑰。"
 
 msgid "Password"
 msgstr "密碼"
@@ -48485,13 +48485,13 @@ msgid "Paths with rate limiting for POST requests"
 msgstr "對 POST 請求進行速率限制的路徑"
 
 msgid "Pattern"
-msgstr ""
+msgstr "模式"
 
 msgid "Pause"
 msgstr "暫停"
 
 msgid "Pause indexing"
-msgstr ""
+msgstr "暫停索引"
 
 msgid "Pause time (ms)"
 msgstr "暫停時間 (ms)"
@@ -48653,7 +48653,7 @@ msgid "Permalink"
 msgstr "永久連結"
 
 msgid "Permalink copied to clipboard."
-msgstr ""
+msgstr "永久連結已複製到剪貼簿。"
 
 msgid "Permissions"
 msgstr "權限"
@@ -48674,16 +48674,16 @@ msgid "Personal access token"
 msgstr "個人存取令牌"
 
 msgid "Personal access token is required."
-msgstr ""
+msgstr "需要個人存取權杖。"
 
 msgid "Personal homepage"
-msgstr ""
+msgstr "個人主頁"
 
 msgid "Personal homepage (default)"
-msgstr ""
+msgstr "個人主頁（預設）"
 
 msgid "Personal namespaces"
-msgstr ""
+msgstr "個人命名空間"
 
 msgid "Personal projects"
 msgstr "個人專案"
@@ -48692,10 +48692,10 @@ msgid "Personal projects limit:"
 msgstr "個人專案限制："
 
 msgid "PersonalAccessToken|The token cannot have multiple granular scopes for the same namespace"
-msgstr ""
+msgstr "權杖不能對同一命名空間具有多個精細範圍"
 
 msgid "PersonalAccessToken|The token cannot have multiple instance-level granular scopes"
-msgstr ""
+msgstr "權杖不能具有多個實例層級的精細範圍"
 
 msgid "PersonalProject|Learn to move a project to a group"
 msgstr "學習如何將專案移入群組"
@@ -54892,6 +54892,12 @@ msgstr ""
 
 msgid "Rate limits can help reduce request volume (like from crawlers or abusive bots)."
 msgstr "速率限制有助於減少請求量（例如來自爬蟲或濫用機器人的請求）。"
+
+msgid "Rate limits for specific Groups API endpoints."
+msgstr ""
+
+msgid "Rate limits for specific Projects API endpoints."
+msgstr ""
 
 msgid "Rate limits for specific Users API endpoints."
 msgstr ""
