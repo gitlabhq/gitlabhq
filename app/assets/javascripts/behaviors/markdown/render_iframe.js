@@ -6,9 +6,9 @@ const IFRAME_SANDBOX_RESTRICTIONS = 'allow-scripts allow-popups allow-same-origi
 const elsProcessingMap = new WeakMap();
 
 function renderIframeEl(el) {
-  // Obtain src from data-src first, in case image lazy loading hasn't
-  // resolved this yet.  See Banzai::Filter::ImageLazyLoadFilter.
-  const src = el.dataset.src || el.src;
+  // Obtain src from data-canonical-src, then data-src, then src.
+  // See Banzai::Filter::AssetProxyFilter and Banzai::Filter::ImageLazyLoadFilter.
+  const src = el.dataset.canonicalSrc || el.dataset.src || el.src;
   if (!src) return;
 
   const srcUrl = new URL(src);

@@ -19,7 +19,12 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
     img.to_html
   end
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:subgroup) { create(:group, parent: group) }
+  let_it_be(:project) { create(:project, :repository, group: subgroup) }
+
+  let(:width) { nil }
+  let(:height) { nil }
 
   before do
     allow(Gitlab::CurrentSettings).to receive_messages(
@@ -55,9 +60,6 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
   end
 
   context 'when the element src has a supported iframe domain' do
-    let(:height) { nil }
-    let(:width) { nil }
-
     it_behaves_like 'an iframe element' do
       let(:src) { "https://www.youtube.com/embed/foo" }
     end
@@ -72,13 +74,11 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
     end
 
     it_behaves_like 'an iframe element' do
-      let(:height) { nil }
       let(:width) { '50px' }
     end
 
     it_behaves_like 'an iframe element' do
       let(:height) { '50px' }
-      let(:width) { nil }
     end
   end
 
@@ -99,8 +99,6 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
 
     context 'and src is for an iframe' do
       let(:src) { "https://www.youtube.com/embed/foo" }
-      let(:height) { nil }
-      let(:width) { nil }
 
       it_behaves_like 'an iframe element'
     end
@@ -129,13 +127,43 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
   end
 
   context 'when allow_iframes_in_markdown is disabled' do
-    let(:src) { 'https://www.youtube.com/embed/foo' }
-
     before do
       stub_feature_flags(allow_iframes_in_markdown: false)
     end
 
+    let(:src) { 'https://www.youtube.com/embed/foo' }
+
     it_behaves_like 'an unchanged element'
+  end
+
+  context 'when allow_iframes_in_markdown is set for the project' do
+    before do
+      stub_feature_flags(allow_iframes_in_markdown: project)
+    end
+
+    let(:src) { 'https://www.youtube.com/embed/foo' }
+
+    it_behaves_like 'an iframe element'
+  end
+
+  context 'when allow_iframes_in_markdown is set for the immediate group' do
+    before do
+      stub_feature_flags(allow_iframes_in_markdown: subgroup)
+    end
+
+    let(:src) { 'https://www.youtube.com/embed/foo' }
+
+    it_behaves_like 'an iframe element'
+  end
+
+  context 'when allow_iframes_in_markdown is set for an ancestor group' do
+    before do
+      stub_feature_flags(allow_iframes_in_markdown: group)
+    end
+
+    let(:src) { 'https://www.youtube.com/embed/foo' }
+
+    it_behaves_like 'an iframe element'
   end
 
   it_behaves_like 'pipeline timing check' do

@@ -42,6 +42,8 @@ class ProjectsController < Projects::ApplicationController
   skip_before_action :enforce_step_up_auth_for_namespace, only: [:create]
   before_action :enforce_step_up_auth_for_namespace_on_create, only: [:create]
 
+  before_action :set_project_markdown_flags
+
   # Project Export Rate Limit
   before_action :check_export_rate_limit!, only: [:export, :download_export, :generate_new_export]
 

@@ -1,6 +1,5 @@
 ---
 Gitlab/AvoidConstDefaultOrganizationId:
-  Details: grace period
   Exclude:
     - 'app/models/organizations/organization.rb'
     - 'app/models/personal_access_token.rb'

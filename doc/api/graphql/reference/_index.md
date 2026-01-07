@@ -307,6 +307,27 @@ Returns [`AiCatalogItemConsumer`](#aicatalogitemconsumer).
 | ---- | ---- | ----------- |
 | <a id="queryaicatalogitemconsumerid"></a>`id` | [`AiCatalogItemConsumerID!`](#aicatalogitemconsumerid) | Global ID of the AI Catalog item consumer. |
 
+### `Query.aiCatalogItemVersions`
+
+{{< details >}}
+**Introduced** in GitLab 18.8.
+**Status**: Experiment.
+{{< /details >}}
+
+Public AI Catalog item versions.
+
+Returns [`AiCatalogItemVersionConnection!`](#aicatalogitemversionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaicatalogitemversionscreatedafter"></a>`createdAfter` | [`Time`](#time) | Item versions created after the timestamp. |
+
 ### `Query.aiCatalogItems`
 
 {{< details >}}
@@ -25611,6 +25632,7 @@ An AI catalog agent version.
 | <a id="aicatalogagentversioncreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that created the item version. |
 | <a id="aicatalogagentversionhumanversionname"></a>`humanVersionName` | [`String`](#string) | Human-friendly name of the item version. In the form v1.0.0-draft. |
 | <a id="aicatalogagentversionid"></a>`id` | [`ID!`](#id) | ID of the item version. |
+| <a id="aicatalogagentversionitem"></a>`item` | [`AiCatalogItem!`](#aicatalogitem) | Item the version belongs to. |
 | <a id="aicatalogagentversionreleased"></a>`released` | [`Boolean!`](#boolean) | Indicates the item version is released. |
 | <a id="aicatalogagentversionreleasedat"></a>`releasedAt` | [`Time`](#time) | Timestamp of when the item version was released. |
 | <a id="aicatalogagentversionsystemprompt"></a>`systemPrompt` | [`String`](#string) | System prompt for the agent. |
@@ -25725,6 +25747,7 @@ An AI catalog flow version.
 | <a id="aicatalogflowversiondefinition"></a>`definition` | [`String`](#string) | YAML definition of the flow. |
 | <a id="aicatalogflowversionhumanversionname"></a>`humanVersionName` | [`String`](#string) | Human-friendly name of the item version. In the form v1.0.0-draft. |
 | <a id="aicatalogflowversionid"></a>`id` | [`ID!`](#id) | ID of the item version. |
+| <a id="aicatalogflowversionitem"></a>`item` | [`AiCatalogItem!`](#aicatalogitem) | Item the version belongs to. |
 | <a id="aicatalogflowversionreleased"></a>`released` | [`Boolean!`](#boolean) | Indicates the item version is released. |
 | <a id="aicatalogflowversionreleasedat"></a>`releasedAt` | [`Time`](#time) | Timestamp of when the item version was released. |
 | <a id="aicatalogflowversionsteps"></a>`steps` | [`AiCatalogFlowStepsConnection`](#aicatalogflowstepsconnection) | Steps of the flow. (see [Connections](#connections)) |
@@ -25859,6 +25882,7 @@ An AI catalog third party flow version.
 | <a id="aicatalogthirdpartyflowversiondefinition"></a>`definition` | [`String!`](#string) | YAML definition of the third party flow. |
 | <a id="aicatalogthirdpartyflowversionhumanversionname"></a>`humanVersionName` | [`String`](#string) | Human-friendly name of the item version. In the form v1.0.0-draft. |
 | <a id="aicatalogthirdpartyflowversionid"></a>`id` | [`ID!`](#id) | ID of the item version. |
+| <a id="aicatalogthirdpartyflowversionitem"></a>`item` | [`AiCatalogItem!`](#aicatalogitem) | Item the version belongs to. |
 | <a id="aicatalogthirdpartyflowversionreleased"></a>`released` | [`Boolean!`](#boolean) | Indicates the item version is released. |
 | <a id="aicatalogthirdpartyflowversionreleasedat"></a>`releasedAt` | [`Time`](#time) | Timestamp of when the item version was released. |
 | <a id="aicatalogthirdpartyflowversionupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item version was updated. |
@@ -57278,6 +57302,7 @@ Implementations:
 | <a id="aicatalogitemversioncreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that created the item version. |
 | <a id="aicatalogitemversionhumanversionname"></a>`humanVersionName` | [`String`](#string) | Human-friendly name of the item version. In the form v1.0.0-draft. |
 | <a id="aicatalogitemversionid"></a>`id` | [`ID!`](#id) | ID of the item version. |
+| <a id="aicatalogitemversionitem"></a>`item` | [`AiCatalogItem!`](#aicatalogitem) | Item the version belongs to. |
 | <a id="aicatalogitemversionreleased"></a>`released` | [`Boolean!`](#boolean) | Indicates the item version is released. |
 | <a id="aicatalogitemversionreleasedat"></a>`releasedAt` | [`Time`](#time) | Timestamp of when the item version was released. |
 | <a id="aicatalogitemversionupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item version was updated. |
