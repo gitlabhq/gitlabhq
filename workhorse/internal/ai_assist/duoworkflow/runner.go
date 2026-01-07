@@ -46,6 +46,7 @@ type workflowStream interface {
 
 type runner struct {
 	rails       *api.API
+	backend     http.Handler
 	token       string
 	originalReq *http.Request
 	conn        websocketConn
@@ -54,7 +55,7 @@ type runner struct {
 	sendMu      sync.Mutex
 }
 
-func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.DuoWorkflow) (*runner, error) {
+func newRunner(conn websocketConn, rails *api.API, backend http.Handler, r *http.Request, cfg *api.DuoWorkflow) (*runner, error) {
 	client, err := NewClient(cfg.ServiceURI, cfg.Headers, cfg.Secure)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize client: %v", err)
@@ -67,6 +68,7 @@ func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.Duo
 
 	return &runner{
 		rails:       rails,
+		backend:     backend,
 		token:       cfg.Headers["x-gitlab-oauth-token"],
 		originalReq: r,
 		conn:        conn,
@@ -176,6 +178,7 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 	case *pb.Action_RunHTTPRequest:
 		handler := &runHTTPActionHandler{
 			rails:       r.rails,
+			backend:     r.backend,
 			token:       r.token,
 			originalReq: r.originalReq,
 			action:      action,

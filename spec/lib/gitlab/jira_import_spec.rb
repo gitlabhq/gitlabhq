@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::JiraImport do
+RSpec.describe Gitlab::JiraImport, :clean_gitlab_redis_shared_state, feature_category: :team_planning do
   let(:project_id) { 321 }
 
   describe '.validate_project_settings!' do
@@ -118,27 +118,6 @@ RSpec.describe Gitlab::JiraImport do
     end
   end
 
-  describe '.get_issues_next_start_at', :clean_gitlab_redis_cache do
-    it 'returns zero when not defined' do
-      expect(Gitlab::Cache::Import::Caching.read("jira-import/paginator/#{project_id}/issues")).to be_nil
-      expect(described_class.get_issues_next_start_at(project_id)).to eq(0)
-    end
-
-    it 'returns negative value for next issues to be imported starting point' do
-      Gitlab::Cache::Import::Caching.write("jira-import/paginator/#{project_id}/issues", -10)
-
-      expect(Gitlab::Cache::Import::Caching.read("jira-import/paginator/#{project_id}/issues")).to eq('-10')
-      expect(described_class.get_issues_next_start_at(project_id)).to eq(-10)
-    end
-
-    it 'returns cached value for next issues to be imported starting point' do
-      Gitlab::Cache::Import::Caching.write("jira-import/paginator/#{project_id}/issues", 10)
-
-      expect(Gitlab::Cache::Import::Caching.read("jira-import/paginator/#{project_id}/issues")).to eq('10')
-      expect(described_class.get_issues_next_start_at(project_id)).to eq(10)
-    end
-  end
-
   describe '.cache_users_mapping', :clean_gitlab_redis_cache do
     let(:data) { { 'user1' => '456', 'user234' => '23' } }
 
@@ -162,24 +141,31 @@ RSpec.describe Gitlab::JiraImport do
     end
   end
 
-  describe '.store_issues_next_started_at', :clean_gitlab_redis_cache do
-    it 'stores nil value' do
-      described_class.store_issues_next_started_at(project_id, nil)
+  # New specs for pagination state methods
+  describe '.get_pagination_state', :clean_gitlab_redis_cache do
+    it 'returns default state when not defined' do
+      state = described_class.get_pagination_state(project_id)
 
-      expect(Gitlab::Cache::Import::Caching.read("jira-import/paginator/#{project_id}/issues")).to eq ''
-      expect(Gitlab::Cache::Import::Caching.read("jira-import/paginator/#{project_id}/issues").to_i).to eq(0)
+      expect(state).to eq({ is_last: false, next_page_token: nil, page: 1 })
     end
 
-    it 'stores positive value' do
-      described_class.store_issues_next_started_at(project_id, 10)
+    it 'returns cached pagination state' do
+      cached_state = { is_last: true, next_page_token: 'token123', page: 2 }
+      described_class.store_pagination_state(project_id, cached_state)
 
-      expect(Gitlab::Cache::Import::Caching.read("jira-import/paginator/#{project_id}/issues").to_i).to eq(10)
+      state = described_class.get_pagination_state(project_id)
+
+      expect(state).to eq(cached_state)
     end
+  end
 
-    it 'stores negative value' do
-      described_class.store_issues_next_started_at(project_id, -10)
+  describe '.store_pagination_state', :clean_gitlab_redis_cache do
+    it 'stores pagination state' do
+      state = { is_last: false, next_page_token: 'token456', page: 3 }
+      described_class.store_pagination_state(project_id, state)
 
-      expect(Gitlab::Cache::Import::Caching.read("jira-import/paginator/#{project_id}/issues").to_i).to eq(-10)
+      cached_state = described_class.get_pagination_state(project_id)
+      expect(cached_state).to eq(state)
     end
   end
 end
