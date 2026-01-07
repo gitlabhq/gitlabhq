@@ -74,7 +74,7 @@ module Ci
         if project_ids_to_be_deleted.any?
           all_destroyed =
             Ci::RunnerProject
-              .destroy_by(project_id: project_ids_to_be_deleted)
+              .destroy_by(project_id: project_ids_to_be_deleted, runner_id: runner.id)
               .all?(&:destroyed?)
 
           unless all_destroyed

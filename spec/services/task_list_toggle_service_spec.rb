@@ -196,7 +196,10 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
 
     expect(toggler.execute).to be_truthy
     expect(toggler.updated_markdown.lines[0]).to eq "> > * [x] Task 1\n"
-    expect(toggler.updated_markdown_html).to include('disabled checked> Task 1')
+    task_1_checkbox = toggler_updated_fragment(toggler).css(
+      'li[data-sourcepos="1:5-1:16"] > input.task-list-item-checkbox').first
+    expect(task_1_checkbox['checked']).not_to be_nil
+    expect(task_1_checkbox['disabled']).not_to be_nil
   end
 
   it 'properly handles a GitLab blockquote' do
@@ -221,7 +224,10 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
 
     expect(toggler.execute).to be_truthy
     expect(toggler.updated_markdown.lines[4]).to eq "* [x] Task 1\n"
-    expect(toggler.updated_markdown_html).to include('disabled checked> Task 1')
+    task_1_checkbox = toggler_updated_fragment(toggler).css(
+      'li[data-sourcepos="5:1-5:12"] > input.task-list-item-checkbox').first
+    expect(task_1_checkbox['checked']).not_to be_nil
+    expect(task_1_checkbox['disabled']).not_to be_nil
   end
 
   context 'when clicking an embedded subtask' do
@@ -243,7 +249,10 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
 
       expect(toggler.execute).to be_truthy
       expect(toggler.updated_markdown.lines[0]).to eq "- - [x] Task 1\n"
-      expect(toggler.updated_markdown_html).to include('disabled checked> Task 1')
+      task_1_checkbox = toggler_updated_fragment(toggler).css(
+        'li[data-sourcepos="1:3-1:14"] > input.task-list-item-checkbox').first
+      expect(task_1_checkbox['checked']).not_to be_nil
+      expect(task_1_checkbox['disabled']).not_to be_nil
     end
 
     it 'properly handles it inside an ordered list' do
@@ -264,11 +273,18 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
 
       expect(toggler.execute).to be_truthy
       expect(toggler.updated_markdown.lines[0]).to eq "1. - [x] Task 1\n"
-      expect(toggler.updated_markdown_html).to include('disabled checked> Task 1')
+      task_1_checkbox = toggler_updated_fragment(toggler).css(
+        'li[data-sourcepos="1:4-1:15"] > input.task-list-item-checkbox').first
+      expect(task_1_checkbox['checked']).not_to be_nil
+      expect(task_1_checkbox['disabled']).not_to be_nil
     end
   end
 
   def parse_markdown(markdown)
     Banzai::Pipeline::FullPipeline.call(markdown, project: nil)[:output].to_html
+  end
+
+  def toggler_updated_fragment(toggler)
+    Nokogiri::HTML.fragment(toggler.updated_markdown_html)
   end
 end

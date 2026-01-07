@@ -46,25 +46,28 @@ module Gitlab
         UNSAFE_PROTOCOLS.none?(scheme)
       end
 
+      def permit_url?(url, remove_invalid_links: true)
+        uri = Addressable::URI.parse(url)
+        uri = uri.normalize
+
+        return true unless uri.scheme
+        return true if safe_protocol?(uri.scheme)
+
+        false
+      rescue Addressable::URI::InvalidURIError
+        return false if remove_invalid_links
+
+        true
+      end
+
       private
 
       def sanitize_node(node:, remove_invalid_links: true)
         ATTRS_TO_SANITIZE.each do |attr|
           next unless node.has_attribute?(attr)
 
-          begin
-            node[attr] = node[attr].strip
-
-            uri = Addressable::URI.parse(node[attr])
-            uri = uri.normalize
-
-            next unless uri.scheme
-            next if safe_protocol?(uri.scheme)
-
-            node.remove_attribute(attr)
-          rescue Addressable::URI::InvalidURIError
-            node.remove_attribute(attr) if remove_invalid_links
-          end
+          node[attr] = node[attr].strip
+          node.remove_attribute(attr) unless permit_url?(node[attr], remove_invalid_links:)
         end
       end
     end

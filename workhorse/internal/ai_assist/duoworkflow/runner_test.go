@@ -129,7 +129,7 @@ func Test_newRunner(t *testing.T) {
 		Secure: false,
 	}
 
-	runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), req, cfg)
+	runner, err := newRunner(mockConn, apiClient, req, cfg)
 
 	require.NoError(t, err)
 	require.NotNil(t, runner)
@@ -453,7 +453,6 @@ func TestRunner_handleAgentAction(t *testing.T) {
 					Client: server.Client(),
 					URL:    serverURL,
 				},
-				backend:     createBackendHandler(server.Client()),
 				token:       "test-token",
 				originalReq: &http.Request{},
 				conn:        mockConn,

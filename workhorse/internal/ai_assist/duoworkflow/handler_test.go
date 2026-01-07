@@ -45,7 +45,7 @@ func TestHandler(t *testing.T) {
 
 		apiClient := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
 
-		httpServer := httptest.NewServer(Handler(apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {})))
+		httpServer := httptest.NewServer(Handler(apiClient))
 		defer httpServer.Close()
 
 		wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
@@ -79,7 +79,7 @@ func TestHandler(t *testing.T) {
 
 		apiClient := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
 
-		server := httptest.NewServer(Handler(apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {})))
+		server := httptest.NewServer(Handler(apiClient))
 		defer server.Close()
 
 		wsURL := "ws" + strings.TrimPrefix(server.URL, "http") + "/duo"
@@ -119,7 +119,7 @@ func TestHandler(t *testing.T) {
 
 		apiClient := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
 
-		httpServer := httptest.NewServer(Handler(apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {})))
+		httpServer := httptest.NewServer(Handler(apiClient))
 		defer httpServer.Close()
 
 		wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
@@ -161,7 +161,7 @@ func TestHandler(t *testing.T) {
 
 		apiClient := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
 
-		httpServer := httptest.NewServer(Handler(apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {})))
+		httpServer := httptest.NewServer(Handler(apiClient))
 		defer httpServer.Close()
 
 		wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
