@@ -309,11 +309,36 @@ describe('date_format_utility.js', () => {
   });
 
   describe('timeIntervalInWords', () => {
-    it('should return string with number of minutes and seconds', () => {
+    it('should return string with seconds only', () => {
       expect(utils.timeIntervalInWords(9.54)).toEqual('9 seconds');
       expect(utils.timeIntervalInWords(1)).toEqual('1 second');
+      expect(utils.timeIntervalInWords(0)).toEqual('0 seconds');
+    });
+
+    it('should handle negative values by using absolute value', () => {
+      expect(utils.timeIntervalInWords(-20)).toEqual('20 seconds');
+      expect(utils.timeIntervalInWords(-100)).toEqual('1 minute 40 seconds');
+      expect(utils.timeIntervalInWords(-3661)).toEqual('1 hour 1 minute 1 second');
+    });
+
+    it('should return string with minutes and seconds', () => {
       expect(utils.timeIntervalInWords(200)).toEqual('3 minutes 20 seconds');
-      expect(utils.timeIntervalInWords(6008)).toEqual('100 minutes 8 seconds');
+      expect(utils.timeIntervalInWords(120)).toEqual('2 minutes');
+    });
+
+    it('should return string with hours, minutes and seconds', () => {
+      expect(utils.timeIntervalInWords(3600)).toEqual('1 hour');
+      expect(utils.timeIntervalInWords(3661)).toEqual('1 hour 1 minute 1 second');
+      expect(utils.timeIntervalInWords(6008)).toEqual('1 hour 40 minutes 8 seconds');
+      expect(utils.timeIntervalInWords(16859)).toEqual('4 hours 40 minutes 59 seconds');
+    });
+
+    it('should return string with days, hours, minutes and seconds', () => {
+      expect(utils.timeIntervalInWords(86400)).toEqual('1 day');
+      expect(utils.timeIntervalInWords(90000)).toEqual('1 day 1 hour');
+      expect(utils.timeIntervalInWords(90061)).toEqual('1 day 1 hour 1 minute 1 second');
+      expect(utils.timeIntervalInWords(172800)).toEqual('2 days');
+      expect(utils.timeIntervalInWords(183700)).toEqual('2 days 3 hours 1 minute 40 seconds');
     });
   });
 

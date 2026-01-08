@@ -183,12 +183,29 @@ export const formatTime = (milliseconds) => {
  */
 export const timeIntervalInWords = (intervalInSeconds) => {
   const secondsInteger = parseInt(intervalInSeconds, 10);
-  const minutes = Math.floor(secondsInteger / 60);
-  const seconds = secondsInteger - minutes * 60;
-  const secondsText = n__('%d second', '%d seconds', seconds);
-  return minutes >= 1
-    ? [n__('%d minute', '%d minutes', minutes), secondsText].join(' ')
-    : secondsText;
+  const absSeconds = Math.abs(secondsInteger);
+
+  const days = Math.floor(absSeconds / 86400);
+  const hours = Math.floor((absSeconds % 86400) / 3600);
+  const minutes = Math.floor((absSeconds % 3600) / 60);
+  const seconds = absSeconds % 60;
+
+  const parts = [];
+
+  if (days > 0) {
+    parts.push(n__('%d day', '%d days', days));
+  }
+  if (hours > 0) {
+    parts.push(n__('%d hour', '%d hours', hours));
+  }
+  if (minutes > 0) {
+    parts.push(n__('%d minute', '%d minutes', minutes));
+  }
+  if (seconds > 0 || parts.length === 0) {
+    parts.push(n__('%d second', '%d seconds', seconds));
+  }
+
+  return parts.join(' ');
 };
 
 /**

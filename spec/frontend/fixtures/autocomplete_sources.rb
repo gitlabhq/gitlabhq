@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::AutocompleteSourcesController, '(JavaScript fixtures)', type: :controller do
+RSpec.describe Projects::AutocompleteSourcesController, '(JavaScript fixtures)', type: :controller, feature_category: :team_planning do
   include JavaScriptFixturesHelpers
 
   let_it_be(:user) { create(:user) }

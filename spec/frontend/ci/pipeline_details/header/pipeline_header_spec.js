@@ -308,9 +308,7 @@ describe('Pipeline header', () => {
     it('displays pipeline duration text', async () => {
       await createComponent();
 
-      expect(findPipelineDuration().text()).toBe(
-        '120 minutes 10 seconds, queued for 3,600 seconds',
-      );
+      expect(findPipelineDuration().text()).toBe('2 hours 10 seconds, queued for 3,600 seconds');
     });
   });
 

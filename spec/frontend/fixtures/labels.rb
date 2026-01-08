@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Labels (JavaScript fixtures)' do
+RSpec.describe 'Labels (JavaScript fixtures)', feature_category: :team_planning do
   include JavaScriptFixturesHelpers
 
   let(:user) { create(:user) }

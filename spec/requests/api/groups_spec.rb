@@ -144,6 +144,18 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     context "when unauthenticated" do
+      before do
+        # Stub to prevent cascading settings queries from auto_duo_code_review_settings_available?
+        # These queries are unrelated to what this N+1 spec is testing.
+        # Added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217045
+        # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
+        if Gitlab.ee?
+          # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all instances for N+1 spec
+          allow_any_instance_of(EE::Namespace).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+          # rubocop:enable RSpec/AnyInstanceOf
+        end
+      end
+
       it "returns public groups", :aggregate_failures do
         get api("/groups")
 
