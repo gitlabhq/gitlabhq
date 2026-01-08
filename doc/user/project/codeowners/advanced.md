@@ -184,18 +184,9 @@ The eligible Code Owners are:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203298) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `check_inherited_groups_for_codeowners`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/566627) in GitLab 18.6.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/579541) in GitLab 18.8. Feature flag `check_inherited_groups_for_codeowners` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-When this feature is disabled, only groups directly invited to a project are
-eligible as Code Owners. Groups shared with the project's parent groups are not
-eligible.
-
-{{< /alert >}}
 
 To make members of a group eligible as Code Owners for projects they don't
 directly belong to, you can

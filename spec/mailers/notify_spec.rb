@@ -969,6 +969,8 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         create(:issue_email_participant, issue: issue, email: 'service.desk@example.com')
       end
 
+      let_it_be(:support_bot) { create(:support_bot) }
+
       before do
         issue.update!(external_author: 'service.desk@example.com')
       end
@@ -997,7 +999,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         end
 
         it 'uses service bot name by default' do
-          expect_sender(Users::Internal.support_bot)
+          expect_sender(support_bot)
         end
 
         it 'has legacy Issue headers' do
@@ -1022,7 +1024,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
           let_it_be(:settings) { create(:service_desk_setting, project: project, outgoing_name: '') }
 
           it 'uses service bot name' do
-            expect_sender(Users::Internal.support_bot)
+            expect_sender(support_bot)
           end
         end
 
@@ -1045,7 +1047,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
           end
 
           it 'uses custom email and service bot name in "from" header' do
-            expect_sender(Users::Internal.support_bot, sender_email: 'supersupport@example.com')
+            expect_sender(support_bot, sender_email: 'supersupport@example.com')
           end
 
           it 'uses SMTP delivery method and has correct settings' do

@@ -138,11 +138,8 @@ To create and manage security policies:
   - You must be the project owner.
   - You must be a group member with permissions to create projects in the group.
 
-{{< alert type="note" >}}
-
-If you're not a group member, you may face limitations in adding or editing policies for your project. The ability to create and manage policies requires permissions to create projects in the group. Make sure you have the required permissions in the group, even when working with project-level policies.
-
-{{< /alert >}}
+> [!note]
+> If you're not a group member, you may face limitations in adding or editing policies for your project. The ability to create and manage policies requires permissions to create projects in the group. Make sure you have the required permissions in the group, even when working with project-level policies.
 
 ## Policy recommendations
 
@@ -266,11 +263,8 @@ experiments:
 
 After you enable the option, any change to the security policies made with the GitLab [policy editor](#policy-editor) creates annotation comments next to the IDs in the `policy.yml` file.
 
-{{< alert type="note" >}}
-
-To apply the annotations, you must use the policy editor. If you edit the `policy.yml` file manually (for example, with a Git commit), the annotations are not applied.
-
-{{< /alert >}}
+> [!note]
+> To apply the annotations, you must use the policy editor. If you edit the `policy.yml` file manually (for example, with a Git commit), the annotations are not applied.
 
 For example:
 
@@ -292,11 +286,8 @@ approval_policy:
     - 203 # security-approvers
 ```
 
-{{< alert type="note" >}}
-
-When you apply annotations for the first time, GitLab creates the annotations for all IDs in the `policy.yml` file, including those in policies that you aren't editing.
-
-{{< /alert >}}
+> [!note]
+> When you apply annotations for the first time, GitLab creates the annotations for all IDs in the `policy.yml` file, including those in policies that you aren't editing.
 
 ## GitLab Security Policy Bot user
 

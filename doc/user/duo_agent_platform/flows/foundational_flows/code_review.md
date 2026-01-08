@@ -47,6 +47,7 @@ This flow is available in the GitLab UI only.
 Prerequisites:
 
 - Ensure you meet [the other prerequisites](../_index.md#prerequisites).
+- Ensure that the Code Review Flow is [turned on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).
 
 To trigger a Code Review Flow on a merge request:
 

@@ -379,11 +379,8 @@ For more information on the passthrough syntax to use, see [Schema](custom_rules
 
 If a ruleset configuration is stored in a private repository you must provide the credentials to access the repository by using the passthrough's [`auth` setting](custom_rulesets_schema.md#the-secretspassthrough-section).
 
-{{< alert type="note" >}}
-
-The `auth` setting only works with `git` passthrough.
-
-{{< /alert >}}
+> [!note]
+> The `auth` setting only works with `git` passthrough.
 
 To use a remote ruleset stored in a private repository, add the following to the `.gitlab/secret-detection-ruleset.toml` configuration file stored in a repository, adjust the `value` to point to the address of the Git repository, and update `auth` to use the appropriate credentials:
 
@@ -397,11 +394,8 @@ To use a remote ruleset stored in a private repository, add the following to the
     value  = "https://gitlab.com/user_group/central_repository_with_shared_ruleset"
 ```
 
-{{< alert type="warning" >}}
-
-Beware of leaking credentials when using this feature. Check [this section](custom_rulesets_schema.md#interpolate) for an example on how to use environment variables to minimize the risk.
-
-{{< /alert >}}
+> [!warning]
+> Beware of leaking credentials when using this feature. Check [this section](custom_rulesets_schema.md#interpolate) for an example on how to use environment variables to minimize the risk.
 
 For more information on the passthrough syntax to use, see [Schema](custom_rulesets_schema.md#schema).
 

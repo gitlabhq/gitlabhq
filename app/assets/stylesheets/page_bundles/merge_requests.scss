@@ -974,3 +974,7 @@ $diff-file-header-top: 11px;
 .merge-request-review-drawer .rte-text-box{
   line-height: 1.5;
 }
+
+.reviewers-dropdown.sidebar-reviewer-disabled {
+  cursor: not-allowed;
+}

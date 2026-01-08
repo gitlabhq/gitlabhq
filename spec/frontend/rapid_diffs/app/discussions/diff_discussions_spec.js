@@ -114,4 +114,30 @@ describe('DiffDiscussions', () => {
     wrapper.findComponent(NoteableDiscussion).vm.$emit('noteEdited', { note, value });
     expect(useDiffDiscussions().editNote).toHaveBeenCalledWith({ note, value });
   });
+
+  describe('timelineLayout prop', () => {
+    it('passes timelineLayout to NoteableDiscussion', () => {
+      createComponent({ discussions: [{ id: '1' }], timelineLayout: true });
+      expect(wrapper.findComponent(NoteableDiscussion).props('timelineLayout')).toBe(true);
+    });
+
+    it('defaults timelineLayout to false', () => {
+      createComponent({ discussions: [{ id: '1' }] });
+      expect(wrapper.findComponent(NoteableDiscussion).props('timelineLayout')).toBe(false);
+    });
+  });
+
+  describe('isLastDiscussion prop', () => {
+    it('passes isLastDiscussion as true for the last discussion', () => {
+      createComponent({ discussions: [{ id: '1' }, { id: '2' }] });
+      const discussions = wrapper.findAllComponents(NoteableDiscussion);
+      expect(discussions.at(0).props('isLastDiscussion')).toBe(false);
+      expect(discussions.at(1).props('isLastDiscussion')).toBe(true);
+    });
+
+    it('passes isLastDiscussion as true for single discussion', () => {
+      createComponent({ discussions: [{ id: '1' }] });
+      expect(wrapper.findComponent(NoteableDiscussion).props('isLastDiscussion')).toBe(true);
+    });
+  });
 });

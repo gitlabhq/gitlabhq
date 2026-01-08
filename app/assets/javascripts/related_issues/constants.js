@@ -1,5 +1,11 @@
 import { __, sprintf } from '~/locale';
-import { TYPE_EPIC, TYPE_INCIDENT, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
+import {
+  TYPE_EPIC,
+  TYPE_INCIDENT,
+  TYPE_ISSUE,
+  TYPE_MERGE_REQUEST,
+  TYPE_TICKET,
+} from '~/issues/constants';
 
 export const linkedIssueTypesMap = {
   BLOCKS: 'blocks',
@@ -16,6 +22,11 @@ export const linkedIssueTypesTextMap = {
 export const autoCompleteTextMap = {
   true: {
     [TYPE_ISSUE]: sprintf(
+      __(' or %{emphasisStart}#issue ID%{emphasisEnd}'),
+      { emphasisStart: '<', emphasisEnd: '>' },
+      false,
+    ),
+    [TYPE_TICKET]: sprintf(
       __(' or %{emphasisStart}#issue ID%{emphasisEnd}'),
       { emphasisStart: '<', emphasisEnd: '>' },
       false,
@@ -38,6 +49,7 @@ export const autoCompleteTextMap = {
   },
   false: {
     [TYPE_ISSUE]: '',
+    [TYPE_TICKET]: '',
     [TYPE_EPIC]: '',
     [TYPE_MERGE_REQUEST]: __(' or references'),
   },
@@ -45,6 +57,7 @@ export const autoCompleteTextMap = {
 
 export const inputPlaceholderTextMap = {
   [TYPE_ISSUE]: __('Enter issue URL'),
+  [TYPE_TICKET]: __('Enter issue URL'),
   [TYPE_INCIDENT]: __('Enter URL'),
   [TYPE_EPIC]: __('Enter epic URL'),
   [TYPE_MERGE_REQUEST]: __('Enter merge request URLs'),
@@ -52,17 +65,20 @@ export const inputPlaceholderTextMap = {
 
 export const inputPlaceholderConfidentialTextMap = {
   [TYPE_ISSUE]: __('Enter confidential issue URL'),
+  [TYPE_TICKET]: __('Enter confidential ticket URL'),
   [TYPE_EPIC]: __('Enter confidential epic URL'),
   [TYPE_MERGE_REQUEST]: __('Enter merge request URLs'),
 };
 
 export const relatedIssuesRemoveErrorMap = {
   [TYPE_ISSUE]: __('An error occurred while removing issues.'),
+  [TYPE_TICKET]: __('An error occurred while removing tickets.'),
   [TYPE_EPIC]: __('An error occurred while removing epics.'),
 };
 
 export const pathIndeterminateErrorMap = {
   [TYPE_ISSUE]: __('We could not determine the path to remove the issue'),
+  [TYPE_TICKET]: __('We could not determine the path to remove the ticket'),
   [TYPE_EPIC]: __('We could not determine the path to remove the epic'),
 };
 
@@ -73,6 +89,7 @@ export const itemAddFailureTypesMap = {
 
 export const addRelatedIssueErrorMap = {
   [TYPE_ISSUE]: __('Issue cannot be found.'),
+  [TYPE_TICKET]: __('Ticket cannot be found.'),
   [TYPE_EPIC]: __('Epic cannot be found.'),
 };
 
@@ -89,6 +106,7 @@ export const addRelatedItemErrorMap = {
  */
 export const issuableIconMap = {
   [TYPE_ISSUE]: 'work-item-issue',
+  [TYPE_TICKET]: 'work-item-ticket',
   [TYPE_INCIDENT]: 'work-item-issue',
   [TYPE_EPIC]: 'work-item-epic',
 };
@@ -100,29 +118,34 @@ export const PathIdSeparator = {
 
 export const issuablesBlockHeaderTextMap = {
   [TYPE_ISSUE]: __('Linked items'),
+  [TYPE_TICKET]: __('Linked items'),
   [TYPE_INCIDENT]: __('Linked incidents or issues'),
   [TYPE_EPIC]: __('Linked epics'),
 };
 
 export const issuablesBlockHelpTextMap = {
   [TYPE_ISSUE]: __('Learn more about linking issues'),
+  [TYPE_TICKET]: __('Learn more about linking tickets'),
   [TYPE_INCIDENT]: __('Learn more about linking issues and incidents'),
   [TYPE_EPIC]: __('Learn more about linking epics'),
 };
 
 export const issuablesBlockAddButtonTextMap = {
   [TYPE_ISSUE]: __('Add a related issue'),
+  [TYPE_TICKET]: __('Add a related ticket'),
   [TYPE_EPIC]: __('Add a related epic'),
 };
 
 export const issuablesFormCategoryHeaderTextMap = {
   [TYPE_ISSUE]: __('The current issue'),
+  [TYPE_TICKET]: __('The current ticket'),
   [TYPE_INCIDENT]: __('The current incident'),
   [TYPE_EPIC]: __('The current epic'),
 };
 
 export const issuablesFormInputTextMap = {
   [TYPE_ISSUE]: __('the following issues'),
+  [TYPE_TICKET]: __('the following issues'),
   [TYPE_INCIDENT]: __('the following incidents or issues'),
   [TYPE_EPIC]: __('the following epics'),
 };

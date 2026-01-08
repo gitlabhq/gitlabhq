@@ -211,7 +211,6 @@ RSpec/RedundantMetatagType:
     - 'ee/spec/services/namespaces/cascade_web_based_commit_signing_enabled_service_spec.rb'
     - 'ee/spec/tasks/gitlab/duo_chat/seed_failed_jobs_spec.rb'
     - 'ee/spec/tasks/gitlab/gitlab_subscriptions/cleanup_duo_add_on_purchase_upgrade_spec.rb'
-    - 'ee/spec/views/groups/early_access_opt_in/show.html.haml_spec.rb'
     - 'ee/spec/views/groups/security/compliance_dashboards/show.html.haml_spec.rb'
     - 'ee/spec/views/groups/security/discover/show.html.haml_spec.rb'
     - 'ee/spec/views/projects/duo_agents_platform/show.html.haml_spec.rb'

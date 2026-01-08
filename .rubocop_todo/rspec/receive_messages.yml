@@ -153,7 +153,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/views/devise/registrations/new.html.haml_spec.rb'
     - 'ee/spec/views/devise/sessions/new.html.haml_spec.rb'
     - 'ee/spec/views/groups/billings/index.html.haml_spec.rb'
-    - 'ee/spec/views/groups/early_access_opt_in/show.html.haml_spec.rb'
     - 'ee/spec/views/groups/group_members/index.html.haml_spec.rb'
     - 'ee/spec/views/groups/settings/_enforce_ssh_certificates.html.haml_spec.rb'
     - 'ee/spec/views/groups/settings/_permissions.html.haml_spec.rb'

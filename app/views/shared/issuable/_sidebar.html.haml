@@ -2,6 +2,7 @@
   This should be removed when this sidebar is converted to Vue since assignee data is also available in the `issuable_sidebar` hash
 
 - issuable_type = issuable_sidebar[:type]
+- issue_type = local_assigns.fetch(:issue_type, nil)
 - signed_in = !!issuable_sidebar.dig(:current_user, :id)
 - can_edit_issuable = issuable_sidebar.dig(:current_user, :can_edit)
 - add_page_startup_api_call "#{issuable_sidebar[:issuable_json_path]}?serializer=sidebar_extras"
@@ -77,7 +78,7 @@
 
       - if issuable_sidebar.dig(:current_user, :can_move)
         .block
-          .js-sidebar-move-issue-block{ data: { project_full_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
+          .js-sidebar-move-issue-block{ data: { project_full_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issue_type: issue_type } }
 
     -# haml-lint:disable InlineJavaScript
     %script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable_sidebar, @project).to_json.html_safe

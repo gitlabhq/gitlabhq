@@ -5,441 +5,359 @@
 # If it turns out that a method you are attempting to remove is in fact in use,
 #   remove it from this file and add it to `excluded_methods.yml`.
 #
-compatible_self_hosted_models:
-  file: ee/app/models/ai/feature_setting.rb
-create_new_key!:
-  file: ee/app/models/cloud_connector/keys.rb
-trim!:
-  file: ee/app/models/cloud_connector/keys.rb
-truncated_pem:
-  file: ee/app/models/cloud_connector/keys.rb
-blocked_issuables_for_collection:
-  file: ee/app/models/concerns/ee/issuable_link.rb
-vulnerability_flags_for:
-  file: ee/app/models/concerns/ee/vulnerability_flag_helpers.rb
-consume_event_created:
-  file: ee/app/models/concerns/geo/blob_replicator_strategy.rb
-consume_event_deleted:
-  file: ee/app/models/concerns/geo/blob_replicator_strategy.rb
-consume_event_created:
-  file: ee/app/models/concerns/geo/repository_replicator_strategy.rb
-consume_event_deleted:
-  file: ee/app/models/concerns/geo/repository_replicator_strategy.rb
-consume_event_checksum_succeeded:
-  file: ee/app/models/concerns/geo/verifiable_replicator.rb
-secondary_checksum:
-  file: ee/app/models/concerns/geo/verifiable_replicator.rb
-product_analytics_funnels:
-  file: ee/app/models/concerns/product_analytics_helpers.rb
-active_pipeline_execution_schedule_policies:
-  file: ee/app/models/concerns/security/pipeline_execution_schedule_policy.rb
-applicable_scan_result_policies_with_real_index:
-  file: ee/app/models/concerns/security/scan_result_policy.rb
-scan_file_path_or_dast_site_url:
-  file: ee/app/models/dast_site_profile.rb
-unset_marketing_user_cookies:
-  file: ee/app/models/ee/active_session.rb
-has_artifact?:
-  file: ee/app/models/ee/ci/build.rb
-collect_license_scanning_reports!:
-  file: ee/app/models/ee/ci/build.rb
-latest_merged_result_pipeline?:
-  file: ee/app/models/ee/ci/pipeline.rb
-license_scan_completed?:
-  file: ee/app/models/ee/ci/pipeline.rb
-triggered_for_ondemand_dast_scan?:
-  file: ee/app/models/ee/ci/pipeline.rb
-has_all_security_policies_reports?:
-  file: ee/app/models/ee/ci/pipeline.rb
-cost_factor_for_project:
-  file: ee/app/models/ee/ci/runner.rb
-allowed_plan_names:
-  file: ee/app/models/ee/ci/runner.rb
-distinct_by_user:
-  file: ee/app/models/ee/clusters/concerns/application_core.rb
-elapsed_days:
-  file: ee/app/models/ee/epic.rb
-max_hierarchy_depth_achieved?:
-  file: ee/app/models/ee/epic.rb
-valid_parent?:
-  file: ee/app/models/ee/epic.rb
-issues_readable_by:
-  file: ee/app/models/ee/epic.rb
-human_ldap_access:
-  file: ee/app/models/ee/group.rb
-seat_overage?:
-  file: ee/app/models/ee/group.rb
-count_within_namespaces:
-  file: ee/app/models/ee/group.rb
-provisioned_by_this_group?:
-  file: ee/app/models/ee/group_member.rb
-old_path_with_namespace_for:
-  file: ee/app/models/ee/namespace.rb
-default_plan?:
-  file: ee/app/models/ee/namespace.rb
-premium_trial_plan?:
-  file: ee/app/models/ee/namespace.rb
-update_wiki_size:
-  file: ee/app/models/ee/namespace_statistics.rb
-member_usernames_among:
-  file: ee/app/models/ee/project.rb
-mirror_last_update_failed?:
-  file: ee/app/models/ee/project.rb
-search_by_visibility:
-  file: ee/app/models/ee/project.rb
-group_ldap_synced?:
-  file: ee/app/models/ee/project.rb
-upstream_projects_count:
-  file: ee/app/models/ee/project.rb
-downstream_projects_count:
-  file: ee/app/models/ee/project.rb
-provisioned_by_this_group?:
-  file: ee/app/models/ee/project_member.rb
-commit_count_for:
-  file: ee/app/models/ee/push_event_payload.rb
-ci_namespace_mirrors_permitted_to:
-  file: ee/app/models/ee/user.rb
-no_eligible_duo_add_on_assignments?:
-  file: ee/app/models/ee/user_preference.rb
-report_type_order:
-  file: ee/app/models/ee/vulnerability.rb
-pluck_container_repository_key:
-  file: ee/app/models/geo/container_repository_registry.rb
-uses_ssh_key?:
-  file: ee/app/models/geo_node.rb
-snapshot_url:
-  file: ee/app/models/geo_node.rb
-update_clone_url!:
-  file: ee/app/models/geo_node.rb
-attribute_timestamp:
-  file: ee/app/models/geo_node_status.rb
-attribute_timestamp=:
-  file: ee/app/models/geo_node_status.rb
-customizable_permissions_exempt_from_consuming_seat:
-  file: ee/app/models/members/member_role.rb
-remaining_storage_size:
-  file: ee/app/models/namespaces/storage/root_size.rb
-from_dependency_scanning?:
-  file: ee/app/models/package_metadata/advisory.rb
-set_validity_checks!:
-  file: ee/app/models/project_security_setting.rb
-index_in:
-  file: ee/app/models/search/zoekt.rb
-delete_in:
-  file: ee/app/models/search/zoekt.rb
-compliance_framework_ids_with_policy_index:
-  file: ee/app/models/security/orchestration_policy_configuration.rb
-experiment_configuration:
-  file: ee/app/models/security/orchestration_policy_configuration.rb
-find_by_work_item_and_name:
-  file: ee/app/models/work_items/statuses/system_defined/status.rb
-can_view_namespace_catalog?:
-  file: app/helpers/ci/catalog/resources_helper.rb
-js_ci_catalog_data:
-  file: app/helpers/ci/catalog/resources_helper.rb
-event_feed_title:
-  file: app/helpers/events_helper.rb
-event_feed_summary:
-  file: app/helpers/events_helper.rb
-group_title_link:
-  file: app/helpers/groups_helper.rb
-integration_issue_type:
-  file: app/helpers/integrations_helper.rb
-integration_todo_target_type:
-  file: app/helpers/integrations_helper.rb
-user_dropdown_label:
-  file: app/helpers/issuables_helper.rb
-project_dropdown_label:
-  file: app/helpers/issuables_helper.rb
-group_dropdown_label:
-  file: app/helpers/issuables_helper.rb
-approve_access_request_group_member_path:
-  file: app/helpers/routing/groups/members_helper.rb
-resend_invite_group_member_path:
-  file: app/helpers/routing/groups/members_helper.rb
-edit_pipeline_schedule_path:
-  file: app/helpers/routing/pipeline_schedules_helper.rb
-play_pipeline_schedule_path:
-  file: app/helpers/routing/pipeline_schedules_helper.rb
-take_ownership_pipeline_schedule_path:
-  file: app/helpers/routing/pipeline_schedules_helper.rb
-request_access_project_members_path:
-  file: app/helpers/routing/projects/members_helper.rb
-leave_project_members_path:
-  file: app/helpers/routing/projects/members_helper.rb
-approve_access_request_project_member_path:
-  file: app/helpers/routing/projects/members_helper.rb
-resend_invite_project_member_path:
-  file: app/helpers/routing/projects/members_helper.rb
-sort_title_stars:
-  file: app/helpers/sorting_titles_values_helper.rb
-deleted_from_database?:
-  file: app/models/application_record.rb
-max_login_attempts_column_exists?:
-  file: app/models/application_setting.rb
-failed_login_attempts_unlock_period_in_minutes_column_exists?:
-  file: app/models/application_setting.rb
-ensure_key_restrictions!:
-  file: app/models/application_setting_implementation.rb
-degenerate!:
-  file: app/models/ci/build.rb
-has_live_trace?:
-  file: app/models/ci/build.rb
-has_archived_trace?:
-  file: app/models/ci/build.rb
-migrated?:
-  file: app/models/ci/build_trace_chunk.rb
-expiring?:
-  file: app/models/ci/job_artifact.rb
-has_archive_artifacts?:
-  file: app/models/ci/pipeline.rb
-has_erasable_artifacts?:
-  file: app/models/ci/pipeline.rb
-waiting_processables:
-  file: app/models/ci/resource_group.rb
-fallback_owner_project:
-  file: app/models/ci/runner.rb
-platform_kubernetes_active?:
-  file: app/models/clusters/cluster.rb
-legacy_auto_devops_domain:
-  file: app/models/clusters/cluster.rb
-can_uninstall?:
-  file: app/models/clusters/concerns/application_core.rb
-schedule_status_update:
-  file: app/models/clusters/concerns/application_core.rb
-update_command:
-  file: app/models/clusters/concerns/application_core.rb
-uninstall_command:
-  file: app/models/clusters/concerns/application_core.rb
-post_uninstall:
-  file: app/models/clusters/concerns/application_core.rb
-certificate_files:
-  file: app/models/clusters/concerns/application_data.rb
-updateable?:
-  file: app/models/clusters/concerns/application_status.rb
-update_available?:
-  file: app/models/clusters/concerns/application_version.rb
-user_authored?:
-  file: app/models/concerns/awardable.rb
-degenerate!:
-  file: app/models/concerns/ci/metadatable.rb
-timeout_human_readable_value:
-  file: app/models/concerns/ci/metadatable.rb
-timeout_source_value:
-  file: app/models/concerns/ci/metadatable.rb
-update_counters_with_lease:
-  file: app/models/concerns/counter_attribute.rb
-trigger_transactional_callbacks?:
-  file: app/models/concerns/cross_database_modification.rb
-before_committed!:
-  file: app/models/concerns/cross_database_modification.rb
-rolledback!:
-  file: app/models/concerns/cross_database_modification.rb
-confirmation_period_expired?:
-  file: app/models/concerns/forced_email_confirmation.rb
-clear_constraints_cache!:
-  file: app/models/concerns/has_check_constraints.rb
-supported_event_actions:
-  file: app/models/concerns/integrations/base/harbor.rb
-instance_exists_for?:
-  file: app/models/concerns/integrations/base/integration.rb
-enabled_in_gitlab_config:
-  file: app/models/concerns/integrations/base/issue_tracker.rb
-has_multiple_assignees?:
-  file: app/models/concerns/issuable.rb
-referenced_group_users:
-  file: app/models/concerns/mentionable.rb
-total_merge_requests_count:
-  file: app/models/concerns/milestoneish.rb
-elapsed_days:
-  file: app/models/concerns/milestoneish.rb
-diff_attributes:
-  file: app/models/concerns/note_on_diff.rb
-_returning_columns_for_insert:
-  file: app/models/concerns/partitioned_table.rb
-managed_prometheus?:
-  file: app/models/concerns/prometheus_adapter.rb
-without_reactive_cache:
-  file: app/models/concerns/reactive_caching.rb
-move_nulls_to_start:
-  file: app/models/concerns/relative_positioning.rb
-lock_expired?:
-  file: app/models/concerns/require_email_verification.rb
-enforced_runner_token_expiration_interval_human_readable:
-  file: app/models/concerns/runner_token_expiration_interval.rb
-effective_runner_token_expiration_interval_human_readable:
-  file: app/models/concerns/runner_token_expiration_interval.rb
-load_schema!:
-  file: app/models/concerns/sha_attribute.rb
-suppress_composite_primary_key:
-  file: app/models/concerns/suppress_composite_primary_key_warning.rb
-reset_open_transactions_baseline:
-  file: app/models/concerns/transactions.rb
-_query_by_sql:
-  file: app/models/concerns/use_sql_function_for_primary_key_lookups.rb
-has_mentions?:
-  file: app/models/concerns/user_mention_behaviour.rb
-mentioned_groups:
-  file: app/models/concerns/user_mention_behaviour.rb
-mentioned_projects:
-  file: app/models/concerns/user_mention_behaviour.rb
-knative_services_finder:
-  file: app/models/environment.rb
-find_sti_class:
-  file: app/models/event.rb
-created_target?:
-  file: app/models/event.rb
-note_target_id:
-  file: app/models/event.rb
-recent_repository_update?:
-  file: app/models/event.rb
-get_ids_by_ids_or_paths:
-  file: app/models/group.rb
-blocked_owners:
-  file: app/models/group.rb
-has_maintainer?:
-  file: app/models/group.rb
-members_from_self_and_ancestors_with_effective_access_level:
-  file: app/models/group.rb
-hierarchy_members_with_inactive:
-  file: app/models/group.rb
-aliased_composite_key:
-  file: app/models/import/source_user_placeholder_reference.rb
-allow_target_ci?:
-  file: app/models/integrations/drone_ci.rb
-previous_updated_at:
-  file: app/models/issue.rb
-email_participants_emails:
-  file: app/models/issue.rb
-owner_class_attribute_default:
-  file: app/models/jira_import_state.rb
-non_initial?:
-  file: app/models/jira_import_state.rb
-diff_base_commit:
-  file: app/models/merge_request.rb
-diff_start_commit:
-  file: app/models/merge_request.rb
-reopenable?:
-  file: app/models/merge_request.rb
-can_be_closed?:
-  file: app/models/merge_request.rb
-find_assignee:
-  file: app/models/merge_request.rb
-migrate_files_to_database!:
-  file: app/models/merge_request_diff.rb
-count_for_project:
-  file: app/models/ml/experiment.rb
-find_or_create!:
-  file: app/models/ml/model_version.rb
-send_update_instructions:
-  file: app/models/namespace.rb
-any_project_with_pages_deployed?:
-  file: app/models/namespace.rb
-recent?:
-  file: app/models/namespace.rb
-saved_change_to_parent?:
-  file: app/models/namespace.rb
-saved_change_to_path_or_parent?:
-  file: app/models/namespace.rb
-import_scheduled?:
-  file: app/models/project.rb
-updating_remote_mirror?:
-  file: app/models/project.rb
-issue_exists?:
-  file: app/models/project.rb
-latest_successful_pipeline_for:
-  file: app/models/project.rb
-enable_ci:
-  file: app/models/project.rb
-valid_runners_token?:
-  file: app/models/project.rb
-storage_upgradable?:
-  file: app/models/project.rb
-limited_protected_branches:
-  file: app/models/project.rb
-deploy_token_create_url:
-  file: app/models/project.rb
-deploy_token_revoke_url_for:
-  file: app/models/project.rb
-update_wiki_size:
-  file: app/models/project_statistics.rb
-update_snippets_size:
-  file: app/models/project_statistics.rb
-update_lfs_objects_size:
-  file: app/models/project_statistics.rb
-update_uploads_size:
-  file: app/models/project_statistics.rb
-update_container_registry_size:
-  file: app/models/project_statistics.rb
-members_in_project_and_ancestors:
-  file: app/models/project_team.rb
-members_with_access_levels:
-  file: app/models/project_team.rb
-mark_for_retry!:
-  file: app/models/remote_mirror.rb
-owner_class_attribute_default:
-  file: app/models/service_desk/custom_email_verification.rb
-unmergeable?:
-  file: app/models/todo.rb
-merge_train_removed?:
-  file: app/models/todo.rb
-review_submitted?:
-  file: app/models/todo.rb
-access_request_url:
-  file: app/models/todo.rb
-for_alert?:
-  file: app/models/todo.rb
-for_issue_or_work_item?:
-  file: app/models/todo.rb
-for_ssh_key?:
-  file: app/models/todo.rb
-self_assigned?:
-  file: app/models/todo.rb
-owner_class_attribute_default:
-  file: app/models/user.rb
-inactive_message:
-  file: app/models/user.rb
-will_save_change_to_login?:
-  file: app/models/user.rb
-render_items_list:
-  file: ee/app/helpers/ee/merge_requests_helper.rb
-trial_submit_text:
-  file: ee/app/helpers/gitlab_subscriptions/trials_helper.rb
-namespace_selector_data:
-  file: ee/app/helpers/gitlab_subscriptions/trials_helper.rb
-get_primary_key:
-  file: ee/app/models/geo/tracking_base.rb
-ci_policy_name_for_environment:
-  file: ee/app/models/secrets_management/group_secrets_managers/pipeline_helper.rb
-really_destroy!:
-  file: ee/app/models/security/attribute.rb
-really_destroy!:
-  file: ee/app/models/security/category.rb
-local_project_id:
-  file: ee/app/models/virtual_registries/packages/maven/upstream.rb
-local_group_id:
-  file: ee/app/models/virtual_registries/packages/maven/upstream.rb
-runner_status_icon:
-  file: app/helpers/ci/runners_helper.rb
-runner_link:
-  file: app/helpers/ci/runners_helper.rb
-offline?:
-  file: app/models/bulk_imports/export.rb
-belongs_to_one_project?:
-  file: app/models/ci/runner.rb
-touch_later:
-  file: app/models/commit.rb
-not_isolated?:
-  file: app/models/concerns/organizations/isolatable.rb
-mark_as_isolated!:
-  file: app/models/concerns/organizations/isolatable.rb
-mark_as_not_isolated!:
-  file: app/models/concerns/organizations/isolatable.rb
-prometheus_client_default_options:
-  file: app/models/concerns/prometheus_adapter.rb
-can_modify_email_otp_enrollment?:
-  file: app/models/concerns/users/email_otp_enrollment.rb
-head_pipeline_active?:
-  file: app/models/merge_request.rb
-not_isolated?:
-  file: app/models/organizations/isolation_record.rb
+ee/app/helpers/ee/merge_requests_helper.rb:
+- render_items_list
+ee/app/helpers/ee/sorting_titles_values_helper.rb:
+- sort_value_version_asc
+- sort_value_version_desc
+ee/app/helpers/gitlab_subscriptions/hand_raise_leads_helper.rb:
+- duo_pro_trial_status_cta_label
+ee/app/helpers/gitlab_subscriptions/trials_helper.rb:
+- trial_submit_text
+- namespace_selector_data
+ee/app/models/ai/feature_setting.rb:
+- compatible_self_hosted_models
+ee/app/models/cloud_connector/keys.rb:
+- create_new_key!
+- trim!
+- truncated_pem
+ee/app/models/concerns/ai/customizable_permission.rb:
+- ai_minimum_access_level_to_execute
+ee/app/models/concerns/approval_rule_like.rb:
+- vulnerability_attribute_known_exploited
+- vulnerability_attribute_epss_score
+ee/app/models/concerns/ee/issuable_link.rb:
+- blocked_issuables_for_collection
+ee/app/models/concerns/ee/vulnerability_flag_helpers.rb:
+- vulnerability_flags_for
+ee/app/models/concerns/geo/blob_replicator_strategy.rb:
+- consume_event_created
+- consume_event_deleted
+ee/app/models/concerns/geo/repository_replicator_strategy.rb:
+- consume_event_created
+- consume_event_deleted
+ee/app/models/concerns/geo/verifiable_replicator.rb:
+- consume_event_checksum_succeeded
+- secondary_checksum
+ee/app/models/concerns/product_analytics_helpers.rb:
+- product_analytics_funnels
+ee/app/models/concerns/security/pipeline_execution_schedule_policy.rb:
+- active_pipeline_execution_schedule_policies
+ee/app/models/concerns/security/scan_result_policy.rb:
+- applicable_scan_result_policies_with_real_index
+ee/app/models/dast_site_profile.rb:
+- scan_file_path_or_dast_site_url
+ee/app/models/ee/active_session.rb:
+- unset_marketing_user_cookies
+ee/app/models/ee/ci/build.rb:
+- has_artifact?
+- collect_license_scanning_reports!
+ee/app/models/ee/ci/pipeline.rb:
+- latest_merged_result_pipeline?
+- license_scan_completed?
+- triggered_for_ondemand_dast_scan?
+- has_all_security_policies_reports?
+ee/app/models/ee/ci/runner.rb:
+- cost_factor_for_project
+- allowed_plan_names
+ee/app/models/ee/clusters/concerns/application_core.rb:
+- distinct_by_user
+ee/app/models/ee/epic.rb:
+- elapsed_days
+- max_hierarchy_depth_achieved?
+- valid_parent?
+- issues_readable_by
+ee/app/models/ee/group.rb:
+- human_ldap_access
+- seat_overage?
+- count_within_namespaces
+ee/app/models/ee/group_member.rb:
+- provisioned_by_this_group?
+ee/app/models/ee/issue.rb:
+- can_assign_epic?
+ee/app/models/ee/merge_request.rb:
+- sync_project_approval_rules_for_policy_configuration
+- delete_approval_rules_for_policy_configuration
+ee/app/models/ee/namespace.rb:
+- old_path_with_namespace_for
+- default_plan?
+- premium_trial_plan?
+ee/app/models/ee/namespace_statistics.rb:
+- update_wiki_size
+ee/app/models/ee/project.rb:
+- member_usernames_among
+- mirror_last_update_failed?
+- search_by_visibility
+- group_ldap_synced?
+- upstream_projects_count
+- downstream_projects_count
+ee/app/models/ee/project_member.rb:
+- provisioned_by_this_group?
+ee/app/models/ee/user.rb:
+- ci_namespace_mirrors_permitted_to
+ee/app/models/ee/user_preference.rb:
+- distinct_eligible_duo_add_on_assignments
+- no_eligible_duo_add_on_assignments?
+ee/app/models/ee/vulnerability.rb:
+- report_type_order
+ee/app/models/geo/container_repository_registry.rb:
+- pluck_container_repository_key
+ee/app/models/geo/tracking_base.rb:
+- get_primary_key
+ee/app/models/geo_node.rb:
+- uses_ssh_key?
+- snapshot_url
+- update_clone_url!
+ee/app/models/geo_node_status.rb:
+- attribute_timestamp
+- attribute_timestamp=
+ee/app/models/members/member_role.rb:
+- customizable_permissions_exempt_from_consuming_seat
+ee/app/models/namespaces/storage/root_size.rb:
+- remaining_storage_size
+ee/app/models/package_metadata/advisory.rb:
+- from_dependency_scanning?
+ee/app/models/project_security_setting.rb:
+- set_validity_checks!
+ee/app/models/search/zoekt.rb:
+- index_in
+- delete_in
+ee/app/models/secrets_management/group_secrets_managers/pipeline_helper.rb:
+- ci_policy_name_for_environment
+ee/app/models/security/attribute.rb:
+- really_destroy!
+ee/app/models/security/category.rb:
+- really_destroy!
+ee/app/models/security/orchestration_policy_configuration.rb:
+- compliance_framework_ids_with_policy_index
+- experiment_configuration
+ee/app/models/virtual_registries/packages/maven/upstream.rb:
+- cache_local_entries
+ee/app/models/work_items/statuses/system_defined/status.rb:
+- find_by_work_item_and_name
+app/helpers/ci/catalog/resources_helper.rb:
+- can_view_namespace_catalog?
+- js_ci_catalog_data
+app/helpers/ci/runners_helper.rb:
+- runner_status_icon
+- runner_link
+app/helpers/events_helper.rb:
+- event_feed_title
+- event_feed_summary
+app/helpers/groups_helper.rb:
+- group_title_link
+app/helpers/integrations_helper.rb:
+- integration_issue_type
+- integration_todo_target_type
+app/helpers/issuables_helper.rb:
+- user_dropdown_label
+- project_dropdown_label
+- group_dropdown_label
+app/helpers/issues_helper.rb:
+- can_admin_issue?
+app/helpers/routing/groups/members_helper.rb:
+- approve_access_request_group_member_path
+- resend_invite_group_member_path
+app/helpers/routing/pipeline_schedules_helper.rb:
+- edit_pipeline_schedule_path
+- play_pipeline_schedule_path
+- take_ownership_pipeline_schedule_path
+app/helpers/routing/projects/members_helper.rb:
+- request_access_project_members_path
+- leave_project_members_path
+- approve_access_request_project_member_path
+- resend_invite_project_member_path
+app/helpers/sorting_titles_values_helper.rb:
+- sort_title_stars
+- sort_title_version_desc
+- sort_title_version_asc
+- sort_value_version_asc
+- sort_value_version_desc
+app/models/application_record.rb:
+- deleted_from_database?
+app/models/application_setting.rb:
+- max_login_attempts_column_exists?
+- failed_login_attempts_unlock_period_in_minutes_column_exists?
+app/models/application_setting_implementation.rb:
+- ensure_key_restrictions!
+app/models/bulk_imports/export.rb:
+- offline?
+app/models/ci/build.rb:
+- has_live_trace?
+- has_archived_trace?
+app/models/ci/build_trace_chunk.rb:
+- migrated?
+app/models/ci/catalog/components_project.rb:
+- find_catalog_component
+app/models/ci/job_artifact.rb:
+- expiring?
+app/models/ci/job_token/allowlist.rb:
+- project_link_traversal_ids
+- group_link_traversal_ids
+- bulk_add_projects!
+- bulk_add_groups!
+app/models/ci/pipeline.rb:
+- has_archive_artifacts?
+- has_erasable_artifacts?
+app/models/ci/resource_group.rb:
+- waiting_processables
+app/models/ci/runner.rb:
+- belongs_to_one_project?
+- fallback_owner_project
+app/models/clusters/cluster.rb:
+- platform_kubernetes_active?
+- legacy_auto_devops_domain
+app/models/clusters/concerns/application_core.rb:
+- can_uninstall?
+- schedule_status_update
+- update_command
+- uninstall_command
+- post_uninstall
+app/models/clusters/concerns/application_data.rb:
+- certificate_files
+app/models/clusters/concerns/application_status.rb:
+- updateable?
+app/models/clusters/concerns/application_version.rb:
+- update_available?
+app/models/commit.rb:
+- touch_later
+app/models/concerns/awardable.rb:
+- user_authored?
+app/models/concerns/counter_attribute.rb:
+- update_counters_with_lease
+app/models/concerns/forced_email_confirmation.rb:
+- confirmation_period_expired?
+app/models/concerns/has_check_constraints.rb:
+- clear_constraints_cache!
+app/models/concerns/integrations/base/harbor.rb:
+- supported_event_actions
+app/models/concerns/integrations/base/integration.rb:
+- instance_exists_for?
+app/models/concerns/integrations/base/issue_tracker.rb:
+- enabled_in_gitlab_config
+app/models/concerns/issuable.rb:
+- has_multiple_assignees?
+- supports_issue_type?
+- can_assign_epic?
+app/models/concerns/mentionable.rb:
+- referenced_projects
+- referenced_group_users
+app/models/concerns/milestoneish.rb:
+- total_merge_requests_count
+- elapsed_days
+app/models/concerns/namespaces/stateful/state_querying.rb:
+- effective_state
+app/models/concerns/note_on_diff.rb:
+- diff_attributes
+app/models/concerns/organizations/isolatable.rb:
+- not_isolated?
+- mark_as_isolated!
+- mark_as_not_isolated!
+app/models/concerns/organizations/sharding.rb:
+- sharding_organization
+app/models/concerns/partitioned_table.rb:
+- _returning_columns_for_insert
+app/models/concerns/prometheus_adapter.rb:
+- prometheus_client_default_options
+- managed_prometheus?
+app/models/concerns/reactive_caching.rb:
+- without_reactive_cache
+app/models/concerns/relative_positioning.rb:
+- move_nulls_to_start
+app/models/concerns/require_email_verification.rb:
+- lock_expired?
+app/models/concerns/runner_token_expiration_interval.rb:
+- enforced_runner_token_expiration_interval_human_readable
+- effective_runner_token_expiration_interval_human_readable
+app/models/concerns/sha_attribute.rb:
+- load_schema!
+app/models/concerns/suppress_composite_primary_key_warning.rb:
+- suppress_composite_primary_key
+app/models/concerns/transactions.rb:
+- reset_open_transactions_baseline
+app/models/concerns/use_sql_function_for_primary_key_lookups.rb:
+- _query_by_sql
+app/models/concerns/user_mention_behaviour.rb:
+- has_mentions?
+- mentioned_groups
+- mentioned_projects
+app/models/environment.rb:
+- knative_services_finder
+app/models/event.rb:
+- find_sti_class
+- created_target?
+- note_target_id
+- recent_repository_update?
+app/models/group.rb:
+- get_ids_by_ids_or_paths
+- blocked_owners
+- has_maintainer?
+- members_from_self_and_ancestors_with_effective_access_level
+- hierarchy_members_with_inactive
+app/models/import/source_user_placeholder_reference.rb:
+- aliased_composite_key
+app/models/integrations/drone_ci.rb:
+- allow_target_ci?
+app/models/issue.rb:
+- previous_updated_at
+- email_participants_emails
+app/models/jira_import_state.rb:
+- owner_class_attribute_default
+- non_initial?
+app/models/merge_request.rb:
+- head_pipeline_active?
+- diff_base_commit
+- diff_start_commit
+- reopenable?
+- can_be_closed?
+- find_assignee
+app/models/merge_request_diff.rb:
+- migrate_files_to_database!
+app/models/ml/experiment.rb:
+- count_for_project
+app/models/ml/model_version.rb:
+- find_or_create!
+app/models/namespace.rb:
+- send_update_instructions
+- any_project_with_pages_deployed?
+- saved_change_to_parent?
+- saved_change_to_path_or_parent?
+app/models/organizations/isolation_record.rb:
+- not_isolated?
+app/models/project.rb:
+- import_scheduled?
+- updating_remote_mirror?
+- issue_exists?
+- latest_successful_pipeline_for
+- enable_ci
+- valid_runners_token?
+- storage_upgradable?
+- limited_protected_branches
+- deploy_token_create_url
+- deploy_token_revoke_url_for
+app/models/project_statistics.rb:
+- update_wiki_size
+- update_snippets_size
+- update_lfs_objects_size
+- update_uploads_size
+- update_container_registry_size
+app/models/project_team.rb:
+- members_in_project_and_ancestors
+- members_with_access_levels
+app/models/remote_mirror.rb:
+- mark_for_retry!
+app/models/service_desk/custom_email_verification.rb:
+- owner_class_attribute_default
+app/models/todo.rb:
+- unmergeable?
+- merge_train_removed?
+- review_submitted?
+- access_request_url
+- for_alert?
+- for_issue_or_work_item?
+- for_ssh_key?
+- self_assigned?
+app/models/user.rb:
+- owner_class_attribute_default
+- inactive_message
+- will_save_change_to_login?

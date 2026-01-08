@@ -1,0 +1,3 @@
+fragment UserDisabledForDuoUsage on User {
+  id
+}

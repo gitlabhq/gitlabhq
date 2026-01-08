@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Constraints
-  class ActivityPubConstrainer
+module Integrations
+  class ActivityPubConstraint
     def matches?(request)
       accept = header(request)
       mime_types.any? { |m| accept.include?(m) }

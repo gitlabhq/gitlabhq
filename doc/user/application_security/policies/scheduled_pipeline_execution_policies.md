@@ -43,11 +43,8 @@ experiments:
     enabled: true
 ```
 
-{{< alert type="note" >}}
-
-This feature is experimental and may change in future releases. You should test it thoroughly in a non-production environment only. You should not use this feature in production environments as it may be unstable.
-
-{{< /alert >}}
+> [!note]
+> This feature is experimental and may change in future releases. You should test it thoroughly in a non-production environment only. You should not use this feature in production environments as it may be unstable.
 
 ## Configure schedule pipeline execution policies
 

@@ -30,6 +30,16 @@ export default {
       required: false,
       default: false,
     },
+    timelineLayout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isLastDiscussion: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     hasReplies() {
@@ -47,11 +57,13 @@ export default {
 
 <template>
   <ul class="gl-list-none gl-p-0">
-    <system-note v-if="firstNote.system" :note="firstNote" />
+    <system-note v-if="firstNote.system" :note="firstNote" :is-last-discussion="isLastDiscussion" />
     <noteable-note
       v-else
       :note="firstNote"
+      :timeline-layout="timelineLayout"
       :show-reply-button="userPermissions.can_create_note && !individual"
+      :is-last-discussion="isLastDiscussion"
       @noteDeleted="$emit('noteDeleted', firstNote)"
       @noteUpdated="$emit('noteUpdated', $event)"
       @noteEdited="$emit('noteEdited', { note: firstNote, value: $event })"
@@ -78,11 +90,18 @@ export default {
         />
         <template v-if="expanded">
           <template v-for="note in replies">
-            <system-note v-if="note.system" :key="`system-${note.id}`" :note="note" />
+            <system-note
+              v-if="note.system"
+              :key="`system-${note.id}`"
+              :note="note"
+              :is-last-discussion="isLastDiscussion"
+            />
             <noteable-note
               v-else
               :key="note.id"
               :note="note"
+              :timeline-layout="timelineLayout"
+              :is-last-discussion="isLastDiscussion"
               @noteDeleted="$emit('noteDeleted', note)"
               @noteUpdated="$emit('noteUpdated', $event)"
               @noteEdited="$emit('noteEdited', { note, value: $event })"

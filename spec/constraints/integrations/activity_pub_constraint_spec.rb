@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Constraints::ActivityPubConstrainer, feature_category: :groups_and_projects do
+RSpec.describe Integrations::ActivityPubConstraint, feature_category: :groups_and_projects do
   subject(:constraint) { described_class.new }
 
   describe '#matches?' do

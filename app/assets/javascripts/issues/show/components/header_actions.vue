@@ -156,9 +156,6 @@ export default {
         issueType: capitalizeFirstCharacter(this.issueTypeText),
       });
     },
-    newIssueTypeText() {
-      return sprintf(__('New related %{issueType}'), { issueType: this.issueTypeText });
-    },
     showToggleIssueStateButton() {
       const canClose = !this.isClosed && this.canUpdateIssue;
       const canReopen = this.isClosed && this.canReopenIssue;
@@ -193,7 +190,7 @@ export default {
     },
     newIssueItem() {
       return {
-        text: this.newIssueTypeText,
+        text: __('New related item'),
         href: this.newIssuePath,
       };
     },

@@ -65,6 +65,7 @@ import {
   WORK_ITEM_TYPE_NAME_ISSUE,
   WIDGET_TYPE_STATUS,
   WORK_ITEM_CREATE_SOURCES,
+  WORK_ITEM_TYPE_NAME_TICKET,
 } from '../constants';
 import { TITLE_LENGTH_MAX } from '../../issues/constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
@@ -437,10 +438,12 @@ export default {
       return findWidget(WIDGET_TYPE_CRM_CONTACTS, this.workItem);
     },
     workItemTypesForSelect() {
-      return this.workItemTypes.map((workItemType) => ({
-        value: workItemType.id,
-        text: NAME_TO_TEXT_MAP[workItemType.name],
-      }));
+      return this.workItemTypes
+        .filter((workItemType) => workItemType.name !== WORK_ITEM_TYPE_NAME_TICKET)
+        .map((workItemType) => ({
+          value: workItemType.id,
+          text: NAME_TO_TEXT_MAP[workItemType.name],
+        }));
     },
     selectedWorkItemType() {
       return this.workItemTypes?.find((item) => item.id === this.selectedWorkItemTypeId);

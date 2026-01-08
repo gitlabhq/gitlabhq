@@ -19,6 +19,8 @@ export const mockUser1 = createMockUser({
   webPath: '/root',
   status: {
     availability: 'NOT_SET',
+    disabledForDuoUsage: false,
+    disabledForDuoUsageReason: null,
   },
   compositeIdentityEnforced: false,
 });
@@ -37,6 +39,23 @@ export const mockUser2 = createMockUser({
   webPath: '/rookie',
   status: {
     availability: 'NOT_SET',
+    disabledForDuoUsage: false,
+    disabledForDuoUsageReason: null,
+  },
+  compositeIdentityEnforced: false,
+});
+
+export const mockDisabledUser = createMockUser({
+  id: 'gid://gitlab/User/42',
+  name: 'Disabled',
+  username: 'disabled',
+  webUrl: '/disabled',
+  webPath: '/disabled',
+  avatarUrl: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+  status: {
+    availability: 'NOT_SET',
+    disabledForDuoUsage: true,
+    disabledForDuoUsageReason: 'Out of credits',
   },
   compositeIdentityEnforced: false,
 });
@@ -697,6 +716,25 @@ export const searchAutocompleteResponseOnMR = {
             canMerge: false,
           },
         },
+        {
+          __typename: 'UserCore',
+          id: 'gid://gitlab/User/2',
+          avatarUrl:
+            'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
+          name: 'Jacki Kub',
+          username: 'francina.skiles',
+          webUrl: '/franc',
+          webPath: '/franc',
+          status: {
+            availability: 'BUSY',
+            disabledForDuoUsage: false,
+            disabledForDuoUsageReason: null,
+          },
+          compositeIdentityEnforced: false,
+          mergeRequestInteraction: {
+            canMerge: false,
+          },
+        },
       ],
     },
   },
@@ -850,6 +888,7 @@ export const participantsQueryResponse = {
             // Remove duplicated entry https://gitlab.com/gitlab-org/gitlab/-/issues/327822
             mockUser1,
             mockUser1,
+            mockUser2,
             {
               __typename: 'UserCore',
               id: 'gid://gitlab/User/2',

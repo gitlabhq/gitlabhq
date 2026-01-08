@@ -90,11 +90,8 @@ The high-level workflow for enforcing policies globally across all subgroups and
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-In GitLab Self-Managed, you can also use [compliance and security policy groups](compliance_and_security_policy_groups.md) to enforce security policies across your instance.
-
-{{< /alert >}}
+> [!note]
+> In GitLab Self-Managed, you can also use [compliance and security policy groups](compliance_and_security_policy_groups.md) to enforce security policies across your instance.
 
 Prerequisites:
 
@@ -190,11 +187,8 @@ You can link a security policy project to more than one group or project. Anyone
 
 For performance reasons, GitLab limits the number of policies that can be configured in a security policy project.
 
-{{< alert type="warning" >}}
-
-If you reduce the limit below the number of policies currently stored in a security policy project, GitLab does not enforce any policies after the limit. To re-enable the policies, increase the limit to match the number of policies in the largest security policy project.
-
-{{< /alert >}}
+> [!warning]
+> If you reduce the limit below the number of policies currently stored in a security policy project, GitLab does not enforce any policies after the limit. To re-enable the policies, increase the limit to match the number of policies in the largest security policy project.
 
 The default limits are:
 
@@ -222,11 +216,8 @@ To change the maximum number of policies your organization can store in a securi
 
 Group limits can exceed the configured or default instance limits. To change the maximum number of policies your organization can store in a security policy project for a top-level group:
 
-{{< alert type="note" >}}
-
-Increasing these limits can affect system performance, especially if you apply a large number of complex policies.
-
-{{< /alert >}}
+> [!note]
+> Increasing these limits can affect system performance, especially if you apply a large number of complex policies.
 
 To adjust the limit for a top-level group:
 

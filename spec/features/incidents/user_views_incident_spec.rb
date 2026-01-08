@@ -40,7 +40,7 @@ RSpec.describe "User views incident", feature_category: :incident_management do
 
       click_button 'Incident actions'
 
-      expect(page).to have_link('New related incident', href: expected_href)
+      expect(page).to have_link('New related item', href: expected_href)
       expect(page).to have_button('Create merge request')
       expect(page).to have_button('Close incident')
     end

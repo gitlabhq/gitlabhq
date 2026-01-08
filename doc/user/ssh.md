@@ -66,7 +66,7 @@ To communicate with GitLab, you can use the following SSH key types:
 | ED25519 (preferred) | More secure and performant than RSA keys. Introduced in OpenSSH 6.5 (2014) and available on most operating systems. Might not be fully supported by all FIPS systems. For more information, see [issue 367429](https://gitlab.com/gitlab-org/gitlab/-/issues/367429). |
 | ED25519_SK          | Requires OpenSSH 8.2 or later on both your local client and the GitLab server. |
 | ECDSA_SK            | Requires OpenSSH 8.2 or later on both your local client and the GitLab server. |
-| RSA                 | Less secure than ED25519. If used, GitLab recommends a key size of at least 2048 bits. Maximum key length is 8192 bits due to Go limitations. Default key size depends on your `ssh-keygen` version. |
+| RSA                 | Less secure than ED25519. If used, GitLab recommends a key size of at least 4096 bits. Maximum key length is 8192 bits due to Go limitations. Default key size depends on your `ssh-keygen` version. |
 | ECDSA               | [Security issues](https://leanpub.com/gocrypto/read#leanpub-auto-ecdsa) related to DSA also apply to ECDSA keys. |
 
 ## Check for existing SSH key pairs
@@ -84,7 +84,7 @@ Before you create a key pair, see if a key pair already exists.
    |  ED25519 (preferred)  | `id_ed25519.pub` | `id_ed25519` |
    |  ED25519_SK           | `id_ed25519_sk.pub` | `id_ed25519_sk` |
    |  ECDSA_SK             | `id_ecdsa_sk.pub` | `id_ecdsa_sk` |
-   |  RSA (at least 2048-bit key size) | `id_rsa.pub` | `id_rsa` |
+   |  RSA (at least 4096-bit key size) | `id_rsa.pub` | `id_rsa` |
    |  DSA (deprecated)     | `id_dsa.pub` | `id_dsa` |
    |  ECDSA                | `id_ecdsa.pub` | `id_ecdsa` |
 
@@ -103,10 +103,10 @@ If you do not have an existing SSH key pair, generate a new one:
    ssh-keygen -t ed25519 -C "<comment>"
    ```
 
-   For 2048-bit RSA:
+   For 4096-bit RSA:
 
    ```shell
-   ssh-keygen -t rsa -b 2048 -C "<comment>"
+   ssh-keygen -t rsa -b 4096 -C "<comment>"
    ```
 
 1. Press <kbd>Enter</kbd>. Output similar to the following is displayed:

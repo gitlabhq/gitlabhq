@@ -101,7 +101,6 @@ RSpec/RailsControllerTesting:
     - 'ee/spec/requests/groups/analytics/devops_adoption_controller_spec.rb'
     - 'ee/spec/requests/groups/dependencies_controller_spec.rb'
     - 'ee/spec/requests/groups/discovers_controller_spec.rb'
-    - 'ee/spec/requests/groups/early_access_opt_in_controller_spec.rb'
     - 'ee/spec/requests/groups/epics_controller_spec.rb'
     - 'ee/spec/requests/groups/group_members_controller_spec.rb'
     - 'ee/spec/requests/groups/protected_environments_controller_spec.rb'

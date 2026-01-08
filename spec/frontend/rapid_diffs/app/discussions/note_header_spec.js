@@ -15,6 +15,7 @@ describe('NoteHeader', () => {
   };
 
   const findAuthorLink = () => wrapper.find('a[data-username]');
+  const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findImportedBadge = () => wrapper.findComponent(ImportedBadge);
   const findInternalNoteBadge = () => wrapper.findComponent(GlBadge);
@@ -58,6 +59,31 @@ describe('NoteHeader', () => {
       createComponent({ author: null });
       expect(findAuthorLink().exists()).toBe(false);
       expect(wrapper.text()).toContain('A deleted user');
+    });
+  });
+
+  describe('showAvatar prop', () => {
+    const author = {
+      id: 'gid://gitlab/User/123',
+      name: 'John Doe',
+      username: 'johndoe',
+      path: '/johndoe',
+      avatar_url: '/avatar',
+    };
+
+    it('shows avatar when showAvatar is true', () => {
+      createComponent({ author, showAvatar: true });
+      expect(findAvatarLink().exists()).toBe(true);
+    });
+
+    it('shows avatar by default', () => {
+      createComponent({ author });
+      expect(findAvatarLink().exists()).toBe(true);
+    });
+
+    it('does not show avatar when showAvatar is false', () => {
+      createComponent({ author, showAvatar: false });
+      expect(findAvatarLink().exists()).toBe(false);
     });
   });
 

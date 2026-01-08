@@ -9,7 +9,7 @@ import {
   GlSearchBoxByType,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -122,10 +122,18 @@ export default {
         };
       },
       update(data) {
-        return data.namespace?.issuable?.participants.nodes.map((node) => ({
-          ...node,
-          canMerge: false,
-        }));
+        return data.namespace?.issuable?.participants.nodes.map((node) => {
+          const isDisabled = Boolean(node?.status?.disabledForDuoUsage);
+          return {
+            ...node,
+            canMerge: false,
+            isDisabled,
+            ...(isDisabled && {
+              disabledReason:
+                node?.status?.disabledForDuoUsageReason || s__('WorkItem|Cannot be assigned'),
+            }),
+          };
+        });
       },
       error() {
         this.$emit('error');
@@ -148,10 +156,18 @@ export default {
         return (
           data.namespace?.users
             .filter((user) => user)
-            .map((user) => ({
-              ...user,
-              canMerge: user.mergeRequestInteraction?.canMerge || false,
-            })) || []
+            .map((user) => {
+              const isDisabled = Boolean(user?.status?.disabledForDuoUsage);
+              return {
+                ...user,
+                canMerge: user.mergeRequestInteraction?.canMerge || false,
+                isDisabled,
+                ...(isDisabled && {
+                  disabledReason:
+                    user?.status?.disabledForDuoUsageReason || s__('WorkItem|Cannot be assigned'),
+                }),
+              };
+            }) || []
         );
       },
       error() {
@@ -400,8 +416,9 @@ export default {
           v-gl-tooltip.left.viewport
           :title="tooltipText(unselectedUser)"
           boundary="viewport"
+          :disabled="unselectedUser.isDisabled"
           data-testid="unselected-participant"
-          @click.capture.native.stop="selectAssignee(unselectedUser)"
+          @click.capture.native.stop="!unselectedUser.isDisabled && selectAssignee(unselectedUser)"
         >
           <sidebar-participant
             :user="unselectedUser"

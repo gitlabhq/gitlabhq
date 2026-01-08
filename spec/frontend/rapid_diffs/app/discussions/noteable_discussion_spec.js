@@ -177,6 +177,30 @@ describe('NoteableDiscussion', () => {
     expect(wrapper.emitted('noteEdited')).toStrictEqual([[{ note, value }]]);
   });
 
+  describe('timelineLayout prop', () => {
+    it('passes timelineLayout to DiscussionNotes', () => {
+      createComponent({ props: { timelineLayout: true } });
+      expect(wrapper.findComponent(DiscussionNotes).props('timelineLayout')).toBe(true);
+    });
+
+    it('defaults timelineLayout to false', () => {
+      createComponent();
+      expect(wrapper.findComponent(DiscussionNotes).props('timelineLayout')).toBe(false);
+    });
+  });
+
+  describe('isLastDiscussion prop', () => {
+    it('passes isLastDiscussion to DiscussionNotes', () => {
+      createComponent({ props: { isLastDiscussion: true } });
+      expect(wrapper.findComponent(DiscussionNotes).props('isLastDiscussion')).toBe(true);
+    });
+
+    it('defaults isLastDiscussion to false', () => {
+      createComponent();
+      expect(wrapper.findComponent(DiscussionNotes).props('isLastDiscussion')).toBe(false);
+    });
+  });
+
   describe('when saving reply', () => {
     beforeEach(() => {
       detectAndConfirmSensitiveTokens.mockResolvedValue(true);

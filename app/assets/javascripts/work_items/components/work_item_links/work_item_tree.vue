@@ -18,6 +18,7 @@ import {
   NAME_TO_TEXT_MAP,
   WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_COLLAPSED,
   WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_EXPANDED,
+  WORK_ITEM_TYPE_NAME_TICKET,
 } from '../../constants';
 import {
   findHierarchyWidget,
@@ -315,10 +316,14 @@ export default {
     genericActionItems(workItemType) {
       const workItemName = NAME_TO_TEXT_LOWERCASE_MAP[workItemType];
       return [
-        {
-          title: sprintf(s__('WorkItem|New %{workItemName}'), { workItemName }),
-          action: () => this.showAddForm(FORM_TYPES.create, workItemType),
-        },
+        ...(workItemType === WORK_ITEM_TYPE_NAME_TICKET
+          ? []
+          : [
+              {
+                title: sprintf(s__('WorkItem|New %{workItemName}'), { workItemName }),
+                action: () => this.showAddForm(FORM_TYPES.create, workItemType),
+              },
+            ]),
         {
           title: sprintf(s__('WorkItem|Existing %{workItemName}'), { workItemName }),
           action: () => this.showAddForm(FORM_TYPES.add, workItemType),

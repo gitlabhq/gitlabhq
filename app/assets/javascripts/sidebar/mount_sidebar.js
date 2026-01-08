@@ -614,7 +614,7 @@ export function mountMoveIssueButton() {
   }
 
   const { projectsAutocompleteEndpoint } = getSidebarOptions();
-  const { projectFullPath, issueIid } = el.dataset;
+  const { projectFullPath, issueIid, issueType } = el.dataset;
 
   Vue.use(VueApollo);
 
@@ -626,6 +626,7 @@ export function mountMoveIssueButton() {
       projectsAutocompleteEndpoint,
       projectFullPath,
       issueIid,
+      issueType,
     },
     render: (createElement) => createElement(MoveIssueButton),
   });

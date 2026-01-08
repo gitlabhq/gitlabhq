@@ -14,14 +14,14 @@ title: Configure SSH key restrictions
 {{< /details >}}
 
 `ssh-keygen` allows users to create RSA keys with as few as 768 bits, which
-falls well below recommendations from certain standards groups (such as the US
-NIST). Some organizations deploying GitLab need to enforce minimum key
+falls well below recommended key sizes from standards groups such as the US
+NIST, and is not secure. Some organizations deploying GitLab need to enforce minimum key
 strength, either to satisfy internal security policy or for regulatory
 compliance.
 
-Similarly, certain standards groups recommend using RSA, ECDSA, ED25519,
-ECDSA_SK, or ED25519_SK over the older DSA, and administrators may need to
-limit the allowed SSH key algorithms.
+Similarly, GitLab strongly recommends using ED25519, ED25519_SK, ECDSA,
+ECDSA_SK, or RSA over the older DSA. Administrators should strongly consider
+limiting the allowed SSH key algorithms to maintain security.
 
 GitLab allows you to restrict the allowed SSH key technology as well as specify
 the minimum key length for each technology:

@@ -5,8 +5,7 @@ module Groups
     include UpdateVisibilityLevel
 
     SETTINGS_PARAMS = [
-      :allow_mfa_for_subgroups,
-      :early_access_program_participant
+      :allow_mfa_for_subgroups
     ].freeze
 
     def execute

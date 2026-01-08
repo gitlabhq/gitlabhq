@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-constraints(::Constraints::GroupUrlConstrainer.new) do
+constraints(Namespaces::GroupUrlConstraint.new) do
   scope(
     path: 'groups/*id',
     controller: :groups,

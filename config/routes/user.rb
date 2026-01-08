@@ -111,7 +111,7 @@ scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) d
   end
 end
 
-constraints(::Constraints::UserUrlConstrainer.new) do
+constraints(Users::UserUrlConstraint.new) do
   # Get all SSH keys of user
   get ':username.keys' => 'users#ssh_keys', constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }
 

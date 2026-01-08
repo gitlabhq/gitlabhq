@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Constraints
-  class UserUrlConstrainer
+module Users
+  class UserUrlConstraint
     def matches?(request)
       full_path = request.params[:username]
 

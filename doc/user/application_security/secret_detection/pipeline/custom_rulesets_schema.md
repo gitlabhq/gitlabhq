@@ -51,11 +51,8 @@ based on the kind of configuration you're making.
 
 #### `interpolate`
 
-{{< alert type="warning" >}}
-
-To reduce the risk of leaking secrets, use this feature with caution.
-
-{{< /alert >}}
+> [!warning]
+> To reduce the risk of leaking secrets, use this feature with caution.
 
 The example below shows a configuration that uses the `$GITURL` environment variable to access a
 private repository. The variable contains a username and token

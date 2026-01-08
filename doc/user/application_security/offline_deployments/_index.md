@@ -13,11 +13,8 @@ description: Offline security scanning and resolving vulnerabilities.
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-To set up an offline environment, you must receive an [opt-out exemption of cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#offline-cloud-licensing) prior to purchase. For more details, contact your GitLab sales representative.
-
-{{< /alert >}}
+> [!note]
+> To set up an offline environment, you must receive an [opt-out exemption of cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#offline-cloud-licensing) prior to purchase. For more details, contact your GitLab sales representative.
 
 It's possible to run most of the GitLab security scanners when not connected to the internet.
 

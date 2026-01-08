@@ -2,7 +2,7 @@ import { merge } from 'lodash';
 import { shallowMount } from '@vue/test-utils';
 import DiscussionNotes from '~/rapid_diffs/app/discussions/discussion_notes.vue';
 import NoteableNote from '~/rapid_diffs/app/discussions/noteable_note.vue';
-import SystemNote from '~/vue_shared/components/notes/system_note.vue';
+import SystemNote from '~/rapid_diffs/app/discussions/system_note.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 
 describe('DiscussionNotes', () => {
@@ -141,6 +141,40 @@ describe('DiscussionNotes', () => {
       const reply = { id: 'bar', system: true };
       createComponent({ notes: [{ id: 'foo' }, reply] });
       expect(wrapper.findComponent(SystemNote).props('note')).toBe(reply);
+    });
+
+    it('passes isLastDiscussion to system note', () => {
+      const note = { id: 'foo', system: true };
+      createComponent({ notes: [note], isLastDiscussion: true });
+      expect(wrapper.findComponent(SystemNote).props('isLastDiscussion')).toBe(true);
+    });
+  });
+
+  describe('timelineLayout prop', () => {
+    it('passes timelineLayout to NoteableNote', () => {
+      const note = { id: 'foo' };
+      createComponent({ notes: [note], timelineLayout: true });
+      expect(wrapper.findComponent(NoteableNote).props('timelineLayout')).toBe(true);
+    });
+
+    it('defaults timelineLayout to false', () => {
+      const note = { id: 'foo' };
+      createComponent({ notes: [note] });
+      expect(wrapper.findComponent(NoteableNote).props('timelineLayout')).toBe(false);
+    });
+  });
+
+  describe('isLastDiscussion prop', () => {
+    it('passes isLastDiscussion to NoteableNote', () => {
+      const note = { id: 'foo' };
+      createComponent({ notes: [note], isLastDiscussion: true });
+      expect(wrapper.findComponent(NoteableNote).props('isLastDiscussion')).toBe(true);
+    });
+
+    it('defaults isLastDiscussion to false', () => {
+      const note = { id: 'foo' };
+      createComponent({ notes: [note] });
+      expect(wrapper.findComponent(NoteableNote).props('isLastDiscussion')).toBe(false);
     });
   });
 });

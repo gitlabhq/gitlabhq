@@ -147,11 +147,8 @@ Prerequisites:
 
 - The custom Docker registry must provide images for all the official analyzers.
 
-{{< alert type="note" >}}
-
-This variable affects all Secure analyzers, not just the analyzers for SAST.
-
-{{< /alert >}}
+> [!note]
+> This variable affects all Secure analyzers, not just the analyzers for SAST.
 
 To have GitLab download the analyzers' images from a custom Docker registry, define the prefix with
 the `SECURE_ANALYZERS_PREFIX` CI/CD variable.

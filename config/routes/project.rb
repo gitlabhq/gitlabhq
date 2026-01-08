@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-constraints(::Constraints::ProjectUrlConstrainer.new) do
+constraints(Projects::ProjectUrlConstraint.new) do
   # If the route has a wildcard segment, the segment has a regex constraint,
   # the segment is potentially followed by _another_ wildcard segment, and
   # the `format` option is not set to false, we need to specify that
@@ -698,7 +698,7 @@ end
 
 # It's under /-/jira scope but cop is only checking /-/
 # rubocop: disable Cop/PutProjectRoutesUnderScope
-scope path: '(/-/jira)', constraints: ::Constraints::JiraEncodedUrlConstrainer.new, as: :jira do
+scope path: '(/-/jira)', constraints: Integrations::JiraEncodedUrlConstraint.new, as: :jira do
   scope path: '*namespace_id/:project_id',
     namespace_id: Gitlab::Jira::Dvcs::ENCODED_ROUTE_REGEX,
     project_id: Gitlab::Jira::Dvcs::ENCODED_ROUTE_REGEX do

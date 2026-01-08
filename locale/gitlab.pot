@@ -1144,9 +1144,6 @@ msgstr ""
 msgid "%{linkStart}Embedded view%{linkEnd} powered by GLQL"
 msgstr ""
 
-msgid "%{link_start}Communication Preference Center%{link_end}."
-msgstr ""
-
 msgid "%{link_start}Visit your account settings%{link_end} to manage your passkeys and other authentication methods."
 msgstr ""
 
@@ -4703,6 +4700,9 @@ msgstr ""
 msgid "Add a related issue"
 msgstr ""
 
+msgid "Add a related ticket"
+msgstr ""
+
 msgid "Add a reply"
 msgstr ""
 
@@ -7272,9 +7272,6 @@ msgstr ""
 msgid "AiPowered|Direct connections"
 msgstr ""
 
-msgid "AiPowered|Early Access Program banner dismissed. You will not see it again for 7 days."
-msgstr ""
-
 msgid "AiPowered|Enable"
 msgstr ""
 
@@ -7288,9 +7285,6 @@ msgid "AiPowered|Enabling self-hosted beta models and features is your acceptanc
 msgstr ""
 
 msgid "AiPowered|End date: %{endDate}"
-msgstr ""
-
-msgid "AiPowered|Enroll in the Early Access Program"
 msgstr ""
 
 msgid "AiPowered|Enter the URL for your Duo Agent Platform service. This endpoint is used for GitLab Duo Agent Platform requests. %{br} The URL must not include the \"http://\" or \"https://\" protocol. For example \"example.com:50052\"."
@@ -7368,9 +7362,6 @@ msgstr ""
 msgid "AiPowered|Group"
 msgstr ""
 
-msgid "AiPowered|Help make the next releases of GitLab better. As a member of the GitLab Early Access Program, you can take part in shaping GitLab by letting us know what you think of GitLab Duo experimental and beta features. How does this program work?"
-msgstr ""
-
 msgid "AiPowered|Indirect connections through GitLab Self-Managed"
 msgstr ""
 
@@ -7435,9 +7426,6 @@ msgid "AiPowered|On by default"
 msgstr ""
 
 msgid "AiPowered|Only members of these groups will have access to selected AI features."
-msgstr ""
-
-msgid "AiPowered|Participate in the Early Access Program and help make GitLab better"
 msgstr ""
 
 msgid "AiPowered|Purchase Duo Pro seats"
@@ -8759,6 +8747,9 @@ msgid "An error occurred while removing epics."
 msgstr ""
 
 msgid "An error occurred while removing issues."
+msgstr ""
+
+msgid "An error occurred while removing tickets."
 msgstr ""
 
 msgid "An error occurred while rendering the editor"
@@ -13306,9 +13297,6 @@ msgid "Buy subscription"
 msgstr ""
 
 msgid "By default, all projects and groups use the global notifications setting."
-msgstr ""
-
-msgid "By enrolling in the Early access program, you agree that GitLab may contact you by email and telephone about products, services, and events related to the Early Access Program. You may opt-out at any time by unsubscribing in emails or visiting our "
 msgstr ""
 
 msgid "By month"
@@ -19261,16 +19249,10 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
-msgid "Confirm Enrollment"
-msgstr ""
-
 msgid "Confirm approval"
 msgstr ""
 
 msgid "Confirm destroy application"
-msgstr ""
-
-msgid "Confirm enrollment in the Early Access Program"
 msgstr ""
 
 msgid "Confirm new password"
@@ -27367,6 +27349,9 @@ msgid "Enter confidential epic URL"
 msgstr ""
 
 msgid "Enter confidential issue URL"
+msgstr ""
+
+msgid "Enter confidential ticket URL"
 msgstr ""
 
 msgid "Enter duration"
@@ -39855,6 +39840,9 @@ msgstr ""
 msgid "Learn more about linking issues and incidents"
 msgstr ""
 
+msgid "Learn more about linking tickets"
+msgstr ""
+
 msgid "Learn more about max seats used"
 msgstr ""
 
@@ -43806,6 +43794,9 @@ msgstr ""
 msgid "Move this item to another group or project"
 msgstr ""
 
+msgid "Move ticket"
+msgstr ""
+
 msgid "Move up"
 msgstr ""
 
@@ -44547,7 +44538,7 @@ msgstr ""
 msgid "New public deploy key"
 msgstr ""
 
-msgid "New related %{issueType}"
+msgid "New related item"
 msgstr ""
 
 msgid "New release"
@@ -68261,6 +68252,9 @@ msgstr ""
 msgid "The current issue"
 msgstr ""
 
+msgid "The current ticket"
+msgstr ""
+
 msgid "The current user is not authorized to access the job log."
 msgstr ""
 
@@ -69920,6 +69914,9 @@ msgid "Thu"
 msgstr ""
 
 msgid "Thursday"
+msgstr ""
+
+msgid "Ticket cannot be found."
 msgstr ""
 
 msgid "TierBadgePopover|Enhance team productivity"
@@ -76002,6 +75999,9 @@ msgstr ""
 msgid "We could not determine the path to remove the issue"
 msgstr ""
 
+msgid "We could not determine the path to remove the ticket"
+msgstr ""
+
 msgid "We couldn't find any %{scope} matching %{term}"
 msgstr ""
 
@@ -79454,9 +79454,6 @@ msgid "You have already requested access."
 msgstr ""
 
 msgid "You have been added to ticket #%{issue_iid}."
-msgstr ""
-
-msgid "You have been enrolled in the Early Access Program. Thank you for helping make GitLab better. You will receive an email with more details about the program."
 msgstr ""
 
 msgid "You have been granted access to the %{source_name} %{source_type} with the following role: %{role_name}."

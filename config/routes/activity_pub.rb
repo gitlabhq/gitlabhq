@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-constraints(::Constraints::ActivityPubConstrainer.new) do
+constraints(Integrations::ActivityPubConstraint.new) do
   scope(module: 'activity_pub') do
-    constraints(::Constraints::ProjectUrlConstrainer.new) do
+    constraints(Projects::ProjectUrlConstraint.new) do
       # Emulating route structure from routes/project.rb since we want to serve
       # ActivityPub content with the proper "Accept" header to the same urls. See
       # project routes file for rational behind this structure.

@@ -2,14 +2,20 @@
 
 require 'spec_helper'
 
-RSpec.describe Constraints::UserUrlConstrainer do
-  let!(:user) { create(:user, username: 'dz') }
+RSpec.describe Users::UserUrlConstraint do
+  let_it_be(:user) { create(:user, :with_namespace, username: 'dz') }
 
   describe '#matches?' do
     context 'valid request' do
       let(:request) { build_request(user.username) }
 
       it { expect(subject.matches?(request)).to be_truthy }
+    end
+
+    context 'when the username is invalid according to NamespacePathValidator' do
+      let(:request) { build_request('') }
+
+      it { expect(subject.matches?(request)).to be_falsey }
     end
 
     context 'invalid request' do

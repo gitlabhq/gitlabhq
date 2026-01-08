@@ -38,6 +38,16 @@ export default {
       type: Function,
       required: true,
     },
+    timelineLayout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isLastDiscussion: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -137,8 +147,10 @@ export default {
   >
     <discussion-notes
       :notes="discussion.notes"
+      :timeline-layout="timelineLayout"
       :expanded="discussion.repliesExpanded"
       :individual="discussion.individual_note"
+      :is-last-discussion="isLastDiscussion"
       @toggleDiscussionReplies="$emit('toggleDiscussionReplies')"
       @startReplying="showReplyForm"
       @noteUpdated="$emit('noteUpdated', $event)"

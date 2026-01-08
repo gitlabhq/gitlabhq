@@ -16,6 +16,9 @@ class UserPreference < ApplicationRecord
 
   columns_changing_default :text_editor_type
 
+  ignore_columns :early_access_program_participant, :early_access_program_tracking,
+    remove_with: '18.10', remove_after: '2026-03-13'
+
   scope :with_user, -> { joins(:user) }
   scope :gitpod_enabled, -> { where(gitpod_enabled: true) }
 

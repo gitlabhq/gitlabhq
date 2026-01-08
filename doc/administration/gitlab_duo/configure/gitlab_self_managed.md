@@ -15,7 +15,6 @@ gitlab_dedicated: no
 
 ## Prerequisites
 
-- [Turn on beta and experimental features](../../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 - Allow both outbound and inbound connections.
   Network firewalls might cause delay.
 - [Turn off Silent Mode](../../silent_mode/_index.md#turn-off-silent-mode).
@@ -50,6 +49,9 @@ on behalf of users.
   [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
 - In multi-node GitLab installations, configure the HTTP/S proxy on all **Rails** and **Sidekiq** nodes.
 - GitLab application nodes must connect to the GitLab Duo Workflow at `https://duo-workflow-svc.runway.gitlab.net` with HTTP/2. The application and service communicate with gRPC.
+- For GitLab Duo Agent Platform features your firewalls and HTTP/S proxy servers must allow outbound
+  connections to `duo-workflow-svc.runway.gitlab.net` on port `443` with `https://` and support for
+  HTTP/2 traffic.
 
 ## Allow inbound connections from clients to the GitLab instance
 
@@ -81,6 +83,14 @@ To resolve this issue, edit your proxy settings:
   RewriteCond %{HTTP:Connection} upgrade [NC]
   RewriteRule ^/?(.*) "ws://127.0.0.1:8181/$1" [P,L]
 ```
+
+## Allow connections from the runner
+
+For GitLab Duo Agent Platform features that make use of runners, like flows,
+the runner must be able to connect to the GitLab instance.
+
+The same [inbound connections from clients to the GitLab instance](#allow-inbound-connections-from-clients-to-the-gitlab-instance)
+must be allowed as outbound connections from the runner to the GitLab instance.
 
 ## Run a health check for GitLab Duo
 

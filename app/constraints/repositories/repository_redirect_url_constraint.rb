@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Constraints
-  class RepositoryRedirectUrlConstrainer
+module Repositories
+  class RepositoryRedirectUrlConstraint
     def matches?(request)
       path = request.params[:repository_path].delete_suffix('.git')
       query = request.query_string

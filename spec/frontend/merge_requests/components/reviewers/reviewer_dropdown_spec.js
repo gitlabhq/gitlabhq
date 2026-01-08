@@ -25,6 +25,7 @@ const createMockUser = ({
   name = 'Administrator',
   username = 'root',
   compositeIdentityEnforced = false,
+  status = {},
 } = {}) => ({
   __typename: 'UserCore',
   id: `gid://gitlab/User/${id}`,
@@ -32,7 +33,12 @@ const createMockUser = ({
     'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
   webUrl: `/${username}`,
   webPath: `/${username}`,
-  status: null,
+  status: {
+    availability: 'NOT_SET',
+    disabledForDuoUsage: false,
+    disabledForDuoUsageReason: null,
+    ...status,
+  },
   compositeIdentityEnforced,
   mergeRequestInteraction: {
     canMerge: true,
@@ -899,6 +905,96 @@ describe('Reviewer dropdown component', () => {
           iid: '1',
         }),
       );
+    });
+  });
+
+  describe('when reviewer is disabled', () => {
+    describe('and reviewer is not selected', () => {
+      beforeEach(async () => {
+        const disabledUser = createMockUser({
+          id: 2,
+          name: 'Disabled User',
+          username: 'disabled',
+          status: {
+            disabledForDuoUsage: true,
+            disabledForDuoUsageReason: 'Out of credits',
+          },
+        });
+
+        createComponent({
+          adminMergeRequest: true,
+          propsData: {
+            selectedReviewers: [],
+            users: [createMockUser(), disabledUser],
+          },
+        });
+        await waitForPromises();
+      });
+
+      it('renders disabled reviewer with disabledReason instead of username', () => {
+        const items = findDropdown().props('items');
+        const usersGroup = items.find((group) => group.text === 'Users');
+        const disabledReviewer = usersGroup.options.find((u) => u.username === 'disabled');
+
+        expect(disabledReviewer).toMatchObject({
+          isDisabled: true,
+          disabledReason: 'Out of credits',
+        });
+      });
+
+      it('prevents disabled reviewer from being selected', async () => {
+        findDropdown().vm.$emit('select', ['disabled']);
+        findDropdown().vm.$emit('hidden');
+
+        await waitForPromises();
+
+        expect(setReviewersMutationMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            reviewerUsernames: [],
+            projectPath: 'gitlab-org/gitlab',
+            iid: '1',
+          }),
+        );
+      });
+    });
+
+    describe('and reviewer is already selected', () => {
+      beforeEach(async () => {
+        const disabledUser = createMockUser({
+          id: 2,
+          name: 'Disabled User',
+          username: 'disabled',
+          status: {
+            disabledForDuoUsage: true,
+            disabledForDuoUsageReason: 'Out of credits',
+          },
+        });
+
+        createComponent({
+          adminMergeRequest: true,
+          propsData: {
+            selectedReviewers: [disabledUser],
+            eligibleReviewers: [disabledUser],
+          },
+          customUsers: [createMockUser(), disabledUser],
+        });
+        await waitForPromises();
+      });
+
+      it('allows disabled reviewer to be removed', async () => {
+        findDropdown().vm.$emit('select', []);
+        findDropdown().vm.$emit('hidden');
+
+        await waitForPromises();
+
+        expect(setReviewersMutationMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            reviewerUsernames: [],
+            projectPath: 'gitlab-org/gitlab',
+            iid: '1',
+          }),
+        );
+      });
     });
   });
 });

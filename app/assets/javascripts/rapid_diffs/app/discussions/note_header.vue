@@ -21,6 +21,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
+    showAvatar: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     author: {
       type: Object,
       required: false,
@@ -84,7 +89,7 @@ export default {
 <template>
   <div class="gl-flex gl-min-w-0 gl-flex-wrap gl-items-center gl-gap-3">
     <template v-if="author">
-      <span class="gl-flex">
+      <span v-if="showAvatar" class="gl-flex">
         <gl-avatar-link
           :href="author.path"
           :data-user-id="authorId"

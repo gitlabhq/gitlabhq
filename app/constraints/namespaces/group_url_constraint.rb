@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Constraints
-  class GroupUrlConstrainer
+module Namespaces
+  class GroupUrlConstraint
     def matches?(request)
       full_path = request.params[:group_id] || request.params[:id]
 

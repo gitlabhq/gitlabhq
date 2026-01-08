@@ -63,7 +63,7 @@ export default {
 
 <template>
   <div class="gl-mt-5">
-    <diff-discussions :discussions="timelineDiscussions" />
+    <diff-discussions :discussions="timelineDiscussions" timeline-layout />
     <div
       v-if="!isLoggedIn || userPermissions.can_create_note"
       class="gl-rounded-[var(--content-border-radius)] gl-bg-default gl-px-5 gl-py-4"

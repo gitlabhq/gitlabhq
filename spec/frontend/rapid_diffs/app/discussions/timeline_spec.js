@@ -60,6 +60,11 @@ describe('CommitTimeline', () => {
     expect(findDiffDiscussions().props('discussions')).toEqual([regularDiscussion]);
   });
 
+  it('passes timeline-layout prop to DiffDiscussions', () => {
+    createComponent([createDiscussion()]);
+    expect(findDiffDiscussions().props('timelineLayout')).toBe(true);
+  });
+
   describe('saveNote', () => {
     it('adds discussion on successful save', async () => {
       const newDiscussion = { id: 'new-1', notes: [{ id: 'note-1' }] };

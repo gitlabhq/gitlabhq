@@ -128,7 +128,7 @@ Style/StringConcatenation:
     - 'spec/lib/banzai/filter/references/issue_reference_filter_spec.rb'
     - 'spec/lib/banzai/filter/references/merge_request_reference_filter_spec.rb'
     - 'spec/lib/banzai/filter/references/user_reference_filter_spec.rb'
-    - 'spec/lib/constraints/project_url_constrainer_spec.rb'
+    - 'spec/constraints/projects/project_url_constraint_spec.rb'
     - 'spec/lib/gitlab/auth/o_auth/user_spec.rb'
     - 'spec/lib/gitlab/auth/otp/strategies/forti_token_cloud_spec.rb'
     - 'spec/lib/gitlab/ci/build/artifacts/metadata_spec.rb'

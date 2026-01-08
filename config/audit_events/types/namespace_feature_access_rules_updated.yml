@@ -1,0 +1,10 @@
+---
+name: namespace_feature_access_rules_updated
+description: GitLab Duo namespace feature access rules were updated
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/584381
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217896
+feature_category: agent_foundations
+milestone: '18.8'
+saved_to_database: true
+scope: [Group]
+streamed: true

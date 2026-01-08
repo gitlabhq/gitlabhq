@@ -431,11 +431,12 @@ describe('Create work item component', () => {
       expect(findLoadingIcon().exists()).toBe(true);
     });
 
-    it('displays a list of work item types including "Select type" option when preselectedWorkItemType is not provided', async () => {
+    it('displays a list of work item types, excluding "Ticket" and including "Select type" options, when preselectedWorkItemType is not provided', async () => {
       createComponent({ props: { preselectedWorkItemType: null } });
       await waitForPromises();
-      // +1 for the "Select type" option
-      const expectedOptions = namespaceWorkItemTypes.length + 1;
+      const expectedOptions = namespaceWorkItemTypes
+        .filter((type) => type.name !== 'Ticket')
+        .concat({ name: 'Select type' }).length;
 
       expect(findSelect().attributes('options').split(',')).toHaveLength(expectedOptions);
     });
@@ -467,10 +468,11 @@ describe('Create work item component', () => {
         },
       });
       await waitForPromises();
+      const expectedOptions = namespaceWorkItemTypes.filter(
+        (type) => type.name !== 'Ticket',
+      ).length;
 
-      expect(findSelect().attributes('options').split(',')).toHaveLength(
-        namespaceWorkItemTypes.length,
-      );
+      expect(findSelect().attributes('options').split(',')).toHaveLength(expectedOptions);
     });
 
     it('selects a work item type on click', async () => {

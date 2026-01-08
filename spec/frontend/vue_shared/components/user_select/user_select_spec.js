@@ -230,7 +230,17 @@ describe('User select dropdown', () => {
       });
 
       it('moves issuable author to the top of unassigned list', () => {
-        expect(findUnselectedParticipantByIndex(0).props('user')).toMatchObject({ ...mockUser2 });
+        expect(findUnselectedParticipantByIndex(0).props('user')).toMatchObject({
+          id: mockUser2.id,
+          name: mockUser2.name,
+          username: mockUser2.username,
+          webUrl: mockUser2.webUrl,
+          webPath: mockUser2.webPath,
+          compositeIdentityEnforced: mockUser2.compositeIdentityEnforced,
+          status: {
+            availability: 'NOT_SET',
+          },
+        });
       });
     });
 
@@ -249,8 +259,14 @@ describe('User select dropdown', () => {
       });
 
       it('moves issuable author on top of unassigned list after current user', () => {
-        expect(findUnselectedParticipantByIndex(0).props('user')).toEqual(mockUser2);
-        expect(findUnselectedParticipantByIndex(1).props('user')).toMatchObject(mockUser1);
+        expect(findUnselectedParticipantByIndex(0).props('user')).toMatchObject({
+          id: mockUser2.id,
+          username: mockUser2.username,
+        });
+        expect(findUnselectedParticipantByIndex(1).props('user')).toMatchObject({
+          id: mockUser1.id,
+          username: mockUser1.username,
+        });
       });
     });
 
@@ -470,7 +486,7 @@ describe('User select dropdown', () => {
       findSearchField().vm.$emit('input', 'ro');
       await waitForSearch();
 
-      expect(findUnselectedParticipants()).toHaveLength(3);
+      expect(findUnselectedParticipants()).toHaveLength(4);
     });
 
     it('renders a list of found users only if no external participants match search term', async () => {
@@ -482,7 +498,7 @@ describe('User select dropdown', () => {
       findSearchField().vm.$emit('input', 'roo');
       await waitForSearch();
 
-      expect(findUnselectedParticipants()).toHaveLength(2);
+      expect(findUnselectedParticipants()).toHaveLength(3);
     });
 
     it('shows a message about no matches if search returned an empty list', async () => {

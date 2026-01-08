@@ -506,7 +506,9 @@ ul.content-list {
 }
 
 /* stylelint-disable-next-line gitlab/no-gl-class */
-.gl-new-dropdown-item:has(.sidebar-participant-disabled) {
+.gl-new-dropdown-item:has(.sidebar-participant-disabled),
+/* stylelint-disable-next-line gitlab/no-gl-class */
+.gl-dropdown-item:has(.sidebar-participant-disabled) {
   cursor: not-allowed;
 }
 

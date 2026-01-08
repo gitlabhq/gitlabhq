@@ -388,7 +388,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/models/deploy_key_spec.rb'
     - 'spec/models/deployment_cluster_spec.rb'
     - 'spec/models/design_management/git_repository_spec.rb'
-    - 'spec/models/early_access_program/tracking_event_spec.rb'
     - 'spec/models/email_spec.rb'
     - 'spec/models/environment_spec.rb'
     - 'spec/models/environment_status_spec.rb'

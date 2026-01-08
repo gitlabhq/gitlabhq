@@ -1,8 +1,9 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import NoteAuthor from './note_author.vue';
+import TimelineEntryItem from './timeline_entry_item.vue';
 
 export default {
   name: 'SystemNote',
@@ -10,6 +11,7 @@ export default {
     TimeAgoTooltip,
     NoteAuthor,
     TimelineEntryItem,
+    GlIcon,
   },
   directives: {
     SafeHtml,
@@ -19,16 +21,29 @@ export default {
       type: Object,
       required: true,
     },
+    isLastDiscussion: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 };
 </script>
 
 <template>
-  <timeline-entry-item :id="`note_${note.id}`">
-    <div class="gl-flex gl-gap-6 gl-px-6">
+  <timeline-entry-item
+    :id="`note_${note.id}`"
+    timeline-layout
+    :is-last-discussion="isLastDiscussion"
+  >
+    <template #avatar>
       <div
-        class="gl-relative gl-top-[calc(0.5em-1px)] gl-h-3 gl-w-3 gl-rounded-full gl-border-2 gl-border-solid gl-border-subtle gl-bg-[var(--gl-status-neutral-icon-color)]"
-      ></div>
+        class="gl-ml-2 gl-flex gl-h-6 gl-w-6 gl-items-center gl-justify-center gl-rounded-full gl-bg-strong gl-text-subtle"
+      >
+        <gl-icon name="comment-dots" />
+      </div>
+    </template>
+    <template #content>
       <div class="gl-flex gl-flex-wrap gl-gap-3 gl-text-subtle">
         <note-author v-if="note.author" :author="note.author" :show-username="false" />
         <span v-else>{{ __('A deleted user') }}</span>
@@ -39,7 +54,7 @@ export default {
         ></div>
         <time-ago-tooltip :time="note.created_at" />
       </div>
-    </div>
+    </template>
   </timeline-entry-item>
 </template>
 

@@ -2,13 +2,14 @@
 import ProjectSelect from '~/sidebar/components/move/issuable_move_dropdown.vue';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
+import { TYPE_TICKET } from '~/issues/constants';
 import { visitUrl } from '~/lib/utils/url_utility';
 import moveIssueMutation from '../../queries/move_issue.mutation.graphql';
 
 export default {
   name: 'MoveIssueButton',
   components: { ProjectSelect },
-  inject: ['projectsAutocompleteEndpoint', 'projectFullPath', 'issueIid'],
+  inject: ['projectsAutocompleteEndpoint', 'projectFullPath', 'issueIid', 'issueType'],
 
   i18n: {
     title: __('Move issue'),
@@ -22,7 +23,8 @@ export default {
   },
   computed: {
     dropdownButtonTitle() {
-      return this.moveInProgress ? this.$options.i18n.titleInProgress : this.$options.i18n.title;
+      const title = this.issueType === TYPE_TICKET ? __('Move ticket') : __('Move issue');
+      return this.moveInProgress ? this.$options.i18n.titleInProgress : title;
     },
   },
   methods: {

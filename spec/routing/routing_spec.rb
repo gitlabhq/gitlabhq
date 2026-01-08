@@ -13,19 +13,19 @@ require 'spec_helper'
 # user_calendar_activities   GET    /users/:username/calendar_activities(.:format)
 RSpec.describe UsersController, "routing" do
   specify "to #show" do
-    allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
+    allow_any_instance_of(::Users::UserUrlConstraint).to receive(:matches?).and_return(true)
 
     expect(get("/User")).to route_to('users#show', username: 'User')
   end
 
   specify "to #show with username starting with o." do
-    allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
+    allow_any_instance_of(::Users::UserUrlConstraint).to receive(:matches?).and_return(true)
 
     expect(get("/o.redka")).to route_to('users#show', username: 'o.redka')
   end
 
   specify "to #gpg_keys" do
-    allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
+    allow_any_instance_of(::Users::UserUrlConstraint).to receive(:matches?).and_return(true)
 
     expect(get("/User.gpg")).to route_to('users#gpg_keys', username: 'User')
   end
@@ -48,7 +48,7 @@ RSpec.describe UsersController, "routing" do
 
   # get all the ssh-keys of a user
   specify "to #ssh_keys" do
-    allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
+    allow_any_instance_of(::Users::UserUrlConstraint).to receive(:matches?).and_return(true)
 
     expect(get("/User.keys")).to route_to('users#ssh_keys', username: 'User')
   end

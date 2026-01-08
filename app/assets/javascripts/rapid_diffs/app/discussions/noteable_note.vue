@@ -1,4 +1,5 @@
 <script>
+import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -12,6 +13,7 @@ import { isCurrentUser } from '~/lib/utils/common_utils';
 import NoteActions from './note_actions.vue';
 import NoteBody from './note_body.vue';
 import NoteHeader from './note_header.vue';
+import TimelineEntryItem from './timeline_entry_item.vue';
 
 export default {
   name: 'NoteableNote',
@@ -19,6 +21,9 @@ export default {
     NoteHeader,
     NoteActions,
     NoteBody,
+    GlAvatarLink,
+    GlAvatar,
+    TimelineEntryItem,
   },
   inject: {
     endpoints: {
@@ -41,6 +46,16 @@ export default {
       default: '',
     },
     restoreFromAutosave: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    timelineLayout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isLastDiscussion: {
       type: Boolean,
       required: false,
       default: false,
@@ -172,52 +187,77 @@ export default {
 </script>
 
 <template>
-  <li
+  <timeline-entry-item
     :id="`note_${note.id}`"
-    class="gl-p-3 gl-pl-5 target:gl-bg-[var(--timeline-entry-target-background-color)]"
+    :timeline-layout="timelineLayout"
+    :is-last-discussion="isLastDiscussion"
     :class="{ 'gl-pointer-events-none gl-opacity-5': isSaving || isDeleting }"
+    class="target:gl-bg-[var(--timeline-entry-target-background-color)]"
     data-testid="noteable-note-container"
   >
-    <div class="gl-flex gl-flex-wrap gl-items-start gl-justify-between gl-gap-2">
-      <note-header
-        class="gl-py-2"
-        :author="author"
-        :created-at="note.created_at"
-        :note-id="note.id"
-        :is-internal-note="note.internal"
-        :is-imported="note.imported"
-      />
-      <note-actions
-        :author-id="authorId"
-        :note-url="note.noteable_note_url"
-        :access-level="note.human_access"
-        :is-contributor="note.is_contributor"
-        :is-author="note.is_noteable_author"
-        :project-name="note.project_name"
-        :noteable-type="note.noteable_type"
-        :show-reply="showReplyButton"
-        :can-edit="canEdit"
-        :can-award-emoji="canAwardEmoji"
-        :can-delete="canEdit"
-        :can-report-as-abuse="canReportAsAbuse"
-        @delete="onDelete"
-        @startEditing="$emit('startEditing')"
-        @startReplying="$emit('startReplying')"
-        @award="toggleAward"
-      />
-    </div>
-    <div class="gl-pb-3 gl-pl-7">
-      <note-body
-        :note="note"
-        :can-edit="canEdit"
-        :is-editing="isEditing"
-        :autosave-key="autosaveKey"
-        :restore-from-autosave="restoreFromAutosave"
-        :save-note="saveNote"
-        @cancelEditing="onCancelEditing"
-        @input="$emit('noteEdited', $event)"
-        @award="toggleAward"
-      />
-    </div>
-  </li>
+    <!-- Avatar slot for timeline layout -->
+    <template #avatar>
+      <gl-avatar-link
+        :href="author.path"
+        :data-user-id="authorId"
+        :data-username="author.username"
+        class="js-user-link"
+      >
+        <gl-avatar
+          :src="author.avatar_url"
+          :entity-name="author.username"
+          :alt="author.name"
+          :size="32"
+        />
+      </gl-avatar-link>
+    </template>
+
+    <!-- Content slot for timeline layout, default slot for non-timeline -->
+    <template #content>
+      <div :class="timelineLayout && 'gl-border gl-rounded-lg gl-border-section gl-px-4 gl-py-2'">
+        <div class="gl-flex gl-flex-wrap gl-items-start gl-justify-between gl-gap-2">
+          <note-header
+            class="gl-py-2"
+            :author="author"
+            :created-at="note.created_at"
+            :note-id="note.id"
+            :is-internal-note="note.internal"
+            :is-imported="note.imported"
+            :show-avatar="!timelineLayout"
+          />
+          <note-actions
+            :author-id="authorId"
+            :note-url="note.noteable_note_url"
+            :access-level="note.human_access"
+            :is-contributor="note.is_contributor"
+            :is-author="note.is_noteable_author"
+            :project-name="note.project_name"
+            :noteable-type="note.noteable_type"
+            :show-reply="showReplyButton"
+            :can-edit="canEdit"
+            :can-award-emoji="canAwardEmoji"
+            :can-delete="canEdit"
+            :can-report-as-abuse="canReportAsAbuse"
+            @delete="onDelete"
+            @startEditing="$emit('startEditing')"
+            @startReplying="$emit('startReplying')"
+            @award="toggleAward"
+          />
+        </div>
+        <div class="gl-pb-3" :class="!timelineLayout && 'gl-pl-7'">
+          <note-body
+            :note="note"
+            :can-edit="canEdit"
+            :is-editing="isEditing"
+            :autosave-key="autosaveKey"
+            :restore-from-autosave="restoreFromAutosave"
+            :save-note="saveNote"
+            @cancelEditing="onCancelEditing"
+            @input="$emit('noteEdited', $event)"
+            @award="toggleAward"
+          />
+        </div>
+      </div>
+    </template>
+  </timeline-entry-item>
 </template>

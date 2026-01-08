@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Constraints::JiraEncodedUrlConstrainer do
+RSpec.describe Integrations::JiraEncodedUrlConstraint do
   let(:namespace_id) { 'group' }
   let(:project_id) { 'project' }
   let(:path) { "/#{namespace_id}/#{project_id}" }

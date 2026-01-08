@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Constraints
-  class ProjectUrlConstrainer
+module Projects
+  class ProjectUrlConstraint
     def matches?(request, existence_check: true)
       namespace_path = request.params[:namespace_id]
       project_path = request.params[:project_id] || request.params[:id]
