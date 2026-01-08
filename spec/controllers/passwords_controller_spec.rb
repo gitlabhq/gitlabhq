@@ -178,7 +178,7 @@ RSpec.describe PasswordsController, feature_category: :system_access do
 
       context 'when the reCAPTCHA is not solved' do
         before do
-          Recaptcha.configuration.skip_verify_env.delete('test')
+          allow(Recaptcha.configuration).to receive(:skip_verify_env).and_return([])
         end
 
         it 'displays an error' do
@@ -199,8 +199,6 @@ RSpec.describe PasswordsController, feature_category: :system_access do
       end
 
       it 'successfully sends password reset when reCAPTCHA is solved' do
-        Recaptcha.configuration.skip_verify_env << 'test'
-
         perform_request
 
         expect(response).to redirect_to(new_user_session_path)

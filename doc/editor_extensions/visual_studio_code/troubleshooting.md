@@ -105,6 +105,18 @@ For more information about simplifying this process, see
 [issue 577](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/577)
 in the `gitlab-vscode-extension` project.
 
+## GitLab Duo features do not appear
+
+If GitLab Duo Chat or GitLab Duo Code Suggestions aren't available in VS Code:
+
+- Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo).
+- For GitLab Duo Chat (Agentic) and GitLab Duo Chat (Classic), ensure the feature is enabled:
+  1. On the left sidebar in VS Code, select **Extensions** > **GitLab Workflow**.
+  1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
+  1. Under **GitLab** > **Duo Chat** or **GitLab** > **Duo Agent Platform**, select the checkbox to
+     enable the feature.
+- For GitLab Duo Code Suggestions, see [troubleshooting Code Suggestions for VS Code](../../user/project/repository/code_suggestions/troubleshooting.md#vs-code-troubleshooting).
+
 ## Known issue: GitLab Duo Chat fails to initialize in remote environments
 
 When using GitLab Duo Chat in remote development environments (such as browser-based VS Code or remote

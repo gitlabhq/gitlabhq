@@ -255,42 +255,103 @@ marked for deletion, objects successfully deleted, run intervals, and durations.
 See [enable the registry debug server](container_registry_troubleshooting.md#enable-the-registry-debug-server)
 for how to enable Prometheus.
 
-### Queue monitoring
+### Monitor task queues
 
-Check the size of the queues by counting the rows in the `gc_blob_review_queue` and
-`gc_manifest_review_queue` tables. Large queues are expected initially, with the number of rows
-proportional to the number of imported blobs and manifests. The queues should reduce over time,
-indicating that garbage collection is successfully reviewing jobs.
+Monitor the health and status of garbage collection task queues for blobs and manifests.
+
+#### Check the health of online garbage collection
+
+The following queries return tasks that were retried more than 10 times,
+or were eligible for review for longer than 24 hours. The online garbage collector should
+pick up an item for review within 24 hours with few failed attempts. If any rows are returned,
+investigate the health of your online garbage collector.
+
+For manifests:
 
 ```sql
-SELECT COUNT(*) FROM gc_blob_review_queue;
-SELECT COUNT(*) FROM gc_manifest_review_queue;
+SELECT
+  repository_id,
+  manifest_id,
+  ROUND(
+    EXTRACT(
+      EPOCH
+      FROM
+        AGE(NOW(), review_after)
+    ) / 3600
+  ) AS hours_eligible_for_review,
+  review_count as failed_review_attempts,
+  event
+FROM
+  gc_manifest_review_queue
+WHERE
+  review_after < NOW() - INTERVAL '24 hours'
+  OR review_count > 10
+LIMIT
+  20;
 ```
 
-Interpreting Queue Sizes:
+For blobs:
 
-- Shrinking queues: Indicate garbage collection is successfully processing tasks.
-- Near-Zero `gc_manifest_review_queue`: Most images flagged for potential deletion
-  have been reviewed and classified either as still in use or removed.
-- Overdue Tasks: Check for overdue GC tasks by running the following queries:
+```sql
+SELECT
+  substring(encode(digest, 'hex'), 3) AS digest,
+  ROUND(
+    EXTRACT(
+      EPOCH
+      FROM
+        AGE(NOW(), review_after)
+    ) / 3600
+  ) AS hours_eligible_for_review,
+  review_count as failed_review_attempts,
+  event
+FROM
+  gc_blob_review_queue
+WHERE
+  review_after < NOW() - INTERVAL '24 hours'
+  OR review_count > 10
+LIMIT
+  20;
+```
+
+If these queries return any rows, check the registry logs for messages related
+to garbage collection. Filter for entries by `component="registry.gc.*` and
+investigate any error messages.
+
+The unfiltered size of the `gc_manifest_review_queue` and `gc_blob_review_queue`
+are not good indicators of the health of the online garbage collector.
+These queues never fully clear for an active registry.
+
+Large amounts of tasks eligible for review are also not necessarily a cause for concern.
+The garbage collector might be working through items caused by a spike in activity.
+
+Similarly, the `created_at` date of these tasks alone is not good health indicator.
+When an event adds the same blob or manifest to the queue, the `review_after`
+of the existing task is updated, which postpones the review. No duplicate task is created. 
+
+This can occur any number of times, so
+tasks created months ago are not a cause for concern.
+
+#### Informational queries related to online garbage collection
+
+Check the number of tasks eligible for review by running the following queries:
 
   ```sql
   SELECT COUNT(*) FROM gc_blob_review_queue WHERE review_after < NOW();
   SELECT COUNT(*) FROM gc_manifest_review_queue WHERE review_after < NOW();
   ```
 
-  A high number of overdue tasks indicates a problem. Large queue sizes are not concerning
-  as long as they are decreasing over time and the number of overdue tasks
-  is close to zero. A high number of overdue tasks should prompt an urgent inspection of logs.
+Generally, these queries should return relatively low counts, often nearing zero.
+However, these queries might return larger values if:
 
-Check GC logs for messages indicating that blobs are still in use, for example `msg=the blob is not dangling`,
-which implies they will not be deleted.
+- An import was started 24 to 48 hours ago
+- Large amounts of tags were deleted or a container repository was removed
+- Online garbage collection was disabled for an extended period
 
-### Adjust blobs interval
+### Adjust the garbage collector worker interval
 
-If the size of your `gc_blob_review_queue` is high, and you want to increase the frequency between
-the garbage collection blob or manifest worker runs, update your interval configuration
-from the default (`5s`) to `1s`:
+If the number of tasks eligible for review remains high, and you want to increase the frequency
+between the garbage collection blob or manifest worker runs, update your
+interval configuration from the default (`5s`) to `1s`:
 
 ```ruby
 registry['gc'] = {

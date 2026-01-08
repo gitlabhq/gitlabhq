@@ -4324,41 +4324,25 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#work_item_new_url_format_enabled?' do
-    context 'when work_item_planning_view is enabled' do
-      before do
-        stub_feature_flags(work_item_planning_view: group)
-      end
-
-      context 'when work_item_new_url_format is enabled for the group' do
-        before do
-          stub_feature_flags(work_item_new_url_format: group)
-        end
-
-        it 'returns true' do
-          expect(group.work_item_new_url_format_enabled?).to eq(true)
-        end
-      end
-
-      context 'when work_item_new_url_format is disabled' do
-        before do
-          stub_feature_flags(work_item_new_url_format: false)
-        end
-
-        it 'returns false' do
-          expect(group.work_item_new_url_format_enabled?).to eq(false)
-        end
-      end
+  describe '#use_work_item_url?' do
+    where(:consolidated_list, :legacy_url, :result) do
+      false | false | false
+      false | true | false
+      true | false | true
+      true | true | false
     end
 
-    context 'when work_item_planning_view is disabled' do
+    with_them do
       before do
-        stub_feature_flags(work_item_planning_view: false)
+        stub_feature_flags(
+          work_item_planning_view: consolidated_list,
+          work_item_legacy_url: legacy_url
+        )
       end
 
-      it 'returns false' do
-        expect(group.work_item_new_url_format_enabled?).to eq(false)
-      end
+      subject(:use_work_item_url?) { group.use_work_item_url? }
+
+      it { is_expected.to be(result) }
     end
   end
 

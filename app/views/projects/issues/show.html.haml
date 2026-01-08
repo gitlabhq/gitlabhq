@@ -1,4 +1,7 @@
-- add_to_breadcrumbs _("Issues"), project_issues_path(@project)
+- if @project.work_items_consolidated_list_enabled?(current_user)
+  - add_to_breadcrumbs _("Work items"), project_work_items_path(@project)
+- else
+  - add_to_breadcrumbs _("Issues"), project_issues_path(@project)
 - breadcrumb_title @issue.to_reference
 
 - page_title "#{@issue.title} (#{@issue.to_reference})", _("Issues")

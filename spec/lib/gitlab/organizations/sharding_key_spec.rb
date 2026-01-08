@@ -37,7 +37,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_not_null) do
     [
-      'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
       *%w[
         bulk_import_batch_trackers.organization_id
         bulk_import_batch_trackers.namespace_id
@@ -297,7 +296,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "user_agent_details" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/574387",
       "abuse_report_assignees" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553428",
       "labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/563889",
-      "member_roles" => "https://gitlab.com/gitlab-org/gitlab/-/issues/567738",
       "award_emoji_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/580326",
       "slack_integrations_scopes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/584705",
       "system_note_metadata" => "https://gitlab.com/gitlab-org/gitlab/-/issues/571215",

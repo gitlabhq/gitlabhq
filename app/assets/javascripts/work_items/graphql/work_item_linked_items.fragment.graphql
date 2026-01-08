@@ -22,6 +22,10 @@ fragment WorkItemLinkedItemsFragment on WorkItem {
               id
               fullPath
             }
+            author {
+              id
+              username
+            }
             workItemType {
               id
               name

@@ -8,6 +8,8 @@ module Types
 
         authorize :read_saved_view
 
+        expose_permissions Types::PermissionTypes::WorkItems::SavedView
+
         field :id,
           Types::GlobalIDType[::WorkItems::SavedViews::SavedView],
           null: false,

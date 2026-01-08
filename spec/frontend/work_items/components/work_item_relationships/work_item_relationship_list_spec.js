@@ -8,7 +8,7 @@ import WorkItemLinkChildContents from 'ee_else_ce/work_items/components/shared/w
 import removeLinkedItemsMutation from '~/work_items/graphql/remove_linked_items.mutation.graphql';
 import addLinkedItemsMutation from '~/work_items/graphql/add_linked_items.mutation.graphql';
 
-import { mockBlockingLinkedItem } from '../../mock_data';
+import { mockBlockingLinkedItem, incidentType, issueType, ticketType } from '../../mock_data';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -100,26 +100,41 @@ describe('WorkItemRelationshipList', () => {
     ]);
   });
 
-  it('redirects to the url of the linked item on click when the item is an incident', () => {
-    const mockLinkedItemsWithIncident = [
+  describe('redirects to URL on click', () => {
+    const createMockLinkedItemWithType = (workItemType, additionalProps = {}) => [
       {
         ...mockLinkedItems[0],
         workItem: {
           ...mockLinkedItems[0].workItem,
-          workItemType: {
-            id: 'gid://gitlab/WorkItems::Type/5',
-            name: 'Incident',
-            iconName: 'work-item-incident',
-            __typename: 'WorkItemType',
-          },
+          workItemType,
+          ...additionalProps,
         },
       },
     ];
 
-    createComponent({ linkedItems: mockLinkedItemsWithIncident });
-    findWorkItemLinkChildContents().vm.$emit('click');
+    it.each([
+      {
+        description: 'when the item is an incident',
+        linkedItems: createMockLinkedItemWithType(incidentType),
+      },
+      {
+        description: 'when the item is a Service Desk issue',
+        linkedItems: createMockLinkedItemWithType(issueType, {
+          author: { username: 'support-bot' },
+        }),
+      },
+      {
+        description: 'when the item is a ticket',
+        linkedItems: createMockLinkedItemWithType(ticketType, {
+          author: { username: 'support-bot' },
+        }),
+      },
+    ])('$description', ({ linkedItems }) => {
+      createComponent({ linkedItems });
+      findWorkItemLinkChildContents().vm.$emit('click');
 
-    expect(visitUrl).toHaveBeenCalledWith(mockLinkedItemsWithIncident[0].workItem.webUrl);
+      expect(visitUrl).toHaveBeenCalledWith(linkedItems[0].workItem.webUrl);
+    });
   });
 
   describe('drag start', () => {

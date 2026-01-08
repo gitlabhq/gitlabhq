@@ -60,6 +60,12 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
 
         perform_request
       end
+
+      it 'responds with status 403' do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
     end
 
     shared_examples 'calls handle_passwordless_flow' do
@@ -86,6 +92,14 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
 
     context 'when :passkeys feature flag is on' do
       it_behaves_like 'calls handle_passwordless_flow'
+
+      context 'when password authentication for web is disabled' do
+        before do
+          stub_application_setting(password_authentication_enabled_for_web: false)
+        end
+
+        it_behaves_like 'does not call handle_passwordless_flow'
+      end
     end
   end
 

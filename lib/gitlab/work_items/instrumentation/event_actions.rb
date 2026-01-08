@@ -36,6 +36,11 @@ module Gitlab
         CLOSE = 'work_item_close'
         CONFIDENTIALITY_DISABLE = 'work_item_confidentiality_disable'
         CONFIDENTIALITY_ENABLE = 'work_item_confidentiality_enable'
+        CREATE = 'work_item_create'
+        CREATE_CHILD_ITEMS_WIDGET = 'work_item_create_child_items_widget'
+        CREATE_GLOBAL_NAV = 'work_item_create_global_nav'
+        CREATE_VULNERABILITY = 'work_item_create_vulnerability'
+        CREATE_WORK_ITEM_LIST = 'work_item_create_work_item_list'
         DESCRIPTION_UPDATE = 'work_item_description_update'
         DESIGN_CREATE = 'work_item_design_create'
         DESIGN_DESTROY = 'work_item_design_destroy'
@@ -74,6 +79,11 @@ module Gitlab
           CLOSE,
           CONFIDENTIALITY_DISABLE,
           CONFIDENTIALITY_ENABLE,
+          CREATE,
+          CREATE_CHILD_ITEMS_WIDGET,
+          CREATE_GLOBAL_NAV,
+          CREATE_VULNERABILITY,
+          CREATE_WORK_ITEM_LIST,
           DESCRIPTION_UPDATE,
           DESIGN_CREATE,
           DESIGN_DESTROY,

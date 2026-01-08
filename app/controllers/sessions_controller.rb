@@ -70,9 +70,12 @@ class SessionsController < Devise::SessionsController
   end
 
   def new_passkey
-    return unless Feature.enabled?(:passkeys, Feature.current_request)
-
-    handle_passwordless_flow
+    if Feature.enabled?(:passkeys, Feature.current_request) &&
+        Gitlab::CurrentSettings.password_authentication_enabled_for_web?
+      handle_passwordless_flow
+    else
+      render_403
+    end
   end
 
   def create

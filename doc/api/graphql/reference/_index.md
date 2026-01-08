@@ -46392,6 +46392,19 @@ Represents an entity for options in SAST CI configuration.
 | <a id="savedreplyid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | Global ID of the user saved reply. |
 | <a id="savedreplyname"></a>`name` | [`String!`](#string) | Name of the saved reply. |
 
+### `SavedViewPermissions`
+
+Check permissions for the current user on a saved view.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="savedviewpermissionsdeletesavedview"></a>`deleteSavedView` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_saved_view` on this resource. |
+| <a id="savedviewpermissionsreadsavedview"></a>`readSavedView` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_saved_view` on this resource. |
+| <a id="savedviewpermissionsupdatesavedview"></a>`updateSavedView` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_saved_view` on this resource. |
+| <a id="savedviewpermissionsupdatesavedviewvisibility"></a>`updateSavedViewVisibility` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_saved_view_visibility` on this resource. |
+
 ### `Scan`
 
 Represents the security scan information.
@@ -49883,6 +49896,7 @@ Check permissions for the current user on a work item.
 | <a id="workitemsavedviewtypeshareurl"></a>`shareUrl` | [`String!`](#string) | URL to auto subscribe users to the view. |
 | <a id="workitemsavedviewtypesort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort option associated with the saved view. |
 | <a id="workitemsavedviewtypesubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Whether the current user is subscribed to the saved view. |
+| <a id="workitemsavedviewtypeuserpermissions"></a>`userPermissions` | [`SavedViewPermissions!`](#savedviewpermissions) | Permissions for the current user on the resource. |
 | <a id="workitemsavedviewtypeworkitems"></a>`workItems` {{< icon name="warning-solid" >}} | [`WorkItemConnection`](#workitemconnection) | **Introduced** in GitLab 18.8. **Status**: Experiment. Work items associated with the saved view. |
 
 ### `WorkItemSelectFieldValue`

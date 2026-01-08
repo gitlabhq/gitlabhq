@@ -818,6 +818,20 @@ export const issueType = {
   iconName: 'work-item-issue',
 };
 
+export const incidentType = {
+  id: 'gid://gitlab/WorkItems::Type/5',
+  name: 'Incident',
+  iconName: 'issue-type-incident',
+  __typename: 'WorkItemType',
+};
+
+export const ticketType = {
+  id: 'gid://gitlab/WorkItems::Type/9',
+  name: 'Ticket',
+  iconName: 'work-item-ticket',
+  __typename: 'WorkItemType',
+};
+
 export const epicType = {
   __typename: 'WorkItemType',
   id: 'gid://gitlab/WorkItems::Type/2411',
@@ -849,6 +863,10 @@ export const mockBlockingLinkedItem = {
           id: 'gid://gitlab/WorkItem/675',
           iid: '83',
           confidential: true,
+          author: {
+            id: 'gid://gitlab/User/1',
+            username: 'root',
+          },
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
@@ -891,6 +909,10 @@ export const mockBlockedByLinkedItem = {
           id: 'gid://gitlab/WorkItem/675',
           iid: '83',
           confidential: true,
+          author: {
+            id: 'gid://gitlab/User/1',
+            username: 'root',
+          },
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
@@ -921,6 +943,10 @@ export const mockBlockedByLinkedItem = {
           id: 'gid://gitlab/WorkItem/676',
           iid: '84',
           confidential: true,
+          author: {
+            id: 'gid://gitlab/User/1',
+            username: 'root',
+          },
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
@@ -963,6 +989,10 @@ export const mockBlockedByOpenAndClosedLinkedItems = {
           id: 'gid://gitlab/WorkItem/675',
           iid: '83',
           confidential: true,
+          author: {
+            id: 'gid://gitlab/User/1',
+            username: 'root',
+          },
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
@@ -993,6 +1023,10 @@ export const mockBlockedByOpenAndClosedLinkedItems = {
           id: 'gid://gitlab/WorkItem/676',
           iid: '84',
           confidential: true,
+          author: {
+            id: 'gid://gitlab/User/1',
+            username: 'root',
+          },
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
@@ -1042,6 +1076,10 @@ export const mockLinkedItems = {
           id: 'gid://gitlab/WorkItem/675',
           iid: '83',
           confidential: true,
+          author: {
+            id: 'gid://gitlab/User/1',
+            username: 'root',
+          },
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
@@ -1072,6 +1110,10 @@ export const mockLinkedItems = {
           id: 'gid://gitlab/WorkItem/646',
           iid: '55',
           confidential: true,
+          author: {
+            id: 'gid://gitlab/User/1',
+            username: 'root',
+          },
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/6',
             name: 'Objective',
@@ -1102,6 +1144,10 @@ export const mockLinkedItems = {
           id: 'gid://gitlab/WorkItem/647',
           iid: '56',
           confidential: true,
+          author: {
+            id: 'gid://gitlab/User/1',
+            username: 'root',
+          },
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/6',
             name: 'Objective',
@@ -1191,6 +1237,10 @@ export const workItemSingleLinkedItemResponse = {
                     id: 'gid://gitlab/WorkItem/675',
                     iid: '83',
                     confidential: true,
+                    author: {
+                      id: 'gid://gitlab/User/1',
+                      username: 'root',
+                    },
                     workItemType: {
                       id: 'gid://gitlab/WorkItems::Type/5',
                       name: 'Task',

@@ -12,6 +12,8 @@ export default {
     scrollToBottomButtonLabel: s__('Job|Scroll to bottom'),
     scrollToTopButtonLabel: s__('Job|Scroll to top'),
     scrollToNextFailureButtonLabel: s__('Job|Scroll to next failure'),
+    scrollToNextResult: s__('Job|Scroll to next result'),
+    scrollToPreviousResult: s__('Job|Scroll to previous result'),
     showRawButtonLabel: s__('Job|Show complete raw'),
     searchPlaceholder: s__('Job|Search visible log output'),
     noResults: s__('Job|No search results found'),
@@ -81,9 +83,16 @@ export default {
       searchResults: [],
       failureCount: null,
       failureIndex: 0,
+      focusedSearchResultIndex: 0,
     };
   },
   computed: {
+    canGoToPreviousResult() {
+      return Boolean(this.searchResults[this.focusedSearchResultIndex - 1]);
+    },
+    canGoToNextResult() {
+      return Boolean(this.searchResults[this.focusedSearchResultIndex + 1]);
+    },
     hasTimestamps() {
       return Boolean(this.jobLog[0]?.time);
     },
@@ -99,13 +108,40 @@ export default {
       return !this.hasFailures;
     },
     fullScreenTooltipContent() {
-      return this.fullScreenModeAvailable ? '' : this.$options.i18n.fullScreenNotAvailable;
+      return this.fullScreenModeAvailable
+        ? this.$options.i18n.enterFullscreen
+        : this.$options.i18n.fullScreenNotAvailable;
     },
   },
   mounted() {
     this.checkFailureCount();
   },
   methods: {
+    handleClearSearch() {
+      this.$emit('searchResults', []);
+      this.searchResults = [];
+    },
+    async scrollToSearchResult(direction) {
+      if (direction === 'next') {
+        this.focusedSearchResultIndex += 1;
+      } else {
+        this.focusedSearchResultIndex -= 1;
+      }
+
+      const result = this.searchResults[this.focusedSearchResultIndex];
+      if (!result) {
+        return;
+      }
+
+      const targetLogLine = document.querySelector(`.js-log-line #L${result.lineNumber}`);
+      if (!targetLogLine) {
+        return;
+      }
+
+      const topBarHeight = this.$el.offsetHeight || 0;
+      await this.$nextTick();
+      scrollToElement(targetLogLine, { offset: topBarHeight * -1 });
+    },
     checkFailureCount() {
       backOff((next, stop) => {
         this.failureCount = document.querySelectorAll('.term-fg-l-red').length;
@@ -142,7 +178,7 @@ export default {
     handleExitFullscreenMode() {
       this.$emit('exitFullscreen');
     },
-    searchJobLog() {
+    async searchJobLog() {
       this.searchResults = [];
 
       if (!this.searchTerm) return;
@@ -161,11 +197,14 @@ export default {
         this.$emit('searchResults', this.searchResults);
 
         const { lineNumber } = this.searchResults[0];
-        const logLine = document.querySelector(`.js-log-line #L${lineNumber}`);
+        const targetLogLine = document.querySelector(`.js-log-line #L${lineNumber}`);
 
-        if (logLine) {
+        if (targetLogLine) {
+          this.focusedSearchResultIndex = 0;
+
           const topBarHeight = this.$el.offsetHeight || 0;
-          setTimeout(() => scrollToElement(logLine, { offset: topBarHeight * -1 }));
+          await this.$nextTick();
+          scrollToElement(targetLogLine, { offset: topBarHeight * -1 });
 
           const message = sprintf(
             n__(
@@ -190,6 +229,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <div
     class="top-bar js-job-log-top-bar gl-flex gl-flex-wrap gl-items-center gl-justify-between gl-gap-3"
@@ -231,12 +271,32 @@ export default {
         class="gl-w-30 gl-grow gl-flex-nowrap"
         :placeholder="$options.i18n.searchPlaceholder"
         data-testid="job-log-search-box"
-        @clear="$emit('searchResults', [])"
+        @clear="handleClearSearch"
         @submit="searchJobLog"
       />
 
       <div class="gl-flex gl-gap-2">
         <!-- links -->
+        <div v-gl-tooltip :title="$options.i18n.scrollToPreviousResult">
+          <gl-button
+            :aria-label="$options.i18n.scrollToPreviousResult"
+            :disabled="!canGoToPreviousResult"
+            data-testid="job-scroll-to-prev-btn"
+            icon="chevron-up"
+            @click="scrollToSearchResult('prev')"
+          />
+        </div>
+
+        <div v-gl-tooltip :title="$options.i18n.scrollToNextResult">
+          <gl-button
+            :aria-label="$options.i18n.scrollToNextResult"
+            :disabled="!canGoToNextResult"
+            data-testid="job-scroll-to-next-btn"
+            icon="chevron-down"
+            @click="scrollToSearchResult('next')"
+          />
+        </div>
+
         <gl-button
           v-if="rawPath"
           v-gl-tooltip.body
@@ -249,15 +309,15 @@ export default {
         <!-- eo links -->
 
         <!-- scroll buttons -->
-        <gl-button
-          v-gl-tooltip
-          :title="$options.i18n.scrollToNextFailureButtonLabel"
-          :aria-label="$options.i18n.scrollToNextFailureButtonLabel"
-          :disabled="shouldDisableJumpToFailures"
-          data-testid="job-top-bar-scroll-to-failure"
-          icon="soft-wrap"
-          @click="handleScrollToNextFailure"
-        />
+        <div v-gl-tooltip :title="$options.i18n.scrollToNextFailureButtonLabel">
+          <gl-button
+            :aria-label="$options.i18n.scrollToNextFailureButtonLabel"
+            :disabled="shouldDisableJumpToFailures"
+            data-testid="job-top-bar-scroll-to-failure"
+            icon="soft-wrap"
+            @click="handleScrollToNextFailure"
+          />
+        </div>
 
         <div v-gl-tooltip :title="$options.i18n.scrollToTopButtonLabel">
           <gl-button
@@ -280,11 +340,10 @@ export default {
         </div>
         <!-- eo scroll buttons -->
 
-        <div v-gl-tooltip="fullScreenTooltipContent">
+        <div v-gl-tooltip :title="fullScreenTooltipContent">
           <gl-button
             v-if="!fullScreenEnabled"
             :disabled="!fullScreenModeAvailable"
-            :title="$options.i18n.enterFullscreen"
             :aria-label="$options.i18n.enterFullscreen"
             data-testid="job-top-bar-enter-fullscreen"
             icon="maximize"
@@ -292,14 +351,15 @@ export default {
           />
         </div>
 
-        <gl-button
-          v-if="fullScreenEnabled"
-          :title="$options.i18n.exitFullScreen"
-          :aria-label="$options.i18n.exitFullScreen"
-          data-testid="job-top-bar-exit-fullscreen"
-          icon="minimize"
-          @click="handleExitFullscreenMode"
-        />
+        <div v-gl-tooltip :title="$options.i18n.exitFullScreen">
+          <gl-button
+            v-if="fullScreenEnabled"
+            :aria-label="$options.i18n.exitFullScreen"
+            data-testid="job-top-bar-exit-fullscreen"
+            icon="minimize"
+            @click="handleExitFullscreenMode"
+          />
+        </div>
       </div>
     </div>
   </div>

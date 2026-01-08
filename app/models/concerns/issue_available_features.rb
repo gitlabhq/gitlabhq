@@ -12,7 +12,7 @@ module IssueAvailableFeatures
       {
         assignee: %w[issue incident],
         confidentiality: %w[issue incident objective key_result task],
-        time_tracking: %w[issue incident],
+        time_tracking: %w[issue incident ticket],
         move_and_clone: %w[issue incident]
       }.with_indifferent_access
     end

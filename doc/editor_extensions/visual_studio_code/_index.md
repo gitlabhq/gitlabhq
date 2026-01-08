@@ -28,9 +28,10 @@ When configured, this extension brings the GitLab features you use every day dir
 
 The GitLab Workflow extension also streamlines your VS Code workflow with AI-assisted features:
 
-- [GitLab Duo Chat](../../user/gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-vs-code):
-  Interact with an AI assistant directly in VS Code.
-- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/_index.md#use-code-suggestions):
+- [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md) and
+  [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md): Interact with an AI assistant
+  directly in VS Code.
+- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/_index.md):
   Suggest completions to your current line of code, or write natural-language code comments to get
   more substantive suggestions.
 

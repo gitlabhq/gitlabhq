@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBuildsMetadataMigrationForSelfManaged, migration: :gitlab_ci, feature_category: :continuous_integration do
+RSpec.describe ReQueueBuildsMetadataMigrationForSelfManaged, migration: :gitlab_ci, feature_category: :continuous_integration do
   let!(:batched_migration) { described_class::MIGRATION }
 
   let(:pipelines_table) { table(:p_ci_pipelines, primary_key: :id, database: :ci) }

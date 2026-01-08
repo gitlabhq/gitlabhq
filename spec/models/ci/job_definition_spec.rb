@@ -54,6 +54,57 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
           let(:config) { { options: { script: ['echo test'] } } }
 
           it { is_expected.to be_valid }
+
+          context 'for trigger:include::component' do
+            let(:config) do
+              {
+                options: { trigger: {
+                  include: [
+                    { component: "${CI_SERVER_FQDN}/${CI_PROJECT_PATH}/image-release@${CI_COMMIT_SHA}" }
+                  ]
+                } }
+              }
+            end
+
+            it { is_expected.to be_valid }
+          end
+
+          context 'for trigger:include::rules' do
+            let(:config) do
+              {
+                options: {
+                  trigger: { include: [{ ref: "$LIB_REF", file: ["modules/.gitlab-ci.yml"],
+                                         rules: [{ if: "$VAR == 'false'" }], project: "gitlab-org/gitlab" }] }
+                }
+              }
+            end
+
+            it { is_expected.to be_valid }
+          end
+
+          context 'for trigger:include::template' do
+            let(:config) do
+              { options: { trigger: { include: [{ template: "Security/Secret-Detection.gitlab-ci.yml" }] } } }
+            end
+
+            it { is_expected.to be_valid }
+          end
+
+          context 'when trigger:include:inputs contains non-string values' do
+            let(:config) do
+              {
+                options: {
+                  trigger: {
+                    include: [{ inputs: { quick_deploy: true,
+                                          mysql_service: [{ name: "${CI_IMAGE_PREFIX}/mysql:8.0" }],
+                                          'configuration-number': 3 } }]
+                  }
+                }
+              }
+            end
+
+            it { is_expected.to be_valid }
+          end
         end
 
         context 'with run_steps' do
@@ -130,6 +181,16 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
             expect(job_definition).not_to be_valid
             expect(job_definition.errors[:config]).to include(
               'object property at `/unknown_property` is a disallowed additional property')
+          end
+
+          context 'when artifacts:reports is null' do
+            let(:config) { { options: { artifacts: { reports: nil } } } }
+
+            it 'is invalid' do
+              expect(job_definition).not_to be_valid
+              expect(job_definition.errors[:config]).to include(
+                'value at `/options/artifacts/reports` is not an object')
+            end
           end
         end
 

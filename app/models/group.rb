@@ -1191,8 +1191,9 @@ class Group < Namespace
     user.present? && Feature.enabled?(:work_items_consolidated_list_user, user)
   end
 
-  def work_item_new_url_format_enabled?
-    work_items_consolidated_list_enabled? && feature_flag_enabled_for_self_or_ancestor?(:work_item_new_url_format, type: :gitlab_com_derisk)
+  def use_work_item_url?
+    work_items_consolidated_list_enabled? &&
+      !feature_flag_enabled_for_self_or_ancestor?(:work_item_legacy_url, type: :gitlab_com_derisk)
   end
 
   # overriden in EE

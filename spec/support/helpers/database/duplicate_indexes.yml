@@ -169,3 +169,6 @@ vulnerability_partial_scans:
 work_item_weights_sources:
   work_item_weights_sources_pkey:
     - index_work_item_weights_sources_on_work_item_id
+users:
+  index_users_on_organization_id_and_reset_password_token:
+  - index_users_on_organization_id

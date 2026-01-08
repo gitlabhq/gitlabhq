@@ -10420,68 +10420,37 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#work_item_new_url_format_enabled?' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, group: group) }
+  describe '#use_work_item_url?' do
+    let_it_be(:group) { build_stubbed(:group) }
+    let_it_be(:project_in_group) { build_stubbed(:project, group: group) }
+    let_it_be(:project_in_user) { build_stubbed(:project, :in_user_namespace) }
 
-    context 'when work_items_consolidated_list is enabled' do
-      before do
-        stub_feature_flags(work_item_planning_view: true)
-      end
-
-      context 'when work_item_new_url_format is enabled for the project' do
-        before do
-          stub_feature_flags(work_item_new_url_format: project)
-        end
-
-        it 'returns true' do
-          expect(project.work_item_new_url_format_enabled?).to eq(true)
-        end
-      end
-
-      context 'when work_item_new_url_format is enabled for the parent group' do
-        before do
-          stub_feature_flags(work_item_new_url_format: group)
-        end
-
-        it 'returns true' do
-          expect(project.work_item_new_url_format_enabled?).to eq(true)
-        end
-      end
-
-      context 'when work_item_new_url_format is disabled' do
-        before do
-          stub_feature_flags(work_item_new_url_format: false)
-        end
-
-        it 'returns false' do
-          expect(project.work_item_new_url_format_enabled?).to eq(false)
-        end
-      end
+    where(:project, :consolidated_list, :legacy_url, :result) do
+      ref(:project_in_group) | false | false | false
+      ref(:project_in_group) | false | true | false
+      ref(:project_in_group) | true | false | true
+      ref(:project_in_group) | true | ref(:group) | false
+      ref(:project_in_group) | true | ref(:project_in_group) | false
+      ref(:project_in_group) | true | ref(:project_in_user) | true
+      ref(:project_in_user) | false | false | false
+      ref(:project_in_user) | false | true | false
+      ref(:project_in_user) | true | false | true
+      ref(:project_in_user) | true | ref(:group) | true
+      ref(:project_in_user) | true | ref(:project_in_group) | true
+      ref(:project_in_user) | true | ref(:project_in_user) | false
     end
 
-    context 'when work_items_consolidated_list is disabled' do
+    with_them do
       before do
-        stub_feature_flags(work_item_planning_view: false)
+        stub_feature_flags(
+          work_item_planning_view: consolidated_list,
+          work_item_legacy_url: legacy_url
+        )
       end
 
-      it 'returns false' do
-        expect(project.work_item_new_url_format_enabled?).to eq(false)
-      end
-    end
+      subject(:use_work_item_url?) { project.use_work_item_url? }
 
-    context 'when project has no group' do
-      let_it_be(:user) { create(:user) }
-      let_it_be(:project_without_group) { create(:project, namespace: user.namespace) }
-
-      before do
-        stub_feature_flags(work_item_planning_view: true)
-        stub_feature_flags(work_item_new_url_format: project_without_group)
-      end
-
-      it 'returns true based on project flag' do
-        expect(project_without_group.work_item_new_url_format_enabled?).to eq(true)
-      end
+      it { is_expected.to be(result) }
     end
   end
 

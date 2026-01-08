@@ -172,6 +172,45 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
               namespace_id: kind_of(Numeric)
             )
       end
+
+      describe 'work item instrumentation tracking' do
+        context 'when create_source is provided' do
+          let(:opts) do
+            {
+              title: 'Awesome work_item',
+              description: 'please fix',
+              create_source: 'work_item_list'
+            }
+          end
+
+          before do
+            tracking_service = instance_double(Gitlab::WorkItems::Instrumentation::TrackingService)
+
+            allow(Gitlab::WorkItems::Instrumentation::TrackingService)
+              .to receive(:new)
+              .with(
+                work_item: kind_of(WorkItem),
+                current_user: current_user,
+                event: 'work_item_create_work_item_list'
+              )
+              .and_return(tracking_service)
+
+            allow(tracking_service).to receive(:execute)
+          end
+
+          it 'tracks the work item creation' do
+            result = service.execute
+
+            expect(Gitlab::WorkItems::Instrumentation::TrackingService)
+              .to have_received(:new)
+              .with(
+                work_item: result[:work_item],
+                current_user: current_user,
+                event: 'work_item_create_work_item_list'
+              )
+          end
+        end
+      end
     end
   end
 

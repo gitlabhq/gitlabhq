@@ -25,6 +25,7 @@ class PasswordsController < Devise::PasswordsController
 
     unless reset_password_token.nil?
       user = User.where(
+        organization_id: Current.organization.id,
         reset_password_token: reset_password_token
       ).first_or_initialize
 
@@ -43,8 +44,8 @@ class PasswordsController < Devise::PasswordsController
         resource.password_expires_at = nil
         resource.save(validate: false) if resource.changed?
       else
-        log_audit_reset_failure(@user)
-        track_weak_password_error(@user, self.class.name, 'create')
+        log_audit_reset_failure(resource)
+        track_weak_password_error(resource, self.class.name, 'create')
       end
     end
   end

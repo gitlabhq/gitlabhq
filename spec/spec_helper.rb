@@ -373,7 +373,7 @@ RSpec.configure do |config|
       # This feature has global impact and most tests aren't ready for it yet
       stub_feature_flags(cells_unique_claims: false)
 
-      stub_feature_flags(work_item_new_url_format: false)
+      stub_feature_flags(work_item_legacy_url: false)
     else
       unstub_all_feature_flags
     end

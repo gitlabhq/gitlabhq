@@ -39,6 +39,7 @@ describe('Resolver', () => {
     wrapper = mountExtended(Resolver, {
       propsData: {
         glqlQuery: 'assignee = "foo"',
+        trackingEventName: 'render_glql_block',
         ...propsData,
       },
     });
@@ -120,15 +121,38 @@ describe('Resolver', () => {
       expectEmittedChanges([{ loading: true }, { loading: false, error: expect.any(Error) }]);
     });
 
+    it('does not send any tracking events', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      expect(trackEventSpy).not.toHaveBeenCalled();
+    });
+
     it('does not render the presenter', () => {
       expect(findPresenter().exists()).toBe(false);
+    });
+  });
+
+  describe('tracking events', () => {
+    beforeEach(() => {
+      mockUtils();
+      createWrapper();
+      return waitForPromises();
+    });
+
+    it('tracks the event defined by `trackingEventName`', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'render_glql_block',
+        { label: expect.any(String) },
+        undefined,
+      );
     });
   });
 
   describe('query successfully loads content', () => {
     beforeEach(() => {
       mockUtils();
-      createWrapper();
+      createWrapper({ trackingEventName: '' });
       return waitForPromises();
     });
 
@@ -143,14 +167,9 @@ describe('Resolver', () => {
       ]);
     });
 
-    it('tracks the `render_glql_block` event', () => {
+    it('does not track the query render when `trackingEventName` has not been set', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-
-      expect(trackEventSpy).toHaveBeenCalledWith(
-        'render_glql_block',
-        { label: expect.any(String) },
-        undefined,
-      );
+      expect(trackEventSpy).not.toHaveBeenCalled();
     });
 
     it('renders the data presenter', () => {

@@ -40,7 +40,7 @@ To add a group README:
 ## Change the Owner of a group
 
 You can change the Owner of a group. Each group must always have at least one
-member with the Owner role.
+human member with the Owner role. Internal users ("bots") and service accounts cannot be the only Owner of a group.
 
 - As an administrator:
   1. On the top bar, select **Search or go to** and find your group.

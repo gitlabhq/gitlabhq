@@ -20766,7 +20766,8 @@ CREATE TABLE member_roles (
     permissions jsonb DEFAULT '{}'::jsonb NOT NULL,
     organization_id bigint,
     CONSTRAINT check_4364846f58 CHECK ((char_length(description) <= 255)),
-    CONSTRAINT check_9907916995 CHECK ((char_length(name) <= 255))
+    CONSTRAINT check_9907916995 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_ae96d7c575 CHECK ((num_nonnulls(namespace_id, organization_id) = 1))
 );
 
 CREATE SEQUENCE member_roles_id_seq
@@ -45332,11 +45333,11 @@ CREATE INDEX index_users_on_name_trigram ON users USING gin (name gin_trgm_ops);
 
 CREATE INDEX index_users_on_organization_id ON users USING btree (organization_id);
 
+CREATE UNIQUE INDEX index_users_on_organization_id_and_reset_password_token ON users USING btree (organization_id, reset_password_token);
+
 CREATE INDEX index_users_on_public_email_excluding_null_and_empty ON users USING btree (public_email) WHERE (((public_email)::text <> ''::text) AND (public_email IS NOT NULL));
 
 CREATE INDEX index_users_on_public_email_trigram ON users USING gin (public_email gin_trgm_ops);
-
-CREATE UNIQUE INDEX index_users_on_reset_password_token ON users USING btree (reset_password_token);
 
 CREATE INDEX index_users_on_state_and_user_type ON users USING btree (state, user_type);
 

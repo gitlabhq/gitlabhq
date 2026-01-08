@@ -2,14 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User password', feature_category: :system_access do
+RSpec.describe 'User password', :with_current_organization, feature_category: :system_access do
   include EmailHelpers
+
+  # Recaptcha must be stubbed for all request flows, as it uses singleton configuration
+  # which will leak between specs
+  before do
+    allow(Gitlab::Recaptcha).to receive(:load_configurations!)
+  end
 
   describe 'send password reset' do
     context 'when recaptcha is enabled' do
       before do
         stub_application_setting(recaptcha_enabled: true)
-        allow(Gitlab::Recaptcha).to receive(:load_configurations!)
         visit new_user_password_path
       end
 

@@ -2,8 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Artifacts do
+RSpec.describe Gitlab::Ci::Config::Entry::Artifacts, feature_category: :continuous_integration do
   let(:entry) { described_class.new(config) }
+
+  before do
+    entry.compose!
+  end
 
   describe 'validation' do
     context 'when entry config value is correct' do
@@ -26,6 +30,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Artifacts do
 
         it 'returns general artifact and report-type artifacts configuration' do
           expect(entry.value).to eq config
+        end
+
+        context "when 'reports' keyword is nil" do
+          let(:config) { { paths: %w[public/], reports: nil } }
+
+          it 'does not include reports' do
+            expect(entry.value).not_to have_key(:reports)
+          end
         end
       end
 

@@ -880,6 +880,31 @@ class User < ApplicationRecord
       Devise.friendly_token(password_length.max)
     end
 
+    # extracted and modified from original Devise method in
+    # https://github.com/heartcombo/devise/blob/731074bf09c2a0cd498c1b8a2a01434e722f94d5/lib/devise/models/recoverable.rb#L134C1-L150C12
+    # rubocop:disable Gitlab/AvoidCurrentOrganization -- this is only called by Devise from PasswordsController
+    def reset_password_by_token(attributes = {})
+      original_token       = attributes[:reset_password_token]
+      reset_password_token = Devise.token_generator.digest(self, :reset_password_token, original_token)
+
+      recoverable = find_or_initialize_with_errors(
+        [:organization_id, :reset_password_token],
+        { organization_id: ::Current.organization.id, reset_password_token: reset_password_token }
+      )
+
+      if recoverable.persisted?
+        if recoverable.reset_password_period_valid?
+          recoverable.reset_password(attributes[:password], attributes[:password_confirmation])
+        else
+          recoverable.errors.add(:reset_password_token, :expired)
+        end
+      end
+
+      recoverable.reset_password_token = original_token if recoverable.reset_password_token.present?
+      recoverable
+    end
+    # rubocop:enable Gitlab/AvoidCurrentOrganization
+
     # Devise method overridden to allow sign in with email or username
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup

@@ -111,9 +111,6 @@ The extension shows information in the VS Code status bar if both:
 To configure settings, go to **Settings** > **Extensions** > **GitLab Workflow**.
 Settings can be configured at the user or workspace level.
 
-By default, GitLab Duo Code Suggestions and GitLab Duo Chat are enabled, so if you have
-the GitLab Duo add-on and a seat assigned, you should have access.
-
 ### Authentication
 
 Authenticate using a personal access token or logging in through an OAuth application.
@@ -161,6 +158,19 @@ To configure OAuth application login:
 1. Under **OAuth Client IDs**, select **Add Item**.
 1. Select **Key** and enter the GitLab instance URL.
 1. Select **Value** and enter the client ID of the OAuth application.
+
+### Configure GitLab Duo
+
+GitLab Duo Code Suggestions and GitLab Duo Chat are enabled by default when you meet the
+prerequisites:
+
+- You have the GitLab Duo add-on and a seat assigned.
+- You open a project that is linked to a remote repository on GitLab, or you set a
+  [default GitLab Duo namespace](../../user/gitlab_duo/model_selection.md#assign-a-default-gitlab-duo-namespace).
+- For GitLab Duo Code Suggestions and GitLab Duo Chat (Agentic), you meet the additional
+  prerequisites:
+  - [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
+  - [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-vs-code)
 
 ### Code security
 

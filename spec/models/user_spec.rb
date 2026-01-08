@@ -1908,6 +1908,56 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       end
     end
 
+    describe '.reset_password_by_token' do
+      let_it_be(:user) { create(:user) }
+
+      let(:reset_password_token) { user.send_reset_password_instructions }
+      let(:new_password) { Devise.friendly_token(25) }
+      let(:organization) { user.organization }
+      let(:attributes) do
+        {
+          reset_password_token: reset_password_token,
+          password: new_password,
+          password_confirmation: new_password
+        }
+      end
+
+      subject(:reset_password_by_token) { described_class.reset_password_by_token(attributes) }
+
+      before do
+        stub_current_organization(organization)
+      end
+
+      it 'changes the password using the token' do
+        expect { reset_password_by_token }.to change { user.reload.encrypted_password }
+      end
+
+      context 'when incorrect organization specified' do
+        let(:organization) { create(:organization) }
+
+        it 'returns new model with errors' do
+          expect { reset_password_by_token }.not_to change { user.reload.encrypted_password }
+
+          expect(reset_password_by_token).not_to be_persisted
+          expect(reset_password_by_token.errors).not_to be_empty
+        end
+      end
+
+      context 'when reset period is expired' do
+        before do
+          travel_to 100.days.ago do
+            reset_password_token
+          end
+        end
+
+        it 'returns model with errors' do
+          expect { reset_password_by_token }.not_to change { user.reload.encrypted_password }
+
+          expect(reset_password_by_token.errors[:reset_password_token]).not_to be_empty
+        end
+      end
+    end
+
     describe '.limit_to_todo_authors' do
       let_it_be_with_reload(:user1) { create(:user) }
       let_it_be_with_reload(:user2) { create(:user) }

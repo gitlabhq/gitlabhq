@@ -1624,7 +1624,7 @@ cache improves performance, but also enables features such as renaming repositor
 
 ### Online garbage collection
 
-1. Adjust defaults: If online garbage collection is not reliably clearing the [review queues](container_registry_metadata_database.md#queue-monitoring),
+1. Adjust defaults: If online garbage collection is not reliably clearing the [review queues](container_registry_metadata_database.md#monitor-task-queues),
    you can adjust the `interval` settings in the `manifests` and `blobs` sections under the
    [`gc`](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md?ref_type=heads#gc)
    configuration section. The default is `5s`, and these can be configured with milliseconds as well,

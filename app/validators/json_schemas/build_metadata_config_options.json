@@ -567,12 +567,6 @@
         "$ref": "#/definitions/serviceDefinition"
       }
     },
-    "stringMap": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      }
-    },
     "triggerDefinition": {
       "oneOf": [
         {
@@ -605,9 +599,7 @@
                 }
               ]
             },
-            "inputs": {
-              "$ref": "#/definitions/stringMap"
-            },
+            "inputs": true,
             "project": true,
             "strategy": true
           }
@@ -624,14 +616,15 @@
           "additionalProperties": false,
           "properties": {
             "artifact": true,
+            "component": true,
             "file": true,
-            "inputs": {
-              "$ref": "#/definitions/stringMap"
-            },
+            "inputs": true,
             "job": true,
             "local": true,
             "project": true,
-            "ref": true
+            "ref": true,
+            "rules": true,
+            "template": true
           }
         }
       ]

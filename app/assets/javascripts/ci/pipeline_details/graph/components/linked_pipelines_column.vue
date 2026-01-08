@@ -91,12 +91,6 @@ export default {
     minWidth() {
       return this.isUpstream ? 0 : this.$options.minWidth;
     },
-    currentPipelinePermissions() {
-      if (!this.currentPipeline) {
-        return {};
-      }
-      return this.getPipelinePermissions(this.currentPipeline.id);
-    },
   },
   methods: {
     getPipelineData(pipeline) {
@@ -237,7 +231,7 @@ export default {
               class="gl-inline-block"
               :config-paths="configPaths"
               :pipeline="currentPipeline"
-              :user-permissions="currentPipelinePermissions"
+              :user-permissions="userPermissions"
               :computed-pipeline-info="getPipelineLayers(pipeline.id)"
               :show-links="showLinks"
               :skip-retry-modal="skipRetryModal"

@@ -5,6 +5,7 @@ class CreateOauthAccessTokenArchivedRecords < Gitlab::Database::Migration[2.3]
 
   # rubocop:disable Migration/PreventStrings -- Keeps compatibility with existing table
   # rubocop:disable Migration/Datetime -- Keeps compatibility with existing table
+  # rubocop:disable Migration/EnsureFactoryForTable -- No factory needed for temporary table
   def up
     create_table :oauth_access_token_archived_records, id: false do |t|
       t.bigint :id, null: false
@@ -23,6 +24,7 @@ class CreateOauthAccessTokenArchivedRecords < Gitlab::Database::Migration[2.3]
   end
   # rubocop:enable Migration/PreventStrings
   # rubocop:enable Migration/Datetime
+  # rubocop:enable Migration/EnsureFactoryForTable
 
   def down
     drop_table :oauth_access_token_archived_records

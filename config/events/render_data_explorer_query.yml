@@ -1,0 +1,21 @@
+---
+description: Data explorer query rendered
+internal_events: true
+status: active
+action: render_data_explorer_query
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: SHA256 of the GLQL block content
+product_group: optimize
+product_categories:
+- product_analytics
+milestone: '18.8'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217833
+tiers:
+- free
+- premium
+- ultimate
