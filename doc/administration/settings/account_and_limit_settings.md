@@ -421,6 +421,7 @@ Custom token prefixes apply only to the following tokens:
 - [Pipeline trigger tokens](../../ci/triggers/_index.md#create-a-pipeline-trigger-token)
 - [Runner authentication tokens](../../security/tokens/_index.md#runner-authentication-tokens)
 - [SCIM tokens](../../security/tokens/_index.md#token-prefixes)
+- [Workspace tokens](../../security/tokens/_index.md#workspace-token)
 
 Prerequisites:
 

@@ -7,4 +7,10 @@ class Issue::Email < ApplicationRecord
 
   validates :email_message_id, uniqueness: true, presence: true, length: { maximum: 1000 }
   validates :issue, presence: true, uniqueness: true
+
+  def work_item
+    return unless issue_id.present?
+
+    ::WorkItem.find(issue_id)
+  end
 end

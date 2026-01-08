@@ -19,3 +19,5 @@ ee/spec/lib/security/secret_detection/partner_tokens/gcp_client_spec.rb:gcp-api-
 ee/spec/lib/security/secret_detection/partner_tokens/gcp_client_spec.rb:gcp-api-key:22
 ee/spec/lib/security/secret_detection/partner_tokens/postman_client_spec.rb:postman-api-token:153
 ee/spec/workers/security/secret_detection/partner_token_verification_worker_spec.rb:generic-api-key:56
+spec/models/user_detail_spec.rb:discord-client-id:654
+spec/models/user_detail_spec.rb:discord-client-id:683

@@ -11,10 +11,10 @@ module Gitlab
         REPLY_ADDRESS_KEY_REGEXP = /\+(?<full_reply_key>#{::SentNotification::FULL_REPLY_KEY_REGEX})@/
 
         class << self
-          def reply_address(issue, reply_key)
+          def reply_address(work_item, reply_key)
             return if reply_key.nil?
 
-            custom_email = issue&.project&.service_desk_setting&.custom_email
+            custom_email = work_item&.project&.service_desk_setting&.custom_email
             return if custom_email.nil?
 
             # Reply keys for custom email addresses always go before the @.

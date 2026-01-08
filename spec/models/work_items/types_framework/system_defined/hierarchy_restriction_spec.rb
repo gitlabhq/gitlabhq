@@ -55,6 +55,7 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::HierarchyRestriction, f
         :incident   | :task       | 1
         :epic       | :epic       | 7
         :epic       | :issue      | 1
+        :epic       | :ticket     | 1
         :objective  | :objective  | 9
         :objective  | :key_result | 1
         :ticket     | :task       | 1

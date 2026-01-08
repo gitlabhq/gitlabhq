@@ -1322,6 +1322,9 @@ msgstr ""
 msgid "%{relation_type} epic is not present."
 msgstr ""
 
+msgid "%{relative_time} ago"
+msgstr ""
+
 msgid "%{releases} release"
 msgid_plural "%{releases} releases"
 msgstr[0] ""
@@ -10210,16 +10213,103 @@ msgstr ""
 msgid "Attestations"
 msgstr ""
 
+msgid "Attestations|Attestation"
+msgstr ""
+
 msgid "Attestations|Attestations"
+msgstr ""
+
+msgid "Attestations|Build"
+msgstr ""
+
+msgid "Attestations|Build Config Digest"
+msgstr ""
+
+msgid "Attestations|Build Config URI"
+msgstr ""
+
+msgid "Attestations|Build Signer Digest"
+msgstr ""
+
+msgid "Attestations|Build Signer URI"
+msgstr ""
+
+msgid "Attestations|Build Trigger"
+msgstr ""
+
+msgid "Attestations|Certificate"
+msgstr ""
+
+msgid "Attestations|Commit"
+msgstr ""
+
+msgid "Attestations|Created"
+msgstr ""
+
+msgid "Attestations|Digest"
+msgstr ""
+
+msgid "Attestations|Issuer"
 msgstr ""
 
 msgid "Attestations|No attestations found for this project"
 msgstr ""
 
+msgid "Attestations|Predicate"
+msgstr ""
+
+msgid "Attestations|Runner Environment"
+msgstr ""
+
+msgid "Attestations|Runner Invocation URI"
+msgstr ""
+
 msgid "Attestations|Sign and verify SLSA provenance with a CI/CD Component."
 msgstr ""
 
+msgid "Attestations|Source Repository Digest"
+msgstr ""
+
+msgid "Attestations|Source Repository Identifier"
+msgstr ""
+
+msgid "Attestations|Source Repository Owner Identifier"
+msgstr ""
+
+msgid "Attestations|Source Repository Owner URI"
+msgstr ""
+
+msgid "Attestations|Source Repository Ref"
+msgstr ""
+
+msgid "Attestations|Source Repository URI"
+msgstr ""
+
+msgid "Attestations|Source Repository Visibility"
+msgstr ""
+
+msgid "Attestations|Subject"
+msgstr ""
+
+msgid "Attestations|Subjects"
+msgstr ""
+
+msgid "Attestations|This attestation does not exist"
+msgstr ""
+
+msgid "Attestations|Unable to parse attestation certificate."
+msgstr ""
+
+msgid "Attestations|Unable to parse attestation metadata"
+msgstr ""
+
 msgid "Attestations|View SLSA Component documentation"
+msgstr ""
+
+msgid "Attestations|View job for this attestation"
+msgstr ""
+
+msgid "Attestations|Workflow"
 msgstr ""
 
 msgid "Attribute 'container-overrides' is not yet supported"
@@ -41349,6 +41439,9 @@ msgid "Maximum time that users are allowed to skip the setup of two-factor authe
 msgstr ""
 
 msgid "Maximum time, in seconds, for a web terminal websocket connection. 0 for unlimited."
+msgstr ""
+
+msgid "Maximum trigrams per file"
 msgstr ""
 
 msgid "Maximum unauthenticated API requests per rate limit period per IP"

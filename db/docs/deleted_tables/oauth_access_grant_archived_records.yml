@@ -17,3 +17,5 @@ notes: |
   Temporary table for archiving oauth access grants during retention implementation.
   Will be dropped after verification period.
 table_size: medium
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215409
+removed_in_milestone: 18.8

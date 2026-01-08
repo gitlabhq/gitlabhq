@@ -70,6 +70,12 @@ module WorkItems
             parent_type_id: TICKET_ID,
             child_type_id: TASK_ID,
             maximum_depth: 1
+          },
+          {
+            id: 8,
+            parent_type_id: EPIC_ID,
+            child_type_id: TICKET_ID,
+            maximum_depth: 1
           }
         ].freeze
       end

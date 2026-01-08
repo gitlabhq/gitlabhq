@@ -169,7 +169,7 @@ module WorkItems
         break if next_level_child_types.empty?
       end
 
-      descendant_types
+      descendant_types.uniq
     end
     strong_memoize_attr :descendant_types
 

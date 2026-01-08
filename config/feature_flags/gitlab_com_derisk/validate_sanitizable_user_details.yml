@@ -1,0 +1,8 @@
+---
+name: validate_sanitizable_user_details
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208943
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581152
+milestone: '18.8'
+type: gitlab_com_derisk
+group: group::authentication
+default_enabled: false

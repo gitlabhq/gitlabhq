@@ -516,7 +516,6 @@ class User < ApplicationRecord
     :enabled_following, :enabled_following=,
     :dpop_enabled, :dpop_enabled=,
     :use_work_items_view, :use_work_items_view=,
-    :new_ui_enabled, :new_ui_enabled=,
     :text_editor, :text_editor=,
     :default_text_editor_enabled, :default_text_editor_enabled=,
     :merge_request_dashboard_list_type, :merge_request_dashboard_list_type=,

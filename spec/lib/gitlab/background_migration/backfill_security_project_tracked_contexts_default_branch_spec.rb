@@ -8,6 +8,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSecurityProjectTrackedContex
   let(:organizations) { table(:organizations) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { described_class::Project }
+  let(:project_settings) { table(:project_settings) }
   let(:identifiers) { table(:vulnerability_identifiers, database: :sec) }
   let(:scanners) { table(:vulnerability_scanners, database: :sec) }
   let(:findings) { table(:vulnerability_occurrences, database: :sec) }
@@ -17,6 +18,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSecurityProjectTrackedContex
   let(:user) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs -- Need an instance of the model
   let(:now) { Time.zone.now }
   let(:storage_version) { 0 }
+  let(:start_id) { project_settings.minimum(:project_id) }
+  let(:end_id) { project_settings.maximum(:project_id) }
 
   let!(:project_with_default_branch) do
     create_project(path: 'project-with-default-branch', default_branch: 'master', with_vulnerabilities: true)
@@ -41,10 +44,10 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSecurityProjectTrackedContex
 
   subject(:perform_migration) do
     described_class.new(
-      start_id: Project.minimum(:id),
-      end_id: Project.maximum(:id),
-      batch_table: :projects,
-      batch_column: :id,
+      start_id: start_id,
+      end_id: end_id,
+      batch_table: :project_settings,
+      batch_column: :project_id,
       sub_batch_size: 100,
       pause_ms: 0,
       connection: ActiveRecord::Base.connection
@@ -53,7 +56,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSecurityProjectTrackedContex
 
   shared_examples 'a successful migration' do
     it 'creates security_project_tracked_contexts records for all projects with default branches' do
-      expect { perform_migration }.to change { tracked_contexts.count }.by(5)
+      expect { perform_migration }.to change { tracked_contexts.count }.by(3)
 
       expect(find_context(project_with_default_branch)).to have_attributes(
         project_id: project_with_default_branch.id,
@@ -71,14 +74,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSecurityProjectTrackedContex
         is_default: true
       )
 
-      expect(find_context(project_with_dependencies)).to have_attributes(
-        project_id: project_with_dependencies.id,
-        context_name: 'main',
-        context_type: described_class::SecurityProjectTrackedContext.context_types[:branch],
-        state: described_class::SecurityProjectTrackedContext::STATES[:tracked],
-        is_default: true
-      )
-
       expect(find_context(project_with_empty_repository)).to have_attributes(
         project_id: project_with_empty_repository.id,
         context_name: 'main',
@@ -86,14 +81,13 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSecurityProjectTrackedContex
         state: described_class::SecurityProjectTrackedContext::STATES[:tracked],
         is_default: true
       )
+    end
 
-      expect(find_context(project_without_vulnerabilities)).to have_attributes(
-        project_id: project_without_vulnerabilities.id,
-        context_name: 'master',
-        context_type: described_class::SecurityProjectTrackedContext.context_types[:branch],
-        state: described_class::SecurityProjectTrackedContext::STATES[:tracked],
-        is_default: true
-      )
+    it 'does not backfill projects that do not have vulnerabilities' do
+      perform_migration
+
+      expect(find_context(project_without_vulnerabilities)).to be_nil
+      expect(find_context(project_with_dependencies)).to be_nil
     end
   end
 
@@ -115,7 +109,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSecurityProjectTrackedContex
       is_default: false
     )
 
-    expect { perform_migration }.to change { tracked_contexts.count }.by(4)
+    expect { perform_migration }.to change { tracked_contexts.count }.by(2)
 
     # Verify the existing record was not modified
     context_record = tracked_contexts.find_by(
@@ -129,6 +123,15 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSecurityProjectTrackedContex
     before do
       Project.delete_all
     end
+
+    it 'does not create any records' do
+      expect { perform_migration }.not_to change { tracked_contexts.count }
+    end
+  end
+
+  context 'when batch contains only projects with no vulnerabilities' do
+    let(:start_id) { project_without_vulnerabilities.id }
+    let(:end_id) { project_without_vulnerabilities.id }
 
     it 'does not create any records' do
       expect { perform_migration }.not_to change { tracked_contexts.count }
@@ -155,6 +158,11 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSecurityProjectTrackedContex
       organization_id: organization.id,
       storage_version: storage_version,
       **attributes
+    )
+
+    project_settings.create!(
+      project_id: project.id,
+      has_vulnerabilities: with_vulnerabilities
     )
 
     create_vulnerability(project) if with_vulnerabilities

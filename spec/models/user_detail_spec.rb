@@ -438,62 +438,153 @@ RSpec.describe UserDetail, feature_category: :system_access do
     it_behaves_like 'prevents `nil` value', :website_url
   end
 
-  describe '#sanitize_attrs' do
+  describe 'sanitization' do
     using RSpec::Parameterized::TableSyntax
 
     subject { build(:user_detail, field => input).tap(&:validate) }
 
-    where(:field, :input, :expected) do
-      # HTML tags sanitization - all fields
-      :bluesky      | '<a href="//evil.com">did:plc:ewvi7nxzyoun6zhxrhs64oiz<a>'   | 'did:plc:ewvi7nxzyoun6zhxrhs64oiz'
-      :discord      | '<a href="//evil.com">1234567890987654321<a>'                | '1234567890987654321'
-      :linkedin     | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
-      :mastodon     | '<a href="//evil.com">@robin@example.com<a>'                 | '@robin@example.com'
-      :orcid        | '<a href="//evil.com">1234-1234-1234-1234<a>'                | '1234-1234-1234-1234'
-      :twitter      | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
-      :website_url  | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
-      :github       | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
-      :location     | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
-      :organization | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
+    shared_examples 'standard sanitization tests' do
+      # rubocop:disable Layout/LineLength -- Ignore long lines to keep single line table format
+      where(:field, :input, :expected) do
+        # HTML tags sanitization - all fields
+        :bluesky      | '<a href="//evil.com">did:plc:ewvi7nxzyoun6zhxrhs64oiz<a>'   | 'did:plc:ewvi7nxzyoun6zhxrhs64oiz'
+        :discord      | '<a href="//evil.com">1234567890987654321<a>'                | '1234567890987654321'
+        :linkedin     | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
+        :mastodon     | '<a href="//evil.com">@robin@example.com<a>'                 | '@robin@example.com'
+        :orcid        | '<a href="//evil.com">1234-1234-1234-1234<a>'                | '1234-1234-1234-1234'
+        :twitter      | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
+        :website_url  | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
+        :github       | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
+        :location     | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
+        :organization | '<a href="//evil.com">https://example.com<a>'                | 'https://example.com'
 
-      # iframe scripts sanitization
-      :bluesky      | '<iframe src=javascript:alert()><iframe>'                    | ''
-      :discord      | '<iframe src=javascript:alert()><iframe>'                    | ''
-      :linkedin     | '<iframe src=javascript:alert()><iframe>'                    | ''
-      :mastodon     | '<iframe src=javascript:alert()><iframe>'                    | ''
-      :orcid        | '<iframe src=javascript:alert()>1234-1234-1234-1234<iframe>' | ''
-      :twitter      | '<iframe src=javascript:alert()><iframe>'                    | ''
-      :website_url  | '<iframe src=javascript:alert()><iframe>'                    | ''
-      :github       | '<iframe src=javascript:alert()><iframe>'                    | ''
-      :location     | '<iframe src=javascript:alert()><iframe>'                    | ''
-      :organization | '<iframe src=javascript:alert()><iframe>'                    | ''
+        # iframe scripts sanitization
+        :bluesky      | '<iframe src=javascript:alert()><iframe>'                    | ''
+        :discord      | '<iframe src=javascript:alert()><iframe>'                    | ''
+        :linkedin     | '<iframe src=javascript:alert()><iframe>'                    | ''
+        :mastodon     | '<iframe src=javascript:alert()><iframe>'                    | ''
+        :orcid        | '<iframe src=javascript:alert()>1234-1234-1234-1234<iframe>' | ''
+        :twitter      | '<iframe src=javascript:alert()><iframe>'                    | ''
+        :website_url  | '<iframe src=javascript:alert()><iframe>'                    | ''
+        :github       | '<iframe src=javascript:alert()><iframe>'                    | ''
+        :location     | '<iframe src=javascript:alert()><iframe>'                    | ''
+        :organization | '<iframe src=javascript:alert()><iframe>'                    | ''
 
-      # js scripts sanitization
-      :bluesky      | '<script>alert("Test")</script>'                             | ''
-      :discord      | '<script>alert("Test")</script>'                             | ''
-      :linkedin     | '<script>alert("Test")</script>'                             | ''
-      :mastodon     | '<script>alert("Test")</script>'                             | ''
-      :orcid        | '<script>alert("Test")1234-1234-1234-1234</script>'          | ''
-      :twitter      | '<script>alert("Test")</script>'                             | ''
-      :website_url  | '<script>alert("Test")</script>'                             | ''
-      :github       | '<script>alert("Test")</script>'                             | ''
-      :location     | '<script>alert("Test")</script>'                             | ''
-      :organization | '<script>alert("Test")</script>'                             | ''
+        # js scripts sanitization
+        :bluesky      | '<script>alert("Test")</script>'                             | ''
+        :discord      | '<script>alert("Test")</script>'                             | ''
+        :linkedin     | '<script>alert("Test")</script>'                             | ''
+        :mastodon     | '<script>alert("Test")</script>'                             | ''
+        :orcid        | '<script>alert("Test")1234-1234-1234-1234</script>'          | ''
+        :twitter      | '<script>alert("Test")</script>'                             | ''
+        :website_url  | '<script>alert("Test")</script>'                             | ''
+        :github       | '<script>alert("Test")</script>'                             | ''
+        :location     | '<script>alert("Test")</script>'                             | ''
+        :organization | '<script>alert("Test")</script>'                             | ''
+      end
+      # rubocop:enable Layout/LineLength
 
-      # HTML entities encoding - fields that encode & to &amp;
-      :linkedin     | 'test&attr'                                                  | 'test&amp;attr'
-      :twitter      | 'test&attr'                                                  | 'test&amp;attr'
-      :website_url  | 'http://example.com?test&attr'                               | 'http://example.com?test&amp;attr'
-      :github       | 'test&attr'                                                  | 'test&amp;attr'
-
-      # HTML entities NOT encoded - location, organization preserve &
-      :location     | 'test&attr'                                                  | 'test&attr'
-      :organization | 'test&attr'                                                  | 'test&attr'
+      with_them do
+        it { is_expected.to be_valid }
+        it { is_expected.to have_attributes field => expected }
+      end
     end
 
-    with_them do
-      it { is_expected.to be_valid }
-      it { is_expected.to have_attributes field => expected }
+    it_behaves_like 'standard sanitization tests'
+
+    context 'with valid field inputs' do
+      where(:field, :input, :expected) do
+        # HTML entities NOT encoding - fields that encode & to &amp;
+        :linkedin     | 'test&attr'                                  | 'test&attr'
+        :twitter      | 'test&attr'                                  | 'test&attr'
+        :website_url  | 'http://example.com?test&attr'               | 'http://example.com?test&attr'
+        :github       | 'test&attr'                                  | 'test&attr'
+
+        # HTML entities NOT encoded - location, organization preserve &
+        :location     | 'test&attr'                                  | 'test&attr'
+        :organization | 'test&attr'                                  | 'test&attr'
+
+        # Legitimate edge cases
+        :website_url  | 'https://example.com/search?q=hello%20world' | 'https://example.com/search?q=hello%20world'
+        :twitter      | 'https://twitter.com/user'                   | 'https://twitter.com/user'
+        :linkedin     | 'https://linkedin.com/in/user-name'          | 'https://linkedin.com/in/user-name'
+        :twitter      | '@user_name'                                 | '@user_name'
+        :discord      | '123456789012345678'                         | '123456789012345678'
+        :website_url  | 'https://example.com?foo=bar&baz=qux'        | 'https://example.com?foo=bar&baz=qux'
+        :github       | 'https://github.com/user/repo'               | 'https://github.com/user/repo'
+        :website_url  | 'https://example.com/path/to/page'           | 'https://example.com/path/to/page'
+      end
+
+      with_them do
+        it { is_expected.to be_valid }
+        it { is_expected.to have_attributes field => expected }
+      end
+    end
+
+    context 'with invalid field inputs' do
+      where(:field, :input, :error_message) do
+        :bluesky     | '&lt;script&gt;alert(1)&lt;/script&gt;'   | 'cannot contain escaped HTML entities'
+        :discord     | '&lt;script&gt;alert(1)&lt;/script&gt;'   | 'cannot contain escaped HTML entities'
+        :linkedin    | '&lt;script&gt;alert(1)&lt;/script&gt;'   | 'cannot contain escaped HTML entities'
+        :mastodon    | '&lt;script&gt;alert(1)&lt;/script&gt;'   | 'cannot contain escaped HTML entities'
+        :orcid       | '&lt;script&gt;alert(1)&lt;/script&gt;'   | 'cannot contain escaped HTML entities'
+        :twitter     | '&lt;script&gt;alert(1)&lt;/script&gt;'   | 'cannot contain escaped HTML entities'
+        :website_url | '&lt;script&gt;alert(1)&lt;/script&gt;'   | 'cannot contain escaped HTML entities'
+        :github      | '&lt;script&gt;alert(1)&lt;/script&gt;'   | 'cannot contain escaped HTML entities'
+
+        :bluesky     | '%2526lt%253Bscript%2526gt%253B'          | 'cannot contain escaped components'
+        :discord     | '%2526lt%253Bscript%2526gt%253B'          | 'cannot contain escaped components'
+        :linkedin    | '%2526lt%253Bscript%2526gt%253B'          | 'cannot contain escaped components'
+        :mastodon    | '%2526lt%253Bscript%2526gt%253B'          | 'cannot contain escaped components'
+        :orcid       | '%2526lt%253Bscript%2526gt%253B'          | 'cannot contain escaped components'
+        :twitter     | '%2526lt%253Bscript%2526gt%253B'          | 'cannot contain escaped components'
+        :website_url | '%2526lt%253Bscript%2526gt%253B'          | 'cannot contain escaped components'
+        :github      | '%2526lt%253Bscript%2526gt%253B'          | 'cannot contain escaped components'
+
+        :bluesky     | 'main../../../../../../api/v4/projects/1' | 'cannot contain a path traversal component'
+        :discord     | 'main../../../../../../api/v4/projects/1' | 'cannot contain a path traversal component'
+        :linkedin    | 'main../../../../../../api/v4/projects/1' | 'cannot contain a path traversal component'
+        :mastodon    | 'main../../../../../../api/v4/projects/1' | 'cannot contain a path traversal component'
+        :orcid       | 'main../../../../../../api/v4/projects/1' | 'cannot contain a path traversal component'
+        :twitter     | 'main../../../../../../api/v4/projects/1' | 'cannot contain a path traversal component'
+        :website_url | 'main../../../../../../api/v4/projects/1' | 'cannot contain a path traversal component'
+        :github      | 'main../../../../../../api/v4/projects/1' | 'cannot contain a path traversal component'
+      end
+
+      with_them do
+        it { is_expected.not_to be_valid }
+        it { is_expected.to have_attributes errors: hash_including(field => array_including(error_message)) }
+      end
+    end
+
+    context 'when feature flag :validate_sanitizable_user_details is disabled' do
+      before do
+        stub_feature_flags(validate_sanitizable_user_details: false)
+      end
+
+      it_behaves_like 'standard sanitization tests'
+
+      where(:field, :input, :expected) do
+        # HTML entities encoding - fields that encode & to &amp;
+        :linkedin     | 'test&attr'                                 | 'test&amp;attr'
+        :twitter      | 'test&attr'                                 | 'test&amp;attr'
+        :website_url  | 'http://example.com?test&attr'              | 'http://example.com?test&amp;attr'
+        :github       | 'test&attr'                                 | 'test&amp;attr'
+
+        # HTML entities NOT encoded - location, organization preserve &
+        :location     | 'test&attr'                                 | 'test&attr'
+        :organization | 'test&attr'                                 | 'test&attr'
+
+        # Does not apply Sanitizable validations
+        :twitter      | '&lt;script&gt;alert(1)&lt;/script&gt;'     | '&lt;script&gt;alert(1)&lt;/script&gt;'
+        :linkedin     | '%2526lt%253Bscript%2526gt%253B'            | '%2526lt%253Bscript%2526gt%253B'
+        :github       | 'main../../../../../../api/v4/projects/1'   | 'main../../../../../../api/v4/projects/1'
+      end
+
+      with_them do
+        it { is_expected.to be_valid }
+        it { is_expected.to have_attributes field => expected }
+      end
     end
   end
 

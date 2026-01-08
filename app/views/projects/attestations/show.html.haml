@@ -1,0 +1,86 @@
+- add_to_breadcrumbs s_('Attestations|Attestations'), project_attestations_path(@project)
+- page_title "Attestation #{@attestation_iid_param}"
+- @breadcrumb_title = @attestation_iid_param
+
+- if @attestation.nil?
+  - empty_state_button_text = s_('Attestations|View SLSA Component documentation')
+  - empty_state_button_link = 'https://gitlab.com/components/slsa#slsa-supply-chain-levels-for-software-artifacts'
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-search-md.svg',
+    title: s_('Attestations|This attestation does not exist'),
+    primary_button_text: empty_state_button_text,
+    primary_button_link: empty_state_button_link) do |c|
+    - c.with_description do
+      = s_('Attestations|Sign and verify SLSA provenance with a CI/CD Component.')
+
+- elsif @subjects.blank?
+  - metadata_error_text = s_('Attestations|View job for this attestation')
+  - metadata_error_path = project_job_path(@project, @attestation.build)
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/status/status-nothing-md.svg',
+    title: s_('Attestations|Unable to parse attestation metadata'),
+    primary_button_text: metadata_error_text,
+    primary_button_link: metadata_error_path)
+
+- else
+  - if @certificate.blank?
+    = render Pajamas::AlertComponent.new(variant: :danger, dismissible: false, alert_options: { class: 'gl-mt-5' }) do |c|
+      - c.with_body do
+        = s_('Attestations|Unable to parse attestation certificate.')
+
+  - download_button_options = { rel: 'nofollow', data: { method: :get }, class: 'gl-my-6' }
+  - download_link = download_namespace_project_attestation_path({ namespace_id: @project.namespace, project_id: @project, id: @attestation.iid})
+  - build = @attestation.build
+  - relative_time = _("%{relative_time} ago") % { relative_time: time_ago_in_words(@attestation.created_at) }
+  - timestamp = @attestation.created_at.strftime('%a, %b %d %Y %H:%M:%S %Z')
+  .gl-col-md-12{ 'data-testid': 'attestation-details' }
+    .gl-mb-5
+      .gl-flex.gl-justify-between
+        %h2.gl-text-size-h2-display.gl-pb-3
+          = s_('Attestations|Attestation')
+        = render Pajamas::ButtonComponent.new(href: download_link, icon: 'download', button_options: download_button_options)
+      %table.gl-table.gl-w-full.gl-border-separate.gl-border-t{ 'data-testid': 'attestation-table' }
+        %colgroup
+          %col{ width: '40%' }
+          %col{ width: '60%' }
+        %tbody
+          %tr
+            %td
+              .gl-font-bold= s_('Attestations|Predicate')
+            %td= @attestation.predicate_type
+          %tr
+            %td
+              .gl-font-bold= s_('Attestations|Created')
+            %td #{relative_time} (#{timestamp})
+          %tr
+            %td
+              .gl-font-bold= s_('Attestations|Commit')
+            %td
+              = link_to "#{build.commit.id}", project_commit_path(@project, build.commit)
+          %tr
+            %td
+              .gl-font-bold= s_('Attestations|Build')
+            %td
+              = link_to "##{build.id}", project_job_path(@project, build)
+          %tr
+            %td
+              .gl-font-bold= s_('Attestations|Workflow')
+            %td
+              = link_to 'View CI/CD configuration', project_ci_pipeline_editor_path(@project)
+    .gl-mb-5
+      %h2.gl-text-size-h2-display.gl-mt-8.gl-pb-3
+        = s_("Attestations|Subjects")
+      %table.gl-table.gl-w-full.gl-border-separate.gl-border-t{ 'data-testid': 'subjects-table' }
+        %colgroup
+          %col{ width: '40%' }
+          %col{ width: '60%' }
+        %thead
+          %tr
+            %th
+              = s_('Attestations|Subject')
+            %th= s_('Attestations|Digest')
+        %tbody
+          - @subjects.each do |subject|
+            %tr
+              %td= subject['name']
+              %td sha256:#{subject['digest']['sha256']}
+    - unless @certificate.blank?
+      = render 'attestation_certificate'

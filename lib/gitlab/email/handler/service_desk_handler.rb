@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# handles service desk issue creation emails with these formats:
+# handles service desk ticket creation emails with these formats:
 #   incoming+gitlab-org-gitlab-ce-20-issue-@incoming.gitlab.com
 #   incoming+gitlab-org/gitlab-ce@incoming.gitlab.com (legacy)
 module Gitlab
@@ -32,10 +32,10 @@ module Gitlab
         def execute
           raise ProjectNotFound if project.nil?
 
-          # Verification emails should never create issues
+          # Verification emails should never create tickets
           return if handled_custom_email_address_verification?
 
-          create_issue_or_note
+          create_work_item_or_note
 
           if from_address
             add_email_participants
@@ -106,19 +106,29 @@ module Gitlab
           project.present? && slug == project.full_path_slug
         end
 
-        def create_issue_or_note
+        def create_work_item_or_note
           if reply_email?
             create_note_from_reply_email
           else
-            create_issue!
+            create_work_item!
           end
         end
 
-        def create_issue!
-          result = ::Issues::CreateService.new(
+        def work_item_type_id
+          return ::WorkItems::Type.default_issue_type.id unless Feature.enabled?(:service_desk_ticket, project)
+
+          # Find type by `service_desk` configuration in the future.
+          # Likely use the provider abstraction then.
+          # See https://gitlab.com/groups/gitlab-org/-/epics/19879
+          ::WorkItems::Type.default_by_type(:ticket).id
+        end
+
+        def create_work_item!
+          result = ::WorkItems::CreateService.new(
             container: project,
             current_user: support_bot,
             params: {
+              work_item_type_id: work_item_type_id,
               title: mail.subject,
               description: message_including_template,
               confidential: ticket_confidential?,
@@ -132,10 +142,10 @@ module Gitlab
 
           raise InvalidIssueError if result.error?
 
-          @issue = result[:issue]
+          @work_item = result[:work_item]
 
           begin
-            ::Issue::Email.create!(issue: @issue, email_message_id: mail.message_id)
+            ::Issue::Email.create!(issue_id: @work_item.id, email_message_id: mail.message_id)
           rescue StandardError => e
             Gitlab::ErrorTracking.log_exception(e)
           end
@@ -145,26 +155,25 @@ module Gitlab
           end
         end
 
-        def issue_from_reply_to
-          strong_memoize(:issue_from_reply_to) do
-            next unless mail.in_reply_to
+        def work_item_from_reply_to
+          return unless mail.in_reply_to
 
-            Issue::Email.find_by_email_message_id(mail.in_reply_to)&.issue
-          end
+          Issue::Email.find_by_email_message_id(mail.in_reply_to)&.work_item
         end
+        strong_memoize_attr :work_item_from_reply_to
 
         def reply_email?
-          issue_from_reply_to.present?
+          work_item_from_reply_to.present?
         end
 
         def create_note_from_reply_email
-          @issue = issue_from_reply_to
+          @work_item = work_item_from_reply_to
 
           create_note(message_including_reply)
         end
 
         def send_thank_you_email
-          Notify.service_desk_thank_you_email(@issue.id).deliver_later
+          Notify.service_desk_thank_you_email(@work_item.id).deliver_later
           Gitlab::Metrics::BackgroundTransaction.current&.add_event(:service_desk_thank_you_email)
         end
 
@@ -180,10 +189,9 @@ module Gitlab
         end
 
         def service_desk_setting
-          strong_memoize(:service_desk_setting) do
-            project.service_desk_setting
-          end
+          project.service_desk_setting
         end
+        strong_memoize_attr :service_desk_setting
 
         def create_template_not_found_note
           issue_template_key = service_desk_setting&.issue_template_key
@@ -200,7 +208,7 @@ module Gitlab
           ::Notes::CreateService.new(
             project,
             support_bot,
-            noteable: @issue,
+            noteable: @work_item,
             note: note
           ).execute
         end
@@ -227,12 +235,12 @@ module Gitlab
         end
 
         def add_email_participants
-          return if reply_email? && !Feature.enabled?(:issue_email_participants, @issue.project)
+          return if reply_email? && !Feature.enabled?(:issue_email_participants, @work_item.project)
 
           # Migrate this to ::IssueEmailParticipants::CreateService once the
           # feature flag issue_email_participants has been enabled globally
           # or removed: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137147#note_1652104416
-          @issue.issue_email_participants.create(email: from_address)
+          @work_item.issue_email_participants.create(email: from_address)
 
           add_external_participants_from_cc
         end
@@ -242,7 +250,7 @@ module Gitlab
           return unless project.service_desk_setting.add_external_participants_from_cc?
 
           ::IssueEmailParticipants::CreateService.new(
-            target: @issue,
+            target: @work_item,
             current_user: support_bot,
             emails: cc_addresses.excluding(service_desk_addresses)
           ).execute
@@ -260,8 +268,9 @@ module Gitlab
         end
 
         def support_bot
-          @support_bot ||= Users::Internal.in_organization(project.organization_id).support_bot
+          Users::Internal.in_organization(project.organization_id).support_bot
         end
+        strong_memoize_attr :support_bot
       end
     end
   end

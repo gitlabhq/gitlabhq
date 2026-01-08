@@ -10,7 +10,7 @@ RSpec.shared_context 'for workhorse body uploads' do
   def workhorse_body_upload(url, params)
     case body_encoding
     when :json
-      perform_workhorse_json_body_upload(url, params.to_json)
+      perform_workhorse_json_body_upload(url, params.to_json, params: { 'Content-Type': 'application/json' })
     when :multipart_form
       perform_workhorse_multpart_form_encoding_body_upload(url, params)
     when :form

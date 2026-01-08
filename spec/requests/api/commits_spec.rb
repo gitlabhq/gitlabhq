@@ -1642,12 +1642,37 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       end
     end
 
+    shared_examples 'does not filter content type in logs' do |content_type|
+      let(:params) do
+        {
+          branch: 'master',
+          commit_message: 'hello world',
+          actions: [
+            {
+              action: 'create',
+              file_path: 'foo/bar/baz.txt',
+              content: 'puts 8'
+            }
+          ]
+        }
+      end
+
+      it 'does not filter content-type in logs' do
+        expect(::API::API::LOGGER).to receive(:info).with(
+          hash_including(params: hash_including("Content-Type" => content_type))
+        )
+
+        workhorse_body_upload(url, params)
+      end
+    end
+
     context 'with json encoding' do
       it_behaves_like 'param validations'
       it_behaves_like 'update actions'
       it_behaves_like 'multiple operations'
       it_behaves_like 'chmod actions'
       it_behaves_like 'committing into a fork as a maintainer'
+      it_behaves_like 'does not filter content type in logs', 'application/json'
 
       it 'returns a 400 bad request with invalid json' do
         perform_workhorse_json_body_upload(url, 'not valid json {')
@@ -1701,6 +1726,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       it_behaves_like 'multiple operations'
       it_behaves_like 'chmod actions'
       it_behaves_like 'committing into a fork as a maintainer'
+      it_behaves_like 'does not filter content type in logs', 'multipart/form-data; boundary=XXX'
 
       context 'for create actions' do
         let(:new_branch_name) { 'multipart-form-patch' }

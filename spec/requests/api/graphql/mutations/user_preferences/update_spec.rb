@@ -20,7 +20,6 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       'useWorkItemsView' => true,
       'mergeRequestDashboardListType' => 'ROLE_BASED',
       'workItemsDisplaySettings' => { 'shouldOpenItemsInSidePanel' => false },
-      'newUiEnabled' => true,
       'mergeRequestDashboardShowDrafts' => true
     }
   end
@@ -62,7 +61,6 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(mutation_response['userPreferences']['workItemsDisplaySettings']).to eq({
         'shouldOpenItemsInSidePanel' => false
       })
-      expect(mutation_response['userPreferences']['newUiEnabled']).to eq(true)
 
       expect(current_user.user_preference.persisted?).to eq(true)
       expect(current_user.user_preference.extensions_marketplace_opt_in_status).to eq('enabled')
@@ -73,7 +71,6 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(current_user.user_preference.merge_request_dashboard_list_type).to eq('role_based')
       expect(current_user.user_preference.merge_request_dashboard_show_drafts).to eq(true)
       expect(current_user.user_preference.work_items_display_settings).to eq({ 'shouldOpenItemsInSidePanel' => false })
-      expect(current_user.user_preference.new_ui_enabled).to eq(true)
     end
   end
 
@@ -89,7 +86,6 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         use_work_items_view: false,
         merge_request_dashboard_list_type: 'action_based',
         work_items_display_settings: { 'shouldOpenItemsInSidePanel' => true },
-        new_ui_enabled: false,
         merge_request_dashboard_show_drafts: false
       }
     end
@@ -112,7 +108,6 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(mutation_response['userPreferences']['workItemsDisplaySettings']).to eq({
         'shouldOpenItemsInSidePanel' => false
       })
-      expect(mutation_response['userPreferences']['newUiEnabled']).to eq(true)
 
       expect(current_user.user_preference.issues_sort).to eq(Types::IssueSortEnum.values[sort_value].value.to_s)
       expect(current_user.user_preference.visibility_pipeline_id_type).to eq('iid')
@@ -122,7 +117,6 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(current_user.user_preference.work_items_display_settings).to eq({
         'shouldOpenItemsInSidePanel' => false
       })
-      expect(current_user.user_preference.new_ui_enabled).to eq(true)
     end
 
     context 'when input has nil attributes' do
@@ -134,8 +128,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
           'organizationGroupsProjectsDisplay' => nil,
           'organizationGroupsProjectsSort' => nil,
           'visibilityPipelineIdType' => nil,
-          'useWorkItemsView' => nil,
-          'newUiEnabled' => nil
+          'useWorkItemsView' => nil
         }
       end
 
@@ -156,89 +149,8 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
           extensions_marketplace_opt_in_status: init_user_preference[:extensions_marketplace_opt_in_status],
           visibility_pipeline_id_type: init_user_preference[:visibility_pipeline_id_type],
           use_work_items_view: init_user_preference[:use_work_items_view],
-          work_items_display_settings: init_user_preference[:work_items_display_settings],
-          new_ui_enabled: init_user_preference[:new_ui_enabled]
+          work_items_display_settings: init_user_preference[:work_items_display_settings]
         })
-      end
-    end
-  end
-
-  describe 'new_ui_enabled specific tests' do
-    context 'when setting new_ui_enabled to true' do
-      let(:input) do
-        {
-          'newUiEnabled' => true
-        }
-      end
-
-      before do
-        current_user.create_user_preference!(new_ui_enabled: false)
-      end
-
-      it 'updates the preferences to true' do
-        post_graphql_mutation(mutation, current_user: current_user)
-
-        expect(response).to have_gitlab_http_status(:success)
-        expect(mutation_response['userPreferences']['newUiEnabled']).to eq(true)
-        expect(current_user.user_preference.reload.new_ui_enabled).to eq(true)
-      end
-    end
-
-    context 'when setting new_ui_enabled to false' do
-      let(:input) do
-        {
-          'newUiEnabled' => false
-        }
-      end
-
-      before do
-        current_user.create_user_preference!(new_ui_enabled: true)
-      end
-
-      it 'updates the preferences to false' do
-        post_graphql_mutation(mutation, current_user: current_user)
-
-        expect(response).to have_gitlab_http_status(:success)
-        expect(mutation_response['userPreferences']['newUiEnabled']).to eq(false)
-        expect(current_user.user_preference.reload.new_ui_enabled).to eq(false)
-      end
-    end
-
-    context 'when project studio is unavailable' do
-      let(:input) do
-        {
-          'newUiEnabled' => true
-        }
-      end
-
-      let(:project_studio_available) { false }
-
-      context 'when the setting is pristine' do
-        before do
-          current_user.create_user_preference!(new_ui_enabled: nil)
-        end
-
-        it 'does not allow enabling project studio' do
-          post_graphql_mutation(mutation, current_user: current_user)
-
-          expect(response).to have_gitlab_http_status(:success)
-          expect(mutation_response['userPreferences']['newUiEnabled']).to eq(nil)
-          expect(current_user.user_preference.reload.new_ui_enabled).to eq(nil)
-        end
-      end
-
-      context 'when the setting was already disabled' do
-        before do
-          current_user.create_user_preference!(new_ui_enabled: false)
-        end
-
-        it 'does not allow enabling project studio' do
-          post_graphql_mutation(mutation, current_user: current_user)
-
-          expect(response).to have_gitlab_http_status(:success)
-          expect(mutation_response['userPreferences']['newUiEnabled']).to eq(false)
-          expect(current_user.user_preference.reload.new_ui_enabled).to eq(false)
-        end
       end
     end
   end

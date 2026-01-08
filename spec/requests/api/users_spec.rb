@@ -1940,6 +1940,87 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       end
     end
 
+    context 'when updating user_details with sanitizable fields' do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be(:user_for_details) { create(:user) }
+      let(:details_path) { "/users/#{user_for_details.id}" }
+
+      subject(:put_request_response) { put api(details_path, admin, admin_mode: true), params: params }
+
+      shared_examples 'successful user_details update' do
+        with_them do
+          it 'responds :ok and sets the field correctly' do
+            put_request_response
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to include(expected_attributes)
+          end
+        end
+      end
+
+      shared_examples 'rejected user_details update' do
+        with_them do
+          it 'responds :bad_request with validation error' do
+            put_request_response
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message'].values.flatten).to include(match(expected_error))
+          end
+        end
+      end
+
+      context 'with valid input' do
+        where(:params, :expected_attributes) do
+          { linkedin: 'https://linkedin.com/in/username' }  | { 'linkedin' => 'https://linkedin.com/in/username' }
+          { website_url: 'https://example.com?a=1&b=2' }    | { 'website_url' => 'https://example.com?a=1&b=2' }
+          { twitter: '<script>alert("xss")</script>@user' } | { 'twitter' => '@user' }
+        end
+
+        it_behaves_like 'successful user_details update'
+      end
+
+      context 'with invalid input' do
+        where(:params, :expected_error) do
+          { linkedin: '&lt;script&gt;alert(1)&lt;/script&gt;' } | /cannot contain escaped HTML entities/
+          { website_url: '%2526lt%253Bscript%2526gt%253B' }     | /cannot contain escaped components/
+          { github: 'main../../../../../../etc/passwd' }        | /cannot contain a path traversal component/
+        end
+
+        it_behaves_like 'rejected user_details update'
+      end
+
+      context 'when feature flag :validate_sanitizable_user_details is disabled' do
+        before do
+          stub_feature_flags(validate_sanitizable_user_details: false)
+        end
+
+        context 'with valid input' do
+          where(:params, :expected_attributes) do
+            { linkedin: 'https://linkedin.com/in/username' }  | { 'linkedin' => 'https://linkedin.com/in/username' }
+            { website_url: 'https://example.com?a=1&b=2' }    | { 'website_url' => 'https://example.com?a=1&b=2' }
+            { twitter: '<script>alert("xss")</script>@user' } | { 'twitter' => '@user' }
+
+            # Valid inputs when the feature flag :validate_sanitizable_user_details is enabled
+            { linkedin: '&lt;script&gt;alert(1)&lt;/script&gt;' } | { 'linkedin' => '&lt;script&gt;alert(1)&lt;/script&gt;' }
+            { website_url: '%2526lt%253Bscript%2526gt%253B' }     | { 'website_url' => '%2526lt%253Bscript%2526gt%253B' }
+            { github: 'main../../../../../../etc/passwd' }        | { 'github' => 'main../../../../../../etc/passwd' }
+          end
+
+          it_behaves_like 'successful user_details update'
+        end
+
+        context 'with input that was already invalid before this MR' do
+          where(:params, :expected_error) do
+            { linkedin: 'a' * 501 }            | /is too long/
+            { website_url: 'not-a-valid-url' } | /is not a valid URL/
+          end
+
+          it_behaves_like 'rejected user_details update'
+        end
+      end
+    end
+
     it 'updates user with avatar' do
       workhorse_form_with_file(
         api(path, admin, admin_mode: true),

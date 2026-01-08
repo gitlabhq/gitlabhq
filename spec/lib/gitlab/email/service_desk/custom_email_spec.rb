@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Email::ServiceDesk::CustomEmail, feature_category: :service_desk do
-  let_it_be(:project) { create(:project) }
+  let_it_be_with_refind(:project) { create(:project) }
+  let_it_be(:custom_email) { 'support@example.com' }
 
   let(:sent_notification) { create(:sent_notification, project: project) }
   let(:reply_key) { sent_notification.partitioned_reply_key }
-  let(:custom_email) { 'support@example.com' }
   let(:custom_email_with_verification_subaddress) { 'support+verify@example.com' }
   let(:email_with_reply_key) { "support+#{reply_key}@example.com" }
   let(:project_mail_key) { ::ServiceDesk::Emails.new(project).default_subaddress_part }
@@ -17,24 +17,43 @@ RSpec.describe Gitlab::Email::ServiceDesk::CustomEmail, feature_category: :servi
   end
 
   describe '.reply_address' do
-    subject(:reply_address) { described_class.reply_address(nil, nil) }
+    subject { described_class.reply_address(nil, nil) }
 
     it { is_expected.to be_nil }
 
     context 'with reply key' do
-      subject(:reply_address) { described_class.reply_address(nil, reply_key) }
+      let_it_be_with_refind(:issue) { create(:issue, project: project) }
+      let_it_be_with_refind(:work_item) { create(:work_item, :ticket, project: project) }
+
+      let(:item_parameter) { nil }
+
+      subject { described_class.reply_address(item_parameter, reply_key) }
 
       it { is_expected.to be_nil }
 
       context 'with issue' do
-        let_it_be(:issue) { create(:issue, project: project) }
-
-        subject(:reply_address) { described_class.reply_address(issue, reply_key) }
+        let(:item_parameter) { issue }
 
         it { is_expected.to be_nil }
+      end
 
-        context 'with service_desk_setting and custom email' do
-          let!(:service_desk_setting) { create(:service_desk_setting, custom_email: custom_email, project: project) }
+      context 'with ticket work item' do
+        let(:item_parameter) { work_item }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'with service_desk_setting and custom email' do
+        let_it_be(:service_desk_setting) { create(:service_desk_setting, custom_email: custom_email, project: project) }
+
+        context 'with issue' do
+          let(:item_parameter) { issue }
+
+          it { is_expected.to eq(email_with_reply_key) }
+        end
+
+        context 'with ticket work item' do
+          let(:item_parameter) { work_item }
 
           it { is_expected.to eq(email_with_reply_key) }
         end
@@ -62,7 +81,7 @@ RSpec.describe Gitlab::Email::ServiceDesk::CustomEmail, feature_category: :servi
 
         before do
           project.reset
-          setting.update!(custom_email: 'support@example.com', custom_email_enabled: true)
+          setting.update!(custom_email: custom_email, custom_email_enabled: true)
         end
 
         it { is_expected.to eq(reply_key) }

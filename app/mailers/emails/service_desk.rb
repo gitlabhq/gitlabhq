@@ -16,8 +16,8 @@ module Emails
       })
     end
 
-    def service_desk_thank_you_email(issue_id)
-      setup_service_desk_mail(issue_id)
+    def service_desk_thank_you_email(work_item_id)
+      setup_service_desk_mail(work_item_id)
 
       email_sender = sender(
         @support_bot.id,
@@ -28,19 +28,19 @@ module Emails
 
       options = {
         from: email_sender,
-        to: @issue.external_author,
+        to: @work_item.external_author,
         subject: "Re: #{subject_base}",
         **service_desk_template_content_options('thank_you')
       }
 
-      mail_new_thread(@issue, options)
+      mail_new_thread(@work_item, options)
       inject_service_desk_custom_email
     end
 
-    def service_desk_new_note_email(issue_id, note_id, recipient)
+    def service_desk_new_note_email(work_item_id, note_id, recipient)
       @note = Note.find(note_id)
 
-      setup_service_desk_mail(issue_id, recipient)
+      setup_service_desk_mail(work_item_id, recipient)
       # Prepare uploads for text replacement in markdown content
       setup_service_desk_attachments
 
@@ -57,7 +57,7 @@ module Emails
         **service_desk_template_content_options('new_note')
       }
 
-      mail_answer_thread(@issue, options)
+      mail_answer_thread(@work_item, options)
       # Add attachments after email init to guide ActiveMailer
       # to choose the correct multipart content types
       add_uploads_as_attachments
@@ -81,7 +81,7 @@ module Emails
         **service_desk_template_content_options('new_participant')
       }
 
-      mail_new_thread(@issue, options)
+      mail_new_thread(@work_item, options)
       inject_service_desk_custom_email
     end
 
@@ -143,18 +143,18 @@ module Emails
 
     private
 
-    def setup_service_desk_mail(issue_id, issue_email_participant = nil)
-      @issue = Issue.find(issue_id)
-      @project = @issue.project
+    def setup_service_desk_mail(work_item_id, issue_email_participant = nil)
+      @work_item = WorkItem.find(work_item_id)
+      @project = @work_item.project
       @support_bot = Users::Internal.in_organization(@project.organization_id).support_bot
 
       @service_desk_setting = @project.service_desk_setting
 
-      if issue_email_participant.blank? && @issue.external_author.present?
-        issue_email_participant = @issue.issue_email_participants.find_by_email(@issue.external_author)
+      if issue_email_participant.blank? && @work_item.external_author.present?
+        issue_email_participant = @work_item.issue_email_participants.find_by_email(@work_item.external_author)
       end
 
-      @sent_notification = SentNotification.record(@issue, @support_bot.id, {
+      @sent_notification = SentNotification.record(@work_item, @support_bot.id, {
         issue_email_participant: issue_email_participant
       })
     end
@@ -182,9 +182,9 @@ module Emails
     end
 
     def inject_service_desk_custom_email_reply_address
-      reply_address = Gitlab::Email::ServiceDesk::CustomEmail.reply_address(@issue, reply_key)
+      reply_address = Gitlab::Email::ServiceDesk::CustomEmail.reply_address(@work_item, reply_key)
       headers['Reply-To'] = Mail::Address.new(reply_address).tap do |address|
-        address.display_name = reply_display_name(@issue)
+        address.display_name = reply_display_name(@work_item)
       end
     end
 
@@ -209,43 +209,43 @@ module Emails
 
     def substitute_template_replacements(template_body)
       template_body
-        .gsub(/%\{\s*ISSUE_ID\s*\}/, issue_id)
-        .gsub(/%\{\s*ISSUE_PATH\s*\}/, issue_path)
+        .gsub(/%\{\s*ISSUE_ID\s*\}/, work_item_id)
+        .gsub(/%\{\s*ISSUE_PATH\s*\}/, work_item_path)
         .gsub(/%\{\s*NOTE_TEXT\s*\}/, note_text)
-        .gsub(/%\{\s*ISSUE_DESCRIPTION\s*\}/, issue_description)
+        .gsub(/%\{\s*ISSUE_DESCRIPTION\s*\}/, work_item_description)
         .gsub(/%\{\s*SYSTEM_HEADER\s*\}/, text_header_message.to_s)
         .gsub(/%\{\s*SYSTEM_FOOTER\s*\}/, text_footer_message.to_s)
         .gsub(/%\{\s*UNSUBSCRIBE_URL\s*\}/, unsubscribe_sent_notification_url(@sent_notification))
         .gsub(/%\{\s*ADDITIONAL_TEXT\s*\}/, service_desk_email_additional_text.to_s)
-        .gsub(/%\{\s*ISSUE_URL\s*\}/, full_issue_url)
+        .gsub(/%\{\s*ISSUE_URL\s*\}/, full_work_item_url)
     end
 
-    def full_issue_url
-      issue_url(@issue)
+    def full_work_item_url
+      work_item_url(@work_item)
     end
 
-    def issue_id
-      "#{Issue.reference_prefix}#{@issue.iid}"
+    def work_item_id
+      "#{WorkItem.reference_prefix}#{@work_item.iid}"
     end
 
-    def issue_path
-      @issue.to_reference(full: true)
+    def work_item_path
+      @work_item.to_reference(full: true)
     end
 
     def note_text
       @note&.note.to_s
     end
 
-    def issue_description
-      return '' if @issue.description_html.blank?
+    def work_item_description
+      return '' if @work_item.description_html.blank?
 
       # Remove references etc. from description HTML because external participants
       # are no regular users and don't have permission to access them.
-      ::Banzai::Renderer.post_process(@issue.description_html, {})
+      ::Banzai::Renderer.post_process(@work_item.description_html, {})
     end
 
     def subject_base
-      "#{@issue.title} (##{@issue.iid})"
+      "#{@work_item.title} (##{@work_item.iid})"
     end
 
     def setup_service_desk_attachments

@@ -64,7 +64,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
-  inject: ['isImpersonating', 'projectStudioEnabled'],
+  inject: ['isImpersonating'],
   props: {
     data: {
       required: true,
@@ -299,13 +299,9 @@ export default {
 </script>
 
 <template>
-  <div
-    :class="{
-      'gl-flex gl-rounded-[1rem]': projectStudioEnabled,
-    }"
-  >
+  <div class="gl-flex gl-rounded-[1rem]">
     <gl-button
-      v-if="projectStudioEnabled && isImpersonating"
+      v-if="isImpersonating"
       v-gl-tooltip.bottom
       :href="data.stop_impersonation_path"
       :title="$options.i18n.stopImpersonating"
@@ -328,8 +324,7 @@ export default {
       <template #toggle>
         <gl-button
           category="tertiary"
-          class="user-bar-dropdown-toggle btn-with-notification"
-          :class="{ '!gl-rounded-full !gl-border-none !gl-px-0': projectStudioEnabled }"
+          class="user-bar-dropdown-toggle btn-with-notification !gl-rounded-full !gl-border-none !gl-px-0"
           :href="data.link_to_profile"
           data-testid="user-menu-toggle"
           data-track-action="click_dropdown"
@@ -339,7 +334,7 @@ export default {
         >
           <span class="gl-sr-only">{{ toggleText }}</span>
           <gl-avatar
-            :size="projectStudioEnabled ? 32 : 24"
+            :size="32"
             :entity-name="data.name"
             :src="avatarUrl"
             aria-hidden="true"
@@ -355,7 +350,7 @@ export default {
         </gl-button>
 
         <div
-          v-if="projectStudioEnabled && hasEmoji"
+          v-if="hasEmoji"
           class="gl-absolute -gl-bottom-1 -gl-right-1 gl-flex gl-h-5 gl-w-5 gl-cursor-pointer gl-items-center gl-justify-center gl-rounded-full gl-bg-neutral-0 gl-text-sm gl-shadow-sm"
           :title="data.status.message"
         >
@@ -371,7 +366,6 @@ export default {
       </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-item
-        v-if="projectStudioEnabled"
         class="gl-border-t gl-flex gl-pt-2 md:gl-hidden"
         data-testid="user-counts-item"
       >
@@ -411,7 +405,7 @@ export default {
         </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
-          v-if="projectStudioEnabled && showAdminButton"
+          v-if="showAdminButton"
           :item="adminLinkItem"
           class="xl:gl-hidden"
           data-testid="admin-link"

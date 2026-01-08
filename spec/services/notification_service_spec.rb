@@ -1088,8 +1088,10 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         let_it_be(:support_bot) { create(:support_bot) }
         let(:mailer) { double(deliver_later: true) }
         let(:issue) { create(:issue, project: project, author: support_bot) }
+        let(:work_item) { create(:work_item, :ticket, project: project, author: support_bot) }
+        let(:noteable) { issue }
 
-        let(:note) { create(:note, noteable: issue, project: project) }
+        let(:note) { create(:note, noteable: noteable, project: project) }
 
         subject(:notification_service) { described_class.new }
 
@@ -1114,109 +1116,119 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           it_behaves_like 'notification with exact metric events', 0
         end
 
-        it_behaves_like 'no participants are notified'
+        shared_examples 'about sending service desk emails' do
+          it_behaves_like 'no participants are notified'
 
-        context 'do exist and note not confidential' do
-          let!(:issue_email_participant) { issue.issue_email_participants.create!(email: 'service.desk@example.com') }
+          context 'when issue email participants exist and note not confidential' do
+            let!(:issue_email_participant) { noteable.issue_email_participants.create!(email: 'service.desk@example.com') }
 
-          before do
-            issue.update!(external_author: 'service.desk@example.com')
-            project.update!(service_desk_enabled: true)
-          end
-
-          it 'sends the email' do
-            expect(Notify).to receive(:service_desk_new_note_email)
-              .with(issue.id, note.id, issue_email_participant)
-
-            notification_service.new_note(note)
-          end
-
-          it_behaves_like 'notification with exact metric events', 1
-
-          context 'when service desk is disabled' do
             before do
-              project.update!(service_desk_enabled: false)
+              noteable.update!(external_author: 'service.desk@example.com')
+              project.update!(service_desk_enabled: true)
             end
 
-            it_behaves_like 'no participants are notified'
-          end
-
-          context 'with multiple external participants' do
-            let!(:other_external_participant) { issue.issue_email_participants.create!(email: 'user@example.com') }
-
-            it 'sends emails' do
+            it 'sends the email' do
               expect(Notify).to receive(:service_desk_new_note_email)
-                .with(issue.id, note.id, IssueEmailParticipant).twice
+                .with(noteable.id, note.id, issue_email_participant)
 
               notification_service.new_note(note)
             end
 
-            context 'when note is from an external participant' do
-              shared_examples 'only sends one Service Desk notification email' do
-                it 'sends one email' do
-                  expect(Notify).not_to receive(:service_desk_new_note_email)
-                    .with(issue.id, note.id, non_recipient)
+            it_behaves_like 'notification with exact metric events', 1
 
-                  expect(Notify).to receive(:service_desk_new_note_email)
-                    .with(issue.id, note.id, recipient)
-
-                  notification_service.new_note(note)
-                end
+            context 'when service desk is disabled' do
+              before do
+                project.update!(service_desk_enabled: false)
               end
 
-              let!(:note) do
-                create(
-                  :note_on_issue,
-                  author: support_bot,
-                  noteable: issue,
-                  project_id: issue.project_id,
-                  note: '@mention referenced, @unsubscribed_mentioned and @outsider also'
-                )
+              it_behaves_like 'no participants are notified'
+            end
+
+            context 'with multiple external participants' do
+              let!(:other_external_participant) { noteable.issue_email_participants.create!(email: 'user@example.com') }
+
+              it 'sends emails' do
+                expect(Notify).to receive(:service_desk_new_note_email)
+                  .with(noteable.id, note.id, IssueEmailParticipant).twice
+
+                notification_service.new_note(note)
               end
 
-              context 'and the note is from the external issue author' do
-                let(:non_recipient) { issue_email_participant }
-                let(:recipient) { other_external_participant }
-                let!(:note_metadata) do
-                  create(:note_metadata, note: note, email_participant: issue_email_participant.email)
+              context 'when note is from an external participant' do
+                shared_examples 'only sends one Service Desk notification email' do
+                  it 'sends one email' do
+                    expect(Notify).not_to receive(:service_desk_new_note_email)
+                      .with(noteable.id, note.id, non_recipient)
+
+                    expect(Notify).to receive(:service_desk_new_note_email)
+                      .with(noteable.id, note.id, recipient)
+
+                    notification_service.new_note(note)
+                  end
                 end
 
-                it_behaves_like 'only sends one Service Desk notification email'
-              end
-
-              context 'and the note is from another external participant' do
-                let(:non_recipient) { other_external_participant }
-                let(:recipient) { issue_email_participant }
-                let!(:note_metadata) do
-                  create(:note_metadata, note: note, email_participant: other_external_participant.email)
+                let!(:note) do
+                  create(
+                    :note_on_issue,
+                    author: support_bot,
+                    noteable: noteable,
+                    project_id: noteable.project_id,
+                    note: '@mention referenced, @unsubscribed_mentioned and @outsider also'
+                  )
                 end
 
-                it_behaves_like 'only sends one Service Desk notification email'
-
-                context 'and the external note auhor email has different format' do
-                  let(:non_recipient) { other_external_participant }
-                  let(:recipient) { issue_email_participant }
+                context 'and the note is from the external issue author' do
+                  let(:non_recipient) { issue_email_participant }
+                  let(:recipient) { other_external_participant }
                   let!(:note_metadata) do
-                    create(:note_metadata, note: note, email_participant: 'USER@example.com')
+                    create(:note_metadata, note: note, email_participant: issue_email_participant.email)
                   end
 
                   it_behaves_like 'only sends one Service Desk notification email'
                 end
+
+                context 'and the note is from another external participant' do
+                  let(:non_recipient) { other_external_participant }
+                  let(:recipient) { issue_email_participant }
+                  let!(:note_metadata) do
+                    create(:note_metadata, note: note, email_participant: other_external_participant.email)
+                  end
+
+                  it_behaves_like 'only sends one Service Desk notification email'
+
+                  context 'and the external note auhor email has different format' do
+                    let(:non_recipient) { other_external_participant }
+                    let(:recipient) { issue_email_participant }
+                    let!(:note_metadata) do
+                      create(:note_metadata, note: note, email_participant: 'USER@example.com')
+                    end
+
+                    it_behaves_like 'only sends one Service Desk notification email'
+                  end
+                end
               end
             end
           end
+
+          context 'when issue email participants exist and note is confidential' do
+            let(:note) { create(:note, noteable: noteable, project: project, confidential: true) }
+            let!(:issue_email_participant) { noteable.issue_email_participants.create!(email: 'service.desk@example.com') }
+
+            before do
+              noteable.update!(external_author: 'service.desk@example.com')
+              project.update!(service_desk_enabled: true)
+            end
+
+            it_behaves_like 'no participants are notified'
+          end
         end
 
-        context 'do exist and note is confidential' do
-          let(:note) { create(:note, noteable: issue, project: project, confidential: true) }
-          let!(:issue_email_participant) { issue.issue_email_participants.create!(email: 'service.desk@example.com') }
+        include_examples 'about sending service desk emails'
 
-          before do
-            issue.update!(external_author: 'service.desk@example.com')
-            project.update!(service_desk_enabled: true)
-          end
+        context 'when noteable is a work item ticket' do
+          let(:noteable) { work_item }
 
-          it_behaves_like 'no participants are notified'
+          include_examples 'about sending service desk emails'
         end
       end
 

@@ -138,7 +138,6 @@ RSpec.describe 'Database schema',
       ], # Temp table
       notification_settings: %w[source_id],
       oauth_access_grants: %w[resource_owner_id application_id],
-      oauth_access_grant_archived_records: %w[resource_owner_id application_id],
       oauth_access_tokens: %w[resource_owner_id application_id],
       oauth_access_token_archived_records: %w[resource_owner_id application_id],
       oauth_applications: %w[owner_id],

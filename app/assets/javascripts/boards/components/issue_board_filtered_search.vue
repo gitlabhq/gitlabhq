@@ -8,7 +8,7 @@ import { joinPaths } from '~/lib/utils/url_utility';
 import issueBoardFilters from 'ee_else_ce/boards/issue_board_filters';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import {
   OPERATORS_IS_NOT,
   OPERATORS_IS,
@@ -35,18 +35,14 @@ import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/release_token.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import {
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
+  WORK_ITEM_TYPE_ENUM_TASK,
+  WORK_ITEM_TYPE_ENUM_TICKET,
+} from '~/work_items/constants';
 
 export default {
-  types: {
-    ISSUE: 'ISSUE',
-    INCIDENT: 'INCIDENT',
-    TASK: 'TASK',
-  },
-  i18n: {
-    incident: __('Incident'),
-    issue: __('Issue'),
-    task: __('Task'),
-  },
   components: { BoardFilteredSearch },
   mixins: [glFeatureFlagMixin()],
   inject: ['isSignedIn', 'releasesFetchPath', 'fullPath', 'isGroupBoard'],
@@ -68,17 +64,31 @@ export default {
   },
   computed: {
     tokensCE() {
-      const { issue, incident, task } = this.$options.i18n;
-      const { types } = this.$options;
       const { fetchLabels } = issueBoardFilters(this.$apollo, this.fullPath, this.isGroupBoard);
 
       const typeOptions = [
-        { icon: 'work-item-issue', value: types.ISSUE, title: issue },
-        { icon: 'work-item-incident', value: types.INCIDENT, title: incident },
+        { icon: 'work-item-issue', value: WORK_ITEM_TYPE_ENUM_ISSUE, title: s__('WorkItem|Issue') },
+        {
+          icon: 'work-item-incident',
+          value: WORK_ITEM_TYPE_ENUM_INCIDENT,
+          title: s__('WorkItem|Incident'),
+        },
       ];
 
       if (this.glFeatures.workItemTasksOnBoards) {
-        typeOptions.push({ icon: 'work-item-task', value: types.TASK, title: task });
+        typeOptions.push({
+          icon: 'work-item-task',
+          value: WORK_ITEM_TYPE_ENUM_TASK,
+          title: s__('WorkItem|Task'),
+        });
+      }
+
+      if (this.glFeatures.serviceDeskTicket) {
+        typeOptions.push({
+          icon: 'work-item-ticket',
+          value: WORK_ITEM_TYPE_ENUM_TICKET,
+          title: s__('WorkItem|Ticket'),
+        });
       }
 
       const tokens = [

@@ -158,6 +158,10 @@ RSpec.describe WorkItems::Widgets::Hierarchy, feature_category: :team_planning d
         {
           work_item_type: WorkItems::Type.default_by_type(:task),
           counts_by_state: { all: 1, opened: 1, closed: 0 }
+        },
+        {
+          work_item_type: WorkItems::Type.default_by_type(:ticket),
+          counts_by_state: { all: 0, opened: 0, closed: 0 }
         }
       )
     end
