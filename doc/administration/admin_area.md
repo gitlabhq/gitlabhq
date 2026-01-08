@@ -598,6 +598,46 @@ The Sidekiq dashboard contains:
   - Current memory usage, measured in MB
   - Peak memory usage, measured in MB
 
+### Data management
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/550952) in GitLab 18.8.
+
+{{< /history >}}
+
+The **Data management** page provides a comprehensive interface to view and manage verification status
+across all components on a Geo primary site.
+The components include [all data types](geo/replication/datatypes.md) supported by Geo.
+
+Use this page to:
+
+- Identify orphaned files or database records that lead to
+  verification failures without requiring Rails console access.
+- View detailed error information and take corrective actions directly
+  from the UI.
+- Track verification status across all components and identify
+  patterns in failures.
+- Trigger checksum calculation for all objects at once.
+
+The list view displays verification status for a selected component.
+
+1. Choose a component from the dropdown list to switch between different verification models (Projects, Uploads, etc.).
+   From the list view, you can:
+
+   - Filter objects by checksum status (Failed, Pending, Successful).
+   - Navigate through large result sets.
+   - View last checksum time, last failed time, and failure reasons for each object.
+   - Trigger checksum calculation for individual objects.
+
+1. Select an individual model from the list view to see comprehensive
+   information about a specific object's verification status, like:
+
+   - Details about the verified object.
+   - Current checksum status and history.
+   - Detailed failure reasons if verification failed.
+   - Options to re-calculate the checksum of the object.
+
 ### Database diagnostics
 
 {{< history >}}
