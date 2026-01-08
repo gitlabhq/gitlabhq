@@ -22,7 +22,6 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'app/models/concerns/issuable.rb'
     - 'app/models/concerns/packages/debian/distribution.rb'
     - 'app/models/concerns/subquery.rb'
-    - 'app/models/concerns/taggable_queries.rb'
     - 'app/models/customer_relations/contact.rb'
     - 'app/models/customer_relations/issue_contact.rb'
     - 'app/models/environment.rb'

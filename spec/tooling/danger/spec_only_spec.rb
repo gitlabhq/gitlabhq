@@ -19,62 +19,121 @@ RSpec.describe Tooling::Danger::SpecOnly, feature_category: :tooling do
     allow(fake_helper).to receive(:labels_to_add).and_return([])
   end
 
-  describe '#add_or_remove_label' do
-    context 'when all changed files are *_spec.rb files' do
+  shared_examples 'eligible for spec-only' do
+    context 'when label is not present' do
       before do
-        allow(fake_helper).to receive(:all_changed_files)
-          .and_return(%w[spec/models/user_spec.rb spec/services/foo_spec.rb])
+        allow(fake_helper).to receive(:mr_labels).and_return([])
       end
 
-      it 'adds the label if not already present' do
-        allow(fake_helper).to receive(:mr_labels).and_return([])
-
+      it 'adds the label' do
         spec_only.add_or_remove_label
 
         expect(fake_helper.labels_to_add).to include('pipeline:spec-only')
       end
+    end
 
-      it 'does nothing if label already present' do
+    context 'when label is already present' do
+      before do
         allow(fake_helper).to receive(:mr_labels).and_return(['pipeline:spec-only'])
+      end
 
+      it 'does nothing' do
         spec_only.add_or_remove_label
 
         expect(fake_helper.labels_to_add).to be_empty
       end
     end
+  end
 
-    context 'when changed files include non-spec files' do
+  shared_examples 'not eligible for spec-only' do
+    context 'when label is present' do
       before do
-        allow(fake_helper).to receive(:all_changed_files).and_return(%w[spec/models/user_spec.rb app/models/user.rb])
+        allow(fake_helper).to receive(:mr_labels).and_return(['pipeline:spec-only'])
       end
 
-      it 'removes the label if present' do
-        allow(fake_helper).to receive(:mr_labels).and_return(['pipeline:spec-only'])
-
+      it 'removes the label' do
         expect(fake_api).to receive(:update_merge_request).with(1, 2, remove_labels: 'pipeline:spec-only')
 
         spec_only.add_or_remove_label
       end
+    end
 
-      it 'does nothing if label not present' do
+    context 'when label is not present' do
+      before do
         allow(fake_helper).to receive(:mr_labels).and_return([])
+      end
 
+      it 'does nothing' do
         expect(fake_api).not_to receive(:update_merge_request)
 
         spec_only.add_or_remove_label
+
+        expect(fake_helper.labels_to_add).not_to include('pipeline:spec-only')
       end
+    end
+  end
+
+  describe '#add_or_remove_label' do
+    context 'when all changed files are spec files' do
+      before do
+        allow(fake_helper).to receive(:all_changed_files)
+          .and_return(%w[spec/models/user_spec.rb spec/frontend/foo_spec.js])
+      end
+
+      it_behaves_like 'eligible for spec-only'
+    end
+
+    context 'when changed files are spec files in ee/' do
+      before do
+        allow(fake_helper).to receive(:all_changed_files)
+          .and_return(%w[ee/spec/models/license_spec.rb ee/spec/services/foo_spec.rb])
+      end
+
+      it_behaves_like 'eligible for spec-only'
+    end
+
+    context 'when changed files include spec files and doc files' do
+      before do
+        allow(fake_helper).to receive(:all_changed_files)
+          .and_return(%w[spec/models/user_spec.rb doc/api/users.md .rubocop/feature.yml])
+      end
+
+      it_behaves_like 'eligible for spec-only'
+    end
+
+    context 'when changed files include spec files and non-doc code files' do
+      before do
+        allow(fake_helper).to receive(:all_changed_files)
+          .and_return(%w[spec/models/user_spec.rb app/models/user.rb])
+      end
+
+      it_behaves_like 'not eligible for spec-only'
+    end
+
+    context 'when changed files include only doc files without spec files' do
+      before do
+        allow(fake_helper).to receive(:all_changed_files)
+          .and_return(%w[doc/api/users.md doc/development/testing.md])
+      end
+
+      it_behaves_like 'not eligible for spec-only'
+    end
+
+    context 'when changed files include only non-spec code files' do
+      before do
+        allow(fake_helper).to receive(:all_changed_files)
+          .and_return(%w[app/models/user.rb lib/gitlab/utils.rb])
+      end
+
+      it_behaves_like 'not eligible for spec-only'
     end
 
     context 'when there are no changed files' do
       before do
-        allow(fake_helper).to receive_messages(all_changed_files: [], mr_labels: [])
+        allow(fake_helper).to receive(:all_changed_files).and_return([])
       end
 
-      it 'does not add the label' do
-        spec_only.add_or_remove_label
-
-        expect(fake_helper.labels_to_add).to be_empty
-      end
+      it_behaves_like 'not eligible for spec-only'
     end
   end
 end

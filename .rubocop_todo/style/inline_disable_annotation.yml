@@ -1482,7 +1482,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/models/package_metadata/affected_package_spec.rb'
     - 'ee/spec/models/package_metadata/package_spec.rb'
     - 'ee/spec/models/security/training_spec.rb'
-    - 'ee/spec/models/upload_spec.rb'
     - 'ee/spec/models/vulnerabilities/read_spec.rb'
     - 'ee/spec/policies/group_policy_spec.rb'
     - 'ee/spec/presenters/approval_rule_presenter_spec.rb'

@@ -1594,6 +1594,8 @@
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
     - <<: *if-default-refs
+      changes: *spec-only-patterns
+    - <<: *if-default-refs
       changes: *workhorse-patterns
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
@@ -2864,12 +2866,16 @@
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
     - <<: *if-default-refs
+      changes: *spec-only-patterns
+    - <<: *if-default-refs
       changes: *static-analysis-patterns
 
 .static-analysis:rules:static-verification-with-database:
   rules:
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
+    - <<: *if-default-refs
+      changes: *spec-only-patterns
 
 .static-analysis:rules:rubocop:
   rules:

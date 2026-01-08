@@ -903,7 +903,6 @@ Gitlab/BoundedContexts:
     - 'app/models/concerns/subquery.rb'
     - 'app/models/concerns/subscribable.rb'
     - 'app/models/concerns/suppress_composite_primary_key_warning.rb'
-    - 'app/models/concerns/taggable_queries.rb'
     - 'app/models/concerns/taskable.rb'
     - 'app/models/concerns/throttled_touch.rb'
     - 'app/models/concerns/time_trackable.rb'

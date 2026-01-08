@@ -617,7 +617,6 @@ Style/IfUnlessModifier:
     - 'rubocop/cop/api/grape_array_missing_coerce.rb'
     - 'rubocop/cop/avoid_keyword_arguments_in_sidekiq_workers.rb'
     - 'rubocop/cop/gitlab/event_store_subscriber.rb'
-    - 'rubocop/cop/gitlab/mark_used_feature_flags.rb'
     - 'rubocop/cop/gitlab/policy_rule_boolean.rb'
     - 'rubocop/cop/ignored_columns.rb'
     - 'rubocop/cop/migration/add_limit_to_text_columns.rb'

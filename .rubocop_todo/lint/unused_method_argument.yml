@@ -401,7 +401,6 @@ Lint/UnusedMethodArgument:
     - 'lib/gitlab/slash_commands/incident_management/incident_command.rb'
     - 'lib/gitlab/slash_commands/presenters/issue_new.rb'
     - 'lib/gitlab/snippet_search_results.rb'
-    - 'lib/gitlab/string_placeholder_replacer.rb'
     - 'lib/gitlab/template/dockerfile_template.rb'
     - 'lib/gitlab/template/gitignore_template.rb'
     - 'lib/gitlab/template/gitlab_ci_yml_template.rb'

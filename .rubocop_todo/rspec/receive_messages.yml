@@ -375,7 +375,6 @@ RSpec/ReceiveMessages:
     - 'spec/requests/projects/redirect_controller_spec.rb'
     - 'spec/requests/projects/service_desk_controller_spec.rb'
     - 'spec/requests/projects/wikis_controller_spec.rb'
-    - 'spec/rubocop/cop/gitlab/mark_used_feature_flags_spec.rb'
     - 'spec/rubocop/cop/migration/add_limit_to_text_columns_spec.rb'
     - 'spec/rubocop/cop/migration/async_post_migrate_only_spec.rb'
     - 'spec/rubocop/cop/migration/remove_column_spec.rb'
