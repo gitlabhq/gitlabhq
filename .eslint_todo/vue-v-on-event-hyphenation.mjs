@@ -330,8 +330,6 @@ export default {
     'ee/app/assets/javascripts/security_inventory/components/sidebar/expandable_group.vue',
     'ee/app/assets/javascripts/security_inventory/components/sidebar/group_list.vue',
     'ee/app/assets/javascripts/security_inventory/components/sidebar/subgroup_sidebar.vue',
-    'ee/app/assets/javascripts/security_orchestration/components/policies/project_modal.vue',
-    'ee/app/assets/javascripts/security_orchestration/components/policy_editor/advanced_editor_banner.vue',
     'ee/app/assets/javascripts/sidebar/components/sidebar_dropdown_widget.vue',
     'ee/app/assets/javascripts/status_checks/components/status_check_form.vue',
     'ee/app/assets/javascripts/test_case_show/components/test_case_sidebar.vue',

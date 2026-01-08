@@ -100,6 +100,8 @@ namespace :gitlab do
       ClickHouse::Client.configuration.databases[:default] = db.with_default_database
 
       ClickHouse::Client.execute("DROP DATABASE IF EXISTS #{db.database}", :default)
+
+      ClickHouse::Client.configuration.databases.delete(:default)
     end
 
     def create_db(database)
@@ -107,6 +109,8 @@ namespace :gitlab do
       ClickHouse::Client.configuration.databases[:default] = main_db.with_default_database
 
       ClickHouse::Client.execute("CREATE DATABASE IF NOT EXISTS #{main_db.database}", :default)
+
+      ClickHouse::Client.configuration.databases.delete(:default)
     end
 
     def check_target_version

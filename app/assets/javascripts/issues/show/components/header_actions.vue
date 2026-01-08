@@ -17,7 +17,13 @@ import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { sanitize } from '~/lib/dompurify';
-import { STATUS_CLOSED, TYPE_ISSUE, TYPE_INCIDENT, issuableTypeText } from '~/issues/constants';
+import {
+  STATUS_CLOSED,
+  TYPE_ISSUE,
+  TYPE_INCIDENT,
+  TYPE_TICKET,
+  issuableTypeText,
+} from '~/issues/constants';
 import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -176,7 +182,11 @@ export default {
       });
     },
     showLockIssueOption() {
-      return this.issueType === TYPE_ISSUE && this.isUserSignedIn && this.canUpdateIssue;
+      return (
+        [TYPE_ISSUE, TYPE_TICKET].includes(this.issueType) &&
+        this.isUserSignedIn &&
+        this.canUpdateIssue
+      );
     },
     showMovedSidebarOptions() {
       return this.isUserSignedIn;
@@ -215,7 +225,9 @@ export default {
       };
     },
     showConfidentialityToggle() {
-      return [TYPE_ISSUE, TYPE_INCIDENT].includes(this.issueType) && this.canUpdateIssue;
+      return (
+        [TYPE_ISSUE, TYPE_INCIDENT, TYPE_TICKET].includes(this.issueType) && this.canUpdateIssue
+      );
     },
   },
   created() {

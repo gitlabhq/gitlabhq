@@ -115,6 +115,77 @@ class CreateIssues < ClickHouse::Migration
 end
 ```
 
+### Creating dictionaries
+
+ClickHouse [dictionaries](https://clickhouse.com/docs/sql-reference/dictionaries) drastically improve query speed by allowing you to enrich data with lookups from external sources without performing expensive JOIN operations. By caching reference data in memory or via optimized layouts, they enable near-instant access for real-time data analysis.
+
+Within GitLab, we only support the `CLICKHOUSE` source referencing our own (`main`) ClickHouse database, other, external dictionary referencing is not supported.
+
+For example, here is how to create a dictionary to look up `traversal_path` for a given `project_id` value:
+
+```ruby
+class DictTest < ClickHouse::Migration
+  def up
+    definition = <<~SQL
+      CREATE DICTIONARY project_traversal_paths_dictionary
+      (
+          `id` UInt64,
+          `traversal_path` String
+      )
+      PRIMARY KEY id
+        SOURCE(
+          CLICKHOUSE(
+            QUERY 'SELECT id, traversal_path FROM (
+              SELECT id, traversal_path
+              FROM (
+                SELECT
+                  id,
+                  argMax(traversal_path, version) AS traversal_path,
+                  argMax(deleted, version) AS deleted
+                  FROM project_namespace_traversal_paths
+                GROUP BY id
+              )
+              WHERE deleted = false
+            )'
+          )
+        )
+        LIFETIME(MIN 300 MAX 500)
+        LAYOUT(CACHE(SIZE_IN_CELLS 1000000))
+    SQL
+
+    create_dictionary(definition, source_tables: ['project_namespace_traversal_paths'])
+  end
+
+  def down
+    execute('DROP DICTIONARY project_traversal_paths_dictionary')
+  end
+end
+```
+
+The `project_namespace_traversal_paths` table is a denormalized `ReplacingMergeTree` table that maps `project_id` to a `traversal_path` value. By using this table in a dictionary definition, we can have close to `O(1)` lookup performance when looking up the `traversal_path` value by `project_id`.
+
+ClickHouse dictionaries require database credentials to be passed as arguments, along with a full reference to the database tables in the `QUERY` argument. To simplify this process, the `create_dictionary` method performs the following:
+
+- Injects the configured ClickHouse credentials to the `CREATE DICTIONARY` statement automatically.
+- Prepends the database name to tables in the `QUERY`. For this, the list of participating tables in the `source_tables` argument must be correctly set.
+
+After the migration, dictionaries can be queried as follows:
+
+```sql
+select dictGetOrDefault('project_traversal_paths_dictionary', 'traversal_path', 3, '0/');
+```
+
+- `project_traversal_paths_dictionary`: Dictionary name
+- `traversal_path`: Requested column
+- `3`: Project ID value
+- `0/`: Default value in case the record cannot be found in the dictionary
+
+{{< alert type="note" >}}
+
+Depending on the dictionary configuration, data loaded by the dictionary might be stale. When using dictionaries, always consider consistency requirements and ways to correct inconsistent data eventually.
+
+{{< /alert >}}
+
 ## Post deployment migrations
 
 To generate a ClickHouse database post deployment migration execute:

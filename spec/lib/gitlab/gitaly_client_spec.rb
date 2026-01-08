@@ -1030,4 +1030,36 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
     end
   end
+
+  describe '.retry_policy' do
+    subject { described_class.retry_policy }
+
+    context 'when settings are not redefined' do
+      it 'returns default retry policy settings' do
+        is_expected.to eq(
+          maxAttempts: 4,
+          initialBackoff: '0.4s',
+          maxBackoff: '1.4s',
+          backoffMultiplier: 2,
+          retryableStatusCodes: %w[UNAVAILABLE ABORTED]
+        )
+      end
+    end
+
+    context 'when settings are redefined' do
+      before do
+        stub_config(gitaly: { client_max_attempts: 10, client_max_backoff: '5.0s' })
+      end
+
+      it 'uses the configured values' do
+        is_expected.to eq(
+          maxAttempts: 10,
+          initialBackoff: '0.4s',
+          maxBackoff: '5.0s',
+          backoffMultiplier: 2,
+          retryableStatusCodes: %w[UNAVAILABLE ABORTED]
+        )
+      end
+    end
+  end
 end

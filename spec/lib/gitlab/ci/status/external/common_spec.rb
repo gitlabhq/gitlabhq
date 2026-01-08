@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::External::Common do
+RSpec.describe Gitlab::Ci::Status::External::Common, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:project) { external_status.project }
   let(:external_target_url) { 'http://example.gitlab.com/status' }

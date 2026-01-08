@@ -7,6 +7,21 @@ module ActiveContext
         @current ||= load_adapter
       end
 
+      def reset
+        @current = nil
+      end
+
+      def for_connection(connection)
+        return nil unless connection
+        return nil unless ActiveContext::Config.enabled?
+
+        adapter_klass = connection.adapter_class&.safe_constantize
+        return nil unless adapter_klass
+
+        options = connection.options
+        adapter_klass.new(connection, options: options)
+      end
+
       private
 
       def load_adapter
@@ -15,11 +30,7 @@ module ActiveContext
         connection = ActiveContext::Config.connection_model&.active
         return nil unless connection
 
-        adapter_klass = connection.adapter_class&.safe_constantize
-        return nil unless adapter_klass
-
-        options = connection.options
-        adapter_klass.new(connection, options: options)
+        for_connection(connection)
       end
     end
   end

@@ -10080,31 +10080,31 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#inactive?' do
+  describe '#dormant?' do
     let_it_be_with_reload(:project) { create(:project, name: 'test-project') }
 
-    it_behaves_like 'returns true if project is inactive'
+    it_behaves_like 'returns true if project is dormant'
   end
 
-  describe '.inactive' do
+  describe '.dormant' do
     before do
       stub_application_setting(inactive_projects_min_size_mb: 5)
       stub_application_setting(inactive_projects_send_warning_email_after_months: 12)
     end
 
-    it 'returns projects that are inactive' do
+    it 'returns projects that are dormant' do
       create_project_with_statistics.tap do |project|
         project.update!(last_activity_at: Time.current)
       end
       create_project_with_statistics.tap do |project|
         project.update!(last_activity_at: 13.months.ago)
       end
-      inactive_large_project = create_project_with_statistics(with_data: true, size_multiplier: 2.gigabytes)
+      dormant_large_project = create_project_with_statistics(with_data: true, size_multiplier: 2.gigabytes)
                                  .tap { |project| project.update!(last_activity_at: 2.years.ago) }
       create_project_with_statistics(with_data: true, size_multiplier: 2.gigabytes)
                                .tap { |project| project.update!(last_activity_at: 1.month.ago) }
 
-      expect(described_class.inactive).to contain_exactly(inactive_large_project)
+      expect(described_class.dormant).to contain_exactly(dormant_large_project)
     end
   end
 

@@ -2,6 +2,6 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Bridge::WaitingForResource do
+RSpec.describe Gitlab::Ci::Status::Bridge::WaitingForResource, feature_category: :continuous_integration do
   it { expect(described_class).to be < Gitlab::Ci::Status::Processable::WaitingForResource }
 end

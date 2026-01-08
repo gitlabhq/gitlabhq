@@ -5,12 +5,13 @@ require 'spec_helper'
 RSpec.describe GroupClusterablePresenter, feature_category: :environment_management do
   include Gitlab::Routing.url_helpers
 
+  let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :group) }
+
   let(:presenter) { described_class.new(group) }
-  let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
   let(:group) { cluster.group }
 
   describe '#can_create_cluster?' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     subject { presenter.can_create_cluster? }
 

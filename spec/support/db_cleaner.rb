@@ -1,10 +1,19 @@
 # frozen_string_literal: true
 
 module DbCleaner
+  def base_class_for(pool)
+    if pool.respond_to?(:connection_class)
+      pool.connection_class
+    else
+      pool.connection_descriptor.name.constantize
+    end
+  end
+
   def all_connection_classes
-    ::ActiveRecord::Base.connection_handler
+    ::ActiveRecord::Base
+      .connection_handler
       .connection_pool_list(:writing)
-      .map(&:connection_class)
+      .map { |pool| base_class_for(pool) }
       .uniq
   end
 

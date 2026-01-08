@@ -1,3 +1,13 @@
+CREATE DICTIONARY namespace_traversal_paths_dict
+(
+    `id` UInt64,
+    `traversal_path` String
+)
+PRIMARY KEY id
+SOURCE(CLICKHOUSE(USER '$DICTIONARY_USER' PASSWORD '$DICTIONARY_PASSWORD' SECURE '$DICTIONARY_SECURE' QUERY '\n        SELECT id, traversal_path FROM (\n          SELECT id, traversal_path\n          FROM (\n            SELECT\n              id,\n              argMax(traversal_path, version) AS traversal_path,\n              argMax(deleted, version) AS deleted\n              FROM $DICTIONARY_DATABASE.namespace_traversal_paths\n            GROUP BY id\n          )\n          WHERE deleted = false\n        )\n      '))
+LIFETIME(MIN 60 MAX 300)
+LAYOUT(CACHE(SIZE_IN_CELLS 3000000));
+
 CREATE TABLE agent_platform_sessions
 (
     `user_id` UInt64,
@@ -95,7 +105,7 @@ CREATE TABLE ci_finished_builds
             stage_name
     )
 )
-ENGINE = ReplacingMergeTree(version, deleted)
+ENGINE = ReplacingMergeTree
 PARTITION BY toYear(finished_at)
 ORDER BY (status, runner_type, project_id, finished_at, id)
 SETTINGS index_granularity = 8192, use_async_block_ids_cache = true, deduplicate_merge_projection_mode = 'rebuild';

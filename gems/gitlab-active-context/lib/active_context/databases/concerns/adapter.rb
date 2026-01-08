@@ -43,6 +43,10 @@ module ActiveContext
           [prefix, name].compact.join(separator)
         end
 
+        def collection_name_without_prefix(collection_name)
+          collection_name.delete_prefix("#{prefix}#{separator}")
+        end
+
         def separator
           DEFAULT_SEPARATOR
         end

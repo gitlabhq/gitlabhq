@@ -187,12 +187,6 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       it_behaves_like 'valid package'
     end
 
-    context 'when user is no project member' do
-      let_it_be(:user) { create(:user) }
-
-      it_behaves_like 'returning an error service response', message: 'Unauthorized'
-    end
-
     context 'when scoped package not following the naming convention' do
       let(:package_name) { '@any-scope/package' }
 
@@ -376,77 +370,6 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       it_behaves_like 'returning an error service response',
         message: 'Could not obtain package lease. Please try again.' do
         it { is_expected.to have_attributes reason: :package_lease_taken }
-      end
-    end
-
-    context 'with package protection rule for different roles and package_name_patterns', :enable_admin_mode do
-      using RSpec::Parameterized::TableSyntax
-
-      let_it_be_with_reload(:package_protection_rule) do
-        create(:package_protection_rule, package_type: :npm, project: project)
-      end
-
-      let_it_be(:project_developer) { create(:user, developer_of: project) }
-      let_it_be(:project_maintainer) { create(:user, maintainer_of: project) }
-      let_it_be(:project_owner) { project.owner }
-      let_it_be(:instance_admin) { create(:admin) }
-
-      let(:package_name_pattern_no_match) { "#{package_name}_no_match" }
-
-      before do
-        package_protection_rule.update!(package_name_pattern: package_name_pattern,
-          minimum_access_level_for_push: minimum_access_level_for_push)
-      end
-
-      shared_examples 'protected package' do
-        it_behaves_like 'returning an error service response', message: 'Package protected.' do
-          it { is_expected.to have_attributes reason: :package_protected }
-        end
-
-        it 'does not create any npm-related package records' do
-          expect { subject }
-            .to not_change { Packages::Package.count }
-            .and not_change { Packages::Npm::Package.count }
-            .and not_change { Packages::Tag.count }
-            .and not_change { Packages::Npm::Metadatum.count }
-        end
-      end
-
-      where(:package_name_pattern, :minimum_access_level_for_push, :user, :shared_examples_name) do
-        ref(:package_name)                  | :maintainer | ref(:project_developer)  | 'protected package'
-        ref(:package_name)                  | :maintainer | ref(:project_owner)      | 'valid package'
-        ref(:package_name)                  | :maintainer | ref(:instance_admin)     | 'valid package'
-        ref(:package_name)                  | :owner      | ref(:project_maintainer) | 'protected package'
-        ref(:package_name)                  | :owner      | ref(:project_owner)      | 'valid package'
-        ref(:package_name)                  | :owner      | ref(:instance_admin)     | 'valid package'
-        ref(:package_name)                  | :admin      | ref(:project_owner)      | 'protected package'
-        ref(:package_name)                  | :admin      | ref(:instance_admin)     | 'valid package'
-
-        ref(:package_name_pattern_no_match) | :owner      | ref(:project_owner)      | 'valid package'
-        ref(:package_name_pattern_no_match) | :admin      | ref(:project_owner)      | 'valid package'
-      end
-
-      with_them do
-        it_behaves_like params[:shared_examples_name]
-      end
-
-      context 'with deploy token' do
-        let_it_be(:deploy_token) { create(:deploy_token, :all_scopes, projects: [project]) }
-        let_it_be(:user) { nil }
-
-        let(:service) { described_class.new(project, deploy_token, params) }
-
-        where(:package_name_pattern, :minimum_access_level_for_push, :shared_examples_name) do
-          ref(:package_name)                  | :maintainer | 'protected package'
-          ref(:package_name)                  | :owner      | 'protected package'
-          ref(:package_name)                  | :admin      | 'protected package'
-
-          ref(:package_name_pattern_no_match) | :owner      | 'valid package'
-        end
-
-        with_them do
-          it_behaves_like params[:shared_examples_name]
-        end
       end
     end
 

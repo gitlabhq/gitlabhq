@@ -66,6 +66,18 @@ module API
         forbidden!('Insufficient permissions for Duo Agent Platform')
       end
 
+      def user_access
+        @user_access ||= Gitlab::UserAccess.new(current_user, container: user_project)
+      end
+
+      def authorize_push_to_branch!(branch)
+        authenticate!
+
+        return if user_access.can_push_to_branch?(branch)
+
+        forbidden!("You are not allowed to push into this branch")
+      end
+
       def commit_response(attrs)
         {
           file_path: attrs[:file_path],
@@ -280,9 +292,7 @@ module API
         hidden true
       end
       post ':id/repository/files/:file_path/authorize' do
-        workhorse_authorize_commits_body_upload! do
-          authorize! :push_code, user_project
-        end
+        workhorse_authorize_commits_body_upload!
       end
 
       desc 'Create new file in repository'
@@ -293,10 +303,10 @@ module API
       end
       post ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
         require_gitlab_workhorse!
-        authorize! :push_code, user_project
 
         file_params = validate_file_params!(file_params_from_body_upload)
         file_params[:file_path] = params[:file_path]
+        authorize_push_to_branch!(file_params[:branch])
 
         result = ::Files::CreateService.new(user_project, current_user, commit_params(file_params)).execute
 
@@ -320,9 +330,7 @@ module API
         hidden true
       end
       put ':id/repository/files/:file_path/authorize' do
-        workhorse_authorize_commits_body_upload! do
-          authorize! :push_code, user_project
-        end
+        workhorse_authorize_commits_body_upload!
       end
 
       desc 'Update existing file in repository'
@@ -333,10 +341,10 @@ module API
       end
       put ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
         require_gitlab_workhorse!
-        authorize! :push_code, user_project
 
         file_params = validate_file_params!(file_params_from_body_upload)
         file_params[:file_path] = params[:file_path]
+        authorize_push_to_branch!(file_params[:branch])
 
         begin
           result = ::Files::UpdateService.new(user_project, current_user, commit_params(file_params)).execute

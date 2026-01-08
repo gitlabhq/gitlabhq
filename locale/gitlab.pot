@@ -7050,13 +7050,13 @@ msgstr ""
 msgid "AiCommitMessage|An unexpected error has occurred. Please try again."
 msgstr ""
 
-msgid "AiFlowTriggers|✅ Agent has started. You can view the progress %{link_start}here%{link_end}."
+msgid "AiFlowTriggers|✅ %{flow_name} has started. You can view progress %{link_start}here%{link_end}."
 msgstr ""
 
-msgid "AiFlowTriggers|❌ Could not start the agent due to this error: %{error}"
+msgid "AiFlowTriggers|❌ Could not start processing due to this error: %{error}"
 msgstr ""
 
-msgid "AiFlowTriggers|🔄 Processing the request and starting the agent..."
+msgid "AiFlowTriggers|🔄 Processing the request..."
 msgstr ""
 
 msgid "AiImpactAnalytics|Assigned Duo seat engagement"

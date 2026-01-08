@@ -585,7 +585,7 @@ module ProjectsHelper
     return false unless project
     return false unless delete_inactive_projects?
 
-    project.persisted? && project.inactive?
+    project.persisted? && project.dormant?
   end
 
   def inactive_project_deletion_date(project)

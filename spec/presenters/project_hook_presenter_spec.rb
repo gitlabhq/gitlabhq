@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ProjectHookPresenter do
-  let(:web_hook_log) { create(:web_hook_log) }
+  let_it_be(:web_hook_log) { create(:web_hook_log) }
+
   let(:project) { web_hook_log.web_hook.project }
   let(:web_hook) { web_hook_log.web_hook }
 

@@ -28,12 +28,8 @@ title: Code Review Flow
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!note]
+> Depending on your add-on, you might have access to GitLab Duo Code Review (Classic) instead. Learn how [Code Review Flow is different](#differences-from-gitlab-duo-code-review-classic).
 
 The Code Review Flow helps you streamline code reviews with agentic AI.
 
@@ -45,8 +41,6 @@ This flow:
 - Supports custom review instructions tailored to your project.
 
 This flow is available in the GitLab UI only.
-
-The Code Review Flow is [different from GitLab Duo Code Review (Classic)](#differences-from-gitlab-duo-code-review-classic).
 
 ## Use the flow
 

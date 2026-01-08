@@ -80,4 +80,84 @@ RSpec.describe ActiveContext::Adapter do
       end
     end
   end
+
+  describe '.for_connection' do
+    let(:connection) { double('Connection') }
+    let(:adapter_instance) { double('AdapterInstance') }
+    let(:options) { { host: 'localhost' } }
+
+    context 'when connection is nil' do
+      it 'returns nil' do
+        expect(described_class.for_connection(nil)).to be_nil
+      end
+    end
+
+    context 'when ActiveContext is not enabled' do
+      before do
+        allow(ActiveContext::Config).to receive(:enabled?).and_return(false)
+      end
+
+      it 'returns nil' do
+        expect(described_class.for_connection(connection)).to be_nil
+      end
+    end
+
+    context 'when ActiveContext is enabled' do
+      before do
+        allow(ActiveContext::Config).to receive(:enabled?).and_return(true)
+      end
+
+      context 'when connection has no adapter class' do
+        before do
+          allow(connection).to receive(:adapter_class).and_return(nil)
+        end
+
+        it 'returns nil' do
+          expect(described_class.for_connection(connection)).to be_nil
+        end
+      end
+
+      context 'when adapter class cannot be constantized' do
+        before do
+          allow(connection).to receive(:adapter_class).and_return('NonExistentAdapter')
+        end
+
+        it 'returns nil' do
+          expect(described_class.for_connection(connection)).to be_nil
+        end
+      end
+
+      context 'when adapter class can be instantiated' do
+        let(:mock_adapter_class) do
+          Class.new do
+            def initialize(connection, options:)
+              @connection = connection
+              @options = options
+            end
+          end
+        end
+
+        before do
+          allow(connection).to receive_messages(adapter_class: 'MockAdapterClass', options: options)
+          stub_const('MockAdapterClass', mock_adapter_class)
+        end
+
+        it 'instantiates the adapter with connection and options' do
+          result = described_class.for_connection(connection)
+
+          expect(result).to be_a(mock_adapter_class)
+        end
+      end
+    end
+  end
+
+  describe '.reset' do
+    it 'clears the adapter instance' do
+      described_class.instance_variable_set(:@current, double('Adapter'))
+      expect(described_class.instance_variable_get(:@current)).not_to be_nil
+
+      described_class.reset
+      expect(described_class.instance_variable_get(:@current)).to be_nil
+    end
+  end
 end

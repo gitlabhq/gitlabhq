@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe ActiveContext::Databases::Concerns::Adapter do
+RSpec.describe ActiveContext::Databases::Concerns::Adapter, feature_category: :global_search do
   # Create a test class that includes the adapter module
   let(:test_class) do
     Class.new do
@@ -130,6 +130,38 @@ RSpec.describe ActiveContext::Databases::Concerns::Adapter do
       it 'still adds the prefix' do
         expect(adapter.full_collection_name('gitlab_active_context_collection'))
           .to eq('gitlab_active_context_gitlab_active_context_collection')
+      end
+    end
+  end
+
+  describe '#collection_name_without_prefix' do
+    it 'removes the prefix and separator from the collection name' do
+      expect(adapter.collection_name_without_prefix('gitlab_active_context_test_collection')).to eq('test_collection')
+    end
+
+    context 'with custom prefix' do
+      let(:options) { { host: 'localhost', prefix: 'custom_prefix' } }
+
+      it 'removes the custom prefix and separator' do
+        expect(adapter.collection_name_without_prefix('custom_prefix_test_collection')).to eq('test_collection')
+      end
+    end
+
+    context 'when name does not have the prefix' do
+      it 'returns the name unchanged' do
+        expect(adapter.collection_name_without_prefix('test_collection')).to eq('test_collection')
+      end
+    end
+
+    context 'when name is empty' do
+      it 'returns empty string' do
+        expect(adapter.collection_name_without_prefix('')).to eq('')
+      end
+    end
+
+    context 'when name only contains the prefix' do
+      it 'returns empty string' do
+        expect(adapter.collection_name_without_prefix('gitlab_active_context_')).to eq('')
       end
     end
   end

@@ -42,7 +42,11 @@ export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
       try {
         const storedValue = localStorage.getItem(FILE_TREE_BROWSER_VISIBILITY);
         if (storedValue !== null) {
+          // User has interacted with the browser before, use their preference
           this.setFileTreeBrowserIsExpanded(parseBoolean(storedValue));
+        } else {
+          // First-time user, show the file tree browser by default
+          this.setFileTreeBrowserIsExpanded(true);
         }
       } catch (error) {
         logError(error);

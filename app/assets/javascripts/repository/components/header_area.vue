@@ -287,7 +287,6 @@ export default {
         v-if="showFileTreeBrowserToggle"
         ref="toggle"
         :aria-keyshortcuts="toggleFileBrowserShortcutKey"
-        :aria-label="__('Toggle file tree browser visibility')"
       />
       <ref-selector
         v-if="!isReadmeView"

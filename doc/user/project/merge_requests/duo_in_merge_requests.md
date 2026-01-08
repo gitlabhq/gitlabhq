@@ -59,14 +59,17 @@ Data usage: The diff of changes between the source branch's head and the target 
 
 ## Use GitLab Duo to review your code
 
-GitLab Duo can review your merge request for potential errors and provide feedback on alignment to standards.
+GitLab Duo can review your merge request for potential errors and provide feedback on alignment to
+standards.
 
 Add GitLab Duo as a reviewer using one of:
 
 - GitLab Duo Code Review (Classic): The classic code review functionality.
-- Code Review Flow: The new flow available through the GitLab Duo Agent Platform. Offers improved context awareness and agentic capabilities.
+- Code Review Flow: The new flow available through the GitLab Duo Agent Platform. Offers improved
+  context awareness and agentic capabilities.
 
-The two options have different requirements and prerequisites. However, you request a review and interact with GitLab Duo the same way. Both options also support automatic reviews, custom
+The two options have different requirements and prerequisites. However, you request a review and
+interact with GitLab Duo the same way. Both options also support automatic reviews, custom
 instructions, and custom comments.
 
 ### GitLab Duo Code Review (Classic)
@@ -120,6 +123,29 @@ Data usage: When you use this feature, the following data is sent to the large l
 - [Custom instructions](#customize-review-instructions-for-gitlab-duo)
 
 ### Code Review Flow
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Core or Pro
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
+
+{{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
+- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
+
+{{< /collapsible >}}
+
+{{< history >}}
+
+- Introduced as [a beta](../../../policy/development_stages_support.md) in GitLab [18.6](https://gitlab.com/groups/gitlab-org/-/epics/18645) [with a flag](../../../administration/feature_flags/_index.md) named `duo_code_review_on_agent_platform`. Disabled by default.
+- Feature flag `duo_code_review_on_agent_platform` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217209) in GitLab 18.8.
+
+{{< /history >}}
 
 The Code Review Flow is available through the GitLab Duo Agent Platform and uses agentic AI for enhanced review capabilities.
 

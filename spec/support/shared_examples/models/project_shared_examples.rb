@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'returns true if project is inactive' do
+RSpec.shared_examples 'returns true if project is dormant' do
   using RSpec::Parameterized::TableSyntax
 
   where(:storage_size, :last_activity_at, :expected_result) do
@@ -21,7 +21,7 @@ RSpec.shared_examples 'returns true if project is inactive' do
     end
 
     it 'returns expected result' do
-      expect(project.inactive?).to eq(expected_result)
+      expect(project.dormant?).to eq(expected_result)
     end
   end
 end

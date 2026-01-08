@@ -7,6 +7,7 @@ import {
   TYPE_EPIC,
   TYPE_INCIDENT,
   TYPE_ISSUE,
+  TYPE_TICKET,
   TYPE_MERGE_REQUEST,
   TYPE_TEST_CASE,
   WORKSPACE_GROUP,
@@ -119,6 +120,10 @@ export const confidentialityQueries = {
     mutation: updateIssueConfidentialMutation,
   },
   [TYPE_ISSUE]: {
+    query: issueConfidentialQuery,
+    mutation: updateIssueConfidentialMutation,
+  },
+  [TYPE_TICKET]: {
     query: issueConfidentialQuery,
     mutation: updateIssueConfidentialMutation,
   },

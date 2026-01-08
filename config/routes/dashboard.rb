@@ -16,7 +16,8 @@ resource :dashboard, controller: 'dashboard', only: [] do
 
     resources :groups, only: [:index] do
       collection do
-        get :member, :inactive, to: 'groups#index'
+        get :member, to: 'groups#index'
+        get :inactive, to: 'groups#index'
       end
     end
     resources :snippets, only: [:index]
@@ -25,7 +26,11 @@ resource :dashboard, controller: 'dashboard', only: [] do
 
     resources :projects, only: [:index] do
       collection do
-        get :contributed, :starred, :personal, :member, :inactive, to: 'projects#index'
+        get :contributed, to: 'projects#index'
+        get :starred, to: 'projects#index'
+        get :personal, to: 'projects#index'
+        get :member, to: 'projects#index'
+        get :inactive, to: 'projects#index'
       end
     end
   end

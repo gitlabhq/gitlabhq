@@ -6,16 +6,6 @@ module Git
 
     alias_method :removing_tag?, :removing_ref?
 
-    # If a tag does not have a dereferenced_target this means it's not
-    # referencing a commit. This can happen when you create a tag for a tree or
-    # blob object. We cannot run pipelines against trees and blobs so we skip
-    # the creation.
-    def create_pipeline?
-      return super if Feature.enabled?(:bypass_tag_commit_check_during_tag_hooks, project)
-
-      super && tag_commit.present?
-    end
-
     def hook_name
       :tag_push_hooks
     end

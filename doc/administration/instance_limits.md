@@ -270,6 +270,13 @@ issues and merge requests.
 When a branch with a large number of commits is pushed, only the last 100 commits
 are processed.
 
+### Size during rebase operations
+
+When you rebase commits, commit messages that exceed the size limit are truncated.
+This limit is separate from the size limits for commit titles and descriptions.
+
+- **Limit**: 10,240 bytes (10 KB).
+
 ## Number of issues in the milestone overview
 
 The maximum number of issues loaded on the milestone overview page is 500.

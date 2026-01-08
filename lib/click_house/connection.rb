@@ -25,8 +25,12 @@ module ClickHouse
       execute('SELECT 1')
     end
 
+    def database_config
+      configuration.databases[database] || raise(ClickHouse::Client::ConfigurationError)
+    end
+
     def database_name
-      configuration.databases[database]&.database
+      database_config.database
     end
 
     def database_engine

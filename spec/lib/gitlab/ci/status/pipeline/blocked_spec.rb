@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Pipeline::Blocked do
+RSpec.describe Gitlab::Ci::Status::Pipeline::Blocked, feature_category: :continuous_integration do
   let(:pipeline) { double('pipeline') }
 
   subject do

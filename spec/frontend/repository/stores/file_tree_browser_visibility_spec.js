@@ -102,10 +102,10 @@ describe('useFileTreeBrowserVisibility', () => {
       expect(store.fileTreeBrowserIsExpanded).toBe(expected);
     });
 
-    it('does nothing when localStorage is empty', () => {
+    it('defaults to true for first-time users when localStorage is empty', () => {
       store.loadFileTreeBrowserExpandedFromLocalStorage();
 
-      expect(store.fileTreeBrowserIsExpanded).toBe(false);
+      expect(store.fileTreeBrowserIsExpanded).toBe(true);
     });
 
     it('handles localStorage errors gracefully', () => {

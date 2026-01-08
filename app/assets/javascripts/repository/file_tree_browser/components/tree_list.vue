@@ -18,6 +18,8 @@ import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
 import getRefMixin from '~/repository/mixins/get_ref';
+import FileTreeBrowserPopover from '~/repository/file_tree_browser/components/file_tree_browser_popover.vue';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import {
   normalizePath,
   dedupeByFlatPathAndId,
@@ -37,6 +39,8 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
+    UserCalloutDismisser,
+    FileTreeBrowserPopover,
     GlButton,
     FileRow,
     GlLoadingIcon,
@@ -103,6 +107,9 @@ export default {
       return {
         backgroundColor: 'var(--gl-highlight-target-background-color)',
       };
+    },
+    targetElement() {
+      return this.$refs.toggle?.$el;
     },
     ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsPeekOn']),
   },
@@ -518,7 +525,16 @@ export default {
 <template>
   <section aria-labelledby="tree-list-heading" class="gl-flex gl-h-full gl-flex-col">
     <div class="gl-mb-3 gl-flex gl-items-center gl-gap-3">
-      <file-tree-browser-toggle />
+      <file-tree-browser-toggle id="file-tree-browser-toggle" ref="toggle" />
+      <user-callout-dismisser feature-name="file_tree_browser_popover">
+        <template #default="{ dismiss, shouldShowCallout }">
+          <file-tree-browser-popover
+            v-if="shouldShowCallout"
+            :target-element="targetElement"
+            @dismiss="dismiss"
+          />
+        </template>
+      </user-callout-dismisser>
       <h3 id="tree-list-heading" class="gl-heading-3 gl-mb-0">
         {{ __('Files') }}
       </h3>

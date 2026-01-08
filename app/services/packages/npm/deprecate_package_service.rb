@@ -99,11 +99,8 @@ module Packages
       end
       strong_memoize_attr :package_status
 
-      # TODO: Remove params['package_name'] with
-      # the rollout of the FF packages_npm_temp_package
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/579369
       def package_name
-        params['package_name'] || params['name']
+        params['name']
       end
       strong_memoize_attr :package_name
     end

@@ -40,6 +40,7 @@ The supported ClickHouse version differs depending on your GitLab version:
 - GitLab 17.7 and later supports ClickHouse 23.x. To use either ClickHouse 24.x or 25.x, use the [workaround](#database-schema-migrations-on-gitlab-1800-and-earlier).
 - GitLab 18.1 and later supports ClickHouse 23.x, 24.x, and 25.x.
 - GitLab 18.8 and later supports ClickHouse 23.x, 24.x, 25.x, and the Replicated database engine.
+  - Older clusters will require an additional permission (`dictGet`), see the [snippet](#database-dictionary-read-support).
 
 ClickHouse Cloud is always compatible with the latest stable GitLab release.
 
@@ -203,7 +204,7 @@ To create the necessary user and database objects:
 CREATE DATABASE gitlab_clickhouse_main_production;
 CREATE USER gitlab IDENTIFIED WITH sha256_password BY 'PASSWORD_HERE';
 CREATE ROLE gitlab_app;
-GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE ON gitlab_clickhouse_main_production.* TO gitlab_app;
+GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE, dictGet ON gitlab_clickhouse_main_production.* TO gitlab_app;
 GRANT SELECT ON information_schema.* TO gitlab_app;
 GRANT gitlab_app TO gitlab;
 ```
@@ -218,7 +219,7 @@ Replace `CLUSTER_NAME_HERE` with your cluster's name:
 CREATE DATABASE gitlab_clickhouse_main_production ON CLUSTER CLUSTER_NAME_HERE ENGINE = Replicated('/clickhouse/databases/{cluster}/gitlab_clickhouse_main_production', '{shard}', '{replica}');
 CREATE USER gitlab IDENTIFIED WITH sha256_password BY 'PASSWORD_HERE' ON CLUSTER CLUSTER_NAME_HERE;
 CREATE ROLE gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
-GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE ON gitlab_clickhouse_main_production.* TO gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
+GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE, dictGet ON gitlab_clickhouse_main_production.* TO gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
 GRANT SELECT ON information_schema.* TO gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
 GRANT gitlab_app TO gitlab ON CLUSTER CLUSTER_NAME_HERE;
 ```
@@ -839,3 +840,42 @@ To work around this issue and run the migrations:
    ```
 
 This time the database migration should successfully finish.
+
+### Database dictionary read support
+
+From GitLab 18.8, GitLab starts using [ClickHouse Dictionaries](https://clickhouse.com/docs/dictionary) for data denormalization. The `GRANT` statements prior 18.8 did not give permission to the `gitlab` user to query dictionaries so a manual modification step is needed:
+
+1. Sign in to:
+   - For ClickHouse Cloud, the ClickHouse SQL console.
+   - For ClickHouse for GitLab Self-Managed, the `clickhouse-client`.
+1. Run the following commands, replacing `PASSWORD_HERE` with the generated password.
+
+{{< tabs >}}
+
+{{< tab title="Single-node or ClickHouse Cloud" >}}
+
+```sql
+GRANT dictGet ON gitlab_clickhouse_main_production.* TO gitlab_app;
+```
+
+{{< /tab >}}
+
+{{< tab title="HA ClickHouse for GitLab Self-Managed" >}}
+
+Replace `CLUSTER_NAME_HERE` with your cluster's name:
+
+```sql
+GRANT dictGet ON gitlab_clickhouse_main_production.* TO gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+Without granting the permission, the ClickHouse migration (`CreateNamespaceTraversalPathsDict`) will fail with the following error:
+
+```plaintext
+DB::Exception: gitlab: Not enough privileges.
+```
+
+After granting the permission, the migration can be safely retried (ideally, wait 1-2 hours until the distributed migration lock clears).

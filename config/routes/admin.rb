@@ -59,7 +59,8 @@ namespace :admin do
 
   resources :groups, only: [:index, :new, :create] do
     collection do
-      get :active, :inactive, to: 'groups#index'
+      get :active, to: 'groups#index'
+      get :inactive, to: 'groups#index'
     end
   end
 
@@ -133,7 +134,8 @@ namespace :admin do
 
   resources :projects, only: [:index] do
     collection do
-      get :active, :inactive, to: 'projects#index'
+      get :active, to: 'projects#index'
+      get :inactive, to: 'projects#index'
     end
   end
 
@@ -185,7 +187,16 @@ namespace :admin do
     put :reset_error_tracking_access_token
     put :clear_repository_check_states
     put :reset_vscode_extension_marketplace_extension_host_domain
-    match :general, :integrations, :repository, :ci_cd, :reporting, :metrics_and_profiling, :network, :preferences, :search, :usage_quotas, via: [:get, :patch]
+    match :general, via: [:get, :patch]
+    match :integrations, via: [:get, :patch]
+    match :repository, via: [:get, :patch]
+    match :ci_cd, via: [:get, :patch]
+    match :reporting, via: [:get, :patch]
+    match :metrics_and_profiling, via: [:get, :patch]
+    match :network, via: [:get, :patch]
+    match :preferences, via: [:get, :patch]
+    match :search, via: [:get, :patch]
+    match :usage_quotas, via: [:get, :patch]
     get :lets_encrypt_terms_of_service
     get :slack_app_manifest_download, format: :json
     get :slack_app_manifest_share

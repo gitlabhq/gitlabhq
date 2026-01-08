@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::External::Factory do
+RSpec.describe Gitlab::Ci::Status::External::Factory, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:project) { resource.project }
   let(:status) { factory.fabricate! }

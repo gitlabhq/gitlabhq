@@ -1202,7 +1202,7 @@ class Project < ApplicationRecord
     Project.with(cte.to_arel).from(cte.alias_to(Project.arel_table))
   end
 
-  def self.inactive
+  def self.dormant
     project_statistics = ::ProjectStatistics.arel_table
     minimum_size_mb = ::Gitlab::CurrentSettings.inactive_projects_min_size_mb.megabytes
     last_activity_cutoff = ::Gitlab::CurrentSettings.inactive_projects_send_warning_email_after_months.months.ago
@@ -3629,7 +3629,7 @@ class Project < ApplicationRecord
     Projects::RecordTargetPlatformsWorker.perform_async(id)
   end
 
-  def inactive?
+  def dormant?
     (statistics || build_statistics).storage_size > ::Gitlab::CurrentSettings.inactive_projects_min_size_mb.megabytes &&
       last_activity_at < ::Gitlab::CurrentSettings.inactive_projects_send_warning_email_after_months.months.ago
   end

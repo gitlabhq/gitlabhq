@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe ClusterablePresenter, feature_category: :deployment_management do
   include Gitlab::Routing.url_helpers
 
-  describe '.fabricate' do
-    let(:project) { create(:project) }
+  let_it_be(:project) { create(:project, :repository) }
 
+  describe '.fabricate' do
     subject { described_class.fabricate(project) }
 
     it 'creates an object from a descendant presenter' do
@@ -49,7 +49,7 @@ RSpec.describe ClusterablePresenter, feature_category: :deployment_management do
     end
 
     context 'when clusterable is a project' do
-      let(:clusterable) { create(:project, :repository) }
+      let(:clusterable) { project }
 
       it_behaves_like 'appropriate member permissions'
     end
@@ -73,7 +73,7 @@ RSpec.describe ClusterablePresenter, feature_category: :deployment_management do
     end
 
     context 'when clusterable is a project' do
-      let(:clusterable) { create(:project, :repository) }
+      let(:clusterable) { project }
 
       it_behaves_like 'appropriate member permissions'
     end
@@ -97,7 +97,7 @@ RSpec.describe ClusterablePresenter, feature_category: :deployment_management do
     end
 
     context 'when clusterable is a project' do
-      let(:clusterable) { create(:project, :repository) }
+      let(:clusterable) { project }
 
       it_behaves_like 'appropriate member permissions'
     end

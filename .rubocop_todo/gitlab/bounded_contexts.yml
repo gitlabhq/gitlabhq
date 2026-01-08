@@ -3736,6 +3736,7 @@ Gitlab/BoundedContexts:
     - 'lib/click_house/models/audit_event.rb'
     - 'lib/click_house/models/base_model.rb'
     - 'lib/click_house/record_sync_context.rb'
+    - 'lib/click_house/dictionary_credentials_handler.rb'
     - 'lib/click_house/replicated_table_engine_patcher.rb'
     - 'lib/click_house/schema_migrations.rb'
     - 'lib/click_house/schema_migrations/context.rb'

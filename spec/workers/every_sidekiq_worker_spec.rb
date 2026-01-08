@@ -524,7 +524,9 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::Runners::ExportUsageCsvWorker' => 3,
         'AppSec::ContainerScanning::ScanImageWorker' => 3,
         'Ci::DestroyOldPipelinesWorker' => 0,
-        'AuditEvents::AuditEventStreamingWorker' => 3
+        'AuditEvents::AuditEventStreamingWorker' => 3,
+        'Vulnerabilities::TriggerFalsePositiveDetectionWorkflowWorker' => 10,
+        'Vulnerabilities::TriggerResolutionWorkflowWorker' => 10
       }.merge(extra_retry_exceptions)
     end
 

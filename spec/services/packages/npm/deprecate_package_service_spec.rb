@@ -26,13 +26,10 @@ RSpec.describe Packages::Npm::DeprecatePackageService, feature_category: :packag
   subject(:execute) { service.execute }
 
   describe '#execute' do
-    # TODO: Always use 'package_name' as a package name key
-    # with the rollout of the FF packages_npm_temp_package
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/579369
-    shared_examples 'enqueues metadata cache worker' do |package_name_key: 'name'|
+    shared_examples 'enqueues metadata cache worker' do
       it 'enqueues metadata cache worker' do
         expect(::Packages::Npm::CreateMetadataCacheWorker).to receive(:perform_async)
-          .with(project.id, params[package_name_key])
+          .with(project.id, params['name'])
 
         execute
       end
@@ -58,27 +55,6 @@ RSpec.describe Packages::Npm::DeprecatePackageService, feature_category: :packag
           .and change { package_1.status }.from('default').to('deprecated')
           .and change { package_2.status }.from('default').to('deprecated')
         expect(execute).to be_success
-      end
-
-      # TODO: Remove with the rollout of the FF packages_npm_temp_package
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/579369
-      context 'with package_name param' do
-        let(:params) { super().tap { |p| p['package_name'] = p.delete('name') } }
-
-        it 'adds or updates the deprecated field and sets status to `deprecated`' do
-          expect { execute }
-            .to change {
-                  package_1.reload.npm_metadatum.package_json['deprecated']
-                }.to('This version is deprecated')
-            .and change {
-                   package_2.reload.npm_metadatum.package_json['deprecated']
-                 }.from('old deprecation message').to('This version is deprecated')
-            .and change { package_1.status }.from('default').to('deprecated')
-            .and change { package_2.status }.from('default').to('deprecated')
-          expect(execute).to be_success
-        end
-
-        it_behaves_like 'enqueues metadata cache worker', package_name_key: 'package_name'
       end
 
       it 'executes 8 queries' do
