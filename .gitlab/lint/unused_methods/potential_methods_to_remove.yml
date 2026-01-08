@@ -143,8 +143,6 @@ event_feed_summary:
   file: app/helpers/events_helper.rb
 group_title_link:
   file: app/helpers/groups_helper.rb
-has_dismissed_ide_environments_callout?:
-  file: app/helpers/ide_helper.rb
 integration_issue_type:
   file: app/helpers/integrations_helper.rb
 integration_todo_target_type:

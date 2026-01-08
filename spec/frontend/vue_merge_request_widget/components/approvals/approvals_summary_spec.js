@@ -19,11 +19,17 @@ Vue.use(VueApollo);
 describe('MRWidget approvals summary', () => {
   let wrapper;
 
+  const defaultProps = {
+    data: approvedByCurrentUser,
+    optional: false,
+    disableCommittersApproval: false,
+  };
+
   const createComponent = ({
     data = approvedByCurrentUser,
     optional = false,
     disableCommittersApproval = false,
-  } = {}) => {
+  } = defaultProps) => {
     wrapper = mount(ApprovalsSummary, {
       propsData: {
         optional,

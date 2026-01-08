@@ -5,47 +5,79 @@ module Gitlab
   class HttpResponseParser < HTTParty::Parser
     # rubocop:disable Gitlab/Json -- Using JSON.parse for compatibility reasons
     def json
-      log_and_raise_oversize_response! if oversize_response?
+      validate_response_size!(:json)
 
       JSON.parse(body, quirks_mode: true, allow_nan: true, max_nesting: max_json_depth)
     end
     # rubocop:enable Gitlab/Json
 
     def xml
-      log_parse_method_called(:xml, (body.count('<') / 2) + body.count('='))
+      validate_response_size!(:xml)
 
       super
     end
 
     def csv
-      log_parse_method_called(:csv, body.count(",\n"))
+      validate_response_size!(:csv)
 
       super
     end
 
     private
 
-    def oversize_response?
-      max_json_structural_chars > 0 && total_value_count_estimate > max_json_structural_chars
+    def validate_response_size!(type)
+      return unless oversize_response?(type)
+
+      log_and_raise_oversize_response!(type)
     end
 
-    def log_and_raise_oversize_response!
+    def oversize_response?(type)
+      max_chars = max_structural_chars_for(type)
+      return false if max_chars <= 0
+
+      total_structural_chars_for(type) > max_chars
+    end
+
+    def log_and_raise_oversize_response!(type)
+      structural_chars = total_structural_chars_for(type)
+
       Gitlab::AppJsonLogger.error(
-        message: 'Large HTTP JSON response',
-        number_of_fields: total_value_count_estimate,
+        message: "Large HTTP #{type.to_s.upcase} response",
+        structural_chars: structural_chars,
         caller: Gitlab::BacktraceCleaner.clean_backtrace(caller)
       )
 
-      raise JSON::ParserError, 'JSON response exceeded the maximum number of objects'
+      raise oversize_response_error_for(type)
     end
 
-    def log_parse_method_called(parse_method, structural_element_count)
-      Gitlab::AppJsonLogger.info(
-        message: 'HttpResponseParser method called',
-        parse_method: parse_method,
-        structural_element_count: structural_element_count,
-        caller: Gitlab::BacktraceCleaner.clean_backtrace(caller)
-      )
+    def total_structural_chars_for(type)
+      case type
+      when :json then estimate_total_json_structural_chars
+      when :xml then estimate_total_xml_structural_chars
+      when :csv then estimate_total_csv_structural_chars
+      else
+        raise ArgumentError, "Unsupported type: #{type}"
+      end
+    end
+
+    def max_structural_chars_for(type)
+      case type
+      when :json then Gitlab::CurrentSettings.max_http_response_json_structural_chars
+      when :xml then Gitlab::CurrentSettings.max_http_response_xml_structural_chars
+      when :csv then Gitlab::CurrentSettings.max_http_response_csv_structural_chars
+      else
+        raise ArgumentError, "Unsupported type: #{type}"
+      end
+    end
+
+    def oversize_response_error_for(type)
+      case type
+      when :json then JSON::ParserError.new('JSON response exceeded the maximum number of objects')
+      when :xml then MultiXml::ParseError.new('XML response exceeded the maximum number of objects')
+      when :csv then CSV::MalformedCSVError.new('CSV response exceeded the maximum number of objects', 1)
+      else
+        raise ArgumentError, "Unsupported type: #{type}"
+      end
     end
 
     # Estimates the total number of values in the JSON response by counting:
@@ -53,12 +85,24 @@ module Gitlab
     # , => Number of elements in arrays (off by one since [1, 2, 3] has just 2 commas)
     # [ => Number of arrays
     # { => Number of objects
-    def total_value_count_estimate
-      @total_value_count_estimate ||= body.count('{[,:')
+    def estimate_total_json_structural_chars
+      @estimate_total_json_structural_chars ||= body.count('{[,:')
     end
 
-    def max_json_structural_chars
-      Gitlab::CurrentSettings.max_http_response_json_structural_chars
+    # Estimates the total number of elements in the XML response by counting:
+    # < => Number of opening tags (divided by 2 to account for closing tags)
+    # = => Number of attributes
+    def estimate_total_xml_structural_chars
+      @estimate_total_xml_structural_chars ||= (body.count('<') / 2) + body.count('=')
+    end
+
+    # Estimates the total number of elements in the CSV response by counting:
+    # , => Number of comma separators
+    # \t => Number of tab separators
+    # ; => Number of semicolon separators
+    # \n => Number of row separators
+    def estimate_total_csv_structural_chars
+      @estimate_total_csv_structural_chars ||= body.count(",\t;\n")
     end
 
     def max_json_depth

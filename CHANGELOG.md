@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.7.1 (2026-01-07)
+
+### Fixed (1 change)
+
+- [Remove search_glql_fix_null_field_pagination feature flag](https://gitlab.com/gitlab-org/security/gitlab/-/commit/739045bf71d2d6631cb763a502478bd5d11f2d80) **GitLab Enterprise Edition**
+
+### Security (8 changes)
+
+- [Fix 404 errors for Duo Workflow WS connection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8f611a6ed9ab78db1f0d5ebb1329867f4689d76f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5633))
+- [Only delete runner projects scoped to the intended runner](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3c26e9f8669d43ed3e25100adb190488a77132b1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5616))
+- [Add base authorization check to update feature settings mutation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dcc442150b40e86a915bc2fcc41bb33be01ab85d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5509))
+- [Don't do arbitrary placeholder replacement on HTML](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3e9ac4b689c7be319dbf54e356b9903aa0debec7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5605))
+- [Pass Mermaid images through asset proxy, apply CSP to deny leaks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3eeb3448f3062c9a9119fe7d4826f6c6282678e3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5606))
+- [Fix security issue related to namespace context](https://gitlab.com/gitlab-org/security/gitlab/-/commit/507d2064f4679c02de2b0771ec6f8299d85d8dbd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5599))
+- [backport(18.7): Fix XSS vulnerability in Web IDE VSCode assets](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f34dd0fddc0d015f3c6cd53d9c0a93d1d39926f5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5604))
+- [Limit XML and CSV HTTP responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f7bb8670028df4a810ed725472dc6a971e8dfcc6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5602))
+
 ## 18.7.0 (2025-12-17)
 
 ### Added (198 changes)
@@ -718,6 +735,32 @@ entry.
 - [Change the urgency of Ci::CreateDownstreamPipelineWorker](https://gitlab.com/gitlab-org/gitlab/-/commit/3c9c6c78e20c58b0543652be65eb3d9c675f7c4b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212782))
 - [Remove destroy_fork_network_on_archive feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/9ce139e5d9330c2bf3da3dcb2275df64ac672602) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212714))
 - [Loose Foreign Keys Cleanup Workers should use sticky connections](https://gitlab.com/gitlab-org/gitlab/-/commit/99ae4f5fca9bbcd8e156002c3dca8c6e259cd7e0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212600))
+
+## 18.6.3 (2026-01-07)
+
+### Added (1 change)
+
+- [Add status filter argument to work items CSV export](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ebc3d9729ffab1b8b434126e9fddeb7258420f31) **GitLab Enterprise Edition**
+
+### Fixed (5 changes)
+
+- [Fix Elasticsearch pagination with null sortable field values](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5baae4cf5d577bf6aaf5a6d49dc42b65df24cf0a) **GitLab Enterprise Edition**
+- [Backport use upstream for DWS API requests in Workhorse](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2ce11772a0519a8154d08b2672f4809d7c4458e8) **GitLab Enterprise Edition**
+- [Exclude Git HTTP requests from authenticated web throttle](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c4cd108c60d518a4718b16e1921273236fe1d793)
+- [Improve handling of attachment urls and filenames](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9300a0ae4bbf51d05487445fa30b3f7f99a53aae)
+- [Backport of Dependency export](https://gitlab.com/gitlab-org/security/gitlab/-/commit/581a890c378ce74d83e134b551ec6439ff9017cb) **GitLab Enterprise Edition**
+
+### Security (9 changes)
+
+- [Fix 404 errors for Duo Workflow WS connection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c10f349f5991f3523a155cce4747be6f1ed42092) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5631))
+- [Only delete runner projects scoped to the intended runner](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e1986b74f37379f4b5bb6873d95e1349bfb4b7ad) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5617))
+- [Add base authorization check to update feature settings mutation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/893eecea8ed27e872d22ac465f26fe9d0cb280ab) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5559))
+- [Don't do arbitrary placeholder replacement on HTML](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e0fc22e0f03a1592cdc2b431dd14efa61b69625c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5538))
+- [Pass Mermaid images through asset proxy, apply CSP to deny leaks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/37866687edb6dc24de8b0a8307941687912aa7fb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5580))
+- [Fix security issue related to namespace context](https://gitlab.com/gitlab-org/security/gitlab/-/commit/03c7b381ae7d53a1a790f68e410538f9df2cb4a4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5554))
+- [backport(18.6): Fix XSS vulnerability in Web IDE VSCode assets](https://gitlab.com/gitlab-org/security/gitlab/-/commit/998405f45eb42be43885becc6901f14333d537f1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5594))
+- [Limit XML and CSV HTTP responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/948848ce8012ed7de7db2a9065283e6abb11519f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5587))
+- [Fix token leak in nginx access logs for Terraform registry](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8f3ee11a294e9a2229794401f32f2b433fc41439) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5506))
 
 ## 18.6.2 (2025-12-10)
 
@@ -1712,6 +1755,26 @@ entry.
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/ea0dbba113b9dbc671b6db6fc4185cbbb6c856ec) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205312))
 - [Finalize BBM DeleteExpiredVulnerabilityExports](https://gitlab.com/gitlab-org/gitlab/-/commit/7a36276fe0a36b9e1a3080f25a66258e6ffa667b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203408))
 - [Finalize BBM RemoveOrphanedVulnerabilityNotesBatchedMigration](https://gitlab.com/gitlab-org/gitlab/-/commit/017bb7f2ba173211a05137f575a0ba8e83d0ee55) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197721))
+
+## 18.5.5 (2026-01-07)
+
+### Fixed (4 changes)
+
+- [Handle 429s during github LFS import](https://gitlab.com/gitlab-org/security/gitlab/-/commit/25c1c4f96f3289ad76cf55cf6da84f7ee48a51df)
+- [Backport of Dependency export](https://gitlab.com/gitlab-org/security/gitlab/-/commit/aee50942e82b712beab04626fc0a2b99fdb6cc03) **GitLab Enterprise Edition**
+- [Fix undercoverage for github importer specs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/500b2117f6ac194a42fd23b2a3ce0fb4faea6f57)
+- [Improve handling of attachment urls and filenames](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6af08f56e6d847cf60418f8bca7a73b7b73c17ff)
+
+### Security (8 changes)
+
+- [Fix 404 errors for Duo Workflow WS connection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/775d921f86810762ffe579553e69409096e77c21) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5632))
+- [Only delete runner projects scoped to the intended runner](https://gitlab.com/gitlab-org/security/gitlab/-/commit/46f677a0a000957fe395378f5eba028b7c306aa3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5618))
+- [Add base authorization check to update feature settings mutation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/38039944d972b980568b3030daca3c0b86994c9a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5560))
+- [Don't do arbitrary placeholder replacement on HTML](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c29b6df00a97d9a7cb474b411765829131a6c8b3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5537))
+- [Pass Mermaid images through asset proxy, apply CSP to deny leaks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a0390537c14352d5f0850e92a23486c2adc114ba) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5579))
+- [Fix security issue related to namespace context](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cdfa3f7707cb543b6139c94794f314f57ed5eb49) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5555))
+- [Limit XML and CSV HTTP responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c6d0c137d76c09d19d36fd3e9e1750fe6a195e5d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5588))
+- [Fix token leak in nginx access logs for Terraform registry](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c273a68260e9e0c43beff82d0ec868e8b3620914) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5498))
 
 ## 18.5.4 (2025-12-10)
 

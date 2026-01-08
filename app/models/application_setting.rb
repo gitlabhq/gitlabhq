@@ -671,6 +671,8 @@ class ApplicationSetting < ApplicationRecord
       :max_http_decompressed_size,
       :max_http_response_size_limit,
       :max_http_response_json_structural_chars,
+      :max_http_response_xml_structural_chars,
+      :max_http_response_csv_structural_chars,
       :max_import_remote_file_size,
       :max_import_size,
       :max_pages_custom_domains_per_project,
@@ -736,6 +738,8 @@ class ApplicationSetting < ApplicationRecord
     max_http_decompressed_size: [:integer, { default: 100 }],
     max_http_response_json_depth: [:integer, { default: 32 }],
     max_http_response_json_structural_chars: [:integer, { default: 1_000_000 }],
+    max_http_response_xml_structural_chars: [:integer, { default: 250_000 }],
+    max_http_response_csv_structural_chars: [:integer, { default: 250_000 }],
     max_github_response_size_limit: [:integer, { default: 8 }],
     max_github_response_json_value_count: [:integer, { default: 250_000 }]
 
