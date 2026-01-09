@@ -5,6 +5,7 @@ import {
   OPERATORS_IS,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import DateToken from '~/vue_shared/components/filtered_search_bar/tokens/date_token.vue';
+import { fifteenDaysFromNow } from '~/vue_shared/access_tokens/utils';
 
 export const PAGE_SIZE = 10;
 
@@ -46,7 +47,7 @@ export const FILTER_OPTIONS = [
   {
     icon: 'history',
     title: __('Created date'),
-    type: 'createdAfter',
+    type: 'created',
     token: DateToken,
     operators: OPERATORS_AFTER_BEFORE,
     unique: true,
@@ -54,7 +55,7 @@ export const FILTER_OPTIONS = [
   {
     icon: 'history',
     title: __('Expiration date'),
-    type: 'expiresAfter',
+    type: 'expires',
     token: DateToken,
     operators: OPERATORS_AFTER_BEFORE,
     unique: true,
@@ -62,7 +63,7 @@ export const FILTER_OPTIONS = [
   {
     icon: 'history',
     title: __('Last used date'),
-    type: 'lastUsedAfter',
+    type: 'lastUsed',
     token: DateToken,
     operators: OPERATORS_AFTER_BEFORE,
     unique: true,
@@ -129,6 +130,59 @@ export const TABLE_FIELDS = [
   },
 ];
 
+export const STATISTICS_FILTERS = {
+  active: [
+    {
+      type: 'state',
+      value: {
+        data: 'ACTIVE',
+        operator: '=',
+      },
+    },
+  ],
+  expiringSoon: [
+    {
+      type: 'state',
+      value: {
+        data: 'ACTIVE',
+        operator: '=',
+      },
+    },
+    {
+      type: 'expires',
+      value: {
+        data: fifteenDaysFromNow(),
+        operator: '<',
+      },
+    },
+  ],
+  revoked: [
+    {
+      type: 'revoked',
+      value: {
+        data: true,
+        operator: '=',
+      },
+    },
+  ],
+  expired: [
+    {
+      type: 'revoked',
+      value: {
+        data: false,
+        operator: '=',
+      },
+    },
+    {
+      type: 'state',
+      value: {
+        data: 'INACTIVE',
+        operator: '=',
+      },
+    },
+  ],
+};
+
 export const ACCESS_PERSONAL_PROJECTS_ENUM = 'PERSONAL_PROJECTS';
 export const ACCESS_SELECTED_MEMBERSHIPS_ENUM = 'SELECTED_MEMBERSHIPS';
 export const ACCESS_ALL_MEMBERSHIPS_ENUM = 'ALL_MEMBERSHIPS';
@@ -136,3 +190,5 @@ export const ACCESS_USER_ENUM = 'USER';
 export const ACCESS_INSTANCE_ENUM = 'INSTANCE';
 
 export const MAX_DESCRIPTION_LENGTH = 255;
+
+export const FILTERED_SEARCH_TERM_KEY = 'search';

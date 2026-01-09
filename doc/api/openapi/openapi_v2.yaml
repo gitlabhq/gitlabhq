@@ -30425,7 +30425,7 @@ paths:
       operationId: deleteApiV4ProjectsIdRegistryProtectionRepositoryRulesProtectionRuleId
   "/api/v4/projects/{id}/registry/protection/tag/rules":
     get:
-      summary: Gets a list of container protection tag rules for a project
+      summary: Gets a list of container protection tag rules for a project.
       description: This feature was introduced in GitLab 18.7.
       produces:
       - application/json
@@ -30437,7 +30437,7 @@ paths:
         required: true
       responses:
         '200':
-          description: Gets a list of container protection tag rules for a project
+          description: Gets a list of container protection tag rules for a project.
           schema:
             type: array
             items:
@@ -30451,6 +30451,44 @@ paths:
       tags:
       - projects
       operationId: getApiV4ProjectsIdRegistryProtectionTagRules
+    post:
+      summary: Create a container protection tag rule for a project. 5 rule limit
+        per project.
+      description: This feature was introduced in GitLab 18.8.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project.
+        type: string
+        required: true
+      - name: postApiV4ProjectsIdRegistryProtectionTagRules
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4ProjectsIdRegistryProtectionTagRules"
+      responses:
+        '201':
+          description: Create a container protection tag rule for a project. 5 rule
+            limit per project.
+          schema:
+            "$ref": "#/definitions/API_Entities_Projects_ContainerRegistry_Protection_TagRule"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '422':
+          description: Unprocessable Entity
+      tags:
+      - projects
+      operationId: postApiV4ProjectsIdRegistryProtectionTagRules
   "/api/v4/projects/{id}/debian_distributions":
     post:
       summary: Create a Debian Distribution
@@ -63215,6 +63253,35 @@ definitions:
         type: string
         example: maintainer
     description: API_Entities_Projects_ContainerRegistry_Protection_TagRule model
+  postApiV4ProjectsIdRegistryProtectionTagRules:
+    type: object
+    properties:
+      tag_name_pattern:
+        type: string
+        description: Container tag name pattern protected by the protection rule.
+          For example, `v*-release`. Wildcard character `*` allowed.
+      minimum_access_level_for_push:
+        type: string
+        description: Minimum GitLab access level required to push container tags.
+          For example, Maintainer, Owner, or Admin.
+        enum:
+        - maintainer
+        - owner
+        - admin
+      minimum_access_level_for_delete:
+        type: string
+        description: Minimum GitLab access level required to delete container tags.
+          For example, Maintainer, Owner, or Admin.
+        enum:
+        - maintainer
+        - owner
+        - admin
+    required:
+    - tag_name_pattern
+    - minimum_access_level_for_push
+    - minimum_access_level_for_delete
+    description: Create a container protection tag rule for a project. 5 rule limit
+      per project.
   postApiV4ProjectsIdDebianDistributions:
     type: object
     properties:

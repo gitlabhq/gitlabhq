@@ -174,6 +174,15 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     shared_examples_for 'projects response without N + 1 queries' do |threshold|
       let_it_be(:additional_project) { create(:project, :public) }
 
+      before do
+        # Stub to prevent cascading settings queries from auto_duo_code_review_settings_available?
+        # These queries are unrelated to what this N+1 spec is testing.
+        # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
+        if Gitlab.ee?
+          allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+        end
+      end
+
       it 'avoids N + 1 queries', :use_sql_query_cache do
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api(path, current_user)

@@ -271,6 +271,12 @@
     "MavenRegistry",
     "MavenRegistryDetails"
   ],
+  "RegistryUpstreamInterface": [
+    "ContainerRegistryUpstreamWithRegistry",
+    "ContainerRegistryUpstreamWithUpstream",
+    "MavenRegistryUpstreamWithRegistry",
+    "MavenRegistryUpstreamWithUpstream"
+  ],
   "ResolvableInterface": [
     "Discussion",
     "Note"

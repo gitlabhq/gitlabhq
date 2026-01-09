@@ -1179,6 +1179,12 @@ You can use GitLab as an auth endpoint with an external container registry.
 
 ## Configure container registry notifications
 
+{{< history >}}
+
+- `threshold` [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1243) in GitLab 17.0, but still usable to ensure [backwards compatibility](https://gitlab.com/gitlab-org/container-registry/-/merge_requests/2577).
+
+{{< /history >}}
+
 You can configure the container registry to send webhook notifications in
 response to events happening in the registry.
 
@@ -1186,7 +1192,11 @@ Read more about the container registry notifications configuration options in th
 [Docker Registry notifications documentation](https://distribution.github.io/distribution/about/notifications/).
 
 > [!warning]
-> The threshold parameter was [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1243) in GitLab 17.0, and is planned for removal in 23.0. Use `maxretries` instead. The registry automatically translates existing threshold configurations to equivalent `maxretries` values based on your configured `backoff` duration, and emits a deprecation warning in logs showing the translated value. While your existing configuration continues to work, you should set `maxretries` to avoid automatic translation.
+> The `threshold` parameter was [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1243) in GitLab 17.0,
+> but is still usable to ensure backwards compatibility. This parameter could be scheduled for removal in a future milestone.
+> Use `maxretries` instead. The registry automatically translates existing threshold configurations to equivalent `maxretries`
+> values based on your configured `backoff` duration, and emits a deprecation warning in logs showing the translated value.
+> While your existing configuration continues to work, you should set `maxretries` to avoid automatic translation.
 
 You can configure multiple endpoints for the container registry.
 

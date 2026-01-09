@@ -18,6 +18,7 @@ ignore_in_report: true
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16319) in GitLab 18.3 [with the flags](../../../development/feature_flags/_index.md) `secrets_manager` and `ci_tanukey_ui`. Disabled by default.
 - Feature flag `ci_tanukey_ui` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/549940) in GitLab 18.4.
+- Made available to some users in a closed beta in GitLab 18.8.
 
 {{< /history >}}
 
@@ -135,3 +136,15 @@ When you [transfer a project](../../../user/project/working_with_projects.md#tra
 ## Secret rotation notifications
 
 Users with the Owner role in the project receive an email notification to rotate a secret on the day specified in a secret's configuration.
+
+## Troubleshooting
+
+### Error: `reading from Vault: api error: status code 403`
+
+When a CI/CD pipeline job attempts to fetch a secret, it might return this error:
+
+```plaintext
+ERROR: Job failed (system failure): resolving secrets: getting secret: get secret data: reading from Vault: api error: status code 403: 1 error occurred: * permission denied
+```
+
+This error happens when a job attempts to fetch a secret that does not exist or has been deleted.

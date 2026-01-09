@@ -9,9 +9,11 @@ query getUserPersonalAccessTokens(
   $sort: AccessTokenSort
   $state: AccessTokenState
   $revoked: Boolean
+  $expiresBefore: Date
   $expiresAfter: Date
   $createdAfter: Time
   $lastUsedAfter: Time
+  $search: String
 ) {
   user(id: $id) {
     id
@@ -23,9 +25,11 @@ query getUserPersonalAccessTokens(
       sort: $sort
       state: $state
       revoked: $revoked
+      expiresBefore: $expiresBefore
       expiresAfter: $expiresAfter
       createdAfter: $createdAfter
       lastUsedAfter: $lastUsedAfter
+      search: $search
     ) {
       nodes {
         id

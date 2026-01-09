@@ -13,7 +13,7 @@ jest.mock('~/lib/graphql', () => jest.fn(() => ({})));
 
 Vue.use(VueRouter);
 
-const routerViewStub = {
+const RouterViewStub = {
   template: `<div><slot :Component="mockComponent" /></div>`,
   data() {
     return {
@@ -34,7 +34,7 @@ describe('initSinglePageApplication', () => {
       propsData: props,
       router: mockRouter,
       stubs: {
-        routerViewStub,
+        RouterViewStub,
       },
     });
     return wrapper;

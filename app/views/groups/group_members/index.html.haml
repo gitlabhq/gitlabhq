@@ -9,8 +9,8 @@
     - c.with_description do
       = group_member_header_subtext(@group)
       - if current_appearance&.member_guidelines?
-        .gl-w-full.gl-order-md-1
-        = brand_member_guidelines
+        .gl-w-full.gl-order-md-1.md
+          = brand_member_guidelines
     - c.with_actions do
       - if can?(current_user, :create_group_link, @group)
         .js-invite-group-trigger{ data: { classes: '@md/panel:gl-w-auto gl-w-full', display_text: _('Invite a group') } }

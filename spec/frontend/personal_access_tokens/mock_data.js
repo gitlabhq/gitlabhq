@@ -220,3 +220,14 @@ export const mockAccessTokenPermissionsQueryResponse = {
     ],
   },
 };
+export const mockStatisticsResponse = {
+  data: {
+    user: {
+      id: 'gid://gitlab/User/123',
+      active: { count: 5 },
+      expiringSoon: { count: 2 },
+      revoked: { count: 3 },
+      expired: { count: 1 },
+    },
+  },
+};

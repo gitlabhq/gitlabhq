@@ -29601,8 +29601,8 @@ Represents a container registry upstream and its registry.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerregistryupstreamwithregistryid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.8. **Status**: Experiment. ID of the container registry upstream. |
-| <a id="containerregistryupstreamwithregistryposition"></a>`position` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.8. **Status**: Experiment. Position of the upstream registry in an ordered list. |
+| <a id="containerregistryupstreamwithregistryid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.2. **Status**: Experiment. ID of the registry upstream. |
+| <a id="containerregistryupstreamwithregistryposition"></a>`position` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.2. **Status**: Experiment. Position of the upstream registry in an ordered list. |
 | <a id="containerregistryupstreamwithregistryregistry"></a>`registry` {{< icon name="warning-solid" >}} | [`ContainerRegistry!`](#containerregistry) | **Introduced** in GitLab 18.8. **Status**: Experiment. Container registry associated with the upstream registry. |
 
 ### `ContainerRegistryUpstreamWithUpstream`
@@ -29613,8 +29613,8 @@ Represents a container virtual registry upstream and its relationship to the ups
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerregistryupstreamwithupstreamid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.7. **Status**: Experiment. ID of the registry upstream. |
-| <a id="containerregistryupstreamwithupstreamposition"></a>`position` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Position of the upstream registry in an ordered list. |
+| <a id="containerregistryupstreamwithupstreamid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.2. **Status**: Experiment. ID of the registry upstream. |
+| <a id="containerregistryupstreamwithupstreamposition"></a>`position` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.2. **Status**: Experiment. Position of the upstream registry in an ordered list. |
 | <a id="containerregistryupstreamwithupstreamupstream"></a>`upstream` {{< icon name="warning-solid" >}} | [`ContainerUpstream!`](#containerupstream) | **Introduced** in GitLab 18.7. **Status**: Experiment. Container upstream associated with the registry upstream. |
 
 ### `ContainerRepository`
@@ -58121,6 +58121,22 @@ Implementations:
 | <a id="registryinterfaceid"></a>`id` | [`ID!`](#id) | ID of the virtual registry. |
 | <a id="registryinterfacename"></a>`name` | [`String!`](#string) | Name of the virtual registry. |
 | <a id="registryinterfaceupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the virtual registry was updated. |
+
+#### `RegistryUpstreamInterface`
+
+Implementations:
+
+- [`ContainerRegistryUpstreamWithRegistry`](#containerregistryupstreamwithregistry)
+- [`ContainerRegistryUpstreamWithUpstream`](#containerregistryupstreamwithupstream)
+- [`MavenRegistryUpstreamWithRegistry`](#mavenregistryupstreamwithregistry)
+- [`MavenRegistryUpstreamWithUpstream`](#mavenregistryupstreamwithupstream)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="registryupstreaminterfaceid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.2. **Status**: Experiment. ID of the registry upstream. |
+| <a id="registryupstreaminterfaceposition"></a>`position` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.2. **Status**: Experiment. Position of the upstream registry in an ordered list. |
 
 #### `ResolvableInterface`
 

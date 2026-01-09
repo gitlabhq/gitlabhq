@@ -4005,6 +4005,9 @@ msgstr ""
 msgid "AccessTokens|An error occurred while fetching the tokens."
 msgstr ""
 
+msgid "AccessTokens|An error occurred while fetching token statistics."
+msgstr ""
+
 msgid "AccessTokens|An error occurred while revoking the token."
 msgstr ""
 
@@ -4126,6 +4129,9 @@ msgid "AccessTokens|Failed to revoke token"
 msgstr ""
 
 msgid "AccessTokens|Feed token"
+msgstr ""
+
+msgid "AccessTokens|Filter for %{status}"
 msgstr ""
 
 msgid "AccessTokens|Filter for active tokens"
