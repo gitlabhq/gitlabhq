@@ -244,4 +244,25 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
       end
     end
   end
+
+  describe '#build_copy' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:group) { create(:group, organization: organization) }
+    let_it_be(:original_scope) do
+      create(:granular_scope, :selected_memberships,
+        organization: organization,
+        namespace: group,
+        permissions: %w[create_member_role delete_member_role])
+    end
+
+    subject(:copied_scope) { original_scope.build_copy }
+
+    it 'builds a new GranularScope with the same attributes' do
+      expect(copied_scope).not_to be_persisted
+
+      described_class::COPYABLE_ATTRIBUTES.each do |attr|
+        expect(copied_scope.attributes[attr]).to eq(original_scope.attributes[attr])
+      end
+    end
+  end
 end

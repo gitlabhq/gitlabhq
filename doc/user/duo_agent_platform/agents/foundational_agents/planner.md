@@ -40,7 +40,7 @@ Use the Planner Agent when you need help with:
 - Backlog management: Identifying stale issues, duplicates, or items needing refinement.
 - Estimation: Suggesting relative sizing or effort estimates for work items.
 
-Please leave feedback in [issue 576622](https://gitlab.com/gitlab-org/gitlab/-/issues/576622).
+Please leave feedback in [issue 583008](https://gitlab.com/gitlab-org/gitlab/-/work_items/583008).
 
 ## Access the Planner Agent
 
@@ -65,32 +65,25 @@ Prerequisites:
 
 ### Example prompts
 
-- "Generate an executive summary of this epic's progress: (insert URL)"
-- "Draft a memo for this initiative (insert URL) including objectives, success criteria, and key stakeholders."
-- "What tasks are needed to implement this user story?"
-- "Draft a technical requirements issue for this (insert URL) including API needs, data models, and integration points."
-- "What issues have missed their due dates?"
-- "Write a dependency map narrative in an issue explaining the relationships and sequencing between these epics: (insert URLs)."
-- "Find stale issues that haven't been updated in 6 months."
-- "Create issues for the tasks needed to implement dark mode: design tokens, component updates, user preference storage, and toggle UI. Tag them all with dark-mode label."
-- "Identify duplicate or similar issues in this project."
-- "Create a bug issue for the payment gateway timeout problem. This blocks our checkout flow and should be high priority with the critical label."
+- "Generate an executive summary of this work items progress: (insert URL)"
+- "Draft a memo for this work item (insert URL) including objectives, success criteria, and key stakeholders."
+- "What tasks are needed to implement this work item?"
+- "Draft a technical requirements work item for this (insert URL) including API needs, data models, and integration points."
+- "What work items have missed their due dates?"
+- "Write a dependency map narrative in an work item explaining the relationships and sequencing between these work items: (insert URLs)."
+- "Find stale work items that haven't been updated in 6 months."
+- "Identify duplicate or similar work items in this project."
 - "Break down this initiative (insert URL) into key features we need to deliver."
-- "Create a feature request issue: users want to export their data as CSV. Include acceptance criteria: supports all data types, includes headers, and respects user permissions."
-- "How should we sequence the features in this initiative? (insert URL)?"
-- "Create a technical debt epic for database optimization. Update all existing issues with 'performance' and 'database' labels to link to this new epic."
-- "What work should we defer in this epic (insert URL) to reduce scope?"
-- "Close this epic (insert URL) as completed. Create a new retrospective issue documenting what went well and what needs improvement, and link it to the closed epic."
-- "Suggest how to organize these 20 issues (insert filter criteria) across Q1 sprints."
+- "How should we sequence the features in this work item? (insert URL)?"
+- "What work should we defer in this work item (insert URL) to reduce scope?"
+- "Close this work item (insert URL) as completed. Create a new retrospective work item documenting what went well and what needs improvement, and link it to the closed work item."
 - "Show work items assigned to me."
 - "Summarize blockers and mitigation plans for leadership: (insert URL)"
-- "Which of the bugs with a "boards" label should we fix first, considering user impact?"
-- "Group these issues into logical release themes: (insert URL)"
-- "Identify which features are required for version 1, and which are optional, and explain why: (insert URL)"
-- "Rank these epics by strategic value for Q1."
+- "Group these work items into logical release themes: (insert URL)"
+- "Rank these work items by strategic value for Q1."
 - "Suggest a phased approach for this project: (insert URL)"
-- "Help me prioritize issues in my backlog with the label (insert label name) by using the RICE framework."
-- "Which child items on this epic should I remove from the current scope to meet the deadline?"
+- "Help me prioritize work items in my backlog with the label (insert label name) by using the RICE framework."
+- "Which child items on this work item should I remove from the current scope to meet the deadline?"
 - "What would be the MVP version of this feature? (insert URL)"
 - "Help me prioritize technical debt against new features."
 - "Compare these features (insert URLs) using an effort versus impact matrix."

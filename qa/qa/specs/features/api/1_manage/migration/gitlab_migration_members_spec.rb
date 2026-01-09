@@ -49,7 +49,7 @@ module QA
         it(
           'member retains direct membership in imported project',
           quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508993',
+            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24006',
             type: :stale
           },
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354417'

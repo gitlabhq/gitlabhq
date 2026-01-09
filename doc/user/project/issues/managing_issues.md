@@ -962,6 +962,11 @@ You can view the issue's status in:
 
 You can also set the status by using the [`/status` quick action](../quick_actions.md#status).
 
+## Participants
+
+Participants are users who interacted with an issue.
+For information about viewing participants, see [participants](../../participants.md).
+
 ## Publish an issue
 
 {{< details >}}

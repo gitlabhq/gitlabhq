@@ -5,6 +5,32 @@
 # Contains functionality related to objects that can have participants, such as
 # an author, an assignee and people mentioned in its description or comments.
 #
+# === Participant Permission System
+#
+# Multiple levels of permission checks (in execution order):
+#
+# 1. **Per-Source Checks**:
+#    - Checks if current user can see each individual note/comment/source
+#    - Determines which sources get processed for reference extraction
+#    - Bypassed when :remove_per_source_permission_from_participants FF is enabled
+#    - When bypassed, relies on final per-participant filtering for security
+#
+# 2. **Reference Extraction**:
+#    - Group references parsed based on user's group visibility
+#    - User mentions extracted from accessible content
+#    - Processes all accessible sources (or all sources when FF enabled)
+#
+# 3. **Confidential Content Handling**:
+#    - Separate extractor for confidential notes
+#    - Additional filtering for users who can read confidential content
+#    - Maintains security regardless of per-source check status
+#
+# 4. **Per-Participant Filtering**:
+#    - Final filtering based on project/group read access
+#    - Enhanced filtering for confidential work items using :read_confidential_issues permission
+#    - Base permission requirement ensuring only authorized users appear
+#    - Always applied as the final security layer regardless of feature flag state
+#
 # Usage:
 #
 #     class Issue < ApplicationRecord
@@ -64,6 +90,8 @@ module Participable
   #
   # Returns an Array of User instances.
   def visible_participants(user)
+    return participants(user) if Feature.enabled?(:remove_per_source_permission_from_participants, user)
+
     filter_by_ability(raw_participants(user, verify_access: true))
   end
 
@@ -92,6 +120,8 @@ module Participable
   end
 
   def raw_participants(current_user = nil, verify_access: false)
+    skip_per_source_checks = Feature.enabled?(:remove_per_source_permission_from_participants, current_user)
+
     extractor = Gitlab::ReferenceExtractor.new(project, current_user)
 
     # Used to extract references from confidential notes.
@@ -110,7 +140,7 @@ module Participable
         participants << source
       when Participable
         next if skippable_system_notes?(source, participants)
-        next unless !verify_access || source_visible_to_user?(source, current_user)
+        next unless !verify_access || skip_per_source_checks || source_visible_to_user?(source, current_user)
 
         source.class.participant_attrs.each do |attr|
           if attr.respond_to?(:call)
@@ -158,9 +188,10 @@ module Participable
   end
 
   def filter_by_ability(participants)
-    case self
-    when PersonalSnippet
+    if self.is_a?(PersonalSnippet)
       Ability.users_that_can_read_personal_snippet(participants.to_a, self)
+    elsif self.is_a?(Issue) && self.confidential?
+      Ability.users_that_can_read_confidential_issues(participants.to_a, self.resource_parent)
     else
       return Ability.users_that_can_read_project(participants.to_a, project) if project
 

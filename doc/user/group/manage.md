@@ -757,3 +757,40 @@ You can view the most recent actions taken in a group, either in your browser or
 
 To view the activity feed in Atom format, select the
 **RSS** ({{< icon name="rss" >}}) icon.
+
+## Display GitLab Credits user data
+
+{{< history >}}
+
+- Namespace setting to allow the display of user data
+  [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215371) in GitLab 18.7
+  [with a flag](../../administration/feature_flags/_index.md) named `usage_billing_dev`.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+Prerequisites:
+
+- You must be a group Owner.
+- The group you are viewing data for must be a top-level group.
+
+To display user data on the GitLab Credits dashboard:
+
+1. On the top bar, select **Search or go to** and find your group.
+1. Select **Settings** > **General**.
+1. Expand the **Permissions and group features** section.
+1. For the **GitLab Credits dashboard**, select the **Display user data** checkbox.
+1. Select **Save changes**.

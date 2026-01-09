@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Verify', feature_category: :continuous_integration,
     quarantine: {
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/411510',
+      issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24023',
       type: :flaky
     } do
     context 'when pipeline is blocked' do

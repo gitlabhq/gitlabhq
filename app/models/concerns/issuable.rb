@@ -278,7 +278,11 @@ module Issuable
 
   class_methods do
     def participant_includes
-      [:author, :award_emoji, { notes: [:author, :award_emoji, :system_note_metadata] }]
+      if Feature.enabled?(:remove_per_source_permission_from_participants, Feature.current_request)
+        [:author, :award_emoji, { notes: [:author, :award_emoji] }]
+      else
+        [:author, :award_emoji, { notes: [:author, :award_emoji, :system_note_metadata] }]
+      end
     end
 
     # Searches for records with a matching title.
@@ -675,8 +679,11 @@ module Issuable
     includes = []
     includes << :author unless notes.authors_loaded?
     includes << :award_emoji unless notes.award_emojis_loaded?
-    includes << :project unless notes.projects_loaded?
-    includes << :system_note_metadata unless notes.system_note_metadata_loaded?
+
+    unless Feature.enabled?(:remove_per_source_permission_from_participants, Feature.current_request)
+      includes << :project unless notes.projects_loaded?
+      includes << :system_note_metadata unless notes.system_note_metadata_loaded?
+    end
 
     if persisted? && includes.any?
       notes.includes(includes)

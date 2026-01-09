@@ -436,7 +436,7 @@ To make releases available publicly, set the following [project settings](../set
 - Users with at least the Developer role
   have write access to the project releases and assets.
 - If a release is associated with a [protected tag](../protected_tags.md),
-  the user must be [allowed to create the protected tag](../protected_tags.md#configuring-protected-tags) too.
+  the user must be [allowed to create the protected tag](../protected_tags.md#configure-protected-tags) too.
 
 As an example of release permission control, you can allow only
 users with at least the Maintainer role
@@ -487,7 +487,7 @@ the UI/API request might result in an authorization failures, such as:
 - `Something went wrong while creating a new release`
 
 Make sure that the user or a service/bot account is allowed to
-[create the protected tag](../protected_tags.md#configuring-protected-tags) too.
+[create the protected tag](../protected_tags.md#configure-protected-tags) too.
 
 See [the release permissions](#release-permissions) for more information.
 

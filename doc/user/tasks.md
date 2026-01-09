@@ -702,6 +702,11 @@ To set an issue as a parent of a task:
 To remove the parent item of the task,
 next to **Parent**, select the dropdown list and then select **Unassign**.
 
+## Participants
+
+Participants are users who interacted with a task.
+For information about viewing participants, see [participants](participants.md).
+
 ## Confidential tasks
 
 {{< history >}}

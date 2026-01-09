@@ -1,0 +1,10 @@
+---
+name: remove_per_source_permission_from_participants
+description: Remove per-source permission checks from participants for performance improvement.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584272
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216686
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584304
+milestone: '18.8'
+group: group::project management
+type: gitlab_com_derisk
+default_enabled: false

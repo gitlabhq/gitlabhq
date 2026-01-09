@@ -33,6 +33,12 @@ class Ability
       end
     end
 
+    def users_that_can_read_confidential_issues(users, container)
+      DeclarativePolicy.subject_scope do
+        users.select { |u| allowed?(u, :read_confidential_issues, container) }
+      end
+    end
+
     # Returns an Array of Issues that can be read by the given user.
     #
     # issues - The issues to reduce down to those readable by the user.

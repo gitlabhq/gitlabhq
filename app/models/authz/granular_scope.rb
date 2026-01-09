@@ -2,6 +2,8 @@
 
 module Authz
   class GranularScope < ApplicationRecord
+    COPYABLE_ATTRIBUTES = %w[organization_id namespace_id permissions access].freeze
+
     belongs_to :organization, class_name: 'Organizations::Organization', optional: false
 
     # When namespace is nil, the scope grants access to user or instance standalone resources
@@ -62,6 +64,10 @@ module Authz
         .flat_map { |p| ::Authz::PermissionGroups::Assignable.get(p)&.permissions }
         .compact.map(&:to_sym)
       # rubocop:enable Database/AvoidUsingPluckWithoutLimit
+    end
+
+    def build_copy
+      self.class.build(attributes.slice(*COPYABLE_ATTRIBUTES))
     end
 
     private

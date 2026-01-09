@@ -66,7 +66,7 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348478',
           quarantine: {
             type: :bug,
-            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/414859"
+            issue: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24007"
           }
         ) do
           expect_project_import_finished_successfully

@@ -244,7 +244,6 @@ RSpec/ContextWording:
     - 'ee/spec/helpers/web_hooks/web_hooks_helper_spec.rb'
     - 'ee/spec/initializers/1_settings_spec.rb'
     - 'ee/spec/initializers/session_store_spec.rb'
-    - 'ee/spec/lib/api/entities/geo_node_status_spec.rb'
     - 'ee/spec/lib/audit/details_spec.rb'
     - 'ee/spec/lib/banzai/filter/references/iteration_reference_filter_spec.rb'
     - 'ee/spec/lib/banzai/filter/references/vulnerability_reference_filters_spec.rb'

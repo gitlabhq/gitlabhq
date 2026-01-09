@@ -38,8 +38,8 @@ module QA
         'creates a merge request with a milestone and label', :smoke, :health_check, :skip_cells,
         quarantine: {
           issue: [
-            'https://gitlab.com/gitlab-org/gitlab/-/issues/494054',
-            'https://gitlab.com/gitlab-org/gitlab/-/issues/574239'
+            'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9462',
+            'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9285'
           ],
           type: :flaky
         },

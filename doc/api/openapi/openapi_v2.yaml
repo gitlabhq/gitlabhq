@@ -1507,6 +1507,11 @@ paths:
         type: string
         required: true
       - in: query
+        name: active
+        description: Limit by projects that are not archived and not marked for deletion
+        type: boolean
+        required: false
+      - in: query
         name: archived
         description: Limit by archived status
         type: boolean

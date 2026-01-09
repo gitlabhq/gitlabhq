@@ -2,22 +2,22 @@
 import { uniqueId } from 'lodash';
 import { GlPopover, GlSprintf, GlLink, GlIcon } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { s__ } from '~/locale';
+import { __ } from '~/locale';
 
 export const i18n = {
-  groupInheritanceTitle: s__('BranchRules|Setting inherited'),
-  groupInheritanceDescription: s__(
-    'BranchRules|This setting is configured for the group. To make changes, contact a user with required %{linkStart}permissions%{linkEnd}.',
+  groupInheritanceTitle: __('Setting inherited'),
+  groupInheritanceDescription: __(
+    'This setting is configured for the group. To make changes, contact a user with required %{linkStart}permissions%{linkEnd}.',
   ),
-  groupInheritanceDescriptionCanEdit: s__(
-    'BranchRules|This setting is configured for the group. To make changes, go to %{linkStart}group repository settings%{linkEnd}.',
+  groupInheritanceDescriptionCanEdit: __(
+    'This setting is configured for the group. To make changes, go to %{linkStart}group repository settings%{linkEnd}.',
   ),
   // Additional text for screen readers to omit reading out URLs and link tags
-  ariaGroupInheritanceDescription: s__(
-    'BranchRules|This setting is configured for the group. To make changes, contact a user with required permissions.',
+  ariaGroupInheritanceDescription: __(
+    'This setting is configured for the group. To make changes, contact a user with required permissions.',
   ),
-  ariaGroupInheritanceDescriptionCanEdit: s__(
-    'BranchRules|This setting is configured for the group. To make changes, go to group repository settings.',
+  ariaGroupInheritanceDescriptionCanEdit: __(
+    'This setting is configured for the group. To make changes, go to group repository settings.',
   ),
 };
 
@@ -33,23 +33,32 @@ export default {
     GlLink,
     GlIcon,
   },
-  inject: ['canAdminGroupProtectedBranches', 'groupSettingsRepositoryPath'],
+  props: {
+    hasGroupPermissions: {
+      type: Boolean,
+      required: true,
+    },
+    groupSettingsRepositoryPath: {
+      type: String,
+      required: true,
+    },
+  },
   computed: {
     triggerId() {
       return uniqueId('group-level-inheritance-info-');
     },
     popoverMessage() {
-      return this.canAdminGroupProtectedBranches
+      return this.hasGroupPermissions
         ? this.$options.i18n.groupInheritanceDescriptionCanEdit
         : this.$options.i18n.groupInheritanceDescription;
     },
     ariaLabelMessage() {
-      return this.canAdminGroupProtectedBranches
+      return this.hasGroupPermissions
         ? this.$options.i18n.ariaGroupInheritanceDescriptionCanEdit
         : this.$options.i18n.ariaGroupInheritanceDescription;
     },
     linkHref() {
-      return this.canAdminGroupProtectedBranches
+      return this.hasGroupPermissions
         ? this.groupSettingsRepositoryPath
         : this.$options.groupPermissionsHelpDocLink;
     },

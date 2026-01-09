@@ -19,6 +19,9 @@ export const scrollPastCoveringElements = async (element, maxIterations = 10) =>
     const elementRect = (await observeIntersectionOnce(element)).intersectionRect;
     const scrollAmount = coveringRect.bottom - elementRect.top;
 
+    // Prevent over-scrolling (Firefox/Safari may return stale IntersectionObserver rects)
+    if (scrollAmount <= 0) return;
+
     getScrollingElement(element).scrollBy({ top: -scrollAmount, behavior: 'instant' });
   }
 };

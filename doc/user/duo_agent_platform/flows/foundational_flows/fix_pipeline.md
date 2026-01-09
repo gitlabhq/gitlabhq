@@ -22,13 +22,6 @@ title: Fix CI/CD Pipeline Flow
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
 The Fix CI/CD Pipeline Flow helps you automatically diagnose and fix issues in your GitLab CI/CD pipeline. This flow:
 
 - Analyzes pipeline failure logs and error messages.

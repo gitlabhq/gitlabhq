@@ -221,6 +221,11 @@ a merge request, or:
 
 GitLab adds the merge request to the user's **Assigned merge requests** page.
 
+## Participants
+
+Participants are users who interacted with a merge request.
+For information about viewing participants, see [participants](../../participants.md).
+
 ## Merge a merge request
 
 During the merge request review process, reviewers provide

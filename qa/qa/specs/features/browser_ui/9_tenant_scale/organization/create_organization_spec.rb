@@ -7,7 +7,7 @@ module QA
     feature_category: :organization,
     quarantine: {
       type: :investigating,
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/438840'
+      issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24032'
     },
     feature_flag: {
       name: [:ui_for_organizations, :organization_switching],

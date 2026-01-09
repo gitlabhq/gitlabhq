@@ -648,6 +648,11 @@ The epic's health status is updated.
 
 You can also set and clear health statuses using the [`/health_status`](../../project/quick_actions.md#health_status) and [`/clear_health_status`](../../project/quick_actions.md#clear_health_status) quick actions.
 
+### Participants
+
+Participants are users who interacted with an epic.
+For information about viewing participants, see [participants](../../participants.md).
+
 ### Add an issue to an epic
 
 {{< history >}}

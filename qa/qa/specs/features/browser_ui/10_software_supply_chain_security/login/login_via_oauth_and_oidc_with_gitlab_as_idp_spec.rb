@@ -6,7 +6,7 @@ module QA
     only: { condition: -> { Runtime::Env.release } },
     feature_category: :system_access, quarantine: {
       type: :investigating,
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/515686'
+      issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24015'
     } do
     let!(:user) { Runtime::User::Store.test_user }
     let(:consumer_host) { "http://#{consumer_name}.#{Runtime::Env.running_in_ci? ? 'test' : 'bridge'}" }

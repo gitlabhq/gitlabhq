@@ -28,7 +28,7 @@ module QA
 
       context 'when policy is allowed', quarantine: {
         type: :flaky,
-        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/504929'
+        issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24024'
       } do
         let(:allowed_policies) { %w[if-not-present always never] }
 
@@ -90,7 +90,7 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368853',
           quarantine: {
             type: :flaky,
-            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/462232"
+            issue: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24025"
           }
         ) do
           project.visit_job(job_name)

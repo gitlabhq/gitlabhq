@@ -16,15 +16,9 @@ title: Data management API
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/537707) in GitLab 18.3 with a [flag](../../administration/feature_flags/_index.md) named `geo_primary_verification_view`. Disabled by default. This feature is an [experiment](../../policy/development_stages_support.md).
+- The flag is enabled by default in GitLab 18.8.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 Use the data management API to manage an instance's data.
 

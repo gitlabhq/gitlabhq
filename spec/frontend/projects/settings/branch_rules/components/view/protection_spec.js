@@ -4,7 +4,7 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import Protection, { i18n } from '~/projects/settings/branch_rules/components/view/protection.vue';
 import ProtectionRow from '~/projects/settings/branch_rules/components/view/protection_row.vue';
 import DisabledByPolicyPopover from '~/projects/settings/branch_rules/components/view/disabled_by_policy_popover.vue';
-import GroupInheritancePopover from '~/projects/settings/branch_rules/components/view/group_inheritance_popover.vue';
+import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
 import {
   protectionPropsMock,
   protectionEmptyStatePropsMock,

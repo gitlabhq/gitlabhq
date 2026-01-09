@@ -31,7 +31,7 @@ To create or delete a protected tag, you must be in the **Allowed to create or d
 
 {{< /alert >}}
 
-## Configuring protected tags
+## Configure protected tags
 
 Prerequisites:
 
@@ -96,10 +96,10 @@ The eligible groups for protected tag permissions are:
 
 - Project A: Both Group X and Subgroup Y, because Project A is shared with Subgroup Y.
 
-#### Share projects with groups for protected tag permissions
+#### Share projects with groups
 
-You can share the project with a group or subgroup so that their members are
-eligible for protected tag permissions.
+You can share the project with a group or subgroup so that their members are eligible for
+protected tag permissions.
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -144,28 +144,6 @@ In that case, if _any_ of these protected tags have a setting like
 If you select a protected tag's name, GitLab displays a list of
 all matching tags.
 
-## Prevent tag creation with the same name as branches
-
-A tag and a branch with identical names can contain different commits. If your
-tags and branches use the same names, users running `git checkout`
-commands might check out the _tag_ `qa` when they instead meant to check out
-the _branch_ `qa`. As an added security measure, avoid creating tags with the
-same name as branches. Confusing the two could lead to potential
-security or operational issues.
-
-To prevent this problem:
-
-1. Identify the branch names you do not want used as tags.
-1. As described in [Configuring protected tags](#configuring-protected-tags),
-   create a protected tag:
-
-   - For the **Name**, provide a name, such as `stable`. You can also create a wildcard
-     like `stable-*` to match multiple names, like `stable-v1` and `stable-v2`.
-   - For **Allowed to Create**, select **No one**.
-   - Select **Protect**.
-
-Users can still create branches, but not tags, with the protected names.
-
 ## Allow deploy keys to create protected tags
 
 You can permit a [deploy key](deploy_keys/_index.md) to create protected tags.
@@ -190,6 +168,28 @@ To allow a deploy key to create a protected tag:
 1. From the **Allowed to create** list, select the deploy key.
 1. Select **Protect**.
 
+## Prevent tag creation with branch names
+
+A tag and a branch with identical names can contain different commits. If your
+tags and branches use the same names, users running `git checkout`
+commands might check out the _tag_ `qa` when they instead meant to check out
+the _branch_ `qa`. As an added security measure, avoid creating tags with the
+same name as branches. Confusing the two could lead to potential
+security or operational issues.
+
+To prevent this problem:
+
+1. Identify the branch names you do not want used as tags.
+1. As described in [Configure protected tags](#configure-protected-tags),
+   create a protected tag:
+
+   - For the **Name**, provide a name, such as `stable`. You can also create a wildcard
+     like `stable-*` to match multiple names, like `stable-v1` and `stable-v2`.
+   - For **Allowed to Create**, select **No one**.
+   - Select **Protect**.
+
+Users can still create branches, but not tags, with the protected names.
+
 ## Run pipelines on protected tags
 
 The permissions to create protected tags define if a user can:
@@ -200,10 +200,11 @@ The permissions to create protected tags define if a user can:
 These permissions ensure that only authorized users can trigger and manage
 CI/CD processes for protected tags.
 
-## Unprotect a protected tag
+## Unprotect a tag
 
-You can unprotect a tag to remove the protection rule.
-The tag itself remains in the repository.
+You can unprotect a tag by removing its protection rule.
+This action removes the protection configuration, not the tag itself.
+The tag remains in the repository but is no longer protected.
 
 Prerequisites:
 
@@ -222,14 +223,16 @@ To unprotect a tag:
 
 ## Delete a protected tag
 
-You can manually delete protected tags with the GitLab API, or the
-GitLab user interface.
+You can delete tags that have protection rules applied to them.
+This removes the tag from the repository, not the protection rule itself.
+If you want to remove the protection rule without deleting the tag,
+see [Unprotect a tag](#unprotect-a-tag).
 
 Prerequisites:
 
 - You must be in the **Allowed to create or delete** list.
 
-To do this:
+To delete a protected tag:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Code** > **Tags**.

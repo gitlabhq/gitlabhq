@@ -1,8 +1,8 @@
 <script>
 import { GlToggle, GlIcon, GlSprintf, GlLink } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
 import { REQUIRED_ICON, NOT_REQUIRED_ICON } from './constants';
-import GroupInheritancePopover from './group_inheritance_popover.vue';
 import DisabledByPolicyPopover from './disabled_by_policy_popover.vue';
 
 export default {
@@ -17,6 +17,8 @@ export default {
   mixins: [glFeatureFlagsMixin()],
   inject: {
     canAdminProtectedBranches: { default: false },
+    canAdminGroupProtectedBranches: { default: false },
+    groupSettingsRepositoryPath: { default: '' },
   },
   props: {
     dataTestIdPrefix: {
@@ -108,7 +110,11 @@ export default {
         <div class="gl-flex gl-items-center">
           {{ label }}
           <disabled-by-policy-popover v-if="isProtectedByPolicy" />
-          <group-inheritance-popover v-else-if="isGroupLevel" />
+          <group-inheritance-popover
+            v-else-if="isGroupLevel"
+            :has-group-permissions="canAdminGroupProtectedBranches"
+            :group-settings-repository-path="groupSettingsRepositoryPath"
+          />
         </div>
       </template>
       <template v-if="hasDescription" #description>

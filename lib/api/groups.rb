@@ -493,6 +493,7 @@ module API
         tags %w[groups]
       end
       params do
+        optional :active, type: Boolean, desc: 'Limit by projects that are not archived and not marked for deletion'
         optional :archived, type: Boolean, desc: 'Limit by archived status'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
           desc: 'Limit by visibility'

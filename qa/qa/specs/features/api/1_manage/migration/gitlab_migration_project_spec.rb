@@ -31,7 +31,7 @@ module QA
           'successfully imports project',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/383351',
           quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/478101',
+            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24008',
             type: :flaky
           }
         ) do
@@ -46,7 +46,7 @@ module QA
           'successfully imports project',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347610',
           quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/478099',
+            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24009',
             type: :flaky
           }
         ) do
@@ -100,7 +100,7 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347570',
           quarantine: {
             type: :bug,
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422430'
+            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24010'
           }
         ) do
           expect_project_import_finished_successfully
@@ -122,7 +122,7 @@ module QA
           'successfully imports project wiki',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347567',
           quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/541472',
+            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24011',
             type: :investigating
           }
         ) do

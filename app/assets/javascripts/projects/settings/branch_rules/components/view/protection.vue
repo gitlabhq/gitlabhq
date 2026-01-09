@@ -3,9 +3,9 @@ import { GlLink, GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
 import ProtectionRow from './protection_row.vue';
 import DisabledByPolicyPopover from './disabled_by_policy_popover.vue';
-import GroupInheritancePopover from './group_inheritance_popover.vue';
 
 export const i18n = {
   rolesTitle: s__('BranchRules|Roles'),
@@ -26,6 +26,10 @@ export default {
     GroupInheritancePopover,
   },
   mixins: [glFeatureFlagsMixin()],
+  inject: {
+    canAdminGroupProtectedBranches: { default: false },
+    groupSettingsRepositoryPath: { default: '' },
+  },
   props: {
     header: {
       type: String,
@@ -156,7 +160,11 @@ export default {
           >{{ __('Edit') }}
         </gl-button>
         <disabled-by-policy-popover v-if="isProtectedByPolicy" />
-        <group-inheritance-popover v-else-if="isGroupLevel" />
+        <group-inheritance-popover
+          v-else-if="isGroupLevel"
+          :has-group-permissions="canAdminGroupProtectedBranches"
+          :group-settings-repository-path="groupSettingsRepositoryPath"
+        />
       </div>
       <gl-link v-else-if="headerLinkHref && headerLinkTitle" :href="headerLinkHref">{{
         headerLinkTitle

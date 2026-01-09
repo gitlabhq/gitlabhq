@@ -27,6 +27,7 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
         expect(new_token.user.namespace).to eq(token.user.namespace)
         expect(new_token.organization).to eq(token.organization)
         expect(new_token.description).to eq(token.description)
+        expect(new_token.scopes).to eq(token.scopes)
       end
 
       it 'notifies the user' do
@@ -153,6 +154,54 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
 
         it 'does not update membership expiration date' do
           expect { response }.not_to change { membership_with_expiration_date.reload.expires_at }
+        end
+      end
+    end
+
+    context 'when granular' do
+      let_it_be(:project) { create(:project, developers: current_user) }
+      let_it_be(:boundary) { Authz::Boundary.for(project) }
+      let_it_be(:token, reload: true) do
+        create(:granular_pat, user: current_user, boundary: boundary, permissions: :create_issue)
+      end
+
+      it_behaves_like "rotates token successfully"
+
+      it "creates granular scopes based on the previous token's granular scopes" do
+        new_token = response.payload[:personal_access_token]
+
+        granular_scopes = new_token.granular_scopes
+        expect(granular_scopes.size).to eq(token.granular_scopes.size)
+
+        new_granular_scope = granular_scopes.first
+        prev_granular_scope = token.granular_scopes.first
+
+        expect(new_granular_scope.namespace_id).to eq(prev_granular_scope.namespace_id)
+        expect(new_granular_scope.organization_id).to eq(prev_granular_scope.organization_id)
+        expect(new_granular_scope.access).to eq(prev_granular_scope.access)
+        expect(new_granular_scope.permissions).to match_array(prev_granular_scope.permissions)
+      end
+
+      context 'when granular scopes addition fails' do
+        before do
+          allow_next_instance_of(Authz::GranularScopeService) do |instance|
+            allow(instance).to receive(:add_granular_scopes).and_return(
+              ServiceResponse.error(message: 'Granular scope addition failed')
+            )
+          end
+        end
+
+        it 'returns an error' do
+          expect(response).to be_error
+          expect(response.message).to include('Granular scope addition failed')
+        end
+
+        it 'does not revoke the token' do
+          expect { response }.not_to change { token.reload.revoked? }.from(false)
+        end
+
+        it 'does not create PersonalAccessToken and Authz::GranularScope records' do
+          expect { response }.not_to change { [PersonalAccessToken.count, Authz::GranularScope.count] }
         end
       end
     end

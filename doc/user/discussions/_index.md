@@ -59,6 +59,8 @@ Users can change this setting for themselves in the [notification settings](../p
 You can quickly see which comments involve you, because GitLab highlights
 mentions for yourself (the current, authenticated user) in a different color.
 
+When you mention someone, in a work item or merge request, they become a [participant](../participants.md).
+
 ### Mentioning all members
 
 {{< history >}}

@@ -27,7 +27,7 @@ module QA
       context 'when developers and maintainers are not allowed to push to a protected branch' do
         it 'user without push rights fails to push', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347757',
           quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/426739',
+            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/18792',
             type: :flaky
           } do
           create_protected_branch(allowed_to_push: {

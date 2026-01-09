@@ -4,7 +4,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import BranchRule from '~/projects/settings/repository/branch_rules/components/branch_rule.vue';
-import GroupInheritancePopover from '~/projects/settings/branch_rules/components/view/group_inheritance_popover.vue';
+import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
 import GroupBadge from '~/projects/settings/repository/branch_rules/components/group_badge.vue';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';

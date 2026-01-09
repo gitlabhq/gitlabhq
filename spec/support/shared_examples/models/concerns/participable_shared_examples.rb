@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'visible participants for issuable with read ability' do |model_class|
-  let_it_be(:user1) { create(:user) }
-
   let(:model) { model_class.to_s.classify.constantize }
 
   before do
@@ -11,14 +9,32 @@ RSpec.shared_examples 'visible participants for issuable with read ability' do |
   end
 
   shared_examples 'check for participables read ability' do |ability_name, ability_source: nil|
-    it 'receives expected ability' do
-      instance = model.new
+    it 'bypasses per-source permission checks' do
       source = ability_source == :participable_source ? participable_source : instance
 
       allow(instance).to receive(:bar).and_return(participable_source)
-      allow(Ability).to receive(:allowed?).with(anything, ability_name, source)
 
-      expect(instance.visible_participants(user1)).to be_empty
+      expect(Ability).not_to receive(:allowed?).with(anything, ability_name, source)
+
+      instance.visible_participants(user1)
+    end
+
+    context 'with remove_per_source_permission_from_participants disabled' do
+      before do
+        stub_feature_flags(remove_per_source_permission_from_participants: false)
+      end
+
+      it 'receives expected ability' do
+        source = ability_source == :participable_source ? participable_source : instance
+
+        allow(instance).to receive(:bar).and_return(participable_source)
+        allow(Ability).to receive(:allowed?).with(anything, ability_name, source)
+
+        result = instance.visible_participants(user1)
+
+        expect(Ability).to have_received(:allowed?).with(user1, ability_name, source)
+        expect(result).to be_empty
+      end
     end
   end
 

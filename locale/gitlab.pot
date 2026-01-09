@@ -10821,6 +10821,9 @@ msgstr ""
 msgid "Automatically resolved"
 msgstr ""
 
+msgid "Automatically sign commits made through the web interface."
+msgstr ""
+
 msgid "Automatically update this project's branches and tags from the upstream repository."
 msgstr ""
 
@@ -12597,9 +12600,6 @@ msgstr ""
 msgid "BranchRules|Setting blocked by security policy"
 msgstr ""
 
-msgid "BranchRules|Setting inherited"
-msgstr ""
-
 msgid "BranchRules|Something went wrong while creating branch rule."
 msgstr ""
 
@@ -12637,18 +12637,6 @@ msgid "BranchRules|This setting is blocked by a security policy. To make changes
 msgstr ""
 
 msgid "BranchRules|This setting is blocked by a security policy. To make changes, go to the security policies. Learn more."
-msgstr ""
-
-msgid "BranchRules|This setting is configured for the group. To make changes, contact a user with required %{linkStart}permissions%{linkEnd}."
-msgstr ""
-
-msgid "BranchRules|This setting is configured for the group. To make changes, contact a user with required permissions."
-msgstr ""
-
-msgid "BranchRules|This setting is configured for the group. To make changes, go to %{linkStart}group repository settings%{linkEnd}."
-msgstr ""
-
-msgid "BranchRules|This setting is configured for the group. To make changes, go to group repository settings."
 msgstr ""
 
 msgid "BranchRules|To create a branch rule, you first need to create a protected branch."
@@ -64693,6 +64681,9 @@ msgstr ""
 msgid "Setting high package limits can impact database performance. Consider the size of your instance when configuring these values."
 msgstr ""
 
+msgid "Setting inherited"
+msgstr ""
+
 msgid "Settings"
 msgstr ""
 
@@ -65061,6 +65052,9 @@ msgid "Sign out"
 msgstr ""
 
 msgid "Sign up"
+msgstr ""
+
+msgid "Sign web-based commits"
 msgstr ""
 
 msgid "Sign-in count:"
@@ -69851,6 +69845,18 @@ msgid "This setting has been configured at the instance level and cannot be over
 msgstr ""
 
 msgid "This setting is allowed for forked projects only"
+msgstr ""
+
+msgid "This setting is configured for the group. To make changes, contact a user with required %{linkStart}permissions%{linkEnd}."
+msgstr ""
+
+msgid "This setting is configured for the group. To make changes, contact a user with required permissions."
+msgstr ""
+
+msgid "This setting is configured for the group. To make changes, go to %{linkStart}group repository settings%{linkEnd}."
+msgstr ""
+
+msgid "This setting is configured for the group. To make changes, go to group repository settings."
 msgstr ""
 
 msgid "This stage has one or more manual jobs that require confirmation before retrying. Do you want to proceed?"

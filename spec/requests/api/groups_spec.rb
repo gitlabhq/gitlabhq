@@ -17,6 +17,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   let_it_be(:project2) { create(:project, namespace: group2, name: 'testing') }
   let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
   let_it_be(:archived_project) { create(:project, namespace: group1, archived: true) }
+  let_it_be(:marked_for_deletion_project) { create(:project, namespace: group1, marked_for_deletion_at: Date.current) }
 
   def expect_log_keys(caller_id:, route:, root_namespace:)
     expect(API::API::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
@@ -765,7 +766,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
         expect(json_response['shared_with_groups'][0]).to have_key('expires_at')
         expect(json_response['projects']).to be_an Array
-        expect(json_response['projects'].length).to eq(5)
+        expect(json_response['projects'].length).to eq(6)
         expect(json_response['shared_projects']).to be_an Array
         expect(json_response['shared_projects'].length).to eq(2)
         expect(json_response['shared_projects'][0]['id']).to eq(project2.id)
@@ -1244,7 +1245,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['parent_id']).to eq(nil)
         expect(json_response['created_at']).to be_present
         expect(json_response['projects']).to be_an Array
-        expect(json_response['projects'].length).to eq(3)
+        expect(json_response['projects'].length).to eq(4)
         expect(json_response['shared_projects']).to be_an Array
         expect(json_response['shared_projects'].length).to eq(0)
         expect(json_response['default_branch_protection']).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
@@ -1667,9 +1668,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
-        expect(json_response.length).to eq(3)
+        expect(json_response.length).to eq(4)
         project_names = json_response.map { |proj| proj['name'] }
-        expect(project_names).to match_array([project1.name, project3.name, archived_project.name])
+        expect(project_names).to match_array([project1.name, project3.name, archived_project.name, marked_for_deletion_project.name])
         expect(json_response.first['visibility']).to be_present
       end
 
@@ -1701,6 +1702,39 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.map { |project| project['id'] }).to contain_exactly(*Project.public_or_visible_to_user(user1).pluck(:id))
+        end
+      end
+
+      context 'and using active' do
+        it "returns only active projects when active is true", :aggregate_failures do
+          get api("/groups/#{group1.id}/projects?active=true", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          project_ids = json_response.map { |project| project['id'] }
+          expect(project_ids).not_to include(archived_project.id, marked_for_deletion_project.id)
+          expect(project_ids).to include(project1.id, project3.id)
+        end
+
+        it "returns only inactive projects when active is false", :aggregate_failures do
+          get api("/groups/#{group1.id}/projects?active=false", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          project_ids = json_response.map { |project| project['id'] }
+          expect(project_ids).to contain_exactly(archived_project.id, marked_for_deletion_project.id)
+        end
+
+        it "returns all projects when active is not provided", :aggregate_failures do
+          get api("/groups/#{group1.id}/projects", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          project_ids = json_response.map { |project| project['id'] }
+          expect(project_ids).to include(project1.id, project3.id, archived_project.id, marked_for_deletion_project.id)
         end
       end
 
@@ -1794,9 +1828,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
-        expect(json_response.length).to eq(3)
+        expect(json_response.length).to eq(4)
         project_names = json_response.map { |proj| proj['name'] }
-        expect(project_names).to match_array([project1.name, project3.name, archived_project.name])
+        expect(project_names).to match_array([project1.name, project3.name, archived_project.name, marked_for_deletion_project.name])
       end
 
       it "filters the groups projects", :aggregate_failures do
@@ -1821,7 +1855,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an(Array)
-        expect(json_response.length).to eq(3)
+        expect(json_response.length).to eq(4)
       end
 
       context 'when include_subgroups is true' do
@@ -1852,7 +1886,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an(Array)
-          expect(json_response.length).to eq(6)
+          expect(json_response.length).to eq(7)
         end
 
         it 'avoids N+1 queries', :aggregate_failures do
@@ -1885,7 +1919,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           records = Gitlab::Json.parse(response.body)
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
-          expect(records.map { |r| r['id'] }).to match_array([project1.id, project3.id, subgroup_project.id, archived_project.id])
+          expect(records.map { |r| r['id'] }).to match_array([project1.id, project3.id, subgroup_project.id, archived_project.id, marked_for_deletion_project.id])
         end
       end
 
@@ -1982,7 +2016,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         project_names = json_response.map { |proj| proj['name'] }
-        expect(project_names).to match_array([project1.name, project3.name, archived_project.name])
+        expect(project_names).to match_array([project1.name, project3.name, archived_project.name, marked_for_deletion_project.name])
       end
 
       it 'does not return a non existing group' do

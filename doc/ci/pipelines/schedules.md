@@ -69,7 +69,7 @@ Prerequisites:
 - You must have at least the Developer role for the project.
 - For schedules that target [protected branches](../../user/project/repository/branches/protected.md#protect-a-branch),
   you must have merge permissions for the target branch.
-- For schedules that run on [protected tags](../../user/project/protected_tags.md#configuring-protected-tags),
+- For schedules that run on [protected tags](../../user/project/protected_tags.md#configure-protected-tags),
   you must be allowed to create protected tags.
 
 To edit a pipeline schedule:

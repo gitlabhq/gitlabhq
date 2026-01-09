@@ -216,6 +216,48 @@ RSpec.describe Ability, feature_category: :system_access do
     end
   end
 
+  describe '.users_that_can_read_confidential_issues' do
+    shared_examples 'filtering users that can read confidential issues' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:guest) { create(:user) }
+      let_it_be(:reporter) { create(:user) }
+      let_it_be(:developer) { create(:user) }
+
+      let(:users) { [guest, reporter, developer] }
+
+      before do
+        parent.add_guest(guest)
+        parent.add_reporter(reporter)
+        parent.add_developer(developer)
+      end
+
+      it 'returns users that can read confidential issues' do
+        result = described_class.users_that_can_read_confidential_issues(users, parent)
+
+        expect(result).to match_array([reporter, developer])
+      end
+
+      it 'returns empty array when no users can read confidential issues' do
+        result = described_class.users_that_can_read_confidential_issues([guest], parent)
+
+        expect(result).to be_empty
+      end
+    end
+
+    context 'for groups' do
+      it_behaves_like 'filtering users that can read confidential issues' do
+        let(:parent) { group }
+      end
+    end
+
+    context 'for projects' do
+      it_behaves_like 'filtering users that can read confidential issues' do
+        let(:parent) { project }
+      end
+    end
+  end
+
   describe '.merge_requests_readable_by_user' do
     context 'with an admin when admin mode is enabled', :enable_admin_mode do
       it 'returns all merge requests' do

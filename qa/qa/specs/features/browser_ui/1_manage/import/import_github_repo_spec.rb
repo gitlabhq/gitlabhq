@@ -5,7 +5,7 @@ module QA
     describe 'GitHub import',
       quarantine: {
         type: :investigating,
-        issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/452419"
+        issue: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24018"
       } do
       include_context 'with github import'
 

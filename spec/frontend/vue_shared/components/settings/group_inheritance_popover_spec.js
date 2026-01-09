@@ -1,19 +1,19 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlPopover, GlLink, GlIcon, GlSprintf } from '@gitlab/ui';
-import GroupInheritancePopover from '~/projects/settings/branch_rules/components/view/group_inheritance_popover.vue';
+import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
 
 describe('GroupInheritancePopover', () => {
   let wrapper;
 
-  const createComponent = (provide = {}) => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(GroupInheritancePopover, {
       stubs: {
         GlSprintf,
       },
-      provide: {
-        canAdminGroupProtectedBranches: false,
+      propsData: {
+        hasGroupPermissions: false,
         groupSettingsRepositoryPath: '/groups/test-group/-/settings/repository',
-        ...provide,
+        ...props,
       },
     });
   };
@@ -67,7 +67,7 @@ describe('GroupInheritancePopover', () => {
 
   describe('when user can admin group protected branches', () => {
     beforeEach(() => {
-      createComponent({ canAdminGroupProtectedBranches: true });
+      createComponent({ hasGroupPermissions: true });
     });
 
     it('shows the editable description message', () => {

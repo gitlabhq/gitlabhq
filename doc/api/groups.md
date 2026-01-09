@@ -521,6 +521,7 @@ Parameters:
 | Attribute                     | Type           | Required | Description |
 |-------------------------------|----------------|----------|-------------|
 | `id`                          | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `active`                      | boolean        | no       | Limit by project status. When `true`, returns active projects. When `false`, returns projects that are archived or marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218053) in GitLab 18.8. |
 | `archived`                    | boolean        | no       | Limit by archived status. |
 | `visibility`                  | string         | no       | Limit by visibility `public`, `internal`, or `private`. |
 | `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` <sup>1</sup>, `star_count` or `last_activity_at` fields. Default is `created_at`. |

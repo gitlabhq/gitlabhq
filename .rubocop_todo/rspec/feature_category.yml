@@ -408,7 +408,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/lib/analytics/refresh_reassign_data_spec.rb'
     - 'ee/spec/lib/api/entities/deployments/approval_spec.rb'
     - 'ee/spec/lib/api/entities/deployments/approval_summary_spec.rb'
-    - 'ee/spec/lib/api/entities/experiment_spec.rb'
     - 'ee/spec/lib/api/entities/merge_request_approval_setting_spec.rb'
     - 'ee/spec/lib/api/entities/pending_member_spec.rb'
     - 'ee/spec/lib/api/entities/protected_environments/approval_rule_for_summary_spec.rb'

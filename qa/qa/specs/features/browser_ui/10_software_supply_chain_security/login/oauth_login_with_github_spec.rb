@@ -6,7 +6,7 @@ module QA
       it 'connects and logs in with GitHub OAuth',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/402405',
         quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/17856',
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17856',
           type: :stale
         } do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

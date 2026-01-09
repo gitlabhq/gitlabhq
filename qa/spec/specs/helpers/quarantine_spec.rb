@@ -2,7 +2,7 @@
 
 require 'rspec/core/sandbox'
 
-RSpec.describe QA::Specs::Helpers::Quarantine do
+RSpec.describe QA::Specs::Helpers::Quarantine, feature_category: :tooling do
   include QA::Support::Helpers::StubEnv
   include QA::Specs::Helpers::RSpec
 

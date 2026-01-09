@@ -2,7 +2,7 @@
 
 require "fog/google"
 
-RSpec.describe QA::Tools::Ci::QaChanges do
+RSpec.describe QA::Tools::Ci::QaChanges, feature_category: :tooling do
   include QA::Support::Helpers::StubEnv
   subject(:qa_changes) { described_class.new(mr_diff) }
 

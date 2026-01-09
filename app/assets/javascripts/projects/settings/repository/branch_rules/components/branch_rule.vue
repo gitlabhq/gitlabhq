@@ -6,7 +6,7 @@ import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { s__, sprintf, n__ } from '~/locale';
 import { accessLevelsConfig } from '~/projects/settings/branch_rules/components/view/constants';
 import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
-import GroupInheritancePopover from '~/projects/settings/branch_rules/components/view/group_inheritance_popover.vue';
+import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
 import { getAccessLevels } from '../../../utils';
 import GroupBadge from './group_badge.vue';
 
@@ -222,7 +222,11 @@ export default {
       </div>
 
       <div class="gl-flex gl-items-start gl-gap-2">
-        <group-inheritance-popover v-if="isGroupLevel" />
+        <group-inheritance-popover
+          v-if="isGroupLevel"
+          :has-group-permissions="canAdminGroupProtectedBranches"
+          :group-settings-repository-path="groupSettingsRepositoryPath"
+        />
         <gl-button
           class="gl-self-start"
           category="tertiary"

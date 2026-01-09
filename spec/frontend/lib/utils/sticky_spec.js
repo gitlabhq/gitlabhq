@@ -58,6 +58,17 @@ describe('Sticky elements utils', () => {
       });
     });
 
+    it('stops when scrollAmount is zero or negative', async () => {
+      getCoveringElement.mockResolvedValue(document.createElement('div'));
+      observeIntersectionOnce
+        .mockResolvedValueOnce({ intersectionRect: { bottom: 50 } })
+        .mockResolvedValueOnce({ intersectionRect: { top: 60 } });
+
+      await scrollPastCoveringElements(getElement());
+
+      expect(getPanel().scrollBy).not.toHaveBeenCalled();
+    });
+
     it('stops after maxIterations to prevent infinite loops', async () => {
       const coveringElement = document.createElement('div');
       getCoveringElement.mockResolvedValue(coveringElement);
