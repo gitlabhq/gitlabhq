@@ -5478,8 +5478,8 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       it 'remains archived' do
         post api(path, user)
 
-        expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['archived']).to be_truthy
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('Project is already archived.')
       end
     end
 

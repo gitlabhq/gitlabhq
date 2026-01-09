@@ -18,6 +18,7 @@ fragment Group on Group {
   }
   isLinkedToSubscription
   archived
+  isSelfArchived
   markedForDeletion
   isSelfDeletionInProgress
   isSelfDeletionScheduled

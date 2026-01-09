@@ -28,6 +28,19 @@ RSpec.describe Projects::ArchiveService, feature_category: :groups_and_projects 
         project.add_owner(user)
       end
 
+      context 'when project is already archived' do
+        before do
+          project.update!(archived: true)
+        end
+
+        it 'returns already archived error' do
+          result = service.execute
+
+          expect(result).to be_error
+          expect(result.message).to eq('Project is already archived.')
+        end
+      end
+
       context 'when project ancestors are already archived' do
         before do
           group.update!(archived: true)

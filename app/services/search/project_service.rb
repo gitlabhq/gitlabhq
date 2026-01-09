@@ -5,8 +5,6 @@ module Search
     include Search::Filter
     include Gitlab::Utils::StrongMemoize
 
-    LEGACY_ALLOWED_SCOPES = %w[blobs issues merge_requests wiki_blobs commits notes milestones users].freeze
-
     attr_accessor :project, :current_user, :params
 
     def initialize(user, project, params)
@@ -27,8 +25,6 @@ module Search
     end
 
     def allowed_scopes
-      return legacy_allowed_scopes unless Feature.enabled?(:search_scope_registry, :instance)
-
       Search::Scopes.available_for_context(
         context: :project,
         container: searched_container,
@@ -54,10 +50,6 @@ module Search
     strong_memoize_attr :scope
 
     private
-
-    def legacy_allowed_scopes
-      LEGACY_ALLOWED_SCOPES
-    end
 
     def searched_container
       project

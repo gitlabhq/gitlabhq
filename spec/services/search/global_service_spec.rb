@@ -162,15 +162,5 @@ RSpec.describe Search::GlobalService, feature_category: :global_search do
       )
       service.allowed_scopes
     end
-
-    context 'when search_scope_registry feature flag is disabled' do
-      before do
-        stub_feature_flags(search_scope_registry: false)
-      end
-
-      it 'returns legacy allowed scopes' do
-        expect(service.allowed_scopes).to eq(described_class::LEGACY_ALLOWED_SCOPES)
-      end
-    end
   end
 end

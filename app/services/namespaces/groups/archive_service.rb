@@ -26,7 +26,7 @@ module Namespaces
           return NotAuthorizedError
         end
 
-        return AlreadyArchivedError if group.archived
+        return AlreadyArchivedError if group.self_archived?
         return AncestorAlreadyArchivedError if group.ancestors_archived?
         return ScheduledDeletionError if group.scheduled_for_deletion_in_hierarchy_chain?
 

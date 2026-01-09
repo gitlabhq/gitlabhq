@@ -42,71 +42,102 @@ const MOCK_PROJECT_PENDING_DELETION = {
 };
 
 describe('availableGraphQLProjectActions', () => {
-  describe.each`
-    userPermissions                                  | markedForDeletion | isSelfDeletionInProgress | isSelfDeletionScheduled | archived | availableActions
-    ${{ viewEditPage: false, removeProject: false }} | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID]}
-    ${{ viewEditPage: true, removeProject: false }}  | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID, ACTION_EDIT]}
-    ${{ viewEditPage: false, removeProject: true }}  | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID, ACTION_DELETE]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_DELETE]}
-    ${{ viewEditPage: true, removeProject: false }}  | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID, ACTION_EDIT]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID, ACTION_EDIT]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${true}                 | ${false} | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID, ACTION_EDIT]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${true}                 | ${false} | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${true}                  | ${false}                | ${false} | ${[]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${true}                  | ${true}                 | ${false} | ${[]}
-    ${{ archiveProject: true }}                      | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID]}
-    ${{ archiveProject: true }}                      | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID, ACTION_ARCHIVE]}
-    ${{ archiveProject: true }}                      | ${false}          | ${false}                 | ${false}                | ${true}  | ${[ACTION_COPY_ID, ACTION_UNARCHIVE]}
-    ${{ archiveProject: false }}                     | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_COPY_ID]}
-    ${{ archiveProject: false }}                     | ${false}          | ${false}                 | ${false}                | ${true}  | ${[ACTION_COPY_ID]}
-  `(
-    'availableGraphQLProjectActions',
-    ({
-      userPermissions,
-      markedForDeletion,
-      isSelfDeletionInProgress,
-      isSelfDeletionScheduled,
-      archived,
-      availableActions,
-    }) => {
-      beforeEach(() => {
-        window.gon = {
-          allow_immediate_namespaces_deletion: true,
-        };
+  describe('when user has viewEditPage permission', () => {
+    it('includes edit action', () => {
+      const availableActions = availableGraphQLProjectActions({
+        userPermissions: { viewEditPage: true },
       });
 
-      it(`when userPermissions = ${JSON.stringify(userPermissions)}, markedForDeletion is ${markedForDeletion}, isSelfDeletionInProgress is ${isSelfDeletionInProgress}, isSelfDeletionScheduled is ${isSelfDeletionScheduled}, and  archived is ${archived} then availableActions = [${availableActions}] and is sorted correctly`, () => {
-        expect(
-          availableGraphQLProjectActions({
-            userPermissions,
+      expect(availableActions).toContain(ACTION_EDIT);
+    });
+  });
+
+  describe('when user has no viewEditPage permission', () => {
+    it('does not include edit action', () => {
+      const availableActions = availableGraphQLProjectActions({
+        userPermissions: { viewEditPage: false },
+      });
+
+      expect(availableActions).not.toContain(ACTION_EDIT);
+    });
+  });
+
+  describe('when user has no archiveProject permission', () => {
+    it('does not include archive nor unarchive action', () => {
+      const availableActions = availableGraphQLProjectActions({
+        userPermissions: { archiveProject: false },
+      });
+
+      expect(availableActions).toStrictEqual([ACTION_COPY_ID]);
+    });
+  });
+
+  describe('when user has archiveProject permission', () => {
+    describe.each`
+      description                               | archived | isSelfArchived | markedForDeletion | expectedActions
+      ${'project is not archived'}              | ${false} | ${false}       | ${false}          | ${[ACTION_COPY_ID, ACTION_ARCHIVE]}
+      ${'project is archived'}                  | ${true}  | ${true}        | ${false}          | ${[ACTION_COPY_ID, ACTION_UNARCHIVE]}
+      ${'project belongs to an archived group'} | ${true}  | ${false}       | ${false}          | ${[ACTION_COPY_ID]}
+      ${'project is marked for deletion'}       | ${false} | ${false}       | ${true}           | ${[ACTION_COPY_ID]}
+    `('when $description', ({ archived, isSelfArchived, markedForDeletion, expectedActions }) => {
+      it('returns expected actions', () => {
+        const availableActions = availableGraphQLProjectActions({
+          userPermissions: { archiveProject: true },
+          archived,
+          isSelfArchived,
+          markedForDeletion,
+        });
+
+        expect(availableActions).toStrictEqual(expectedActions);
+      });
+    });
+  });
+
+  describe('when user has no removeProject permission', () => {
+    it('does not include delete actions', () => {
+      const availableActions = availableGraphQLProjectActions({
+        userPermissions: { removeProject: false },
+      });
+
+      expect(availableActions).toStrictEqual([ACTION_COPY_ID]);
+    });
+  });
+
+  describe('when user has removeProject permission', () => {
+    describe.each`
+      description                                      | markedForDeletion | isSelfDeletionScheduled | isSelfDeletionInProgress | allowImmediateNamespacesDeletion | expectedActions
+      ${'project is not marked for deletion'}          | ${false}          | ${false}                | ${false}                 | ${true}                          | ${[ACTION_COPY_ID, ACTION_DELETE]}
+      ${'project is scheduled for deletion'}           | ${true}           | ${true}                 | ${false}                 | ${true}                          | ${[ACTION_COPY_ID, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
+      ${'project is scheduled but immediate disabled'} | ${true}           | ${true}                 | ${false}                 | ${false}                         | ${[ACTION_COPY_ID, ACTION_RESTORE]}
+      ${'project belongs to a deleted group'}          | ${true}           | ${false}                | ${false}                 | ${true}                          | ${[ACTION_COPY_ID]}
+      ${'project deletion is in progress'}             | ${true}           | ${true}                 | ${true}                  | ${true}                          | ${[]}
+    `(
+      'when $description',
+      ({
+        markedForDeletion,
+        isSelfDeletionScheduled,
+        isSelfDeletionInProgress,
+        allowImmediateNamespacesDeletion,
+        expectedActions,
+      }) => {
+        beforeEach(() => {
+          window.gon = {
+            allow_immediate_namespaces_deletion: allowImmediateNamespacesDeletion,
+          };
+        });
+
+        it('returns expected actions', () => {
+          const availableActions = availableGraphQLProjectActions({
+            userPermissions: { removeProject: true },
             markedForDeletion,
             isSelfDeletionInProgress,
             isSelfDeletionScheduled,
-            archived,
-          }),
-        ).toStrictEqual(availableActions);
-      });
-    },
-  );
+          });
 
-  describe('when allow_immediate_namespaces_deletion is disabled', () => {
-    beforeEach(() => {
-      window.gon = {
-        allow_immediate_namespaces_deletion: false,
-      };
-    });
-
-    it('does not allow deleting immediately', () => {
-      expect(
-        availableGraphQLProjectActions({
-          userPermissions: { viewEditPage: true, removeProject: true },
-          markedForDeletion: true,
-          isSelfDeletionInProgress: false,
-          isSelfDeletionScheduled: true,
-        }),
-      ).toStrictEqual([ACTION_COPY_ID, ACTION_EDIT, ACTION_RESTORE]);
-    });
+          expect(availableActions).toStrictEqual(expectedActions);
+        });
+      },
+    );
   });
 });
 

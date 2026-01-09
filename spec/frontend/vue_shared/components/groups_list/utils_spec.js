@@ -1,21 +1,21 @@
 import {
+  availableGraphQLGroupActions,
   deleteParams,
+  renderArchiveSuccessToast,
   renderDeleteSuccessToast,
   renderLeaveSuccessToast,
   renderRestoreSuccessToast,
-  availableGraphQLGroupActions,
-  renderArchiveSuccessToast,
   renderUnarchiveSuccessToast,
 } from '~/vue_shared/components/groups_list/utils';
 import {
-  ACTION_COPY_ID,
-  ACTION_EDIT,
   ACTION_ARCHIVE,
-  ACTION_UNARCHIVE,
-  ACTION_RESTORE,
+  ACTION_COPY_ID,
   ACTION_DELETE,
-  ACTION_LEAVE,
   ACTION_DELETE_IMMEDIATELY,
+  ACTION_EDIT,
+  ACTION_LEAVE,
+  ACTION_RESTORE,
+  ACTION_UNARCHIVE,
 } from '~/vue_shared/components/list_actions/constants';
 import toast from '~/vue_shared/plugins/global_toast';
 
@@ -45,76 +45,134 @@ afterEach(() => {
 });
 
 describe('availableGraphQLGroupActions', () => {
-  describe.each`
-    userPermissions                                              | markedForDeletion | isSelfDeletionInProgress | isSelfDeletionScheduled | archived | features                   | availableActions
-    ${{ viewEditPage: false, removeGroup: false }}               | ${false}          | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_COPY_ID]}
-    ${{ viewEditPage: true, removeGroup: false }}                | ${false}          | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_EDIT]}
-    ${{ viewEditPage: false, removeGroup: true }}                | ${false}          | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_DELETE]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${false}          | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_DELETE]}
-    ${{ viewEditPage: true, removeGroup: false }}                | ${true}           | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_EDIT]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_EDIT]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${false}                 | ${true}                 | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
-    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${true}           | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_LEAVE]}
-    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${true}           | ${false}                 | ${true}                 | ${false} | ${{}}                      | ${[ACTION_COPY_ID, ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE_IMMEDIATELY]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${true}                  | ${false}                | ${false} | ${{}}                      | ${[]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${true}                  | ${true}                 | ${false} | ${{}}                      | ${[]}
-    ${{ archiveGroup: true }}                                    | ${true}           | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: true }}  | ${[ACTION_COPY_ID]}
-    ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: true }}  | ${[ACTION_COPY_ID, ACTION_ARCHIVE]}
-    ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${true}  | ${{ archiveGroup: true }}  | ${[ACTION_COPY_ID, ACTION_UNARCHIVE]}
-    ${{ archiveGroup: false }}                                   | ${false}          | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: true }}  | ${[ACTION_COPY_ID]}
-    ${{ archiveGroup: false }}                                   | ${false}          | ${false}                 | ${false}                | ${true}  | ${{ archiveGroup: true }}  | ${[ACTION_COPY_ID]}
-    ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: false }} | ${[ACTION_COPY_ID]}
-    ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${true}  | ${{ archiveGroup: false }} | ${[ACTION_COPY_ID, ACTION_UNARCHIVE]}
-    ${{ archiveGroup: false }}                                   | ${false}          | ${false}                 | ${false}                | ${false} | ${{ archiveGroup: false }} | ${[ACTION_COPY_ID]}
-    ${{ archiveGroup: false }}                                   | ${false}          | ${false}                 | ${false}                | ${true}  | ${{ archiveGroup: false }} | ${[ACTION_COPY_ID]}
-  `(
-    'availableGraphQLGroupActions',
-    ({
-      userPermissions,
-      markedForDeletion,
-      isSelfDeletionInProgress,
-      isSelfDeletionScheduled,
-      archived,
-      features,
-      availableActions,
-    }) => {
-      beforeEach(() => {
-        window.gon = {
-          features,
-          allow_immediate_namespaces_deletion: true,
-        };
+  describe('when user has viewEditPage permission', () => {
+    it('includes edit action', () => {
+      const availableActions = availableGraphQLGroupActions({
+        userPermissions: { viewEditPage: true },
       });
 
-      it(`when userPermissions = ${JSON.stringify(userPermissions)}, markedForDeletion is ${markedForDeletion}, isSelfDeletionInProgress is ${isSelfDeletionInProgress}, isSelfDeletionScheduled is ${isSelfDeletionScheduled}, and archived is ${archived} then availableActions = [${availableActions}] and is sorted correctly`, () => {
-        expect(
-          availableGraphQLGroupActions({
-            userPermissions,
+      expect(availableActions).toContain(ACTION_EDIT);
+    });
+  });
+
+  describe('when user has no viewEditPage permission', () => {
+    it('does not include edit action', () => {
+      const availableActions = availableGraphQLGroupActions({
+        userPermissions: { viewEditPage: false },
+      });
+
+      expect(availableActions).not.toContain(ACTION_EDIT);
+    });
+  });
+
+  describe('when user has archiveGroup permission', () => {
+    describe.each`
+      description                                                  | featureFlag | archived | isSelfArchived | markedForDeletion | expectedActions
+      ${'group is not archived'}                                   | ${true}     | ${false} | ${false}       | ${false}          | ${[ACTION_COPY_ID, ACTION_ARCHIVE]}
+      ${'group is archived'}                                       | ${true}     | ${true}  | ${true}        | ${false}          | ${[ACTION_COPY_ID, ACTION_UNARCHIVE]}
+      ${'group belongs to an archived group'}                      | ${true}     | ${true}  | ${false}       | ${false}          | ${[ACTION_COPY_ID]}
+      ${'group is scheduled for deletion'}                         | ${true}     | ${false} | ${false}       | ${true}           | ${[ACTION_COPY_ID]}
+      ${'group is not archived but flag is disabled'}              | ${false}    | ${false} | ${false}       | ${false}          | ${[ACTION_COPY_ID]}
+      ${'group is archived but flag is disabled'}                  | ${false}    | ${true}  | ${true}        | ${false}          | ${[ACTION_COPY_ID, ACTION_UNARCHIVE]}
+      ${'group belongs to an archived group but flag is disabled'} | ${false}    | ${true}  | ${false}       | ${false}          | ${[ACTION_COPY_ID]}
+      ${'group is scheduled for deletion but flag is disabled'}    | ${false}    | ${false} | ${false}       | ${true}           | ${[ACTION_COPY_ID]}
+    `(
+      'when $description',
+      ({ featureFlag, archived, isSelfArchived, markedForDeletion, expectedActions }) => {
+        beforeEach(() => {
+          window.gon = {
+            features: { archiveGroup: featureFlag },
+          };
+        });
+
+        it('returns expected actions', () => {
+          const availableActions = availableGraphQLGroupActions({
+            userPermissions: { archiveGroup: true },
+            archived,
+            isSelfArchived,
+            markedForDeletion,
+          });
+
+          expect(availableActions).toStrictEqual(expectedActions);
+        });
+      },
+    );
+  });
+
+  describe('when user has no archiveGroup permission', () => {
+    it('does not include archive nor unarchive action', () => {
+      const availableActions = availableGraphQLGroupActions({
+        userPermissions: { archiveGroup: false },
+      });
+
+      expect(availableActions).toStrictEqual([ACTION_COPY_ID]);
+    });
+  });
+
+  describe('when user has removeGroup permission', () => {
+    describe.each`
+      description                                    | markedForDeletion | isSelfDeletionScheduled | isSelfDeletionInProgress | allowImmediateNamespacesDeletion | expectedActions
+      ${'group is not marked for deletion'}          | ${false}          | ${false}                | ${false}                 | ${true}                          | ${[ACTION_COPY_ID, ACTION_DELETE]}
+      ${'group is scheduled for deletion'}           | ${true}           | ${true}                 | ${false}                 | ${true}                          | ${[ACTION_COPY_ID, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
+      ${'group is scheduled but immediate disabled'} | ${true}           | ${true}                 | ${false}                 | ${false}                         | ${[ACTION_COPY_ID, ACTION_RESTORE]}
+      ${'group belongs to a deleted group'}          | ${true}           | ${false}                | ${false}                 | ${true}                          | ${[ACTION_COPY_ID]}
+      ${'group deletion is in progress'}             | ${true}           | ${true}                 | ${true}                  | ${true}                          | ${[]}
+    `(
+      'when $description',
+      ({
+        markedForDeletion,
+        isSelfDeletionScheduled,
+        isSelfDeletionInProgress,
+        allowImmediateNamespacesDeletion,
+        expectedActions,
+      }) => {
+        beforeEach(() => {
+          window.gon = {
+            allow_immediate_namespaces_deletion: allowImmediateNamespacesDeletion,
+          };
+        });
+
+        it('returns expected actions', () => {
+          const availableActions = availableGraphQLGroupActions({
+            userPermissions: { removeGroup: true },
             markedForDeletion,
             isSelfDeletionInProgress,
             isSelfDeletionScheduled,
-            archived,
-          }),
-        ).toStrictEqual(availableActions);
+          });
+
+          expect(availableActions).toStrictEqual(expectedActions);
+        });
+      },
+    );
+  });
+
+  describe('when user has no removeGroup permission', () => {
+    it('does not include delete actions', () => {
+      const availableActions = availableGraphQLGroupActions({
+        userPermissions: { removeGroup: false },
       });
-    },
-  );
 
-  describe('when allow_immediate_namespaces_deletion is disabled', () => {
-    beforeEach(() => {
-      window.gon = {
-        allow_immediate_namespaces_deletion: false,
-      };
+      expect(availableActions).toStrictEqual([ACTION_COPY_ID]);
     });
+  });
 
-    it('does not allow deleting immediately', () => {
-      expect(
-        availableGraphQLGroupActions({
-          userPermissions: { viewEditPage: true, removeGroup: true },
-          markedForDeletion: true,
-          isSelfDeletionInProgress: false,
-          isSelfDeletionScheduled: true,
-        }),
-      ).toStrictEqual([ACTION_COPY_ID, ACTION_EDIT, ACTION_RESTORE]);
+  describe('when user has canLeave permission', () => {
+    it('includes leave action', () => {
+      const availableActions = availableGraphQLGroupActions({
+        userPermissions: { canLeave: true },
+      });
+
+      expect(availableActions).toContain(ACTION_LEAVE);
+    });
+  });
+
+  describe('when user has no canLeave permission', () => {
+    it('does not include leave', () => {
+      const availableActions = availableGraphQLGroupActions({
+        userPermissions: { canLeave: false },
+      });
+
+      expect(availableActions).not.toContain(ACTION_LEAVE);
     });
   });
 });

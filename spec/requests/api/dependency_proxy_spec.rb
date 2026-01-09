@@ -60,5 +60,12 @@ RSpec.describe API::DependencyProxy, :api, feature_category: :virtual_registry d
 
       it_behaves_like 'responding to purge requests'
     end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_dependency_proxy_cache do
+      let(:boundary_object) { group }
+      let(:request) do
+        delete api("/groups/#{group.id}/dependency_proxy/cache", personal_access_token: pat)
+      end
+    end
   end
 end

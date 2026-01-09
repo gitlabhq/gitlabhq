@@ -13,6 +13,7 @@ const formatSubgroupsAndProjects = (item) => {
     fullPath: item.full_path,
     editPath: item.edit_path,
     archived: item.archived,
+    isSelfArchived: item.is_self_archived,
     descriptionHtml: item.markdown_description,
     visibility: item.visibility,
     createdAt: item.created_at,

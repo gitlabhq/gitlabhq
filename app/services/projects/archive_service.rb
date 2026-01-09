@@ -7,6 +7,9 @@ module Projects
     NotAuthorizedError = ServiceResponse.error(
       message: "You don't have permissions to archive this project."
     )
+    AlreadyArchivedError = ServiceResponse.error(
+      message: 'Project is already archived.'
+    )
     AncestorAlreadyArchivedError = ServiceResponse.error(
       message: 'Cannot archive project since one of the ancestors is already archived.'
     )
@@ -19,6 +22,7 @@ module Projects
 
     def execute
       return NotAuthorizedError unless can?(current_user, :archive_project, project)
+      return AlreadyArchivedError if project.self_archived?
       return AncestorAlreadyArchivedError if project.ancestors_archived?
       return ScheduledDeletionError if project.scheduled_for_deletion_in_hierarchy_chain?
 

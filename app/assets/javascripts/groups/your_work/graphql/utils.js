@@ -15,6 +15,7 @@ export const formatGroupForGraphQLResolver = (group) => ({
   updatedAt: group.updated_at,
   avatarUrl: group.avatar_url,
   archived: group.archived,
+  isSelfArchived: group.is_self_archived,
   markedForDeletion: group.marked_for_deletion,
   isSelfDeletionInProgress: group.is_self_deletion_in_progress,
   isSelfDeletionScheduled: group.is_self_deletion_scheduled,

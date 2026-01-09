@@ -19,16 +19,6 @@ module Search
     end
 
     def tabs
-      if ::Feature.enabled?(:search_scope_registry, :instance)
-        tabs_with_registry
-      else
-        legacy_tabs
-      end
-    end
-
-    private
-
-    def tabs_with_registry
       nav = {}
       Search::Scopes.scope_definitions.each do |scope_key, definition|
         label = definition[:label]
@@ -53,63 +43,7 @@ module Search
       nav
     end
 
-    def legacy_tabs
-      {
-        projects: {
-          sort: 1,
-          label: _("Projects"),
-          data: { testid: 'projects-tab' },
-          condition: project.nil?
-        },
-        blobs: {
-          sort: 2,
-          label: _("Code"),
-          data: { testid: 'code-tab' },
-          condition: show_code_search_tab?
-        },
-        #  sort: 3 is reserved for EE items
-        issues: {
-          sort: 4,
-          label: _("Issues"),
-          condition: show_issues_search_tab?
-        },
-        merge_requests: {
-          sort: 5,
-          label: _("Merge requests"),
-          condition: show_merge_requests_search_tab?
-        },
-        wiki_blobs: {
-          sort: 6,
-          label: _("Wiki"),
-          condition: show_wiki_search_tab?
-        },
-        commits: {
-          sort: 7,
-          label: _("Commits"),
-          condition: show_commits_search_tab?
-        },
-        notes: {
-          sort: 8,
-          label: _("Comments"),
-          condition: show_comments_search_tab?
-        },
-        milestones: {
-          sort: 9, label: _("Milestones"),
-          condition: show_milestones_search_tab?
-        },
-        users: {
-          sort: 10,
-          label: _("Users"),
-          condition: show_user_search_tab?
-        },
-        snippet_titles: {
-          sort: 11,
-          label: _("Snippets"),
-          search: { snippets: true, group_id: nil, project_id: nil },
-          condition: show_snippets_search_tab?
-        }
-      }
-    end
+    private
 
     # Returns whether a scope should be visible
     # This method is called for each scope defined in Search::Scopes::SCOPE_DEFINITIONS

@@ -64,12 +64,7 @@ module Gitlab
         end
 
         def search_scopes
-          if Feature.enabled?(:search_scope_registry, :instance)
-            ::Search::Scopes.all_scope_names
-          else
-            # Legacy list of scopes for SLI metrics
-            ::Gitlab::Search::AbuseDetection::LEGACY_ALLOWED_SCOPES
-          end
+          ::Search::Scopes.all_scope_names
         end
 
         def endpoint_ids

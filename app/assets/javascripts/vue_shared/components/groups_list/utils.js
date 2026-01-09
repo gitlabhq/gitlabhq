@@ -17,6 +17,7 @@ export const availableGraphQLGroupActions = ({
   isSelfDeletionInProgress,
   isSelfDeletionScheduled,
   archived,
+  isSelfArchived,
 }) => {
   // No actions available when group deletion is in progress
   if (isSelfDeletionInProgress) {
@@ -27,7 +28,7 @@ export const availableGraphQLGroupActions = ({
   const canEdit = userPermissions.viewEditPage;
   const canArchive =
     userPermissions.archiveGroup && !archived && !markedForDeletion && gon.features?.archiveGroup;
-  const canUnarchive = userPermissions.archiveGroup && archived;
+  const canUnarchive = userPermissions.archiveGroup && isSelfArchived;
   const canRestore = userPermissions.removeGroup && isSelfDeletionScheduled;
   const { canLeave } = userPermissions;
   // Groups that are not marked for deletion can be deleted (delayed)

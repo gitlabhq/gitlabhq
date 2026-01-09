@@ -16,6 +16,7 @@ export const availableGraphQLProjectActions = ({
   isSelfDeletionInProgress,
   isSelfDeletionScheduled,
   archived,
+  isSelfArchived,
 }) => {
   // No actions available when project deletion is in progress
   if (isSelfDeletionInProgress) {
@@ -25,7 +26,7 @@ export const availableGraphQLProjectActions = ({
   // Rules
   const canEdit = userPermissions.viewEditPage;
   const canArchive = userPermissions.archiveProject && !archived && !markedForDeletion;
-  const canUnarchive = userPermissions.archiveProject && archived;
+  const canUnarchive = userPermissions.archiveProject && isSelfArchived;
   const canRestore = userPermissions.removeProject && isSelfDeletionScheduled;
   // Projects that are not marked for deletion can be deleted (delayed)
   const canDelete = userPermissions.removeProject && !markedForDeletion;
