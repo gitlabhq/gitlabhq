@@ -78,12 +78,12 @@ module Gitlab
       real_time = (real_stop - real_start)
       cpu_time = cpu_stop - cpu_start
 
-      trans.observe("gitlab_#{name}_real_duration_seconds".to_sym, real_time) do
+      trans.observe(:"gitlab_#{name}_real_duration_seconds", real_time) do
         docstring "Measure #{name}"
         buckets EXECUTION_MEASUREMENT_BUCKETS
       end
 
-      trans.observe("gitlab_#{name}_cpu_duration_seconds".to_sym, cpu_time) do
+      trans.observe(:"gitlab_#{name}_cpu_duration_seconds", cpu_time) do
         docstring "Measure #{name}"
         buckets EXECUTION_MEASUREMENT_BUCKETS
         with_feature "prometheus_metrics_measure_#{name}_cpu_duration"

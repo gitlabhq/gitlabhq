@@ -30,7 +30,7 @@ module Gitlab
       # event_name - The name of the event (e.g. "git_push").
       # tags - A set of tags to attach to the event.
       def add_event(event_name, tags = {})
-        event_name = "gitlab_transaction_event_#{event_name}_total".to_sym
+        event_name = :"gitlab_transaction_event_#{event_name}_total"
         metric = self.class.prometheus_metric(event_name, :counter) do
           label_keys tags.keys
         end

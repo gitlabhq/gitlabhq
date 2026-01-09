@@ -332,7 +332,7 @@ module Gitlab
           return object unless value
 
           references.each do |key|
-            attribute = "#{key.delete_suffix('_id')}=".to_sym
+            attribute = :"#{key.delete_suffix('_id')}="
             next unless object.respond_to?(key) && object.respond_to?(attribute)
 
             if object.read_attribute(key) == value&.id

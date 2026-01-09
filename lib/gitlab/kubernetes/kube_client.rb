@@ -26,7 +26,7 @@ module Gitlab
       }.freeze
 
       SUPPORTED_API_GROUPS.each do |name, params|
-        client_method_name = "#{name}_client".to_sym
+        client_method_name = :"#{name}_client"
 
         define_method(client_method_name) do
           strong_memoize(client_method_name) do

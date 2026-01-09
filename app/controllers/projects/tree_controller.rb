@@ -36,7 +36,7 @@ class Projects::TreeController < Projects::ApplicationController
       })
     end
 
-    @ref_type = ref_type
+    @ref_type = ref_type if Feature.disabled?(:verified_ref_extractor, @project)
 
     if tree.entries.empty?
       if @repository.blob_at(@commit.id, @path)

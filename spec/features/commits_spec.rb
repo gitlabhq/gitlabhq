@@ -103,10 +103,10 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
                   visit project_commits_path(project, short_sha)
                 end
 
-                it 'shows latest build status for the commit sha' do
+                # Git prioritizes matching short SHAs to branches over commits
+                it 'does not show any build status' do
                   page.within("//li[@id='commit-#{short_sha}']") do
-                    expect(page).to have_css("[data-testid='ci-icon']")
-                    expect(page).to have_css('[data-testid="status_failed_borderless-icon"]')
+                    expect(page).not_to have_css("[data-testid='ci-icon']")
                   end
                 end
               end

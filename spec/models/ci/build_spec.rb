@@ -2340,12 +2340,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       specify do
-        expect(Ci::BuildTag.where(build_id: build_without_job_definition, tag_id: Ci::Tag.find_by_name('tag_from_tags')))
-          .not_to be_empty
+        expect(build_without_job_definition.job_definition).to be_nil
       end
 
-      specify do
-        expect(build_without_job_definition.job_definition).to be_nil
+      it 'does not create build tagging' do
+        expect(Ci::BuildTag.where(build_id: build_without_job_definition, tag_id: Ci::Tag.find_by_name('tag_from_tags')))
+          .to be_empty
       end
 
       it 'falls back to tags table' do
@@ -2386,17 +2386,22 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     it 'saves tags' do
       build.save!
 
-      expect(build.tags.count).to eq(1)
-      expect(build.tags.first.name).to eq('tag')
-      expect(build.taggings.count).to eq(1)
-      expect(build.taggings.first.tag.name).to eq('tag')
+      expect(build.tag_list).to contain_exactly('tag')
+      expect(build.tags).to be_empty
+      expect(build.taggings).to be_empty
     end
 
-    it 'strips tags' do
-      build.tag_list = ['       taga', 'tagb      ', '   tagc    ']
+    context 'when tags have white-space' do
+      before do
+        build.tag_list = ['       taga', 'tagb      ', '   tagc    ']
+      end
 
-      build.save!
-      expect(build.tags.map(&:name)).to match_array(%w[taga tagb tagc])
+      it 'strips tags' do
+        build.save!
+
+        expect(build.tag_list).to match_array(%w[taga tagb tagc])
+        expect(build.tags.map(&:name)).to be_empty
+      end
     end
 
     context 'with BulkInsertableTags.with_bulk_insert_tags' do

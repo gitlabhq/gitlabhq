@@ -33,12 +33,8 @@ module Gitlab
             }
           end
 
-          def polymorphic_taggings?
-            true
-          end
-
-          def monomorphic_taggings?(_taggable)
-            true
+          def uses_taggings?
+            Feature.disabled?(:ci_stop_populating_p_ci_build_tags, @project)
           end
         end
       end

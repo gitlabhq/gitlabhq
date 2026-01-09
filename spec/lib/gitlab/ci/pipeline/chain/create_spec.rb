@@ -112,11 +112,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
     end
 
     let(:job) do
-      build(:ci_build, :without_job_definition, ci_stage: stage, pipeline: pipeline, project: project)
+      build(:ci_build, ci_stage: stage, pipeline: pipeline, project: project)
     end
 
     let(:bridge) do
-      build(:ci_bridge, :without_job_definition, ci_stage: stage, pipeline: pipeline, project: project)
+      build(:ci_bridge, ci_stage: stage, pipeline: pipeline, project: project)
     end
 
     before do
@@ -125,34 +125,72 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
     end
 
     context 'without tags' do
-      it 'extracts an empty tag list' do
+      it 'does not try to insert taggings' do
         expect(Gitlab::Ci::Tags::BulkInsert)
-          .to receive(:bulk_insert_tags!)
-          .with([job])
-          .and_call_original
+          .not_to receive(:bulk_insert_tags!)
 
         step.perform!
 
         expect(job).to be_persisted
         expect(job.tag_list).to eq([])
+        expect(Ci::Tag.count).to be_zero
+      end
+
+      context 'when ci_stop_populating_p_ci_build_tags FF is disabled' do
+        before do
+          stub_feature_flags(ci_stop_populating_p_ci_build_tags: false)
+        end
+
+        it 'extracts an empty tag list' do
+          expect(Gitlab::Ci::Tags::BulkInsert)
+            .to receive(:bulk_insert_tags!)
+            .with([job])
+            .and_call_original
+
+          step.perform!
+
+          expect(job).to be_persisted
+          expect(job.tag_list).to eq([])
+          expect(Ci::Tag.count).to be_zero
+        end
       end
     end
 
     context 'with tags' do
-      before do
-        job.tag_list = %w[tag1 tag2]
+      let(:job) do
+        build(:ci_build, ci_stage: stage, pipeline: pipeline, project: project, tag_list: %w[tag1 tag2])
       end
 
-      it 'bulk inserts tags' do
+      it 'does not bulk inserts tags' do
         expect(Gitlab::Ci::Tags::BulkInsert)
-          .to receive(:bulk_insert_tags!)
-          .with([job])
-          .and_call_original
+          .not_to receive(:bulk_insert_tags!)
 
         step.perform!
 
         expect(job).to be_persisted
-        expect(job.reload.tag_list).to match_array(%w[tag1 tag2])
+        expect(job.reload.tag_list).to eq(%w[tag1 tag2])
+        expect(job.reload.taggings).to be_empty
+        expect(Ci::Tag.named(%w[tag1 tag2])).to be_empty
+      end
+
+      context 'when ci_stop_populating_p_ci_build_tags feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_stop_populating_p_ci_build_tags: false)
+        end
+
+        it 'bulk inserts tags with taggings' do
+          expect(Gitlab::Ci::Tags::BulkInsert)
+            .to receive(:bulk_insert_tags!)
+            .with([job])
+            .and_call_original
+
+          step.perform!
+
+          expect(job).to be_persisted
+          expect(job.reload.tag_list).to match_array(%w[tag1 tag2])
+          expect(job.reload.taggings.count).to be 2
+          expect(Ci::Tag.named(%w[tag1 tag2]).count).to be 2
+        end
       end
     end
   end

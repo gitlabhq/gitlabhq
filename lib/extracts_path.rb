@@ -25,13 +25,11 @@ module ExtractsPath
   # - @ref    - A string representing the ref (e.g., the branch, tag, or commit SHA)
   # - @path   - A string representing the filesystem path
   # - @commit - A Commit representing the commit from the given ref
+  # - @ref_type - The type of ref this is, will attempt to detect if not supplied in params
   #
   # If the :id parameter appears to be requesting a specific response format,
   # that will be handled as well.
   def assign_ref_vars
-    ref_extractor = ExtractsRef::RefExtractor.new(repository_container, params.permit(:id, :ref, :path, :ref_type))
-    ref_extractor.extract!
-
     @id = ref_extractor.id
     @ref = ref_extractor.ref
     @path = ref_extractor.path
@@ -43,6 +41,7 @@ module ExtractsPath
     end
 
     rectify_format!
+    ref_type if Feature.enabled?(:verified_ref_extractor, @project)
 
     rectify_renamed_default_branch! && return
 
@@ -55,7 +54,14 @@ module ExtractsPath
   end
 
   def ref_type
-    ExtractsRef::RefExtractor.ref_type(params[:ref_type])
+    if Feature.enabled?(:verified_ref_extractor, @project)
+      return @ref_type if defined? @ref_type
+
+      @ref_type = ExtractsRef::VerifiedRefExtractor
+        .ref_type(repository_container.repository, ref: ref_extractor.ref, ref_type: ref_extractor.ref_type)
+    else
+      ExtractsRef::RefExtractor.ref_type(params[:ref_type])
+    end
   end
 
   private
@@ -122,6 +128,11 @@ module ExtractsPath
 
   def repository_container
     @project
+  end
+
+  def ref_extractor
+    @ref_extractor ||=
+      ExtractsRef::RefExtractor.new(repository_container, params.permit(:id, :ref, :path, :ref_type)).tap(&:extract!)
   end
 end
 # rubocop:enable Gitlab/ModuleWithInstanceVariables

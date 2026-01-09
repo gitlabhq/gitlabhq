@@ -85,8 +85,21 @@ RSpec.describe Projects::BlameController, feature_category: :source_code_managem
         it 'redirects with flash' do
           request
 
-          expect(controller).to redirect_to("/#{project.full_path}/-/blame/#{id}")
+          expect(controller).to redirect_to("/#{project.full_path}/-/blame/#{id}?ref_type=heads")
           expect(flash[:notice]).to eq(flash_message)
+        end
+
+        context 'with verified_ref_extractor disabled' do
+          before do
+            stub_feature_flags(verified_ref_extractor: false)
+          end
+
+          it 'redirects with flash' do
+            request
+
+            expect(controller).to redirect_to("/#{project.full_path}/-/blame/#{id}")
+            expect(flash[:notice]).to eq(flash_message)
+          end
         end
       end
 

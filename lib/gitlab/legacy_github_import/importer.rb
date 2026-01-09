@@ -218,7 +218,7 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def import_comments(issuable_type)
-        resource_type = "#{issuable_type}_comments".to_sym
+        resource_type = :"#{issuable_type}_comments"
 
         # Two notes here:
         # 1. We don't have a distinctive attribute for comments (unlike issues

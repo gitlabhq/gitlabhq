@@ -1296,6 +1296,41 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'create_ticket' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:role, :service_desk_enabled, :allowed) do
+      :guest      | false | false
+      :planner    | false | false
+      :reporter   | false | false
+      :developer  | false | false
+      :maintainer | false | false
+      :owner      | false | false
+      :guest      | true  | false
+      :planner    | true  | true
+      :reporter   | true  | true
+      :developer  | true  | true
+      :maintainer | true  | true
+      :owner      | true  | true
+    end
+
+    with_them do
+      let(:current_user) { public_send(role) }
+
+      before do
+        allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(service_desk_enabled)
+      end
+
+      it 'allows/disallows create_ticket based on role and service desk status' do
+        if allowed
+          is_expected.to be_allowed(:create_ticket)
+        else
+          is_expected.to be_disallowed(:create_ticket)
+        end
+      end
+    end
+  end
+
   context "project bots" do
     let(:project_bot) { create(:user, :project_bot) }
     let(:user) { create(:user) }

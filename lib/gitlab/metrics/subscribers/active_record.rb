@@ -126,7 +126,7 @@ module Gitlab
         end
 
         def observe_db_role_duration(db_role, event)
-          observe("gitlab_sql_#{db_role}_duration_seconds".to_sym, event) do
+          observe(:"gitlab_sql_#{db_role}_duration_seconds", event) do
             buckets ::Gitlab::Metrics::Subscribers::ActiveRecord::SQL_DURATION_BUCKET
           end
 

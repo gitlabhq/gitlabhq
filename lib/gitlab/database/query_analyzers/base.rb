@@ -81,11 +81,11 @@ module Gitlab
         end
 
         def self.context_key
-          @context_key ||= "analyzer_#{self.analyzer_key}_context".to_sym
+          @context_key ||= :"analyzer_#{self.analyzer_key}_context"
         end
 
         def self.suppress_key
-          @suppress_key ||= "analyzer_#{self.analyzer_key}_suppressed".to_sym
+          @suppress_key ||= :"analyzer_#{self.analyzer_key}_suppressed"
         end
 
         def self.analyzer_key

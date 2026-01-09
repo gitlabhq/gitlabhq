@@ -92,6 +92,7 @@ To use Chat in the GitLab UI:
    ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat**
    ({{< icon name="duo-chat" >}}).
    A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
+1. Under the Chat text box, turn off the **Agentic** toggle.
 1. Enter your question in the message box and press <kbd>Enter</kbd> or select **Send**.
    - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat)
      for your chat.
@@ -124,6 +125,7 @@ In GitLab 17.10 and later, you can have an unlimited number of simultaneous conv
    - On the GitLab Duo sidebar, select **New GitLab Duo Chat** ({{< icon name="pencil-square" >}}).
    - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
    A new Chat conversation replaces the previous one.
+1. Under the Chat text box, turn off the **Agentic** toggle.
 1. To view all of your conversations, view the [Chat history](#view-the-chat-history).
 1. To switch between conversations, in your Chat history, select the appropriate conversation.
 

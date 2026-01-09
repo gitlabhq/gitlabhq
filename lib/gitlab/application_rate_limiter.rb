@@ -201,7 +201,7 @@ module Gitlab
         end
 
         throttled?(key, scope: scope, **options).tap do |throttled|
-          log_request(request, "#{key}_request_limit".to_sym, current_user) if throttled
+          log_request(request, :"#{key}_request_limit", current_user) if throttled
         end
       end
 

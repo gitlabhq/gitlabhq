@@ -322,7 +322,7 @@ In this configuration, both GitLab and the AI Gateway are hosted by the customer
 
 In this scenario, the customer hosts GitLab but relies on the GitLab-managed AI Gateway for AI processing.
 
-- **Logging Behavior**: Prompts and inputs sent to the AI Gateway are **not logged** in the cloud-connected AI Gateway to prevent exposure of sensitive information such as personally identifiable information (PII).
+- **Logging Behavior**: For information about how GitLab handles AI prompt and response data when using the cloud-connected AI Gateway, see [GitLab Duo data usage](../../user/gitlab_duo/data_usage.md#data-retention).
 - **Expanded Logging**: Even if [AI logs are enabled](#enable-logging), no detailed logs are generated in the GitLab-managed AI Gateway to avoid unintended leaks of sensitive information.
   - Logging remains **minimal** in this setup, and the expanded logging features are disabled by default.
 - **Privacy**: This configuration is designed to ensure that sensitive data is not logged in a cloud environment.
@@ -342,7 +342,7 @@ The [AI logs](#enable-logging) control whether additional debugging information,
 
 ### Logging in cloud-connected AI Gateways
 
-To prevent potential data leakage of sensitive information, expanded logging (including prompts and inputs) is intentionally disabled when using a cloud-connected AI Gateway. Preventing the exposure of PII is a priority.
+For information about how GitLab handles AI prompt and response data when using a cloud-connected AI Gateway, see [GitLab Duo data usage](../../user/gitlab_duo/data_usage.md#data-retention).
 
 ### Cross-referencing logs between the AI Gateway and GitLab
 

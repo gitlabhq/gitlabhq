@@ -333,7 +333,7 @@ module Gitlab
           if key.to_sym == :organization
             user.user_detail_organization = value
           elsif user.respond_to?(:"#{key}=")
-            user.public_send("#{key}=".to_sym, value) # rubocop:disable GitlabSecurity/PublicSend -- we validate that `key` is a supported value by calling `gl_user.sync_attribute?(key)` on L330
+            user.public_send(:"#{key}=", value) # rubocop:disable GitlabSecurity/PublicSend -- we validate that `key` is a supported value by calling `gl_user.sync_attribute?(key)` on L330
           else
             raise UnknownAttributeMappingError
           end

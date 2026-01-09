@@ -26,7 +26,7 @@ module Gitlab
             end
 
             def mapper_instrumentation_key
-              "config_mapper_#{self.class.name.demodulize.downcase}".to_sym
+              :"config_mapper_#{self.class.name.demodulize.downcase}"
             end
           end
         end

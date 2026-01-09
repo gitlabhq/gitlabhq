@@ -48,7 +48,7 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
       let_it_be(:pending_build_without_tags) { build_without_tags.queuing_entry }
 
       context 'when tag_ids match pending builds' do
-        let(:tag_ids) { build_with_tags.tags.ids }
+        let(:tag_ids) { Ci::Tag.named(build_with_tags.tag_list).ids }
 
         it 'returns matching pending builds' do
           expect(pending_builds).to contain_exactly(pending_build_with_tags, pending_build_without_tags)

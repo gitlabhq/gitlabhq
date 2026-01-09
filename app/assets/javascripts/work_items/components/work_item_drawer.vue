@@ -1,11 +1,10 @@
 <script>
-import { GlLink, GlDrawer, GlButton, GlTooltipDirective, GlOutsideDirective } from '@gitlab/ui';
+import { GlLink, GlButton, GlTooltipDirective, GlOutsideDirective } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
 import { __ } from '~/locale';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TYPE_ISSUE } from '~/issues/constants';
-import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
   DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME,
@@ -13,7 +12,6 @@ import {
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl, setUrlParams, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { makeDrawerItemFullPath, makeDrawerUrlParam, canRouterNav } from '../utils';
 import WorkItemMetadataProvider from './work_item_metadata_provider.vue';
 
@@ -25,7 +23,6 @@ export default {
   },
   components: {
     GlLink,
-    GlDrawer,
     GlButton,
     MountingPortal,
     WorkItemDetail: () => import('~/work_items/components/work_item_detail.vue'),
@@ -55,11 +52,6 @@ export default {
       required: false,
       default: TYPE_ISSUE,
     },
-    clickOutsideExcludeSelector: {
-      type: String,
-      required: false,
-      default: null,
-    },
     isBoard: {
       type: Boolean,
       required: false,
@@ -79,12 +71,6 @@ export default {
     headerReference() {
       const path = this.activeItemFullPath.substring(this.activeItemFullPath.lastIndexOf('/') + 1);
       return `${path}#${this.activeItem.iid}`;
-    },
-    getDrawerHeight() {
-      return `calc(${getContentWrapperHeight()} + var(--top-bar-height))`;
-    },
-    paneledViewEnabled() {
-      return this.glFeatures.projectStudioEnabled;
     },
   },
   watch: {
@@ -116,14 +102,10 @@ export default {
     },
   },
   mounted() {
-    if (this.paneledViewEnabled) {
-      document.addEventListener('keydown', this.handleKeydown);
-    }
+    document.addEventListener('keydown', this.handleKeydown);
   },
   beforeDestroy() {
-    if (this.paneledViewEnabled) {
-      document.removeEventListener('keydown', this.handleKeydown);
-    }
+    document.removeEventListener('keydown', this.handleKeydown);
   },
 
   methods: {
@@ -216,32 +198,6 @@ export default {
 
       this.$emit('close');
     },
-    async handleClickOutside(event) {
-      for (const selector of this.$options.defaultExcludedSelectors) {
-        const excludedElements = document.querySelectorAll(selector);
-        for (const parent of excludedElements) {
-          if (parent.contains(event.target)) {
-            this.$emit('clicked-outside');
-            return;
-          }
-        }
-      }
-      if (this.clickOutsideExcludeSelector) {
-        const excludedElements = document.querySelectorAll(this.clickOutsideExcludeSelector);
-        for (const parent of excludedElements) {
-          if (parent.contains(event.target)) {
-            this.$emit('clicked-outside');
-            return;
-          }
-        }
-      }
-      // If on board, wait for all tasks to be resolved before closing the drawer.
-      if (this.isBoard) {
-        await this.$nextTick();
-      }
-
-      this.handleClose(true);
-    },
     focusOnHeaderLink() {
       this.$refs?.workItemUrl?.$el?.focus();
     },
@@ -291,78 +247,11 @@ export default {
     '#chat-component',
     '.user-popover',
   ],
-  DRAWER_Z_INDEX,
 };
 </script>
 
 <template>
-  <gl-drawer
-    v-if="!paneledViewEnabled"
-    v-gl-outside="handleClickOutside"
-    :open="open"
-    :z-index="$options.DRAWER_Z_INDEX"
-    data-testid="work-item-drawer"
-    :header-height="getDrawerHeight"
-    header-sticky
-    class="work-item-drawer gl-w-full gl-leading-reset lg:gl-w-[480px] xl:gl-w-[768px] min-[1440px]:gl-w-[912px]"
-    @close="handleClose"
-    @opened="$emit('opened')"
-  >
-    <template #title>
-      <div class="work-item-drawer-header gl-flex gl-w-full gl-items-start gl-gap-x-2 xl:gl-px-4">
-        <div class="gl-flex gl-grow gl-items-center gl-gap-2">
-          <gl-link
-            ref="workItemUrl"
-            data-testid="work-item-drawer-ref-link"
-            :href="activeItem.webUrl"
-            class="gl-text-sm gl-font-bold gl-text-default"
-            @click="redirectToWorkItem"
-          >
-            {{ headerReference }}
-          </gl-link>
-          <gl-button
-            v-gl-tooltip
-            data-testid="work-item-drawer-copy-button"
-            :title="copyTooltipText"
-            category="tertiary"
-            icon="link"
-            size="small"
-            :aria-label="$options.i18n.copyTooltipText"
-            :data-clipboard-text="activeItem.webUrl"
-            @click="handleCopyToClipboard"
-          />
-        </div>
-        <gl-button
-          v-gl-tooltip
-          data-testid="work-item-drawer-link-button"
-          :href="activeItem.webUrl"
-          :title="$options.i18n.openTooltipText"
-          category="tertiary"
-          icon="maximize"
-          size="small"
-          :aria-label="$options.i18n.openTooltipText"
-          @click="redirectToWorkItem"
-        />
-      </div>
-    </template>
-    <template #default>
-      <work-item-metadata-provider :full-path="activeItemFullPath">
-        <work-item-detail
-          :key="activeItem.iid"
-          :work-item-iid="activeItem.iid"
-          :work-item-full-path="activeItemFullPath"
-          :is-board="isBoard"
-          is-drawer
-          class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
-          @deleteWorkItem="deleteWorkItem"
-          @work-item-updated="handleWorkItemUpdated"
-          @workItemTypeChanged="$emit('workItemTypeChanged', $event)"
-          v-on="$listeners"
-        />
-      </work-item-metadata-provider>
-    </template>
-  </gl-drawer>
-  <mounting-portal v-else-if="open" mount-to="#contextual-panel-portal" append>
+  <mounting-portal v-if="open" mount-to="#contextual-panel-portal" append>
     <div data-testid="work-item-drawer" class="work-item-drawer gl-pt-4 gl-leading-reset">
       <div
         class="work-item-drawer-header gl-flex gl-w-full gl-items-start gl-gap-x-2 gl-px-4 @xl/panel:gl-px-6"

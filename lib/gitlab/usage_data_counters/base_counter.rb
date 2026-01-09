@@ -44,7 +44,7 @@ module Gitlab::UsageDataCounters
       end
 
       def counter_key(event)
-        "#{prefix}_#{event}".to_sym
+        :"#{prefix}_#{event}"
       end
 
       def known_events
