@@ -10258,4 +10258,31 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       it { is_expected.to be_allow_user_to_create_group_and_project }
     end
   end
+
+  describe '.unlock_access_by_token' do
+    let_it_be(:user) { create(:user) }
+
+    let!(:unlock_token) { user.lock_access! }
+
+    subject(:unlock_access_by_token) { described_class.unlock_access_by_token(unlock_token) }
+
+    it 'finds user by organization and unlock token' do
+      expect { unlock_access_by_token }.to change { user.reload.access_locked? }.from(true).to(false)
+    end
+
+    context 'with incorrect organization' do
+      let(:another_organization) { create(:organization) }
+
+      before do
+        stub_current_organization(another_organization)
+      end
+
+      it 'initializes model with errors' do
+        expect { unlock_access_by_token }.not_to change { user.reload.access_locked? }
+
+        expect(unlock_access_by_token).to be_a(described_class)
+        expect(unlock_access_by_token.errors[:organization_id]).not_to be_empty
+      end
+    end
+  end
 end

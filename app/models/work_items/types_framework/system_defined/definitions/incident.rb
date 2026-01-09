@@ -41,6 +41,18 @@ module WorkItems
                 icon_name: 'work-item-incident'
               }
             end
+
+            def use_legacy_view?
+              true
+            end
+
+            def incident_management?
+              true
+            end
+
+            def configurable
+              false
+            end
           end
         end
       end

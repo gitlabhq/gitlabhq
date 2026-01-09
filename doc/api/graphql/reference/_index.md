@@ -50013,10 +50013,23 @@ Represents a status with its work item count.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemtypearchived"></a>`archived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the work item type is archived. |
+| <a id="workitemtypecanpromotetoobjective"></a>`canPromoteToObjective` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the work item type can be promoted to an objective. |
+| <a id="workitemtypecanusercreateitems"></a>`canUserCreateItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the work item type is creatable by the API. |
 | <a id="workitemtypeiconname"></a>`iconName` | [`String`](#string) | Icon name of the work item type. |
 | <a id="workitemtypeid"></a>`id` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type. |
+| <a id="workitemtypeisconfigurable"></a>`isConfigurable` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the work item type is configurable. |
+| <a id="workitemtypeisfilterable"></a>`isFilterable` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the work item type should be filterable. |
+| <a id="workitemtypeisgroupworkitemtype"></a>`isGroupWorkItemType` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the work item type belongs only to a group. |
+| <a id="workitemtypeisincidentmanagement"></a>`isIncidentManagement` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the work item type is for incident management. |
+| <a id="workitemtypeisservicedesk"></a>`isServiceDesk` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the work item type is for service desk. |
 | <a id="workitemtypename"></a>`name` | [`String!`](#string) | Name of the work item type. |
+| <a id="workitemtypeshowprojectselector"></a>`showProjectSelector` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the work item type should show the project selector. |
 | <a id="workitemtypesupportedconversiontypes"></a>`supportedConversionTypes` {{< icon name="warning-solid" >}} | [`[WorkItemType!]`](#workitemtype) | **Introduced** in GitLab 17.8. **Status**: Experiment. Supported conversion types for the work item type. |
+| <a id="workitemtypesupportsmoveaction"></a>`supportsMoveAction` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the work item type can be moved or not. |
+| <a id="workitemtypesupportsroadmapview"></a>`supportsRoadmapView` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the work item type supports roadmap view. |
+| <a id="workitemtypeuseissueview"></a>`useIssueView` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the work item type uses the issue view instead of work item view. |
+| <a id="workitemtypevisibleinsettings"></a>`visibleInSettings` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the work item type should be visible in the settings page. |
 | <a id="workitemtypewidgetdefinitions"></a>`widgetDefinitions` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetDefinition!]`](#workitemwidgetdefinition) | **Introduced** in GitLab 16.7. **Status**: Experiment. Available widgets for the work item type. |
 
 #### Fields with arguments
@@ -50217,6 +50230,8 @@ Represents a hierarchy widget definition.
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetdefinitionhierarchyallowedchildtypes"></a>`allowedChildTypes` | [`WorkItemTypeConnection`](#workitemtypeconnection) | Allowed child types for the work item type. (see [Connections](#connections)) |
 | <a id="workitemwidgetdefinitionhierarchyallowedparenttypes"></a>`allowedParentTypes` | [`WorkItemTypeConnection`](#workitemtypeconnection) | Allowed parent types for the work item type. (see [Connections](#connections)) |
+| <a id="workitemwidgetdefinitionhierarchyautoexpandtreeonmove"></a>`autoExpandTreeOnMove` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the hierarchy widget should auto expand the tree during move operation. |
+| <a id="workitemwidgetdefinitionhierarchypropagatesmilestone"></a>`propagatesMilestone` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the hierarchy widget propagates milestone. |
 | <a id="workitemwidgetdefinitionhierarchytype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetDefinitionLabels`
@@ -50229,6 +50244,28 @@ Represents a labels widget definition.
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetdefinitionlabelsallowsscopedlabels"></a>`allowsScopedLabels` | [`Boolean!`](#boolean) | Indicates whether scoped labels are available. |
 | <a id="workitemwidgetdefinitionlabelstype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
+
+### `WorkItemWidgetDefinitionProgress`
+
+Represents a progress widget definition.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdefinitionprogressshowpopover"></a>`showPopover` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether to show the progress popover. |
+| <a id="workitemwidgetdefinitionprogresstype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
+
+### `WorkItemWidgetDefinitionStartAndDueDate`
+
+Represents a start and due date widget definition.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdefinitionstartandduedatecanrollup"></a>`canRollUp` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Indicates whether the start and due date widget should roll up dates. |
+| <a id="workitemwidgetdefinitionstartandduedatetype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetDefinitionStatus`
 
@@ -58854,6 +58891,8 @@ Implementations:
 - [`WorkItemWidgetDefinitionGeneric`](#workitemwidgetdefinitiongeneric)
 - [`WorkItemWidgetDefinitionHierarchy`](#workitemwidgetdefinitionhierarchy)
 - [`WorkItemWidgetDefinitionLabels`](#workitemwidgetdefinitionlabels)
+- [`WorkItemWidgetDefinitionProgress`](#workitemwidgetdefinitionprogress)
+- [`WorkItemWidgetDefinitionStartAndDueDate`](#workitemwidgetdefinitionstartandduedate)
 - [`WorkItemWidgetDefinitionStatus`](#workitemwidgetdefinitionstatus)
 - [`WorkItemWidgetDefinitionWeight`](#workitemwidgetdefinitionweight)
 

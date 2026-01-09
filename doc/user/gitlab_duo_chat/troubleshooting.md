@@ -320,7 +320,7 @@ You might get an error that states
 
 This error occurs when you belong to multiple GitLab Duo namespaces, and have not selected a default namespace.
 
-To resolve this, [assign a default GitLab Duo namespace](../gitlab_duo/model_selection.md#assign-a-default-gitlab-duo-namespace).
+To resolve this, [set a default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 ## Agentic Chat-specific issues
 

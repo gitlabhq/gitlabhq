@@ -11,7 +11,6 @@ title: GitLab MCP clients
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -26,6 +25,7 @@ title: GitLab MCP clients
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519938) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `duo_workflow_mcp_support`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/545956) in GitLab 18.2. Feature flag `duo_workflow_mcp_support` removed.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545956) from experiment to beta in GitLab 18.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 
 {{< /history >}}
 

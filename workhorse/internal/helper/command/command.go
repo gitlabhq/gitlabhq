@@ -22,6 +22,11 @@ func KillProcessGroup(cmd *exec.Cmd) error {
 		return nil
 	}
 
+	// If process already finished, nothing to do
+	if cmd.ProcessState != nil {
+		return nil
+	}
+
 	if p := cmd.Process; p != nil && p.Pid > 0 {
 		// Send SIGTERM to the process group of cmd
 		_ = syscall.Kill(-p.Pid, syscall.SIGTERM)

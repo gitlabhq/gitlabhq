@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User unlock', feature_category: :system_access do
+RSpec.describe 'User unlock', :with_current_organization, feature_category: :system_access do
   include EmailHelpers
 
   let_it_be(:user) { create(:user) }

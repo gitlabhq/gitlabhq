@@ -10,7 +10,6 @@ title: GitLab Duo Chat (Agentic)
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -37,6 +36,7 @@ title: GitLab Duo Chat (Agentic)
 - [Updated default LLM](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1541) to Claude Sonnet 4.5 in GitLab 18.6.
 - Feature flag `self_hosted_agent_platform` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208951) in GitLab 18.7.
 - [Updated default LLM](https://gitlab.com/groups/gitlab-org/-/epics/19998) to Claude Haiku 4.5 in GitLab 18.7.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/581872) in GitLab 18.8 with [flags](../../administration/feature_flags/_index.md) named `agentic_chat_ga` and `ai_duo_agent_platform_ga_rollout_self_managed`. Both flags are enabled by default. Feature flag `duo_agentic_chat` removed.
 
 {{< /history >}}
 
@@ -262,7 +262,6 @@ Learn more about how to [customize GitLab Duo](../gitlab_duo/customize_duo/_inde
 {{< details >}}
 
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Beta
 
 {{< /details >}}
 
@@ -273,6 +272,7 @@ Learn more about how to [customize GitLab Duo](../gitlab_duo/customize_duo/_inde
 - [Available on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/19344) in GitLab 18.6.
 - [Added](https://gitlab.com/groups/gitlab-org/-/epics/19345) to VS Code and JetBrains IDEs in GitLab 18.6.
 - Feature flag `ai_user_model_switching` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214042) in GitLab 18.7.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/569140) in GitLab 18.8.
 
 {{< /history >}}
 
@@ -399,7 +399,7 @@ For information on resolving these issues, see [Troubleshooting](troubleshooting
 
 ## Feedback
 
-Because this is a beta feature, your feedback is valuable in helping us improve it.
+Your feedback is valuable in helping us improve this feature.
 Share your experiences, suggestions, or issues in [issue 542198](https://gitlab.com/gitlab-org/gitlab/-/issues/542198).
 
 ## Related topics

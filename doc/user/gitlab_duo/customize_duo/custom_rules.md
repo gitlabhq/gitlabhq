@@ -10,7 +10,6 @@ title: Custom rules
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -18,6 +17,7 @@ title: Custom rules
 
 - Custom rules [added](https://gitlab.com/gitlab-org/gitlab/-/issues/550743) in GitLab 18.2.
 - User-level custom rules [added](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2452) in GitLab 18.7.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 
 {{< /history >}}
 

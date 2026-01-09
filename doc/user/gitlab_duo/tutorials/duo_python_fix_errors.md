@@ -1014,8 +1014,11 @@ These improvements have made the application more reliable, secure, and maintain
 - Blog post: [Streamline DevSecOps engineering workflows with GitLab Duo](https://about.gitlab.com/blog/2024/12/05/streamline-devsecops-engineering-workflows-with-gitlab-duo/)
 <!-- markdownlint-disable -->
 - <i class="fa-youtube-play" aria-hidden="true"></i>
-  [GitLab Duo Chat](https://youtu.be/ZQBAuf-CTAY?si=0o9-xJ_ATTsL1oew)
-<!-- Video published on 2024-04-18 -->
+  [GitLab Duo Chat (Agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ)
+  <!-- Video published on 2025-06-02 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i>
+  [GitLab Duo Chat (Classic)](https://youtu.be/ZQBAuf-CTAY?si=0o9-xJ_ATTsL1oew)
+  <!-- Video published on 2024-04-18 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [GitLab Duo Code Suggestions](https://youtu.be/ds7SG1wgcVM?si=MfbzPIDpikGhoPh7)
 <!-- Video published on 2024-01-24 -->

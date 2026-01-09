@@ -10,13 +10,13 @@ title: Foundational agents
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/576618) in GitLab 18.6.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/576618) as a beta in GitLab 18.6.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 
 {{< /history >}}
 
@@ -95,7 +95,7 @@ Prerequisites:
 
 These settings apply to:
 
-- Users who have the top-level group as the [default GitLab Duo namespace](../../../gitlab_duo/model_selection.md#assign-a-default-gitlab-duo-namespace).
+- Users who have the top-level group as the [default GitLab Duo namespace](../../../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
 - Users without a default namespace, and who visit a namespace that belongs to the top-level group.
 
 If you turn off foundational agents for a top-level group, users with that group as their default GitLab Duo namespace can't access foundational agents in any namespace.

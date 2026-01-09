@@ -10,7 +10,6 @@ title: Convert to GitLab CI/CD Flow
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Beta
 
 {{< /details >}}
 
@@ -19,6 +18,7 @@ title: Convert to GitLab CI/CD Flow
 - Introduced as [a beta](../../../../policy/development_stages_support.md) in GitLab 18.3 [with a flag](../../../../administration/feature_flags/_index.md) named `duo_workflow_in_ci`. Disabled by default, but can be enabled for the instance or a user.
 - Feature flag `duo_workflow_in_ci` enabled by default in 18.4.
 - The `duo_workflow` flag must also be enabled, but it is enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 
 {{< /history >}}
 

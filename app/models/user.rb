@@ -902,6 +902,21 @@ class User < ApplicationRecord
       recoverable.reset_password_token = original_token if recoverable.reset_password_token.present?
       recoverable
     end
+
+    # override, from Devise in
+    # https://github.com/heartcombo/devise/blob/e9c534d363cc9d552662049b38582eead87bedd6/lib/devise/models/lockable.rb#L189-L197
+    def unlock_access_by_token(unlock_token)
+      original_token = unlock_token
+      unlock_token   = Devise.token_generator.digest(self, :unlock_token, unlock_token)
+
+      lockable = find_or_initialize_with_errors(
+        [:organization_id, :unlock_token],
+        { organization_id: ::Current.organization.id, unlock_token: unlock_token }
+      )
+      lockable.unlock_access! if lockable.persisted?
+      lockable.unlock_token = original_token
+      lockable
+    end
     # rubocop:enable Gitlab/AvoidCurrentOrganization
 
     # Devise method overridden to allow sign in with email or username

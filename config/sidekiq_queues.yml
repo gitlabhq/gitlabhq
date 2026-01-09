@@ -249,6 +249,8 @@
   - 1
 - - ci_slsa_publish_provenance
   - 1
+- - ci_track_pipeline_trigger_events
+  - 1
 - - ci_unlock_pipelines_in_queue
   - 1
 - - ci_update_approval_rules_for_related_mrs

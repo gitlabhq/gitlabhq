@@ -11,7 +11,6 @@ title: Remote execution environment sandbox
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -20,6 +19,7 @@ title: Remote execution environment sandbox
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578048) in GitLab 18.7 [with a flags](../../administration/feature_flags/_index.md) named `ai_duo_agent_platform_network_firewall` and `ai_dap_executor_connects_over_ws`
 - Feature flag `ai_duo_agent_platform_network_firewall` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215950) in GitLab 18.7.
 - Feature flag `ai_dap_executor_connects_over_ws` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215774) in GitLab 18.7.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 
 {{< /history >}}
 

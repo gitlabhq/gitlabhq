@@ -1,0 +1,17 @@
+---
+description: CI build triggered
+action: ci_build_triggered
+product_group: pipeline_authoring
+milestone: "18.8"
+internal_events: true
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215970
+tiers:
+- free
+- premium
+- ultimate
+identifiers:
+  - project
+  - user
+additional_properties:
+  user_type:
+    description: Type of user that triggered the build (human or bot)

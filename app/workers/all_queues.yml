@@ -3780,6 +3780,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: ci_track_pipeline_trigger_events
+  :worker_name: Ci::TrackPipelineTriggerEventsWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: ci_unlock_pipelines_in_queue
   :worker_name: Ci::UnlockPipelinesInQueueWorker
   :feature_category: :job_artifacts

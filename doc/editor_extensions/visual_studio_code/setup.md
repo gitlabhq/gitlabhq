@@ -161,16 +161,16 @@ To configure OAuth application login:
 
 ### Configure GitLab Duo
 
-GitLab Duo Code Suggestions and GitLab Duo Chat are enabled by default when you meet the
+GitLab Duo Chat and GitLab Duo Code Suggestions are enabled by default when you meet the
 prerequisites:
 
 - You have the GitLab Duo add-on and a seat assigned.
 - You open a project that is linked to a remote repository on GitLab, or you set a
   [default GitLab Duo namespace](../../user/gitlab_duo/model_selection.md#assign-a-default-gitlab-duo-namespace).
-- For GitLab Duo Code Suggestions and GitLab Duo Chat (Agentic), you meet the additional
+- For GitLab Duo Chat (Agentic) and GitLab Duo Code Suggestions, you meet the additional
   prerequisites:
-  - [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
   - [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-vs-code)
+  - [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
 
 ### Code security
 

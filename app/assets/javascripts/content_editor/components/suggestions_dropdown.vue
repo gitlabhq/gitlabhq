@@ -1,15 +1,18 @@
 <script>
-import { GlAvatar, GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { GlAvatar, GlLoadingIcon, GlIcon, GlBadge } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { getAdaptiveStatusColor } from '~/lib/utils/color_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { isUserBusy } from '~/set_status_modal/utils';
 import { REFERENCE_TYPES } from '~/content_editor/constants/reference_types';
+import { s__ } from '~/locale';
 
 export default {
   components: {
     GlAvatar,
     GlLoadingIcon,
     GlIcon,
+    GlBadge,
   },
 
   directives: {
@@ -314,6 +317,17 @@ export default {
           )
         : escape(text);
     },
+
+    userBadges(item) {
+      const badges = [];
+      if (item.availability && isUserBusy(item.availability)) {
+        badges.push({ variant: 'warning', label: s__('UserProfile|Busy') });
+      }
+      if (item.composite_identity_enforced) {
+        badges.push({ variant: 'neutral', label: s__('UserProfile|AI') });
+      }
+      return badges;
+    },
   },
   safeHtmlConfig: { ALLOWED_TAGS: ['strong'], ALLOW_DATA_ATTR: false },
 };
@@ -355,8 +369,19 @@ export default {
                     :size="24"
                     :shape="item.type === 'Group' ? 'rect' : 'circle'"
                   />
-                  <span>
-                    <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.username)"></span>
+                  <span class="gl-flex gl-flex-col">
+                    <span class="gl-flex gl-items-center gl-gap-2">
+                      <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.username)"></span>
+                      <gl-badge
+                        v-for="badge in userBadges(item)"
+                        :key="badge.label"
+                        :variant="badge.variant"
+                        size="sm"
+                        class="gl-ml-0"
+                      >
+                        {{ badge.label }}
+                      </gl-badge>
+                    </span>
                     <small
                       v-safe-html:[$options.safeHtmlConfig]="highlight(avatarSubLabel(item))"
                       class="gl-text-subtle"

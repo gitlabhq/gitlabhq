@@ -1940,6 +1940,10 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     subject { issue.has_widget?(widget_type) }
 
+    before do
+      stub_feature_flags(work_item_system_defined_type: false)
+    end
+
     context 'when the work item does not have the widget' do
       it { is_expected.to be_falsey }
     end

@@ -102,10 +102,7 @@ export const mockCreateMutationResponse = {
   data: {
     personalAccessTokenCreate: {
       errors: [],
-      personalAccessToken: {
-        id: 'gid://gitlab/PersonalAccessToken/123',
-        token: 'xxxxxxxxxxxxxxxxxxxx',
-      },
+      token: 'xx',
     },
   },
 };

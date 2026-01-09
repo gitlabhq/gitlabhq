@@ -61,6 +61,21 @@ After you configure the plugin in your IDE, connect it to your GitLab account:
 1. Select **Verify setup**.
 1. Select **OK** or **Save**.
 
+## Configure GitLab Duo
+
+Prerequisites:
+
+- You have the GitLab Duo add-on and a seat assigned.
+- You open a project that is linked to a remote repository on GitLab, or you set a
+  [default GitLab Duo namespace](../../user/gitlab_duo/model_selection.md#assign-a-default-gitlab-duo-namespace).
+
+To enable GitLab Duo Chat and GitLab Duo Code Suggestions, review the prerequisites and
+setup steps for each feature:
+
+- [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-jetbrains-ides)
+- [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-jetbrains-ides)
+- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/set_up.md)
+
 ## Set the default namespace
 
 The GitLab Duo Agent Platform uses the **Default Namespace** value when the plugin

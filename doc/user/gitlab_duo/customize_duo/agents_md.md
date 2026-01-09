@@ -10,7 +10,6 @@ title: AGENTS.md customization files
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -18,6 +17,7 @@ title: AGENTS.md customization files
 
 - Support for `AGENTS.md` in GitLab Duo Chat [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2597) in GitLab 18.7.
 - Support for `AGENTS.md` in agentic flows [introduced](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1509) in GitLab 18.8.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 
 {{< /history >}}
 

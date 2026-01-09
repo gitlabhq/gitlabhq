@@ -9,7 +9,14 @@ title: GitLab Duo plugin for JetBrains IDEs
 The [GitLab Duo plugin](https://plugins.jetbrains.com/plugin/22325-gitlab-duo) integrates GitLab Duo
 with JetBrains IDEs like IntelliJ, PyCharm, GoLand, Webstorm, and Rubymine.
 
-To install and configure the extension, see [Install and set up](setup.md).
+After you [install and configure](setup.md) the extension, you can access the following features:
+
+- [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md): On the right tool window bar, select<br>**GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
+- [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md): On the right tool window bar, select **GitLab Duo Chat**
+  ({{< icon name="duo-chat" >}}). Or select some code and then, in the floating toolbar, select
+  **GitLab Duo Quick Chat** ({{< icon name="tanuki-ai" >}}).
+- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/_index.md): In the status bar, select **Duo** ({{< icon name="tanuki-ai" >}}).
+  The icon will change based on the feature status.
 
 ## Use with remote development
 

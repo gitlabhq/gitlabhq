@@ -789,7 +789,7 @@ describe('GfmAutoComplete', () => {
             compositeIdentityEnforced: true,
           });
           expect(result).toContain('IMG my-user');
-          expect(result).toContain('Agent');
+          expect(result).toContain('AI');
           expect(result).toContain('gl-badge');
         });
       });

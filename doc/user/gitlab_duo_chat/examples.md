@@ -316,7 +316,7 @@ You can also add additional instructions to be considered. For example:
 
 For more information, see:
 
-- [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-duo-chat-in-vs-code).
+- [Use GitLab Duo Chat in VS Code](agentic_chat.md#use-gitlab-duo-chat-in-vs-code).
 - <i class="fa-youtube-play" aria-hidden="true"></i> [Application modernization with GitLab Duo (C++ to Java)](https://youtu.be/FjoAmt5eeXA?si=SLv9Mv8eSUAVwW5Z).
   <!-- Video published on 2025-03-18 -->
 
@@ -610,7 +610,7 @@ You can include additional instructions to be considered. For example:
 
 `/tests` uses [Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) to deliver more accurate, context-aware suggestions.
 
-For more information, see [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-duo-chat-in-vs-code).
+For more information, see [Use GitLab Duo Chat in VS Code](agentic_chat.md#use-gitlab-duo-chat-in-vs-code).
 
 <i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
 

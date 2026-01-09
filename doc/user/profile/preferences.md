@@ -95,6 +95,8 @@ To change back to the default colors, clear the **Color for removed lines** and 
 
 Use the **Behavior** section to customize the behavior of the system layout and default views. You can change your layout width and choose the default content for your homepage, group and project overview pages. You have options to customize appearance and function, like whitespace rendering, file display, and text automation.
 
+You can also use this section to set a default namespace for GitLab Duo.
+
 ### Change the layout width on the UI
 
 You can stretch content on the GitLab UI to fill the entire page. By default, page content is fixed at 1280 pixels wide.
@@ -173,6 +175,32 @@ Your project overview page is the page you view when you select **Project overvi
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
 1. From the **Project overview content** dropdown list, select an option.
+1. Select **Save changes**.
+
+### Set a default GitLab Duo namespace
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/552081) in GitLab 18.3 with a [flag](../../administration/feature_flags/_index.md) named `ai_user_default_duo_namespace`. Disabled by default.
+- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/560319) in GitLab 18.4.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/569140) `ai_user_default_duo_namespace` feature flag in GitLab 18.7.
+
+{{< /history >}}
+
+Set a default GitLab Duo namespace to ensure GitLab Duo is available for use with your project and uses the correct models.
+
+You must do this because GitLab Duo can't always detect the namespace you are working from. This can happen in the following scenarios:
+
+- You belong to multiple GitLab Duo namespaces.
+- You work in your IDE with a project that doesn't have a GitLab remote configured.
+- You use GitLab Duo in the CLI.
+
+To select a default namespace:
+
+1. In GitLab.com, in the upper-right corner, select your avatar.
+1. Select **Preferences**.
+1. Go to the **Behavior** section.
+1. From the **Default GitLab Duo namespace** dropdown list, select the namespace to set as your default.
 1. Select **Save changes**.
 
 ### Hide shortcut buttons

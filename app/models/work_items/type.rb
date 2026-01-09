@@ -173,6 +173,71 @@ module WorkItems
     end
     strong_memoize_attr :descendant_types
 
+    # Temporary method for adding configuration thought the API
+    def supports_roadmap_view?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def use_legacy_view?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def can_promote_to_objective?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def show_project_selector?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def supports_move_action?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def service_desk?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def incident_management?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def configurable?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def creatable?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def visible_in_settings?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def archived?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def filterable?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def only_for_group?
+      nil
+    end
+
     private
 
     def strip_whitespace

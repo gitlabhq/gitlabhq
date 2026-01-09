@@ -872,11 +872,21 @@ export default {
       );
     },
     preventDefaultConditionally(event) {
-      const $refs = this.$refs.workItemNotes?.$el.$refs;
+      // Dragging image resize handles in RTE do not require repositioning like text does
+      // so we return early after preventing default behaviour, this fixes
+      // a problem as mentioned in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217708#note_2987427072
+      if (event.target.classList.contains('image-resize')) {
+        event.preventDefault();
+        return;
+      }
+
+      // Drag happened on text selection, check if
+      // text is dropped between note forms.
+      const $refs = this.$refs.workItemNotes?.$refs;
       const topForm = $refs.addNoteTop;
       const bottomForm = $refs.addNoteBottom;
 
-      if (!topForm?.contains(event.target) && !bottomForm?.contains(event.target)) {
+      if (!topForm?.$el.contains(event.target) && !bottomForm?.$el.contains(event.target)) {
         event.preventDefault();
       }
     },

@@ -2,6 +2,7 @@ package upload
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -88,8 +89,8 @@ func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, 
 		return nil, err
 	}
 	defer func() {
-		if err = zipMdOut.Close(); err != nil {
-			log.ContextLogger(ctx).WithError(err).Error("Failed to close zip-metadata stdout")
+		if zipCloseErr := zipMdOut.Close(); zipCloseErr != nil && !errors.Is(zipCloseErr, os.ErrClosed) {
+			log.ContextLogger(ctx).WithError(zipCloseErr).Error("Failed to close zip-metadata stdout")
 		}
 	}()
 

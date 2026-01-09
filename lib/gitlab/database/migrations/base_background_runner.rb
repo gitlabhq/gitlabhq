@@ -48,10 +48,12 @@ module Gitlab
 
           batch_names = (1..).each.lazy.map { |i| "batch_#{i}" }
 
+          batch_count = 0
           jobs.each do |j|
             break if run_until <= Time.current
 
             batch_name = batch_names.next
+            batch_count += 1
 
             print_job_progress(batch_name, j)
 
@@ -64,6 +66,8 @@ module Gitlab
               run_job(j)
             end
           end
+
+          instrumentation.observe_no_batches_processed(connection: connection) if batch_count == 0
         end
 
         def job_meta(_job)

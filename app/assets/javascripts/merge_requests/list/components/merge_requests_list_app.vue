@@ -109,6 +109,8 @@ function cacheIsExpired(cacheAge, compareTo = Date.now()) {
   return cacheAge + BRANCH_LIST_REFRESH_INTERVAL <= compareTo;
 }
 
+const MAX_COUNT = 999;
+
 export default {
   name: 'MergeRequestsListApp',
   i18n,
@@ -255,6 +257,7 @@ export default {
         state: this.state,
         ...this.pageParams,
         ...this.apiFilterParams,
+        maxCount: MAX_COUNT,
         search: this.searchQuery,
       };
     },
@@ -818,6 +821,7 @@ export default {
     },
   },
   STATUS_OPEN,
+  MAX_COUNT,
 };
 </script>
 
@@ -849,6 +853,7 @@ export default {
       issuable-item-class="merge-request"
       :show-bulk-edit-sidebar="showBulkEditSidebar"
       :search-timeout="searchTimeout"
+      :max-count="$options.MAX_COUNT"
       always-allow-custom-empty-state
       @click-tab="handleClickTab"
       @next-page="handleNextPage"

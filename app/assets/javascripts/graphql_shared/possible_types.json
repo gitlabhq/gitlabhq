@@ -421,6 +421,8 @@
     "WorkItemWidgetDefinitionGeneric",
     "WorkItemWidgetDefinitionHierarchy",
     "WorkItemWidgetDefinitionLabels",
+    "WorkItemWidgetDefinitionProgress",
+    "WorkItemWidgetDefinitionStartAndDueDate",
     "WorkItemWidgetDefinitionStatus",
     "WorkItemWidgetDefinitionWeight"
   ]

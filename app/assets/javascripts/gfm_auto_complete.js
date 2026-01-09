@@ -69,7 +69,7 @@ const agentBadge = memoize(
           size: 'sm',
         },
       },
-      s__('UserProfile|Agent'),
+      s__('UserProfile|AI'),
     ).outerHTML,
 );
 

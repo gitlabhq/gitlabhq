@@ -51,6 +51,7 @@ describe('IssuableListRoot component', () => {
     it('renders', () => {
       expect(findIssuableTabs().props()).toEqual({
         tabs: mockIssuableListProps.tabs,
+        maxCount: null,
         tabCounts: mockIssuableListProps.tabCounts,
         currentTab: mockIssuableListProps.currentTab,
         truncateCounts: false,

@@ -13,6 +13,7 @@ import PersonalAccessTokenExpirationDate from './personal_access_token_expiratio
 import PersonalAccessTokenScopeSelector from './personal_access_token_scope_selector.vue';
 import PersonalAccessTokenNamespaceSelector from './personal_access_token_namespace_selector.vue';
 import PersonalAccessTokenPermissionsSelector from './personal_access_token_permissions_selector.vue';
+import CreatedPersonalAccessToken from './created_personal_access_token.vue';
 
 export default {
   name: 'CreateGranularPersonalAccessTokenForm',
@@ -27,6 +28,7 @@ export default {
     PersonalAccessTokenNamespaceSelector,
     PersonalAccessTokenPermissionsSelector,
     GlButton,
+    CreatedPersonalAccessToken,
   },
   inject: ['accessTokenMaxDate', 'accessTokenTableUrl'],
   data() {
@@ -48,6 +50,7 @@ export default {
         permissions: '',
       },
       isSubmitting: false,
+      createdToken: null,
     };
   },
   computed: {
@@ -122,8 +125,14 @@ export default {
               ],
             },
           },
-          update: () => {
-            // TODO: in a follow-up show the user newly created token
+          update: (_, { data: { personalAccessTokenCreate } }) => {
+            const { token, errors } = personalAccessTokenCreate;
+
+            if (errors?.length) {
+              throw Error(errors.join(','));
+            }
+
+            this.createdToken = token;
           },
         })
         .catch((error) => {
@@ -165,66 +174,70 @@ export default {
 
 <template>
   <div>
-    <page-heading :heading="$options.i18n.heading">
-      <template #description>
-        {{ $options.i18n.description }}
-      </template>
-    </page-heading>
+    <created-personal-access-token v-if="createdToken" v-model="createdToken" />
 
-    <gl-form class="js-quick-submit">
-      <section class="gl-w-full lg:gl-w-1/2">
-        <gl-form-group
-          :label="$options.i18n.nameLabel"
-          label-for="token-name"
-          :invalid-feedback="errors.name"
-          :state="!errors.name"
-        >
-          <gl-form-input id="token-name" v-model.trim="form.name" :state="!errors.name" />
-        </gl-form-group>
+    <div v-else>
+      <page-heading :heading="$options.i18n.heading">
+        <template #description>
+          {{ $options.i18n.description }}
+        </template>
+      </page-heading>
 
-        <gl-form-group
-          :label="$options.i18n.descriptionLabel"
-          label-for="token-description"
-          :invalid-feedback="errors.description"
-          :state="!errors.description"
-        >
-          <gl-form-textarea
-            id="token-description"
-            v-model.trim="form.description"
+      <gl-form class="js-quick-submit">
+        <section class="gl-w-full lg:gl-w-1/2">
+          <gl-form-group
+            :label="$options.i18n.nameLabel"
+            label-for="token-name"
+            :invalid-feedback="errors.name"
+            :state="!errors.name"
+          >
+            <gl-form-input id="token-name" v-model.trim="form.name" :state="!errors.name" />
+          </gl-form-group>
+
+          <gl-form-group
+            :label="$options.i18n.descriptionLabel"
+            label-for="token-description"
+            :invalid-feedback="errors.description"
             :state="!errors.description"
+          >
+            <gl-form-textarea
+              id="token-description"
+              v-model.trim="form.description"
+              :state="!errors.description"
+            />
+          </gl-form-group>
+
+          <personal-access-token-expiration-date
+            v-model="form.expirationDate"
+            :error="errors.expirationDate"
           />
-        </gl-form-group>
 
-        <personal-access-token-expiration-date
-          v-model="form.expirationDate"
-          :error="errors.expirationDate"
-        />
+          <personal-access-token-scope-selector v-model="form.access" :error="errors.access" />
 
-        <personal-access-token-scope-selector v-model="form.access" :error="errors.access" />
+          <personal-access-token-namespace-selector
+            v-if="renderNamespaceSelector"
+            v-model="form.namespaceIds"
+            :error="errors.namespaceIds"
+          />
+        </section>
 
-        <personal-access-token-namespace-selector
-          v-if="renderNamespaceSelector"
-          v-model="form.namespaceIds"
-          :error="errors.namespaceIds"
-        />
-      </section>
+        <section>
+          <personal-access-token-permissions-selector
+            v-model="form.permissions"
+            :error="errors.permissions"
+          />
+        </section>
 
-      <section>
-        <personal-access-token-permissions-selector
-          v-model="form.permissions"
-          :error="errors.permissions"
-        />
-      </section>
+        <section class="gl-mt-6">
+          <gl-button :href="accessTokenTableUrl">
+            {{ $options.i18n.cancelButton }}
+          </gl-button>
 
-      <section class="gl-mt-6">
-        <gl-button :href="accessTokenTableUrl">
-          {{ $options.i18n.cancelButton }}
-        </gl-button>
-
-        <gl-button variant="confirm" :loading="isSubmitting" @click="createGranularToken">
-          {{ $options.i18n.createButton }}
-        </gl-button>
-      </section>
-    </gl-form>
+          <gl-button variant="confirm" :loading="isSubmitting" @click="createGranularToken">
+            {{ $options.i18n.createButton }}
+          </gl-button>
+        </section>
+      </gl-form>
+    </div>
   </div>
 </template>

@@ -11,6 +11,7 @@ const createComponent = ({
   tabs = mockIssuableListProps.tabs,
   tabCounts = mockIssuableListProps.tabCounts,
   currentTab = mockIssuableListProps.currentTab,
+  maxCount = null,
   truncateCounts = false,
   mountFn = shallowMount,
 } = {}) =>
@@ -20,6 +21,7 @@ const createComponent = ({
       tabCounts,
       currentTab,
       truncateCounts,
+      maxCount,
     },
     slots: {
       'nav-actions': `<button class="js-new-issuable">New issuable</button>`,
@@ -107,5 +109,31 @@ describe('IssuableTabs', () => {
 
       expect(wrapper.emitted('click')).toEqual([['opened']]);
     });
+  });
+
+  describe('maxCount prop', () => {
+    it.each`
+      count | maxCount | renders
+      ${1}  | ${10}    | ${'1'}
+      ${10} | ${10}    | ${'10'}
+      ${11} | ${10}    | ${`10+`}
+      ${11} | ${null}  | ${`11`}
+    `(
+      'renders $renders for count of $count when maxCount is $maxCount',
+      ({ count, maxCount, renders }) => {
+        wrapper = createComponent({
+          tabCounts: {
+            opened: count,
+            closed: 0,
+            all: undefined,
+          },
+          maxCount,
+        });
+
+        const openTab = findAllGlTabs().at(0);
+
+        expect(openTab.text()).toContain(renders);
+      },
+    );
   });
 });

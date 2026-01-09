@@ -54,6 +54,10 @@ module WorkItems
             def licenses_for_parent
               { 'epic' => :epics }
             end
+
+            def support_move_action?
+              true
+            end
           end
         end
       end

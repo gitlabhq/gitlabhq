@@ -708,4 +708,335 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
       expect(result.map(&:base_type)).to include('ticket')
     end
   end
+
+  describe 'for configurable methods' do
+    let(:type) { build(:work_item_system_defined_type) } # Issue type
+    let(:configuration_class) { WorkItems::TypesFramework::SystemDefined::Definitions::Issue }
+
+    before do
+      allow(type).to receive(:configuration_class).and_return(configuration_class)
+    end
+
+    describe '#supports_roadmap_view?' do
+      context 'when configuration_class supports roadmap view' do
+        it 'returns true' do
+          allow(configuration_class).to receive(:supports_roadmap_view?).and_return(true)
+
+          expect(type.supports_roadmap_view?).to be true
+        end
+      end
+
+      context 'when configuration_class does not support roadmap view' do
+        it 'returns false' do
+          allow(configuration_class).to receive(:supports_roadmap_view?).and_return(false)
+
+          expect(type.supports_roadmap_view?).to be false
+        end
+      end
+
+      context 'when configuration_class does not respond to supports_roadmap_view?' do
+        it 'returns false as default' do
+          allow(configuration_class).to receive(:supports_roadmap_view?).and_return(nil)
+
+          expect(type.supports_roadmap_view?).to be false
+        end
+      end
+    end
+
+    describe '#use_legacy_view?' do
+      context 'when configuration_class uses legacy view' do
+        it 'returns true' do
+          allow(configuration_class).to receive(:use_legacy_view?).and_return(true)
+
+          expect(type.use_legacy_view?).to be true
+        end
+      end
+
+      context 'when configuration_class does not use legacy view' do
+        it 'returns false' do
+          allow(configuration_class).to receive(:use_legacy_view?).and_return(false)
+
+          expect(type.use_legacy_view?).to be false
+        end
+      end
+
+      context 'when configuration_class does not respond to use_legacy_view?' do
+        it 'returns false as default' do
+          allow(configuration_class).to receive(:use_legacy_view?).and_return(nil)
+
+          expect(type.use_legacy_view?).to be false
+        end
+      end
+    end
+
+    describe '#can_promote_to_objective?' do
+      context 'when configuration_class can promote to objective' do
+        it 'returns true' do
+          allow(configuration_class).to receive(:can_promote_to_objective?).and_return(true)
+
+          expect(type.can_promote_to_objective?).to be true
+        end
+      end
+
+      context 'when configuration_class cannot promote to objective' do
+        it 'returns false' do
+          allow(configuration_class).to receive(:can_promote_to_objective?).and_return(false)
+
+          expect(type.can_promote_to_objective?).to be false
+        end
+      end
+
+      context 'when configuration_class does not respond to can_promote_to_objective?' do
+        it 'returns false as default' do
+          allow(configuration_class).to receive(:can_promote_to_objective?).and_return(nil)
+
+          expect(type.can_promote_to_objective?).to be false
+        end
+      end
+    end
+
+    describe '#show_project_selector?' do
+      context 'when configuration_class shows project selector' do
+        it 'returns true' do
+          allow(configuration_class).to receive(:show_project_selector?).and_return(true)
+
+          expect(type.show_project_selector?).to be true
+        end
+      end
+
+      context 'when configuration_class does not show project selector' do
+        it 'returns false' do
+          allow(configuration_class).to receive(:show_project_selector?).and_return(false)
+
+          expect(type.show_project_selector?).to be false
+        end
+      end
+
+      context 'when configuration_class does not respond to show_project_selector?' do
+        it 'returns true as default' do
+          allow(configuration_class).to receive(:show_project_selector?).and_return(nil)
+
+          expect(type.show_project_selector?).to be true
+        end
+      end
+    end
+
+    describe '#supports_move_action?' do
+      context 'when configuration_class supports move action' do
+        it 'returns true' do
+          allow(configuration_class).to receive(:supports_move_action?).and_return(true)
+
+          expect(type.supports_move_action?).to be true
+        end
+      end
+
+      context 'when configuration_class does not support move action' do
+        it 'returns false' do
+          allow(configuration_class).to receive(:supports_move_action?).and_return(false)
+
+          expect(type.supports_move_action?).to be false
+        end
+      end
+
+      context 'when configuration_class does not respond to supports_move_action?' do
+        it 'returns false as default' do
+          allow(configuration_class).to receive(:supports_move_action?).and_return(nil)
+
+          expect(type.supports_move_action?).to be false
+        end
+      end
+    end
+
+    describe '#service_desk?' do
+      context 'when configuration_class responds to service_desk?' do
+        it 'returns true when configuration_class.service_desk? is true' do
+          allow(type.configuration_class).to receive(:service_desk?).and_return(true)
+
+          expect(type.service_desk?).to be true
+        end
+
+        it 'returns false when configuration_class.service_desk? is false' do
+          allow(type.configuration_class).to receive(:service_desk?).and_return(false)
+
+          expect(type.service_desk?).to be false
+        end
+      end
+
+      context 'when configuration_class does not respond to service_desk?' do
+        it 'returns false as default' do
+          allow(type.configuration_class).to receive(:try).with(:service_desk?).and_return(nil)
+
+          expect(type.service_desk?).to be false
+        end
+      end
+    end
+
+    describe '#incident_management?' do
+      context 'when configuration_class responds to incident_management?' do
+        it 'returns true when configuration_class.incident_management? is true' do
+          allow(type.configuration_class).to receive(:incident_management?).and_return(true)
+
+          expect(type.incident_management?).to be true
+        end
+
+        it 'returns false when configuration_class.incident_management? is false' do
+          allow(type.configuration_class).to receive(:incident_management?).and_return(false)
+
+          expect(type.incident_management?).to be false
+        end
+      end
+
+      context 'when configuration_class does not respond to incident_management?' do
+        it 'returns false as default' do
+          allow(type.configuration_class).to receive(:try).with(:incident_management?).and_return(nil)
+
+          expect(type.incident_management?).to be false
+        end
+      end
+    end
+
+    describe '#configurable?' do
+      context 'when configuration_class responds to configurable?' do
+        it 'returns true when configuration_class.configurable? is true' do
+          allow(type.configuration_class).to receive(:configurable?).and_return(true)
+
+          expect(type.configurable?).to be true
+        end
+
+        it 'returns false when configuration_class.configurable? is explicitly false' do
+          allow(type.configuration_class).to receive(:configurable?).and_return(false)
+
+          expect(type.configurable?).to be false
+        end
+      end
+
+      context 'when configuration_class does not respond to configurable?' do
+        it 'returns true as default when value is nil' do
+          allow(type.configuration_class).to receive(:try).with(:configurable?).and_return(nil)
+
+          expect(type.configurable?).to be true
+        end
+      end
+    end
+
+    describe '#creatable?' do
+      context 'when configuration_class responds to creatable?' do
+        it 'returns true when configuration_class.creatable? is true' do
+          allow(type.configuration_class).to receive(:creatable?).and_return(true)
+
+          expect(type.creatable?).to be true
+        end
+
+        it 'returns false when configuration_class.creatable? is explicitly false' do
+          allow(type.configuration_class).to receive(:creatable?).and_return(false)
+
+          expect(type.creatable?).to be false
+        end
+      end
+
+      context 'when configuration_class does not respond to creatable?' do
+        it 'returns true as default when value is nil' do
+          allow(type.configuration_class).to receive(:try).with(:creatable?).and_return(nil)
+
+          expect(type.creatable?).to be true
+        end
+      end
+    end
+
+    describe '#visible_in_settings??' do
+      context 'when configuration_class responds to visible_in_settings??' do
+        it 'returns true when configuration_class.visible_in_settings?? is true' do
+          allow(type.configuration_class).to receive(:visible_in_settings?).and_return(true)
+
+          expect(type.visible_in_settings?).to be true
+        end
+
+        it 'returns false when configuration_class.visible_in_settings?? is explicitly false' do
+          allow(type.configuration_class).to receive(:visible_in_settings?).and_return(false)
+
+          expect(type.visible_in_settings?).to be false
+        end
+      end
+
+      context 'when configuration_class does not respond to visible_in_settings??' do
+        it 'returns true as default when value is nil' do
+          allow(type.configuration_class).to receive(:try).with(:visible_in_settings?).and_return(nil)
+
+          expect(type.visible_in_settings?).to be true
+        end
+      end
+    end
+
+    describe '#archived?' do
+      context 'when configuration_class responds to archived?' do
+        it 'returns true when configuration_class.archived? is true' do
+          allow(type.configuration_class).to receive(:archived?).and_return(true)
+
+          expect(type.archived?).to be true
+        end
+
+        it 'returns false when configuration_class.archived? is explicitly false' do
+          allow(type.configuration_class).to receive(:archived?).and_return(false)
+
+          expect(type.archived?).to be false
+        end
+      end
+
+      context 'when configuration_class does not respond to archived?' do
+        it 'returns false as default when value is nil' do
+          allow(type.configuration_class).to receive(:try).with(:archived?).and_return(nil)
+
+          expect(type.archived?).to be false
+        end
+      end
+    end
+
+    describe '#filterable?' do
+      context 'when configuration_class responds to filterable?' do
+        it 'returns true when configuration_class.filterable? is true' do
+          allow(type.configuration_class).to receive(:filterable?).and_return(true)
+
+          expect(type.filterable?).to be true
+        end
+
+        it 'returns false when configuration_class.filterable?is explicitly false' do
+          allow(type.configuration_class).to receive(:filterable?).and_return(false)
+
+          expect(type.filterable?).to be false
+        end
+      end
+
+      context 'when configuration_class does not respond to filterable?' do
+        it 'returns false as default when value is nil' do
+          allow(type.configuration_class).to receive(:try).with(:filterable?).and_return(nil)
+
+          expect(type.filterable?).to be false
+        end
+      end
+    end
+
+    describe '#only_for_group?' do
+      context 'when configuration_class responds to only_for_group?' do
+        it 'returns true when configuration_class.only_for_group? is true' do
+          allow(type.configuration_class).to receive(:only_for_group?).and_return(true)
+
+          expect(type.only_for_group?).to be true
+        end
+
+        it 'returns false when configuration_class.only_for_group? is false' do
+          allow(type.configuration_class).to receive(:only_for_group?).and_return(false)
+
+          expect(type.only_for_group?).to be false
+        end
+      end
+
+      context 'when configuration_class does not respond to only_for_group?' do
+        it 'returns false as default' do
+          allow(type.configuration_class).to receive(:try).with(:only_for_group?).and_return(nil)
+
+          expect(type.only_for_group?).to be false
+        end
+      end
+    end
+  end
 end

@@ -44,6 +44,18 @@ module WorkItems
                 icon_name: "work-item-ticket"
               }
             end
+
+            def use_legacy_view?
+              true
+            end
+
+            def service_desk?
+              true
+            end
+
+            def configurable
+              false
+            end
           end
         end
       end

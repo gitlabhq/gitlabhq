@@ -10,13 +10,13 @@ title: Composite identity
 - Tier: Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Experiment
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554156) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `duo_workflow_use_composite_identity`.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 
 {{< /history >}}
 

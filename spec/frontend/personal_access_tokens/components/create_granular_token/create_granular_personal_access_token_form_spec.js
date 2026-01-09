@@ -12,6 +12,7 @@ import PersonalAccessTokenExpirationDate from '~/personal_access_tokens/componen
 import PersonalAccessTokenScopeSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_scope_selector.vue';
 import PersonalAccessTokenNamespaceSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_namespace_selector.vue';
 import PersonalAccessTokenPermissionsSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_permissions_selector.vue';
+import CreatedPersonalAccessToken from '~/personal_access_tokens/components/create_granular_token/created_personal_access_token.vue';
 import createGranularPersonalAccessTokenMutation from '~/personal_access_tokens/graphql/create_granular_personal_access_token.mutation.graphql';
 import { MAX_DESCRIPTION_LENGTH } from '~/personal_access_tokens/constants';
 import { mockCreateMutationResponse, mockCreateMutationInput } from '../../mock_data';
@@ -54,6 +55,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     wrapper.findComponent(PersonalAccessTokenPermissionsSelector);
   const findCancelButton = () => wrapper.findAllComponents(GlButton).at(0);
   const findCreateButton = () => wrapper.findAllComponents(GlButton).at(1);
+  const findCreatedToken = () => wrapper.findComponent(CreatedPersonalAccessToken);
 
   const fillFormWithValidData = async () => {
     findNameInput().vm.$emit('input', mockCreateMutationInput.name);
@@ -80,6 +82,8 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     it('renders the form container', () => {
       expect(findForm().exists()).toBe(true);
       expect(findForm().classes()).toContain('js-quick-submit');
+
+      expect(findCreatedToken().exists()).toBe(false);
     });
 
     it('renders the name field with correct label', () => {
@@ -227,7 +231,44 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
       });
     });
 
-    it('handles submission errors', async () => {
+    it('displays the created token and hides the form', async () => {
+      await fillFormWithValidData();
+      await findCreateButton().vm.$emit('click');
+
+      await waitForPromises();
+
+      expect(findCreatedToken().exists()).toBe(true);
+      expect(findCreatedToken().props('value')).toBe(
+        mockCreateMutationResponse.data.personalAccessTokenCreate.token,
+      );
+
+      expect(findForm().exists()).toBe(false);
+    });
+
+    it('displays an error message when mutation returns an error', async () => {
+      const errorMutationHandler = jest.fn().mockResolvedValue({
+        data: {
+          personalAccessTokenCreate: {
+            token: null,
+            errors: ['Error 1', 'Error 2'],
+          },
+        },
+      });
+
+      createComponent({ mutationHandler: errorMutationHandler });
+
+      await fillFormWithValidData();
+      await findCreateButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Token generation unsuccessful. Please try again.',
+        captureError: true,
+        error: expect.any(Error),
+      });
+    });
+
+    it('displays an error message when mutation fails', async () => {
       const errorMutationHandler = jest.fn().mockRejectedValue(new Error('Mutation failed'));
       createComponent({ mutationHandler: errorMutationHandler });
 
@@ -241,6 +282,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
         captureError: true,
         error: expect.any(Error),
       });
+
       expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' }, wrapper.element);
     });
   });

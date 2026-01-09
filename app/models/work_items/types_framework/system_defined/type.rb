@@ -165,6 +165,62 @@ module WorkItems
           license_name.present?
         end
 
+        def supports_roadmap_view?
+          configuration_class.try(:supports_roadmap_view?) || false
+        end
+
+        def use_legacy_view?
+          configuration_class.try(:use_legacy_view?) || false
+        end
+
+        def can_promote_to_objective?
+          configuration_class.try(:can_promote_to_objective?) || false
+        end
+
+        def show_project_selector?
+          value = configuration_class.try(:show_project_selector?)
+          value.nil? ? true : value
+        end
+
+        def supports_move_action?
+          configuration_class.try(:supports_move_action?) || false
+        end
+
+        def service_desk?
+          configuration_class.try(:service_desk?) || false
+        end
+
+        def incident_management?
+          configuration_class.try(:incident_management?) || false
+        end
+
+        def configurable?
+          value = configuration_class.try(:configurable?)
+          value.nil? ? true : value
+        end
+
+        def creatable?
+          value = configuration_class.try(:creatable?)
+          value.nil? ? true : value
+        end
+
+        def visible_in_settings?
+          value = configuration_class.try(:visible_in_settings?)
+          value.nil? ? true : value
+        end
+
+        def archived?
+          configuration_class.try(:archived?) || false
+        end
+
+        def filterable?
+          configuration_class.try(:filterable?) || false
+        end
+
+        def only_for_group?
+          configuration_class.try(:only_for_group?) || false
+        end
+
         private
 
         def licenses_for_parent

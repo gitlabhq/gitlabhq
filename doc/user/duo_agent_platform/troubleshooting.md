@@ -10,7 +10,6 @@ title: Troubleshooting the GitLab Duo Agent Platform
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -32,6 +31,10 @@ If you are trying to run a flow but it's not visible in the GitLab UI:
 1. Ensure GitLab Duo is [turned on and flows are allowed to execute](../gitlab_duo/turn_on_off.md).
 1. Ensure the required feature flags are enabled for the flow you're trying to use.
    For the latest flag information, check the documentation history for the feature.
+1. If it still does not work:
+   1. Disable the affected flow in the top-level group and save the configuration.
+   1. Enable the affected flow in the top-level group and save the configuration.
+   1. Wait a few minutes for the setting to propagate across your groups.
 
 ## Session is stuck in created state
 

@@ -246,6 +246,11 @@ export default {
       required: false,
       default: false,
     },
+    maxCount: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -349,6 +354,7 @@ export default {
         :tab-counts="tabCounts"
         :current-tab="currentTab"
         :truncate-counts="truncateCounts"
+        :max-count="maxCount"
         @click="$emit('click-tab', $event)"
       >
         <template #nav-actions>
