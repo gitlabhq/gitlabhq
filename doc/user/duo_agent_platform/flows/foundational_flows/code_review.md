@@ -53,8 +53,8 @@ To trigger a Code Review Flow on a merge request:
 
 1. On the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. Use one of these methods to trigger the review:
-   - Assign the review to `@GitLabDuo`
-   - Mention `@GitLabDuo` in a comment
+   - Assign GitLab Duo as a reviewer.
+   - In a comment box, enter the quick action `/assign_reviewer @GitLabDuo`.
 
 You can interact with GitLab Duo by:
 

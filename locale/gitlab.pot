@@ -3309,6 +3309,9 @@ msgstr ""
 msgid "AISummary|View summary"
 msgstr ""
 
+msgid "AI|AI vulnerability management"
+msgstr ""
+
 msgid "AI|Accept & Insert"
 msgstr ""
 
@@ -3340,9 +3343,6 @@ msgid "AI|Enable Auto Review"
 msgstr ""
 
 msgid "AI|Error occurred when starting the AI False Positive Detection workflow."
-msgstr ""
-
-msgid "AI|Explain or Resolve with AI"
 msgstr ""
 
 msgid "AI|Explain this code."
@@ -3450,7 +3450,7 @@ msgstr ""
 msgid "AI|Troubleshoot this broken pipeline."
 msgstr ""
 
-msgid "AI|Use GitLab Duo to check if this vulnerability might be false positive."
+msgid "AI|Use GitLab Duo to check whether this vulnerability might be a false positive."
 msgstr ""
 
 msgid "AI|Use GitLab Duo to generate a merge request with a suggested solution."
@@ -16406,6 +16406,15 @@ msgid "CodeOwners|Show all"
 msgstr ""
 
 msgid "CodeOwner|Pattern"
+msgstr ""
+
+msgid "CodeReviewCommentsSentimentChart|Users that reacted positively or negatively to GitLab Duo Code review comments. Expect negativity bias. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "CodeReviewCommentsSentimentChart|👍 Approval rate"
+msgstr ""
+
+msgid "CodeReviewCommentsSentimentChart|👎 Disapproval rate"
 msgstr ""
 
 msgid "CodeReviewRequestsByRoleChart|Requests by authors"
@@ -61612,10 +61621,13 @@ msgstr ""
 msgid "SecurityOrchestration|Filter and search projects"
 msgstr ""
 
-msgid "SecurityOrchestration|For any MR that matches this policy's rules, only the override project approval settings apply and bot message enabled. No additional approvals are required."
+msgid "SecurityOrchestration|For any merge request on %{branches}%{commitType}%{branchExceptionsString}"
 msgstr ""
 
-msgid "SecurityOrchestration|For any merge request on %{branches}%{commitType}%{branchExceptionsString}"
+msgid "SecurityOrchestration|For any merge request that matches this policy's rules, no action is applied. This policy overrides the project approval settings and notifies users with a bot message, which means that no approvals are required."
+msgstr ""
+
+msgid "SecurityOrchestration|For any merge request that matches this policy's rules, no action is applied. Users are warned about project approval settings that could have been overridden, if the policy were enforced rather than in warn mode, through a bot message. No additional approvals are required."
 msgstr ""
 
 msgid "SecurityOrchestration|For large groups, there may be a significant delay in applying policy changes to pre-existing merge requests. Policy changes typically apply almost immediately for newly created merge requests."

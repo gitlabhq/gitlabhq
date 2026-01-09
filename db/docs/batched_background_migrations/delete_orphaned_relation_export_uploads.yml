@@ -1,8 +1,10 @@
 ---
 migration_job_name: DeleteOrphanedRelationExportUploads
-description: Deletes orphaned uploads for Projects::ImportExport::RelationExportUpload where the corresponding RelationExportUpload record no longer exists
+description: Deletes orphaned uploads for Projects::ImportExport::RelationExportUpload where the corresponding RelationExportUpload record no longer exists.
+  Originally introduced by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212963
+  Re-ran to ensure all orphaned records are removed after an additional bug fix.
 feature_category: importers
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212963
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218125
 milestone: '18.7'
-queued_migration_version: 20251117110002
+queued_migration_version: 20260108110056
 finalized_by: # version of the migration that finalized this BBM

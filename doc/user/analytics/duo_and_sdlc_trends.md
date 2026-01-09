@@ -184,6 +184,25 @@ The **GitLab Duo Code Review requests by role** chart displays the number of Git
 
 Higher author adoption indicates teams embracing automated review workflows.
 
+## GitLab Duo Code Review comments sentiment
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/574005) in GitLab 18.8.
+
+{{< /history >}}
+
+The **GitLab Duo Code Review comments sentiment** chart displays the sentiment of GitLab Duo Code Review comments over the last 180 days, measured by positive (👍) and negative (👎) reaction rates. The chart shows:
+
+- **Approval rate**: The percentage of GitLab Duo Code Review comments that received positive (👍) reactions.
+- **Disapproval rate**: The percentage of GitLab Duo Code Review comments that received negative (👎) reactions.
+
+When interpreting your analytics, keep in mind that:
+
+- Negativity bias is expected. Users tend to flag problems, but rarely acknowledge good suggestions, even when applying them.
+- Low reaction rates are common. Focus on whether code improves and reviews complete faster.
+- Rising disapproval (👎) rates signal issues. Stable or declining disapproval rates indicate healthy adoption of GitLab Duo Code Review.
+
 ## GitLab Duo metrics by user
 
 {{< history >}}

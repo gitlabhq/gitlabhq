@@ -162,6 +162,7 @@ describe('RefTrackingSelection component', () => {
         refType: 'BRANCH',
         isProtected: false,
         commit: {
+          id: `gid://gitlab/Commit/${i}`,
           sha: `sha${i}abcdefghijklmnop`,
           shortId: `sha${i}abcd`,
           title: `Commit for ref-${i}`,

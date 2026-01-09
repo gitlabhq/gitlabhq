@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueDeleteOrphanedRelationExportUploads, migration: :gitlab_main, feature_category: :importers do
+RSpec.describe RequeueDeleteOrphanedRelationExportUploads, migration: :gitlab_main, feature_category: :importers do
   let(:migration) { described_class.new }
   let(:batched_migration) { described_class::MIGRATION }
 

@@ -149,7 +149,7 @@ Data usage: When you use this feature, the following data is sent to the large l
 
 The Code Review Flow is available through the GitLab Duo Agent Platform and uses agentic AI for enhanced review capabilities.
 
-After you enable the flow, you can mention or assign `@GitLabDuo` on your MR for a review.
+After you enable the flow, you can assign GitLab Duo as a reviewer.
 
 For setup and requirements, see [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md).
 

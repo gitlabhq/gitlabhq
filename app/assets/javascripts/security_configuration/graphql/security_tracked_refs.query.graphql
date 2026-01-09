@@ -16,6 +16,7 @@ query getSecurityTrackedRefs(
         isDefault
         isProtected
         commit {
+          id
           sha
           shortId
           title

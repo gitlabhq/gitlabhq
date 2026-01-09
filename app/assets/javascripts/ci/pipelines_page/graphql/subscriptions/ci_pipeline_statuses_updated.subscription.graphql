@@ -7,6 +7,8 @@ subscription pipelineStatusesUpdated($projectId: ProjectID!) {
     detailedStatus {
       ...CiIcon
       name
+      label
+      hasDetails
     }
     finishedAt
     duration
