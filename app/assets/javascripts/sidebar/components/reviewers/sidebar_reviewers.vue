@@ -65,7 +65,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.issuable;
+        return data.namespace?.issuable;
       },
       result() {
         this.initialLoading = false;

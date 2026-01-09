@@ -44,7 +44,7 @@ export default normalizeRender({
         fetchPolicy: fetchPolicies.CACHE_ONLY,
       })
       .subscribe((res) => {
-        const issuable = res.data?.workspace?.issuable;
+        const issuable = res.data?.namespace?.issuable;
         if (issuable) {
           this.setConfidentiality(issuable.confidential);
         }

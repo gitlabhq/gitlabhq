@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class PersonalAccessToken < ApplicationRecord
+  include AfterCommitQueue
   include Expirable
   include TokenAuthenticatable
   include Sortable

@@ -32,7 +32,7 @@ With Service Desk, your customers
 can email you bug reports, feature requests, or general feedback.
 Service Desk provides a unique email address, so they don't need their own GitLab accounts.
 
-Service Desk emails are created in your GitLab project as new issues.
+Service Desk emails are created in your GitLab project as new tickets.
 Your team can respond directly from the project, while customers interact with the thread only
 through email.
 
@@ -50,12 +50,12 @@ Here's how Service Desk works for you:
 
 1. You provide a project-specific email address to your paying customers, who can email you directly
    from the application.
-1. Each email they send creates an issue in the appropriate project.
-1. Your team members go to the Service Desk issue tracker, where they can see new support
-   requests and respond inside associated issues.
+1. Each email they send creates a ticket in the appropriate project.
+1. Your team members go to the Service Desk ticket tracker, where they can see new support
+   requests and respond inside associated tickets.
 1. Your team communicates with the customer to understand the request.
 1. Your team starts working on implementing code to solve your customer's problem.
-1. When your team finishes the implementation, the merge request is merged and the issue
+1. When your team finishes the implementation, the merge request is merged and the ticket
    is closed automatically.
 
 Meanwhile:
@@ -73,13 +73,13 @@ Meanwhile:
   - [Use a custom template for Service Desk tickets](configure.md#use-a-custom-template-for-service-desk-tickets)
   - [Support Bot user](configure.md#support-bot-user)
   - [Default ticket visibility](configure.md#default-ticket-visibility)
-  - [Reopen issues when an external participant comments](configure.md#reopen-issues-when-an-external-participant-comments)
+  - [Reopen tickets when an external participant comments](configure.md#reopen-tickets-when-an-external-participant-comments)
   - [Custom email address](configure.md#custom-email-address)
   - [Use an additional Service Desk alias email](configure.md#use-an-additional-service-desk-alias-email)
   - [Configure email ingestion in multi-node environments](configure.md#configure-email-ingestion-in-multi-node-environments)
 - [Use Service Desk](using_service_desk.md)
-  - [As an end user (issue creator)](using_service_desk.md#as-an-end-user-issue-creator)
-  - [As a responder to the issue](using_service_desk.md#as-a-responder-to-the-issue)
+  - [As an end user (ticket creator)](using_service_desk.md#as-an-end-user-ticket-creator)
+  - [As a responder to the ticket](using_service_desk.md#as-a-responder-to-the-ticket)
   - [Email contents and formatting](using_service_desk.md#email-contents-and-formatting)
   - [Convert a regular issue to a Service Desk ticket](using_service_desk.md#convert-a-regular-issue-to-a-service-desk-ticket)
   - [Privacy considerations](using_service_desk.md#privacy-considerations)
@@ -90,7 +90,7 @@ Meanwhile:
 
 ## Troubleshooting Service Desk
 
-### Emails to Service Desk do not create issues
+### Emails to Service Desk do not create tickets
 
 - Your emails might be ignored because they contain one of the
   [email headers that GitLab ignores](../../../administration/incoming_email.md#rejected-headers).

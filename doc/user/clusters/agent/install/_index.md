@@ -198,19 +198,13 @@ To connect your cluster to GitLab, [install the registered agent with Helm](#ins
 
 To install a receptive agent, follow the steps in [GitLab connects to agent (receptive agent)](#option-2-gitlab-connects-to-agent-receptive-agent).
 
-{{< alert type="note" >}}
-
-To connect to multiple clusters, you must configure, register, and install an agent in each cluster. Make sure to give each agent a unique name.
-
-{{< /alert >}}
+> [!note]
+> To connect to multiple clusters, you must configure, register, and install an agent in each cluster. Make sure to give each agent a unique name.
 
 #### Install the agent with Helm
 
-{{< alert type="warning" >}}
-
-For simplicity, the default Helm chart configuration sets up a service account for the agent with `cluster-admin` rights. You should not use this on production systems. To deploy to a production system, follow the instructions in [Customize the Helm installation](#customize-the-helm-installation) to create a service account with the minimum permissions required for your deployment and specify that during installation.
-
-{{< /alert >}}
+> [!warning]
+> For simplicity, the default Helm chart configuration sets up a service account for the agent with `cluster-admin` rights. You should not use this on production systems. To deploy to a production system, follow the instructions in [Customize the Helm installation](#customize-the-helm-installation) to create a service account with the minimum permissions required for your deployment and specify that during installation.
 
 To install the agent on your cluster using Helm:
 
@@ -293,11 +287,8 @@ and the domain DNS can't be resolved.
 
 ## Install multiple agents in your cluster
 
-{{< alert type="note" >}}
-
-In most cases, you should run one agent per cluster and use the agent impersonation features (Premium and Ultimate only) to support multi-tenancy. If you must run multiple agents, share any issues you encounter. You can provide your feedback in [issue 454110](https://gitlab.com/gitlab-org/gitlab/-/issues/454110).
-
-{{< /alert >}}
+> [!note]
+> In most cases, you should run one agent per cluster and use the agent impersonation features (Premium and Ultimate only) to support multi-tenancy. If you must run multiple agents, share any issues you encounter. You can provide your feedback in [issue 454110](https://gitlab.com/gitlab-org/gitlab/-/issues/454110).
 
 To install a second agent in your cluster, you can follow the [previous steps](#register-the-agent-with-gitlab) a second time. To avoid resource name collisions within the cluster, you must either:
 

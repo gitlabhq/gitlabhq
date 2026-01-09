@@ -325,6 +325,14 @@ describe('WorkItemUserPreferences', () => {
         expect(firstMetadataItem.text()).not.toBe('Status');
       });
 
+      it('does not render `Status` settings for service desk list', () => {
+        createComponent({ mountFn: mount, props: { isServiceDeskList: true } });
+
+        const firstMetadataItem = findDropdownItems().at(0);
+
+        expect(firstMetadataItem.text()).not.toBe('Status');
+      });
+
       it('renders `Status` settings for group work item listing', () => {
         createComponent({ mountFn: mount, props: { isGroup: true } });
 

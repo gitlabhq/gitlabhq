@@ -39,11 +39,8 @@ Prerequisites:
 - For a JetBrains IDE, [install and configure the GitLab plugin for JetBrains](../../../editor_extensions/jetbrains_ide/setup.md) version 3.12.2 or later.
 - For Visual Studio, [install and configure the GitLab extension for Visual Studio](../../../editor_extensions/visual_studio/setup.md) version 0.60.0 or later.
 
-{{< alert type="note" >}}
-
-Conversations that existed before you created any custom rules do not follow those rules.
-
-{{< /alert >}}
+> [!note]
+> Conversations that existed before you created any custom rules do not follow those rules.
 
 ### Create user-level custom rules
 

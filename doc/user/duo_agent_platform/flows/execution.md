@@ -37,11 +37,8 @@ To prevent flows from running autonomously in the GitLab UI, you can [turn off f
 
 You can customize how flows are executed in CI/CD by creating an agent configuration file in your project.
 
-{{< alert type="note" >}}
-
-You cannot use predefined CI/CD variables in this scenario.
-
-{{< /alert >}}
+> [!note]
+> You cannot use predefined CI/CD variables in this scenario.
 
 ### Create the configuration file
 

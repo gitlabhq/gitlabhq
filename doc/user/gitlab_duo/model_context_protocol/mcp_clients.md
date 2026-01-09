@@ -177,11 +177,8 @@ To do so, add the `approvedTools` field to any server configuration:
 
 If you do not include this field, you must manually approve every tool in the session (this is the default behavior).
 
-{{< alert type="warning" >}}
-
-Only use `"approvedTools": true` for servers you completely trust.
-
-{{< /alert >}}
+> [!warning]
+> Only use `"approvedTools": true` for servers you completely trust.
 
 For example:
 

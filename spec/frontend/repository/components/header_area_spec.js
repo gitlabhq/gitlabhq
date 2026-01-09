@@ -15,13 +15,11 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import { headerAppInjected } from 'ee_else_ce_jest/repository/mock_data';
 import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
-import { useMainContainer } from '~/pinia/global_stores/main_container';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, TOGGLE_FILE_TREE_BROWSER_VISIBILITY } from '~/behaviors/shortcuts/keybindings';
 import { EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE } from '~/repository/constants';
-import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 jest.mock('~/panel_breakpoint_instance');
@@ -47,7 +45,6 @@ describe('HeaderArea', () => {
   let wrapper;
   let pinia;
   let fileTreeBrowserStore;
-  let mainContainerStore;
 
   const findBreadcrumbs = () => wrapper.findComponent(Breadcrumbs);
   const findFileTreeToggle = () => wrapper.findComponent(FileTreeBrowserToggle);
@@ -103,7 +100,6 @@ describe('HeaderArea', () => {
 
   beforeEach(() => {
     pinia = createTestingPinia({ stubActions: false });
-    mainContainerStore = useMainContainer();
     fileTreeBrowserStore = useFileTreeBrowserVisibility();
     wrapper = createComponent();
   });
@@ -113,24 +109,16 @@ describe('HeaderArea', () => {
   });
 
   describe('File tree browser toggle', () => {
-    beforeEach(() => {
-      // Reset stores to default state for each test
-      mainContainerStore.$patch({ isCompact: false });
-    });
-
     describe('when repositoryFileTreeBrowser is enabled', () => {
       it.each`
-        fileTreeVisible | isCompactSize | isProjectOverview | expectedToggleVisible
-        ${false}        | ${false}      | ${false}          | ${true}
-        ${true}         | ${false}      | ${false}          | ${false}
-        ${false}        | ${true}       | ${false}          | ${false}
-        ${false}        | ${false}      | ${true}           | ${false}
+        fileTreeVisible | isProjectOverview | expectedToggleVisible
+        ${false}        | ${false}          | ${true}
+        ${true}         | ${false}          | ${false}
+        ${false}        | ${true}           | ${false}
       `(
         'toggles file tree visibility',
-        ({ fileTreeVisible, isCompactSize, isProjectOverview, expectedToggleVisible }) => {
-          PanelBreakpointInstance.getBreakpointSize.mockReturnValue(isCompactSize ? 'xs' : 'xl');
+        ({ fileTreeVisible, isProjectOverview, expectedToggleVisible }) => {
           pinia = createTestingPinia({ stubActions: false });
-          mainContainerStore = useMainContainer();
           fileTreeBrowserStore = useFileTreeBrowserVisibility();
           fileTreeBrowserStore.setFileTreeBrowserIsExpanded(fileTreeVisible);
 

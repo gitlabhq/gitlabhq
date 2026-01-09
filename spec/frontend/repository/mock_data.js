@@ -249,7 +249,7 @@ export const headerAppInjected = {
   showEditButton: true,
   showWebIdeButton: true,
   isGitpodEnabledForInstance: false,
-  showPipelineEditorUrl: true,
+  showPipelineEditorButton: true,
   webIdeUrl: 'https://gitlab.com/project/-/ide/',
   editUrl: 'https://gitlab.com/project/-/edit/main/',
   pipelineEditorUrl: 'https://gitlab.com/project/-/ci/editor',

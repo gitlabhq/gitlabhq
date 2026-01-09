@@ -74,6 +74,17 @@ describe('FileTreeBrowser', () => {
         expect(findOverlay().exists()).toBe(true);
         expect(findOverlay().isVisible()).toBe(true);
       });
+
+      it('closes the file tree browser when overlay is clicked', () => {
+        pinia = createTestingPinia({ stubActions: false });
+        fileTreeBrowserStore = useFileTreeBrowserVisibility(pinia);
+        fileTreeBrowserStore.setFileTreeBrowserIsPeekOn(true);
+        createComponent();
+
+        findOverlay().trigger('click');
+
+        expect(fileTreeBrowserStore.fileTreeBrowserIsPeekOn).toBe(false);
+      });
     });
 
     describe('FileBrowserHeight v-show visibility', () => {
@@ -172,11 +183,11 @@ describe('FileTreeBrowser', () => {
 
     describe('enableStickyHeight prop', () => {
       it.each`
-        isWide   | expectedEnableStickyHeight | description
-        ${true}  | ${true}                    | ${'passes enableStickyHeight as true when isWide is true'}
-        ${false} | ${false}                   | ${'passes enableStickyHeight as false when isWide is false'}
-      `('$description', ({ isWide, expectedEnableStickyHeight }) => {
-        mockMainContainerStore.isWide = isWide;
+        isCompact | expectedEnableStickyHeight | description
+        ${false}  | ${true}                    | ${'passes enableStickyHeight as true when isCompact is false'}
+        ${true}   | ${false}                   | ${'passes enableStickyHeight as false when isCompact is true'}
+      `('$description', ({ isCompact, expectedEnableStickyHeight }) => {
+        mockMainContainerStore.isCompact = isCompact;
         pinia = createTestingPinia({ stubActions: false });
         fileTreeBrowserStore = useFileTreeBrowserVisibility(pinia);
         createComponent();

@@ -302,6 +302,98 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
         expect(created_migration.gitlab_schema).to eq('gitlab_ci')
       end
     end
+
+    context 'when using cursor migration', :freeze_time do
+      let(:job_class) do
+        Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
+          cursor :id, :created_at
+
+          def self.name
+            'MyJobClass'
+          end
+        end
+      end
+
+      context "when the migration doesn't exist already" do
+        let_it_be(:projects) { create_list(:project, 2) }
+        let(:version) { '20231204101122' }
+        let(:min_cursor) { [0, Time.current.to_s] }
+        let(:max_cursor) { [projects.last.id, projects.last.created_at.to_s] }
+
+        before do
+          allow(Gitlab::Database::PgClass).to receive(:for_table).with(:projects).and_return(pgclass_info)
+          allow(migration).to receive(:version).and_return(version)
+        end
+
+        subject(:enqueue_batched_background_migration) do
+          migration.queue_batched_background_migration(
+            job_class.name,
+            :projects,
+            :id,
+            min_cursor: min_cursor,
+            max_cursor: max_cursor
+          )
+        end
+
+        it 'enqueues exactly one batched migration' do
+          expect { enqueue_batched_background_migration }
+            .to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
+        end
+
+        it 'creates the database record for the migration' do
+          batched_background_migration = enqueue_batched_background_migration
+
+          expect(batched_background_migration.reload).to have_attributes(
+            job_class_name: 'MyJobClass',
+            table_name: 'projects',
+            column_name: 'id',
+            interval: 120,
+            min_value: 1,
+            max_value: nil,
+            min_cursor: [0, Time.current.to_s],
+            max_cursor: [projects.last.id, projects.last.created_at.to_s],
+            batch_class_name: 'PrimaryKeyBatchingStrategy',
+            batch_size: 1000,
+            max_batch_size: nil,
+            sub_batch_size: 100,
+            job_arguments: %w[],
+            status_name: :active,
+            total_tuple_count: pgclass_info.cardinality_estimate,
+            gitlab_schema: 'gitlab_main',
+            queued_migration_version: version
+          )
+        end
+
+        context 'when cursors are not provided' do
+          let(:min_cursor) { nil }
+          let(:max_cursor) { nil }
+
+          it 'creates the database record for the migration' do
+            batched_background_migration = enqueue_batched_background_migration
+
+            expect(batched_background_migration.reload).to have_attributes(
+              job_class_name: 'MyJobClass',
+              table_name: 'projects',
+              column_name: 'id',
+              interval: 120,
+              min_value: 1,
+              max_value: nil,
+              min_cursor: [projects.first.id, be_a(String)],
+              max_cursor: [projects.last.id, be_a(String)],
+              batch_class_name: 'PrimaryKeyBatchingStrategy',
+              batch_size: 1000,
+              max_batch_size: nil,
+              sub_batch_size: 100,
+              job_arguments: %w[],
+              status_name: :active,
+              total_tuple_count: pgclass_info.cardinality_estimate,
+              gitlab_schema: 'gitlab_main',
+              queued_migration_version: version
+            )
+          end
+        end
+      end
+    end
   end
 
   describe '#finalize_batched_background_migration' do

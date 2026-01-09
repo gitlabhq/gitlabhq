@@ -344,8 +344,6 @@ app/models/project_statistics.rb:
 app/models/project_team.rb:
 - members_in_project_and_ancestors
 - members_with_access_levels
-app/models/remote_mirror.rb:
-- mark_for_retry!
 app/models/service_desk/custom_email_verification.rb:
 - owner_class_attribute_default
 app/models/todo.rb:

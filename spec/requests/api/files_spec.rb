@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Files, feature_category: :source_code_management do
   include RepoHelpers
+  include ProjectForksHelper
 
   include_context 'for workhorse body uploads'
 
@@ -1319,6 +1320,34 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       it_behaves_like 'when authenticated', 'as a direct project member'
       it_behaves_like 'rate limiting for large commit content'
     end
+
+    context 'when committing to a fork as a maintainer' do
+      include_context 'merge request allowing collaboration'
+
+      let(:file_path) { FFaker::UUID.uuidv4 }
+      let(:url) { api("/projects/#{forked_project.id}/repository/files/#{file_path}", user) }
+
+      let(:params) do
+        {
+          branch: 'feature',
+          content: 'puts 8',
+          commit_message: 'Added newfile'
+        }
+      end
+
+      it 'allows pushing to the source branch of the merge request' do
+        workhorse_body_upload(url, params)
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'denies pushing to another branch' do
+        workhorse_body_upload(url, params.merge(branch: 'master'))
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['message']).to eq('403 Forbidden - You are not allowed to push into this branch')
+      end
+    end
   end
 
   describe 'PUT /projects/:id/repository/files/:file_path' do
@@ -1477,6 +1506,34 @@ RSpec.describe API::Files, feature_category: :source_code_management do
 
       it_behaves_like 'updates to an existing file'
       it_behaves_like 'rate limiting for large commit content'
+    end
+
+    context 'when committing to a fork as a maintainer' do
+      include_context 'merge request allowing collaboration'
+
+      let(:method) { :put }
+      let(:url) { api("/projects/#{forked_project.id}/repository/files/#{file_path}", user) }
+
+      let(:params) do
+        {
+          branch: 'feature',
+          content: 'puts 8',
+          commit_message: 'Changed file'
+        }
+      end
+
+      it 'allows pushing to the source branch of the merge request' do
+        workhorse_body_upload(url, params)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'denies pushing to another branch' do
+        workhorse_body_upload(url, params.merge(branch: 'master'))
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['message']).to eq('403 Forbidden - You are not allowed to push into this branch')
+      end
     end
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers

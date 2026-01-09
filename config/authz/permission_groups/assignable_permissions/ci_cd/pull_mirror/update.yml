@@ -1,0 +1,7 @@
+---
+name: update_pull_mirror
+description: Grants the ability to update pull mirrors
+permissions:
+  - update_pull_mirror
+boundaries:
+  - project

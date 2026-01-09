@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module BlobHelper
+  include WebIdeButtonHelper
+
   def edit_blob_path(project = @project, ref = @ref, path = @path, options = {})
     project_edit_blob_path(project, tree_join(ref, path), options[:link_opts])
   end
@@ -321,7 +323,9 @@ module BlobHelper
       ssh_url: ssh_enabled? ? ssh_clone_url_to_repo(project) : '',
       http_url: http_enabled? ? http_clone_url_to_repo(project) : '',
       xcode_url: show_xcode_link?(project) ? xcode_uri_to_repo(project) : '',
-      download_links: archive_download_links(project, ref, archive_prefix).to_json
+      download_links: archive_download_links(project, ref, archive_prefix).to_json,
+      web_ide_button_options: web_ide_button_data({ blob: blob }).merge(fork_modal_options(project, blob)).to_json,
+      web_ide_button_default_branch: project.default_branch_or_main
     }
   end
 

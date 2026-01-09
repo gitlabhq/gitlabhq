@@ -22,7 +22,7 @@ describe('HeaderActionsConfidentialityToggle', () => {
 
   const mockConfidentialityQueryResponse = {
     data: {
-      workspace: {
+      namespace: {
         id: '1',
         issuable: {
           id: '1',

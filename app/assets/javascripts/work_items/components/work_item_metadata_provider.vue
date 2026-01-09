@@ -57,7 +57,9 @@ export default normalizeRender({
       projectImportJiraPath: computed(() => this.metadata.projectImportJiraPath),
       exportCsvPath: computed(() => this.metadata.exportCsvPath),
       canBulkUpdate: computed(() => Boolean(this.metadata?.adminIssue)),
+      canAdminIssue: computed(() => Boolean(this.metadata?.adminIssue)),
       canEdit: computed(() => Boolean(this.metadata?.adminProject)),
+      canAdminProject: computed(() => Boolean(this.metadata?.adminProject)),
       canImportWorkItems: computed(() => Boolean(this.metadata?.importWorkItems)),
       groupId: computed(() => this.metadata?.groupId),
       isIssueRepositioningDisabled: computed(() =>

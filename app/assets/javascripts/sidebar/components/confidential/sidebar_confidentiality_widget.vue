@@ -64,7 +64,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.issuable?.confidential || false;
+        return data.namespace?.issuable?.confidential || false;
       },
       skip() {
         return !this.iid;
@@ -73,7 +73,7 @@ export default {
         if (!data) {
           return;
         }
-        this.$emit('confidentialityUpdated', data.workspace?.issuable?.confidential);
+        this.$emit('confidentialityUpdated', data.namespace?.issuable?.confidential);
       },
       error() {
         createAlert({
@@ -114,7 +114,7 @@ export default {
       });
 
       const data = produce(sourceData, (draftData) => {
-        draftData.workspace.issuable.confidential = !this.confidential;
+        draftData.namespace.issuable.confidential = !this.confidential;
       });
 
       client.writeQuery({

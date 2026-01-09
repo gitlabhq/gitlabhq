@@ -29365,6 +29365,12 @@ msgstr ""
 msgid "False"
 msgstr ""
 
+msgid "Fast forward merge is not possible. Please rebase or use merge train."
+msgstr ""
+
+msgid "Fast forward merge is not possible. Please rebase."
+msgstr ""
+
 msgid "Fast timeout"
 msgstr ""
 
@@ -30221,10 +30227,10 @@ msgstr ""
 msgid "FoundationalAgents|Availability settings"
 msgstr ""
 
-msgid "FoundationalAgents|Control whether %{linkStart}GitLab Duo foundational agents%{linkEnd} are available."
+msgid "FoundationalAgents|Control the availability of each foundational agent individually."
 msgstr ""
 
-msgid "FoundationalAgents|Control whether foundational agents are available."
+msgid "FoundationalAgents|Control whether foundational agents are available by default."
 msgstr ""
 
 msgid "FoundationalAgents|Default availability"
@@ -30242,19 +30248,13 @@ msgstr ""
 msgid "FoundationalAgents|Off"
 msgstr ""
 
-msgid "FoundationalAgents|Off (default)"
-msgstr ""
-
-msgid "FoundationalAgents|Off by default"
-msgstr ""
-
 msgid "FoundationalAgents|On"
 msgstr ""
 
-msgid "FoundationalAgents|On (default)"
+msgid "FoundationalAgents|Use default (Off)"
 msgstr ""
 
-msgid "FoundationalAgents|On by default"
+msgid "FoundationalAgents|Use default (On)"
 msgstr ""
 
 msgid "FoundationalAgents|When turned on, foundational agents are available for projects in this group. %{linkStart}What are foundational agents%{linkEnd}?"
@@ -42263,9 +42263,6 @@ msgid "Merge request homepage"
 msgstr ""
 
 msgid "Merge request must be open."
-msgstr ""
-
-msgid "Merge request must be rebased, because a fast-forward merge is not possible."
 msgstr ""
 
 msgid "Merge request must not be draft."
@@ -79445,6 +79442,9 @@ msgid "You don't have permission to manage email participants."
 msgstr ""
 
 msgid "You don't have permission to manage this issue."
+msgstr ""
+
+msgid "You don't have permission to modify this file."
 msgstr ""
 
 msgid "You don't have permission to update the setting %{attribute}."

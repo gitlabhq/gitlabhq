@@ -14,7 +14,7 @@ export default {
           iid: this.issuableIid,
         };
       },
-      update: (data) => data.workspace?.issuable?.reviewers?.nodes || [],
+      update: (data) => data.namespace?.issuable?.reviewers?.nodes || [],
       skip() {
         return !this.open;
       },

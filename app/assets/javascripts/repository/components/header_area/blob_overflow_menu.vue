@@ -9,6 +9,7 @@ import projectInfoQuery from 'ee_else_ce/repository/queries/project_info.query.g
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
 import { DEFAULT_BLOB_INFO } from '~/repository/constants';
 import BlobButtonGroup from 'ee_else_ce/repository/components/header_area/blob_button_group.vue';
+import { NO_MODIFY_PERMISSION_MESSAGE } from './constants';
 import BlobDefaultActionsGroup from './blob_default_actions_group.vue';
 import BlobDeleteFileGroup from './blob_delete_file_group.vue';
 import BlobRepositoryActionsGroup from './blob_repository_actions_group.vue';
@@ -107,6 +108,7 @@ export default {
       userPermissions: DEFAULT_BLOB_INFO.userPermissions,
       activeViewerType: SIMPLE_BLOB_VIEWER,
       isLoggedIn: isLoggedIn(),
+      dropdownTooltipText: this.$options.i18n.dropdownTooltip,
     };
   },
   computed: {
@@ -139,8 +141,35 @@ export default {
   },
   mounted() {
     this.updateViewerFromQueryParam(this.$route?.query?.plain);
+
+    const disclosureDropdown = this.$refs.disclosureDropdown?.$el;
+    if (disclosureDropdown) {
+      disclosureDropdown.addEventListener('mouseover', this.updateDropdownTooltipText);
+      disclosureDropdown.addEventListener('mouseleave', this.updateDropdownTooltipText);
+    }
+  },
+  beforeDestroy() {
+    const disclosureDropdown = this.$refs.disclosureDropdown?.$el;
+    if (disclosureDropdown) {
+      disclosureDropdown.removeEventListener('mouseover', this.updateDropdownTooltipText);
+      disclosureDropdown.removeEventListener('mouseleave', this.updateDropdownTooltipText);
+    }
   },
   methods: {
+    updateDropdownTooltipText(event) {
+      const isHoveredButtonGroup = this.$refs.buttonGroup?.$el?.contains?.(event.target);
+      const isHoveredDeleteFileGroup = this.$refs.deleteFileGroup?.$el?.contains(event.target);
+
+      if (
+        (isHoveredButtonGroup || isHoveredDeleteFileGroup) &&
+        !this.userPermissions.createMergeRequestIn
+      ) {
+        this.dropdownTooltipText = NO_MODIFY_PERMISSION_MESSAGE;
+        return;
+      }
+
+      this.dropdownTooltipText = this.$options.i18n.dropdownTooltip;
+    },
     updateViewerFromQueryParam(plainValue) {
       const hasRichViewer = Boolean(this.blobInfo.richViewer);
       const useSimpleViewer = plainValue === '1' || !hasRichViewer;
@@ -162,7 +191,8 @@ export default {
 </script>
 <template>
   <gl-disclosure-dropdown
-    v-gl-tooltip-directive.hover="$options.i18n.dropdownTooltip"
+    ref="disclosureDropdown"
+    v-gl-tooltip-directive.hover="dropdownTooltipText"
     no-caret
     icon="ellipsis_v"
     data-testid="blob-overflow-menu"
@@ -174,6 +204,7 @@ export default {
     <blob-repository-actions-group :permalink-path="blobInfo.permalinkPath" />
     <blob-button-group
       v-if="isLoggedIn && !blobInfo.archived"
+      ref="buttonGroup"
       :current-ref="currentRef"
       :project-path="projectPath"
       :is-using-lfs="isUsingLfs"
@@ -195,6 +226,7 @@ export default {
     />
     <blob-delete-file-group
       v-if="isLoggedIn && !blobInfo.archived"
+      ref="deleteFileGroup"
       :current-ref="currentRef"
       :is-empty-repository="isEmptyRepository"
       :is-using-lfs="isUsingLfs"

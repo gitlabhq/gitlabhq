@@ -33,10 +33,17 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     isGroupIssuesList,
     workItemPlanningViewEnabled,
     workItemsSavedViewsEnabled,
+    // service desk list
+    isServiceDeskEnabled,
+    isServiceDeskSupported,
+    serviceDeskCalloutSvgPath,
+    serviceDeskEmailAddress,
+    serviceDeskHelpPath,
+    serviceDeskSettingsPath,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
-  const router = createRouter({ fullPath, workspaceType, defaultBranch });
+  const router = createRouter({ fullPath, workspaceType, defaultBranch, workItemType });
 
   const breadcrumbParams = { workItemType };
 
@@ -72,6 +79,13 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       workItemType,
       workItemPlanningViewEnabled: parseBoolean(workItemPlanningViewEnabled),
       workItemsSavedViewsEnabled: parseBoolean(workItemsSavedViewsEnabled),
+      // service desk list
+      isServiceDeskEnabled: parseBoolean(isServiceDeskEnabled),
+      isServiceDeskSupported: parseBoolean(isServiceDeskSupported),
+      serviceDeskCalloutSvgPath,
+      serviceDeskEmailAddress,
+      serviceDeskHelpPath,
+      serviceDeskSettingsPath,
     },
     mounted() {
       performanceMarkAndMeasure({

@@ -1,0 +1,5 @@
+---
+name: create_secure_file
+description: Grants the ability to create secure files
+boundaries:
+  - project

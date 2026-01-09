@@ -1,0 +1,10 @@
+---
+name: auto_merge_on_merge_status_change
+description: Trigger auto merge process when merge status changes to can_be_merged
+feature_issue_url: https://gitlab.com/gitlab-com/request-for-help/-/issues/3850
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217382
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584884
+milestone: '18.8'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

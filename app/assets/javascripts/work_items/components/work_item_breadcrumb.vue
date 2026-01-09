@@ -2,7 +2,7 @@
 import { GlBreadcrumb } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { ROUTES, WORK_ITEM_TYPE_NAME_EPIC } from '../constants';
+import { ROUTES, WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_TICKET } from '../constants';
 
 const BREADCRUMB_LABELS = {
   workItemList: s__('WorkItem|Work items'),
@@ -35,6 +35,9 @@ export default {
     isEpicsList() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
+    isServiceDeskList() {
+      return this.workItemType === WORK_ITEM_TYPE_NAME_TICKET;
+    },
     listName() {
       if (this.isWorkItemPlanningViewEnabled) {
         return s__('WorkItem|Work items');
@@ -42,6 +45,10 @@ export default {
 
       if (this.isEpicsList) {
         return __('Epics');
+      }
+
+      if (this.isServiceDeskList) {
+        return __('Service Desk');
       }
 
       return __('Issues');
@@ -53,6 +60,10 @@ export default {
 
       if (this.isEpicsList) {
         return 'epics';
+      }
+
+      if (this.isServiceDeskList) {
+        return 'service_desk';
       }
 
       return 'issues';

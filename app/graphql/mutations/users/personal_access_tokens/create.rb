@@ -34,32 +34,22 @@ module Mutations
             raise_resource_not_available_error! '`granular_personal_access_tokens` feature flag is disabled.'
           end
 
-          build_granular_scopes(args.delete(:granular_scopes))
-
-          params = personal_access_token_params(args)
-          response = ::PersonalAccessTokens::CreateService.new(
-            current_user: current_user, target_user: current_user, params: params,
-            organization_id: Current.organization.id
+          granular_scopes = build_granular_scopes(args.delete(:granular_scopes))
+          response = ::Authn::PersonalAccessTokens::CreateGranularService.new(
+            current_user: current_user,
+            organization: Current.organization,
+            params: args,
+            granular_scopes: granular_scopes
           ).execute
 
           return { errors: Array(response.message) } if response.error?
 
-          token = response.payload[:personal_access_token]
-
-          response = ::Authz::GranularScopeService.new(token).add_granular_scopes(
-            granular_scopes
-          )
-
-          return { errors: Array(response.message) } if response.error?
+          token = response[:personal_access_token]
 
           { token: token.token, errors: [] }
         end
 
         private
-
-        def personal_access_token_params(args)
-          args.merge(granular: true, scopes: [::Gitlab::Auth::GRANULAR_SCOPE])
-        end
 
         def build_granular_scopes(inputs)
           attrs = inputs.flat_map { |input| prepare_granular_scope_attrs(input) }

@@ -12,8 +12,8 @@ title: Use Service Desk
 
 {{< /details >}}
 
-You can use Service Desk to [create an issue](#as-an-end-user-issue-creator) or [respond to one](#as-a-responder-to-the-issue).
-In these issues, you can also see our friendly neighborhood [Support Bot](configure.md#support-bot-user).
+You can use Service Desk to [create a ticket](#as-an-end-user-ticket-creator) or [respond to one](#as-a-responder-to-the-ticket).
+In these tickets, you can also see our friendly neighborhood [Support Bot](configure.md#support-bot-user).
 
 ## View Service Desk email address
 
@@ -22,11 +22,11 @@ To check what the Service Desk email address is for your project:
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Service Desk**.
 
-The email address is available at the top of the issue list.
+The email address is available at the top of the ticket list.
 
-## As an end user (issue creator)
+## As an end user (ticket creator)
 
-To create a Service Desk issue, an end user does not need to know anything about
+To create a Service Desk ticket, an end user does not need to know anything about
 the GitLab instance. They just send an email to the address they are given, and
 receive an email back from GitLab Support Bot, confirming receipt:
 
@@ -36,10 +36,10 @@ Thank you for your support request! We are tracking your request as ticket `#%{i
 
 This email also gives the end user an option to unsubscribe.
 
-If they don't choose to unsubscribe, then any new comments added to the issue
+If they don't choose to unsubscribe, then any new comments added to the ticket
 are sent as emails.
 
-Any responses they send by email are displayed in the issue itself.
+Any responses they send by email are displayed in the ticket itself.
 
 For additional information see [External participants](external_participants.md) and the
 [headers used for treating email](../../../administration/incoming_email.md#accepted-headers).
@@ -65,13 +65,13 @@ To create a Service Desk ticket from the UI:
 For a walkthrough, see [Create Service Desk tickets in the UI and API (GitLab 16.10)](https://www.youtube.com/watch?v=ibUGNc2wifQ).
 <!-- Video published on 2024-03-05 -->
 
-## As a responder to the issue
+## As a responder to the ticket
 
-For responders to the issue, everything works just like other GitLab issues.
-GitLab displays a familiar-looking issue tracker where responders can see
-issues created through customer support requests, and filter or interact with them.
+For responders to the ticket, everything works just like GitLab issues.
+GitLab displays a familiar-looking ticket tracker where responders can see
+tickets created through customer support requests, and filter or interact with them.
 
-![Service Desk Issue tracker](img/service_desk_issue_tracker_v16_10.png)
+![Service Desk ticket tracker](img/service_desk_issue_tracker_v16_10.png)
 
 Messages from the end user are shown as coming from the special
 [Support Bot user](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users).
@@ -80,18 +80,18 @@ You can read and write comments as you usually do in GitLab:
 - The project's visibility (private, internal, public) does not affect Service Desk.
 - The path to the project, including its group or namespace, is shown in emails.
 
-### View Service Desk issues
+### View Service Desk tickets
 
 Prerequisites:
 
 - You must have at least the Reporter role for the project.
 
-To view Service Desk issues:
+To view Service Desk tickets:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Service Desk**.
 
-#### Redesigned issue list
+#### Redesigned ticket list
 
 {{< history >}}
 
@@ -100,21 +100,21 @@ To view Service Desk issues:
 
 {{< /history >}}
 
-The Service Desk issue list more closely matches the regular issue list.
+The Service Desk ticket list more closely matches the regular issue list.
 Available features include:
 
 - The same sorting and ordering options [as on the issue list](../issues/sorting_issue_lists.md).
-- The same filters, including [the OR operator](#filter-the-list-of-issues) and [filtering by issue ID](#filter-issues-by-id).
+- The same filters, including [the OR operator](#filter-the-list-of-tickets) and [filtering by ticket ID](#filter-tickets-by-id).
 
-There is no longer an option to create a new issue from the Service Desk issue list.
-This decision better reflects the nature of Service Desk, where new issues are created by emailing
+There is no longer an option to create a new ticket from the Service Desk ticket list.
+This decision better reflects the nature of Service Desk, where new tickets are created by emailing
 a dedicated email address.
 
-##### Filter the list of issues
+##### Filter the list of tickets
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Service Desk**.
-1. Above the list of issues, select **Search or filter results**.
+1. Above the list of tickets, select **Search or filter results**.
 1. In the dropdown list that appears, select the attribute you want to filter by.
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
@@ -129,19 +129,19 @@ a dedicated email address.
 
 When [filtering with the OR operator](../issues/managing_issues.md#filter-the-list-of-issues) is enabled,
 you can use **is one of: `||`**
-when you [filter the list of issues](#filter-the-list-of-issues) by:
+when you [filter the list of tickets](#filter-the-list-of-tickets) by:
 
 - Assignees
 - Labels
 
 `is one of` represents an inclusive OR. For example, if you filter by `Assignee is one of Sidney Jones` and
-`Assignee is one of Zhang Wei`, GitLab shows issues where either `Sidney`, `Zhang`, or both of them are assignees.
+`Assignee is one of Zhang Wei`, GitLab shows tickets where either `Sidney`, `Zhang`, or both of them are assignees.
 
-##### Filter issues by ID
+##### Filter tickets by ID
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Service Desk**.
-1. In the **Search** box, type the issue ID. For example, enter filter `#10` to return only issue 10.
+1. In the **Search** box, type the ticket ID. For example, enter filter `#10` to return only ticket 10.
 
 ## Email contents and formatting
 
@@ -154,7 +154,7 @@ when you [filter the list of issues](#filter-the-list-of-issues) by:
 
 {{< /history >}}
 
-HTML emails show HTML formatting, such as:
+HTML emails sent from Service Desk tickets show HTML formatting, such as:
 
 - Tables
 - Blockquotes
@@ -185,7 +185,7 @@ In GitLab 15.9 and earlier, uploads to a comment are sent as links in the email.
 
 {{< /history >}}
 
-Use the quick action `/convert_to_ticket external-issue-author@example.com` to convert any regular issue
+Use the quick action `/convert_to_ticket external-ticket-author@example.com` to convert any regular issue
 into a Service Desk ticket. This assigns the provided email address as the external author of the ticket
 and adds them to the list of external participants. They receive Service Desk emails for any public
 comment on the ticket and can reply to these emails. Replies add a new comment on the ticket.
@@ -201,35 +201,35 @@ You can add a public comment on the ticket to let the end user know that the tic
 
 {{< /history >}}
 
-Service Desk issues are [confidential](../issues/confidential_issues.md), so they are
+Service Desk tickets are [confidential](../issues/confidential_issues.md), so they are
 only visible to project members. The project owner can
-[make an issue public](../issues/confidential_issues.md#in-an-existing-issue).
-When a Service Desk issue becomes public, the issue creator's and participants' email addresses are
+[make a ticket public](../issues/confidential_issues.md#in-an-existing-issue).
+When a Service Desk ticket becomes public, the ticket creator's and participants' email addresses are
 visible to signed-in users with at least the Reporter role for the project.
 
-In GitLab 15.8 and earlier, when a Service Desk issue becomes public, the issue creator's email
+In GitLab 15.8 and earlier, when a Service Desk ticket becomes public, the ticket creator's email
 address is disclosed to everyone who can view the project.
 
-Anyone in your project can use the Service Desk email address to create an issue in this project, **regardless
+Anyone in your project can use the Service Desk email address to create a ticket in this project, **regardless
 of their role** in the project.
 
 The unique internal email address is visible to project members at least
 the Planner role in your GitLab instance.
-An external user (issue creator) cannot see the internal email address
+An external user (ticket creator) cannot see the internal email address
 displayed in the information note.
 
-### Moving a Service Desk issue
+### Moving a Service Desk ticket
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/372246) in GitLab 15.7: customers continue receiving notifications when a Service Desk issue is moved.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/372246) in GitLab 15.7: customers continue receiving notifications when a Service Desk ticket is moved.
 
 {{< /history >}}
 
-You can move a Service Desk issue the same way you
+You can move a Service Desk ticket the same way you
 [move a regular issue](../issues/managing_issues.md#move-an-issue) in GitLab.
 
-If a Service Desk issue is moved to a different project with Service Desk enabled,
-the customer who created the issue continues to receive email notifications.
-Because a moved issue is first closed, then copied, the customer is considered to be a participant
-in both issues. They continue to receive any notifications in the old issue and the new one.
+If a Service Desk ticket is moved to a different project with Service Desk enabled,
+the customer who created the ticket continues to receive email notifications.
+Because a moved ticket is first closed, then copied, the customer is considered to be a participant
+in both tickets. They continue to receive any notifications in the old ticket and the new one.

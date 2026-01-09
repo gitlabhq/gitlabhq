@@ -1,0 +1,10 @@
+---
+name: service_desk_list_refactor
+description: Render work items list instead of legacy list for service desk list
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/505027
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216857
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/585012
+milestone: '18.8'
+group: group::project management
+type: wip
+default_enabled: false

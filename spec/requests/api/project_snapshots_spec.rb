@@ -60,5 +60,15 @@ RSpec.describe API::ProjectSnapshots, :aggregate_failures, feature_category: :so
       expect(response).to have_gitlab_http_status(:ok)
       expect_snapshot_response_for(project.wiki.repository)
     end
+
+    context 'with granular token permissions', :enable_admin_mode do
+      it_behaves_like 'authorizing granular token permissions', :read_snapshot do
+        let(:boundary_object) { project }
+        let(:user) { admin }
+        let(:request) do
+          get api(path, personal_access_token: pat), params: { wiki: '0' }
+        end
+      end
+    end
   end
 end

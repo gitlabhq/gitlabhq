@@ -121,7 +121,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.issuable?.reference || '';
+        return data.namespace?.issuable?.reference || '';
       },
       error(error) {
         createAlert({ message: this.$options.i18n.referenceFetchError });

@@ -107,11 +107,8 @@ You can ask about a specific GitLab issue. For example:
 - When you are viewing an issue in GitLab, you can ask `Generate a concise summary of the current issue.`
 - `How can I improve the description of <link to your issue> so that readers understand the value and problems to be solved?`
 
-{{< alert type="note" >}}
-
-If the issue contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
-
-{{< /alert >}}
+> [!note]
+> If the issue contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For tips on how GitLab Duo Chat can improve your productivity with issues and epics, see [Boost your productivity with GitLab Duo Chat](https://youtu.be/RJezT5_V6dI).
@@ -148,11 +145,8 @@ You can ask about a specific GitLab epic. For example:
 - When you are viewing an epic in GitLab, you can ask `Generate a concise summary of the opened epic.`
 - `What are the unique use cases raised by commenters in <link to your epic>?`
 
-{{< alert type="note" >}}
-
-If the epic contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
-
-{{< /alert >}}
+> [!note]
+> If the epic contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
 
 ## Ask about a specific merge request
 
@@ -272,11 +266,8 @@ You can ask about a specific GitLab work item. For example:
 - When you are viewing an work item in GitLab, you can ask `Generate a concise summary of the current work item.`
 - `How can I improve the description of <link to your work item> so that readers understand the value and problems to be solved?`
 
-{{< alert type="note" >}}
-
-If the work item contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
-
-{{< /alert >}}
+> [!note]
+> If the work item contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
 
 ## Explain selected code
 
@@ -485,11 +476,8 @@ For example, if you are developing an e-commerce app, you can add the `cart_serv
 - `How does checkout_flow.js interact with cart_service.py? Generate a sequence diagram using Mermaid.`
 - `Can you extend the checkout process by showing products related to the ones in the user's cart? I want to move the checkout logic to the backend before proceeding. Generate the Python backend code and change the frontend code to work with the new backend.`
 
-{{< alert type="note" >}}
-
-You cannot use [Quick Chat](_index.md#in-an-editor-window) to add files or ask questions about files added for Chat's context.
-
-{{< /alert >}}
+> [!note]
+> You cannot use [Quick Chat](_index.md#in-an-editor-window) to add files or ask questions about files added for Chat's context.
 
 ## Refactor code in the IDE
 
@@ -830,11 +818,8 @@ Use the commands to quickly accomplish specific tasks.
 | /reset  | [Clear the chat window and reset the conversation](#delete-or-start-a-new-conversation)                                       |
 | /help   | Learn more about how GitLab Duo Chat works                                                                                           |
 
-{{< alert type="note" >}}
-
-On GitLab.com, in GitLab 17.10 and later, when having [multiple conversations](_index.md#have-multiple-conversations), the `/clear` and `/reset` slash commands are replaced by the [`/new` slash command](#gitlab-ui).
-
-{{< /alert >}}
+> [!note]
+> On GitLab.com, in GitLab 17.10 and later, when having [multiple conversations](_index.md#have-multiple-conversations), the `/clear` and `/reset` slash commands are replaced by the [`/new` slash command](#gitlab-ui).
 
 ### GitLab UI
 

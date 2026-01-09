@@ -15,11 +15,8 @@ title: GitLab MCP server tools
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-To provide feedback on this feature, leave a comment on [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).
-
-{{< /alert >}}
+> [!warning]
+> To provide feedback on this feature, leave a comment on [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).
 
 The GitLab MCP server provides a set of tools that integrate with your existing GitLab workflows.
 You can use these tools to interact directly with GitLab and perform common GitLab operations.

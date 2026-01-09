@@ -63,11 +63,8 @@ You can also use GitLab Duo Chat in these IDEs by installing an editor extension
 - [Eclipse](../../editor_extensions/eclipse/setup.md)
 - [Visual Studio](../../editor_extensions/visual_studio/setup.md)
 
-{{< alert type="note" >}}
-
-If you have GitLab Self-Managed: Use GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, but the experience might be degraded.
-
-{{< /alert >}}
+> [!note]
+> If you have GitLab Self-Managed: Use GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, but the experience might be degraded.
 
 ## Use GitLab Duo Chat in the GitLab UI
 

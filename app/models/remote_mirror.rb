@@ -164,11 +164,6 @@ class RemoteMirror < ApplicationRecord
     self.last_error = Gitlab::UrlSanitizer.sanitize(error_message, user: user, password: password)
   end
 
-  def mark_for_retry!(error_message)
-    update_error_message(error_message)
-    update_retry!
-  end
-
   def mark_as_failed!(error_message)
     update_error_message(error_message)
     update_fail!

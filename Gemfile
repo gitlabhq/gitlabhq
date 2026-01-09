@@ -141,7 +141,7 @@ gem 'acme-client', '~> 2.0.19', feature_category: :pages
 gem 'browser', '~> 5.3.1', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # OS detection for usage ping
-gem 'ohai', '~> 18.1', feature_category: :product_analytics
+gem 'ohai', '~> 19.1.16', feature_category: :product_analytics
 
 # GPG
 gem 'gpgme', '~> 2.0.24', feature_category: :source_code_management

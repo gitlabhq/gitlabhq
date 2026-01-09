@@ -56,7 +56,7 @@ export default {
         text: this.$options.i18n.replace,
         extraAttrs: {
           'data-testid': 'replace',
-          disabled: this.isReplaceDisabled,
+          disabled: this.isReplaceDisabled || !this.userPermissions.createMergeRequestIn,
         },
       };
     },

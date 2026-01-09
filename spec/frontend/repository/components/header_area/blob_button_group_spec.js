@@ -82,6 +82,20 @@ describe('BlobButtonGroup component', () => {
       expect(showUploadBlobModalMock).toHaveBeenCalled();
     });
 
+    describe('when user cannot create merge requests', () => {
+      it('disables the button item', async () => {
+        await createComponent({
+          props: {
+            userPermissions: { pushCode: false, createMergeRequestIn: false, forkProject: true },
+          },
+        });
+
+        expect(findReplaceItem().props('item')).toMatchObject({
+          extraAttrs: { disabled: true },
+        });
+      });
+    });
+
     describe('when user cannot modify blob', () => {
       beforeEach(async () => {
         await createComponent({

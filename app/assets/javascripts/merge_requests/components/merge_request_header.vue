@@ -87,7 +87,7 @@ export default {
         fetchPolicy: fetchPolicies.NO_CACHE,
       });
 
-      badgeState.state = data?.workspace?.issuable?.state;
+      badgeState.state = data?.namespace?.issuable?.state;
     },
   },
 };

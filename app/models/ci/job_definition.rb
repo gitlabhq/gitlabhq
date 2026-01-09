@@ -28,7 +28,7 @@ module Ci
     # Partition ID from which we start using the new checksum approach on GitLab.com.
     # This is set to align with new partition creation to minimize redundant job definitions.
     # For context, see: https://gitlab.com/gitlab-org/gitlab/-/issues/577902
-    NEW_CHECKSUM_PARTITION_THRESHOLD = 109
+    NEW_CHECKSUM_PARTITION_THRESHOLD = 108
 
     query_constraints :id, :partition_id
     partitionable scope: ->(_) { Ci::Pipeline.current_partition_value }, partitioned: true

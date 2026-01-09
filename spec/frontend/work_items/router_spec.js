@@ -15,7 +15,7 @@ import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphq
 import App from '~/work_items/components/app.vue';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
-import { WORK_ITEM_BASE_ROUTE_MAP } from '~/work_items/constants';
+import { WORK_ITEM_BASE_ROUTE_MAP, WORK_ITEM_TYPE_NAME_TICKET } from '~/work_items/constants';
 import WorkItemsRoot from '~/work_items/pages/work_item_root.vue';
 import { createRouter } from '~/work_items/router';
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
@@ -130,6 +130,18 @@ describe('Work items router', () => {
     const basePath = router.options.history?.base || router.options.base;
 
     expect(basePath).toBe('/groups/work_item/-');
+  });
+
+  it('includes /-/issues in basePath for service desk list', () => {
+    const router = createRouter({
+      fullPath: '/work_item',
+      workItemType: WORK_ITEM_TYPE_NAME_TICKET,
+    });
+
+    // options.history only exists in Vue 3 router
+    const basePath = router.options.history?.base || router.options.base;
+
+    expect(basePath).toBe('/work_item/-/issues');
   });
 
   it(`renders create work item page on /issues/new route with 'type' param set to 'ISSUE'`, async () => {

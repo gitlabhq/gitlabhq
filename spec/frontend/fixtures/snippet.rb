@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SnippetsController, '(JavaScript fixtures)', type: :controller do
+RSpec.describe SnippetsController, '(JavaScript fixtures)', type: :controller, feature_category: :source_code_management do
   include JavaScriptFixturesHelpers
 
   let(:user) { create(:user) }

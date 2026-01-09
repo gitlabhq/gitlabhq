@@ -15,17 +15,16 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
     stub_feature_flags(repository_file_tree_browser: true)
     visit project_tree_path(project, project.default_branch)
     wait_for_requests
-    click_button 'Show file tree browser'
   end
 
   describe 'basic functionality' do
     it 'shows and hides the file tree browser' do
-      expect(page).to have_css('.file-tree-browser-peek')
+      expect(page).to have_css('.file-tree-browser')
 
       click_button 'Hide file tree browser'
       wait_for_requests
 
-      expect(page).not_to have_css('.file-tree-browser-peek')
+      expect(page).not_to have_css('.file-tree-browser')
     end
 
     it 'displays files and directories' do
@@ -60,9 +59,8 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
     it 'expands parent directories when navigating directly to a nested file' do
       visit project_blob_path(project, "#{project.default_branch}/files/ruby/popen.rb")
       wait_for_requests
-      # File tree starts collapsed
-      click_button('Show file tree browser')
 
+      # File tree starts open
       within('.file-tree-browser') do
         # Should auto-expand parent directories
         files_folder = find_button('files')

@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'pinia';
+import { mapState, mapActions } from 'pinia';
 import { GlButton } from '@gitlab/ui';
 import { InternalEvents } from '~/tracking';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
@@ -47,7 +47,7 @@ export default {
       'fileTreeBrowserIsPeekOn',
       'fileTreeBrowserIsVisible',
     ]),
-    ...mapState(useMainContainer, ['isWide']),
+    ...mapState(useMainContainer, ['isCompact']),
     visibilityClasses() {
       return {
         'file-tree-browser-expanded gl-sticky gl-pb-5': this.fileTreeBrowserIsExpanded,
@@ -59,6 +59,7 @@ export default {
     this.restoreTreeWidthUserPreference();
   },
   methods: {
+    ...mapActions(useFileTreeBrowserVisibility, ['resetFileTreeBrowserAllStates']),
     restoreTreeWidthUserPreference() {
       const userPreference = localStorage.getItem(FILE_TREE_BROWSER_STORAGE_KEY);
       if (!userPreference) return;
@@ -70,6 +71,9 @@ export default {
     saveTreeWidthPreference(size) {
       localStorage.setItem(FILE_TREE_BROWSER_STORAGE_KEY, size);
       this.treeWidth = size;
+    },
+    onOverlayClick() {
+      this.resetFileTreeBrowserAllStates();
     },
   },
   fileTreeBrowserStorageKey: FILE_TREE_BROWSER_STORAGE_KEY,
@@ -85,17 +89,18 @@ export default {
       v-if="fileTreeBrowserIsPeekOn"
       class="file-tree-browser-overlay gl-fixed gl-bottom-0 gl-left-0 gl-right-0 gl-top-0"
       data-testid="overlay"
+      @click="onOverlayClick"
     ></div>
     <transition name="file-tree-browser-slide">
       <file-browser-height
         v-show="fileTreeBrowserIsVisible"
-        :enable-sticky-height="isWide"
+        :enable-sticky-height="!isCompact"
         :style="{ '--tree-width': `${treeWidth}px` }"
         class="file-tree-browser file-tree-browser-responsive gl-fixed gl-left-0 gl-flex-none gl-p-4"
         :class="visibilityClasses"
       >
         <panel-resizer
-          class="max-@lg/panel:gl-hidden"
+          class="max-@md/panel:gl-hidden"
           :start-size="treeWidth"
           :min-size="$options.minTreeWidth"
           :max-size="$options.maxTreeWidth"

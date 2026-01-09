@@ -11,3 +11,28 @@ gitlab_schema: gitlab_ci
 sharding_key:
   project_id: projects
 table_size: small
+partition_detach_info:
+- partition_name: ci_builds_metadata_103
+  bounds_clause: "FOR VALUES IN ('103')"
+  required_constraint: "(partition_id = ANY (ARRAY[103]))"
+  parent_schema: public
+- partition_name: ci_builds_metadata_104
+  bounds_clause: "FOR VALUES IN ('104')"
+  required_constraint: "(partition_id = ANY (ARRAY[104]))"
+  parent_schema: public
+- partition_name: ci_builds_metadata_105
+  bounds_clause: "FOR VALUES IN ('105')"
+  required_constraint: "(partition_id = ANY (ARRAY[105]))"
+  parent_schema: public
+- partition_name: ci_builds_metadata_106
+  bounds_clause: "FOR VALUES IN ('106')"
+  required_constraint: "(partition_id = ANY (ARRAY[106]))"
+  parent_schema: public
+- partition_name: ci_builds_metadata_107
+  bounds_clause: "FOR VALUES IN ('107')"
+  required_constraint: "(partition_id = ANY (ARRAY[107]))"
+  parent_schema: public
+- partition_name: ci_builds_metadata_108
+  bounds_clause: "FOR VALUES IN ('108')"
+  required_constraint: "(partition_id = ANY (ARRAY[108]))"
+  parent_schema: public

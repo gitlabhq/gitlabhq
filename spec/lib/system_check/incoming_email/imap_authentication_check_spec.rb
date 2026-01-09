@@ -10,7 +10,7 @@ MAIL_ROOM_CONFIG_ENABLED_SAMPLE =
   ":port: 143\n"\
   ""
 
-RSpec.describe SystemCheck::IncomingEmail::ImapAuthenticationCheck do
+RSpec.describe SystemCheck::IncomingEmail::ImapAuthenticationCheck, feature_category: :notifications do
   subject(:system_check) { described_class.new }
 
   describe '#load_config' do

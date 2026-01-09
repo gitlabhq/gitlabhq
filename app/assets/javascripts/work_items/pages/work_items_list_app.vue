@@ -38,6 +38,9 @@ import {
   WORKSPACE_PROJECT,
 } from '~/issues/constants';
 import { AutocompleteCache } from '~/issues/dashboard/utils';
+import EmptyStateWithAnyTickets from '~/issues/service_desk/components/empty_state_with_any_issues.vue';
+import EmptyStateWithoutAnyTickets from '~/issues/service_desk/components/empty_state_without_any_issues.vue';
+import InfoBanner from '~/issues/service_desk/components/info_banner.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   CREATED_DESC,
@@ -130,6 +133,7 @@ import {
   STATE_CLOSED,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_TICKET,
   METADATA_KEYS,
   WORK_ITEM_CREATE_SOURCES,
 } from '../constants';
@@ -173,6 +177,7 @@ export default {
   components: {
     GlLoadingIcon,
     GlButton,
+    InfoBanner,
     IssuableList,
     IssueCardStatistics,
     IssueCardTimeInfo,
@@ -182,6 +187,8 @@ export default {
     WorkItemHealthStatus,
     EmptyStateWithAnyIssues,
     EmptyStateWithoutAnyIssues,
+    EmptyStateWithAnyTickets,
+    EmptyStateWithoutAnyTickets,
     CreateWorkItemModal,
     LocalBoard,
     WorkItemListHeading,
@@ -215,6 +222,7 @@ export default {
     'hasCustomFieldsFeature',
     'isGroup',
     'isProject',
+    'isServiceDeskSupported',
     'showNewWorkItem',
     'workItemType',
     'canReadCrmOrganization',
@@ -452,6 +460,9 @@ export default {
     },
   },
   computed: {
+    isInfoBannerVisible() {
+      return this.isServiceDeskList && this.isServiceDeskSupported && this.hasWorkItems;
+    },
     workItems() {
       if (this.workItemsFull.length > 0 && this.workItemsSlim.length > 0 && !this.detailLoading) {
         return this.combineSlimAndFullLists(this.workItemsSlim, this.workItemsFull);
@@ -503,6 +514,9 @@ export default {
     },
     isEpicsList() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
+    },
+    isServiceDeskList() {
+      return this.workItemType === WORK_ITEM_TYPE_NAME_TICKET;
     },
     hasSearch() {
       return Boolean(this.searchQuery);
@@ -824,7 +838,7 @@ export default {
         hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
         hasManualSort: !this.isEpicsList,
-        hasStatusFeature: this.hasStatusFeature && !this.isEpicsList,
+        hasStatusFeature: this.hasStatusFeature && !this.isEpicsList && !this.isServiceDeskList,
         hasStartDate: true,
         hasPriority: !this.isEpicsList,
         hasMilestoneDueDate: true,
@@ -1453,6 +1467,7 @@ export default {
         @workItemDeleted="deleteItem"
         @work-item-updated="handleStatusChange"
       />
+      <info-banner v-if="isInfoBannerVisible" />
       <issuable-list
         :active-issuable="activeItem"
         :current-tab="state"
@@ -1500,11 +1515,12 @@ export default {
             :full-path="rootPageFullPath"
             :is-epics-list="isEpicsList"
             :is-group="isGroup"
+            :is-service-desk-list="isServiceDeskList"
             :work-item-type-id="workItemTypeId"
             :sort-key="sortKey"
           />
         </template>
-        <template v-if="!isPlanningViewsEnabled" #nav-actions>
+        <template v-if="!isPlanningViewsEnabled && !isServiceDeskList" #nav-actions>
           <div class="gl-flex gl-justify-end gl-gap-3">
             <gl-button
               v-if="enableClientSideBoardsExperiment"
@@ -1665,8 +1681,17 @@ export default {
 
         <template v-if="!error" #empty-state>
           <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab">
+            <template v-if="isServiceDeskList">
+              <empty-state-with-any-tickets
+                v-if="hasAnyIssues"
+                :has-search="hasSearch"
+                :is-open-tab="isOpenTab"
+              />
+              <empty-state-without-any-tickets v-else />
+            </template>
+
             <empty-state-with-any-issues
-              v-if="hasAnyIssues"
+              v-else-if="hasAnyIssues"
               :has-search="hasSearch"
               :is-open-tab="isOpenTab"
               :is-epic="isEpicsList"

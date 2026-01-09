@@ -40,7 +40,7 @@ To enable Service Desk in your project:
 
 Service Desk is now enabled for this project.
 If anyone sends an email to the address available below **Email address to use for Service Desk**,
-GitLab creates a confidential issue with the email's content.
+GitLab creates a confidential ticket with the email's content.
 
 ## Service Desk glossary
 
@@ -87,7 +87,7 @@ content specific to the Service Desk ticket or your GitLab instance.
 | `%{ISSUE_ID}`          | {{< yes >}}               | {{< yes >}} | Ticket IID. |
 | `%{ISSUE_PATH}`        | {{< yes >}}               | {{< yes >}} | Project path appended with the ticket IID. |
 | `%{ISSUE_URL}`         | {{< yes >}}               | {{< yes >}} | URL of the ticket. External participants can only view the ticket if the project is public and ticket is not confidential (Service Desk tickets are confidential by default). |
-| `%{ISSUE_DESCRIPTION}` | {{< yes >}}               | {{< yes >}} | Ticket description. If a user has edited the description, it may contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify descriptions or your team is aware of the template design. |
+| `%{ISSUE_DESCRIPTION}` | {{< yes >}}               | {{< yes >}} | Ticket description. If a user has edited the description, it may contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify ticket descriptions or your team is aware of the template design. |
 | `%{UNSUBSCRIBE_URL}`   | {{< yes >}}               | {{< yes >}} | Unsubscribe URL. Learn how to [unsubscribe as an external participant](external_participants.md#unsubscribing-from-notification-emails) and [use unsubscribe headers in notification emails from GitLab](../../profile/notifications.md#using-an-email-client-or-other-software). |
 | `%{NOTE_TEXT}`         | {{< no >}}                | {{< yes >}} | The new comment added to the ticket by a user. Take care to include this placeholder in `new_note.md`. Otherwise, the external participants may never see the updates on their Service Desk ticket. |
 
@@ -150,7 +150,7 @@ To keep your emails on brand, you can create a custom new note email template. T
 {{< /history >}}
 
 Instance administrators can add a header, footer or additional text to the GitLab instance and apply
-them to all emails sent from GitLab. If you're using a custom `thank_you.md`, `new_participant` or `new_note.md`, to include
+them to all emails sent from GitLab. If you're using a custom `thank_you.md`, `new_participant.md` or `new_note.md`, to include
 this content, add `%{SYSTEM_HEADER}`, `%{SYSTEM_FOOTER}`, or `%{ADDITIONAL_TEXT}` to your templates.
 
 For more information, see [System header and footer messages](../../../administration/appearance.md#add-system-header-and-footer-messages) and [custom additional text](../../../administration/settings/email.md#custom-additional-text).
@@ -158,7 +158,7 @@ For more information, see [System header and footer messages](../../../administr
 ## Use a custom template for Service Desk tickets
 
 You can select one [description template](../description_templates.md#create-a-description-template)
-**per project** to be appended to every new Service Desk ticket's description.
+**per project** to be appended to every new Service Desk ticket description.
 
 You can set description templates at various levels:
 
@@ -181,7 +181,7 @@ To use a custom description template with Service Desk:
 
 ## Support Bot user
 
-Behind the scenes, Service Desk works by the special Support Bot user creating issues.
+Behind the scenes, Service Desk works by the special Support Bot user creating tickets.
 This user isn't a [billable user](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users),
 so it does not count toward the license limit count.
 
@@ -192,7 +192,7 @@ This feature only applies to comments made in GitLab 16.1 and later.
 
 ### Change the Support Bot's display name
 
-You can change the display name of the Support Bot user. Emails sent from Service Desk have
+You can change the display name of the Support Bot user. Emails sent from Service Desk tickets have
 this name in the `From` header. The default display name is `GitLab Support Bot`.
 
 To edit the custom email display name:
@@ -230,7 +230,7 @@ To disable this setting:
 1. Clear the **New tickets are confidential by default** checkbox.
 1. Select **Save changes**.
 
-## Reopen issues when an external participant comments
+## Reopen tickets when an external participant comments
 
 {{< history >}}
 
@@ -238,9 +238,9 @@ To disable this setting:
 
 {{< /history >}}
 
-You can configure GitLab to reopen closed issues when an external participant adds
-a new comment on an issue by email. This also adds an internal comment that mentions
-the assignees of the issue and creates to-do items for them.
+You can configure GitLab to reopen closed tickets when an external participant adds
+a new comment on a ticket by email. This also adds an internal comment that mentions
+the assignees of the ticket and creates to-do items for them.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For a walkthrough, see [a short showcase video](https://youtu.be/163wDM1e43o).

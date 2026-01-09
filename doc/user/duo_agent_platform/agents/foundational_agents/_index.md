@@ -85,12 +85,12 @@ Prerequisites:
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Foundational agents**, for **Default availability**, select one of the following:
-   - **On by default**
-   - **Off by default**
+   - **On**
+   - **Off**
 1. Under **Availability settings**, for each agent, select one of the following:
    - **On**
    - **Off**
-   - **On (default)** or **Off (default)**
+   - **Use default (On)** or **Use default (Off)**
 1. Select **Save changes**.
 
 These settings apply to:
@@ -112,12 +112,12 @@ Prerequisites:
 1. On the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Foundational agents**, for **Default availability**, select one of the following:
-   - **On by default**
-   - **Off by default**
+   - **On**
+   - **Off**
 1. Under **Availability settings**, for each agent, select one of the following:
    - **On**
    - **Off**
-   - **On (default)** or **Off (default)**
+   - **Use default (On)** or **Use default (Off)**
 1. Select **Save changes**.
 
 {{< /tab >}}

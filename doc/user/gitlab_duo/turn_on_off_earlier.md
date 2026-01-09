@@ -22,11 +22,8 @@ title: GitLab Duo availability - earlier versions
 
 For GitLab Duo Pro or Enterprise, you can turn GitLab Duo on or off for a group, project, or instance.
 
-{{< alert type="note" >}}
-
-This information applies to GitLab 18.1 and earlier. For GitLab 18.2 and later, view [the latest documentation](turn_on_off.md).
-
-{{< /alert >}}
+> [!note]
+> This information applies to GitLab 18.1 and earlier. For GitLab 18.2 and later, view [the latest documentation](turn_on_off.md).
 
 When GitLab Duo is turned off for a group, project, or instance:
 

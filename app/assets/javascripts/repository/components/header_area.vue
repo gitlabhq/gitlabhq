@@ -23,7 +23,6 @@ import RepositoryOverflowMenu from '~/repository/components/header_area/reposito
 import AddToTree from '~/repository/components/header_area/add_to_tree.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
-import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { Mousetrap } from '~/lib/mousetrap';
 import {
   EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
@@ -83,7 +82,7 @@ export default {
     'showEditButton',
     'showWebIdeButton',
     'isGitpodEnabledForInstance',
-    'showPipelineEditorUrl',
+    'showPipelineEditorButton',
     'webIdeUrl',
     'editUrl',
     'pipelineEditorUrl',
@@ -133,7 +132,6 @@ export default {
   },
   computed: {
     ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsVisible']),
-    ...mapState(useMainContainer, ['isCompact']),
     isTreeView() {
       return !['blobPathDecoded', 'blobPathEncoded'].includes(this.$route.name);
     },
@@ -205,8 +203,7 @@ export default {
       return (
         this.glFeatures.repositoryFileTreeBrowser &&
         !this.isProjectOverview &&
-        !this.fileTreeBrowserIsVisible &&
-        !this.isCompact
+        !this.fileTreeBrowserIsVisible
       );
     },
     toggleFileBrowserShortcutKey() {
@@ -406,7 +403,7 @@ export default {
           :show-edit-button="showEditButton"
           :show-web-ide-button="showWebIdeButton"
           :is-gitpod-enabled-for-instance="isGitpodEnabledForInstance"
-          :show-pipeline-editor-url="showPipelineEditorUrl"
+          :show-pipeline-editor-button="showPipelineEditorButton"
           :web-ide-url="webIDEUrl"
           :edit-url="editUrl"
           :pipeline-editor-url="pipelineEditorUrl"

@@ -94,7 +94,6 @@ Style/RedundantSelf:
     - 'app/models/packages/sem_ver.rb'
     - 'app/models/pages_domain.rb'
     - 'app/models/personal_access_token.rb'
-    - 'app/models/plan.rb'
     - 'app/models/project.rb'
     - 'app/models/project_feature.rb'
     - 'app/models/project_group_link.rb'

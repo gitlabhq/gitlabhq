@@ -111,7 +111,7 @@ describe('HeaderActions component', () => {
 
   const mockIssueReferenceData = {
     data: {
-      workspace: {
+      namespace: {
         id: 'gid://gitlab/Project/7',
         issuable: {
           id: 'gid://gitlab/Issue/511',

@@ -57,6 +57,11 @@ export default {
       required: false,
       default: false,
     },
+    isServiceDeskList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     workItemTypeId: {
       type: String,
       required: true,
@@ -86,7 +91,7 @@ export default {
     applicableMetadataPreferences() {
       return WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter((item) => {
         if (item.key === METADATA_KEYS.STATUS) {
-          return !this.isEpicsList;
+          return !this.isEpicsList && !this.isServiceDeskList;
         }
         return !this.isGroup || item.isPresentInGroup || this.isGroupIssuesList;
       });

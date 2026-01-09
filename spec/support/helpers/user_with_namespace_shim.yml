@@ -630,6 +630,7 @@
 - spec/helpers/search_helper_spec.rb
 - spec/helpers/submodule_helper_spec.rb
 - spec/helpers/tree_helper_spec.rb
+- spec/helpers/web_ide_button_helper_spec.rb
 - spec/lib/banzai/filter/references/user_reference_filter_spec.rb
 - spec/lib/banzai/filter/truncate_visible_filter_spec.rb
 - spec/lib/banzai/reference_parser/project_parser_spec.rb
