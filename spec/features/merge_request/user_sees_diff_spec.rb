@@ -32,7 +32,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
         visit "#{diffs_project_merge_request_path(project, merge_request)}#{fragment}"
       end
 
-      it 'shows expanded note', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391239' do
+      it 'shows expanded note', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9350' do
         expect(page).to have_selector(fragment, visible: true)
       end
     end
@@ -86,7 +86,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
     end
 
     context 'as user who needs to fork' do
-      it 'shows fork/cancel confirmation', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/337477' do
+      it 'shows fork/cancel confirmation', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9320' do
         sign_in(user)
         visit diffs_project_merge_request_path(project, merge_request)
 

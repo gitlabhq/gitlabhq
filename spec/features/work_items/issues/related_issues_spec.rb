@@ -162,7 +162,8 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
         visit project_issue_path(project, issue_a)
       end
 
-      it 'shows related issues count', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/563602' do
+      it 'shows related issues count',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16773' do
         within_testid('work-item-relationships') do
           expect(page).to have_css('[data-testid="crud-count"]', text: '2')
         end

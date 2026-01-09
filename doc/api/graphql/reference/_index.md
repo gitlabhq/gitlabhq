@@ -15980,6 +15980,29 @@ The edge type for [`AgentConfiguration`](#agentconfiguration).
 | <a id="agentconfigurationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="agentconfigurationedgenode"></a>`node` | [`AgentConfiguration`](#agentconfiguration) | The item at the end of the edge. |
 
+#### `AgentPlatformUserFlowCountConnection`
+
+The connection type for [`AgentPlatformUserFlowCount`](#agentplatformuserflowcount).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentplatformuserflowcountconnectionedges"></a>`edges` | [`[AgentPlatformUserFlowCountEdge]`](#agentplatformuserflowcountedge) | A list of edges. |
+| <a id="agentplatformuserflowcountconnectionnodes"></a>`nodes` | [`[AgentPlatformUserFlowCount]`](#agentplatformuserflowcount) | A list of nodes. |
+| <a id="agentplatformuserflowcountconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AgentPlatformUserFlowCountEdge`
+
+The edge type for [`AgentPlatformUserFlowCount`](#agentplatformuserflowcount).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentplatformuserflowcountedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="agentplatformuserflowcountedgenode"></a>`node` | [`AgentPlatformUserFlowCount`](#agentplatformuserflowcount) | The item at the end of the edge. |
+
 #### `AiAgentConnection`
 
 The connection type for [`AiAgent`](#aiagent).
@@ -25506,6 +25529,18 @@ Agent platform aggregated metrics by flow type.
 | <a id="agentplatformflowmetricsessionscount"></a>`sessionsCount` | [`Int!`](#int) | Total number of sessions. |
 | <a id="agentplatformflowmetricuserscount"></a>`usersCount` | [`Int!`](#int) | Number of unique users. |
 
+### `AgentPlatformUserFlowCount`
+
+Agent platform flow counts aggergated per user.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentplatformuserflowcountflowtype"></a>`flowType` | [`String!`](#string) | Type of the flow. |
+| <a id="agentplatformuserflowcountsessionscount"></a>`sessionsCount` | [`Int!`](#int) | Total number of flow sessions. |
+| <a id="agentplatformuserflowcountuser"></a>`user` | [`UserCore`](#usercore) | User who triggered the flow. |
+
 ### `AgentVersionWarning`
 
 Version-related warning for a connected Agent.
@@ -27623,6 +27658,8 @@ Branch protection details for a branch rule.
 | <a id="branchprotectionprotectedfrompushbysecuritypolicy"></a>`protectedFromPushBySecurityPolicy` | [`Boolean!`](#boolean) | Indicates if a security policy prevents push or force push. |
 | <a id="branchprotectionpushaccesslevels"></a>`pushAccessLevels` | [`PushAccessLevelConnection`](#pushaccesslevelconnection) | Details about who can push when the branch is the source branch. (see [Connections](#connections)) |
 | <a id="branchprotectionunprotectaccesslevels"></a>`unprotectAccessLevels` | [`UnprotectAccessLevelConnection`](#unprotectaccesslevelconnection) | Details about who can unprotect the branch. (see [Connections](#connections)) |
+| <a id="branchprotectionwarnmodificationblockedbypolicy"></a>`warnModificationBlockedByPolicy` | [`Boolean!`](#boolean) | Indicates if a warn mode security policy would prevent modification. |
+| <a id="branchprotectionwarnprotectedfrompushbysecuritypolicy"></a>`warnProtectedFromPushBySecurityPolicy` | [`Boolean!`](#boolean) | Indicates if a warn mode security policy would prevent push or force push. |
 
 ### `BranchRule`
 
@@ -29805,13 +29842,13 @@ Represents a container upstream registry.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerupstreamcachevalidityhours"></a>`cacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Time before the cache expires for the upstream registry. |
-| <a id="containerupstreamdescription"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Description of the upstream registry. |
-| <a id="containerupstreamid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.7. **Status**: Experiment. ID of the upstream registry. |
-| <a id="containerupstreamname"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Name of the upstream registry. |
-| <a id="containerupstreamregistriescount"></a>`registriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Number of registries using the upstream. |
-| <a id="containerupstreamurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. URL of the upstream registry. |
-| <a id="containerupstreamusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Username to sign in to the upstream registry. |
+| <a id="containerupstreamcachevalidityhours"></a>`cacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.1. **Status**: Experiment. Time before the cache expires for the upstream registry. |
+| <a id="containerupstreamdescription"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Description of the upstream registry. |
+| <a id="containerupstreamid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.1. **Status**: Experiment. ID of the upstream registry. |
+| <a id="containerupstreamname"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the upstream registry. |
+| <a id="containerupstreamregistriescount"></a>`registriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.6. **Status**: Experiment. Number of registries using the upstream. |
+| <a id="containerupstreamurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
+| <a id="containerupstreamusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
 
 ### `ContainerUpstreamDetails`
 
@@ -29821,14 +29858,14 @@ Represents container upstream details.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerupstreamdetailscachevalidityhours"></a>`cacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Time before the cache expires for the upstream registry. |
-| <a id="containerupstreamdetailsdescription"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Description of the upstream registry. |
-| <a id="containerupstreamdetailsid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.7. **Status**: Experiment. ID of the upstream registry. |
-| <a id="containerupstreamdetailsname"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Name of the upstream registry. |
-| <a id="containerupstreamdetailsregistriescount"></a>`registriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Number of registries using the upstream. |
+| <a id="containerupstreamdetailscachevalidityhours"></a>`cacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.1. **Status**: Experiment. Time before the cache expires for the upstream registry. |
+| <a id="containerupstreamdetailsdescription"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Description of the upstream registry. |
+| <a id="containerupstreamdetailsid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.1. **Status**: Experiment. ID of the upstream registry. |
+| <a id="containerupstreamdetailsname"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the upstream registry. |
+| <a id="containerupstreamdetailsregistriescount"></a>`registriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.6. **Status**: Experiment. Number of registries using the upstream. |
 | <a id="containerupstreamdetailsregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[ContainerRegistryUpstreamWithRegistry!]!`](#containerregistryupstreamwithregistry) | **Introduced** in GitLab 18.8. **Status**: Experiment. Represents the connected upstream registry for an upstream and the upstream position data. |
-| <a id="containerupstreamdetailsurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. URL of the upstream registry. |
-| <a id="containerupstreamdetailsusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Username to sign in to the upstream registry. |
+| <a id="containerupstreamdetailsurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
+| <a id="containerupstreamdetailsusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
 
 ### `ContextPreset`
 
@@ -50779,6 +50816,7 @@ Requires ClickHouse. Premium and Ultimate only.
 | <a id="agentplatformmetricsresumedsessioneventcount"></a>`resumedSessionEventCount` | [`Int`](#int) | Total count of `agent_platform_session_resumed` event. |
 | <a id="agentplatformmetricsstartedsessioneventcount"></a>`startedSessionEventCount` | [`Int`](#int) | Total count of `agent_platform_session_started` event. |
 | <a id="agentplatformmetricsstoppedsessioneventcount"></a>`stoppedSessionEventCount` | [`Int`](#int) | Total count of `agent_platform_session_stopped` event. |
+| <a id="agentplatformmetricsuserflowcounts"></a>`userFlowCounts` | [`AgentPlatformUserFlowCountConnection`](#agentplatformuserflowcountconnection) | Aggregated count of flows per user. (see [Connections](#connections)) |
 
 #### Fields with arguments
 
@@ -58260,6 +58298,27 @@ Implementations:
 | ---- | ---- | ----------- |
 | <a id="todoablename"></a>`name` | [`String`](#string) | Name or title of the object. |
 | <a id="todoableweburl"></a>`webUrl` | [`String`](#string) | URL of the object. |
+
+#### `UpstreamInterface`
+
+Implementations:
+
+- [`ContainerUpstream`](#containerupstream)
+- [`ContainerUpstreamDetails`](#containerupstreamdetails)
+- [`MavenUpstream`](#mavenupstream)
+- [`MavenUpstreamDetails`](#mavenupstreamdetails)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="upstreaminterfacecachevalidityhours"></a>`cacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.1. **Status**: Experiment. Time before the cache expires for the upstream registry. |
+| <a id="upstreaminterfacedescription"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Description of the upstream registry. |
+| <a id="upstreaminterfaceid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.1. **Status**: Experiment. ID of the upstream registry. |
+| <a id="upstreaminterfacename"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the upstream registry. |
+| <a id="upstreaminterfaceregistriescount"></a>`registriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.6. **Status**: Experiment. Number of registries using the upstream. |
+| <a id="upstreaminterfaceurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
+| <a id="upstreaminterfaceusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
 
 #### `User`
 

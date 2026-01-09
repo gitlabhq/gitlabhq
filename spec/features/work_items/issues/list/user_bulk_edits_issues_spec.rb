@@ -45,7 +45,8 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
   end
 
   context 'assignee' do
-    it 'updates to current user', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/553809' do
+    it 'updates to current user',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16772' do
       visit project_issues_path(project)
 
       click_button 'Bulk edit'

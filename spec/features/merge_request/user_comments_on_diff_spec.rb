@@ -44,7 +44,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       end
 
       context 'in multiple files' do
-        it 'toggles comments', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/393518' do
+        it 'toggles comments', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9355' do
           first_line_element = find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']").find(:xpath, "..")
           first_root_element = first_line_element.ancestor('[data-path]')
           click_diff_line(first_line_element)
@@ -165,7 +165,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
         add_comment('-13')
       end
 
-      it 'allows comments on previously hidden lines at the top of a file', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/285294' do
+      it 'allows comments on previously hidden lines at the top of a file', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9333' do
         # Click -9, expand up, select 1 add and verify comment
         page.within find_in_page_or_panel_by_scrolling('[data-path="files/ruby/popen.rb"]') do
           all('.js-unfold-all')[0].click

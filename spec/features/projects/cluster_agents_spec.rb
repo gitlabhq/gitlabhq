@@ -27,7 +27,7 @@ RSpec.describe 'ClusterAgents', :js, feature_category: :environment_management d
     end
 
     it 'displays empty state', :aggregate_failures,
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/514075' do
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16781' do
       expect(page).to have_selector('[data-testid="cluster-agent-empty-state"]')
     end
   end

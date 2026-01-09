@@ -15,7 +15,7 @@ require 'spec_helper'
 # - https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56458#note_535900110
 # - https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102719
 # - https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105849
-# - https://gitlab.com/gitlab-org/gitlab/-/issues/383970
+# - https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9301
 #
 RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_management do
   include MobileHelpers
@@ -92,7 +92,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
         wait_for_board_cards(3, 2)
       end
 
-      it 'shows confidential issues with icon', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383970' do
+      it 'shows confidential issues with icon', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9301' do
         page.within(all('[data-testid="board-list"]')[1]) do
           expect(page).to have_selector('.confidential-icon', count: 1)
         end
@@ -126,7 +126,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
         expect(page).to have_selector('.board', count: 3)
       end
 
-      it 'infinite scrolls list', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/525518' do
+      it 'infinite scrolls list', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/3761' do
         # Use small height to avoid automatic loading via GlIntersectionObserver
         page.driver.browser.manage.window.resize_to(400, 400)
 
@@ -168,7 +168,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
         end
       end
 
-      context 'closed', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383970' do
+      context 'closed', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9301' do
         it 'shows list of closed issues' do
           wait_for_board_cards(4, 1)
           wait_for_requests
@@ -256,7 +256,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           expect(page).to have_selector(selector, text: development.title, count: 1)
         end
 
-        it 'issue moves between lists and does not show the "Development" label since the card is in the "Development" list label', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383970' do
+        it 'issue moves between lists and does not show the "Development" label since the card is in the "Development" list label', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9301' do
           drag(list_from_index: 1, from_index: 1, list_to_index: 2)
 
           wait_for_board_cards(2, 7)
@@ -267,7 +267,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           expect(all('[data-testid="board-list"]')[2].all('.board-card').last).not_to have_content(development.title)
         end
 
-        it 'issue moves between lists and does not show the "Planning" label since the card is in the "Planning" list label', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383970' do
+        it 'issue moves between lists and does not show the "Planning" label since the card is in the "Planning" list label', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9301' do
           drag(list_from_index: 2, list_to_index: 1)
 
           wait_for_board_cards(2, 9)
@@ -278,7 +278,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           expect(all('[data-testid="board-list"]')[1].all('.board-card').first).not_to have_content(planning.title)
         end
 
-        it 'issue moves from closed', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383970' do
+        it 'issue moves from closed', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9301' do
           drag(list_from_index: 2, list_to_index: 3)
 
           wait_for_board_cards(2, 8)
@@ -295,7 +295,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
             end
           end
 
-          context 'list header', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383970' do
+          context 'list header', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9301' do
             let(:total_planning_issues) { "8" }
 
             it 'shows issue count on the list' do
@@ -319,7 +319,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           wait_for_empty_boards((3..4))
         end
 
-        it 'filters by assignee', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383970' do
+        it 'filters by assignee', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9301' do
           set_filter("assignee", user.username)
           click_on user.username
           filter_submit.click
@@ -341,7 +341,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           wait_for_board_cards(4, 0)
         end
 
-        it 'filters by label', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383970' do
+        it 'filters by label', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9301' do
           set_filter("label", testing.title)
           click_on testing.title
           filter_submit.click
@@ -400,7 +400,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           wait_for_board_cards(2, 8)
         end
 
-        it 'infinite scrolls list with label filter', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383970' do
+        it 'infinite scrolls list with label filter', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9301' do
           create_list(:labeled_issue, 30, project: project, labels: [planning, testing])
 
           set_filter("label", testing.title)

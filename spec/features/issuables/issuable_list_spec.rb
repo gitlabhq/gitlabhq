@@ -36,7 +36,7 @@ RSpec.describe 'issuable list', :js, feature_category: :team_planning do
       expect(first('[data-testid="issuable-comments"]')).to have_content(2)
     end
 
-    it 'sorts labels alphabetically', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446203' do
+    it 'sorts labels alphabetically', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16804' do
       label1 = create(:label, project: project, title: 'a')
       label2 = create(:label, project: project, title: 'z')
       label3 = create(:label, project: project, title: 'x')
@@ -53,7 +53,7 @@ RSpec.describe 'issuable list', :js, feature_category: :team_planning do
     end
   end
 
-  it 'displays a warning if counting the number of issues times out', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/393344' do
+  it 'displays a warning if counting the number of issues times out', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9340' do
     allow_any_instance_of(IssuesFinder).to receive(:count_by_state).and_raise(ActiveRecord::QueryCanceled)
 
     visit_issuable_list(:issue)

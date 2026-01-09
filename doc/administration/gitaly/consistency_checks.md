@@ -38,7 +38,8 @@ Instance administrators can override consistency checks if they must
 process repositories that do not pass consistency checks.
 
 For Linux package installations, edit `/etc/gitlab/gitlab.rb` and set the
-following keys (in this example, to disable the `hasDotgit` consistency check):
+following keys (in this example, to allow bad email headers in old commits, and
+disable the `hasDotgit` and `gitmodulesUrl` consistency checks):
 
 ```ruby
 ignored_blobs = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
@@ -48,16 +49,21 @@ gitaly['configuration'] = {
   git: {
     # ...
     config: [
-      # Populate a file with one unabbreviated SHA-1 per line.
-      # See https://git-scm.com/docs/git-config#Documentation/git-config.txt-fsckskipList
+      # Allow bad email headers in old commits
+      # (Populate a file with one unabbreviated SHA-1 per line.
+      #  See https://git-scm.com/docs/git-config#Documentation/git-config.txt-fsckskipList)
       { key: "fsck.skipList", value: ignored_blobs },
       { key: "fetch.fsck.skipList", value: ignored_blobs },
       { key: "receive.fsck.skipList", value: ignored_blobs },
+      { key: "fsck.missingSpaceBeforeEmail", value: "ignore" },
 
+      # Ignore specific consistency checks
+      # See https://git-scm.com/docs/git-fsck.html#_fsck_messages
       { key: "fsck.hasDotgit", value: "ignore" },
       { key: "fetch.fsck.hasDotgit", value: "ignore" },
       { key: "receive.fsck.hasDotgit", value: "ignore" },
-      { key: "fsck.missingSpaceBeforeEmail", value: "ignore" },
+      { key: "fsck.gitmodulesUrl", value: "ignore" },
+      { key: "fetch.fsck.gitmodulesUrl", value: "ignore" },
     ],
   },
 }
@@ -89,6 +95,14 @@ value = "ignore"
 
 [[git.config]]
 key = "receive.fsck.missingSpaceBeforeEmail"
+value = "ignore"
+
+[[git.config]]
+key = "fsck.gitmodulesUrl"
+value = "ignore"
+
+[[git.config]]
+key = "fetch.fsck.gitmodulesUrl"
 value = "ignore"
 
 [[git.config]]

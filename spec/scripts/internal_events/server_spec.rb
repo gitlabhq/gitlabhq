@@ -46,7 +46,8 @@ RSpec.describe Server, feature_category: :service_ping do
         }
       end
 
-      it 'successfully parses event', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/498775' do
+      it 'successfully parses event',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17026' do
         expect(response.code).to eq('200')
         expect(events).to contain_exactly(expected_event)
       end
@@ -71,7 +72,8 @@ RSpec.describe Server, feature_category: :service_ping do
         }
       end
 
-      it 'successfully parses event', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/498776' do
+      it 'successfully parses event',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17027' do
         expect(response.code).to eq('200')
         expect(events).to contain_exactly(expected_event)
       end
@@ -99,7 +101,8 @@ RSpec.describe Server, feature_category: :service_ping do
         }
       end
 
-      it 'successfully parses event', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/499957' do
+      it 'successfully parses event',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17028' do
         expect(response.code).to eq('200')
         expect(events).to contain_exactly(expected_event)
       end
@@ -138,7 +141,8 @@ RSpec.describe Server, feature_category: :service_ping do
         ]
       end
 
-      it 'successfully parses event', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/498772' do
+      it 'successfully parses event',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17029' do
         expect(response.code).to eq('200')
         expect(events).to match_array(expected_events)
       end
@@ -162,7 +166,8 @@ RSpec.describe Server, feature_category: :service_ping do
         }
       end
 
-      it 'successfully parses event', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/498773' do
+      it 'successfully parses event',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17030' do
         expect(response.code).to eq('200')
         expect(events).to contain_exactly(expected_event)
       end
@@ -171,7 +176,7 @@ RSpec.describe Server, feature_category: :service_ping do
     context 'with a non-structured event or an internal event' do
       let(:body) { internal_event_fixture('snowplow_events/non_internal_event_structured.json') }
 
-      it 'ignores the event', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/498774' do
+      it 'ignores the event', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17031' do
         expect(response.code).to eq('200')
         expect(events).to be_empty
       end
@@ -183,7 +188,8 @@ RSpec.describe Server, feature_category: :service_ping do
       await { Net::HTTP.new('localhost', port).options('/com.snowplowanalytics.snowplow/tp2') }
     end
 
-    it 'applies the correct headers', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/498779' do
+    it 'applies the correct headers',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17032' do
       expect(response.code).to eq('200')
       expect(response.header['Access-Control-Allow-Credentials']).to eq('true')
       expect(response.header['Access-Control-Allow-Headers']).to eq('Content-Type')
@@ -194,7 +200,8 @@ RSpec.describe Server, feature_category: :service_ping do
   describe 'GET /micro/good -> list tracked structured events' do
     subject(:response) { await { Net::HTTP.get_response url_for("/micro/good") } }
 
-    it 'successfully returns tracked events', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/498777' do
+    it 'successfully returns tracked events',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17033' do
       expect(response.code).to eq('200')
       expect(response.body).to eq("[]")
     end
@@ -206,7 +213,8 @@ RSpec.describe Server, feature_category: :service_ping do
         await { Net::HTTP.get url_for("/i?#{query_params}") }
       end
 
-      it 'successfully returns tracked events', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/498778' do
+      it 'successfully returns tracked events',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17034' do
         expect(response.code).to eq('200')
         expect(response.body).to eq([{
           event: {

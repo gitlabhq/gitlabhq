@@ -253,7 +253,8 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
       }
     end
 
-    it 'updates all specified attributes', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/553628' do
+    it 'updates all specified attributes',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4077' do
       expect do
         post_graphql_mutation(mutation, current_user: current_user)
         updatable_work_items.each(&:reload)

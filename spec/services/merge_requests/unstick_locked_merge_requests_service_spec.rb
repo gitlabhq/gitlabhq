@@ -153,7 +153,7 @@ RSpec.describe MergeRequests::UnstickLockedMergeRequestsService, :clean_gitlab_r
       end
 
       it 'logs updated stuck merge job ids and errored MRs',
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/477967' do
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17040' do
         mr_1 = create(
           :merge_request,
           :locked,

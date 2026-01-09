@@ -393,16 +393,35 @@ The directory for package metadata changed with the release of 16.2 from `vendor
 
 #### Missing database data
 
-If license or advisory data is missing from the dependency list or MR pages, one possible cause of this is that the database has not been synchronized with the export data.
+If license or advisory data is missing from the dependency list, vulnerability reports, or merge request pages, the database might not have synchronized with the export data.
 
-`package_metadata` synchronization is triggered by using cron jobs ([advisory sync](https://gitlab.com/gitlab-org/gitlab/-/blob/16-3-stable-ee/config/initializers/1_settings.rb#L864-866) and [license sync](https://gitlab.com/gitlab-org/gitlab/-/blob/16-3-stable-ee/config/initializers/1_settings.rb#L855-857)) and imports only the package registry types enabled in [admin settings](../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync).
+##### Confirm enabled package registry types
 
-The file structure in `vendor/package_metadata` must coincide with the package registry type enabled previously. For example, to sync `maven` license or advisory data, the package metadata directory under the Rails directory must have the following structure:
+`package_metadata` synchronization is triggered by using cron jobs ([advisory sync](https://gitlab.com/gitlab-org/gitlab/-/blob/16-3-stable-ee/config/initializers/1_settings.rb#L864-866) and [license sync](https://gitlab.com/gitlab-org/gitlab/-/blob/16-3-stable-ee/config/initializers/1_settings.rb#L855-857)). Only the package registry types enabled in [admin settings](../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) are imported.
+
+For example, if `maven` is selected, but `golang` is not, you will only see advisories and license information for Maven.
+
+##### Confirm correct file structure
+
+The file structure in `vendor/package_metadata` must coincide with the package registry type enabled previously. For example, to sync `maven` license or advisory data, the package metadata directory under the Rails directory must have the following structure where `$GITLAB_RAILS_ROOT_DIR` matches the output of the command `gitlab-rails runner 'puts Rails.root.to_s'`:
 
 - For licenses:`$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v2/maven/**/*.ndjson`.
 - For advisories:`$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/advisories/v2/maven/**/*.ndjson`.
 
-After a successful run, data under the `pm_` tables in the database should be populated (check using [Rails console](../../administration/operations/rails_console.md)):
+You can check if GitLab recognizes the file path in the [Rails console](../../administration/operations/rails_console.md):
+
+- For licenses: `sudo gitlab-rails runner "puts File.exist?(PackageMetadata::SyncConfiguration::Location::LICENSES_PATH)"`
+- For advisories: `sudo gitlab-rails runner "puts File.exist?(PackageMetadata::SyncConfiguration::Location::ADVISORIES_PATH)"`
+
+If the above commands returns `false`, GitLab is not able to find the expected package path. All folders and files in the path must have `755` permissions. To update the permissions:
+
+`sudo chmod -R 755 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/`
+
+##### Verify data
+
+After a sync job is successfully run, data under the `pm_` tables in the database should be populated.
+
+You can confirm by checking how many packages exist for a vendor by using the [Rails console](../../administration/operations/rails_console.md). For example, to confirm that Maven license and advisory data loaded, run:
 
 - For licenses: `sudo gitlab-rails runner "puts \"Package model has #{PackageMetadata::Package.where(purl_type: 'maven').size} packages\""`
 - For advisories: `sudo gitlab-rails runner "puts \"Advisory model has #{PackageMetadata::AffectedPackage.where(purl_type: 'maven').size} packages\""`
@@ -412,5 +431,14 @@ Additionally, checkpoint data should exist for the particular package registry b
 - For licenses: `sudo gitlab-rails runner "puts \"maven data has been synced up to #{PackageMetadata::Checkpoint.where(data_type: 'licenses', purl_type: 'maven')}\""`
 - For advisories: `sudo gitlab-rails runner "puts \"maven data has been synced up to #{PackageMetadata::Checkpoint.where(data_type: 'advisories', purl_type: 'maven')}\""`
 
-Finally, you can check the [`application_json.log`](../../administration/logs/_index.md#application_jsonlog) logs to verify that the
-sync job has run and is without error by searching for `DEBUG` messages where the class is `PackageMetadata::SyncService`. Example: `{"severity":"DEBUG","time":"2023-06-22T16:41:00.825Z","correlation_id":"a6e80150836b4bb317313a3fe6d0bbd6","class":"PackageMetadata::SyncService","message":"Evaluating data for licenses:gcp/prod-export-license-bucket-1a6c642fc4de57d4/v2/pypi/1694703741/0.ndjson"}`.
+##### Logs
+
+The [`application_json.log`](../../administration/logs/_index.md#application_jsonlog) file will help verify the
+sync job has run and is without error. Events associated with the sync will have a `DEBUG` severity and the class is `PackageMetadata::SyncService`.
+Example: 
+`{"severity":"DEBUG","time":"2026-01-07T02:15:49.618Z","meta.caller_id":"PackageMetadata::AdvisoriesSyncWorker","correlation_id":"43008e30dd708eadbe1ab16ad7fa953f","meta.root_caller_id":"Cronjob","meta.feature_category":"software_composition_analysis","meta.client_id":"ip/","class":"PackageMetadata::SyncService","message":"Evaluating data for advisories:offline//opt/gitlab/embedded/service/gitlab-rails/vendor/package_metadata/advisories/v2/maven/1761761049/0.ndjson"}`
+
+The [`sidekiq`](../../administration/logs/_index.md#sidekiq-logs) logs will show if any errors have occurred during the sync job. Events logged for the sync will mention the relevant classes:
+
+- For licenses: `PackageMetadata::LicensesSyncWorker`
+- For advisories: `PackageMetadata::AdvisoriesSyncWorker`

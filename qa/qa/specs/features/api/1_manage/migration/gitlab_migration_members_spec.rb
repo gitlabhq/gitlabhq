@@ -27,7 +27,7 @@ module QA
         it(
           'member retains indirect membership in imported project',
           quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508994',
+            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/23614',
             type: :stale
           },
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354416'

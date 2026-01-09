@@ -27,7 +27,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
   end
 
   describe '.long_timeout' do
-    context 'default case', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/467676' do
+    context 'default case', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9469' do
       it { expect(subject.long_timeout).to eq(6.hours) }
     end
 
@@ -611,7 +611,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         allow(Gitlab::RequestContext.instance).to receive(:request_deadline).and_return(request_deadline)
       end
 
-      it 'includes the deadline information', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450626' do
+      it 'includes the deadline information', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16819' do
         kword_args = described_class.request_kwargs('default', timeout: 2)
 
         expect(kword_args[:deadline])
@@ -626,7 +626,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         expect(kword_args[:metadata][:deadline_type]).to eq("limited")
       end
 
-      it 'does not limit calls in sidekiq', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/465260' do
+      it 'does not limit calls in sidekiq', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9511' do
         expect(Sidekiq).to receive(:server?).and_return(true)
 
         kword_args = described_class.request_kwargs('default', timeout: 6.hours.to_i)
@@ -644,7 +644,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         expect(kword_args[:metadata][:deadline_type]).to be_nil
       end
 
-      it 'includes only the deadline specified by the timeout when there was no deadline', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/524657' do
+      it 'includes only the deadline specified by the timeout when there was no deadline', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9513' do
         allow(Gitlab::RequestContext.instance).to receive(:request_deadline).and_return(nil)
         kword_args = described_class.request_kwargs('default', timeout: 6.hours.to_i)
 

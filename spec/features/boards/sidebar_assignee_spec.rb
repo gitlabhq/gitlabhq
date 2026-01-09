@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Project issue boards sidebar assignee', :js,
-  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332078',
+  quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9319',
   feature_category: :portfolio_management do
   include BoardHelpers
 

@@ -45,7 +45,8 @@ RSpec.describe 'Tooltips on .timeago dates', :js, feature_category: :user_profil
       wait_for_requests
     end
 
-    it 'has the datetime formated correctly', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/334481' do
+    it 'has the datetime formated correctly',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9315' do
       expect(page).to have_selector('[data-testid=snippet-created-at] .js-timeago', text: '1 day ago')
 
       page.find('[data-testid=snippet-created-at] .js-timeago').hover

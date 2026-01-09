@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'getting an issue list for a project', feature_category: :team_planning,
   quarantine: {
     issue: [
-      'https://gitlab.com/gitlab-org/gitlab/-/issues/558224',
+      'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17015',
       'https://gitlab.com/gitlab-org/gitlab/-/issues/448377',
       'https://gitlab.com/gitlab-org/gitlab/-/issues/448489',
       'https://gitlab.com/gitlab-org/gitlab/-/issues/448791',

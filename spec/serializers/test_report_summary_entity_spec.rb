@@ -14,12 +14,13 @@ RSpec.describe TestReportSummaryEntity do
     end
 
     context 'when summary has test suites' do
-      it 'contains the test suites', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463029' do
+      it 'contains the test suites',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17035' do
         expect(as_json).to include(:test_suites)
         expect(as_json[:test_suites].count).to eq(1)
       end
 
-      it 'contains build_ids', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463030' do
+      it 'contains build_ids', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17036' do
         expect(as_json[:test_suites].first).to include(:build_ids)
       end
     end

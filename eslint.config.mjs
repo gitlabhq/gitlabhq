@@ -13,6 +13,21 @@ if (!REVEAL_ESLINT_TODO || REVEAL_ESLINT_TODO === 'false' || REVEAL_ESLINT_TODO 
   REVEAL_ESLINT_TODO = false;
 }
 
+const NO_HARDCODED_URLS_OPTIONS = {
+  allowedKeys: ['path', 'redirect'],
+  allowedFunctions: ['helpPagePath'],
+  allowedInterpolationVariables: [
+    'FORUM_URL',
+    'DOCS_URL',
+    'PROMO_URL',
+    'CONTRIBUTE_URL',
+    'DOCS_URL_IN_EE_DIR',
+    'CUSTOMERS_PORTAL_URL',
+  ],
+  allowedPatterns: ['\\/api\\/:version'],
+  disallowedObjectProperties: ['relative_url_root'],
+};
+
 const { dirname } = import.meta;
 const compat = new FlatCompat({
   baseDirectory: dirname,
@@ -252,6 +267,14 @@ export default [
       '@gitlab/vue-tailwind-no-interpolation': 'error',
       '@gitlab/tailwind-no-max-width-media-queries': 'error',
       '@gitlab/vue-tailwind-no-max-width-media-queries': 'error',
+      '@gitlab/no-hardcoded-urls': ['error', NO_HARDCODED_URLS_OPTIONS],
+      '@gitlab/vue-no-hardcoded-urls': [
+        'error',
+        {
+          allowedVueComponents: ['help-page-link'],
+          ...NO_HARDCODED_URLS_OPTIONS,
+        },
+      ],
 
       'no-param-reassign': [
         'error',
@@ -507,6 +530,8 @@ export default [
       '@gitlab/vue-tailwind-no-interpolation': 'off',
       '@gitlab/no-max-width-media-queries': 'off',
       '@gitlab/vue-tailwind-no-max-width-media-queries': 'off',
+      '@gitlab/no-hardcoded-urls': 'off',
+      '@gitlab/vue-no-hardcoded-urls': 'off',
       'require-await': 'error',
       'import/no-dynamic-require': 'off',
       'no-import-assign': 'off',
@@ -639,6 +664,8 @@ export default [
 
     rules: {
       '@gitlab/require-i18n-strings': 'off',
+      '@gitlab/no-hardcoded-urls': 'off',
+      '@gitlab/vue-no-hardcoded-urls': 'off',
       'import/extensions': 'off',
       'import/no-extraneous-dependencies': 'off',
       'import/no-commonjs': 'off',
@@ -653,6 +680,8 @@ export default [
     rules: {
       'filenames/match-regex': 'off',
       '@gitlab/require-i18n-strings': 'off',
+      '@gitlab/no-hardcoded-urls': 'off',
+      '@gitlab/vue-no-hardcoded-urls': 'off',
       'import/no-unresolved': [
         'error',
         // The test fixtures are dynamically generated in CI during
@@ -713,6 +742,8 @@ export default [
       'import/no-extraneous-dependencies': 'off',
       'no-restricted-syntax': 'off',
       '@gitlab/require-i18n-strings': 'off',
+      '@gitlab/no-hardcoded-urls': 'off',
+      '@gitlab/vue-no-hardcoded-urls': 'off',
     },
   },
 
@@ -729,6 +760,8 @@ export default [
     rules: {
       '@gitlab/require-i18n-strings': 'off',
       '@gitlab/vue-require-i18n-strings': 'off',
+      '@gitlab/no-hardcoded-urls': 'off',
+      '@gitlab/vue-no-hardcoded-urls': 'off',
     },
   },
 
@@ -738,6 +771,8 @@ export default [
 
     rules: {
       '@gitlab/require-i18n-strings': 'off',
+      '@gitlab/no-hardcoded-urls': 'off',
+      '@gitlab/vue-no-hardcoded-urls': 'off',
       'import/no-extraneous-dependencies': 'off',
       'import/no-commonjs': 'off',
       'import/no-nodejs-modules': 'off',
@@ -803,6 +838,8 @@ export default [
 
     rules: {
       '@gitlab/require-i18n-strings': 'off',
+      '@gitlab/no-hardcoded-urls': 'off',
+      '@gitlab/vue-no-hardcoded-urls': 'off',
       'no-restricted-imports': 'off',
     },
   },
@@ -831,6 +868,8 @@ export default [
       'import/extensions': 'off',
       // k6 performance tests don't need internationalization
       '@gitlab/require-i18n-strings': 'off',
+      '@gitlab/no-hardcoded-urls': 'off',
+      '@gitlab/vue-no-hardcoded-urls': 'off',
       // Console logging is expected in k6 tests
       'no-console': 'off',
       // Allow unnamed functions in k6 tests

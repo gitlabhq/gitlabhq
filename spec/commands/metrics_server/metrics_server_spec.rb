@@ -93,7 +93,7 @@ RSpec.describe 'GitLab metrics server', :aggregate_failures do
     end
   end
 
-  context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/455277' do
+  context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9473' do
     it_behaves_like 'spawns a server', 'puma'
   end
 

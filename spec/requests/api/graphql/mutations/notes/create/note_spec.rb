@@ -44,7 +44,7 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
 
     context 'with quarantine', quarantine: {
       issue: [
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/556774',
+        'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17014',
         'https://gitlab.com/gitlab-org/gitlab/-/issues/552090'
       ]
     } do

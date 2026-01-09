@@ -48,7 +48,7 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
       end
     end
 
-    describe 'filters by assignee', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/351426' do
+    describe 'filters by assignee', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9352' do
       before do
         set_filter('assignee')
       end

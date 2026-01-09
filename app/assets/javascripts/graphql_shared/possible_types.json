@@ -330,6 +330,12 @@
     "WikiPage",
     "WorkItem"
   ],
+  "UpstreamInterface": [
+    "ContainerUpstream",
+    "ContainerUpstreamDetails",
+    "MavenUpstream",
+    "MavenUpstreamDetails"
+  ],
   "User": [
     "AddOnUser",
     "AutocompletedUser",

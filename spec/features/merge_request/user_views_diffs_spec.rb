@@ -60,7 +60,7 @@ RSpec.describe 'User views diffs', :js, feature_category: :code_review_workflow 
     expect(page).not_to have_selector('.mr-loading-status .loading', visible: true)
   end
 
-  it 'expands all diffs', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/333628' do
+  it 'expands all diffs', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9314' do
     first('.diff-toggle-caret').click
 
     expect(page).to have_button('Expand all')

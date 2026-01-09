@@ -2187,7 +2187,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
 
       context 'user does not have access to view the private profile' do
-        it 'returns no projects', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444704' do
+        it 'returns no projects', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9486' do
           get api(path, user)
 
           expect(response).to have_gitlab_http_status(:ok)

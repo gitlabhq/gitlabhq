@@ -28,19 +28,21 @@ title: Guidelines for implementing Enterprise Edition features
 
 ## Feature implementation decision flow
 
-The following diagram illustrates how to decide where and how to implement features across the CE/EE/SaaS layers:
+The following diagram illustrates how to decide where and how to implement features across the CE/EE/SaaS/Dedicated
+layers:
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TD
     accTitle: Feature implementation decision flow
-    accDescr: Diagram showing how to decide where and how to implement features across CE/EE/SaaS layers
+    accDescr: Diagram showing how to decide where and how to implement features across CE/EE/SaaS/Dedicated layers
 
     A[Developer wants to implement a feature] --> B{What type of feature?}
 
     B -->|CE Feature| C[Implement in main codebase]
     B -->|EE Licensed Feature| D[EE Feature Path]
     B -->|SaaS-only Feature| E[SaaS Feature Path]
+    B -->|Dedicated Feature| F[Dedicated Feature Path]
 
     C --> C1[Place code in app/, lib/, etc.]
     C --> C2[Write tests in spec/]
@@ -76,27 +78,39 @@ flowchart TD
     E8 --> E10[Write tests in ee/spec/]
     E9 --> E10
     E10 --> E11[Use stub_saas_features helper]
+
+    F --> F1[Add to FEATURES in ee/lib/gitlab/dedicated.rb]
+    F1 --> F2[Create YAML definition in ee/config/dedicated_features/]
+    F2 --> F3{Extending CE feature?}
+    F3 -->|Yes| F4[Create EE module that extends CE]
+    F3 -->|No| F5[Create new EE-only code]
+    F4 --> F6[Use prepend_mod pattern]
+    F5 --> F7[Place directly in ee/ directory]
+    F6 --> F8[Guard with Gitlab::Dedicated.feature_available?]
+    F7 --> F8
+    F8 --> F9[Write tests in ee/spec/]
 ```
 
-This diagram shows the three main implementation layers:
+This diagram shows the four main implementation layers:
 
 - **CE (Green)**: Community Edition features with no licensing requirements.
   If your target audience is **free users on GitLab.com**, follow the **SaaS** decision path
 - **EE (Orange)**: Enterprise Edition features requiring Premium/Ultimate licenses
 - **SaaS (Pink)**: Features exclusive to GitLab.com SaaS instances
+- **Dedicated (Blue)**: Features that behave differently on GitLab Dedicated instances
 
 Key decision points:
 
 - **File placement**: CE code goes in main directories, EE code in `ee/` subdirectories
 - **Feature guards**: Different methods for each layer (`licensed_feature_available?`, `License.feature_available?`,
-  `Gitlab::Saas.feature_available?`)
+  `Gitlab::Saas.feature_available?`, `Gitlab::Dedicated.feature_available?`)
 - **Testing approaches**: Each layer has specific helpers and metadata for testing
 
 ## SaaS-only feature
 
 Use the following guidelines when you develop a feature that is only applicable for SaaS (for example, a CustomersDot integration).
 
-In general, features should be provided for [both SaaS and self-managed deployments](https://handbook.gitlab.com/handbook/product/product-principles/#parity-between-saas-and-self-managed-deployments).
+In general, features should be provided for [both SaaS and Self-managed deployments](https://handbook.gitlab.com/handbook/product/product-principles/#parity-between-saas-and-self-managed-deployments).
 However, there are cases when a feature should only be available on SaaS and this guide will help show how that is
 accomplished.
 
@@ -337,6 +351,103 @@ Here's a [📺 video](https://youtu.be/DHkaqXw_Tmc) demonstrating how to do the 
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/DHkaqXw_Tmc" frameborder="0" allowfullscreen> </iframe>
 </figure>
+
+## Dedicated instance features
+
+Use the following guidelines when you need to handle GitLab Dedicated instances differently in your code.
+
+GitLab Dedicated instances are always provisioned with the Ultimate tier, as documented in
+the [Dedicated architecture](../administration/dedicated/architecture.md). Because Dedicated is exclusively an
+Enterprise Edition offering, all Dedicated-specific code must be placed in the `ee/` directory structure, following the
+same patterns as other EE features.
+
+### Common use cases
+
+Dedicated-specific code is for features that should only be available on Dedicated instances.
+
+In general, features should be provided
+for [both SaaS and Self-managed deployments](https://handbook.gitlab.com/handbook/product/product-principles/#parity-between-saas-and-self-managed-deployments).
+However, there are valid cases for Dedicated-only features.
+
+### Using `Gitlab::Dedicated` methods
+
+The `Gitlab::Dedicated` module provides the `feature_available?` method to handle Dedicated-specific behavior:
+
+Use `feature_available?` with the `FEATURES` list when a feature should only run on Dedicated:
+
+```ruby
+return unless Gitlab::Dedicated.feature_available?(:custom_backup_strategy)
+
+# Custom backup code that only runs on Dedicated
+```
+
+Add the feature to `FEATURES` in `ee/lib/gitlab/dedicated.rb`:
+
+```ruby
+FEATURES = %i[custom_backup_strategy skip_ultimate_trial_experience].freeze
+```
+
+The `feature_available?` method enables context-rich definitions through YAML files in `ee/config/dedicated_features/`
+that document why
+the feature behaves differently for Dedicated instances.
+
+#### Dedicated feature definition and validation
+
+This process ensures consistent Dedicated feature usage in the codebase. All Dedicated features **must**:
+
+- Be known. Only use Dedicated features that are explicitly defined in `FEATURES`.
+- Have an owner.
+
+All Dedicated features are self-documented in YAML files stored in:
+
+- [`ee/config/dedicated_features`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/config/dedicated_features)
+
+Each Dedicated feature is defined in a separate YAML file consisting of a number of fields:
+
+| Field               | Required | Description                                                                                                |
+|---------------------|----------|------------------------------------------------------------------------------------------------------------|
+| `name`              | yes      | Name of the Dedicated feature.                                                                             |
+| `introduced_by_url` | no       | The URL to the merge request that introduced the Dedicated feature.                                        |
+| `milestone`         | no       | Milestone in which the Dedicated feature was created.                                                      |
+| `group`             | no       | The [group](https://handbook.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature. |
+
+#### Create a new Dedicated feature file definition
+
+To create a new Dedicated feature definition:
+
+1. See the [namespacing concepts guide](software_design.md#use-namespaces-to-define-bounded-contexts)
+   for help in naming the feature.
+1. Add the feature to `FEATURES` in `ee/lib/gitlab/dedicated.rb`.
+1. Create a YAML file in `ee/config/dedicated_features/` with the feature name:
+
+```yaml
+---
+name: skip_ultimate_trial_experience
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123456
+milestone: '18.6'
+group: group::acquisition
+```
+
+Only Dedicated features that have a YAML definition file can be used when running the development or testing
+environments.
+
+### Why Dedicated code must be in `ee/`
+
+All Dedicated-specific code must be placed in the `ee/` directory structure. This ensures that:
+
+- Dedicated features are only available in EE builds
+- The codebase maintains clear separation between CE and EE functionality
+- Dedicated instances have access to all Ultimate features plus Dedicated-specific behavior
+
+Just as with SaaS-only features, avoid using `Gitlab::CurrentSettings.gitlab_dedicated_instance?` directly in
+application code. Instead, use `Gitlab::Dedicated.feature_available?(:specific_feature)` to provide context about why
+the feature behaves differently for Dedicated.
+
+### Exceptions for database migrations
+
+Database migrations may need to check for Dedicated instances using `Gitlab::CurrentSettings.gitlab_dedicated_instance?`
+when the migration needs to behave differently based on the deployment type. This is acceptable in migrations where the
+`Gitlab::Dedicated.feature_available?` pattern cannot be used.
 
 ## Implement a new EE feature
 

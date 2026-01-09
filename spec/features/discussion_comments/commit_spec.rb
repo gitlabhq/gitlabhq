@@ -25,7 +25,7 @@ RSpec.describe 'Thread Comments Commit', :js, feature_category: :source_code_man
   end
 
   it 'adds award to the correct note',
-    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/554920' do
+    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16771' do
     wait_for_requests
 
     find("#note_#{commit_discussion_note2.id} .js-note-emoji").click

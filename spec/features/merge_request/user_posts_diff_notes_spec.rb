@@ -45,7 +45,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
     end
 
     context 'with an old line on the left and a new line on the right' do
-      it 'allows commenting on the left side', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/199050' do
+      it 'allows commenting on the left side', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9330' do
         should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..'), 'left')
       end
 
@@ -55,7 +55,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
     end
 
     context 'with an unchanged line on the left and an unchanged line on the right' do
-      it 'allows commenting on the left side', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/196826' do
+      it 'allows commenting on the left side', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9326' do
         should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first).find(:xpath, '..'), 'left')
       end
 
@@ -219,7 +219,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
     end
 
     context 'with a match line' do
-      it 'does not allow commenting', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/375024' do
+      it 'does not allow commenting', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9305' do
         match_should_not_allow_commenting(find_in_page_or_panel_by_scrolling('.match', match: :first))
       end
     end

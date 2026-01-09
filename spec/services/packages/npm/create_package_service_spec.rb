@@ -433,7 +433,8 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
     subject { service.execute }
 
-    it 'only creates one package', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448644' do
+    it 'only creates one package',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17042' do
       expect { create_packages(project, user, params) }.to change { Packages::Package.count }.by(1)
     end
 

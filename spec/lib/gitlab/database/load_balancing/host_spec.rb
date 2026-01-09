@@ -129,7 +129,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
           .and_return(true)
       end
 
-      it 'refreshes the status', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/486721' do
+      it 'refreshes the status',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16817' do
         expect(host).to be_online
       end
 

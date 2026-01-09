@@ -256,7 +256,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
         end
       end
 
-      it 'user who tries to navigate away can cancel the action and keep their changes', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410496' do
+      it 'user who tries to navigate away can cancel the action and keep their changes', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9336' do
         click_link 'Pipelines'
 
         page.driver.browser.switch_to.alert.dismiss
@@ -268,7 +268,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
         end
       end
 
-      it 'user who tries to navigate away can confirm the action and discard their change', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410496' do
+      it 'user who tries to navigate away can confirm the action and discard their change', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9336' do
         click_link 'Pipelines'
 
         page.driver.browser.switch_to.alert.accept

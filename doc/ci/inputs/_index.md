@@ -338,6 +338,32 @@ In this example:
   of the environment.
 - If none of the conditions match, the fallback rule provides generic size options.
 
+You can also use the `||` (OR) operator to match multiple conditions. For example:
+
+```yaml
+spec:
+  inputs:
+    deployment_type:
+      options: ['canary', 'blue-green', 'rolling', 'recreate']
+      default: 'rolling'
+
+    requires_approval:
+      description: 'Whether deployment requires manual approval'
+      rules:
+        - if: $[[ inputs.deployment_type ]] == 'canary' || $[[ inputs.deployment_type ]] == 'blue-green'
+          options: ['true']
+          default: 'true'
+        - options: ['true', 'false']
+          default: 'false'
+---
+
+deploy:
+  script: echo "Deploying with $[[ inputs.deployment_type ]] strategy"
+```
+
+In this example, the `requires_approval` input is set to `true` when `deployment_type` is either
+`canary` or `blue-green`. In all other cases, the default is `false` and both `true` or `false` are allowed options.
+
 ## Set input values
 
 ### For configuration added with `include`

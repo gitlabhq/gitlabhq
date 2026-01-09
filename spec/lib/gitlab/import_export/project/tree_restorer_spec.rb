@@ -273,7 +273,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
             expect(event.action).not_to be_nil
           end
 
-          it 'event belongs to note, belongs to merge request, belongs to a project', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446116' do
+          it 'event belongs to note, belongs to merge request, belongs to a project', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9482' do
             expect(event.note.noteable.project).not_to be_nil
           end
         end

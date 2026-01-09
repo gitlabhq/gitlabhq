@@ -116,7 +116,7 @@ RSpec.describe 'Dashboard Issues filtering', :js, feature_category: :team_planni
     end
 
     it 'keeps sorting issues after visiting Projects Issues page',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480735' do
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16770' do
       pajamas_sort_by 'Due date', from: 'Created date'
 
       visit project_issues_path(project)

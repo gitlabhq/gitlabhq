@@ -13,6 +13,10 @@ RSpec.describe RuboCop::Cop::Gitlab::FeatureAvailableUsage do
       expect_no_offenses('Gitlab::Saas.feature_available?(:some_feature)')
     end
 
+    it 'does not flag the use of Gitlab::Dedicated.feature_available?' do
+      expect_no_offenses('Gitlab::Dedicated.feature_available?(:some_feature)')
+    end
+
     it 'flags the use with a dynamic feature as nil' do
       expect_offense(<<~RUBY)
         feature_available?(nil)

@@ -32,14 +32,14 @@ RSpec.describe 'Merge request > User sees merge request file tree sidebar', :js,
     end
   end
 
-  context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/512092' do
+  context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9506' do
     it_behaves_like 'last entry clickable'
   end
 
   context 'when viewing using file-by-file mode' do
     let(:user) { create(:user, view_diffs_file_by_file: true) }
 
-    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/517688' do
+    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9452' do
       it_behaves_like 'last entry clickable'
     end
 

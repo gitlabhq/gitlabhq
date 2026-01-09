@@ -89,7 +89,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
       end
 
       it 'allows multiple users to report the same user', :js,
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/563735' do
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16574' do
         fill_and_submit_abuse_category_form
         fill_and_submit_report_abuse_form
 

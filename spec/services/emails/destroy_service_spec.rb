@@ -17,7 +17,8 @@ RSpec.describe Emails::DestroyService, feature_category: :user_management do
       expect(response).to be true
     end
 
-    it 'resets email in notification settings', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/525174' do
+    it 'resets email in notification settings',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9437' do
       service.execute(email)
 
       expect(notification_setting.reload.notification_email).to eq nil

@@ -51,7 +51,8 @@ RSpec.describe Packages::Debian::GenerateDistributionWorker, type: :worker, feat
           end
         end
 
-        context 'with valid parameters', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446272' do
+        context 'with valid parameters',
+          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17065' do
           it_behaves_like 'an idempotent worker' do
             let(:job_args) { [container_type_as_string, distribution_id] }
 
