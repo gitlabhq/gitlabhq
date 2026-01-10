@@ -7,7 +7,7 @@ RSpec.describe Gitlab::GrapeOpenapi::TagRegistry do
   describe '#register' do
     it 'adds a new tag to the registry' do
       expect { tag_registry.register(tag) }.to change { tag_registry.tags.size }.by(1)
-      expect(tag_registry.tags.first[:name]).to eq('Audit Events')
+      expect(tag_registry.tags.first[:name]).to eq('Audit events')
     end
 
     it 'does not add duplicate tags' do
@@ -31,10 +31,10 @@ RSpec.describe Gitlab::GrapeOpenapi::TagRegistry do
           .to eq(
             [
               {
-                description: "Operations concerning Audit Events", name: "Audit Events"
+                description: "Operations related to audit events.", name: "Audit events"
               },
               {
-                description: "Operations concerning Another Tags", name: "Another Tags"
+                description: "Operations related to another tags.", name: "Another tags"
               }
             ]
           )

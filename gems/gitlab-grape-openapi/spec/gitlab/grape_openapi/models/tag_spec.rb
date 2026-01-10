@@ -10,7 +10,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Tag do
       let(:tag_name) { 'audit_events' }
 
       it 'capitalizes and joins with spaces' do
-        expect(normalized_name).to eq('Audit Events')
+        expect(normalized_name).to eq('Audit events')
       end
     end
 
@@ -26,7 +26,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Tag do
       let(:tag_name) { 'user_audit_events_api' }
 
       it 'capitalizes all words and joins with spaces' do
-        expect(normalized_name).to eq('User Audit Events Api')
+        expect(normalized_name).to eq('User audit events api')
       end
     end
 
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Tag do
       end
 
       it 'applies the override for matching words' do
-        expect(normalized_name).to eq('API Settings')
+        expect(normalized_name).to eq('API settings')
       end
     end
 
@@ -58,7 +58,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Tag do
       end
 
       it 'applies all matching overrides' do
-        expect(normalized_name).to eq('REST API For SSH Keys')
+        expect(normalized_name).to eq('REST API for SSH keys')
       end
     end
 
@@ -70,7 +70,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Tag do
       end
 
       it 'matches regardless of case in the normalized name' do
-        expect(normalized_name).to eq('My API Endpoint')
+        expect(normalized_name).to eq('My API endpoint')
       end
     end
 
@@ -86,7 +86,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Tag do
       end
 
       it 'does not match partial words' do
-        expect(normalized_name).to eq('Application Settings')
+        expect(normalized_name).to eq('Application settings')
       end
     end
 
@@ -98,14 +98,14 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Tag do
       end
 
       it 'returns the capitalized name without overrides' do
-        expect(normalized_name).to eq('Api Settings')
+        expect(normalized_name).to eq('Api settings')
       end
     end
   end
 
   describe '#initialize' do
     it 'sets the name' do
-      expect(tag.name).to eq('Audit Events')
+      expect(tag.name).to eq('Audit events')
     end
   end
 
@@ -118,7 +118,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Tag do
       end
 
       it 'returns a hash with name and description' do
-        expect(hash).to eq({ name: 'Audit Events', description: 'A test tag description' })
+        expect(hash).to eq({ name: 'Audit events', description: 'A test tag description' })
       end
     end
 
@@ -128,7 +128,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Tag do
       end
 
       it 'returns a hash with only name' do
-        expect(hash).to eq({ name: 'Audit Events' })
+        expect(hash).to eq({ name: 'Audit events' })
       end
     end
   end
@@ -137,7 +137,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Tag do
     subject(:description) { tag.description }
 
     it 'returns a humanized description based on the tag name' do
-      expect(description).to eq('Operations concerning Audit Events')
+      expect(description).to eq('Operations related to audit events.')
     end
   end
 end
