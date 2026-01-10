@@ -33204,6 +33204,9 @@ msgstr ""
 msgid "Group overview content"
 msgstr ""
 
+msgid "Group path"
+msgstr ""
+
 msgid "Group project URLs are prefixed with the group namespace"
 msgstr ""
 
@@ -59718,9 +59721,6 @@ msgstr ""
 msgid "Search groups or projects"
 msgstr ""
 
-msgid "Search groups..."
-msgstr ""
-
 msgid "Search iterations"
 msgstr ""
 
@@ -60063,19 +60063,16 @@ msgstr ""
 msgid "SecretsManagerPermissions|Are you sure you want to remove permissions for %{principalName}?"
 msgstr ""
 
-msgid "SecretsManagerPermissions|Can add new secrets"
+msgid "SecretsManagerPermissions|Can authenticate with the secrets manager and related API endpoints."
 msgstr ""
 
-msgid "SecretsManagerPermissions|Can authenticate with the secrets manager and related API endpoints."
+msgid "SecretsManagerPermissions|Can create and update secrets."
 msgstr ""
 
 msgid "SecretsManagerPermissions|Can permanently delete secrets."
 msgstr ""
 
 msgid "SecretsManagerPermissions|Can read secret metadata but not the secret value."
-msgstr ""
-
-msgid "SecretsManagerPermissions|Can update details of existing secrets."
 msgstr ""
 
 msgid "SecretsManagerPermissions|Enable the secrets manager to securely store and manage sensitive information for this group."
@@ -60091,6 +60088,9 @@ msgid "SecretsManagerPermissions|Failed to delete secrets manager permissions. P
 msgstr ""
 
 msgid "SecretsManagerPermissions|Failed to fetch secrets manager permissions. Please try again later."
+msgstr ""
+
+msgid "SecretsManagerPermissions|For example, my-group or my-group/sub-group"
 msgstr ""
 
 msgid "SecretsManagerPermissions|Permissions for secrets manager removed."
