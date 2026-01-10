@@ -284,7 +284,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 {{< /history >}}
 
 Allows you to create a single file. For creating multiple files with a single request,
-see the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
+see the [commits API](commits.md#create-a-commit).
 
 ```plaintext
 POST /projects/:id/repository/files/:file_path
@@ -343,7 +343,7 @@ Example response:
 {{< /history >}}
 
 Allows you to update a single file. For updating multiple files with a single request,
-refer to the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
+refer to the [commits API](commits.md#create-a-commit).
 
 ```plaintext
 PUT /projects/:id/repository/files/:file_path
@@ -406,7 +406,7 @@ error message. Possible causes for a failed commit include:
 ## Delete existing file in repository
 
 Deletes a single file. To delete multiple files with a single request,
-see the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
+see the [commits API](commits.md#create-a-commit).
 
 ```plaintext
 DELETE /projects/:id/repository/files/:file_path

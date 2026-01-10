@@ -14,7 +14,7 @@ RSpec.describe Mutations::Commits::Create, feature_category: :source_code_manage
   specify { expect(described_class).to require_graphql_authorizations(:push_code) }
 
   describe '#resolve' do
-    subject { mutation.resolve(project_path: project.full_path, branch: branch, start_branch: start_branch, message: message, actions: actions) }
+    subject { mutation.resolve(project_path: project.full_path, branch: branch, start_branch: start_branch, message: message, actions: actions, allow_empty: allow_empty) }
 
     let(:branch) { 'master' }
     let(:start_branch) { nil }
@@ -31,6 +31,7 @@ RSpec.describe Mutations::Commits::Create, feature_category: :source_code_manage
     end
 
     let(:mutated_commit) { subject[:commit] }
+    let(:allow_empty) { false }
 
     context 'when user is not a project member' do
       it 'raises an error' do
@@ -122,14 +123,49 @@ RSpec.describe Mutations::Commits::Create, feature_category: :source_code_manage
           end
         end
 
-        context 'when actions are not defined' do
-          let(:actions) { [] }
+        describe 'actions' do
+          context 'when actions are not defined' do
+            let(:actions) { [] }
 
-          it 'returns a new commit' do
-            expect(mutated_commit).to have_attributes(message: message, project: project)
-            expect(subject[:errors]).to be_empty
+            context 'when allow_empty is true' do
+              let(:allow_empty) { true }
 
-            expect_to_contain_deltas([])
+              it 'creates an empty commit successfully' do
+                expect(mutated_commit).to have_attributes(message: message, project: project)
+                expect(subject[:errors]).to be_empty
+                expect_to_contain_deltas([])
+              end
+            end
+
+            context 'when allow_empty is false' do
+              it 'raises an ArgumentError' do
+                expect { subject }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+                  .with_message('Provide at least one action, or set allowEmpty to true.')
+              end
+            end
+          end
+        end
+
+        describe 'allow_empty' do
+          shared_examples 'successful commit' do
+            it 'returns a new commit' do
+              expect(mutated_commit).to have_attributes(message: message, project: project)
+              expect(subject[:errors]).to be_empty
+
+              expect_to_contain_deltas([
+                a_hash_including(a_mode: '0', b_mode: '100644', new_file: true, new_path: file_path)
+              ])
+            end
+          end
+
+          context "when allow_empty is true" do
+            let(:allow_empty) { true }
+
+            include_examples 'successful commit'
+          end
+
+          context "when allow_empty is false" do
+            include_examples 'successful commit'
           end
         end
 

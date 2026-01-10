@@ -4859,7 +4859,8 @@ Input type: `CommitCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcommitcreateactions"></a>`actions` | [`[CommitAction!]!`](#commitaction) | Array of action hashes to commit as a batch. |
+| <a id="mutationcommitcreateactions"></a>`actions` | [`[CommitAction!]`](#commitaction) | Array of action hashes to commit as a batch. |
+| <a id="mutationcommitcreateallowempty"></a>`allowEmpty` | [`Boolean`](#boolean) | Indicates whether an empty commit can be created. Defaults to `false`. |
 | <a id="mutationcommitcreatebranch"></a>`branch` | [`String!`](#string) | Name of the branch to commit into, it can be a new branch. |
 | <a id="mutationcommitcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcommitcreatemessage"></a>`message` | [`String!`](#string) | Raw commit message. |

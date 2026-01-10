@@ -1611,7 +1611,7 @@ You can configure these limits for GitLab Self-Managed instances using the [depe
 
 The Commits and Files APIs enforce maximum size and rate limits on the following endpoints:
 
-- `POST /projects/:id/repository/commits` - [Create a commit with multiple files and actions](../api/commits.md#create-a-commit-with-multiple-files-and-actions)
+- `POST /projects/:id/repository/commits` - [Create a commit](../api/commits.md#create-a-commit)
 - `POST /projects/:id/repository/files/:file_path` - [Create new file in repository](../api/repository_files.md#create-new-file-in-repository)
 - `PUT /projects/:id/repository/files/:file_path` - [Update existing file in repository](../api/repository_files.md#update-existing-file-in-repository)
 

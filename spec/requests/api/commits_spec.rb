@@ -720,7 +720,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       context 'missing actions' do
         let(:params) { super().except(:actions) }
 
-        it_behaves_like 'returns bad request - validation error', "actions is required"
+        it_behaves_like 'returns bad request - validation error', "Provide at least one action, or set allow_empty to true"
       end
 
       context 'when actions is not an array' do
@@ -945,6 +945,122 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         end
       end
 
+      context 'when actions does not touch files' do
+        let(:base_params) do
+          {
+            branch: 'master',
+            commit_message: 'message'
+          }
+        end
+
+        shared_examples 'warns the user' do
+          it 'returns a 400 with the proper message' do
+            expect(response).to have_gitlab_http_status(:bad_request)
+
+            msg = "400 Bad request - Provide at least one action, or set allow_empty to true"
+            expect(json_response['message']).to eq(msg)
+          end
+        end
+
+        shared_examples 'creates an empty commit' do
+          it 'returns 200 and creates the empty commit' do
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['title']).to eq('message')
+            expect(json_response['stats']['additions']).to eq(0)
+            expect(json_response['stats']['deletions']).to eq(0)
+            expect(json_response['stats']['total']).to eq(0)
+          end
+        end
+
+        context 'when actions is empty' do
+          let(:params) { base_params.merge(actions: [], allow_empty: allow_empty) }
+
+          context 'when allow_empty is true' do
+            let(:allow_empty) { true }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'creates an empty commit'
+          end
+
+          context 'when allow_empty is false' do
+            let(:allow_empty) { false }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'warns the user'
+          end
+
+          context 'when allow_empty is nil' do
+            let(:allow_empty) { nil }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'warns the user'
+          end
+
+          context 'when allow_empty is not passed' do
+            let(:params) { base_params.merge(actions: []) }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'warns the user'
+          end
+        end
+
+        context 'when actions is not passed' do
+          let(:params) { base_params.merge(allow_empty: allow_empty) }
+
+          context 'when allow_empty is true' do
+            let(:allow_empty) { true }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'creates an empty commit'
+          end
+
+          context 'when allow_empty is false' do
+            let(:allow_empty) { false }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'warns the user'
+          end
+
+          context 'when allow_empty is nil' do
+            let(:allow_empty) { nil }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'warns the user'
+          end
+
+          context 'when allow_empty is not passed' do
+            let(:params) { base_params }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'warns the user'
+          end
+        end
+      end
+
       context 'a new file in project repo' do
         context 'when user is a direct project member' do
           let(:params) { valid_c_params }
@@ -971,6 +1087,72 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
               let(:request) { workhorse_body_upload(url, valid_c_params) }
               let(:message) { '403 Forbidden' }
             end
+          end
+        end
+
+        context 'when creating a commit with file actions' do
+          let(:base_params) do
+            {
+              branch: 'master',
+              commit_message: message,
+              actions: [
+                {
+                  action: 'create',
+                  file_path: new_file_path,
+                  content: 'puts 8'
+                }
+              ]
+            }
+          end
+
+          shared_examples 'creates a commit' do
+            it 'creates the commit' do
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response['title']).to eq(message)
+              expect(json_response['stats']['additions']).to eq(1)
+              expect(json_response['stats']['deletions']).to eq(0)
+              expect(json_response['stats']['total']).to eq(1)
+            end
+          end
+
+          context 'when allow_empty is true' do
+            let(:params) { base_params.merge(allow_empty: true) }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'creates a commit'
+          end
+
+          context 'when allow_empty is false' do
+            let(:params) { base_params.merge(allow_empty: false) }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'creates a commit'
+          end
+
+          context 'when allow_empty is nil' do
+            let(:params) { base_params.merge(allow_empty: nil) }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'creates a commit'
+          end
+
+          context 'when allow_empty is missing' do
+            let(:params) { base_params }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'creates a commit'
           end
         end
       end

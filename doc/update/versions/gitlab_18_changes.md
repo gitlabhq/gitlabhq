@@ -99,7 +99,7 @@ For more details about what data is migrated and how to estimate migration durat
 
 GitLab 18.6.2, 18.5.4, and 18.4.6 introduced size and rate limits on requests made to the following endpoints:
 
-- `POST /projects/:id/repository/commits` - [Create a commit with multiple files and actions](../../api/commits.md#create-a-commit-with-multiple-files-and-actions)
+- `POST /projects/:id/repository/commits` - [Create a commit](../../api/commits.md#create-a-commit)
 - `POST /projects/:id/repository/files/:file_path` - [Create new file in repository](../../api/repository_files.md#create-new-file-in-repository)
 - `PUT /projects/:id/repository/files/:file_path` - [Update existing file in repository](../../api/repository_files.md#update-existing-file-in-repository)
 

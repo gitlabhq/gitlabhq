@@ -131,10 +131,11 @@ Example response:
 ]
 ```
 
-## Create a commit with multiple files and actions
+## Create a commit
 
 {{< history >}}
 
+- `allow_empty` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211520) in GitLab 18.8.
 - Request size and rate limits introduced in GitLab 18.7.
 
 {{< /history >}}
@@ -150,10 +151,11 @@ POST /projects/:id/repository/commits
 
 | Attribute        | Type           | Required | Description |
 |------------------|----------------|----------|-------------|
-| `actions[]`      | array          | Yes      | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
 | `branch`         | string         | Yes      | Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`. |
 | `commit_message` | string         | Yes      | Commit message. |
 | `id`             | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `actions[]`      | array          | No       | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
+| `allow_empty`    | boolean        | No       | When `true`, creates an empty commit. Default is `false`. |
 | `author_email`   | string         | No       | Specify the commit author's email address. |
 | `author_name`    | string         | No       | Specify the commit author's name. |
 | `force`          | boolean        | No       | If `true`, overwrites the target branch with a new commit based on the `start_branch` or `start_sha`. |

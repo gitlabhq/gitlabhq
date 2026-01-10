@@ -8649,7 +8649,6 @@ CREATE TABLE virtual_registries_container_cache_entries (
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -8661,7 +8660,6 @@ CREATE TABLE virtual_registries_container_cache_entries (
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 )
 PARTITION BY HASH (relative_path);
@@ -8677,7 +8675,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -8689,7 +8686,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
@@ -8704,7 +8700,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -8716,7 +8711,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
@@ -8731,7 +8725,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -8743,7 +8736,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
@@ -8758,7 +8750,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -8770,7 +8761,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
@@ -8785,7 +8775,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -8797,7 +8786,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
@@ -8812,7 +8800,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -8824,7 +8811,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
@@ -8839,7 +8825,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -8851,7 +8836,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
@@ -8866,7 +8850,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -8878,7 +8861,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
@@ -8893,7 +8875,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -8905,7 +8886,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
@@ -8920,7 +8900,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -8932,7 +8911,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
@@ -8947,7 +8925,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -8959,7 +8936,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
@@ -8974,7 +8950,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -8986,7 +8961,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
@@ -9001,7 +8975,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -9013,7 +8986,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
@@ -9028,7 +9000,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -9040,7 +9011,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
@@ -9055,7 +9025,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -9067,7 +9036,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
@@ -9082,7 +9050,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     file_store integer DEFAULT 1 NOT NULL,
     size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    file_md5 bytea,
     file_sha1 bytea NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
@@ -9094,7 +9061,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries
     CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
     CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
     CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
 );
 
