@@ -92,7 +92,7 @@ You can use GitLab Duo Chat in:
 
 Prerequisites:
 
-- Ensure you meet [the prerequisites](../duo_agent_platform/_index.md#prerequisites).
+- Ensure you meet the [prerequisites](../duo_agent_platform/_index.md#prerequisites).
 
 To use Chat in the GitLab UI:
 
@@ -117,7 +117,7 @@ most recent conversation, and that conversation is still active in the Chat draw
 Prerequisites:
 
 - [Install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.15.1 or later.
-- Ensure you meet [the other prerequisites](../duo_agent_platform/_index.md#prerequisites).
+- Ensure you meet the [other prerequisites](../duo_agent_platform/_index.md#prerequisites).
 
 Turn on GitLab Duo Chat:
 <!-- markdownlint-disable MD044 -->
@@ -139,7 +139,7 @@ Then, to use GitLab Duo Chat:
 Prerequisites:
 
 - [Install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.11.1 or later.
-- Ensure you meet [the other prerequisites](../duo_agent_platform/_index.md#prerequisites).
+- Ensure you meet the [other prerequisites](../duo_agent_platform/_index.md#prerequisites).
 
 Turn on GitLab Duo Chat:
 
@@ -158,7 +158,7 @@ Then, to use GitLab Duo Chat:
 Prerequisites:
 
 - [Install and configure the GitLab extension for Visual Studio](../../editor_extensions/visual_studio/setup.md) version 0.60.0 or later.
-- Ensure you meet [the other prerequisites](../duo_agent_platform/_index.md#prerequisites).
+- Ensure you meet the [other prerequisites](../duo_agent_platform/_index.md#prerequisites).
 
 Turn on GitLab Duo Chat:
 

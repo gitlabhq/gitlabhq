@@ -37,6 +37,7 @@ For an overview, see [Developer Onboarding with GitLab Duo Agent Platform](https
 To use the Agent Platform:
 
 - Use GitLab 18.2 or later. For the best experience, use the latest version of GitLab.
+- Have purchased [GitLab Credits](../../subscriptions/gitlab_credits.md).
 - [GitLab Duo, including GitLab Duo Core and flow execution, must be turned on](../gitlab_duo/turn_on_off.md).
 - Depending on your GitLab version:
   - In GitLab 18.8 and later, the [Agent Platform must be turned on](../gitlab_duo/turn_on_off.md#turn-gitlab-duo-agent-platform-on-or-off).
