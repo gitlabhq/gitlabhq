@@ -458,7 +458,6 @@ To use GraphQL pagination with ClickHouse, ensure your queries meet these
 requirements:
 
 - `ORDER BY` columns must be `NOT NULL`.
-- `ORDER BY` direction must be the same for all columns.
 - `ORDER BY` column values must identify exactly one row (requirement for
   keyset pagination).
 
