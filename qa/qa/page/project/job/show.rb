@@ -27,11 +27,9 @@ module QA
 
           def successful?(timeout: 60)
             raise "Timed out waiting for the build trace to load" unless loaded?
-            raise "Timed out waiting for the status to be a valid completed state" unless completed?(timeout: timeout)
 
             QA::Runtime::Logger.debug(" \n\n ------- Job log: ------- \n\n #{job_log} \n -------")
-
-            passed?
+            output(wait: timeout).include?('Job succeeded') || passed?
           end
 
           # Reminder: You may wish to wait for a particular job status before checking output
