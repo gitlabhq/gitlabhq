@@ -39,7 +39,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     ip_restriction_failure: "This job could not be executed because group IP address restrictions are enabled, and the runner's IP address is not in the allowed range.",
     duo_workflow_not_allowed: "Duo Agent Platform cannot run on this runner. Duo jobs can only run on instance wide or top level group runners. Be sure to remove the gitlab--duo tag from this runner to avoid it picking these jobs.",
     failed_outdated_deployment_job: 'The deployment job is older than the latest deployment, and therefore failed.',
-    reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.'
+    reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.',
+    job_router_failure: 'The Job Router failed to run this job.'
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES
@@ -51,16 +52,29 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def callout_failure_message
-    message = self.class.callout_failure_messages.fetch(failure_reason.to_sym)
+    failure_reason.to_sym.then do |failure_reason|
+      message = self.class.callout_failure_messages.fetch(failure_reason)
 
-    if doc_link = troubleshooting_doc[failure_reason.to_sym]
-      message += " #{help_page_link(doc_link)}"
+      # Include custom error message from job_messages only for job_router_failure
+      message = "#{message} #{job_router_failure_msg}" if failure_reason == :job_router_failure
+
+      if doc_link = troubleshooting_doc[failure_reason]
+        message += " #{help_page_link(doc_link)}"
+      end
+
+      message
     end
-
-    message
   end
 
   private
+
+  def job_router_failure_msg
+    if respond_to?(:error_job_messages) && error_job_messages.any?
+      error_job_messages.first.content
+    else
+      "Please contact your administrator."
+    end
+  end
 
   def troubleshooting_doc
     {

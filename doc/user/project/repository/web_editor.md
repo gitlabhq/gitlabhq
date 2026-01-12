@@ -333,3 +333,4 @@ production releases and release candidates. To create a tag in the Web Editor:
   - [Default branch](branches/default.md)
   - [Protected branches](branches/protected.md)
 - [Web IDE](../web_ide/_index.md)
+- [File tree browser](files/file_tree_browser.md)

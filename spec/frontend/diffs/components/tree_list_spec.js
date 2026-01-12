@@ -5,14 +5,10 @@ import TreeList from '~/diffs/components/tree_list.vue';
 import DiffFileRow from '~/diffs/components//diff_file_row.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { SET_LINKED_FILE_HASH, SET_TREE_DATA, SET_DIFF_FILES } from '~/diffs/store/mutation_types';
-import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
-import { sortTree } from '~/ide/stores/utils';
 import { isElementClipped } from '~/lib/utils/common_utils';
 import { globalAccessorPlugin } from '~/pinia/plugins';
-import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
-import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 import { useCodeReview } from '~/diffs/stores/code_review';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 
 jest.mock('~/lib/utils/common_utils');
 
@@ -49,13 +45,8 @@ describe('Diffs tree list component', () => {
 
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin], stubActions: false });
+    useFileBrowser();
     useCodeReview();
-    useLegacyDiffs().isTreeLoaded = true;
-    useLegacyDiffs().diffFiles = [getDiffFileMock()];
-    useLegacyDiffs().addedLines = 10;
-    useLegacyDiffs().addedLines = 20;
-    useLegacyDiffs().mergeRequestDiff = {};
-    useLegacyDiffs().setTreeOpen.mockReturnValue();
   });
 
   const setupFilesInState = () => {
@@ -159,8 +150,8 @@ describe('Diffs tree list component', () => {
       },
     };
 
-    useLegacyDiffs().treeEntries = treeEntries;
-    useLegacyDiffs().tree = [
+    useFileBrowser().treeEntries = treeEntries;
+    useFileBrowser().tree = [
       {
         ...treeEntries.app,
         tree: [treeEntries.javascript, treeEntries['index.js'], treeEntries['test.rb']],
@@ -257,7 +248,7 @@ describe('Diffs tree list component', () => {
 
     describe('when renderTreeList is false', () => {
       beforeEach(() => {
-        useLegacyDiffs().renderTreeList = false;
+        useFileBrowser().renderTreeList = false;
       });
 
       it('renders list items', async () => {
@@ -290,22 +281,15 @@ describe('Diffs tree list component', () => {
     });
 
     it('dispatches setTreeOpen with all paths for the current diff file', async () => {
-      useLegacyDiffs().currentDiffFileId = 'appjavascriptfile';
+      const spy = jest.spyOn(useFileBrowser(), 'setTreeOpen').mockReturnValue();
+      await wrapper.setProps({ currentDiffFileId: 'appjavascriptfile' });
 
-      await nextTick();
-
-      expect(useLegacyDiffs().setTreeOpen).toHaveBeenCalledWith({
-        opened: true,
-        path: 'app',
-      });
-      expect(useLegacyDiffs().setTreeOpen).toHaveBeenCalledWith({
-        opened: true,
-        path: 'app/javascript',
-      });
+      expect(spy).toHaveBeenCalledWith('app', true);
+      expect(spy).toHaveBeenCalledWith('app/javascript', true);
     });
   });
 
-  describe('with viewedDiffFileIds', () => {
+  describe('with reviewedIds', () => {
     const reviewedIds = { 12345: true };
 
     beforeEach(() => {
@@ -337,11 +321,7 @@ describe('Diffs tree list component', () => {
     });
 
     const setupFiles = (diffFiles) => {
-      const { treeEntries, tree } = generateTreeList(diffFiles);
-      useLegacyDiffs()[SET_TREE_DATA]({
-        treeEntries,
-        tree: sortTree(tree),
-      });
+      useFileBrowser().setTreeData(diffFiles);
     };
 
     beforeEach(() => {
@@ -353,8 +333,7 @@ describe('Diffs tree list component', () => {
       wrapper.element.insertAdjacentHTML('afterbegin', `<div data-file-row="05.txt"><div>`);
       isElementClipped.mockReturnValueOnce(true);
       wrapper.vm.$refs.scroller.scrollToItem = jest.fn();
-      useLegacyDiffs().currentDiffFileId = '05.txt';
-      await nextTick();
+      await wrapper.setProps({ currentDiffFileId: '05.txt' });
       jest.runAllTimers();
 
       expect(wrapper.vm.currentDiffFileId).toBe('05.txt');
@@ -375,17 +354,8 @@ describe('Diffs tree list component', () => {
       ['root-last.rb'],
     ];
 
-    const linkFile = (fileHash) => {
-      useLegacyDiffs()[SET_LINKED_FILE_HASH](fileHash);
-    };
-
     const setupFiles = (diffFiles) => {
-      const { treeEntries, tree } = generateTreeList(diffFiles);
-      useLegacyDiffs()[SET_DIFF_FILES](diffFiles);
-      useLegacyDiffs()[SET_TREE_DATA]({
-        treeEntries,
-        tree: sortTree(tree),
-      });
+      useFileBrowser().setTreeData(diffFiles);
     };
 
     const createFile = (name, path = '') => ({
@@ -396,24 +366,26 @@ describe('Diffs tree list component', () => {
     });
 
     beforeEach(() => {
-      createComponent();
       setupFiles(filePaths.map(([name, path]) => createFile(name, path)));
     });
 
     describe('files in folders', () => {
-      it.each(filePaths.map((path) => path[0]))('links %s file', async (linkedFile) => {
-        linkFile(linkedFile);
-        await nextTick();
-        const items = getScroller().props('items');
-        expect(
-          items.map(
-            (item) =>
-              `${'─'.repeat(item.level * 2)}${item.type === 'tree' ? '📁' : ''}${
-                item.name || item.path
-              }`,
-          ),
-        ).toMatchSnapshot();
-      });
+      it.each(filePaths.map((paths) => paths.toReversed().join('')))(
+        'links %s file',
+        async (linkedFilePath) => {
+          createComponent({ linkedFilePath });
+          await nextTick();
+          const items = getScroller().props('items');
+          expect(
+            items.map(
+              (item) =>
+                `${'─'.repeat(item.level * 2)}${item.type === 'tree' ? '📁' : ''}${
+                  item.name || item.path
+                }`,
+            ),
+          ).toMatchSnapshot();
+        },
+      );
     });
   });
 
@@ -429,9 +401,7 @@ describe('Diffs tree list component', () => {
 
         wrapper.findByTestId(toggle).vm.$emit('click');
 
-        expect(useLegacyDiffs().setRenderTreeList).toHaveBeenCalledWith({
-          renderTreeList,
-        });
+        expect(useFileBrowser().setRenderTreeList).toHaveBeenCalledWith(renderTreeList);
       },
     );
 
@@ -442,7 +412,7 @@ describe('Diffs tree list component', () => {
     `(
       'sets $selectedToggle as selected when renderTreeList is $renderTreeList',
       ({ selectedToggle, deselectedToggle, renderTreeList }) => {
-        useLegacyDiffs().renderTreeList = renderTreeList;
+        useFileBrowser().renderTreeList = renderTreeList;
 
         createComponent();
 
@@ -453,7 +423,7 @@ describe('Diffs tree list component', () => {
   });
 
   describe('loading state', () => {
-    const getLoadingFile = () => useLegacyDiffs().tree[2];
+    const getLoadingFile = () => useFileBrowser().tree[2];
     const getRootItems = () =>
       getScroller()
         .props('items')

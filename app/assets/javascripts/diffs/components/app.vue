@@ -32,6 +32,7 @@ import { useFindingsDrawer } from '~/mr_notes/store/findings_drawer';
 import { useBatchComments } from '~/batch_comments/store';
 import { querySelectionClosest } from '~/lib/utils/selection';
 import { useCodeReview } from '~/diffs/stores/code_review';
+import * as types from '~/diffs/store/mutation_types';
 import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
   ALERT_OVERFLOW_HIDDEN,
@@ -235,7 +236,6 @@ export default {
       'startVersion',
       'latestDiff',
       'currentDiffFileId',
-      'isTreeLoaded',
       'hasConflicts',
       'viewDiffsFileByFile',
       'renderTreeList',
@@ -247,11 +247,11 @@ export default {
       'isVirtualScrollingEnabled',
       'isBatchLoading',
       'isBatchLoadingError',
-      'flatBlobsList',
+      'linkedFile',
     ]),
     ...mapState(useLegacyDiffs, { diffFiles: 'diffFilesFiltered' }),
     ...mapState(useNotes, ['discussions', 'isNotesFetched', 'getNoteableData']),
-    ...mapState(useFileBrowser, ['fileBrowserVisible']),
+    ...mapState(useFileBrowser, ['fileBrowserVisible', 'isLoadingFileBrowser', 'flatBlobsList']),
     ...mapState(useFindingsDrawer, ['activeDrawer']),
     ...mapState(useCodeReview, ['reviewedIds']),
     diffs() {
@@ -467,9 +467,11 @@ export default {
       'setShowWhitespace',
       'goToFile',
       'setFileCollapsedByUser',
-      'toggleTreeOpen',
     ]),
-    ...mapActions(useFileBrowser, ['setFileBrowserVisibility']),
+    ...mapActions(useLegacyDiffs, {
+      setCurrentDiffFile: types.SET_CURRENT_DIFF_FILE,
+    }),
+    ...mapActions(useFileBrowser, ['setFileBrowserVisibility', 'toggleTreeOpen']),
     ...mapActions(useFindingsDrawer, ['setDrawer']),
     closeDrawer() {
       this.setDrawer({});
@@ -761,13 +763,13 @@ export default {
       window.location.reload();
     },
     handleReviewTracking(event) {
-      const types = {
+      const trackingTypes = {
         noteFormStartReview: 'merge_request_click_start_review_on_changes_tab',
         noteFormAddToReview: 'merge_request_click_add_to_review_on_changes_tab',
       };
 
-      if (this.shouldShow && types[event.name]) {
-        this.trackEvent(types[event.name]);
+      if (this.shouldShow && trackingTypes[event.name]) {
+        this.trackEvent(trackingTypes[event.name]);
       }
     },
     isDiffViewActive(item) {
@@ -794,6 +796,10 @@ export default {
 
       el.dispatchEvent(new CustomEvent('quoteReply'));
     },
+    onFileTreeClick(file) {
+      this.setCurrentDiffFile(file.fileHash);
+      this.goToFile({ path: file.path });
+    },
   },
   howToMergeDocsPath: helpPagePath('user/project/merge_requests/merge_request_troubleshooting.md', {
     anchor: 'check-out-merge-requests-locally-through-the-head-ref',
@@ -804,7 +810,9 @@ export default {
 <template>
   <div v-show="shouldShow">
     <findings-drawer :project="activeProject" :drawer="activeDrawer" @close="closeDrawer" />
-    <div v-if="isLoading || !isTreeLoaded" class="loading"><gl-loading-icon size="lg" /></div>
+    <div v-if="isLoading || isLoadingFileBrowser" class="loading">
+      <gl-loading-icon size="lg" />
+    </div>
     <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
       <div class="gl-flex gl-flex-wrap">
         <compare-versions :toggle-file-tree-visible="hasChanges" />
@@ -837,7 +845,9 @@ export default {
           v-if="renderFileTree"
           class="gl-px-5"
           :total-files-count="numTotalFiles"
-          @clickFile="goToFile({ path: $event.path })"
+          :current-diff-file-id="currentDiffFileId"
+          :linked-file-path="linkedFile ? linkedFile.file_path : null"
+          @clickFile="onFileTreeClick"
           @toggleFolder="toggleTreeOpen"
         />
         <div class="gl-col-md-auto diff-files-holder gl-px-5">

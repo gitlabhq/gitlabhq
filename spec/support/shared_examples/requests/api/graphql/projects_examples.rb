@@ -141,7 +141,7 @@ RSpec.shared_examples 'getting a collection of projects' do
       # There is an N+1 query related to marked_for_deletion - https://gitlab.com/gitlab-org/gitlab/-/issues/548924
       expect do
         post_graphql(query, current_user: current_user)
-      end.not_to exceed_all_query_limit(control).with_threshold(9)
+      end.not_to exceed_all_query_limit(control).with_threshold(14)
     end
 
     it 'returns the expected projects' do

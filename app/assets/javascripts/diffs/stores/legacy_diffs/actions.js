@@ -3,7 +3,6 @@ import { setCookie, handleLocationHash, historyPushState } from '~/lib/utils/com
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import {
@@ -13,8 +12,6 @@ import {
   removeParams,
 } from '~/lib/utils/url_utility';
 import notesEventHub from '~/notes/event_hub';
-import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
-import { sortTree } from '~/ide/stores/utils';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import {
   countLinesInBetween,
@@ -23,10 +20,10 @@ import {
   lineExists,
 } from '~/diffs/utils/diff_file';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 import {
   INLINE_DIFF_VIEW_TYPE,
   DIFF_VIEW_COOKIE_NAME,
-  TREE_LIST_STORAGE_KEY,
   OLD_LINE_KEY,
   NEW_LINE_KEY,
   TYPE_KEY,
@@ -43,9 +40,6 @@ import {
   TRACKING_CLICK_DIFF_VIEW_SETTING,
   TRACKING_DIFF_VIEW_INLINE,
   TRACKING_DIFF_VIEW_PARALLEL,
-  TRACKING_CLICK_FILE_BROWSER_SETTING,
-  TRACKING_FILE_BROWSER_TREE,
-  TRACKING_FILE_BROWSER_LIST,
   TRACKING_CLICK_WHITESPACE_SETTING,
   TRACKING_WHITESPACE_SHOW,
   TRACKING_WHITESPACE_HIDE,
@@ -142,7 +136,7 @@ export async function prefetchSingleFile(treeEntry) {
       urlParams.start_sha = startSha;
     }
 
-    this[types.TREE_ENTRY_DIFF_LOADING]({ path: treeEntry.filePaths.new });
+    useFileBrowser().setTreeEntryDiffLoading(treeEntry.filePaths.new);
 
     try {
       const { data: diffData } = await axios.get(
@@ -153,7 +147,7 @@ export async function prefetchSingleFile(treeEntry) {
 
       eventHub.$emit('diffFilesModified');
     } catch (e) {
-      this[types.TREE_ENTRY_DIFF_LOADING]({ path: treeEntry.filePaths.new, loading: false });
+      useFileBrowser().setTreeEntryDiffLoading(treeEntry.filePaths.new, false);
     }
   }
 }
@@ -165,8 +159,8 @@ export async function fetchFileByFile() {
   const diffId = getParameterValues('diff_id', url)[0];
   const startSha = getParameterValues('start_sha', url)[0];
   const treeEntry = id
-    ? this.flatBlobsList.find(({ fileHash }) => fileHash === id)
-    : this.flatBlobsList[0];
+    ? useFileBrowser().flatBlobsList.find(({ fileHash }) => fileHash === id)
+    : useFileBrowser().flatBlobsList[0];
 
   eventHub.$emit(EVT_PERF_MARK_DIFF_FILES_START);
 
@@ -343,12 +337,8 @@ export function fetchDiffFilesMeta() {
       this[types.SET_DIFF_METADATA](strippedData);
 
       eventHub.$emit(EVT_PERF_MARK_FILE_TREE_START);
-      const { treeEntries, tree } = generateTreeList(data.diff_files);
+      useFileBrowser().setTreeData(data.diff_files);
       eventHub.$emit(EVT_PERF_MARK_FILE_TREE_END);
-      this[types.SET_TREE_DATA]({
-        treeEntries,
-        tree: sortTree(tree, 'key'),
-      });
 
       return data;
     })
@@ -367,7 +357,9 @@ export function fetchDiffFilesMeta() {
 }
 
 export function prefetchFileNeighbors() {
-  const { flatBlobsList: allBlobs, currentDiffIndex: currentIndex } = this;
+  const { currentDiffIndex: currentIndex } = this;
+
+  const allBlobs = useFileBrowser().flatBlobsList;
 
   const previous = Math.max(currentIndex - 1, 0);
   const next = Math.min(allBlobs.length - 1, currentIndex + 1);
@@ -692,14 +684,6 @@ export function getLinesForDiscussion({ discussion }) {
   return lines;
 }
 
-export function toggleTreeOpen(path) {
-  this[types.TOGGLE_FOLDER_OPEN](path);
-}
-
-export function setTreeOpen({ path, opened }) {
-  this[types.SET_FOLDER_OPEN]({ path, opened });
-}
-
 export function setCurrentFileHash(hash) {
   if (hash.startsWith('note_')) return;
 
@@ -710,11 +694,11 @@ export function goToFile({ path }) {
   if (!this.viewDiffsFileByFile) {
     this.scrollToFile({ path });
   } else {
-    if (!this.treeEntries[path]) return;
+    if (!useFileBrowser().treeEntries[path]) return;
 
     this.unlinkFile();
 
-    const { fileHash } = this.treeEntries[path];
+    const { fileHash } = useFileBrowser().treeEntries[path];
 
     this[types.SET_CURRENT_DIFF_FILE](fileHash);
 
@@ -730,9 +714,9 @@ export function goToFile({ path }) {
 }
 
 export function scrollToFile({ path }) {
-  if (!this.treeEntries[path]) return;
+  if (!useFileBrowser().treeEntries[path]) return;
 
-  const { fileHash } = this.treeEntries[path];
+  const { fileHash } = useFileBrowser().treeEntries[path];
 
   this[types.SET_CURRENT_DIFF_FILE](fileHash);
 
@@ -763,24 +747,6 @@ export function openDiffFileCommentForm(formData) {
 
 export function closeDiffFileCommentForm(fileHash) {
   this[types.CLOSE_DIFF_FILE_COMMENT_FORM](fileHash);
-}
-
-export function setRenderTreeList({ renderTreeList, trackClick = true }) {
-  this[types.SET_RENDER_TREE_LIST](renderTreeList);
-
-  localStorage.setItem(TREE_LIST_STORAGE_KEY, renderTreeList);
-
-  if (trackClick) {
-    const events = [TRACKING_CLICK_FILE_BROWSER_SETTING];
-
-    if (renderTreeList) {
-      events.push(TRACKING_FILE_BROWSER_TREE);
-    } else {
-      events.push(TRACKING_FILE_BROWSER_LIST);
-    }
-
-    queueRedisHllEvents(events);
-  }
 }
 
 export async function setShowWhitespace({
@@ -1030,7 +996,7 @@ export function setCurrentDiffFileIdFromNote(noteId) {
 
   const fileHash = useNotes().getDiscussion(note.discussion_id).diff_file?.file_hash;
 
-  if (fileHash && this.flatBlobsList.some((f) => f.fileHash === fileHash)) {
+  if (fileHash && useFileBrowser().flatBlobsList.some((f) => f.fileHash === fileHash)) {
     this[types.SET_CURRENT_DIFF_FILE](fileHash);
   }
 
@@ -1040,7 +1006,7 @@ export function setCurrentDiffFileIdFromNote(noteId) {
 export function navigateToDiffFileIndex(index) {
   this.unlinkFile();
 
-  const { fileHash } = this.flatBlobsList[index];
+  const { fileHash } = useFileBrowser().flatBlobsList[index];
   document.location.hash = fileHash;
 
   this[types.SET_CURRENT_DIFF_FILE](fileHash);

@@ -11,9 +11,9 @@ import micromatch from 'micromatch';
 import { s__, sprintf } from '~/locale';
 import { RecycleScroller } from 'vendor/vue-virtual-scroller';
 import { isElementClipped } from '~/lib/utils/common_utils';
-import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { MR_FOCUS_FILE_BROWSER } from '~/behaviors/shortcuts/keybindings';
 import { useCodeReview } from '~/diffs/stores/code_review';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 import DiffFileRow from './diff_file_row.vue';
 
 export default {
@@ -52,6 +52,16 @@ export default {
       required: false,
       default: true,
     },
+    currentDiffFileId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    linkedFilePath: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -59,14 +69,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useLegacyDiffs, [
-      'renderTreeList',
-      'currentDiffFileId',
-      'fileTree',
-      'allBlobs',
-      'linkedFile',
-      'flatBlobsList',
-    ]),
+    ...mapState(useFileBrowser, ['renderTreeList', 'tree', 'allBlobs', 'flatBlobsList']),
     ...mapState(useCodeReview, ['reviewedIds']),
     flatUngroupedList() {
       return this.flatBlobsList.reduce((acc, blob, index) => {
@@ -90,7 +93,7 @@ export default {
       let search = this.search.toLowerCase().trim();
 
       if (search === '') {
-        return this.renderTreeList ? this.fileTree : this.allBlobs;
+        return this.renderTreeList ? this.tree : this.allBlobs;
       }
 
       const searchSplit = search.split(',').filter((t) => t);
@@ -142,7 +145,7 @@ export default {
     },
     flatListWithLinkedFile() {
       const result = [...this.flatFilteredTreeList];
-      const linkedFileIndex = result.findIndex((item) => item.path === this.linkedFile.file_path);
+      const linkedFileIndex = result.findIndex((item) => item.path === this.linkedFilePath);
       const [linkedFileItem] = result.splice(linkedFileIndex, 1);
 
       if (linkedFileItem.parentPath === '/')
@@ -176,7 +179,7 @@ export default {
     treeList() {
       if (!this.renderTreeList && !this.groupBlobsListItems && !this.search)
         return this.flatUngroupedList;
-      const list = this.linkedFile ? this.flatListWithLinkedFile : this.flatFilteredTreeList;
+      const list = this.linkedFilePath ? this.flatListWithLinkedFile : this.flatFilteredTreeList;
       if (this.search) return list;
       return list.filter((item) => !item.hidden);
     },
@@ -190,7 +193,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useLegacyDiffs, ['setRenderTreeList', 'setTreeOpen']),
+    ...mapActions(useFileBrowser, ['setRenderTreeList', 'setTreeOpen']),
     preventClippingSelectedFile(hash) {
       // let the layout stabilize, we need to wait for:
       // scroll to file, sticky elements update, file browser height update
@@ -215,7 +218,7 @@ export default {
           .split('/')
           .slice(0, -1)
           .reduce((acc, part) => [...acc, acc.length ? `${acc.at(-1)}/${part}` : part], [])
-          .forEach((path) => this.setTreeOpen({ path, opened: true }));
+          .forEach((path) => this.setTreeOpen(path, true));
       }
     },
     isLoading(fileHash) {
@@ -257,7 +260,7 @@ export default {
           :title="__('List view')"
           :aria-label="__('List view')"
           data-testid="list-view-toggle"
-          @click="setRenderTreeList({ renderTreeList: false })"
+          @click="setRenderTreeList(false)"
         />
         <gl-button
           v-gl-tooltip.hover
@@ -266,7 +269,7 @@ export default {
           :title="__('Tree view')"
           :aria-label="__('Tree view')"
           data-testid="tree-view-toggle"
-          @click="setRenderTreeList({ renderTreeList: true })"
+          @click="setRenderTreeList(true)"
         />
       </gl-button-group>
     </div>

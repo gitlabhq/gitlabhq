@@ -1000,8 +1000,11 @@ You can configure OIDC group membership to:
   [auditor](../auditor_users.md) roles based on group membership.
 
 GitLab checks these groups on each sign in and updates user attributes as necessary.
-This feature **does not** allow you to automatically add users to GitLab
+This feature does not allow you to automatically add users to GitLab
 [groups](../../user/group/_index.md).
+
+The value defined for a specific group must reflect the value returned by the identity provider.
+For example, Microsoft Entra OIDC returns a GroupID so the `required_groups` configuration would look like `required_groups: ["55db8574-c392-4e8b-892d-1e086394be9c"]`.
 
 ### Required groups
 

@@ -184,7 +184,7 @@ Group permissions for [GitLab Duo](gitlab_duo/_index.md):
 
 | Action                                                                                                     | Non-member | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ---------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| Use GitLab Duo features <sup>1</sup>                                                                       |            |       |     ✓   |    ✓     |     ✓     |     ✓      |   ✓   |
+| Use GitLab Duo features <sup>1</sup>                                                                       |            |   ✓   |     ✓   |    ✓     |     ✓     |     ✓      |   ✓   |
 | Configure [GitLab Duo feature availability](gitlab_duo/turn_on_off.md#for-a-group-or-subgroup)             |            |       |         |          |           |     ✓      |   ✓   |
 | Configure [GitLab Duo Self Hosted](../administration/gitlab_duo_self_hosted/configure_duo_features.md)     |            |       |         |          |           |            |   ✓   |
 | Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features)  |            |       |         |          |           |            |   ✓   |

@@ -50,6 +50,7 @@ describe('DiffContent', () => {
         createCustomGetters(() => ({
           legacyNotes: {},
           legacyDiffs: {},
+          fileBrowser: {},
           batchComments: {
             draftsForFile: () => () => true,
             draftsForLine: () => () => true,

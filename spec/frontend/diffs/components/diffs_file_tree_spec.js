@@ -1,7 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { PiniaVuePlugin } from 'pinia';
-import { createTestingPinia } from '@pinia/testing';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
@@ -9,8 +8,6 @@ import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import { getCookie, removeCookie, setCookie } from '~/lib/utils/common_utils';
 import { TREE_LIST_WIDTH_STORAGE_KEY } from '~/diffs/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
-import * as types from '~/diffs/store/mutation_types';
-import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import * as panels from '~/lib/utils/panels';
@@ -18,7 +15,6 @@ import * as panels from '~/lib/utils/panels';
 Vue.use(PiniaVuePlugin);
 
 describe('DiffsFileTree', () => {
-  let pinia;
   let wrapper;
   let breakpointChangeCallback;
   let mockBreakpointSize;
@@ -28,7 +24,6 @@ describe('DiffsFileTree', () => {
   const createComponent = (propsData = {}) => {
     wrapper = extendedWrapper(
       shallowMount(DiffsFileTree, {
-        pinia,
         propsData,
       }),
     );
@@ -65,8 +60,6 @@ describe('DiffsFileTree', () => {
   });
 
   beforeEach(() => {
-    pinia = createTestingPinia();
-    useLegacyDiffs();
     mockBreakpointInstance('lg');
     jest.spyOn(panels, 'getPanelElement').mockReturnValue(null);
   });
@@ -88,13 +81,6 @@ describe('DiffsFileTree', () => {
     createComponent();
     wrapper.findComponent(TreeList).vm.$emit('toggleFolder', obj);
     expect(wrapper.emitted('toggleFolder')).toStrictEqual([[obj]]);
-  });
-
-  it('sets current file on click', () => {
-    const file = { fileHash: 'foo' };
-    createComponent();
-    wrapper.findComponent(TreeList).vm.$emit('clickFile', file);
-    expect(useLegacyDiffs()[types.SET_CURRENT_DIFF_FILE]).toHaveBeenCalledWith(file.fileHash);
   });
 
   describe('size', () => {
@@ -244,17 +230,27 @@ describe('DiffsFileTree', () => {
     const loadedFiles = { foo: true };
     const totalFilesCount = '20';
     const rowHeight = 30;
+    const currentDiffFileId = 'foo';
+    const linkedFilePath = '/linked';
     jest.spyOn(window, 'getComputedStyle').mockReturnValue({
       getPropertyValue() {
         return `${rowHeight}px`;
       },
     });
-    createComponent({ loadedFiles, totalFilesCount, groupBlobsListItems });
+    createComponent({
+      loadedFiles,
+      totalFilesCount,
+      groupBlobsListItems,
+      currentDiffFileId,
+      linkedFilePath,
+    });
     await nextTick();
     expect(wrapper.findComponent(TreeList).props('loadedFiles')).toBe(loadedFiles);
     expect(wrapper.findComponent(TreeList).props('totalFilesCount')).toBe(totalFilesCount);
     expect(wrapper.findComponent(TreeList).props('rowHeight')).toBe(rowHeight);
     expect(wrapper.findComponent(TreeList).props('groupBlobsListItems')).toBe(groupBlobsListItems);
+    expect(wrapper.findComponent(TreeList).props('currentDiffFileId')).toBe(currentDiffFileId);
+    expect(wrapper.findComponent(TreeList).props('linkedFilePath')).toBe(linkedFilePath);
   });
 
   describe('when screen is wide enough', () => {

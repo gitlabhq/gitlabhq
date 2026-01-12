@@ -8,9 +8,10 @@ import { getCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils'
 import { pinia } from '~/pinia/instance';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 import eventHub from '../notes/event_hub';
 import DiffsApp from './components/app.vue';
-import { TREE_LIST_STORAGE_KEY, DIFF_WHITESPACE_COOKIE_NAME } from './constants';
+import { DIFF_WHITESPACE_COOKIE_NAME } from './constants';
 
 export default function initDiffsApp() {
   const el = document.getElementById('js-diffs-app');
@@ -49,10 +50,7 @@ export default function initDiffsApp() {
       ...mapState(useMrNotes, ['activeTab']),
     },
     created() {
-      const treeListStored = localStorage.getItem(TREE_LIST_STORAGE_KEY);
-      const renderTreeList = treeListStored !== null ? parseBoolean(treeListStored) : true;
-
-      this.setRenderTreeList({ renderTreeList, trackClick: false });
+      useFileBrowser().initTreeList();
 
       // NOTE: A "true" or "checked" value for `showWhitespace` is '0' not '1'.
       // Check for cookie and save that setting for future use.
@@ -76,7 +74,7 @@ export default function initDiffsApp() {
       }
     },
     methods: {
-      ...mapActions(useLegacyDiffs, ['setRenderTreeList', 'setShowWhitespace']),
+      ...mapActions(useLegacyDiffs, ['setShowWhitespace']),
     },
     render(createElement) {
       return createElement('diffs-app', {
@@ -108,7 +106,8 @@ export default function initDiffsApp() {
         FindFile: () => import('~/vue_shared/components/file_finder/index.vue'),
       },
       computed: {
-        ...mapState(useLegacyDiffs, ['fileFinderVisible', 'isLoading', 'flatBlobsList']),
+        ...mapState(useLegacyDiffs, ['fileFinderVisible', 'isLoading']),
+        ...mapState(useFileBrowser, ['flatBlobsList']),
       },
       watch: {
         fileFinderVisible(newVal, oldVal) {

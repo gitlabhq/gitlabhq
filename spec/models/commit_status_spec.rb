@@ -1090,6 +1090,10 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     let(:attr_value) { :unknown_failure }
 
     it_behaves_like 'having enum with nil value'
+
+    it 'supports job_router_failure' do
+      expect(described_class.failure_reasons).to include('job_router_failure' => 1_014)
+    end
   end
 
   describe '#archived?' do

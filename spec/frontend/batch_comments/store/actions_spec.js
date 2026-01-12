@@ -33,6 +33,7 @@ describe('Batch comments store actions', () => {
       plugins: [
         createCustomGetters(() => ({
           legacyDiffs: {},
+          fileBrowser: {},
           legacyNotes: legacyNotesGetters,
           batchComments: batchCommentsGetters,
         })),

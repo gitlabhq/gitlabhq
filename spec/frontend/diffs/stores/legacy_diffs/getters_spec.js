@@ -13,6 +13,7 @@ import { createCustomGetters } from 'helpers/pinia_helpers';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 import discussion from '../../mock_data/diff_discussions';
 import diffsMockData from '../../mock_data/merge_request_diffs';
 
@@ -27,6 +28,7 @@ describe('Diffs Module Getters', () => {
         legacyNotes: notesGetters,
         legacyMrNotes: {},
         batchComments: {},
+        fileBrowser: {},
       })),
       globalAccessorPlugin,
     ],
@@ -334,86 +336,9 @@ describe('Diffs Module Getters', () => {
     });
   });
 
-  describe('isTreePathLoaded', () => {
-    it.each`
-      desc                                         | loaded   | path             | bool
-      ${'the file exists and has been loaded'}     | ${true}  | ${'path/tofile'} | ${true}
-      ${'the file exists and has not been loaded'} | ${false} | ${'path/tofile'} | ${false}
-      ${'the file does not exist'}                 | ${false} | ${'tofile/path'} | ${false}
-    `('returns $bool when $desc', ({ loaded, path, bool }) => {
-      store.treeEntries['path/tofile'] = { diffLoaded: loaded };
-
-      expect(store.isTreePathLoaded(path)).toBe(bool);
-    });
-  });
-
-  describe('allBlobs', () => {
-    it('returns an array of blobs', () => {
-      store.treeEntries = {
-        file: {
-          type: 'blob',
-          path: 'file',
-          parentPath: '/',
-          tree: [],
-        },
-        tree: {
-          type: 'tree',
-          path: 'tree',
-          parentPath: '/',
-          tree: [],
-        },
-      };
-
-      expect(store.allBlobs).toEqual([
-        {
-          isHeader: true,
-          path: '/',
-          tree: [
-            {
-              parentPath: '/',
-              path: 'file',
-              tree: [],
-              type: 'blob',
-            },
-          ],
-        },
-      ]);
-    });
-
-    it('assigns ids to files', () => {
-      store.treeEntries = {
-        file: {
-          type: 'blob',
-          path: 'file',
-          parentPath: '/',
-          fileHash: '111',
-          tree: [],
-        },
-      };
-      store.diffFiles = [{ id: '222', file_hash: '111' }];
-
-      expect(store.allBlobs).toEqual([
-        {
-          isHeader: true,
-          path: '/',
-          tree: [
-            {
-              parentPath: '/',
-              path: 'file',
-              tree: [],
-              type: 'blob',
-              fileHash: '111',
-              id: '222',
-            },
-          ],
-        },
-      ]);
-    });
-  });
-
   describe('currentDiffIndex', () => {
     it('returns index of currently selected diff in diffList', () => {
-      store.treeEntries = [
+      useFileBrowser().treeEntries = [
         { type: 'blob', fileHash: '111' },
         { type: 'blob', fileHash: '222' },
         { type: 'blob', fileHash: '333' },
@@ -556,27 +481,6 @@ describe('Diffs Module Getters', () => {
 
     it('returns null if no linked file is set', () => {
       expect(store.linkedFile).toBe(null);
-    });
-  });
-
-  describe('fileTree', () => {
-    it('returns fileTree', () => {
-      const diffFiles = [
-        { id: '111', file_hash: '222' },
-        { id: '333', file_hash: '444' },
-      ];
-      const tree = {
-        type: 'tree',
-        path: 'tree',
-        parentPath: '/',
-        fileHash: '444',
-        tree: [{ fileHash: '222', tree: [] }],
-      };
-      store.diffFiles = diffFiles;
-      store.tree = [tree];
-      expect(store.fileTree).toStrictEqual([
-        { ...tree, id: '333', tree: [{ ...tree.tree[0], id: '111' }] },
-      ]);
     });
   });
 

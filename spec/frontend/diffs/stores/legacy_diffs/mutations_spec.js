@@ -3,6 +3,7 @@ import { INLINE_DIFF_VIEW_TYPE, INLINE_DIFF_LINES_KEY } from '~/diffs/constants'
 import * as types from '~/diffs/store/mutation_types';
 import * as utils from '~/diffs/store/utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { getDiffFileMock } from '../../mock_data/diff_file';
 
 describe('DiffsStoreMutations', () => {
@@ -87,8 +88,8 @@ describe('DiffsStoreMutations', () => {
       const mockFile = getDiffFileMock();
       store.$patch({
         diffFiles: [],
-        treeEntries: { [mockFile.file_path]: { fileHash: mockFile.file_hash } },
       });
+      useFileBrowser().treeEntries = { [mockFile.file_path]: { fileHash: mockFile.file_hash } };
       const diffMock = {
         diff_files: [mockFile],
       };
@@ -96,15 +97,15 @@ describe('DiffsStoreMutations', () => {
       store[types.SET_DIFF_DATA_BATCH](diffMock);
 
       expect(store.diffFiles[0].collapsed).toEqual(false);
-      expect(store.treeEntries[mockFile.file_path].diffLoaded).toBe(true);
+      expect(useFileBrowser().treeEntries[mockFile.file_path].diffLoaded).toBe(true);
     });
 
     it('should update diff position by default', () => {
       const mockFile = getDiffFileMock();
       store.$patch({
         diffFiles: [mockFile, { ...mockFile, file_hash: 'foo', file_path: 'foo' }],
-        treeEntries: { [mockFile.file_path]: { fileHash: mockFile.file_hash } },
       });
+      useFileBrowser().treeEntries = { [mockFile.file_path]: { fileHash: mockFile.file_hash } };
       const diffMock = {
         diff_files: [mockFile],
       };
@@ -112,15 +113,15 @@ describe('DiffsStoreMutations', () => {
       store[types.SET_DIFF_DATA_BATCH](diffMock);
 
       expect(store.diffFiles[1].file_hash).toBe(mockFile.file_hash);
-      expect(store.treeEntries[mockFile.file_path].diffLoaded).toBe(true);
+      expect(useFileBrowser().treeEntries[mockFile.file_path].diffLoaded).toBe(true);
     });
 
     it('should not update diff position', () => {
       const mockFile = getDiffFileMock();
       store.$patch({
         diffFiles: [mockFile, { ...mockFile, file_hash: 'foo', file_path: 'foo' }],
-        treeEntries: { [mockFile.file_path]: { fileHash: mockFile.file_hash } },
       });
+      useFileBrowser().treeEntries = { [mockFile.file_path]: { fileHash: mockFile.file_hash } };
       const diffMock = {
         diff_files: [mockFile],
         updatePosition: false,
@@ -129,7 +130,7 @@ describe('DiffsStoreMutations', () => {
       store[types.SET_DIFF_DATA_BATCH](diffMock);
 
       expect(store.diffFiles[0].file_hash).toBe(mockFile.file_hash);
-      expect(store.treeEntries[mockFile.file_path].diffLoaded).toBe(true);
+      expect(useFileBrowser().treeEntries[mockFile.file_path].diffLoaded).toBe(true);
     });
   });
 
@@ -142,17 +143,6 @@ describe('DiffsStoreMutations', () => {
 
       expect(store.coverageFiles).toEqual(coverage);
       expect(store.coverageLoaded).toEqual(true);
-    });
-  });
-
-  describe('SET_DIFF_TREE_ENTRY', () => {
-    it('should set tree entry', () => {
-      const file = getDiffFileMock();
-      store.$patch({ treeEntries: { [file.file_path]: {} } });
-
-      store[types.SET_DIFF_TREE_ENTRY](file);
-
-      expect(store.treeEntries[file.file_path].diffLoaded).toBe(true);
     });
   });
 
@@ -920,68 +910,6 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
-  describe('TOGGLE_FOLDER_OPEN', () => {
-    it('toggles entry opened prop', () => {
-      store.$patch({
-        treeEntries: {
-          path: {
-            opened: false,
-          },
-        },
-      });
-
-      store[types.TOGGLE_FOLDER_OPEN]('path');
-
-      expect(store.treeEntries.path.opened).toBe(true);
-    });
-  });
-
-  describe('SET_FOLDER_OPEN', () => {
-    it('toggles entry opened prop', () => {
-      store.$patch({
-        treeEntries: {
-          path: {
-            opened: false,
-          },
-        },
-      });
-
-      store[types.SET_FOLDER_OPEN]({ path: 'path', opened: true });
-
-      expect(store.treeEntries.path.opened).toBe(true);
-    });
-  });
-
-  describe('TREE_ENTRY_DIFF_LOADING', () => {
-    it('sets the entry loading state to true by default', () => {
-      store.$patch({
-        treeEntries: {
-          path: {
-            diffLoading: false,
-          },
-        },
-      });
-
-      store[types.TREE_ENTRY_DIFF_LOADING]({ path: 'path' });
-
-      expect(store.treeEntries.path.diffLoading).toBe(true);
-    });
-
-    it('sets the entry loading state to the provided value', () => {
-      store.$patch({
-        treeEntries: {
-          path: {
-            diffLoading: true,
-          },
-        },
-      });
-
-      store[types.TREE_ENTRY_DIFF_LOADING]({ path: 'path', loading: false });
-
-      expect(store.treeEntries.path.diffLoading).toBe(false);
-    });
-  });
-
   describe('SET_CURRENT_DIFF_FILE', () => {
     it('updates currentDiffFileId', () => {
       store[types.SET_CURRENT_DIFF_FILE]('somefileid');
@@ -1019,42 +947,6 @@ describe('DiffsStoreMutations', () => {
 
       expect(file[INLINE_DIFF_LINES_KEY][0].hasForm).toBe(true);
       expect(file[INLINE_DIFF_LINES_KEY][1].hasForm).toBe(false);
-    });
-  });
-
-  describe('SET_TREE_DATA', () => {
-    it('sets treeEntries and tree in state', () => {
-      store.$patch({
-        treeEntries: {},
-        tree: [],
-        isTreeLoaded: false,
-      });
-
-      store[types.SET_TREE_DATA]({
-        treeEntries: { file: { name: 'index.js' } },
-        tree: ['tree'],
-      });
-
-      expect(store.treeEntries).toEqual({
-        file: {
-          name: 'index.js',
-        },
-      });
-
-      expect(store.tree).toEqual(['tree']);
-      expect(store.isTreeLoaded).toEqual(true);
-    });
-  });
-
-  describe('SET_RENDER_TREE_LIST', () => {
-    it('sets renderTreeList', () => {
-      store.$patch({
-        renderTreeList: true,
-      });
-
-      store[types.SET_RENDER_TREE_LIST](false);
-
-      expect(store.renderTreeList).toBe(false);
     });
   });
 

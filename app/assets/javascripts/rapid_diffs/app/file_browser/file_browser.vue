@@ -4,7 +4,6 @@ import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
-import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 
 export default {
   name: 'FileBrowser',
@@ -18,6 +17,11 @@ export default {
       default: true,
     },
   },
+  data() {
+    return {
+      currentFileHash: '',
+    };
+  },
   computed: {
     ...mapState(useDiffsView, ['totalFilesCount']),
     ...mapState(useDiffsList, ['loadedFiles']),
@@ -25,10 +29,11 @@ export default {
   },
   methods: {
     clickFile(file) {
+      this.currentFileHash = file.fileHash;
       this.$emit('clickFile', file);
     },
     toggleFolder(path) {
-      useLegacyDiffs().toggleTreeOpen(path);
+      useFileBrowser().toggleTreeOpen(path);
     },
   },
 };
@@ -41,6 +46,7 @@ export default {
     :loaded-files="loadedFiles"
     :total-files-count="totalFilesCount"
     :group-blobs-list-items="groupBlobsListItems"
+    :current-diff-file-id="currentFileHash"
     @clickFile="clickFile"
     @toggleFolder="toggleFolder"
   />

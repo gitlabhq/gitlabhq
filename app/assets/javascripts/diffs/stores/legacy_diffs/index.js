@@ -8,7 +8,6 @@ export const useLegacyDiffs = defineStore('legacyDiffs', {
   state() {
     return {
       isLoading: true,
-      isTreeLoaded: false,
       batchLoadingState: null,
       retrievingBatches: false,
       addedLines: null,
@@ -29,13 +28,10 @@ export const useLegacyDiffs = defineStore('legacyDiffs', {
       mergeRequestDiffs: [],
       mergeRequestDiff: null,
       diffViewType: INLINE_DIFF_VIEW_TYPE,
-      tree: [],
-      treeEntries: {},
       currentDiffFileId: '',
       projectPath: '',
       commentForms: [],
       highlightedRow: null,
-      renderTreeList: true,
       showWhitespace: true,
       viewDiffsFileByFile: false,
       fileFinderVisible: false,

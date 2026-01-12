@@ -51758,6 +51758,7 @@ Values for sorting CI/CD job analytics.
 | <a id="cijobfailurereasoninvalid_bridge_trigger"></a>`INVALID_BRIDGE_TRIGGER` | A job that failed due to invalid bridge trigger. |
 | <a id="cijobfailurereasonip_restriction_failure"></a>`IP_RESTRICTION_FAILURE` | A job that failed due to ip restriction failure. |
 | <a id="cijobfailurereasonjob_execution_timeout"></a>`JOB_EXECUTION_TIMEOUT` | A job that failed due to job execution timeout. |
+| <a id="cijobfailurereasonjob_router_failure"></a>`JOB_ROUTER_FAILURE` | A job that failed due to job router failure. |
 | <a id="cijobfailurereasonmissing_dependency_failure"></a>`MISSING_DEPENDENCY_FAILURE` | A job that failed due to missing dependency failure. |
 | <a id="cijobfailurereasonno_matching_runner"></a>`NO_MATCHING_RUNNER` | A job that failed due to no matching runner. |
 | <a id="cijobfailurereasonpipeline_loop_detected"></a>`PIPELINE_LOOP_DETECTED` | A job that failed due to pipeline loop detected. |

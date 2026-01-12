@@ -44,7 +44,8 @@ module Gitlab
             ip_restriction_failure: 'IP address restriction failure',
             duo_workflow_not_allowed: 'Duo Workflow cannot run on this runner',
             failed_outdated_deployment_job: 'failed outdated deployment job',
-            reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.'
+            reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.',
+            job_router_failure: 'The Job Router failed to run this job.'
           }.freeze
           # rubocop: enable Layout/LineLength
 
@@ -73,7 +74,18 @@ module Gitlab
           end
 
           def description
-            "- (#{failure_reason_message})"
+            return "- (#{failure_reason_message})" unless subject.failure_reason.to_sym == :job_router_failure
+
+            custom_message = fetch_custom_message
+            if custom_message.present?
+              "- (#{failure_reason_message} #{custom_message})"
+            else
+              "- (#{failure_reason_message} Please contact your administrator.)"
+            end
+          end
+
+          def fetch_custom_message
+            subject.try(:error_job_messages)&.first&.content
           end
 
           def failure_reason_message

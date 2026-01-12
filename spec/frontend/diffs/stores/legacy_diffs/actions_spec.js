@@ -25,7 +25,6 @@ import { createTestPiniaAction, createCustomGetters } from 'helpers/pinia_helper
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import * as types from '~/diffs/store/mutation_types';
 import * as utils from '~/diffs/store/utils';
-import * as treeWorkerUtils from '~/diffs/utils/tree_worker_utils';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
@@ -44,6 +43,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { diffMetadata } from '../../mock_data/diff_metadata';
 
 jest.mock('~/alert');
@@ -56,6 +56,7 @@ const endpointDiffForPath = '/diffs/set/endpoint/path';
 describe('legacyDiffs actions', () => {
   let getters = {};
   let notesGetters = {};
+  let fileBrowserGetters = {};
   let store;
   let mock;
   let testAction;
@@ -69,6 +70,7 @@ describe('legacyDiffs actions', () => {
 
   beforeEach(() => {
     getters = {};
+    fileBrowserGetters = {};
     createTestingPinia({
       stubActions: false,
       plugins: [
@@ -76,6 +78,7 @@ describe('legacyDiffs actions', () => {
           legacyDiffs: getters,
           legacyNotes: notesGetters,
           batchComments: {},
+          fileBrowser: fileBrowserGetters,
         })),
         globalAccessorPlugin,
       ],
@@ -228,9 +231,9 @@ describe('legacyDiffs actions', () => {
 
         await store.prefetchSingleFile(treeEntry);
 
-        expect(store[types.TREE_ENTRY_DIFF_LOADING]).toHaveBeenCalledWith({
-          path: treeEntry.filePaths.new,
-        });
+        expect(useFileBrowser().setTreeEntryDiffLoading).toHaveBeenCalledWith(
+          treeEntry.filePaths.new,
+        );
 
         // wait for the mocked network request to return
         await waitForPromises();
@@ -323,10 +326,10 @@ describe('legacyDiffs actions', () => {
           // wait for the mocked network request to return
           await waitForPromises();
 
-          expect(store[types.TREE_ENTRY_DIFF_LOADING]).toHaveBeenCalledWith({
-            path: treeEntry.filePaths.new,
-            loading: false,
-          });
+          expect(useFileBrowser().setTreeEntryDiffLoading).toHaveBeenCalledWith(
+            treeEntry.filePaths.new,
+            false,
+          );
         });
       });
     });
@@ -380,7 +383,7 @@ describe('legacyDiffs actions', () => {
           showWhitespace: false,
           diffFiles: [],
         };
-        getters = {
+        fileBrowserGetters = {
           flatBlobsList: [treeEntry],
         };
         store.$patch(state);
@@ -579,10 +582,10 @@ describe('legacyDiffs actions', () => {
       delete noFilesData.diff_files;
     });
 
-    it('should fetch diff meta information', () => {
+    it('should fetch diff meta information', async () => {
       mock.onGet(endpointMetadata).reply(HTTP_STATUS_OK, diffMetadata);
 
-      return testAction(
+      await testAction(
         store.fetchDiffFilesMeta,
         {},
         { endpointMetadata, diffViewType: 'inline', showWhitespace: true },
@@ -591,14 +594,10 @@ describe('legacyDiffs actions', () => {
           { type: store[types.SET_LOADING], payload: false },
           { type: store[types.SET_MERGE_REQUEST_DIFFS], payload: diffMetadata.merge_request_diffs },
           { type: store[types.SET_DIFF_METADATA], payload: noFilesData },
-          // Workers are synchronous in Jest environment (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58805)
-          {
-            type: store[types.SET_TREE_DATA],
-            payload: treeWorkerUtils.generateTreeList(diffMetadata.diff_files),
-          },
         ],
         [],
       );
+      expect(useFileBrowser().setTreeData).toHaveBeenCalledWith(diffMetadata.diff_files);
     });
 
     describe('when diff metadata returns has_encoded_file_paths as true', () => {
@@ -624,15 +623,11 @@ describe('legacyDiffs actions', () => {
               type: store[types.SET_DIFF_METADATA],
               payload: { ...noFilesData, has_encoded_file_paths: true },
             },
-            // Workers are synchronous in Jest environment (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58805)
-            {
-              type: store[types.SET_TREE_DATA],
-              payload: treeWorkerUtils.generateTreeList(diffMetadata.diff_files),
-            },
           ],
           [],
         );
 
+        expect(useFileBrowser().setTreeData).toHaveBeenCalledWith(diffMetadata.diff_files);
         expect(createAlert).toHaveBeenCalledTimes(1);
         expect(createAlert).toHaveBeenCalledWith({
           title: ENCODED_FILE_PATHS_TITLE,
@@ -705,25 +700,25 @@ describe('legacyDiffs actions', () => {
   describe('prefetchFileNeighbors', () => {
     it('dispatches two requests to prefetch the next/previous files', () => {
       store.prefetchSingleFile.mockReturnValue({});
+      useFileBrowser().treeEntries = {
+        abc: {
+          type: 'blob',
+          fileHash: 'abc',
+        },
+        ghi: {
+          type: 'blob',
+          fileHash: 'ghi',
+        },
+        def: {
+          type: 'blob',
+          fileHash: 'def',
+        },
+      };
       return testAction(
         store.prefetchFileNeighbors,
         {},
         {
           currentDiffFileId: 'ghi',
-          treeEntries: {
-            abc: {
-              type: 'blob',
-              fileHash: 'abc',
-            },
-            ghi: {
-              type: 'blob',
-              fileHash: 'ghi',
-            },
-            def: {
-              type: 'blob',
-              fileHash: 'def',
-            },
-          },
         },
         [],
         [
@@ -1436,44 +1431,20 @@ describe('legacyDiffs actions', () => {
     });
   });
 
-  describe('toggleTreeOpen', () => {
-    it('commits TOGGLE_FOLDER_OPEN', () => {
-      return testAction(
-        store.toggleTreeOpen,
-        'path',
-        { treeEntries: { path: {} } },
-        [{ type: store[types.TOGGLE_FOLDER_OPEN], payload: 'path' }],
-        [],
-      );
-    });
-  });
-
-  describe('setTreeOpen', () => {
-    it('commits SET_FOLDER_OPEN', () => {
-      return testAction(
-        store.setTreeOpen,
-        { path: 'path', opened: true },
-        { treeEntries: { path: {} } },
-        [{ type: store[types.SET_FOLDER_OPEN], payload: { path: 'path', opened: true } }],
-        [],
-      );
-    });
-  });
-
   describe('goToFile', () => {
     const file = { path: 'path' };
     const fileHash = 'test';
     let state;
 
     beforeEach(() => {
+      useFileBrowser().treeEntries = {
+        path: {
+          fileHash,
+        },
+      };
       getters.isTreePathLoaded = () => false;
       state = {
         viewDiffsFileByFile: true,
-        treeEntries: {
-          path: {
-            fileHash,
-          },
-        },
       };
       store.$patch(state);
     });
@@ -1542,30 +1513,24 @@ describe('legacyDiffs actions', () => {
     });
 
     it('updates location hash', () => {
-      const state = {
-        treeEntries: {
-          path: {
-            fileHash: 'test',
-          },
+      useFileBrowser().treeEntries = {
+        path: {
+          fileHash: 'test',
         },
       };
 
-      store.$patch(state);
       store.scrollToFile({ path: 'path' });
 
       expect(document.location.hash).toBe('#test');
     });
 
     it('commits SET_CURRENT_DIFF_FILE', () => {
-      const state = {
-        treeEntries: {
-          path: {
-            fileHash: 'test',
-          },
+      useFileBrowser().treeEntries = {
+        path: {
+          fileHash: 'test',
         },
       };
 
-      store.$patch(state);
       store.scrollToFile({ path: 'path' });
 
       expect(store[types.SET_CURRENT_DIFF_FILE]).toHaveBeenCalledWith('test');
@@ -1626,24 +1591,6 @@ describe('legacyDiffs actions', () => {
       expect(store[types.SET_FILE_COLLAPSED]).not.toHaveBeenCalled();
       expect($emit).toHaveBeenCalledTimes(1);
       expect(scrollToElement).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('setRenderTreeList', () => {
-    it('commits SET_RENDER_TREE_LIST', () => {
-      return testAction(
-        store.setRenderTreeList,
-        { renderTreeList: true },
-        {},
-        [{ type: store[types.SET_RENDER_TREE_LIST], payload: true }],
-        [],
-      );
-    });
-
-    it('sets localStorage', () => {
-      store.setRenderTreeList({ renderTreeList: true });
-
-      expect(localStorage.setItem).toHaveBeenCalledWith('mr_diff_tree_list', true);
     });
   });
 
@@ -2090,7 +2037,7 @@ describe('legacyDiffs actions', () => {
 
   describe('setCurrentDiffFileIdFromNote', () => {
     it('commits SET_CURRENT_DIFF_FILE', () => {
-      getters = { flatBlobsList: [{ fileHash: '123' }] };
+      fileBrowserGetters = { flatBlobsList: [{ fileHash: '123' }] };
       notesGetters = {
         getDiscussion: () => ({ diff_file: { file_hash: '123' } }),
         notesById: { 1: { discussion_id: '2' } },
@@ -2129,7 +2076,7 @@ describe('legacyDiffs actions', () => {
 
   describe('navigateToDiffFileIndex', () => {
     it('commits SET_CURRENT_DIFF_FILE', () => {
-      getters = { flatBlobsList: [{ fileHash: '123' }] };
+      fileBrowserGetters = { flatBlobsList: [{ fileHash: '123' }] };
 
       return testAction(
         store.navigateToDiffFileIndex,
@@ -2141,7 +2088,7 @@ describe('legacyDiffs actions', () => {
     });
 
     it('dispatches the fetchFileByFile action when the state value viewDiffsFileByFile is true', () => {
-      getters = { flatBlobsList: [{ fileHash: '123' }] };
+      fileBrowserGetters = { flatBlobsList: [{ fileHash: '123' }] };
       store.fetchFileByFile.mockReturnValueOnce(Promise.resolve());
 
       return testAction(

@@ -80,3 +80,4 @@ https://gitlab.com/gitlab-org/gitlab/-/commits/master/CONTRIBUTING.md?ref_type=h
 - [Git blame](git_blame.md)
 - [Common Git commands](../../../../topics/git/commands.md)
 - [File management with Git](../../../../topics/git/file_management.md)
+- [File tree browser](file_tree_browser.md)

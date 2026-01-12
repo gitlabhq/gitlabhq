@@ -3,23 +3,16 @@ import axios from '~/lib/utils/axios_utils';
 import { pinia } from '~/pinia/instance';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import FileBrowserToggle from '~/diffs/components/file_browser_toggle.vue';
-import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
-import { SET_TREE_DATA } from '~/diffs/store/mutation_types';
-import { linkTreeNodes, sortTree } from '~/ide/stores/utils';
-import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { useApp } from '~/rapid_diffs/stores/app';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 import FileBrowser from './file_browser.vue';
 import FileBrowserDrawer from './file_browser_drawer.vue';
 import FileBrowserDrawerToggle from './file_browser_drawer_toggle.vue';
 
 const loadFileBrowserData = async (diffFilesEndpoint, shouldSort) => {
   const { data } = await axios.get(diffFilesEndpoint);
-  const { treeEntries, tree } = generateTreeList(data.diff_files);
-  useLegacyDiffs()[SET_TREE_DATA]({
-    treeEntries,
-    tree: shouldSort ? sortTree(tree) : linkTreeNodes(tree),
-  });
+  useFileBrowser().setTreeData(data.diff_files, shouldSort);
 };
 
 const initToggle = (el) => {
@@ -77,6 +70,7 @@ const initBrowserComponent = async (el, shouldSort) => {
 
 export async function initFileBrowser({ toggleTarget, browserTarget, appData }) {
   initToggle(toggleTarget);
+  useFileBrowser().initTreeList();
   await loadFileBrowserData(appData.diffFilesEndpoint, appData.shouldSortMetadataFiles);
   initBrowserComponent(browserTarget, appData.shouldSortMetadataFiles);
 }

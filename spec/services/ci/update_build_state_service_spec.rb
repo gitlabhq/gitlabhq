@@ -52,6 +52,51 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
     end
   end
 
+  context 'when build fails with custom message' do
+    let(:params) do
+      {
+        state: 'failed',
+        failure_reason: 'job_router_failure',
+        failure_message: 'Router could not find suitable executor'
+      }
+    end
+
+    it 'creates a job message' do
+      expect { execute }.to change { build.job_messages.count }.by(1)
+
+      message = build.job_messages.last
+      expect(message.content).to eq('Router could not find suitable executor')
+      expect(message.severity).to eq('error')
+    end
+
+    it 'updates the build status' do
+      execute
+
+      expect(build.reload).to be_failed
+      expect(build.failure_reason).to eq('job_router_failure')
+    end
+  end
+
+  context 'when build fails without custom message' do
+    let(:params) do
+      {
+        state: 'failed',
+        failure_reason: 'job_router_failure'
+      }
+    end
+
+    it 'does not create a job message' do
+      expect { execute }.not_to change { build.job_messages.count }
+    end
+
+    it 'updates the build status' do
+      execute
+
+      expect(build.reload).to be_failed
+      expect(build.failure_reason).to eq('job_router_failure')
+    end
+  end
+
   context 'when build does not have checksum' do
     context 'when state has changed' do
       let(:params) { { state: 'success' } }

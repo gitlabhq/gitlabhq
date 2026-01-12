@@ -169,6 +169,23 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           it { expect(job.reload).to be_unmet_prerequisites }
         end
 
+        context 'when failure_reason is job_router_failure' do
+          before do
+            update_job(state: 'failed', failure_reason: 'job_router_failure')
+          end
+
+          context 'without custom message' do
+            it 'updates the job status' do
+              expect(job.reload).to be_failed
+              expect(job.failure_reason).to eq('job_router_failure')
+            end
+
+            it 'does not create a job message' do
+              expect(job.reload.job_messages.count).to eq(0)
+            end
+          end
+        end
+
         context 'when unmigrated live trace chunks exist' do
           let(:job) do
             create(:ci_build, :pending, :trace_live, pipeline: pipeline, project: project, user: user,

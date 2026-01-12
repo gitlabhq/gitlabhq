@@ -1,4 +1,5 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 import {
   DIFF_FILE_MANUAL_COLLAPSE,
   DIFF_FILE_AUTOMATIC_COLLAPSE,
@@ -15,7 +16,6 @@ import {
   prepareDiffData,
   isDiscussionApplicableToLine,
   updateLineInFile,
-  markTreeEntriesLoaded,
 } from '../../store/utils';
 
 export default {
@@ -83,20 +83,8 @@ export default {
         // we need to ensure when we load it in batched request it updates it position
         updatePosition,
       }),
-      treeEntries: markTreeEntriesLoaded({
-        priorEntries: this.treeEntries,
-        loadedFiles: diffFiles,
-      }),
     });
-  },
-
-  [types.SET_DIFF_TREE_ENTRY](diffFile) {
-    Object.assign(this, {
-      treeEntries: markTreeEntriesLoaded({
-        priorEntries: this.treeEntries,
-        loadedFiles: [diffFile],
-      }),
-    });
+    useFileBrowser().markTreeEntriesLoaded(diffFiles);
   },
 
   [types.SET_COVERAGE_DATA](coverageFiles) {
@@ -281,16 +269,6 @@ export default {
       Object.assign(file, { discussions });
     });
   },
-
-  [types.TOGGLE_FOLDER_OPEN](path) {
-    this.treeEntries[path].opened = !this.treeEntries[path].opened;
-  },
-  [types.SET_FOLDER_OPEN]({ path, opened }) {
-    this.treeEntries[path].opened = opened;
-  },
-  [types.TREE_ENTRY_DIFF_LOADING]({ path, loading = true }) {
-    this.treeEntries[path].diffLoading = loading;
-  },
   [types.SET_CURRENT_DIFF_FILE](fileId) {
     this.currentDiffFileId = fileId;
   },
@@ -317,14 +295,6 @@ export default {
   },
   [types.SET_HIGHLIGHTED_ROW](lineCode) {
     this.highlightedRow = lineCode;
-  },
-  [types.SET_TREE_DATA]({ treeEntries, tree }) {
-    this.treeEntries = treeEntries;
-    this.tree = tree;
-    this.isTreeLoaded = true;
-  },
-  [types.SET_RENDER_TREE_LIST](renderTreeList) {
-    this.renderTreeList = renderTreeList;
   },
   [types.SET_SHOW_WHITESPACE](showWhitespace) {
     this.showWhitespace = showWhitespace;

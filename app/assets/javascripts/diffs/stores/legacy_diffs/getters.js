@@ -9,6 +9,7 @@ import {
   DIFF_COMPARE_HEAD_VERSION_INDEX,
 } from '~/diffs/constants';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { computeSuggestionCommitMessage } from '../../utils/suggestions';
 import { parallelizeDiffLines } from '../../store/utils';
 
@@ -139,31 +140,8 @@ export function getDiffFileByHash() {
 
 export function isTreePathLoaded() {
   return (path) => {
-    return Boolean(this.treeEntries[path]?.diffLoaded);
+    return Boolean(useFileBrowser().treeEntries[path]?.diffLoaded);
   };
-}
-
-export function flatBlobsList() {
-  return Object.values(this.treeEntries).filter((f) => f.type === 'blob');
-}
-
-export function allBlobs() {
-  return this.flatBlobsList.reduce((acc, file) => {
-    const { parentPath } = file;
-
-    if (parentPath && !acc.some((f) => f.path === parentPath)) {
-      acc.push({
-        path: parentPath,
-        isHeader: true,
-        tree: [],
-      });
-    }
-
-    const id = this.diffFiles.find((diff) => diff.file_hash === file.fileHash)?.id;
-    acc.find((f) => f.path === parentPath).tree.push({ ...file, id });
-
-    return acc;
-  }, []);
 }
 
 export function getCommentFormForDiffFile() {
@@ -203,7 +181,7 @@ export function fileLineCoverage() {
 export function currentDiffIndex() {
   return Math.max(
     0,
-    this.flatBlobsList.findIndex((diff) => diff.fileHash === this.currentDiffFileId),
+    useFileBrowser().flatBlobsList.findIndex((diff) => diff.fileHash === this.currentDiffFileId),
   );
 }
 
@@ -349,14 +327,4 @@ export function diffCompareDropdownSourceVersions() {
     });
   }
   return versions;
-}
-
-export function fileTree() {
-  const diffs = this.diffFiles;
-  const mapToId = (item) => {
-    const id = diffs.find((diff) => diff.file_hash === item.fileHash)?.id;
-    const tree = item.tree.map(mapToId);
-    return { ...item, id, tree };
-  };
-  return this.tree.map(mapToId);
 }
