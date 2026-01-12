@@ -97,7 +97,6 @@ The generator creates a template. Fill in all required fields:
 ---
 name: read_job
 description: Grants the ability to read CI/CD jobs
-feature_category: continuous_integration
 boundaries:
   - group
   - project
@@ -109,7 +108,6 @@ boundaries:
 |-------|-------------|-------------|
 | `name` | Permission name (auto-populated) | Matches the permission name |
 | `description` | Human-readable description of what the permission allows | Describe the capability granted |
-| `feature_category` | GitLab feature category | Found in `lib/api/<resource>.rb` - search for `feature_category` |
 | `boundaries` | List of organizational levels where the permission applies | Determined by the route pattern - `project` for `/projects/:id/...`, `group` for `/groups/:id/...`, `user` for `/users/:id/...`, `instance` for no prefix |
 
 ### Step 4: Assign permissions to Permission Groups

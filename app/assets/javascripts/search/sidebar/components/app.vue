@@ -4,8 +4,6 @@ import { mapState, mapGetters } from 'vuex';
 import { __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
-import SidebarPortal from '~/super_sidebar/components/sidebar_portal.vue';
-import { toggleSuperSidebarCollapsed } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 import {
   SCOPE_ISSUES,
@@ -42,7 +40,6 @@ export default {
     NotesFilters,
     WikiBlobsFilters,
     ScopeSidebarNavigation,
-    SidebarPortal,
     DomElementListener,
     CommitsFilters,
     MilestonesFilters,
@@ -84,9 +81,6 @@ export default {
     showWikiBlobsFilters() {
       return this.currentScope === SCOPE_WIKI_BLOBS;
     },
-    projectStudioEnabled() {
-      return window.gon?.features?.projectStudioEnabled;
-    },
   },
   beforeCreate() {
     if (!this.$store) {
@@ -95,11 +89,7 @@ export default {
   },
   methods: {
     toggleFilters() {
-      if (this.projectStudioEnabled) {
-        this.$refs.mobileFilters.classList.toggle('gl-hidden');
-      } else {
-        toggleSuperSidebarCollapsed();
-      }
+      this.$refs.mobileFilters.classList.toggle('gl-hidden');
     },
   },
 };
@@ -113,7 +103,6 @@ export default {
       @click="toggleFilters"
     />
     <div
-      v-if="projectStudioEnabled"
       ref="mobileFilters"
       class="filters -gl-ml-4 gl-hidden gl-min-w-30 @md/panel:gl-block"
       data-testid="search-filters"
@@ -129,22 +118,5 @@ export default {
       <milestones-filters v-if="showMilestonesFilters" />
       <wiki-blobs-filters v-if="showWikiBlobsFilters" />
     </div>
-    <sidebar-portal v-else>
-      <div
-        class="super-sidebar-context-header gl-m-0 gl-px-4 gl-py-3 gl-font-bold gl-leading-reset"
-      >
-        {{ $options.i18n.headerText }}
-      </div>
-      <all-scopes-start-filters />
-      <scope-sidebar-navigation />
-      <issues-filters v-if="showIssuesFilters" />
-      <merge-requests-filters v-if="showMergeRequestFilters" />
-      <blobs-filters v-if="showBlobFilters" />
-      <projects-filters v-if="showProjectsFilters" />
-      <notes-filters v-if="showNotesFilters" />
-      <commits-filters v-if="showCommitsFilters" />
-      <milestones-filters v-if="showMilestonesFilters" />
-      <wiki-blobs-filters v-if="showWikiBlobsFilters" />
-    </sidebar-portal>
   </section>
 </template>

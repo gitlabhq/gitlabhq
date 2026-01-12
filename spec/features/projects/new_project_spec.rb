@@ -164,12 +164,12 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
       shared_examples 'link to importers' do
         let(:importer_routes) do
           {
-            'github': :new_import_github_path,
-            'bitbucket': :status_import_bitbucket_path,
+            github: :new_import_github_path,
+            bitbucket: :status_import_bitbucket_path,
             'bitbucket server': :status_import_bitbucket_server_path,
-            'fogbugz': :new_import_fogbugz_path,
-            'gitea': :new_import_gitea_path,
-            'manifest': :new_import_manifest_path
+            fogbugz: :new_import_fogbugz_path,
+            gitea: :new_import_gitea_path,
+            manifest: :new_import_manifest_path
           }
         end
 

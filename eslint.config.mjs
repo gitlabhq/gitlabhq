@@ -707,6 +707,7 @@ export default [
 
     plugins: {
       '@graphql-eslint': graphqlPlugin,
+      'local-rules': eslintLocalRules,
     },
 
     rules: {
@@ -718,6 +719,7 @@ export default [
       '@graphql-eslint/no-unused-variables': 'error',
       '@graphql-eslint/no-unused-fragments': 'error',
       '@graphql-eslint/no-duplicate-fields': 'error',
+      'local-rules/graphql-require-feature-category': 'error',
     },
   },
   {

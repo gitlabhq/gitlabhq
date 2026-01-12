@@ -78,6 +78,13 @@ attributes into a separate table, improving query performance and maintainabilit
 For more details about what data is migrated and how to estimate migration duration, see
 [Merge request merge data migration details](#merge-request-merge-data-migration-details).
 
+### ClickHouse dictionary creation error
+
+GitLab Self-Managed customers with [ClickHouse integration](../../integration/clickhouse.md) enabled might
+encounter a ClickHouse database migration error during the upgrade process due to a missing
+permission (`DB::Exception: gitlab: Not enough privileges`). To resolve this error, see the
+[database dictionary read support troubleshooting documentation](../../integration/clickhouse.md#database-dictionary-read-support).
+
 ## 18.7.0
 
 - A [post deployment migration](../../development/database/post_deployment_migrations.md)

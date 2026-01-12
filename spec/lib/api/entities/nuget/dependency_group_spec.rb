@@ -23,13 +23,13 @@ RSpec.describe API::Entities::Nuget::DependencyGroup do
     {
       '@id': 'http://gitlab.com/Sandbox.App/1.0.0.json#dependencygroup',
       '@type': 'PackageDependencyGroup',
-      'targetFramework': 'fwk test',
-      'dependencies': [
+      targetFramework: 'fwk test',
+      dependencies: [
         {
           '@id': 'http://gitlab.com/Sandbox.App/1.0.0.json#dependency',
           '@type': 'PackageDependency',
-          'id': 'Dependency',
-          'range': '2.0.0'
+          id: 'Dependency',
+          range: '2.0.0'
         }
       ]
     }

@@ -254,7 +254,6 @@ create_timelog
 create_todo
 create_user_personal_access_token
 create_virtual_registry
-create_vulnerability
 create_vulnerability_archive_export
 create_vulnerability_export
 create_vulnerability_feedback
@@ -685,7 +684,6 @@ read_user_preference
 read_user_profile
 read_users_list
 read_virtual_registry
-read_vulnerability
 read_vulnerability_archive_export
 read_vulnerability_export
 read_vulnerability_feedback

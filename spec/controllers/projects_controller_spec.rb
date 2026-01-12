@@ -1837,7 +1837,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
           allow(strategy)
             .to receive(:increment)
-            .and_return(Gitlab::ApplicationRateLimiter.rate_limits["project_#{action}".to_sym][:threshold].call + 1)
+            .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:"project_#{action}"][:threshold].call + 1)
         end
       end
 

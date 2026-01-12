@@ -123,6 +123,18 @@ To distinguish queries from mutations and fragments, the following naming conven
 
 If you are using queries for the [CustomersDot GraphQL endpoint](https://gitlab.com/gitlab-org/gitlab/-/blob/be78ccd832fd40315c5e63bb48ee1596ae146f56/app/controllers/customers_dot/proxy_controller.rb), end the filename with `.customer.query.graphql`, `.customer.mutation.graphql`, or `.customer.fragment.graphql`.
 
+### Feature category requirement
+
+All GraphQL query, mutation, and subscription files **must** include a comment that specifies their feature category. This requirement is enforced by the `local-rules/graphql-require-feature-category` ESLint rule.
+
+Add a comment at the top of your `.graphql` file in the following format:
+
+```graphql
+# @feature_category: <category>
+```
+
+The category must be one of the valid categories defined in [`config/feature_categories.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/feature_categories.yml).
+
 ### Fragments
 
 [Fragments](https://graphql.org/learn/queries/#fragments) are a way to make your complex GraphQL queries more readable and re-usable. Here is an example of GraphQL fragment:

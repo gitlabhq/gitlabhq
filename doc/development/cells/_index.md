@@ -17,7 +17,6 @@ Below are available schemas related to Cells and Organizations:
 | `gitlab_main_cell` (deprecated) | All `gitlab_main_cell` tables are being moved to `gitlab_main_org`. `gitlab_main_org` is a better name for `gitlab_main_cell` - there is no functional difference between the two. |
 | `gitlab_main_org`| Use for all tables in the `main:` database that are for an Organization. For example, `projects` and `groups` |
 | `gitlab_main_cell_setting` | All tables in the `main:` database related to cell settings. For example, `application_settings`. These cell-local tables should not have any foreign key references from/to organization tables. |
-| `gitlab_main_clusterwide` (deprecated) | All tables in the `main:` database where all rows, or a subset of rows needs to be present across the cluster, in the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. For example, `plans`. For the [Cells 1.0 architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/), there are no real clusterwide tables as each cell will have its own database. In effect, these tables will still be stored locally in each cell. |
 | `gitlab_main_cell_local` | For tables in the `main:` database that are related to features that is distinct for each cell. For example, `zoekt_nodes`, or `shards`. These cell-local tables should not have any foreign key references from/to organization tables. |
 | `gitlab_ci` | Use for all tables in the `ci:` database that are for an Organization. For example, `ci_pipelines` and `ci_builds` |
 | `gitlab_ci_cell_local` | For tables in the `ci:` database that are related to features that is distinct for each cell. For example, `instance_type_ci_runners`, or `ci_cost_settings`. These cell-local tables should not have any foreign key references from/to organization tables. |
@@ -34,36 +33,6 @@ After a schema has been assigned, the merge request pipeline might fail due to o
 - [Cross-database joins](../database/multiple_databases.md#suggestions-for-removing-cross-database-joins)
 - [Cross-database transactions](../database/multiple_databases.md#fixing-cross-database-transactions)
 - [Cross-database foreign keys](../database/multiple_databases.md#foreign-keys-that-cross-databases)
-
-## What schema to choose if the feature can be cluster-wide?
-
-The `gitlab_main_clusterwide` schema is now deprecated.
-We will ask teams to update tables from `gitlab_main_clusterwide` to `gitlab_main_org` as required.
-This requires adding sharding keys to these tables, and may require
-additional changes to related features to scope them to the Organizational level.
-
-Clusterwide features are
-[heavily discouraged](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/#how-do-i-decide-whether-to-move-my-feature-to-the-cluster-cell-or-organization-level),
-and there are [no plans to perform any cluster-wide synchronization](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/decisions/014_clusterwide_syncing_in_cells_1_0/).
-
-Choose a different schema from the list of available GitLab [schemas](#available-cells--organization-schemas) instead.
-We expect most tables to use the `gitlab_main_org` schema, especially if the
-table in the table is related to `projects`, or `namespaces`.
-Another alternative is the `gitlab_main_cell_local` schema.
-
-Consult with the [Tenant Scale group](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/tenant-scale/):
-If you believe you require a clusterwide feature, seek design input from the
-Tenant Scale group.
-Here are some considerations to think about:
-
-- Can the feature to be scoped per Organization (or lower) instead ?
-- The related feature must work on multiple cells, not just the legacy cell.
-- How would the related feature scale across many Organizations and Cells ?
-- How will data be stored ?
-- How will organizations reference the data consistently ?
-  Can you use globally unique identifiers ?
-- Does the data need to be consistent across different cells ?
-- Do not use database tables to store [static data](#static-data).
 
 ## Creating a new schema
 

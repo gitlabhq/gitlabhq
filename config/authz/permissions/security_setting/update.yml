@@ -1,0 +1,6 @@
+---
+name: update_security_setting
+description: Grants the ability to update security settings
+boundaries:
+  - project
+  - group

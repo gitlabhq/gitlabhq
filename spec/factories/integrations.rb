@@ -65,7 +65,7 @@ FactoryBot.define do
       next unless evaluator.all_channels
 
       integration.event_channel_names.each do |name|
-        integration.send("#{name}=".to_sym, "##{name}")
+        integration.send(:"#{name}=", "##{name}")
       end
     end
 

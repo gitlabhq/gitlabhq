@@ -16,8 +16,8 @@ RSpec.describe API::Entities::Nuget::Dependency do
     {
       '@id': 'http://gitlab.com/Sandbox.App/1.0.0.json#dependency',
       '@type': 'PackageDependency',
-      'id': 'Dependency',
-      'range': '2.0.0'
+      id: 'Dependency',
+      range: '2.0.0'
     }
   end
 

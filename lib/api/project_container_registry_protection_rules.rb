@@ -24,6 +24,7 @@ module API
           tags %w[projects]
           is_array true
         end
+        route_setting :authorization, permissions: :read_container_registry_protection_rule, boundary_type: :project
         get do
           present user_project.container_registry_protection_rules,
             with: Entities::Projects::ContainerRegistry::Protection::Rule
@@ -54,6 +55,7 @@ module API
             For example maintainer, owner or admin.'
           at_least_one_of :minimum_access_level_for_push, :minimum_access_level_for_delete
         end
+        route_setting :authorization, permissions: :create_container_registry_protection_rule, boundary_type: :project
         post do
           response =
             ::ContainerRegistry::Protection::CreateRuleService
@@ -95,6 +97,7 @@ module API
               desc: 'Minimum GitLab access level to allow to delete container images in the container registry.
               For example maintainer, owner or admin. To unset the value, use an empty string `""`.'
           end
+          route_setting :authorization, permissions: :update_container_registry_protection_rule, boundary_type: :project
           patch do
             protection_rule = user_project.container_registry_protection_rules.find(params[:protection_rule_id])
             response = ::ContainerRegistry::Protection::UpdateRuleService.new(protection_rule,
@@ -116,6 +119,7 @@ module API
             ]
             tags %w[projects]
           end
+          route_setting :authorization, permissions: :delete_container_registry_protection_rule, boundary_type: :project
           delete do
             protection_rule = user_project.container_registry_protection_rules.find(params[:protection_rule_id])
 

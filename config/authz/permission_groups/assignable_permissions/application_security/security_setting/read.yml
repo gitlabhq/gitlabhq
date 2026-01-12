@@ -1,0 +1,7 @@
+---
+name: read_security_setting
+description: Grants the ability to read security settings
+boundaries:
+  - project
+permissions:
+  - read_security_setting

@@ -6,28 +6,28 @@ FactoryBot.define do
 
     initialize_with do
       {
-        "categories": [
+        categories: [
           "Complexity"
         ],
-        "check_name": "argument_count",
-        "content": {
-          "body": ""
+        check_name: "argument_count",
+        content: {
+          body: ""
         },
-        "description": "Avoid parameter lists longer than 5 parameters. [12/5]",
-        "fingerprint": "15cdb5c53afd42bc22f8ca366a08d547",
-        "location": {
-          "path": "file_a.rb",
-          "lines": {
-            "begin": 10,
-            "end": 10
+        description: "Avoid parameter lists longer than 5 parameters. [12/5]",
+        fingerprint: "15cdb5c53afd42bc22f8ca366a08d547",
+        location: {
+          path: "file_a.rb",
+          lines: {
+            begin: 10,
+            end: 10
           }
         },
-        "other_locations": [],
-        "remediation_points": 900000,
-        "severity": "major",
-        "type": "issue",
-        "engine_name": "structure",
-        "web_url": "http://localhost/root/test-project/-/blob/f572d396fae9206628714fb2ce00f72e94f2258f/file_a.rb#L10"
+        other_locations: [],
+        remediation_points: 900000,
+        severity: "major",
+        type: "issue",
+        engine_name: "structure",
+        web_url: "http://localhost/root/test-project/-/blob/f572d396fae9206628714fb2ce00f72e94f2258f/file_a.rb#L10"
       }.with_indifferent_access
     end
   end
@@ -37,28 +37,28 @@ FactoryBot.define do
 
     initialize_with do
       {
-        "categories": [
+        categories: [
           "Complexity"
         ],
-        "check_name": "argument_count",
-        "content": {
-          "body": ""
+        check_name: "argument_count",
+        content: {
+          body: ""
         },
-        "description": "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
-        "fingerprint": "f3bdc1e8c102ba5fbd9e7f6cda51c95e",
-        "location": {
-          "path": "file_a.rb",
-          "lines": {
-            "begin": 10,
-            "end": 10
+        description: "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
+        fingerprint: "f3bdc1e8c102ba5fbd9e7f6cda51c95e",
+        location: {
+          path: "file_a.rb",
+          lines: {
+            begin: 10,
+            end: 10
           }
         },
-        "other_locations": [],
-        "remediation_points": 900000,
-        "severity": "major",
-        "type": "issue",
-        "engine_name": "structure",
-        "web_url": "http://localhost/root/test-project/-/blob/f572d396fae9206628714fb2ce00f72e94f2258f/file_a.rb#L10"
+        other_locations: [],
+        remediation_points: 900000,
+        severity: "major",
+        type: "issue",
+        engine_name: "structure",
+        web_url: "http://localhost/root/test-project/-/blob/f572d396fae9206628714fb2ce00f72e94f2258f/file_a.rb#L10"
       }.with_indifferent_access
     end
   end
@@ -68,33 +68,33 @@ FactoryBot.define do
 
     initialize_with do
       {
-        "type": "Issue",
-        "check_name": "Rubocop/Metrics/ParameterLists",
-        "description": "Avoid parameter lists longer than 5 parameters. [12/5]",
-        "categories": [
+        type: "Issue",
+        check_name: "Rubocop/Metrics/ParameterLists",
+        description: "Avoid parameter lists longer than 5 parameters. [12/5]",
+        categories: [
           "Complexity"
         ],
-        "remediation_points": 550000,
-        "location": {
-          "path": "file_b.rb",
-          "positions": {
-            "begin": {
-              "column": 14,
-              "line": 10
+        remediation_points: 550000,
+        location: {
+          path: "file_b.rb",
+          positions: {
+            begin: {
+              column: 14,
+              line: 10
             },
-            "end": {
-              "column": 39,
-              "line": 10
+            end: {
+              column: 39,
+              line: 10
             }
           }
         },
-        "content": {
-          "body": "This cop checks for methods with too many parameters.\nThe maximum number of parameters is configurable.\nKeyword arguments can optionally be excluded from the total count."
+        content: {
+          body: "This cop checks for methods with too many parameters.\nThe maximum number of parameters is configurable.\nKeyword arguments can optionally be excluded from the total count."
         },
-        "engine_name": "rubocop",
-        "fingerprint": "ab5f8b935886b942d621399f5a2ca16e",
-        "severity": "minor",
-        "web_url": "http://localhost/root/test-project/-/blob/f572d396fae9206628714fb2ce00f72e94f2258f/file_b.rb#L10"
+        engine_name: "rubocop",
+        fingerprint: "ab5f8b935886b942d621399f5a2ca16e",
+        severity: "minor",
+        web_url: "http://localhost/root/test-project/-/blob/f572d396fae9206628714fb2ce00f72e94f2258f/file_b.rb#L10"
       }.with_indifferent_access
     end
   end
@@ -117,27 +117,27 @@ FactoryBot.define do
 
     initialize_with do
       {
-        "categories": [
+        categories: [
           "Complexity"
         ],
-        "check_name": "argument_count",
-        "content": {
-          "body": ""
+        check_name: "argument_count",
+        content: {
+          body: ""
         },
-        "description": "Avoid parameter lists longer than 5 parameters. [12/5]",
-        "fingerprint": fingerprint,
-        "location": {
-          "path": "file_a.rb",
-          "lines": {
-            "begin": 10,
-            "end": 10
+        description: "Avoid parameter lists longer than 5 parameters. [12/5]",
+        fingerprint: fingerprint,
+        location: {
+          path: "file_a.rb",
+          lines: {
+            begin: 10,
+            end: 10
           }
         },
-        "other_locations": [],
-        "remediation_points": 900000,
-        "severity": severity,
-        "type": "issue",
-        "engine_name": "structure"
+        other_locations: [],
+        remediation_points: 900000,
+        severity: severity,
+        type: "issue",
+        engine_name: "structure"
       }.with_indifferent_access
     end
   end

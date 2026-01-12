@@ -29879,7 +29879,7 @@ msgstr ""
 msgid "Find file"
 msgstr ""
 
-msgid "Find the activation code for a purchased or renewed subscription in the Customers Portal or purchase confirmation email."
+msgid "Find the activation code for a purchased or renewed subscription in the %{linkStart}Customers Portal%{linkEnd} or purchase confirmation email."
 msgstr ""
 
 msgid "FindFile|Switch branch/tag"
@@ -67172,6 +67172,9 @@ msgid "SuperSonics|Online license"
 msgstr ""
 
 msgid "SuperSonics|Ready to get started? A GitLab plan is ideal for scaling organizations and for multi team usage."
+msgstr ""
+
+msgid "SuperSonics|Received a license key? %{linkStart}Go to license settings%{linkEnd} to add it to your GitLab instance."
 msgstr ""
 
 msgid "SuperSonics|Select that you agree before activating the subscription."

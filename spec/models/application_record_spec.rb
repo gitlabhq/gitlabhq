@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationRecord do
+RSpec.describe ApplicationRecord, feature_category: :database do
   describe '#id_in' do
     let(:records) { create_list(:user, 3) }
 

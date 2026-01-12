@@ -26,7 +26,7 @@ risks through built-in safeguards and security controls, including:
 - Integrated [Visual Studio Code Dev Container](../../editor_extensions/visual_studio_code/setup.md#use-the-extension-in-a-visual-studio-code-dev-container) sandbox.
 - [Tools output sanitization](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/duo_workflow_service/security/TOOL_RESPONSE_SECURITY.md).
 - [Human in the loop approvals for chat-based GitLab Duo Agent Platform sessions](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/duo_workflow/#workflow-agents-tools).
-- Integrated prompt-injection detection tools such as [Hidden Layer](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors).
+- Integrated [prompt injection detection](#detect-prompt-injection-attempts) tools such as [HiddenLayer](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors).
 
 ## Prompt injection
 
@@ -164,6 +164,34 @@ Write clear, detailed system prompts that:
 - Define the agent's role and responsibilities explicitly
 - Describe what actions the agent is allowed to take
 - Specify what data sources the agent can access
+
+#### Detect prompt injection attempts
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/584290) in GitLab 18.8 [with a feature flag](../../administration/feature_flags/_index.md) named `ai_prompt_scanning`. Enabled on GitLab.com.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Prerequisites:
+
+- You must be using the GitLab AI Gateway.
+- You must have the Owner role for the group.
+
+To configure prompt injection protection:
+
+1. On the top bar, select **Search or go to** and find your group.
+1. Select **Settings** > **General**.
+1. Expand **GitLab Duo features**.
+1. Under **Prompt injection protection**, select an option:
+   - **No checks**: Turn off scanning entirely. No prompt data is sent to third-party services.
+   - **Log only**: Scan and log results, but do not block requests. On GitLab.com, this is the default.
+   - **Interrupt**: Scan and block detected prompt injection attempts.
+1. Select **Save changes**.
 
 #### Avoiding the lethal trifecta through careful tool selection
 

@@ -143,13 +143,23 @@ async function main() {
   }
 
   const eslint = createESLintInstance(overrideConfig);
-  const results = await lint(eslint, [
-    './app/assets/javascripts/**/*.{js,mjs,cjs,vue}',
-    './ee/app/assets/javascripts/**/*.{js,mjs,cjs,vue}',
+
+  // Build list of paths, checking if directories exist for GraphQL paths
+  const lintPaths = [
+    './app/assets/javascripts/**/*.{js,mjs,cjs,vue,graphql}',
+    './ee/app/assets/javascripts/**/*.{js,mjs,cjs,vue,graphql}',
     './spec/frontend/**/*.js',
-    './ee/spec/frontend/**/*.js',
+    './ee/spec/frontend/**/*.{js,graphql}',
     'scripts/**/*.{js,mjs,cjs}',
-  ]);
+  ];
+
+  // We don't add ee/app/graphql since that directory only contains Ruby files.
+  // EE's .graphql files are in ee/app/assets/javascripts (already covered above)
+  if (fs.existsSync(path.join(ROOT_PATH, 'app/graphql'))) {
+    lintPaths.push('./app/graphql/**/*.graphql');
+  }
+
+  const results = await lint(eslint, lintPaths);
 
   const offendingFiles = getOffendingFiles(results, rule);
   if (offendingFiles.length > 0) {

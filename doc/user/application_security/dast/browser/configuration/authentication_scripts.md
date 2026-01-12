@@ -106,7 +106,7 @@ to your CI/CD configuration as well.
 |--------|-------------|
 | `doc.getURL()` | Get the current page URL. |
 | `doc.navigateURL(url)` | Go to a specific URL. |
-| `doc.actionFormInput(path, value)` | Enter text into form input fields. |
+| `doc.actionFormInput(path, value, dontClear)` | Enter text into form input fields. |
 | `doc.actionFormSelectOption(optionPath)` | Select dropdown list option. |
 | `doc.actionFormRadioButton(buttonPath)` | Select radio button. |
 | `doc.actionFormCheckbox(checkboxPath)` | Toggle a checkbox. |
@@ -163,14 +163,21 @@ doc.navigateURL("https://app.example.com/auth/two-factor")
 doc.navigateURL("https://tenant1.example.com/login")
 ```
 
-### `doc.actionFormInput(path, value)`
+### `doc.actionFormInput(path, value, dontClear)`
 
 Enters text into form input fields such as text boxes, password fields, email fields, and text areas.
+
+By default, this method clears any existing content in the field before new text is entered. Set `dontClear: true` when you need to:
+
+- Preserve or append to existing field content.
+- Work with fields that have auto-focus behavior where the clearing process interferes with input.
+- Handle multi-part inputs like OTP fields that automatically move focus between individual digit inputs.
 
 Parameters:
 
 - `path` (string): Element selector path using DAST selector syntax.
 - `value` (string): Text value to enter into the field.
+- `dontClear` (boolean, optional): When `true`, the method does not clear the field before text is entered. Default: `false`.
 
 Usage:
 
@@ -191,6 +198,11 @@ doc.actionFormInput("xpath://input[@data-testid='login-field']", "testuser")
 // Multi-step authentication
 doc.actionFormInput("id:verification-code", "123456")
 doc.actionFormInput("css:.otp-input", otp.generateTOTP())
+
+// Skip clearing - useful for fields with auto-focus behavior
+doc.actionFormInput("css:.ap-otp-inputs[data-index='0']", 1, true)
+doc.actionFormInput("css:.ap-otp-inputs[data-index='1']", 2, true)
+doc.actionFormInput("css:.ap-otp-inputs[data-index='2']", 3, true)
 
 // Search or filter fields
 doc.actionFormInput("css:input[type='search']", "product name")

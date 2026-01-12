@@ -28,7 +28,6 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 | `gitlab_main_cell` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_main_org` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_main_cell_setting` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
-| `gitlab_main_clusterwide` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_main_cell_local` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_ci` | All CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`) | |
 | `gitlab_ci_cell_local` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
@@ -495,7 +494,7 @@ The pipeline failed with the following [error](https://gitlab.com/gitlab-org/git
 ```ruby
 Database::PreventCrossJoins::CrossJoinAcrossUnsupportedTablesError:
 
-Unsupported cross-join across 'users, notification_settings' querying 'gitlab_main_clusterwide, gitlab_main_cell' discovered when executing query 'SELECT "users".* FROM "users" WHERE "users"."id" IN (SELECT "notification_settings"."user_id" FROM ((SELECT "notification_settings"."user_id" FROM "notification_settings" WHERE "notification_settings"."source_id" = 119 AND "notification_settings"."source_type" = 'Project' AND (("notification_settings"."level" = 3 AND EXISTS (SELECT true FROM "notification_settings" "notification_settings_2" WHERE "notification_settings_2"."user_id" = "notification_settings"."user_id" AND "notification_settings_2"."source_id" IS NULL AND "notification_settings_2"."source_type" IS NULL AND "notification_settings_2"."level" = 2)) OR "notification_settings"."level" = 2))) notification_settings)'
+Unsupported cross-join across 'users, notification_settings' querying 'gitlab_main_user, gitlab_main_org' discovered when executing query 'SELECT "users".* FROM "users" WHERE "users"."id" IN (SELECT "notification_settings"."user_id" FROM ((SELECT "notification_settings"."user_id" FROM "notification_settings" WHERE "notification_settings"."source_id" = 119 AND "notification_settings"."source_type" = 'Project' AND (("notification_settings"."level" = 3 AND EXISTS (SELECT true FROM "notification_settings" "notification_settings_2" WHERE "notification_settings_2"."user_id" = "notification_settings"."user_id" AND "notification_settings_2"."source_id" IS NULL AND "notification_settings_2"."source_type" IS NULL AND "notification_settings_2"."level" = 2)) OR "notification_settings"."level" = 2))) notification_settings)'
 ```
 
 To make the pipeline green, this cross-join query must be allow-listed.

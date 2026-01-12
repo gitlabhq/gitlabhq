@@ -34,7 +34,7 @@ RSpec.describe 'sawyer_patch' do
     sawyer_resource = Sawyer::Resource.new(
       Sawyer::Agent.new(''),
       {
-        'user': 'value',
+        user: 'value',
         'user=': 'value',
         '==': 'value',
         '!=': 'value',

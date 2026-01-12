@@ -128,7 +128,8 @@ module API
           all_or_none_of :batched, :batch_number
         end
         get ':id/export_relations/download' do
-          export = user_group.bulk_import_exports.for_user_and_relation(current_user, params[:relation]).first
+          export = user_group.bulk_import_exports.for_user_and_relation(current_user, params[:relation])
+            .for_offline_export(nil).first
 
           break render_api_error!('Export not found', 404) unless export
 
@@ -182,13 +183,15 @@ module API
         end
         get ':id/export_relations/status' do
           if params[:relation]
-            export = user_group.bulk_import_exports.for_user_and_relation(current_user, params[:relation]).first
+            export = user_group.bulk_import_exports.for_user_and_relation(current_user, params[:relation])
+              .for_offline_export(nil).first
 
             break render_api_error!('Export not found', 404) unless export
 
             present export, with: Entities::BulkImports::ExportStatus
           else
-            present user_group.bulk_import_exports.for_user(current_user), with: Entities::BulkImports::ExportStatus
+            present user_group.bulk_import_exports.for_user(current_user).for_offline_export(nil),
+              with: Entities::BulkImports::ExportStatus
           end
         end
       end

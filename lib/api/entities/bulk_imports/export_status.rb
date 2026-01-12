@@ -5,7 +5,8 @@ module API
     module BulkImports
       class ExportStatus < Grape::Entity
         expose :relation, documentation: { type: 'String', example: 'issues' }
-        expose :status, documentation: { type: 'String', example: 'started', values: %w[started finished failed] }
+        expose :status,
+          documentation: { type: 'String', example: 'started', values: %w[pending started finished failed] }
         expose :error, documentation: { type: 'String', example: 'Error message' }
         expose :updated_at, documentation: { type: 'DateTime', example: '2012-05-28T04:42:42-07:00' }
         expose :batched, documentation: { type: 'Boolean', example: true }

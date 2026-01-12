@@ -282,6 +282,8 @@ The cloud native buildpack (CNB) builder image was updated to `heroku/builder:24
 
 These changes affect you if your pipelines use the [`auto-build-image`](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image) provided by [the Auto Build stage of Auto DevOps](https://docs.gitlab.com/topics/autodevops/stages/#auto-build).
 
+To continue to use `heroku/builder:22` after GitLab 19.0, set `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER` to `heroku/builder:22`.
+
 </div>
 
 <div class="deprecation breaking-change" data-milestone="19.0">

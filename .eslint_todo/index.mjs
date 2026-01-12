@@ -17,3 +17,5 @@ export { default as noRestrictedImports } from './no-restricted-imports.mjs';
 export { default as gitlabNoHardcodedUrls } from './gitlab-no-hardcoded-urls.mjs';
 
 export { default as gitlabVueNoHardcodedUrls } from './gitlab-vue-no-hardcoded-urls.mjs';
+
+export { default as localRulesGraphqlRequireFeatureCategory } from './local-rules-graphql-require-feature-category.mjs';

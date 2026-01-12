@@ -509,7 +509,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
     it 'runs the pipeline successfully' do
       allow_next_instance_of(BulkImports::ExportStatus) do |status|
-        allow(status).to receive(:started?).and_return(false)
+        allow(status).to receive(:in_progress?).and_return(false)
         allow(status).to receive(:empty?).and_return(false)
         allow(status).to receive(:failed?).and_return(false)
         allow(status).to receive(:batched?).and_return(false)
@@ -523,7 +523,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     context 'when export status is started' do
       it 'reenqueues pipeline worker' do
         allow_next_instance_of(BulkImports::ExportStatus) do |status|
-          allow(status).to receive(:started?).and_return(true)
+          allow(status).to receive(:in_progress?).and_return(true)
           allow(status).to receive(:empty?).and_return(false)
           allow(status).to receive(:failed?).and_return(false)
           allow(status).to receive(:batched?).and_return(false)
@@ -545,7 +545,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     context 'when export status is empty' do
       before do
         allow_next_instance_of(BulkImports::ExportStatus) do |status|
-          allow(status).to receive(:started?).and_return(false)
+          allow(status).to receive(:in_progress?).and_return(false)
           allow(status).to receive(:empty?).and_return(true)
           allow(status).to receive(:failed?).and_return(false)
           allow(status).to receive(:batched?).and_return(false)
@@ -624,7 +624,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         allow_next_instance_of(BulkImports::ExportStatus) do |status|
           allow(status).to receive(:batched?).and_return(true)
           allow(status).to receive(:batches_count).and_return(batches_count)
-          allow(status).to receive(:started?).and_return(false)
+          allow(status).to receive(:in_progress?).and_return(false)
           allow(status).to receive(:empty?).and_return(false)
           allow(status).to receive(:failed?).and_return(false)
           allow(status).to receive(:batches).and_return(batches)

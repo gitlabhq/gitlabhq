@@ -743,7 +743,7 @@ GEM
       terminal-table (>= 1.5.1)
     gitlab-chronic (0.10.6)
       numerizer (~> 0.2)
-    gitlab-cloud-connector (1.37.0)
+    gitlab-cloud-connector (1.40.0)
       activesupport (>= 7.0)
       jwt (~> 2.9)
     gitlab-crystalball (1.1.1)
@@ -1292,7 +1292,7 @@ GEM
       plist (~> 3.1)
       train-core
       wmi-lite (~> 1.0)
-    oj (3.16.12)
+    oj (3.16.13)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     oj-introspect (0.8.0)
@@ -2191,7 +2191,7 @@ DEPENDENCIES
   gitlab-active-context!
   gitlab-backup-cli!
   gitlab-chronic (~> 0.10.5)
-  gitlab-cloud-connector (~> 1.37)
+  gitlab-cloud-connector (~> 1.40)
   gitlab-crystalball (~> 1.1.0)
   gitlab-dangerfiles (~> 4.10.0)
   gitlab-duo-workflow-service-client (~> 0.6)!

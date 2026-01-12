@@ -14,6 +14,7 @@ module API
         requires :email, type: String, desc: 'Public email address of the user'
         optional :size, type: Integer, desc: 'Single pixel dimension for Gravatar images'
       end
+      route_setting :authorization, permissions: :read_avatar, boundary_type: :user
       get do
         forbidden!('Unauthorized access') unless can?(current_user, :read_users_list)
 

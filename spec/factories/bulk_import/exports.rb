@@ -5,6 +5,10 @@ FactoryBot.define do
     group { association(:group) if project.nil? }
     relation { 'labels' }
 
+    trait :pending do
+      status { -2 }
+    end
+
     trait :started do
       status { 0 }
 

@@ -155,7 +155,7 @@ RSpec.describe Packages::Npm::ProcessTemporaryPackageFileService, feature_catego
       it 'returns error' do
         expect(execute).to be_error.and have_attributes(
           message: "not a number or other value (after ) at line 1, " \
-            "column 2 [parse.c:480] in '{ name\": \"package-name\"}",
+            "column 2 [parse.c:600] in '{ name\": \"package-name\"}",
           reason: :json_parser_error
         )
       end

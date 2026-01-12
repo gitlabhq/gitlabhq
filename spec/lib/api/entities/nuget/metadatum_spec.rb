@@ -15,12 +15,12 @@ RSpec.describe API::Entities::Nuget::Metadatum, feature_category: :package_regis
 
   let(:expected) do
     {
-      'authors': 'Authors',
-      'description': 'Description',
-      'summary': 'Description',
-      'projectUrl': 'http://sandbox.com/project',
-      'licenseUrl': 'http://sandbox.com/license',
-      'iconUrl': 'http://sandbox.com/icon'
+      authors: 'Authors',
+      description: 'Description',
+      summary: 'Description',
+      projectUrl: 'http://sandbox.com/project',
+      licenseUrl: 'http://sandbox.com/license',
+      iconUrl: 'http://sandbox.com/icon'
     }
   end
 

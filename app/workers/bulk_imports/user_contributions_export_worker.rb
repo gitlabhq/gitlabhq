@@ -43,7 +43,7 @@ module BulkImports
       # The earlier check '#job_stuck_without_exports?' means the export has not hung with no exports at this point
       return true if no_exports?
 
-      started_exports = portable.bulk_import_exports.for_status(BulkImports::Export::STARTED)
+      started_exports = portable.bulk_import_exports.for_status(BulkImports::Export::IN_PROGRESS_STATUSES)
 
       started_exports.any? do |export|
         # Skip over exports that would never have user contributions to export

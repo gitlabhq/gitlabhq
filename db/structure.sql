@@ -40490,6 +40490,10 @@ CREATE INDEX idx_bulk_import_batch_trackers_on_organization_id ON bulk_import_ba
 
 CREATE INDEX idx_bulk_import_batch_trackers_on_project_id ON bulk_import_batch_trackers USING btree (project_id);
 
+CREATE UNIQUE INDEX idx_bulk_import_exports_on_group_relation_offline_export ON bulk_import_exports USING btree (group_id, relation, offline_export_id) WHERE ((group_id IS NOT NULL) AND (offline_export_id IS NOT NULL));
+
+CREATE UNIQUE INDEX idx_bulk_import_exports_on_project_relation_offline_export ON bulk_import_exports USING btree (project_id, relation, offline_export_id) WHERE ((project_id IS NOT NULL) AND (offline_export_id IS NOT NULL));
+
 CREATE INDEX idx_catalog_resource_cpmt_last_usages_on_cpmt_project_id ON catalog_resource_component_last_usages USING btree (component_project_id);
 
 CREATE UNIQUE INDEX idx_ci_job_token_authorizations_on_accessed_and_origin_project ON ci_job_token_authorizations USING btree (accessed_project_id, origin_project_id);
@@ -46412,9 +46416,9 @@ CREATE INDEX packages_packages_pending_verification ON packages_package_files US
 
 CREATE INDEX pages_deployments_deleted_at_null_index ON pages_deployments USING btree (project_id, path_prefix, id) WHERE (deleted_at IS NULL);
 
-CREATE UNIQUE INDEX partial_idx_bulk_import_exports_on_group_user_and_relation ON bulk_import_exports USING btree (group_id, relation, user_id) WHERE ((group_id IS NOT NULL) AND (user_id IS NOT NULL));
+CREATE UNIQUE INDEX partial_idx_bulk_import_exports_on_group_user_relation ON bulk_import_exports USING btree (group_id, relation, user_id) WHERE ((group_id IS NOT NULL) AND (user_id IS NOT NULL) AND (offline_export_id IS NULL));
 
-CREATE UNIQUE INDEX partial_idx_bulk_import_exports_on_project_user_and_relation ON bulk_import_exports USING btree (project_id, relation, user_id) WHERE ((project_id IS NOT NULL) AND (user_id IS NOT NULL));
+CREATE UNIQUE INDEX partial_idx_bulk_import_exports_on_project_user_relation ON bulk_import_exports USING btree (project_id, relation, user_id) WHERE ((project_id IS NOT NULL) AND (user_id IS NOT NULL) AND (offline_export_id IS NULL));
 
 CREATE INDEX partial_index_slack_integrations_with_bot_user_id ON slack_integrations USING btree (id) WHERE (bot_user_id IS NOT NULL);
 

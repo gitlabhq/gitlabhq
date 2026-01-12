@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feature_category: :importers do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:relation) { 'labels' }
   let_it_be(:import) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: import) }
@@ -35,21 +37,18 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
     end
   end
 
-  describe '#started?' do
-    context 'when export status is started' do
-      let(:status) { BulkImports::Export::STARTED }
+  describe '#in_progress?' do
+    subject(:in_progress?) { export_status.in_progress? }
 
-      it 'returns true' do
-        expect(export_status.started?).to eq(true)
-      end
+    where(:status, :result) do
+      BulkImports::Export::PENDING  | true
+      BulkImports::Export::STARTED  | true
+      BulkImports::Export::FINISHED | false
+      BulkImports::Export::FAILED   | false
     end
 
-    context 'when export status is not started' do
-      let(:status) { BulkImports::Export::FAILED }
-
-      it 'returns false' do
-        expect(export_status.started?).to eq(false)
-      end
+    with_them do
+      it { is_expected.to eq(result) }
     end
 
     context 'when export status is not present' do
@@ -57,9 +56,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
         instance_double(HTTParty::Response, parsed_response: [])
       end
 
-      it 'returns false' do
-        expect(export_status.started?).to eq(false)
-      end
+      it { is_expected.to be(false) }
     end
 
     context 'when something goes wrong during export status fetch' do
@@ -71,9 +68,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
         end
       end
 
-      it 'returns false' do
-        expect(export_status.started?).to eq(false)
-      end
+      it { is_expected.to be(false) }
     end
   end
 

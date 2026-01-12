@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
+RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout, feature_category: :database do
   before do
     Rake.application.rake_require 'tasks/gitlab/cleanup'
   end

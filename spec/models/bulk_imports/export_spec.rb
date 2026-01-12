@@ -3,6 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Export, type: :model, feature_category: :importers do
+  describe 'constants' do
+    it 'correctly defines in progress statuses' do
+      expect(described_class::IN_PROGRESS_STATUSES).to eq(
+        [described_class::PENDING, described_class::STARTED]
+      )
+    end
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:project) }
@@ -56,6 +64,20 @@ RSpec.describe BulkImports::Export, type: :model, feature_category: :importers d
 
       it 'returns bulk_import_exports for the given status' do
         expect(described_class.for_status(0)).to contain_exactly(export_2)
+      end
+    end
+
+    describe '.for_offline_export' do
+      let(:offline_export) { create(:offline_export) }
+      let(:direct_transfer_relation_export) { create(:bulk_import_export) }
+      let(:offline_transfer_relation_export) { create(:bulk_import_export, offline_export: offline_export) }
+
+      it 'returns bulk_import_exports for the given offline export' do
+        expect(described_class.for_offline_export(offline_export)).to contain_exactly(offline_transfer_relation_export)
+      end
+
+      it 'returns bulk_import_exports without an offline export when given nil' do
+        expect(described_class.for_offline_export(nil)).to contain_exactly(direct_transfer_relation_export)
       end
     end
   end
