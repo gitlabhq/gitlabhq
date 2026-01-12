@@ -1,0 +1,10 @@
+---
+name: enforce_projects_pagination_limit
+description: Enforces keyset pagination for unauthenticated users querying projects when offset pagination limits are exceeded
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581517
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214356
+rollout_issue_url:
+milestone: '18.9'
+group: group::organizations
+type: ops
+default_enabled: false

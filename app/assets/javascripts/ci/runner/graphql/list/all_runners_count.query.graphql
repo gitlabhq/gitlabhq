@@ -6,6 +6,7 @@ query getAllRunnersCount(
   $search: String
   $versionPrefix: String
   $creator: String
+  $ownerFullPath: String
 ) {
   runners(
     paused: $paused
@@ -15,6 +16,7 @@ query getAllRunnersCount(
     search: $search
     versionPrefix: $versionPrefix
     creatorUsername: $creator
+    ownerFullPath: $ownerFullPath
   ) {
     count
   }

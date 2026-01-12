@@ -110,6 +110,22 @@ RSpec.shared_examples 'wiki controller actions' do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    context 'when wiki contains upload pages' do
+      let!(:file_in_uploads_directory) do
+        create(:wiki_page, wiki: wiki, title: 'uploads/image')
+      end
+
+      before do
+        get :pages, params: routing_params.merge(id: wiki_title)
+      end
+
+      it 'excludes upload pages from pages_list' do
+        titles = assigns(:pages_list).map(&:title)
+
+        expect(titles).to contain_exactly('page title test')
+      end
+    end
   end
 
   describe 'GET #history' do

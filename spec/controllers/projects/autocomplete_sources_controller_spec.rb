@@ -305,7 +305,6 @@ RSpec.describe Projects::AutocompleteSourcesController do
   describe 'GET wikis' do
     before do
       create(:wiki_page, project: project, title: 'foo')
-      create(:wiki_page, project: project, title: 'templates/template1')
     end
 
     context 'when user can read wiki pages' do
@@ -314,10 +313,24 @@ RSpec.describe Projects::AutocompleteSourcesController do
         sign_in(user)
       end
 
-      it 'lists wiki pages (except templates)' do
+      it 'lists wiki pages' do
         get :wikis, format: :json, params: { namespace_id: group.path, project_id: project.path }
 
         expect(json_response.pluck('title')).to eq(['foo'])
+      end
+
+      %w[templates uploads].each do |prefix|
+        context "with #{prefix}" do
+          before do
+            create(:wiki_page, project: project, title: "#{prefix}/#{prefix}1")
+          end
+
+          it "does not return #{prefix}" do
+            get :wikis, format: :json, params: { namespace_id: group.path, project_id: project.path }
+
+            expect(json_response.pluck('title')).not_to include("#{prefix}1")
+          end
+        end
       end
     end
 

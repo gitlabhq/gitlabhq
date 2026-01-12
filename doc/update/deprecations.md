@@ -171,6 +171,32 @@ we will enforce keyset pagination on these APIs.
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### Enforce page limit for unauthenticated Projects API requests
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.9</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/585176).
+
+</div>
+
+To maintain platform stability and ensure optimal performance for all customers, we're enforcing a maximum offset limit on unauthenticated Projects API requests. The offset limit applies only to GitLab.com. On GitLab Self-Managed and GitLab Dedicated, the offset limit will be disabled by default behind a feature flag.
+
+**What's changing**
+
+A maximum offset limit of 50,000 will be enforced for all unauthenticated requests to the Projects List REST API. For example, the `page` parameter will be limited to 2,500 pages when retrieving 20 results per page.
+
+Workflows requiring access to more data must use keyset-based pagination parameters.
+
+**Why it matters**
+
+This limit ensures consistent service quality and performance across GitLab.com by managing resource utilization effectively.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### Resource owner password credentials grant is deprecated
 
 <div class="deprecation-notes">

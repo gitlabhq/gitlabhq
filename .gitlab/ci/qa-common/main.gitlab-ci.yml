@@ -64,6 +64,7 @@ stages:
     GL_DOCKER_REGISTRY_MIRROR: mirror.gcr.io
     GL_DOCKER_REGISTRY_MIRROR_ENDPOINT: https://${GL_DOCKER_REGISTRY_MIRROR}
     GL_DOCKER_DIND_OPTIONS: "--registry-mirror=$GL_DOCKER_REGISTRY_MIRROR_ENDPOINT"
+    HEALTHCHECK_TCP_PORT: "2375"
 
 .e2e-test-variables:
   variables:

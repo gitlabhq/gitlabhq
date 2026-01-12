@@ -72,15 +72,14 @@ For JetBrains IDEs:
 - Install a JetBrains IDE.
 - Install and set up the [GitLab Duo plugin for JetBrains IDEs](../../../editor_extensions/jetbrains_ide/setup.md).
 
-## Turn MCP on or off for your group
+## Allow external MCP tools
 
-To turn MCP on or off for your group:
+To allow the IDE to access external MCP tools:
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Model Context Protocol**, select or clear the
-   **Turn on support for Model Context Protocol (MCP)** checkbox.
+1. Under **External MCP tools**, select the **Allow external MCP tools** checkbox.
 1. Select **Save changes**.
 
 ## Configure MCP servers

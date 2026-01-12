@@ -241,7 +241,9 @@ On GitLab.com, flows can use:
 
 - [Hosted runners](../../../ci/runners/hosted_runners/_index.md), which GitLab provides.
 
-Flows executed on runners can be secured with runtime sandboxing offering network and filesystem isolation. In order to benefit from sandboxing it is required to:
+Flows executed on runners can be secured with runtime sandboxing offering network and file system isolation. To benefit
+from sandboxing you must:
 
-1. Enable  [privileged](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers) mode by setting `privileged = true` in your [runner config](https://docs.gitlab.com/runner/configuration/advanced-configuration/)
-1. Use Duo Agent Platform default base [image](#change-the-default-docker-image)
+1. Enable [privileged](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers)
+   mode by setting `privileged = true` in your [runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration/).
+1. Use GitLab Duo Agent Platform default base [image](#change-the-default-docker-image).

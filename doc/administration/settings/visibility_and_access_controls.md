@@ -458,7 +458,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-To turn on the display of user data on the GitLab Credits dashboard:
+To turn on the display of user data on the [GitLab Credits dashboard](../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard):
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.

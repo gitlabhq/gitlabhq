@@ -204,6 +204,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
           aggregate_failures "testing response" do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('public_api/v4/issue_link')
+            expect(json_response['id']).to eq(issue_link.id)
           end
         end
       end
@@ -287,6 +288,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('public_api/v4/issue_link')
+          expect(json_response['id']).to eq(issue_link.id)
         end
 
         it 'returns 404 when the issue link does not belong to the specified issue' do

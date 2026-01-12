@@ -79,6 +79,12 @@ export default {
         pagination: {},
       });
     },
+    onTokenComplete(token) {
+      this.$emit('token-complete', token);
+    },
+    onTokenDestroy(token) {
+      this.$emit('token-destroy', token);
+    },
   },
   sortOptions,
 };
@@ -97,5 +103,7 @@ export default {
     data-testid="runners-filtered-search"
     @onFilter="onFilter"
     @onSort="onSort"
+    @token-complete="onTokenComplete"
+    @token-destroy="onTokenDestroy"
   />
 </template>

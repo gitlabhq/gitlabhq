@@ -73,18 +73,24 @@ Get details for issue 42 in project 123
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/571243) in GitLab 18.5.
+- `assignee_ids`, `reviewer_ids`, `description`, `labels`, and `milestone_id` [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217458) in GitLab 18.8.
 
 {{< /history >}}
 
 Creates a merge request in a GitLab project.
 
-| Parameter           | Type    | Required | Description |
-|---------------------|---------|----------|-------------|
-| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
-| `title`             | string  | Yes      | Title of the merge request. |
-| `source_branch`     | string  | Yes      | Name of the source branch. |
-| `target_branch`     | string  | Yes      | Name of the target branch. |
-| `target_project_id` | integer | No       | ID of the target project. |
+| Parameter           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `id`                | string            | Yes      | ID or URL-encoded path of the project. |
+| `title`             | string            | Yes      | Title of the merge request. |
+| `source_branch`     | string            | Yes      | Name of the source branch. |
+| `target_branch`     | string            | Yes      | Name of the target branch. |
+| `target_project_id` | integer           | No       | ID of the target project. |
+| `assignee_ids`      | array of integers | No       | Array of IDs of merge request assignees. Set to `0` or an empty value to unassign all assignees. |
+| `reviewer_ids`      | array of integers | No       | Array of IDs of merge request reviewers. Set to `0` or an empty value to unassign all reviewers. |
+| `description`       | string            | No       | Description of the merge request. |
+| `labels`            | array of strings  | No       | Array of label names. Set to an empty string to unassign all labels. |
+| `milestone_id`      | integer           | No       | ID of the milestone. |
 
 Example:
 

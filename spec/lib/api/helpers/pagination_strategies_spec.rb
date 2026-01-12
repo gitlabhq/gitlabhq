@@ -8,9 +8,10 @@ RSpec.describe API::Helpers::PaginationStrategies, feature_category: :api do
   let(:expected_result) { double("result") }
   let(:relation) { double("relation", klass: "SomeClass") }
   let(:params) { {} }
+  let(:current_user) { double("user") }
 
   before do
-    allow(subject).to receive(:params).and_return(params)
+    allow(subject).to receive_messages(params: params, current_user: current_user)
   end
 
   describe '#paginate_with_strategies' do
@@ -66,7 +67,8 @@ RSpec.describe API::Helpers::PaginationStrategies, feature_category: :api do
       context 'when keyset pagination is available and enforced for the relation' do
         before do
           allow(Gitlab::Pagination::Keyset).to receive(:available_for_type?).and_return(true)
-          allow(Gitlab::Pagination::CursorBasedKeyset).to receive(:enforced_for_type?).and_return(true)
+          allow(Gitlab::Pagination::CursorBasedKeyset)
+            .to receive(:enforced_for_type?).with(request_scope, relation, current_user).and_return(true)
         end
 
         context 'when a request scope is given' do
@@ -82,7 +84,8 @@ RSpec.describe API::Helpers::PaginationStrategies, feature_category: :api do
 
             context 'when keyset pagination is not enforced' do
               before do
-                allow(Gitlab::Pagination::CursorBasedKeyset).to receive(:enforced_for_type?).and_return(false)
+                allow(Gitlab::Pagination::CursorBasedKeyset)
+                  .to receive(:enforced_for_type?).with(request_scope, relation, current_user).and_return(false)
               end
 
               it 'returns no errors' do
@@ -105,6 +108,8 @@ RSpec.describe API::Helpers::PaginationStrategies, feature_category: :api do
         end
 
         context 'when a request scope is not given' do
+          let(:request_scope) { nil }
+
           context 'when the default limits are exceeded' do
             let(:params) { { per_page: 100, page: (offset_limit / 100) + 1 } }
 

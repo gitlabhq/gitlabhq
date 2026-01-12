@@ -119,7 +119,7 @@ For premium models with optimized integration:
 
 | Model | Requests with one credit |
 |-------|------------------------|
-| claude-4.5-Haiku (default Agentic Chat model) | 6.7 |
+| claude-4.5-haiku (default Agentic Chat model) | 6.7 |
 | gpt-5-codex | 3.3|
 | gpt-5 | 3.3 |
 | gpt-5.2 | 2.5 |
@@ -138,7 +138,11 @@ You are billed for features that are generally available.
 | Feature | Requests with one credit |
 |---------|---------------------------|
 | [GitLab Duo Code Suggestions](../user/project/repository/code_suggestions/_index.md) | 50 |
-| [GitLab Duo Chat (Agentic)](../user/gitlab_duo_chat/agentic_chat.md) | 6.7 |
+| [GitLab Duo Chat (Agentic)](../user/gitlab_duo_chat/agentic_chat.md) | 6.7 <sup>1</sup> |
+
+**Footnotes**:
+
+1. For requests with the default model (claude-4.5-haiku). Credit cost varies based on the model selected for the request.
 
 ## GitLab Credits dashboard
 

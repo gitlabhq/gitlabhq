@@ -318,6 +318,7 @@
     GL_DOCKER_REGISTRY_MIRROR: mirror.gcr.io
     GL_DOCKER_REGISTRY_MIRROR_ENDPOINT: https://${GL_DOCKER_REGISTRY_MIRROR}
     GL_DOCKER_DIND_OPTIONS: "--registry-mirror=$GL_DOCKER_REGISTRY_MIRROR_ENDPOINT"
+    HEALTHCHECK_TCP_PORT: "2375"
   tags:
     # See https://gitlab.com/gitlab-com/www-gitlab-com/-/issues/7019 for tag descriptions
     - gitlab-org-docker
@@ -337,7 +338,7 @@
         docker run --rm --privileged ${QEMU_IMAGE} --install all;
         echo -e "section_end:`date +%s`:emulator_install\r\e[0K"
       fi
-    - docker buildx create --use  # creates and set's to active buildkit builder
+    - docker buildx create --use --driver-opt network=host # creates and sets to active buildkit builder
 
 .use-buildx:
   extends: .use-docker-in-docker

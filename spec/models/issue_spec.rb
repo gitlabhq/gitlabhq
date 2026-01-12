@@ -511,6 +511,46 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  describe '.non_archived' do
+    let_it_be(:archived_project) { create(:project, :archived) }
+    let_it_be(:active_project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+
+    let_it_be(:issue_in_archived_project) { create(:issue, project: archived_project) }
+    let_it_be(:issue_in_active_project) { create(:issue, project: active_project) }
+    let_it_be(:group_level_issue) { create(:issue, :group_level, namespace: group) }
+
+    context 'when use_existing_join is false' do
+      it 'returns issues from non-archived projects and group-level issues' do
+        expect(described_class.non_archived).to contain_exactly(
+          issue_in_active_project,
+          group_level_issue
+        )
+      end
+
+      it 'excludes issues from archived projects' do
+        expect(described_class.non_archived).not_to include(issue_in_archived_project)
+      end
+    end
+
+    context 'when use_existing_join is true' do
+      it 'returns issues from non-archived projects and group-level issues' do
+        result = described_class.left_joins(:project).non_archived(use_existing_join: true)
+
+        expect(result).to contain_exactly(
+          issue_in_active_project,
+          group_level_issue
+        )
+      end
+
+      it 'excludes issues from archived projects' do
+        result = described_class.left_joins(:project).non_archived(use_existing_join: true)
+
+        expect(result).not_to include(issue_in_archived_project)
+      end
+    end
+  end
+
   describe '.order_severity' do
     let_it_be(:issue_high_severity) { create(:issuable_severity, severity: :high).issue }
     let_it_be(:issue_low_severity) { create(:issuable_severity, severity: :low).issue }
@@ -576,50 +616,6 @@ RSpec.describe Issue, feature_category: :team_planning do
       subject { described_class.order_escalation_status_desc }
 
       it { is_expected.to eq([resolved_incident, triggered_incident, issue_no_status]) }
-    end
-  end
-
-  describe '.non_archived' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:archived_group) { create(:group, :archived) }
-    let_it_be(:subgroup) { create(:group, parent: archived_group) }
-
-    let_it_be(:non_archived_project) { create(:project, group: group) }
-    let_it_be(:archived_project) { create(:project, :archived, group: group) }
-    let_it_be(:project_in_archived_group) { create(:project, group: archived_group) }
-    let_it_be(:project_in_subgroup_of_archived_group) { create(:project, group: subgroup) }
-
-    let_it_be(:issue_in_non_archived_project) { create(:issue, project: non_archived_project) }
-    let_it_be(:issue_in_archived_project) { create(:issue, project: archived_project) }
-    let_it_be(:issue_in_archived_group) { create(:issue, project: project_in_archived_group) }
-    let_it_be(:issue_in_subgroup_of_archived_group) { create(:issue, project: project_in_subgroup_of_archived_group) }
-    let_it_be(:group_level_issue) { create(:issue, :group_level, namespace: group) }
-    let_it_be(:group_level_issue_in_archived_group) { create(:issue, :group_level, namespace: archived_group) }
-
-    subject { described_class.non_archived }
-
-    it 'returns issues from non-archived projects' do
-      is_expected.to include(issue_in_non_archived_project)
-    end
-
-    it 'returns group-level issues from non-archived groups' do
-      is_expected.to include(group_level_issue)
-    end
-
-    it 'does not return issues from archived projects' do
-      is_expected.not_to include(issue_in_archived_project)
-    end
-
-    it 'does not return issues from projects in archived groups' do
-      is_expected.not_to include(issue_in_archived_group)
-    end
-
-    it 'does not return issues from projects in subgroups of archived groups' do
-      is_expected.not_to include(issue_in_subgroup_of_archived_group)
-    end
-
-    it 'does not return group-level issues from archived groups' do
-      is_expected.not_to include(group_level_issue_in_archived_group)
     end
   end
 

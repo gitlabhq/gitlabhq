@@ -37,7 +37,7 @@ RSpec.describe ResolvesPipelines, feature_category: :source_code_management do
     ]
   end
 
-  it { is_expected.to have_graphql_arguments(:status, :scope, :ref, :ref_type, :sha, :source, :updated_after, :updated_before, :username) }
+  it { is_expected.to have_graphql_arguments(:status, :scope, :ref, :ref_type, :sha, :source, :updated_after, :updated_before, :username, :ids) }
 
   it 'finds all pipelines' do
     expect(resolve_pipelines).to contain_exactly(*all_pipelines)
@@ -173,6 +173,40 @@ RSpec.describe ResolvesPipelines, feature_category: :source_code_management do
     expect(field.complexity.call({}, {}, 1)).to eq 3
     expect(field.complexity.call({}, { sha: 'foo' }, 1)).to eq 5
     expect(field.complexity.call({}, { sha: 'ref' }, 1)).to eq 5
+  end
+
+  context 'filtering by IDs' do
+    let_it_be(:pipeline1) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline2) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline3) { create(:ci_pipeline, project: project) }
+
+    it 'returns pipelines matching the provided IDs' do
+      ids = [pipeline1.to_global_id.to_s, pipeline3.to_global_id.to_s]
+
+      expect(resolve_pipelines(ids: ids)).to contain_exactly(pipeline1, pipeline3)
+    end
+
+    it 'raises an error when exceeding maximum pipeline IDs limit' do
+      max_ids_count = described_class::MAX_PIPELINE_IDS
+
+      too_many_ids = Array.new(max_ids_count + 1) do |i|
+        "gid://gitlab/Ci::Pipeline/#{i + 1}"
+      end
+
+      result = resolve_pipelines(ids: too_many_ids)
+
+      expect(result).to be_a(GraphQL::ExecutionError)
+      expect(result.message).to eq("Cannot query more than #{max_ids_count} pipelines by ID at once.")
+    end
+
+    it 'handles invalid GraphQL IDs' do
+      invalid_id = "invalid-id"
+      valid_id = pipeline1.to_global_id.to_s
+
+      ids = [invalid_id, valid_id]
+
+      expect(resolve_pipelines(ids: ids)).to contain_exactly(pipeline1)
+    end
   end
 
   def resolve_pipelines(args = {}, context = { current_user: current_user })

@@ -66,7 +66,7 @@ module API
       end
 
       def cursor_based_keyset_pagination_enforced?(request_scope, relation)
-        Gitlab::Pagination::CursorBasedKeyset.enforced_for_type?(request_scope, relation)
+        Gitlab::Pagination::CursorBasedKeyset.enforced_for_type?(request_scope, relation, current_user)
       end
 
       def keyset_pagination_enabled?

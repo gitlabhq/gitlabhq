@@ -1,0 +1,27 @@
+- title: "Enforce page limit for unauthenticated Projects API requests"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "19.0"
+  announcement_milestone: "18.9"
+  breaking_change: true
+  window:  # Can be 1, 2, or 3 - The window when the breaking change will be deployed on GitLab.com
+  reporter: smaglangit
+  stage: tenant scale
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/585176
+  impact: low
+  impact_details: https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?usage=edge_case&migration_complexity=minor_manual&scope=project&identification_complexity=supported&additional_complexity=no&base_impact=minor&pipeline_impact=none&compliance_impact=none&availability_impact=none&authorization_impact=none&API_impact=minor
+  impact_offering: [GitLab.com]
+  scope: project
+  resolution_role: Developer
+  manual_task: false
+  body: |  # (required) Don't change this line.
+    To maintain platform stability and ensure optimal performance for all customers, we're enforcing a maximum offset limit on unauthenticated Projects API requests. The offset limit applies only to GitLab.com. On GitLab Self-Managed and GitLab Dedicated, the offset limit will be disabled by default behind a feature flag.
+
+    **What's changing**
+
+    A maximum offset limit of 50,000 will be enforced for all unauthenticated requests to the Projects List REST API. For example, the `page` parameter will be limited to 2,500 pages when retrieving 20 results per page.
+
+    Workflows requiring access to more data must use keyset-based pagination parameters.
+
+    **Why it matters**
+
+    This limit ensures consistent service quality and performance across GitLab.com by managing resource utilization effectively.

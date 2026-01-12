@@ -355,6 +355,27 @@ describe('FilteredSearchBarRoot', () => {
         expect(wrapper.emitted('onFilter')[0]).toEqual([mockFilters]);
       });
     });
+
+    describe.each(['token-destroy', 'token-complete'])(
+      'when signals fom GLFiltered search are emitted',
+      (emittedSignal) => {
+        const mockFilters = [tokenValueAuthor];
+
+        beforeEach(async () => {
+          createComponent({ propsData: { initialFilterValue: mockFilters } });
+          await nextTick();
+        });
+
+        it(`the same signal ${emittedSignal} is emitted`, async () => {
+          findGlFilteredSearch().vm.$emit(emittedSignal, mockFilters);
+
+          await nextTick();
+
+          const inputs = wrapper.emitted(emittedSignal);
+          expect(inputs[inputs.length - 1][0]).toEqual(mockFilters);
+        });
+      },
+    );
   });
 
   describe('template', () => {

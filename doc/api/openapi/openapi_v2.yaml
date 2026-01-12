@@ -61399,6 +61399,10 @@ definitions:
   API_Entities_IssueLink:
     type: object
     properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
       source_issue:
         "$ref": "#/definitions/API_Entities_IssueBasic"
       target_issue:

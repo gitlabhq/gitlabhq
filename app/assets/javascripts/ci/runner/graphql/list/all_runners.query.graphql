@@ -12,6 +12,7 @@ query getAllRunners(
   $search: String
   $versionPrefix: String
   $creator: String
+  $ownerFullPath: String
   $sort: CiRunnerSort
 ) {
   runners(
@@ -26,6 +27,7 @@ query getAllRunners(
     search: $search
     versionPrefix: $versionPrefix
     creatorUsername: $creator
+    ownerFullPath: $ownerFullPath
     sort: $sort
   ) {
     ...AllRunnersConnection

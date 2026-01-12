@@ -29167,6 +29167,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="commitpipelinesids"></a>`ids` | [`[ID!]`](#id) | Filter pipelines by their Global IDs. Maximum 20 IDs per request. |
 | <a id="commitpipelinesref"></a>`ref` | [`String`](#string) | Filter pipelines by the ref they are run for. |
 | <a id="commitpipelinesreftype"></a>`refType` | [`RefType`](#reftype) | Type of ref. |
 | <a id="commitpipelinesscope"></a>`scope` | [`PipelineScopeEnum`](#pipelinescopeenum) | Filter pipelines by scope. |
@@ -37677,6 +37678,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestpipelinesids"></a>`ids` | [`[ID!]`](#id) | Filter pipelines by their Global IDs. Maximum 20 IDs per request. |
 | <a id="mergerequestpipelinesref"></a>`ref` | [`String`](#string) | Filter pipelines by the ref they are run for. |
 | <a id="mergerequestpipelinesreftype"></a>`refType` | [`RefType`](#reftype) | Type of ref. |
 | <a id="mergerequestpipelinesscope"></a>`scope` | [`PipelineScopeEnum`](#pipelinescopeenum) | Filter pipelines by scope. |
@@ -44165,6 +44167,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectpipelinesids"></a>`ids` | [`[ID!]`](#id) | Filter pipelines by their Global IDs. Maximum 20 IDs per request. |
 | <a id="projectpipelinesref"></a>`ref` | [`String`](#string) | Filter pipelines by the ref they are run for. |
 | <a id="projectpipelinesreftype"></a>`refType` | [`RefType`](#reftype) | Type of ref. |
 | <a id="projectpipelinesscope"></a>`scope` | [`PipelineScopeEnum`](#pipelinescopeenum) | Filter pipelines by scope. |

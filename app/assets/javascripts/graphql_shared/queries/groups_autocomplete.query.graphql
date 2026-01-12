@@ -3,6 +3,7 @@ query groupsAutocomplete($search: String) {
     nodes {
       id
       name
+      fullPath
       fullName
       avatarUrl
     }

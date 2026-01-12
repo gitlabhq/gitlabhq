@@ -187,6 +187,13 @@
         }
       }
     }
+
+    // Make sure a list that is the last child of a blockquote doesn't have an unnecessary bottom margin
+    > ul, > ol {
+      &:last-child {
+        @apply gl-mb-0;
+      }
+    }
   }
 
   hr {

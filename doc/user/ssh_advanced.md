@@ -106,26 +106,20 @@ For more information about using 1Password with SSH keys, see the [1Password doc
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30343) in GitLab 18.6 [with a flag](../administration/feature_flags/_index.md) named `enterprise_disable_ssh_keys`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30343) in GitLab 18.8.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
 Prerequisites:
 
-- You must have the Owner role for the group that the enterprise user belongs to.
+- You must have the Owner role for the group that the enterprise users belong to.
 
 Disabling the SSH Keys of a group's [enterprise users](enterprise_user/_index.md):
 
-- Stops the enterprise users from adding new SSH Keys. This behavior applies
-  even if an enterprise user is also an administrator of the group.
+- Stops the enterprise users from adding new SSH Keys.
 - Disables the existing SSH Keys of the enterprise users.
+
+This also applies to enterprise users who are administrators of the group.
 
 To disable the enterprise users' SSH Keys:
 
