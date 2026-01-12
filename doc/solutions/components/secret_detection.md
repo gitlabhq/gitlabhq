@@ -127,7 +127,7 @@ Upon creating the policy, for reference, here is the complete policy configurati
 ```yaml
 ---
 scan_execution_policy:
-- name: Scan Execution for Secret Detection with Custom Rules
+- name: Scan execution for secret detection with custom rules
   description: ''
   enabled: true
   policy_scope:

@@ -6484,7 +6484,7 @@ If you rely on .NET 2.1 support being present in the analyzer image by default, 
 
 <div class="deprecation " data-milestone="15.0">
 
-### Secret Detection configuration variables deprecated
+### Secret detection configuration variables deprecated
 
 <div class="deprecation-notes">
 
@@ -6494,7 +6494,7 @@ If you rely on .NET 2.1 support being present in the analyzer image by default, 
 
 </div>
 
-To make it simpler and more reliable to [customize GitLab Secret Detection](https://docs.gitlab.com/user/application_security/secret_detection/#customizing-settings), we're deprecating some of the variables that you could previously set in your CI/CD configuration.
+To make it simpler and more reliable to [customize GitLab secret detection](https://docs.gitlab.com/user/application_security/secret_detection/#customizing-settings), we're deprecating some of the variables that you could previously set in your CI/CD configuration.
 
 The following variables currently allow you to customize the options for historical scanning, but interact poorly with the [GitLab-managed CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Secret-Detection.gitlab-ci.yml) and are now deprecated:
 
@@ -6506,7 +6506,7 @@ The following variables currently allow you to customize the options for histori
 The `SECRET_DETECTION_ENTROPY_LEVEL` previously allowed you to configure rules that only considered the entropy level of strings in your codebase, and is now deprecated.
 This type of entropy-only rule created an unacceptable number of incorrect results (false positives) and is no longer supported.
 
-In GitLab 15.0, we'll update the Secret Detection [analyzer](https://docs.gitlab.com/user/application_security/terminology/#analyzer) to ignore these deprecated options.
+In GitLab 15.0, we'll update the secret detection [analyzer](https://docs.gitlab.com/user/application_security/terminology/#analyzer) to ignore these deprecated options.
 You'll still be able to configure historical scanning of your commit history by setting the [`SECRET_DETECTION_HISTORIC_SCAN` CI/CD variable](https://docs.gitlab.com/user/application_security/secret_detection/#available-cicd-variables).
 
 For further details, see [the deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352565).

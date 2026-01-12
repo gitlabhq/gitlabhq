@@ -4977,9 +4977,9 @@ Input type: `ConfigureSastIacInput`
 
 ### `Mutation.configureSecretDetection`
 
-Configure Secret Detection for a project by enabling Secret Detection
+Configure secret detection for a project by enabling secret detection
 in a new or modified `.gitlab-ci.yml` file in a new branch. The new
-branch and a URL to create a Merge Request are a part of the
+branch and a URL to create a merge request are a part of the
 response.
 
 Input type: `ConfigureSecretDetectionInput`

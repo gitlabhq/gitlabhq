@@ -32169,6 +32169,9 @@ msgstr ""
 msgid "GlobalSearch|Could not load search results. Refresh the page to try again."
 msgstr ""
 
+msgid "GlobalSearch|Dead queue length"
+msgstr ""
+
 msgid "GlobalSearch|Epics"
 msgstr ""
 
@@ -68599,6 +68602,9 @@ msgid "The number of documents waiting for full indexing. This includes new cont
 msgstr ""
 
 msgid "The number of documents waiting for updates to existing indexed content. These represent changes to previously indexed files, commits, or metadata."
+msgstr ""
+
+msgid "The number of items that failed after being retried once. Items in the dead queue are not automatically retried. %{help_link_start}Reindex these items manually%{help_link_end} or contact GitLab Support with relevant logs for help."
 msgstr ""
 
 msgid "The number of projects that have no repository data indexed. A value of 0 means all projects have had repository data indexed at least once, though some may need updates. This metric tracks only projects completely missing repository data from the index, not those needing incremental updates."
