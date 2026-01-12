@@ -1,0 +1,7 @@
+---
+name: read_user_status
+description: Grants the ability to read user status
+boundaries:
+  - user
+permissions:
+  - read_user_status

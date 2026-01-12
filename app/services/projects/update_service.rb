@@ -79,6 +79,7 @@ module Projects
       validate_renaming_project_with_tags
       validate_restrict_user_defined_variables_change
       validate_pages_primary_domain
+      validate_pages_access_level
       validate_ci_inbound_job_token_scope_change
     end
 
@@ -160,6 +161,42 @@ module Projects
       return if project.pages_domain_present?(primary_domain)
 
       raise_validation_error(s_("UpdateProject|The `pages_primary_domain` attribute is missing from the domain list in the Pages project configuration. Assign `pages_primary_domain` to the Pages project or reset it."))
+    end
+
+    def validate_pages_access_level
+      return unless ::Gitlab.config.pages.access_control
+
+      pages_access_level = resolve_pages_access_level
+      return if pages_access_level.nil?
+
+      return unless project.pages_access_control_forced_by_ancestor?
+
+      validate_public_pages_restriction(pages_access_level)
+      validate_private_project_pages_restriction(pages_access_level)
+    end
+
+    def resolve_pages_access_level
+      return unless params.key?(:pages_access_level)
+
+      ProjectFeature.access_level_from_str(params[:pages_access_level])
+    rescue KeyError
+      raise_api_error(s_('UpdateProject|Pages access level is not allowed for the project visibility level'))
+    end
+
+    def validate_public_pages_restriction(pages_access_level)
+      return unless pages_access_level == ProjectFeature::PUBLIC
+
+      raise_api_error(s_('UpdateProject|Pages access level cannot be public when public access is disabled'))
+    end
+
+    def validate_private_project_pages_restriction(pages_access_level)
+      visibility = params[:visibility_level]&.to_i || project.visibility_level
+      return unless visibility == Gitlab::VisibilityLevel::PRIVATE
+
+      allowed_levels = [ProjectFeature::DISABLED, ProjectFeature::PRIVATE]
+      return if allowed_levels.include?(pages_access_level)
+
+      raise_api_error(s_('UpdateProject|Pages access level is not allowed for the project visibility level'))
     end
 
     def ambiguous_head_documentation_link

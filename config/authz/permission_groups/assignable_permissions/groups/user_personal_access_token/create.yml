@@ -1,0 +1,7 @@
+---
+name: create_user_personal_access_token
+description: Grants the ability to create user personal access tokens
+boundaries:
+  - user
+permissions:
+  - create_user_personal_access_token

@@ -872,6 +872,12 @@ export default {
       );
     },
     preventDefaultConditionally(event) {
+      // We do not want to prevent drag and drop for child and related item trees
+      const ignoredClasses = ['tree-item', 'linked-item'];
+      if (ignoredClasses.some((className) => event.target.classList.contains(className))) {
+        return;
+      }
+
       // Dragging image resize handles in RTE do not require repositioning like text does
       // so we return early after preventing default behaviour, this fixes
       // a problem as mentioned in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217708#note_2987427072

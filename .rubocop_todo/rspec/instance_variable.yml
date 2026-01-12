@@ -62,7 +62,6 @@ RSpec/InstanceVariable:
     - 'spec/helpers/notes_helper_spec.rb'
     - 'spec/helpers/projects_helper_spec.rb'
     - 'spec/helpers/search_helper_spec.rb'
-    - 'spec/helpers/tree_helper_spec.rb'
     - 'spec/helpers/wiki_helper_spec.rb'
     - 'spec/lib/api/helpers/authentication_spec.rb'
     - 'spec/lib/banzai/filter/asset_proxy_filter_spec.rb'

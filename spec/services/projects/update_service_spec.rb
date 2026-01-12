@@ -919,6 +919,150 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       end
     end
 
+    context 'when updating pages access level', feature_category: :pages do
+      context 'when pages_access_level is not provided' do
+        before do
+          stub_pages_setting(access_control: true)
+        end
+
+        it 'does not raise validation error' do
+          result = update_project(project, user, name: 'new-name')
+
+          expect(result[:status]).to eq(:success)
+        end
+      end
+
+      context 'when pages_access_level is blank' do
+        before do
+          stub_pages_setting(access_control: true)
+        end
+
+        it 'raise api error' do
+          result = update_project(project, user, {
+            name: 'new-name',
+            pages_access_level: ''
+          })
+
+          expect(result[:status]).to eq(:api_error)
+          expect(result[:message]).to include('Pages access level is not allowed for the project visibility level')
+        end
+      end
+
+      context 'when pages_access_control_forced_by_ancestor is false' do
+        before do
+          stub_pages_setting(access_control: true)
+        end
+
+        it 'does not validate pages access level' do
+          result = update_project(project, user, pages_access_level: 'public')
+
+          expect(result[:status]).to eq(:success)
+        end
+      end
+
+      context 'when pages access control is false' do
+        before do
+          stub_pages_setting(access_control: false)
+        end
+
+        it 'does not validate pages access level' do
+          result = update_project(project, user, pages_access_level: 'public')
+
+          expect(result[:status]).to eq(:success)
+        end
+      end
+
+      context 'when pages_access_control_forced_by_ancestor is true' do
+        using RSpec::Parameterized::TableSyntax
+
+        before do
+          stub_pages_setting(access_control: true)
+          stub_application_setting(force_pages_access_control: true)
+        end
+
+        context 'with different project visibilities and non-public pages access levels' do
+          where(:visibility_level, :pages_access_level, :result_status, :error_message) do
+            Gitlab::VisibilityLevel::PRIVATE  | 'disabled' | :success | nil
+            Gitlab::VisibilityLevel::PRIVATE  | 'private'  | :success | nil
+            Gitlab::VisibilityLevel::PRIVATE  | 'enabled'  | :api_error | 'Pages access level is not allowed for the project visibility level'
+            Gitlab::VisibilityLevel::INTERNAL | 'disabled' | :success | nil
+            Gitlab::VisibilityLevel::INTERNAL | 'private'  | :success | nil
+            Gitlab::VisibilityLevel::INTERNAL | 'enabled'  | :success | nil
+            Gitlab::VisibilityLevel::PUBLIC   | 'disabled' | :success | nil
+            Gitlab::VisibilityLevel::PUBLIC   | 'private'  | :success | nil
+            Gitlab::VisibilityLevel::PUBLIC   | 'enabled'  | :success | nil
+          end
+
+          with_them do
+            before do
+              project.visibility_level = visibility_level
+            end
+
+            it 'validates pages access level correctly' do
+              result = update_project(project, user, pages_access_level: pages_access_level)
+
+              expect(result[:status]).to eq(result_status)
+              expect(result[:message]).to include(error_message) if error_message
+            end
+          end
+        end
+
+        context 'with different project visibilities and public pages access levels' do
+          where(:visibility_level, :pages_access_level) do
+            Gitlab::VisibilityLevel::PRIVATE  | 'public'
+            Gitlab::VisibilityLevel::INTERNAL | 'public'
+            Gitlab::VisibilityLevel::PUBLIC   | 'public'
+          end
+
+          with_them do
+            before do
+              project.visibility_level = visibility_level
+            end
+
+            it 'raise api error' do
+              result = update_project(project, user, pages_access_level: pages_access_level)
+
+              expect(result[:status]).to eq(:api_error)
+              expect(result[:message]).to include('Pages access level cannot be public when public access is disabled')
+            end
+          end
+        end
+
+        describe 'when changing visibility level and pages_access_level together' do
+          where(:new_visibility_level, :pages_access_level, :result_status, :error_message) do
+            Gitlab::VisibilityLevel::PRIVATE  | 'disabled' | :success | nil
+            Gitlab::VisibilityLevel::PRIVATE  | 'private'  | :success | nil
+            Gitlab::VisibilityLevel::PRIVATE  | 'enabled'  | :api_error | 'Pages access level is not allowed for the project visibility level'
+            Gitlab::VisibilityLevel::PRIVATE  | 'public'   | :api_error | 'Pages access level cannot be public when public access is disabled'
+            Gitlab::VisibilityLevel::INTERNAL | 'disabled' | :success | nil
+            Gitlab::VisibilityLevel::INTERNAL | 'private'  | :success | nil
+            Gitlab::VisibilityLevel::INTERNAL | 'enabled'  | :success | nil
+            Gitlab::VisibilityLevel::INTERNAL | 'public'   | :api_error | 'Pages access level cannot be public when public access is disabled'
+            Gitlab::VisibilityLevel::PUBLIC   | 'disabled' | :success | nil
+            Gitlab::VisibilityLevel::PUBLIC   | 'private'  | :success | nil
+            Gitlab::VisibilityLevel::PUBLIC   | 'enabled'  | :success | nil
+            Gitlab::VisibilityLevel::PUBLIC   | 'public'   | :api_error | 'Pages access level cannot be public when public access is disabled'
+          end
+
+          with_them do
+            before do
+              project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+            end
+
+            it 'validates both visibility and pages access level changes' do
+              result = update_project(project, user,
+                visibility_level: new_visibility_level,
+                pages_access_level: pages_access_level
+              )
+
+              expect(result[:status]).to eq(result_status)
+              expect(result[:message]).to include(error_message) if error_message
+            end
+          end
+        end
+      end
+    end
+
     describe 'when project has missing CI/CD settings record' do
       before do
         project.ci_cd_settings.destroy!

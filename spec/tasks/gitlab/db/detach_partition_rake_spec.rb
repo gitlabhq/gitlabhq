@@ -40,7 +40,6 @@ RSpec.describe 'gitlab:db:detach_partition', :silence_stdout, feature_category: 
   after do
     Rake::Task['gitlab:db:detach_partition'].reenable
     Rake::Task['gitlab:db:reattach_partition'].reenable
-    Rake::Task['gitlab:db:alter_partition'].reenable
   end
 
   describe "detach_partition" do
@@ -129,7 +128,6 @@ RSpec.describe 'gitlab:db:detach_partition', :silence_stdout, feature_category: 
 
         # Clear the task to allow re-invocation
         Rake::Task['gitlab:db:reattach_partition'].reenable
-        Rake::Task['gitlab:db:alter_partition'].reenable
 
         # Then reattach
         expect do
@@ -205,7 +203,6 @@ RSpec.describe 'gitlab:db:detach_partition', :silence_stdout, feature_category: 
 
         Rake::Task['gitlab:db:detach_partition'].invoke('test_foo_table_100')
         Rake::Task['gitlab:db:detach_partition'].reenable
-        Rake::Task['gitlab:db:alter_partition'].reenable
       end
 
       it 'outputs message about partition not being attached' do
@@ -248,6 +245,54 @@ RSpec.describe 'gitlab:db:detach_partition', :silence_stdout, feature_category: 
         expect do
           Rake::Task['gitlab:db:reattach_partition'].invoke('test_foo_table_100')
         end.to output(/Partition test_foo_table_100 is already attached/).to_stdout
+      end
+    end
+  end
+
+  describe 'gitlab:db:detach_partition and reattach_partition database-specific tasks' do
+    let(:partition_name) { 'test_partition_100' }
+    let(:databases) { { 'main' => {}, 'ci' => {} } }
+
+    before do
+      allow(ActiveRecord::Tasks::DatabaseTasks).to receive(:setup_initial_database_yaml).and_return(databases)
+      allow(Gitlab::Database::Dictionary).to receive_message_chain(:entries,
+        :find_detach_allowed_partitions).and_return({})
+      allow(Gitlab::Database::EachDatabase).to receive(:each_connection)
+    end
+
+    after do
+      %w[main ci].each do |db|
+        Rake::Task["gitlab:db:detach_partition:#{db}"].reenable
+        Rake::Task["gitlab:db:reattach_partition:#{db}"].reenable
+      end
+    end
+
+    describe 'task registration' do
+      it 'creates detach and reattach tasks for each database' do
+        %w[main ci].each do |database_name|
+          expect(Rake::Task.task_defined?("gitlab:db:detach_partition:#{database_name}")).to be true
+          expect(Rake::Task.task_defined?("gitlab:db:reattach_partition:#{database_name}")).to be true
+        end
+      end
+    end
+
+    describe 'detach_partition tasks' do
+      it 'calls the task for each database' do
+        %w[main ci].each do |database_name|
+          expect(Rake::Task["gitlab:db:detach_partition:#{database_name}"]).to receive(:invoke).with(partition_name)
+          Rake::Task["gitlab:db:detach_partition:#{database_name}"].invoke(partition_name)
+          Rake::Task["gitlab:db:detach_partition:#{database_name}"].reenable
+        end
+      end
+    end
+
+    describe 'reattach_partition tasks' do
+      it 'calls the task for each database' do
+        %w[main ci].each do |database_name|
+          expect(Rake::Task["gitlab:db:reattach_partition:#{database_name}"]).to receive(:invoke).with(partition_name)
+          Rake::Task["gitlab:db:reattach_partition:#{database_name}"].invoke(partition_name)
+          Rake::Task["gitlab:db:reattach_partition:#{database_name}"].reenable
+        end
       end
     end
   end

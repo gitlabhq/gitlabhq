@@ -832,6 +832,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response['username']).to eq(user.username)
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_user do
+      let(:boundary_object) { :user }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
+    end
+
     it "does not return the user's `is_admin` flag" do
       get api(path, user)
 
@@ -1092,6 +1099,14 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       it_behaves_like 'rendering user status' do
         let(:path) { "/users/#{user.id}/status" }
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_user_status do
+        let(:boundary_object) { :user }
+        let(:path) { "/users/#{user.id}/status" }
+        let(:request) do
+          get api(path, personal_access_token: pat)
+        end
+      end
     end
 
     context 'when finding the user by username' do
@@ -1151,6 +1166,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         expect(response).to have_gitlab_http_status(:created)
       end
 
+      it_behaves_like 'authorizing granular token permissions', :follow_user do
+        let(:boundary_object) { :user }
+        let(:request) do
+          post api(path, personal_access_token: pat)
+        end
+      end
+
       it 'alerts and not follow when over followee limit' do
         stub_const('Users::UserFollowUser::MAX_FOLLOWEE_LIMIT', 2)
         Users::UserFollowUser::MAX_FOLLOWEE_LIMIT.times { user.follow(create(:user)) }
@@ -1206,6 +1228,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         expect(user.followees).to be_empty
         expect(response).to have_gitlab_http_status(:created)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :unfollow_user do
+        let(:boundary_object) { :user }
+        let(:request) do
+          post api(path, personal_access_token: pat)
+        end
+      end
     end
 
     context 'on an unfollowed user' do
@@ -1239,6 +1268,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_user_follower do
+        let(:boundary_object) { :user }
+        let(:request) do
+          get api(path, personal_access_token: pat)
+        end
       end
 
       it 'do not lists followers if profile is private' do
@@ -1310,6 +1346,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_user_following do
+        let(:boundary_object) { :user }
+        let(:request) do
+          get api(path, personal_access_token: pat)
+        end
       end
 
       it 'do not lists following user if profile is private' do
@@ -2517,9 +2560,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
   describe "POST /users/:id/keys" do
     let(:path) { "/users/#{user.id}/keys" }
+    let(:key_params) { attributes_for(:key, usage_type: :signing) }
 
     it_behaves_like 'POST request permissions for admin mode' do
-      let(:params) { attributes_for(:key, usage_type: :signing) }
+      let(:params) { key_params }
     end
 
     it "does not create invalid ssh key" do
@@ -2673,6 +2717,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         end
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_user_project_deploy_key do
+      let(:boundary_object) { :user }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
+    end
   end
 
   describe 'GET /users/:id/keys' do
@@ -2774,6 +2825,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_user_ssh_key do
+      let(:boundary_object) { :user }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
+    end
+
     it 'returns array of ssh keys' do
       user.keys << key
 
@@ -2808,6 +2866,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['title']).to eq(key.title)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_user_ssh_key do
+      let(:boundary_object) { :user }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
     end
 
     it 'returns 404 error if user not found' do
@@ -2903,9 +2968,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
   describe 'POST /users/:id/gpg_keys' do
     let(:path) { "/users/#{user.id}/gpg_keys" }
+    let(:key_params) { attributes_for :gpg_key, key: GpgHelpers::User2.public_key }
 
     it_behaves_like 'POST request permissions for admin mode' do
-      let(:params) { attributes_for :gpg_key, key: GpgHelpers::User2.public_key }
+      let(:params) { key_params }
     end
 
     it 'does not create invalid GPG key' do
@@ -2951,6 +3017,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.first['key']).to eq(gpg_key.key)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_user_gpg_key do
+      let(:boundary_object) { :user }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
     end
 
     context 'when rate limited' do
@@ -3000,6 +3073,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 GPG Key Not Found')
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_user_gpg_key do
+      let(:boundary_object) { :user }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
     end
 
     it 'returns a single GPG key' do
@@ -3132,6 +3212,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
   describe "POST /users/:id/emails", :mailer do
     let(:path) { "/users/#{user.id}/emails" }
+    let(:email_attrs) { attributes_for :email }
 
     it_behaves_like 'POST request permissions for admin mode' do
       before do
@@ -3150,8 +3231,6 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     it "creates unverified email" do
-      email_attrs = attributes_for :email
-
       perform_enqueued_jobs do
         expect do
           post api(path, admin, admin_mode: true), params: email_attrs
@@ -3404,7 +3483,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
   end
 
-  describe "GET /user" do
+  describe 'GET /user' do
     let(:path) { '/user' }
 
     shared_examples 'get user info' do |version|
@@ -3425,6 +3504,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('public_api/v4/user/public')
           expect(json_response['id']).to eq(user.id)
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :read_user do
+          let(:boundary_object) { :user }
+          let(:request) do
+            get api(path, personal_access_token: pat, version: version)
+          end
         end
 
         context "scopes" do
@@ -3501,6 +3587,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         expect(json_response["view_diffs_file_by_file"]).to eq(user.user_preference.view_diffs_file_by_file)
         expect(json_response["show_whitespace_in_diffs"]).to eq(user.user_preference.show_whitespace_in_diffs)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_user_preference do
+        let(:boundary_object) { :user }
+        let(:request) do
+          get api(path, personal_access_token: pat)
+        end
+      end
     end
   end
 
@@ -3534,10 +3627,17 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         expect(json_response["view_diffs_file_by_file"]).to eq(user.view_diffs_file_by_file)
         expect(json_response["show_whitespace_in_diffs"]).to eq(user.show_whitespace_in_diffs)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :update_user_preference do
+        let(:boundary_object) { :user }
+        let(:request) do
+          put api(path, personal_access_token: pat), params: { view_diffs_file_by_file: true }
+        end
+      end
     end
   end
 
-  describe "GET /user/keys" do
+  describe 'GET /user/keys' do
     subject(:request) { get api(path, user) }
 
     let(:path) { "/user/keys" }
@@ -3559,6 +3659,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first["title"]).to eq(key.title)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_user_ssh_key do
+        let(:boundary_object) { :user }
+        let(:request) do
+          get api(path, personal_access_token: pat)
+        end
       end
 
       it 'returns array of ssh keys with comments replaced with'\
@@ -3599,7 +3706,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
   end
 
-  describe "GET /user/keys/:key_id" do
+  describe 'GET /user/keys/:key_id' do
     let(:path) { "/user/keys/#{key.id}" }
 
     it "returns single key" do
@@ -3608,6 +3715,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       get api(path, user)
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response["title"]).to eq(key.title)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_user_ssh_key do
+      let(:boundary_object) { :user }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
     end
 
     it 'exposes SSH key comment as a simple identifier of username + hostname' do
@@ -3697,6 +3811,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       post api(path, user), params: { key: "somekey" }
       expect(response).to have_gitlab_http_status(:bad_request)
     end
+
+    it_behaves_like 'authorizing granular token permissions', :create_user_ssh_key do
+      let(:boundary_object) { :user }
+      let(:request) do
+        post api('/user/keys', personal_access_token: pat), params: attributes_for(:key)
+      end
+    end
   end
 
   describe "DELETE /user/keys/:key_id" do
@@ -3710,6 +3831,14 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
         expect(response).to have_gitlab_http_status(:no_content)
       end.to change { user.keys.count }.by(-1)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_user_ssh_key do
+      let(:boundary_object) { :user }
+      let(:key) { create(:key, user: user) }
+      let(:request) do
+        delete api("/user/keys/#{key.id}", personal_access_token: pat)
+      end
     end
 
     it_behaves_like '412 response' do
@@ -3760,6 +3889,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         expect(json_response.first['key']).to eq(gpg_key.key)
       end
 
+      it_behaves_like 'authorizing granular token permissions', :read_user_gpg_key do
+        let(:boundary_object) { :user }
+        let(:request) do
+          get api(path, personal_access_token: pat)
+        end
+      end
+
       context 'scopes' do
         let(:api_call) { method(:api) }
 
@@ -3778,6 +3914,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['key']).to eq(gpg_key.key)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_user_gpg_key do
+      let(:boundary_object) { :user }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
     end
 
     it 'returns 404 Not Found within invalid ID' do
@@ -3822,6 +3965,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       end.to change { user.gpg_keys.count }.by(1)
     end
 
+    it_behaves_like 'authorizing granular token permissions', :create_user_gpg_key do
+      let(:boundary_object) { :user }
+      let(:request) do
+        post api(path, personal_access_token: pat), params: attributes_for(:gpg_key, key: GpgHelpers::User2.public_key)
+      end
+    end
+
     it 'returns a 401 error if unauthorized' do
       post api(path), params: { key: 'some key' }
 
@@ -3845,6 +3995,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
         expect(response).to have_gitlab_http_status(:accepted)
       end.to change { user.gpg_keys.count }.by(-1)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :revoke_user_gpg_key do
+      let(:boundary_object) { :user }
+      let(:request) do
+        post api("/user/gpg_keys/#{gpg_key.id}/revoke", personal_access_token: pat)
+      end
     end
 
     it 'returns 404 if key ID not found' do
@@ -3880,6 +4037,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
         expect(response).to have_gitlab_http_status(:no_content)
       end.to change { user.gpg_keys.count }.by(-1)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_user_gpg_key do
+      let(:boundary_object) { :user }
+      let(:request) do
+        delete api(path, personal_access_token: pat)
+      end
     end
 
     it 'returns 404 if key ID not found' do
@@ -3927,6 +4091,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         expect(json_response.second['email']).to eq(email.email)
       end
 
+      it_behaves_like 'authorizing granular token permissions', :read_user_email do
+        let(:boundary_object) { :user }
+        let(:request) do
+          get api(path, personal_access_token: pat)
+        end
+      end
+
       context "scopes" do
         let(:api_call) { method(:api) }
 
@@ -3944,6 +4115,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       get api(path, user)
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response["email"]).to eq(email.email)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_user_email do
+      let(:boundary_object) { :user }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
     end
 
     it "returns 404 Not Found within invalid ID" do
@@ -3985,6 +4163,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(response).to have_gitlab_http_status(:created)
     end
 
+    it_behaves_like 'authorizing granular token permissions', :create_user_email do
+      let(:boundary_object) { :user }
+      let(:request) do
+        post api(path, personal_access_token: pat), params: attributes_for(:email)
+      end
+    end
+
     it "returns a 401 error if unauthorized" do
       post api(path), params: { email: 'some email' }
       expect(response).to have_gitlab_http_status(:unauthorized)
@@ -4009,6 +4194,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
         expect(response).to have_gitlab_http_status(:no_content)
       end.to change { user.emails.count }.by(-1)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_user_email do
+      let(:boundary_object) { :user }
+      let(:request) do
+        delete api(path, personal_access_token: pat)
+      end
     end
 
     it_behaves_like '412 response' do
@@ -4944,6 +5136,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         expect(activity['last_activity_at']).to eq(2.days.ago.to_date.to_s)
       end
 
+      it_behaves_like 'authorizing granular token permissions', :read_user_activity do
+        let(:boundary_object) { :user }
+        let(:request) do
+          get api(path, personal_access_token: pat)
+        end
+      end
+
       context 'passing a :from parameter' do
         it 'returns the activities from the given date' do
           get api("#{path}?from=2000-1-1", user)
@@ -5065,6 +5264,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
     describe 'GET' do
       it_behaves_like 'rendering user status'
+
+      it_behaves_like 'authorizing granular token permissions', :read_user_status do
+        let(:boundary_object) { :user }
+        let(:request) do
+          get api(path, personal_access_token: pat)
+        end
+      end
     end
 
     describe 'PUT' do
@@ -5077,6 +5283,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       include_examples '/user/status passing nil for params'
 
       include_examples '/user/status clear_status_after field'
+
+      it_behaves_like 'authorizing granular token permissions', :update_user_status do
+        let(:boundary_object) { :user }
+        let(:request) do
+          put api(path, personal_access_token: pat), params: { emoji: 'smirk', message: 'hello' }
+        end
+      end
 
       context 'when passing empty params' do
         let(:request_user) { user_with_status }
@@ -5112,6 +5325,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       include_examples '/user/status passing nil for params'
 
       include_examples '/user/status clear_status_after field'
+
+      it_behaves_like 'authorizing granular token permissions', :update_user_status do
+        let(:boundary_object) { :user }
+        let(:request) do
+          patch api(path, personal_access_token: pat), params: { emoji: 'smirk', message: 'hello' }
+        end
+      end
 
       context 'when passing empty params' do
         let(:request_user) { user_with_status }
@@ -5153,6 +5373,18 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(user.avatar).to be_present
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['avatar_url']).to include(user.avatar_path)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_user_avatar do
+      let(:boundary_object) { :user }
+      let(:request) do
+        workhorse_form_with_file(
+          api(path, personal_access_token: pat),
+          method: :put,
+          file_key: :avatar,
+          params: { avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
+        )
+      end
     end
 
     it "returns 400 when avatar file size over 200 KiB" do
@@ -5264,6 +5496,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('name is missing, scopes is missing')
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_user_personal_access_token do
+      let(:boundary_object) { :user }
+      let(:request) do
+        post api(path, personal_access_token: pat), params: { name: 'test', scopes: ['k8s_proxy'] }
+      end
     end
 
     context 'when scope is not allowed' do
@@ -5642,6 +5881,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           expect(json_response).to be_a Hash
           expect(json_response).to match(associations)
         end
+
+        it_behaves_like 'authorizing granular token permissions', :read_user_association do
+          let(:boundary_object) { :user }
+          let(:request) do
+            get api(path, personal_access_token: pat)
+          end
+        end
       end
     end
   end
@@ -5651,13 +5897,20 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     let(:other_attributable) { admin }
   end
 
-  describe 'POST /api/v4/user/support_pin' do
+  describe 'POST /user/support_pin' do
     context 'when authenticated' do
       it 'creates a new support PIN' do
         post api('/user/support_pin', user)
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response).to include('pin', 'expires_at')
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :create_user_support_pin do
+        let(:boundary_object) { :user }
+        let(:request) do
+          post api('/user/support_pin', personal_access_token: pat)
+        end
       end
 
       it "handles errors when creating a support PIN" do
@@ -5686,6 +5939,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to include('pin', 'expires_at')
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_user_support_pin do
+        let(:boundary_object) { :user }
+        let(:request) do
+          get api('/user/support_pin', personal_access_token: pat)
+        end
       end
 
       it 'returns 404 Not Found when no PIN exists' do

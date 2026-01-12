@@ -34,7 +34,7 @@ RSpec.describe Pajamas::AvatarComponent, type: :component, feature_category: :de
       let(:item) { project }
 
       it "has default shape (rect)" do
-        expect(page).to have_css ".gl-avatar.\\!gl-rounded-base"
+        expect(page).to have_css ".gl-avatar"
         expect(page).not_to have_css ".gl-avatar-circle"
       end
     end
@@ -43,7 +43,7 @@ RSpec.describe Pajamas::AvatarComponent, type: :component, feature_category: :de
       let(:item) { group }
 
       it "has default shape (rect)" do
-        expect(page).to have_css ".gl-avatar.\\!gl-rounded-base"
+        expect(page).to have_css ".gl-avatar"
         expect(page).not_to have_css ".gl-avatar-circle"
       end
     end

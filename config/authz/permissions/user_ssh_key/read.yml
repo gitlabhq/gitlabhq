@@ -1,0 +1,5 @@
+---
+name: read_user_ssh_key
+description: Grants the ability to read user SSH keys
+boundaries:
+  - user

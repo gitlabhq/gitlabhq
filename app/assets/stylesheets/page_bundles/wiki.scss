@@ -207,10 +207,8 @@
 .wiki-page-details, .wiki-comments {
   @apply gl-w-full;
   @apply gl-mx-auto;
-  @apply gl-px-2;
   @apply gl-relative;
   max-width: $wiki-content-default-width;
-  overflow-x: auto;
 }
 
 .wiki-overview {

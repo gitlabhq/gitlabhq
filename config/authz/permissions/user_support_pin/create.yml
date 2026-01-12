@@ -1,0 +1,5 @@
+---
+name: create_user_support_pin
+description: Grants the ability to create user support PIN
+boundaries:
+  - user

@@ -1,0 +1,5 @@
+---
+name: read_user_following
+description: Grants the ability to read user following information
+boundaries:
+  - user

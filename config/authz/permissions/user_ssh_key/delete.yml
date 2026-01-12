@@ -1,0 +1,5 @@
+---
+name: delete_user_ssh_key
+description: Grants the ability to delete user SSH keys
+boundaries:
+  - user

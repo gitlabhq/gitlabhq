@@ -104,8 +104,9 @@ optional authentication, and optional Git SHA. The variable uses the following f
 > [!note]
 > If a project has a `.gitlab/sast-ruleset.toml` file committed, that local configuration takes precedence and the file from `SAST_RULESET_GIT_REFERENCE` isn't used.
 
-The following example [enables SAST](_index.md#configure-sast-in-your-cicd-yaml) and uses a shared ruleset customization file.
-In this example, the file is committed on the default branch of `example-ruleset-project` at the path `.gitlab/sast-ruleset.toml`.
+The following example enables SAST and uses a shared ruleset customization file. In this example,
+the file is committed on the default branch of `example-ruleset-project` at the path
+`.gitlab/sast-ruleset.toml`.
 
 ```yaml
 include:
@@ -638,7 +639,7 @@ rules:
 
 ### Specify a private remote configuration
 
-The following example [enables SAST](_index.md#configure-sast-in-your-cicd-yaml) and uses a shared ruleset customization file. The file is:
+The following example enables SAST and uses a shared ruleset customization file. The file is:
 
 - Downloaded from a private project that requires authentication, by using a [Group Access Token](../../group/settings/group_access_tokens.md) securely stored within a CI variable.
 - Checked out at a specific Git commit SHA instead of the default branch.

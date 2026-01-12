@@ -256,7 +256,6 @@ RSpec/ExpectInHook:
     - 'spec/presenters/commit_presenter_spec.rb'
     - 'spec/presenters/commit_status_presenter_spec.rb'
     - 'spec/presenters/group_member_presenter_spec.rb'
-    - 'spec/presenters/project_member_presenter_spec.rb'
     - 'spec/requests/api/avatar_spec.rb'
     - 'spec/requests/api/ci/runner/jobs_request_post_spec.rb'
     - 'spec/requests/api/ci/runner/runners_post_spec.rb'

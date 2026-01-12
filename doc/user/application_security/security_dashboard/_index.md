@@ -227,7 +227,7 @@ To view details:
 1. Vulnerabilities that are no longer detected are not automatically counted as closed. Use [vulnerability management policies](../policies/_index.md) to automatically close them if needed.
 
 > [!note]
-> Starting in GitLab 18.8 (available January 2026), the Vulnerabilities over time chart excludes no longer detected vulnerabilities to more accurately reflect the number of detected vulnerabilities that require attention. This change might result in a drop in the total number of vulnerabilities shown in the chart. This change applies automatically to vulnerabilities no longer detected in pipelines run from GitLab 18.8 onward. A background migration handles remaining vulnerabilities from earlier pipelines.
+> Starting in GitLab 18.8 (available January 2026) on GitLab.com and in GitLab 18.9 (available February 2026) on GitLab Self-Managed and GitLab Dedicated, the Vulnerabilities over time chart excludes no longer detected vulnerabilities. This approach more accurately reflects the number of detected vulnerabilities that require attention. This change might result in a drop in the total number of vulnerabilities shown in the chart. This change applies automatically to vulnerabilities no longer detected in pipelines run from GitLab 18.9 onward. A background migration handles remaining vulnerabilities from earlier pipelines.
 
 ![vulnerabilities over time](img/vulnerabilities_over_time_chart_v18_5.png)
 

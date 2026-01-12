@@ -23,7 +23,9 @@ Debug-level logging can help when troubleshooting. For details, see
 
 ## Changes in the CI/CD template
 
-The [GitLab-managed SAST CI/CD template](_index.md#configure-sast-in-your-cicd-yaml) controls which [analyzer](analyzers.md) jobs run and how they're configured. While using the template, you might experience a job failure or other pipeline error. For example, you might:
+The GitLab-managed SAST CI/CD template controls which [analyzer](analyzers.md) jobs run and how
+they're configured. While you use the template, you might experience a job failure or other pipeline
+error. For example, you might:
 
 - See an error message like `'<your job>' needs 'spotbugs-sast' job, but 'spotbugs-sast' is not in any previous stage` when you view an affected pipeline.
 - Experience another type of unexpected issue with your CI/CD pipeline configuration.
@@ -37,12 +39,17 @@ include:
 
 If your GitLab instance has limited network connectivity, you can also download the file and host it elsewhere.
 
-You should only use this solution temporarily, returning to [the standard template](_index.md#configure-sast-in-your-cicd-yaml) as soon as possible.
+You should only use this solution temporarily. Return to the standard template as soon as
+possible.
 
 ## Errors in a specific analyzer job
 
-GitLab SAST [analyzers](analyzers.md) are released as container images.
-If you're seeing a new error that doesn't appear to be related to [the GitLab-managed SAST CI/CD template](_index.md#configure-sast-in-your-cicd-yaml) or changes in your own project, you can try [pinning the affected analyzer to a specific older version](_index.md#pinning-to-minor-image-version).
+GitLab SAST [analyzers](analyzers.md) are released as container images. If you're seeing a new error
+that doesn't appear to be related to the GitLab-managed SAST CI/CD template or changes in your own
+project, you can try
+[pinning the affected analyzer to a specific older version](_index.md#pinning-to-minor-image-version).
+You should only use this solution temporarily. Return to the standard template as soon as
+possible.
 
 Each [analyzer project](analyzers.md) has a `CHANGELOG.md` file listing the changes made in each available version.
 

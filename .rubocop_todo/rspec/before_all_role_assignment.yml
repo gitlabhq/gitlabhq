@@ -888,7 +888,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/helpers/projects_helper_spec.rb'
     - 'spec/helpers/search_helper_spec.rb'
     - 'spec/helpers/timeboxes_helper_spec.rb'
-    - 'spec/helpers/tree_helper_spec.rb'
     - 'spec/helpers/web_hooks/web_hooks_helper_spec.rb'
     - 'spec/lib/api/entities/release_spec.rb'
     - 'spec/lib/api/helpers/packages_helpers_spec.rb'

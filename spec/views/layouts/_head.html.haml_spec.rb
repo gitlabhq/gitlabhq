@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/_head' do
+RSpec.describe 'layouts/_head', feature_category: :design_system do
   include StubConfiguration
 
   before do

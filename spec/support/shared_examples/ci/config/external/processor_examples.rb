@@ -44,7 +44,7 @@ RSpec.shared_examples 'handles invalid remote files' do
     it 'raises an error' do
       expect { processor.perform }.to raise_error(
         described_class::IncludeError,
-        /Remote file .* could not be fetched because of a socket error/
+        /Remote file .* could not be fetched (after \d+ attempts )?because of a socket error/
       )
     end
   end

@@ -253,6 +253,7 @@ module API
         use :with_custom_attributes
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :read_user, boundary_type: :user
       get ":id", feature_category: :user_profile, urgency: :low do
         forbidden!('Not authorized!') unless current_user
 
@@ -281,6 +282,7 @@ module API
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
       end
+      route_setting :authorization, permissions: :read_user_status, boundary_type: :user
       get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :user_profile, urgency: :default do
         check_rate_limit_by_user_or_ip!(:user_status)
 
@@ -298,6 +300,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
+      route_setting :authorization, permissions: :follow_user, boundary_type: :user
       post ':id/follow', feature_category: :user_profile do
         user = find_user(params[:id])
         not_found!('User') unless user
@@ -320,6 +323,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
+      route_setting :authorization, permissions: :unfollow_user, boundary_type: :user
       post ':id/unfollow', feature_category: :user_profile do
         user = find_user(params[:id])
         not_found!('User') unless user
@@ -344,6 +348,7 @@ module API
         requires :id, type: Integer, desc: 'The ID of the user'
         use :pagination
       end
+      route_setting :authorization, permissions: :read_user_following, boundary_type: :user
       get ':id/following', feature_category: :user_profile do
         forbidden!('Not authorized!') unless current_user
 
@@ -363,6 +368,7 @@ module API
         requires :id, type: Integer, desc: 'The ID of the user'
         use :pagination
       end
+      route_setting :authorization, permissions: :read_user_follower, boundary_type: :user
       get ':id/followers', feature_category: :user_profile do
         forbidden!('Not authorized!') unless current_user
 
@@ -528,6 +534,7 @@ module API
         requires :user_id, type: String, desc: 'The ID or username of the user'
         use :pagination
       end
+      route_setting :authorization, permissions: :read_user_project_deploy_key, boundary_type: :user
       get ':user_id/project_deploy_keys', requirements: API::USER_REQUIREMENTS, feature_category: :continuous_delivery do
         user = find_user(params[:user_id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
@@ -582,6 +589,7 @@ module API
         requires :user_id, type: String, desc: 'The ID or username of the user'
         use :pagination
       end
+      route_setting :authorization, permissions: :read_user_ssh_key, boundary_type: :user
       get ':user_id/keys', requirements: API::USER_REQUIREMENTS, feature_category: :system_access do
         check_rate_limit_by_user_or_ip!(:user_ssh_keys)
 
@@ -600,6 +608,7 @@ module API
         requires :id, type: Integer, desc: 'The ID of the user'
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
       end
+      route_setting :authorization, permissions: :read_user_ssh_key, boundary_type: :user
       get ':id/keys/:key_id', requirements: API::USER_REQUIREMENTS, feature_category: :system_access do
         check_rate_limit_by_user_or_ip!(:user_ssh_key)
 
@@ -673,6 +682,7 @@ module API
         use :pagination
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :read_user_gpg_key, boundary_type: :user
       get ':id/gpg_keys', feature_category: :system_access do
         check_rate_limit_by_user_or_ip!(:user_gpg_keys)
 
@@ -693,6 +703,7 @@ module API
         requires :key_id, type: Integer, desc: 'The ID of the GPG key'
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :read_user_gpg_key, boundary_type: :user
       get ':id/gpg_keys/:key_id', feature_category: :system_access do
         check_rate_limit_by_user_or_ip!(:user_gpg_key)
 
@@ -1059,6 +1070,7 @@ module API
             type: Integer,
             desc: 'ID of the user to query.'
         end
+        route_setting :authorization, permissions: :read_user_association, boundary_type: :user
         get do
           authenticate!
 
@@ -1200,6 +1212,7 @@ module API
           success Entities::UserPublic
           tags ['users']
         end
+        route_setting :authorization, permissions: :read_user, boundary_type: :user
         get feature_category: :user_profile, urgency: :low do
           entity =
             # We're disabling Cop/UserAdmin because it checks if the given user is an admin.
@@ -1239,6 +1252,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_user_ssh_key, boundary_type: :user
       get "keys", feature_category: :system_access do
         keys = current_user.keys.preload_users
 
@@ -1253,6 +1267,7 @@ module API
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :read_user_ssh_key, boundary_type: :user
       get "keys/:key_id", feature_category: :system_access do
         key = current_user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
@@ -1272,6 +1287,7 @@ module API
         optional :usage_type, type: String, values: Key.usage_types.keys, default: 'auth_and_signing',
           desc: 'Scope of usage for the SSH key'
       end
+      route_setting :authorization, permissions: :create_user_ssh_key, boundary_type: :user
       post "keys", feature_category: :system_access do
         key = ::Keys::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
@@ -1290,6 +1306,7 @@ module API
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :delete_user_ssh_key, boundary_type: :user
       delete "keys/:key_id", feature_category: :system_access do
         key = current_user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
@@ -1309,6 +1326,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_user_gpg_key, boundary_type: :user
       get 'gpg_keys', feature_category: :system_access do
         present paginate(current_user.gpg_keys), with: Entities::GpgKey
       end
@@ -1322,6 +1340,7 @@ module API
         requires :key_id, type: Integer, desc: 'The ID of the GPG key'
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :read_user_gpg_key, boundary_type: :user
       get 'gpg_keys/:key_id', feature_category: :system_access do
         key = current_user.gpg_keys.find_by(id: params[:key_id])
         not_found!('GPG Key') unless key
@@ -1338,6 +1357,7 @@ module API
       params do
         requires :key, type: String, desc: 'The new GPG key'
       end
+      route_setting :authorization, permissions: :create_user_gpg_key, boundary_type: :user
       post 'gpg_keys', feature_category: :system_access do
         key = ::GpgKeys::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
@@ -1356,6 +1376,7 @@ module API
         requires :key_id, type: Integer, desc: 'The ID of the GPG key'
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :revoke_user_gpg_key, boundary_type: :user
       post 'gpg_keys/:key_id/revoke', feature_category: :system_access do
         key = current_user.gpg_keys.find_by(id: params[:key_id])
         not_found!('GPG Key') unless key
@@ -1373,6 +1394,7 @@ module API
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :delete_user_gpg_key, boundary_type: :user
       delete 'gpg_keys/:key_id', feature_category: :system_access do
         key = current_user.gpg_keys.find_by(id: params[:key_id])
         not_found!('GPG Key') unless key
@@ -1391,6 +1413,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_user_email, boundary_type: :user
       get "emails", feature_category: :user_profile, urgency: :high do
         present paginate(current_user.emails), with: Entities::Email
       end
@@ -1437,6 +1460,7 @@ module API
         success Entities::UserSupportPin
         tags ['support_pins']
       end
+      route_setting :authorization, permissions: :create_user_support_pin, boundary_type: :user
       post "support_pin", feature_category: :user_profile do
         authenticate!
 
@@ -1454,6 +1478,7 @@ module API
         success Entities::UserSupportPin
         tags ['support_pins']
       end
+      route_setting :authorization, permissions: :read_user_support_pin, boundary_type: :user
       get "support_pin", feature_category: :user_profile do
         authenticate!
 
@@ -1481,6 +1506,7 @@ module API
         optional :policy_advanced_editor, type: Boolean, desc: 'Flag indicating that advanced editor is enabled.'
         at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs, :pass_user_identities_to_ci_jwt, :policy_advanced_editor
       end
+      route_setting :authorization, permissions: :update_user_preference, boundary_type: :user
       put "preferences", feature_category: :user_profile, urgency: :high do
         authenticate!
 
@@ -1503,6 +1529,7 @@ module API
         detail 'This feature was introduced in GitLab 14.0.'
         tags ['users']
       end
+      route_setting :authorization, permissions: :read_user_preference, boundary_type: :user
       get "preferences", feature_category: :user_profile do
         present current_user.user_preference, with: Entities::UserPreferences
       end
@@ -1515,6 +1542,7 @@ module API
         requires :email_id, type: Integer, desc: 'The ID of the email'
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :read_user_email, boundary_type: :user
       get "emails/:email_id", feature_category: :user_profile do
         email = current_user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
@@ -1530,6 +1558,7 @@ module API
       params do
         requires :email, type: String, desc: 'The new email'
       end
+      route_setting :authorization, permissions: :create_user_email, boundary_type: :user
       post "emails", feature_category: :user_profile do
         email = Emails::CreateService.new(current_user, declared_params.merge(user: current_user)).execute
 
@@ -1547,6 +1576,7 @@ module API
         requires :email_id, type: Integer, desc: 'The ID of the email'
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :delete_user_email, boundary_type: :user
       delete "emails/:email_id", feature_category: :user_profile do
         email = current_user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
@@ -1574,6 +1604,7 @@ module API
         use :pagination
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :read_user_activity, boundary_type: :user
       get "activities", feature_category: :user_profile do
         activities = User
           .where(User.arel_table[:last_activity_on].gteq(params[:from]))
@@ -1593,6 +1624,7 @@ module API
       params do
         use :set_user_status_params
       end
+      route_setting :authorization, permissions: :update_user_status, boundary_type: :user
       put "status", feature_category: :user_profile do
         set_user_status(include_missing_params: true)
       end
@@ -1605,6 +1637,7 @@ module API
       params do
         use :set_user_status_params
       end
+      route_setting :authorization, permissions: :update_user_status, boundary_type: :user
       patch "status", feature_category: :user_profile do
         if declared_params(include_missing: false).empty?
           status :ok
@@ -1619,6 +1652,7 @@ module API
         success Entities::UserStatus
         tags ['user_statuses']
       end
+      route_setting :authorization, permissions: :read_user_status, boundary_type: :user
       get 'status', feature_category: :user_profile do
         present current_user.status || {}, with: Entities::UserStatus
       end
@@ -1631,6 +1665,7 @@ module API
       params do
         requires :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'The avatar file (generated by Multipart middleware)', documentation: { type: 'file' }
       end
+      route_setting :authorization, permissions: :update_user_avatar, boundary_type: :user
       put "avatar", feature_category: :user_profile do
         update_params = {
           avatar: declared_params[:avatar],
@@ -1660,6 +1695,7 @@ module API
           requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: [::Gitlab::Auth::K8S_PROXY_SCOPE, ::Gitlab::Auth::SELF_ROTATE_SCOPE].map(&:to_s),
             desc: 'The array of scopes of the personal access token'
         end
+        route_setting :authorization, permissions: :create_user_personal_access_token, boundary_type: :user
         post feature_category: :system_access do
           response = ::PersonalAccessTokens::CreateService.new(
             current_user: current_user, target_user: current_user, params: declared_params(include_missing: false), organization_id: Current.organization.id
