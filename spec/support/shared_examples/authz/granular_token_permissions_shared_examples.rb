@@ -24,7 +24,7 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions|
   end
 
   context 'when authenticating with a legacy personal access token' do
-    let(:pat) { create(:personal_access_token, user:) }
+    let(:pat) { create(:personal_access_token, :admin_mode, user:) }
 
     it_behaves_like 'granting access'
   end

@@ -43,6 +43,7 @@ module API
       use :pagination
       use :filter_params
     end
+    route_setting :authorization, permissions: :read_deploy_token, boundary_type: :instance
     get 'deploy_tokens' do
       authenticated_as_admin!
 
@@ -74,6 +75,7 @@ module API
         is_array true
         tags deploy_tokens_tags
       end
+      route_setting :authorization, permissions: :read_deploy_token, boundary_type: :project
       get ':id/deploy_tokens' do
         authorize!(:read_deploy_token, user_project)
 
@@ -106,6 +108,7 @@ module API
         ]
         tags deploy_tokens_tags
       end
+      route_setting :authorization, permissions: :create_deploy_token, boundary_type: :project
       post ':id/deploy_tokens' do
         authorize!(:create_deploy_token, user_project)
 
@@ -132,6 +135,7 @@ module API
       params do
         requires :token_id, type: Integer, desc: 'The ID of the deploy token'
       end
+      route_setting :authorization, permissions: :read_deploy_token, boundary_type: :project
       get ':id/deploy_tokens/:token_id' do
         authorize!(:read_deploy_token, user_project)
 
@@ -151,6 +155,7 @@ module API
       params do
         requires :token_id, type: Integer, desc: 'The ID of the deploy token'
       end
+      route_setting :authorization, permissions: :delete_deploy_token, boundary_type: :project
       delete ':id/deploy_tokens/:token_id' do
         authorize!(:destroy_deploy_token, user_project)
 
@@ -181,6 +186,7 @@ module API
         is_array true
         tags deploy_tokens_tags
       end
+      route_setting :authorization, permissions: :read_deploy_token, boundary_type: :group
       get ':id/deploy_tokens' do
         authorize!(:read_deploy_token, user_group)
 
@@ -213,6 +219,7 @@ module API
         ]
         tags deploy_tokens_tags
       end
+      route_setting :authorization, permissions: :create_deploy_token, boundary_type: :group
       post ':id/deploy_tokens' do
         authorize!(:create_deploy_token, user_group)
 
@@ -239,6 +246,7 @@ module API
       params do
         requires :token_id, type: Integer, desc: 'The ID of the deploy token'
       end
+      route_setting :authorization, permissions: :read_deploy_token, boundary_type: :group
       get ':id/deploy_tokens/:token_id' do
         authorize!(:read_deploy_token, user_group)
 
@@ -258,6 +266,7 @@ module API
       params do
         requires :token_id, type: Integer, desc: 'The ID of the deploy token'
       end
+      route_setting :authorization, permissions: :delete_deploy_token, boundary_type: :group
       delete ':id/deploy_tokens/:token_id' do
         authorize!(:destroy_deploy_token, user_group)
 

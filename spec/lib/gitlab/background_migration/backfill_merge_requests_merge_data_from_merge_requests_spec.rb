@@ -124,6 +124,38 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillMergeRequestsMergeDataFromMe
       end
     end
 
+    context 'when merge_commit_sha is invalid (single character "f")' do
+      let!(:merge_request_with_invalid_sha) do
+        merge_requests.create!(
+          target_project_id: project.id,
+          source_project_id: project.id,
+          target_branch: 'main',
+          source_branch: 'feature-invalid',
+          merge_status: 'can_be_merged',
+          merge_commit_sha: 'f', # Invalid single character
+          merge_user_id: user.id
+        )
+      end
+
+      it 'creates merge_requests_merge_data record' do
+        expect { perform_migration }.to change { merge_requests_merge_data.count }.by(1)
+      end
+
+      it 'sets merge_commit_sha to NULL for invalid value' do
+        perform_migration
+
+        merge_data = merge_requests_merge_data.find_by(merge_request_id: merge_request_with_invalid_sha.id)
+
+        expect(merge_data).to have_attributes(
+          merge_request_id: merge_request_with_invalid_sha.id,
+          project_id: project.id,
+          merge_user_id: user.id,
+          merge_commit_sha: nil,
+          merge_status: 3 # 'can_be_merged' -> 3
+        )
+      end
+    end
+
     context 'when merge_requests_merge_data already exists' do
       let!(:merge_request) do
         merge_requests.create!(

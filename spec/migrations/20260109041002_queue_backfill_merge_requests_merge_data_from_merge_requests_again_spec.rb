@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillMergeRequestsMergeDataFromMergeRequests, migration: :gitlab_main_org, feature_category: :code_review_workflow do
+RSpec.describe QueueBackfillMergeRequestsMergeDataFromMergeRequestsAgain, migration: :gitlab_main_org, feature_category: :code_review_workflow do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

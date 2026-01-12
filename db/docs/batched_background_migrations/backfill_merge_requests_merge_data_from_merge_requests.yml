@@ -4,5 +4,5 @@ description: Backfill rows from merge_requests table to merge_requests_merge_dat
 feature_category: code_review_workflow
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208777
 milestone: '18.8'
-queued_migration_version: 20251216224251
+queued_migration_version: 20260109041002
 finalized_by: # version of the migration that finalized this BBM

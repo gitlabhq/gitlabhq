@@ -1,0 +1,7 @@
+---
+name: read_deploy_token
+description: Grants the ability to read deploy tokens
+boundaries:
+  - instance
+  - group
+  - project

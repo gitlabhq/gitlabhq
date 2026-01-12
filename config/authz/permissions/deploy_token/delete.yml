@@ -1,0 +1,6 @@
+---
+name: delete_deploy_token
+description: Grants the ability to delete deploy tokens
+boundaries:
+  - group
+  - project

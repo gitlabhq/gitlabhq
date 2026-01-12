@@ -194,7 +194,6 @@ create_container_image
 create_container_registry_protection_immutable_tag_rule
 create_coverage_fuzzing_corpus
 create_custom_emoji
-create_deploy_token
 create_deployment
 create_design
 create_environment
@@ -498,7 +497,6 @@ read_dependency_list_export
 read_dependency_proxy
 read_deploy_board
 read_deploy_key
-read_deploy_token
 read_deployment
 read_design
 read_design_activity

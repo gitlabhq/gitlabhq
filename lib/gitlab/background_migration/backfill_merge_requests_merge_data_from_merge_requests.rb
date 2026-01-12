@@ -43,7 +43,7 @@ module Gitlab
             mr.merge_error,
             mr.merge_jid,
             CASE
-              WHEN mr.merge_commit_sha IS NOT NULL
+              WHEN mr.merge_commit_sha IS NOT NULL AND mr.merge_commit_sha != 'f'
               THEN decode(mr.merge_commit_sha, 'hex')
             END AS merge_commit_sha,
             CASE
