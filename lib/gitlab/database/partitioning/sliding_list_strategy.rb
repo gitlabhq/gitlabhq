@@ -3,7 +3,7 @@
 module Gitlab
   module Database
     module Partitioning
-      class SlidingListStrategy
+      class SlidingListStrategy < BaseStrategy
         attr_reader :model, :partitioning_key, :next_partition_if, :detach_partition_if, :analyze_interval
 
         delegate :table_name, to: :model
@@ -19,12 +19,16 @@ module Gitlab
         end
 
         def current_partitions
+          ensure_connection_set
+
           Gitlab::Database::PostgresPartition.for_parent_table(table_name).map do |partition|
             SingleNumericListPartition.from_sql(table_name, partition.name, partition.condition)
           end.sort
         end
 
         def missing_partitions
+          ensure_connection_set
+
           if no_partitions_exist?
             [initial_partition]
           elsif next_partition_if.call(active_partition)
@@ -35,14 +39,20 @@ module Gitlab
         end
 
         def initial_partition
+          ensure_connection_set
+
           SingleNumericListPartition.new(table_name, 1)
         end
 
         def next_partition
+          ensure_connection_set
+
           SingleNumericListPartition.new(table_name, active_partition.value + 1)
         end
 
         def extra_partitions
+          ensure_connection_set
+
           possibly_extra = current_partitions[0...-1] # Never consider the most recent partition
 
           extra = possibly_extra.take_while { |p| detach_partition_if.call(p) }
@@ -70,6 +80,8 @@ module Gitlab
         # database, we should not change the default there.
         #
         def after_adding_partitions
+          ensure_connection_set
+
           if different_connection_names?
             Gitlab::AppLogger.warn(
               message: 'Skipping changing column default because connections mismatch',
@@ -87,16 +99,22 @@ module Gitlab
         end
 
         def active_partition
+          ensure_connection_set
+
           # The current partitions list is sorted, so the last partition has the highest value
           # This is the only partition that receives inserts.
           current_partitions.last
         end
 
         def no_partitions_exist?
+          ensure_connection_set
+
           current_partitions.empty?
         end
 
         def validate_and_fix
+          ensure_connection_set
+
           if different_connection_names?
             Gitlab::AppLogger.warn(
               message: 'Skipping fixing column default because connections mismatch',

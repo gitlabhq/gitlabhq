@@ -158,24 +158,86 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
     end
 
     context 'with multiple databases' do
-      it 'creates partitions in each database' do
-        skip_if_shared_database(:ci)
+      let(:ci_connection) { Ci::ApplicationRecord.connection }
 
-        expect { described_class.sync_partitions(models) }
-          .to change { find_partitions(table_names.first, conn: main_connection).size }.from(0)
-          .and change { find_partitions(table_names.last, conn: main_connection).size }.from(0)
-          .and change { find_partitions(table_names.first, conn: ci_connection).size }.from(0)
-          .and change { find_partitions(table_names.last, conn: ci_connection).size }.from(0)
+      subject(:sync) { described_class.sync_partitions(models, owner_db_only: owner_db_only) }
+
+      before do
+        skip_if_shared_database(:ci)
       end
 
-      it 'does not create partitions in each database if restricted' do
-        skip_if_shared_database(:ci)
+      context 'when owner_db_only is false' do
+        let(:owner_db_only) { false }
 
-        expect { described_class.sync_partitions(models, owner_db_only: true) }
-          .to change { find_partitions(table_names.first, conn: main_connection).size }.from(0)
-          .and change { find_partitions(table_names.last, conn: main_connection).size }.from(0)
-          .and change { find_partitions(table_names.first, conn: ci_connection).size }.by_at_most(0)
-          .and change { find_partitions(table_names.last, conn: ci_connection).size }.by_at_most(0)
+        it 'creates partitions in each database' do
+          expect { sync }
+            .to change { find_partitions(table_names.first, conn: main_connection).size }.from(0).to(be > 0)
+            .and change { find_partitions(table_names.last, conn: main_connection).size }.from(0).to(be > 0)
+            .and change { find_partitions(table_names.first, conn: ci_connection).size }.from(0).to(be > 0)
+            .and change { find_partitions(table_names.last, conn: ci_connection).size }.from(0).to(be > 0)
+        end
+
+        context 'with SharedModel' do
+          let(:table_names) { %w[_test_partitioning_generic_shared_model] }
+          let(:models) do
+            [
+              Class.new(Gitlab::Database::SharedModel) do
+                include PartitionedTable
+
+                self.table_name = :_test_partitioning_generic_shared_model
+                partitioned_by :created_at, strategy: :monthly
+              end
+            ]
+          end
+
+          it 'creates partitions in each database' do
+            expect(
+              models.first < ::Gitlab::Database::SharedModel &&
+              !(models.first < Gitlab::Database::Partitioning::TableWithoutModel)
+            ).to be_truthy
+
+            expect { sync }
+              .to change { find_partitions(table_names.first, conn: main_connection).size }.from(0)
+              .and change { find_partitions(table_names.first, conn: ci_connection).size }.from(0)
+          end
+        end
+      end
+
+      context 'when owner_db_only is true' do
+        let(:owner_db_only) { true }
+
+        it 'does not create partitions in each database if restricted' do
+          expect { sync }
+            .to change { find_partitions(table_names.first, conn: main_connection).size }.from(0)
+            .and change { find_partitions(table_names.last, conn: main_connection).size }.from(0)
+            .and change { find_partitions(table_names.first, conn: ci_connection).size }.by_at_most(0)
+            .and change { find_partitions(table_names.last, conn: ci_connection).size }.by_at_most(0)
+        end
+
+        context 'with SharedModel' do
+          let(:table_names) { %w[_test_partitioning_generic_shared_model] }
+          let(:models) do
+            [
+              Class.new(Gitlab::Database::SharedModel) do
+                include PartitionedTable
+
+                self.table_name = :_test_partitioning_generic_shared_model
+                partitioned_by :created_at, strategy: :monthly
+              end
+            ]
+          end
+
+          it 'creates partitions in each database' do
+            expect(
+              models.first < ::Gitlab::Database::SharedModel &&
+              !(models.first < Gitlab::Database::Partitioning::TableWithoutModel)
+            ).to be_truthy
+
+            expect { sync }
+              .to change { find_partitions(table_names.first, conn: main_connection).size }.from(0)
+              .and change { find_partitions(table_names.first, conn: ci_connection).size }.from(0)
+          end
+        end
       end
     end
 

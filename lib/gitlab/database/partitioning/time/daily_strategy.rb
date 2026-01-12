@@ -9,6 +9,8 @@ module Gitlab
           PARTITION_SUFFIX = '%Y%m%d'
 
           def current_partitions
+            ensure_connection_set
+
             Gitlab::Database::PostgresPartition.for_parent_table(table_name).map do |partition|
               TimePartition.from_sql(table_name, partition.name, partition.condition)
             end
@@ -16,10 +18,14 @@ module Gitlab
 
           # Check the currently existing partitions and determine which ones are missing
           def missing_partitions
+            ensure_connection_set
+
             desired_partitions - current_partitions
           end
 
           def extra_partitions
+            ensure_connection_set
+
             partitions = current_partitions - desired_partitions
             partitions.reject!(&:holds_data?) if retain_non_empty_partitions
 
@@ -27,6 +33,8 @@ module Gitlab
           end
 
           def desired_partitions
+            ensure_connection_set
+
             [].tap do |parts|
               min_date, max_date = relevant_range
 
@@ -47,6 +55,8 @@ module Gitlab
           end
 
           def relevant_range
+            ensure_connection_set
+
             first_partition = current_partitions.min
 
             if first_partition
@@ -67,10 +77,12 @@ module Gitlab
             [min_date, max_date]
           end
 
+          # no explicit connection needed since no queries are executed (pure date math on static value)
           def oldest_active_date
             retain_for.ago.beginning_of_day.to_date
           end
 
+          # no explicit connection needed since no queries are executed (pure string formatting on static value)
           def partition_name(lower_bound)
             suffix = lower_bound&.strftime(PARTITION_SUFFIX) || '00000000'
 

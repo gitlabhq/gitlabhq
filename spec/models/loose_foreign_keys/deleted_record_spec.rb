@@ -74,7 +74,11 @@ RSpec.describe LooseForeignKeys::DeletedRecord, type: :model, feature_category: 
     let(:partition_manager) { Gitlab::Database::Partitioning::PartitionManager.new(described_class) }
 
     describe 'next_partition_if callback' do
-      let(:active_partition) { described_class.partitioning_strategy.active_partition }
+      let(:active_partition) do
+        Gitlab::Database::SharedModel.using_connection(ApplicationRecord.connection) do
+          described_class.partitioning_strategy.active_partition
+        end
+      end
 
       subject(:value) { described_class.partitioning_strategy.next_partition_if.call(active_partition) }
 
@@ -106,7 +110,11 @@ RSpec.describe LooseForeignKeys::DeletedRecord, type: :model, feature_category: 
     end
 
     describe 'detach_partition_if callback' do
-      let(:active_partition) { described_class.partitioning_strategy.active_partition }
+      let(:active_partition) do
+        Gitlab::Database::SharedModel.using_connection(ApplicationRecord.connection) do
+          described_class.partitioning_strategy.active_partition
+        end
+      end
 
       subject(:value) { described_class.partitioning_strategy.detach_partition_if.call(active_partition) }
 
@@ -131,38 +139,40 @@ RSpec.describe LooseForeignKeys::DeletedRecord, type: :model, feature_category: 
 
     describe 'the behavior of the strategy' do
       it 'moves records to new partitions as time passes', :freeze_time do
-        # We start with partition 1
-        expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to eq([1])
+        Gitlab::Database::SharedModel.using_connection(ApplicationRecord.connection) do
+          # We start with partition 1
+          expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to eq([1])
 
-        # it's not a day old yet so no new partitions are created
-        partition_manager.sync_partitions
+          # it's not a day old yet so no new partitions are created
+          partition_manager.sync_partitions
 
-        expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to eq([1])
+          expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to eq([1])
 
-        # add one record so the next partition will be created
-        described_class.create!(fully_qualified_table_name: 'public.table', primary_key_value: 1)
+          # add one record so the next partition will be created
+          described_class.create!(fully_qualified_table_name: 'public.table', primary_key_value: 1)
 
-        # after traveling forward a day
-        travel(described_class::PARTITION_DURATION + 1.second)
+          # after traveling forward a day
+          travel(described_class::PARTITION_DURATION + 1.second)
 
-        # a new partition is created
-        partition_manager.sync_partitions
+          # a new partition is created
+          partition_manager.sync_partitions
 
-        expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to eq([1, 2])
+          expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to eq([1, 2])
 
-        # and we can insert to the new partition
-        expect { described_class.create!(fully_qualified_table_name: table, primary_key_value: 5) }.not_to raise_error
+          # and we can insert to the new partition
+          expect { described_class.create!(fully_qualified_table_name: table, primary_key_value: 5) }.not_to raise_error
 
-        # after processing old records
-        described_class.for_partition(1).update_all(status: :processed)
+          # after processing old records
+          described_class.for_partition(1).update_all(status: :processed)
 
-        partition_manager.sync_partitions
+          partition_manager.sync_partitions
 
-        # the old one is removed
-        expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to eq([2])
+          # the old one is removed
+          expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to eq([2])
 
-        # and we only have the newly created partition left.
-        expect(described_class.count).to eq(1)
+          # and we only have the newly created partition left.
+          expect(described_class.count).to eq(1)
+        end
       end
     end
   end

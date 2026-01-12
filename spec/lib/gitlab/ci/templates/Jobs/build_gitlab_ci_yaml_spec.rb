@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Jobs/Build.gitlab-ci.yml' do
+RSpec.describe 'Jobs/Build.gitlab-ci.yml', feature_category: :auto_devops do
   include Ci::TemplateHelpers
 
   subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Jobs/Build') }

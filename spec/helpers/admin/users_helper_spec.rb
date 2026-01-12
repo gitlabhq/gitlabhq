@@ -108,4 +108,25 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
       })
     end
   end
+
+  describe 'email_otp_status_text' do
+    subject { helper.email_otp_status_text(current_user) }
+
+    before do
+      allow(current_user).to receive(:email_otp_required_after).and_return(email_otp_required_after)
+    end
+
+    context 'when user has email OTP disabled' do
+      let(:email_otp_required_after) { nil }
+
+      it { is_expected.to eq('No') }
+    end
+
+    context 'when user has email OTP enabled' do
+      let(:now) { Time.current }
+      let(:email_otp_required_after) { now }
+
+      it { is_expected.to eq("Yes (#{now.to_fs(:medium)})") }
+    end
+  end
 end

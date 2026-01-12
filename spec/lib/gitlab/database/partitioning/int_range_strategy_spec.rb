@@ -254,6 +254,26 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
     end
   end
 
+  describe '#after_adding_partitions' do
+    let(:partitioning_key) { double }
+
+    subject(:strategy) { described_class.new(model, partitioning_key, partition_size: 10) }
+
+    it 'is a no-op and does not raise an error' do
+      expect { strategy.after_adding_partitions }.not_to raise_error
+    end
+  end
+
+  describe '#validate_and_fix' do
+    let(:partitioning_key) { double }
+
+    subject(:strategy) { described_class.new(model, partitioning_key, partition_size: 10) }
+
+    it 'is a no-op and does not raise an error' do
+      expect { strategy.validate_and_fix }.not_to raise_error
+    end
+  end
+
   describe 'simulates the merge_request_diff_commits partition creation' do
     let(:table_name) { '_test_partitioned_test' }
     let(:model) do

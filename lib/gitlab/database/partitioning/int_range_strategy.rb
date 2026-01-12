@@ -3,7 +3,7 @@
 module Gitlab
   module Database
     module Partitioning
-      class IntRangeStrategy
+      class IntRangeStrategy < BaseStrategy
         attr_reader :model, :partitioning_key, :partition_size, :analyze_interval
 
         # We create this many partitions in the future
@@ -20,6 +20,8 @@ module Gitlab
         end
 
         def current_partitions
+          ensure_connection_set
+
           int_range_partitions = Gitlab::Database::PostgresPartition.for_parent_table(table_name).map do |partition|
             IntRangePartition.from_sql(table_name, partition.name, partition.condition)
           end
@@ -29,18 +31,26 @@ module Gitlab
 
         # Check the currently existing partitions and determine which ones are missing
         def missing_partitions
+          ensure_connection_set
+
           desired_partitions - current_partitions
         end
 
         def extra_partitions
+          ensure_connection_set
+
           []
         end
 
         def after_adding_partitions
+          ensure_connection_set
+
           # No-op, required by the partition manager
         end
 
         def validate_and_fix
+          ensure_connection_set
+
           # No-op, required by the partition manager
         end
 

@@ -27,6 +27,12 @@ module Admin
       }.merge(admin_user_organization_field_shared(initial_organization)).to_json
     end
 
+    def email_otp_status_text(user)
+      return %{Yes (#{user.email_otp_required_after.to_fs(:medium)})} if user.email_otp_required_after
+
+      'No'
+    end
+
     private
 
     def admin_user_organization_field_shared(initial_organization)

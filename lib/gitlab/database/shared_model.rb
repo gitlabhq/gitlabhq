@@ -40,6 +40,16 @@ module Gitlab
           self.overriding_connection = previous_connection
         end
 
+        def ensure_connection_set!
+          return if Feature.disabled?(:enforce_explicit_connection_for_partitioned_shared_models, :instance)
+
+          return if overriding_connection
+
+          raise 'Connection not set for SharedModel partition strategy. ' \
+            'Use SharedModel.using_connection() to set the correct connection. ' \
+            'Using the default database is dangerous.'
+        end
+
         def connection
           if connection = self.overriding_connection
             connection

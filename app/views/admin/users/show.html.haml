@@ -91,6 +91,11 @@
                 - else
                   = _('Disabled')
 
+          %li{ class: list_item_classes, data: { testid: 'email-otp' } }
+            %span.gl-text-subtle= _('Email OTP:')
+            .gl-col-span-2
+              %strong= email_otp_status_text(@user)
+
           = render_if_exists 'admin/namespace_plan_info', namespace: @user.namespace
 
           %li{ class: list_item_classes }
