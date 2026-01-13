@@ -724,7 +724,7 @@ Use:
 
 ## create
 
-Use **create** when an object does not exist and you are creating it for the first time.  **Create** is the opposite of [delete](#delete).
+Use **create** when an object does not exist and you are creating it for the first time. **Create** is the opposite of [delete](#delete).
 
 For example:
 

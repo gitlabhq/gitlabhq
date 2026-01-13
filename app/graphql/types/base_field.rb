@@ -3,6 +3,7 @@
 module Types
   class BaseField < GraphQL::Schema::Field
     include Gitlab::Graphql::Deprecations
+    include Gitlab::Graphql::Authz::AuthorizeGranularToken
     include Gitlab::Graphql::Authorize::AuthorizeResource
 
     argument_class ::Types::BaseArgument
@@ -31,6 +32,7 @@ module Types
       # We want to avoid the overhead of this in prod
       extension ::Gitlab::Graphql::CallsGitaly::FieldExtension if Gitlab.dev_or_test_env?
       extension ::Gitlab::Graphql::Present::FieldExtension
+      extension ::Gitlab::Graphql::Authz::GranularTokenAuthorization
       extension ::Gitlab::Graphql::Authorize::FieldExtension
 
       after_connection_extensions.each { extension _1 } if after_connection_extensions.any?

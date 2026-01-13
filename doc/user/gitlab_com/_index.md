@@ -376,7 +376,7 @@ GitLab.com sets these requirements for passwords on new accounts and password ch
 - Minimum character length 8 characters.
 - Maximum character length 128 characters.
 - All characters are accepted. For example, `~`, `!`, `@`, `#`, `$`, `%`, `^`, `&`, `*`, `()`,
-  `[]`, `_`, `+`,  `=`, and `-`.
+  `[]`, `_`, `+`, `=`, and `-`.
 
 ## Group creation
 

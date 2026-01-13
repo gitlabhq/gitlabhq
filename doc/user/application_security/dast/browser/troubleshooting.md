@@ -126,7 +126,7 @@ This usually happens when the server exists, but:
 
 #### Target responded with HTTP 5xx error
 
-You might see the target application respond with an `HTTP 5xx` error. This happens when the application is reachable, but is responding with server errors like  `500 Internal Server Error`, `502 Bad Gateway`, `503 Service Unavailable`, or `504 Gateway Timeout`.
+You might see the target application respond with an `HTTP 5xx` error. This happens when the application is reachable, but is responding with server errors like `500 Internal Server Error`, `502 Bad Gateway`, `503 Service Unavailable`, or `504 Gateway Timeout`.
 
 You might see server errors when:
 

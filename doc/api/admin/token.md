@@ -121,7 +121,7 @@ Example response:
 - [OAuth application secrets added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179035) in GitLab 17.9.
 - [Incoming email tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180763) in GitLab 17.9.
 - [Feature flags client tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181096) in GitLab 17.9.
-- [Pipeline trigger tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181598) in GitLab 17.10  [with a flag](../../administration/feature_flags/_index.md) named `token_api_expire_pipeline_triggers`. Disabled by default.
+- [Pipeline trigger tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181598) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `token_api_expire_pipeline_triggers`. Disabled by default.
 - [GitLab sessions added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184047) in GitLab 17.11.
 
 {{< /history >}}

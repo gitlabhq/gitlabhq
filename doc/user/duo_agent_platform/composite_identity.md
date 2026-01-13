@@ -111,3 +111,25 @@ AI Catalog flows use different token types with different permission scopes:
   [available job token permissions](../../ci/jobs/ci_job_token.md#job-token-access).
 
 Because these are different token types with different scopes, the CI/CD job has different permissions than the OAuth token.
+
+## Compliance considerations for merge requests
+
+When a flow creates a merge request, the merge request is attributed to the service account instead of the human user who triggered the flow. This attribution model might conflict with compliance frameworks that require segregation of duties, including:
+
+- SOC 2 (System and Organization Controls 2)
+- SOX (Sarbanes-Oxley Act)
+- ISO 27001 (Information Security Management)
+- FedRAMP (Federal Risk and Authorization Management Program)
+
+These frameworks typically require that a user cannot author code changes and approve those changes for production deployment.
+
+### Understanding the attribution model
+
+Even though the service account creates the commits and opens the merge request, the human user
+is considered the author because:
+
+- The human user directed the service account to create the changes.
+- From a compliance perspective, prompting an AI system to write code is equivalent to writing the code yourself.
+- The service account acts as a proxy for the human user's intent.
+
+Organizations subject to compliance requirements should [turn off foundational flows](../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off) that create merge requests.

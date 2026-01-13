@@ -121,7 +121,7 @@ To rotate a personal access token:
 1. Select **Edit profile**.
 1. On the left sidebar, select **Personal access tokens**.
 1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
-1. Select  **Rotate** ({{< icon name="retry" >}}).
+1. Select **Rotate** ({{< icon name="retry" >}}).
 1. On the confirmation dialog, select **Rotate**.
 
 ## Revoke a personal access token

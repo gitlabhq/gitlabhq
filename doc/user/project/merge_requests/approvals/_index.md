@@ -28,7 +28,7 @@ You can configure approvals to be optional or required, depending on your projec
   - Create a list of [Code Owners](../../codeowners/_index.md) for specific files.
   - Configure approvals
     [for the entire instance](../../../../administration/merge_requests_approvals.md).
-  - Configure  [group merge request approval settings](../../../group/manage.md#group-merge-request-approval-settings).
+  - Configure [group merge request approval settings](../../../group/manage.md#group-merge-request-approval-settings).
 
     {{< alert type="note" >}}
 

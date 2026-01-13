@@ -289,7 +289,8 @@ class GraphqlController < ApplicationController
       current_organization: Current.organization,
       request: request,
       scope_validator: ::Gitlab::Auth::ScopeValidator.new(api_user, request_authenticator),
-      remove_deprecated: Gitlab::Utils.to_boolean(permitted_params[:remove_deprecated], default: false)
+      remove_deprecated: Gitlab::Utils.to_boolean(permitted_params[:remove_deprecated], default: false),
+      access_token: access_token
     }
   end
 

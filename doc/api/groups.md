@@ -1785,7 +1785,7 @@ Returns `204` and no content on success.
 
 {{< alert type="flag" >}}
 
-The availability of the  `web_based_commit_signing_enabled` attribute is controlled by a feature flag.
+The availability of the `web_based_commit_signing_enabled` attribute is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
 

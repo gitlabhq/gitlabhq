@@ -20,6 +20,7 @@ module RuboCop
           PermissionTypes
           Resolvers
           Subscriptions
+          Directives
         ].freeze
 
         class << self

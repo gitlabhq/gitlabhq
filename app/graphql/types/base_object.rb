@@ -3,6 +3,7 @@
 module Types
   class BaseObject < GraphQL::Schema::Object
     include Gitlab::Graphql::VersionFilter::FutureFieldFallback
+    include Gitlab::Graphql::Authz::AuthorizeGranularToken
 
     prepend Gitlab::Graphql::Present
     prepend Gitlab::Graphql::ExposePermissions

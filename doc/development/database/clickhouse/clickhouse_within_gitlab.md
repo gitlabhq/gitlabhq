@@ -648,7 +648,7 @@ To resolve this, you should add a migration to add the column to ClickHouse too.
 
 ### Example
 
-1. Add a new column `new_int` of type `int4`  to a table that is being synchronised to ClickHouse, such as `milestones`.
+1. Add a new column `new_int` of type `int4` to a table that is being synchronised to ClickHouse, such as `milestones`.
 1. Note that CI will fail with the error:
 
    ```plaintext

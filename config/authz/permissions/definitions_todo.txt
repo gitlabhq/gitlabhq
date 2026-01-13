@@ -254,7 +254,6 @@ create_timelog
 create_todo
 create_virtual_registry
 create_vulnerability_archive_export
-create_vulnerability_export
 create_vulnerability_feedback
 create_vulnerability_state_transition
 create_web_ide_terminal

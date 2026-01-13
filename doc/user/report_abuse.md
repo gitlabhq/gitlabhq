@@ -88,7 +88,7 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 
 {{< /history >}}
 
-1. On the task, in the upper-right corner, select  **More actions** ({{< icon name="ellipsis_v" >}}).
+1. On the task, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Report abuse**.
 1. Select a reason for reporting the user.
 1. Complete an abuse report.
@@ -102,7 +102,7 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 
 {{< /history >}}
 
-1. On the objective, in the upper-right corner, select  **More actions** ({{< icon name="ellipsis_v" >}}).
+1. On the objective, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Report abuse**.
 1. Select a reason for reporting the user.
 1. Complete an abuse report.
@@ -116,7 +116,7 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 
 {{< /history >}}
 
-1. On the key result, in the upper-right corner, select  **More actions** ({{< icon name="ellipsis_v" >}}).
+1. On the key result, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Report abuse**.
 1. Select a reason for reporting the user.
 1. Complete an abuse report.

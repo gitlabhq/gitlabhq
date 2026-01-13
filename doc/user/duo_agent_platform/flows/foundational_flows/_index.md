@@ -48,5 +48,9 @@ In the GitLab UI, foundational flows have access to the following GitLab APIs:
 - [Notes API](../../../../api/notes.md)
 - [Search API](../../../../api/search.md)
 
-In addition, foundational flows use a service account to complete tasks.
+### Service accounts
+
+Foundational flows use a service account to complete tasks.
 For more information, see [composite identity workflow](../../composite_identity.md#composite-identity-workflow).
+
+When foundational flows create merge requests, the merge request is attributed to the service account. This means the user who triggered the flow can approve and merge AI-generated code. Organizations with SOC 2, SOX, ISO 27001, or FedRAMP requirements should review the [compliance considerations](../../composite_identity.md#compliance-considerations-for-merge-requests) and implement appropriate approval policies.

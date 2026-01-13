@@ -287,7 +287,7 @@ If the instance is not reachable (for example, because of proxy configuration er
   gitlab_cloud_connector.providers.CompositeProvider.CriticalAuthError: No keys founds in JWKS; are OIDC providers up?
   ```
 
-In this scenario, verify if  `AIGW_GITLAB_URL` and `$AIGW_GITLAB_API_URL` are properly set to the container and accessible.
+In this scenario, verify if `AIGW_GITLAB_URL` and `$AIGW_GITLAB_API_URL` are properly set to the container and accessible.
 The following commands should be successful when run from the container:
 
 ```shell

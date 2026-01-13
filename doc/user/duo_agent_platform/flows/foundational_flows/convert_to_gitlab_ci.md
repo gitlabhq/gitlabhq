@@ -39,6 +39,9 @@ The Convert to GitLab CI/CD Flow helps you migrate your Jenkins pipelines to Git
 
 This flow is available in the GitLab UI only.
 
+> ![note]
+> The Convert to GitLab CI/CD Flow creates merge requests by using a service account. Organizations with SOC 2, SOX, ISO 27001, or FedRAMP requirements should ensure appropriate peer review policies are in place. For more information, see [compliance considerations for merge requests](../../composite_identity.md#compliance-considerations-for-merge-requests).
+
 ## Prerequisites
 
 To convert a Jenkinsfile, you must:

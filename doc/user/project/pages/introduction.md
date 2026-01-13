@@ -349,7 +349,7 @@ Prerequisites
 
 To regenerate a unique domain for your GitLab Pages site:
 
-1. On the left sidebar, select  **Deploy** > **Pages**.
+1. On the left sidebar, select **Deploy** > **Pages**.
 1. Next to **Access pages**, press **Regenerate unique domain**.
 1. GitLab generates a new unique domain for your Pages site.
 

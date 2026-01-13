@@ -440,6 +440,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'RefreshLicenseComplianceChecksWorker' => 3,
         'Releases::CreateEvidenceWorker' => 3,
         'RemoteMirrorNotificationWorker' => 3,
+        'Repositories::PostReceiveWorker' => 3,
         'RepositoryCheck::BatchWorker' => false,
         'RepositoryCheck::ClearWorker' => false,
         'RepositoryCheck::SingleRepositoryWorker' => false,

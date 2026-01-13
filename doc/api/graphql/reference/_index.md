@@ -25272,9 +25272,11 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="addonuserpersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="addonuserpersonalaccesstokenscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Filter personal access tokens created before the timestamp. |
 | <a id="addonuserpersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the specified date. |
 | <a id="addonuserpersonalaccesstokensexpiresbefore"></a>`expiresBefore` | [`Date`](#date) | Filter personal access tokens that expire before the specified date. |
 | <a id="addonuserpersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="addonuserpersonalaccesstokenslastusedbefore"></a>`lastUsedBefore` | [`Time`](#time) | Filter personal access tokens last used before the timestamp. |
 | <a id="addonuserpersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. |
 | <a id="addonuserpersonalaccesstokenssearch"></a>`search` | [`String`](#string) | Query to search personal access tokens by name. |
 | <a id="addonuserpersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
@@ -26995,9 +26997,11 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="autocompleteduserpersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="autocompleteduserpersonalaccesstokenscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Filter personal access tokens created before the timestamp. |
 | <a id="autocompleteduserpersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the specified date. |
 | <a id="autocompleteduserpersonalaccesstokensexpiresbefore"></a>`expiresBefore` | [`Date`](#date) | Filter personal access tokens that expire before the specified date. |
 | <a id="autocompleteduserpersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="autocompleteduserpersonalaccesstokenslastusedbefore"></a>`lastUsedBefore` | [`Time`](#time) | Filter personal access tokens last used before the timestamp. |
 | <a id="autocompleteduserpersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. |
 | <a id="autocompleteduserpersonalaccesstokenssearch"></a>`search` | [`String`](#string) | Query to search personal access tokens by name. |
 | <a id="autocompleteduserpersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
@@ -30395,9 +30399,11 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="currentuserpersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="currentuserpersonalaccesstokenscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Filter personal access tokens created before the timestamp. |
 | <a id="currentuserpersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the specified date. |
 | <a id="currentuserpersonalaccesstokensexpiresbefore"></a>`expiresBefore` | [`Date`](#date) | Filter personal access tokens that expire before the specified date. |
 | <a id="currentuserpersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="currentuserpersonalaccesstokenslastusedbefore"></a>`lastUsedBefore` | [`Time`](#time) | Filter personal access tokens last used before the timestamp. |
 | <a id="currentuserpersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. |
 | <a id="currentuserpersonalaccesstokenssearch"></a>`search` | [`String`](#string) | Query to search personal access tokens by name. |
 | <a id="currentuserpersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
@@ -37969,9 +37975,11 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneepersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="mergerequestassigneepersonalaccesstokenscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Filter personal access tokens created before the timestamp. |
 | <a id="mergerequestassigneepersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the specified date. |
 | <a id="mergerequestassigneepersonalaccesstokensexpiresbefore"></a>`expiresBefore` | [`Date`](#date) | Filter personal access tokens that expire before the specified date. |
 | <a id="mergerequestassigneepersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="mergerequestassigneepersonalaccesstokenslastusedbefore"></a>`lastUsedBefore` | [`Time`](#time) | Filter personal access tokens last used before the timestamp. |
 | <a id="mergerequestassigneepersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. |
 | <a id="mergerequestassigneepersonalaccesstokenssearch"></a>`search` | [`String`](#string) | Query to search personal access tokens by name. |
 | <a id="mergerequestassigneepersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
@@ -38428,9 +38436,11 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestauthorpersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="mergerequestauthorpersonalaccesstokenscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Filter personal access tokens created before the timestamp. |
 | <a id="mergerequestauthorpersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the specified date. |
 | <a id="mergerequestauthorpersonalaccesstokensexpiresbefore"></a>`expiresBefore` | [`Date`](#date) | Filter personal access tokens that expire before the specified date. |
 | <a id="mergerequestauthorpersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="mergerequestauthorpersonalaccesstokenslastusedbefore"></a>`lastUsedBefore` | [`Time`](#time) | Filter personal access tokens last used before the timestamp. |
 | <a id="mergerequestauthorpersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. |
 | <a id="mergerequestauthorpersonalaccesstokenssearch"></a>`search` | [`String`](#string) | Query to search personal access tokens by name. |
 | <a id="mergerequestauthorpersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
@@ -38938,9 +38948,11 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestparticipantpersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="mergerequestparticipantpersonalaccesstokenscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Filter personal access tokens created before the timestamp. |
 | <a id="mergerequestparticipantpersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the specified date. |
 | <a id="mergerequestparticipantpersonalaccesstokensexpiresbefore"></a>`expiresBefore` | [`Date`](#date) | Filter personal access tokens that expire before the specified date. |
 | <a id="mergerequestparticipantpersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="mergerequestparticipantpersonalaccesstokenslastusedbefore"></a>`lastUsedBefore` | [`Time`](#time) | Filter personal access tokens last used before the timestamp. |
 | <a id="mergerequestparticipantpersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. |
 | <a id="mergerequestparticipantpersonalaccesstokenssearch"></a>`search` | [`String`](#string) | Query to search personal access tokens by name. |
 | <a id="mergerequestparticipantpersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
@@ -39416,9 +39428,11 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewerpersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="mergerequestreviewerpersonalaccesstokenscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Filter personal access tokens created before the timestamp. |
 | <a id="mergerequestreviewerpersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the specified date. |
 | <a id="mergerequestreviewerpersonalaccesstokensexpiresbefore"></a>`expiresBefore` | [`Date`](#date) | Filter personal access tokens that expire before the specified date. |
 | <a id="mergerequestreviewerpersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="mergerequestreviewerpersonalaccesstokenslastusedbefore"></a>`lastUsedBefore` | [`Time`](#time) | Filter personal access tokens last used before the timestamp. |
 | <a id="mergerequestreviewerpersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. |
 | <a id="mergerequestreviewerpersonalaccesstokenssearch"></a>`search` | [`String`](#string) | Query to search personal access tokens by name. |
 | <a id="mergerequestreviewerpersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
@@ -48132,9 +48146,11 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="usercorepersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="usercorepersonalaccesstokenscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Filter personal access tokens created before the timestamp. |
 | <a id="usercorepersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the specified date. |
 | <a id="usercorepersonalaccesstokensexpiresbefore"></a>`expiresBefore` | [`Date`](#date) | Filter personal access tokens that expire before the specified date. |
 | <a id="usercorepersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="usercorepersonalaccesstokenslastusedbefore"></a>`lastUsedBefore` | [`Time`](#time) | Filter personal access tokens last used before the timestamp. |
 | <a id="usercorepersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. |
 | <a id="usercorepersonalaccesstokenssearch"></a>`search` | [`String`](#string) | Query to search personal access tokens by name. |
 | <a id="usercorepersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
@@ -58633,9 +58649,11 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="userpersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="userpersonalaccesstokenscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Filter personal access tokens created before the timestamp. |
 | <a id="userpersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the specified date. |
 | <a id="userpersonalaccesstokensexpiresbefore"></a>`expiresBefore` | [`Date`](#date) | Filter personal access tokens that expire before the specified date. |
 | <a id="userpersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="userpersonalaccesstokenslastusedbefore"></a>`lastUsedBefore` | [`Time`](#time) | Filter personal access tokens last used before the timestamp. |
 | <a id="userpersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. |
 | <a id="userpersonalaccesstokenssearch"></a>`search` | [`String`](#string) | Query to search personal access tokens by name. |
 | <a id="userpersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |

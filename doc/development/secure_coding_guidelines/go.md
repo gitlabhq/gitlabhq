@@ -57,7 +57,7 @@ func fixed(hostNames []byte) string {
 }
 ```
 
-Alternatively, you can use backtick-delimited raw string literals. For example, the `\b` in ``regexp.Compile(`hello\bworld`)``  matches a word boundary, not a backspace character, as within backticks `\b` is not an escape sequence.
+Alternatively, you can use backtick-delimited raw string literals. For example, the `\b` in ``regexp.Compile(`hello\bworld`)`` matches a word boundary, not a backspace character, as within backticks `\b` is not an escape sequence.
 
 ## Path Traversal guidelines
 
@@ -105,7 +105,7 @@ os.WriteFile(filepath.Join("/app/data", userInput), []byte("data"), 0644)
 os.Readlink(filepath.Join("/app/data", userInput))
 ```
 
-To mitigate these risks, use the  [`safeopen`](https://pkg.go.dev/github.com/google/safeopen) library functions. These functions enforce a secure root directory and sanitize file paths:
+To mitigate these risks, use the [`safeopen`](https://pkg.go.dev/github.com/google/safeopen) library functions. These functions enforce a secure root directory and sanitize file paths:
 
 Example of safe usage:
 

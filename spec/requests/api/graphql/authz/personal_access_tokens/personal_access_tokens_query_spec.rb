@@ -18,7 +18,7 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
   let_it_be(:legacy_token_expiring_soon) { create(:personal_access_token, user: user, expires_at: 1.week.from_now) }
   let_it_be(:boundary) { ::Authz::Boundary.for(group) }
   let_it_be(:granular_token) do
-    create(:granular_pat, name: 'Special token', last_used_at: 1.day.ago, permissions: ['read_member_role'],
+    create(:granular_pat, name: 'Special token', last_used_at: 2.days.ago, permissions: ['read_member_role'],
       user: user, boundary: boundary)
   end
 
@@ -230,6 +230,15 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
         end
       end
 
+      context 'with { created_before: <timestamp> }' do
+        let(:args) { { created_before: 4.days.ago } }
+
+        it 'returns only personal access tokens that were created before the given timestamp' do
+          created_at_times = personal_access_tokens_data.pluck('createdAt').map(&:in_time_zone)
+          expect(created_at_times).to be_present.and all(be <= args[:created_before])
+        end
+      end
+
       context 'with { created_after: <date> }' do
         let(:args) { { created_after: 1.day.ago } }
 
@@ -239,8 +248,17 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
         end
       end
 
+      context 'with { last_used_before: <timestamp> }' do
+        let(:args) { { last_used_before: 1.day.ago } }
+
+        it 'returns only personal access tokens that were last used before the given timestamp' do
+          last_used_at_times = personal_access_tokens_data.pluck('lastUsedAt').map(&:in_time_zone)
+          expect(last_used_at_times).to be_present.and all(be <= args[:last_used_before])
+        end
+      end
+
       context 'with { last_used_after: <date> }' do
-        let(:args) { { last_used_after: 2.days.ago } }
+        let(:args) { { last_used_after: 3.days.ago } }
 
         it 'returns only personal access tokens that were last used after the given date' do
           last_used_at_times = personal_access_tokens_data.pluck('lastUsedAt').map(&:in_time_zone)

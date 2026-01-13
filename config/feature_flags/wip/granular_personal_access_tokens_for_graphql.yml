@@ -1,0 +1,10 @@
+---
+name: granular_personal_access_tokens_for_graphql
+description: Enables Granular Personal Access Tokens for GraphQL requests
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/571510
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211322
+rollout_issue_url:
+milestone: '18.8'
+group: group::authorization
+type: wip
+default_enabled: false

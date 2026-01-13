@@ -283,7 +283,7 @@ To finish, remove the deployed resources and delete the secret you used to acces
 
 1. Delete the `clusters/testing/nginx.yaml` file.
    Flux will take care of removing the related resources from the cluster.
-1. Stop the `container-registry-secret`  environment.
+1. Stop the `container-registry-secret` environment.
    Stopping the environment will trigger its `on_stop` job, removing the secret from the cluster.
 
 ## Next steps

@@ -411,7 +411,7 @@ Assuming the current analyzer release is `v{N}`:
 
       Using `release candidates` allows us to release **all breaking changes in a single major version bump**, which follows the [semver guidance](https://semver.org) of only making breaking changes in a major version update.
 
-1. During the milestone of the major release, when there are no more changes to be merged into the `default`  or `v{N+1}` branches:
+1. During the milestone of the major release, when there are no more changes to be merged into the `default` or `v{N+1}` branches:
    1. Create a `v{N}` branch from the `default` branch.
    1. Create a Merge Request in the `v{N+1}` branch to squash all the `release candidate` changelog entries into a single entry for `v{N+1}`.
 

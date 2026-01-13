@@ -49,7 +49,7 @@ To create a scan execution policy, you can use any of the following resources:
 - You can assign a maximum of five rules to each policy.
 - You can assign a maximum of five scan execution policies to each security policy project.
 - Local project YAML files cannot override scan execution policies. Scan execution policies take precedence over any configurations defined for a pipeline, even if you use the same job name in your project's CI/CD configuration.
-- Scheduled policies (`type: schedule`) execute according to their scheduled  `cadence` only. Updating a policy does not trigger an immediate scan.
+- Scheduled policies (`type: schedule`) execute according to their scheduled `cadence` only. Updating a policy does not trigger an immediate scan.
 - Policy updates that you make directly to the YAML configuration files (with a commit or push instead of in the policy editor) can take up to 10 minutes to propagate through the system. (See [issue 512615](https://gitlab.com/gitlab-org/gitlab/-/issues/512615) for proposed changes to this limitation.)
 
 ## Job stages
@@ -242,7 +242,7 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) the `branch_exceptions` field in GitLab 16.3 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_exceptions`. Generally available in GitLab 16.5. Feature flag removed.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147691) a new `scan_execution_pipeline_worker` worker to scheduled scans to create pipelines in GitLab 16.11 [with a flag](../../../administration/feature_flags/_index.md).
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152855) a new application setting `security_policy_scheduled_scans_max_concurrency` in GitLab 17.1. The concurrency limit applies when both the `scan_execution_pipeline_worker` and `scan_execution_pipeline_concurrency_control` are enabled.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158636) a concurrency limit for scan execution scheduled jobs in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named  `scan_execution_pipeline_concurrency_control`.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158636) a concurrency limit for scan execution scheduled jobs in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `scan_execution_pipeline_concurrency_control`.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) the `scan_execution_pipeline_worker` feature flag on GitLab.com in GitLab 17.5.
 - [Feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) `scan_execution_pipeline_worker` removed in GitLab 17.6.
 - [Feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/463802) `scan_execution_pipeline_concurrency_control` removed in GitLab 17.9.

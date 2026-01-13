@@ -39,6 +39,9 @@ The Developer Flow streamlines the process of converting issues into actionable 
 
 This flow is available in the GitLab UI only.
 
+> ![note]
+> The Developer Flow creates merge requests by using a service account. Organizations with SOC 2, SOX, ISO 27001, or FedRAMP requirements should ensure appropriate peer review policies are in place. For more information, see [compliance considerations for merge requests](../../composite_identity.md#compliance-considerations-for-merge-requests).
+
 ## Prerequisites
 
 To create a merge request from an issue, you must:

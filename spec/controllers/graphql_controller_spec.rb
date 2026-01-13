@@ -543,6 +543,12 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         expect(assigns(:context)[:is_sessionless_user]).to be true
       end
 
+      it 'assigns access_token in the context' do
+        subject
+
+        expect(assigns(:context)[:access_token]).to eq(token)
+      end
+
       it "assigns username in ApplicationContext" do
         subject
 
@@ -837,7 +843,6 @@ RSpec.describe GraphqlController, feature_category: :integrations do
           context 'when cookie-based authentication is used' do
             it 'does not invoke DPoP' do
               sign_in(user)
-              expect(controller).not_to receive(:extract_personal_access_token)
 
               post :execute
 

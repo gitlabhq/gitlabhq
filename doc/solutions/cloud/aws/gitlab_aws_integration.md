@@ -131,7 +131,7 @@ Generally solutions demonstrate end-to-end capabilities for the development fram
 
 ### .NET on AWS
 
-- [Working Example Code for Scaling .NET Framework 4.x Runners on AWS](https://gitlab.com/guided-explorations/aws/dotnet-aws-toolkit)  `[GitLab Solution]` `[CI Solution]`
+- [Working Example Code for Scaling .NET Framework 4.x Runners on AWS](https://gitlab.com/guided-explorations/aws/dotnet-aws-toolkit) `[GitLab Solution]` `[CI Solution]`
 - [Video Walkthrough of Code and Building a .NET Framework 4.x Project](https://www.youtube.com/watch?v=_4r79ZLmDuo) `[GitLab Solution]` `[CI Solution]`
 
 ## System to system integration of GitLab and AWS

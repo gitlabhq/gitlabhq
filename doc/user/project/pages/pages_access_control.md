@@ -32,7 +32,7 @@ For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
-1. To enable the access control, toggle **Pages**  If you don't see the toggle button,
+1. To enable the access control, toggle **Pages**. If you don't see the toggle button,
    that means it isn't enabled. Ask your administrator to [enable it](../../../administration/pages/_index.md#access-control).
 
 1. The Pages access control dropdown list allows you to set who can view pages hosted
