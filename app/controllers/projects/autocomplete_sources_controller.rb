@@ -54,7 +54,11 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   private
 
   def autocomplete_service
-    @autocomplete_service ||= ::Projects::AutocompleteService.new(@project, current_user, params)
+    @autocomplete_service ||= ::Projects::AutocompleteService.new(
+      @project,
+      current_user,
+      params.merge(organization_id: Current.organization.id)
+    )
   end
 
   def target

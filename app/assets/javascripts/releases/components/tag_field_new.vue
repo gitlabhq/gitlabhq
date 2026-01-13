@@ -4,7 +4,7 @@ import { GlButton, GlTruncate, GlIcon, GlFormGroup, GlPopover } from '@gitlab/ui
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { __, s__ } from '~/locale';
 import { ESC_KEY } from '~/lib/utils/keys';
-
+import { getParameterByName } from '~/lib/utils/url_utility';
 import TagSearch from './tag_search.vue';
 import TagCreate from './tag_create.vue';
 
@@ -38,7 +38,9 @@ export default {
     },
   },
   mounted() {
-    this.newTagName = this.release?.tagName || '';
+    const selectedTagName = getParameterByName('tag_name');
+    this.newTagName = selectedTagName || this.release?.tagName || '';
+    this.updateReleaseTagName(this.newTagName);
   },
   methods: {
     ...mapActions('editNew', [

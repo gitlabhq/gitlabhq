@@ -146,11 +146,8 @@ The following table gives an overview of the pre-defined stages in value stream 
 | Review    | The median time taken to review a merge request that has a closing issue pattern, between its creation and until it's merged. |
 | Staging   | The median time between merging a merge request that has a closing issue pattern until the very first deployment to a [production environment](#production-environment). If there isn't a production environment, this is not tracked. |
 
-{{< alert type="note" >}}
-
-Value stream analytics works on timestamp data and aggregates only the final start and stop events of the stage. For items that move back and forth between stages multiple times, the stage time is calculated solely from the final events' timestamps.
-
-{{< /alert >}}
+> [!note]
+> Value stream analytics works on timestamp data and aggregates only the final start and stop events of the stage. For items that move back and forth between stages multiple times, the stage time is calculated solely from the final events' timestamps.
 
 ### Example workflow
 
@@ -214,11 +211,8 @@ For example, a stage tracks when the `in progress` label is added and removed, w
 With the original calculation method, the duration is five hours (from 9:00 to 14:00).
 With cumulative label event duration calculation enabled, the duration is three hours (9:00 to 10:00 and 12:00 to 14:00).
 
-{{< alert type="note" >}}
-
-When you upgrade your GitLab version to 16.10 (or to a higher version), existing label-based value stream analytics stages are automatically reaggregated using the background aggregation process.
-
-{{< /alert >}}
+> [!note]
+> When you upgrade your GitLab version to 16.10 (or to a higher version), existing label-based value stream analytics stages are automatically reaggregated using the background aggregation process.
 
 #### Reaggregate data after upgrade
 
@@ -322,11 +316,8 @@ The table shows a list of related workflow items for the selected stage. Based o
 - Issues
 - Merge requests
 
-{{< alert type="note" >}}
-
-The end date for each predefined date range is the current day, and is included in the number of days selected. For example, the start date for `Last 30 days` is 29 days prior to the current day for a total of 30 days.
-
-{{< /alert >}}
+> [!note]
+> The end date for each predefined date range is the current day, and is included in the number of days selected. For example, the start date for `Last 30 days` is 29 days prior to the current day for a total of 30 days.
 
 ### Data filters
 
@@ -490,11 +481,8 @@ To create a value stream with default stages:
    - Select a **Start event** and a **Stop event**.
 1. Select **New value stream**.
 
-{{< alert type="note" >}}
-
-If you have recently upgraded to GitLab Premium, it can take up to 30 minutes for data to collect and display.
-
-{{< /alert >}}
+> [!note]
+> If you have recently upgraded to GitLab Premium, it can take up to 30 minutes for data to collect and display.
 
 ### With custom stages
 

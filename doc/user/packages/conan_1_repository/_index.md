@@ -21,11 +21,8 @@ work and timelines to make it production ready.
 
 {{< /alert >}}
 
-{{< alert type="note" >}}
-
-The Conan registry is not FIPS compliant and is disabled when FIPS mode is enabled.
-
-{{< /alert >}}
+> [!note]
+> The Conan registry is not FIPS compliant and is disabled when FIPS mode is enabled.
 
 Publish Conan packages in your project's package registry. Then install the
 packages whenever you need to use them as a dependency.
@@ -363,11 +360,8 @@ conan info Hello/0.1@mycompany/beta
 
 ## Download a Conan package
 
-{{< alert type="flag" >}}
-
-Packages uploaded before [Conan info metadata extraction](#extract-conan-metadata) was enabled cannot be downloaded with the `conan download` CLI command.
-
-{{< /alert >}}
+> [!note]
+> Packages uploaded before [Conan info metadata extraction](#extract-conan-metadata) was enabled cannot be downloaded with the `conan download` CLI command.
 
 You can download a Conan package's recipe and binaries to your local cache without using settings that use the `conan download` command.
 
@@ -434,11 +428,8 @@ When you upload a Conan package, GitLab automatically extracts metadata from the
 - Package options
 - Package requirements and dependencies
 
-{{< alert type="note" >}}
-
-Packages uploaded before this feature was enabled (GitLab 17.10) do not have their metadata extracted. For these packages, some search and download functionalities are limited.
-
-{{< /alert >}}
+> [!note]
+> Packages uploaded before this feature was enabled (GitLab 17.10) do not have their metadata extracted. For these packages, some search and download functionalities are limited.
 
 ## Conan revisions
 
@@ -449,11 +440,8 @@ Packages uploaded before this feature was enabled (GitLab 17.10) do not have the
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 {{< alert type="note" >}}
 
@@ -551,11 +539,8 @@ Or:
 conan remove package_name/version@user/channel#revision_hash:package_id --remote=gitlab
 ```
 
-{{< alert type="note" >}}
-
-When you delete packages with revisions, you must include the `--remote=gitlab` flag. Otherwise, the package is removed only from your local system cache.
-
-{{< /alert >}}
+> [!note]
+> When you delete packages with revisions, you must include the `--remote=gitlab` flag. Otherwise, the package is removed only from your local system cache.
 
 ### Immutable revisions workflow
 

@@ -33,6 +33,7 @@ import {
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
   WORK_ITEM_TYPE_ENUM_TICKET,
+  WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
 } from '~/work_items/constants';
 import {
   isAssigneesWidget,
@@ -40,6 +41,7 @@ import {
   findLinkedItemsWidget,
   canRouterNav,
 } from '~/work_items/utils';
+import { routeForWorkItemTypeName } from '~/work_items/router/utils';
 import { SUPPORT_BOT_USERNAME } from '~/issues/show/utils/issuable_data';
 
 export default {
@@ -374,10 +376,15 @@ export default {
       });
 
       if (shouldRouterNav) {
+        const { useWorkItemUrl } = this.glFeatures;
+        const workItemTypeParameter = useWorkItemUrl
+          ? WORK_ITEM_TYPE_ROUTE_WORK_ITEM
+          : routeForWorkItemTypeName(this.issuable.workItemType?.name);
         this.$router.push({
           name: 'workItem',
           params: {
             iid: this.issuableIid,
+            type: workItemTypeParameter,
           },
         });
       } else {

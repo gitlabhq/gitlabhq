@@ -114,11 +114,8 @@ A more detailed Composer CI/CD file is also available as a `.gitlab-ci.yml` temp
 1. Above the file list, select **Set up CI/CD**. If this button is not available, select **CI/CD Configuration** and then **Edit**.
 1. From the **Apply a template** list, select **Composer**.
 
-{{< alert type="warning" >}}
-
-Do not save unless you want to overwrite the existing CI/CD file.
-
-{{< /alert >}}
+> [!warning]
+> Do not save unless you want to overwrite the existing CI/CD file.
 
 ## Publishing packages with the same name or version
 

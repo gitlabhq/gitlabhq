@@ -29,11 +29,8 @@ title: Post-migration contribution and membership mapping
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-To leave feedback about this feature, add a comment to [issue 502565](https://gitlab.com/gitlab-org/gitlab/-/issues/502565).
-
-{{< /alert >}}
+> [!note]
+> To leave feedback about this feature, add a comment to [issue 502565](https://gitlab.com/gitlab-org/gitlab/-/issues/502565).
 
 When you import groups or projects into GitLab with post-migration mapping, user contributions and memberships from the
 source instance are initially assigned to placeholder users rather than real users on the destination instance. This

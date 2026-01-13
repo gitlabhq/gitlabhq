@@ -63,8 +63,8 @@ export const renderDeleteSuccessToast = (item) => {
   // If the project/group is already marked for deletion
   if (item.markedForDeletion) {
     toast(
-      sprintf(__("Group '%{group_name}' is being deleted."), {
-        group_name: item.fullName,
+      sprintf(__('%{group_name} is being deleted.'), {
+        group_name: item.name,
       }),
     );
 
@@ -72,9 +72,8 @@ export const renderDeleteSuccessToast = (item) => {
   }
 
   toast(
-    sprintf(__("Group '%{group_name}' will be deleted on %{date}."), {
-      group_name: item.fullName,
-      date: item.permanentDeletionDate,
+    sprintf(__('%{group_name} moved to pending deletion.'), {
+      group_name: item.name,
     }),
   );
 };

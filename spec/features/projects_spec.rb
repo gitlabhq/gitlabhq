@@ -320,7 +320,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
         it 'allows immediate deletion', :sidekiq_inline do
           remove_with_confirm('Delete immediately', project_aimed_for_deletion.path_with_namespace)
 
-          expect(page).to have_content "Project '#{project_aimed_for_deletion.full_name}' is being deleted"
+          expect(page).to have_content "#{project_aimed_for_deletion.name} is being deleted."
         end
       end
 
@@ -339,7 +339,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
           it 'allows immediate deletion', :sidekiq_inline do
             remove_with_confirm('Delete immediately', project_aimed_for_deletion.path_with_namespace)
 
-            expect(page).to have_content "Project '#{project_aimed_for_deletion.full_name}' is being deleted"
+            expect(page).to have_content "#{project_aimed_for_deletion.name} is being deleted."
           end
         end
 
@@ -349,7 +349,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
 
           remove_with_confirm('Delete immediately', project_aimed_for_deletion.path_with_namespace)
 
-          expect(page).to have_content "Project '#{project_aimed_for_deletion.full_name}' is being deleted"
+          expect(page).to have_content "#{project_aimed_for_deletion.name} is being deleted."
         end
 
         it 'does not allow immediate deletion' do

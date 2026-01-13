@@ -137,11 +137,8 @@ When SSH certificates are enforced:
 - It does not apply to service accounts, deploy keys, and other types of internal accounts.
 - Only SSH certificates added to the group by Owners are used to authenticate repository access.
 
-{{< alert type="note" >}}
-
-Enforcing SSH certificates disables HTTPS access for regular users.
-
-{{< /alert >}}
+> [!note]
+> Enforcing SSH certificates disables HTTPS access for regular users.
 
 Prerequisites:
 

@@ -307,11 +307,8 @@ When a group is marked for deletion, scheduled CI/CD pipelines stop running.
 If the user who scheduled the group deletion loses access to the group (for example, by leaving the group, having their role downgraded, or being banned from the group) before the deletion occurs,
 the deletion job instead restores the group, and the group is no longer scheduled for deletion.
 
-{{< alert type="warning" >}}
-
-If the user who scheduled the group deletion regains Owner role or administrator access before the job runs, then the job removes the group permanently.
-
-{{< /alert >}}
+> [!warning]
+> If the user who scheduled the group deletion regains Owner role or administrator access before the job runs, then the job removes the group permanently.
 
 ## Delete a group immediately
 

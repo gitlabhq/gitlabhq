@@ -22,6 +22,7 @@ import toast from '~/vue_shared/plugins/global_toast';
 jest.mock('~/vue_shared/plugins/global_toast');
 
 const MOCK_GROUP = {
+  name: 'Group',
   fullName: 'Group',
   fullPath: 'path/to/group',
 };
@@ -182,16 +183,14 @@ describe('renderDeleteSuccessToast', () => {
     renderDeleteSuccessToast(MOCK_GROUP_WITH_DELAY_DELETION);
 
     expect(toast).toHaveBeenCalledWith(
-      `Group '${MOCK_GROUP_WITH_DELAY_DELETION.fullName}' will be deleted on ${MOCK_GROUP_WITH_DELAY_DELETION.permanentDeletionDate}.`,
+      `${MOCK_GROUP_WITH_DELAY_DELETION.name} moved to pending deletion.`,
     );
   });
 
   it('when delayed deletion is enabled and group is already pending deletion, renders the delete immediately message', () => {
     renderDeleteSuccessToast(MOCK_GROUP_PENDING_DELETION);
 
-    expect(toast).toHaveBeenCalledWith(
-      `Group '${MOCK_GROUP_PENDING_DELETION.fullName}' is being deleted.`,
-    );
+    expect(toast).toHaveBeenCalledWith(`${MOCK_GROUP_PENDING_DELETION.name} is being deleted.`);
   });
 });
 

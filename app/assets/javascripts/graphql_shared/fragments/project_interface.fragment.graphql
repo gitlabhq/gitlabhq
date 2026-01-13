@@ -2,6 +2,7 @@ fragment ProjectInterface on ProjectInterface {
   id
   fullPath
   avatarUrl
+  name
   nameWithNamespace
   webUrl
   userPermissions {

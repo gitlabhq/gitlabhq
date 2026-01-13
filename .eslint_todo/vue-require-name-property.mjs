@@ -1326,7 +1326,6 @@ export default {
     'ee/app/assets/javascripts/ai/components/ai_actions_dropdown.vue',
     'ee/app/assets/javascripts/ai/components/ai_generate_issue_description.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/components/common/activity_logs.vue',
-    'ee/app/assets/javascripts/ai/duo_agents_platform/components/common/run_agent_flow_form.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/namespace/project/project_agents_platform_index.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/namespace/user/user_agents_platform_index.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/nested_route_app.vue',

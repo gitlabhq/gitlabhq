@@ -17,7 +17,7 @@ type GracefulCloser interface {
 	Shutdown(ctx context.Context) error
 }
 
-// ShutdownAll gracefully shuts down multiple GracefulCloser instances concurrently.
+// All gracefully shuts down multiple GracefulCloser instances concurrently.
 // It launches a goroutine for each closer and waits for all of them to complete or
 // for the context to be canceled. All errors from the shutdown operations are collected
 // and returned as a combined error.
@@ -25,7 +25,7 @@ type GracefulCloser interface {
 // The function returns immediately if the closers slice is empty.
 // If any closer returns an error, those errors are collected and joined together.
 // The shutdown context's deadline applies to all closers collectively.
-func ShutdownAll(ctx context.Context, closers ...GracefulCloser) error {
+func All(ctx context.Context, closers ...GracefulCloser) error {
 	if len(closers) == 0 {
 		return nil
 	}

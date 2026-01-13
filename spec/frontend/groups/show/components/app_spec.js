@@ -341,7 +341,7 @@ describe('GroupsShowApp', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.findByRole('link', { name: mockGroup.name }).exists()).toBe(true);
+      expect(wrapper.findByRole('link', { name: mockGroup.fullName }).exists()).toBe(true);
     });
 
     it('correctly renders `Edit` action', async () => {
@@ -515,7 +515,9 @@ describe('GroupsShowApp', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.findByRole('link', { name: mockProject.name }).exists()).toBe(true);
+      expect(wrapper.findByRole('link', { name: mockProject.nameWithNamespace }).exists()).toBe(
+        true,
+      );
     });
 
     it('correctly renders `Edit` action', async () => {

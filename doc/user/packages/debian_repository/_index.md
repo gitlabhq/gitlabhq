@@ -54,11 +54,8 @@ disabled by default.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags/_index.md)
 can opt to enable it.
 
-{{< alert type="warning" >}}
-
-Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags/_index.md#risks-when-enabling-features-still-in-development).
-
-{{< /alert >}}
+> [!warning]
+> Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags/_index.md#risks-when-enabling-features-still-in-development).
 
 To enable it:
 
@@ -76,11 +73,8 @@ Feature.disable(:debian_packages)
 
 The Debian group repository is also behind a second feature flag that is disabled by default.
 
-{{< alert type="warning" >}}
-
-Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags/_index.md#risks-when-enabling-features-still-in-development).
-
-{{< /alert >}}
+> [!warning]
+> Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags/_index.md#risks-when-enabling-features-still-in-development).
 
 To enable it:
 

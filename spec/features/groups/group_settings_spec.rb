@@ -438,7 +438,7 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
         it 'allows immediate deletion', :sidekiq_inline do
           expect { remove_with_confirm('Delete immediately', group.path) }.to change { Group.count }.by(-1)
 
-          expect(page).to have_content "Group '#{group.name}' is being deleted"
+          expect(page).to have_content "#{group.name} is being deleted."
         end
       end
 
@@ -475,7 +475,7 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
           it 'allows immediate deletion', :sidekiq_inline do
             expect { remove_with_confirm('Delete immediately', group.path) }.to change { Group.count }.by(-1)
 
-            expect(page).to have_content "Group '#{group.name}' is being deleted"
+            expect(page).to have_content "#{group.name} is being deleted."
           end
         end
 
@@ -485,7 +485,7 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
 
           expect { remove_with_confirm('Delete immediately', group.path) }.to change { Group.count }.by(-1)
 
-          expect(page).to have_content "Group '#{group.name}' is being deleted"
+          expect(page).to have_content "#{group.name} is being deleted."
         end
 
         it 'does not allow immediate deletion' do

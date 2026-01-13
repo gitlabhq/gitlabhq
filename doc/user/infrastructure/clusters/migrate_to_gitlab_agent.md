@@ -49,11 +49,8 @@ Clusters defined in parent groups are not returned in this case. This behavior h
 
 Disabled clusters are returned as well to avoid accidentally leaving clusters behind.
 
-{{< alert type="note" >}}
-
-The cluster discovery API does not work for personal namespaces.
-
-{{< /alert >}}
+> [!note]
+> The cluster discovery API does not work for personal namespaces.
 
 ## Migrate generic deployments
 

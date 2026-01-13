@@ -24,6 +24,8 @@ module Gitlab
             track_keyword_usage_for('artifacts_reports_junit',
               command.yaml_processor_result.uses_nested_keyword?(%i[artifacts reports junit]))
             track_keyword_usage_for('job_inputs', command.yaml_processor_result.uses_keyword?(:inputs))
+            track_keyword_usage_for('inputs', command.yaml_processor_result.uses_inputs?)
+            track_keyword_usage_for('input_rules', command.yaml_processor_result.uses_input_rules?)
           end
 
           def track_keyword_usage_for(keyword, used)

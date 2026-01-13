@@ -384,6 +384,10 @@ if you can't upgrade to 15.11.12 and later.
 
 ## 15.7.1
 
+- The `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.md) in the Linux package (Omnibus)
+  might not work properly due to a bug in the [version of cURL](https://github.com/curl/curl/issues/10122) included with GitLab 15.4.6.
+  This issue causes all wildcard domains (like `.example.com`) to be ignored except for the last one listed in the `no_proxy` variable.
+  To work around the issue, you can move your wildcard domain to the end of the list or upgrade to a [later version with a fixed cURL](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster (Praefect) is [unavailable](../../administration/gitaly/praefect/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md) and [Geo replication and verification](../../administration/geo/_index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster (Praefect). The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ### Geo installations
@@ -448,6 +452,10 @@ if you can't upgrade to 15.11.12 and later.
   that secrets or sensitive information could leak if the file variable and its
   contents printed. For example, if they were printed in an echo output. For more information,
   see [Understanding the file type variable expansion change in GitLab 15.7](https://about.gitlab.com/blog/2023/02/13/impact-of-the-file-type-variable-change-15-7/).
+- The `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.md) in the Linux package (Omnibus)
+  might not work properly due to a bug in the [version of cURL](https://github.com/curl/curl/issues/10122) included with GitLab 15.4.6.
+  This issue causes all wildcard domains (like `.example.com`) to be ignored except for the last one listed in the `no_proxy` variable.
+  To work around the issue, you can move your wildcard domain to the end of the list or upgrade to a [later version with a fixed cURL](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster (Praefect) is [unavailable](../../administration/gitaly/praefect/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md) and [Geo replication and verification](../../administration/geo/_index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster (Praefect). The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 - Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site).
 
@@ -551,6 +559,10 @@ if you can't upgrade to 15.11.12 and later.
 - We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
   - Affected versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
   - Versions containing fix: GitLab 15.8.3 and later.
+- The `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.md) in the Linux package (Omnibus)
+  might not work properly due to a bug in the [version of cURL](https://github.com/curl/curl/issues/10122) included with GitLab 15.4.6.
+  This issue causes all wildcard domains (like `.example.com`) to be ignored except for the last one listed in the `no_proxy` variable.
+  To work around the issue, you can move your wildcard domain to the end of the list or upgrade to a [later version with a fixed cURL](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster (Praefect) is [unavailable](../../administration/gitaly/praefect/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md) and [Geo replication and verification](../../administration/geo/_index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster (Praefect). The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ## 15.6.2
@@ -568,6 +580,10 @@ if you can't upgrade to 15.11.12 and later.
 - We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
   - Affected versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
   - Versions containing fix: GitLab 15.8.3 and later.
+- The `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.md) in the Linux package (Omnibus)
+  might not work properly due to a bug in the [version of cURL](https://github.com/curl/curl/issues/10122) included with GitLab 15.4.6.
+  This issue causes all wildcard domains (like `.example.com`) to be ignored except for the last one listed in the `no_proxy` variable.
+  To work around the issue, you can move your wildcard domain to the end of the list or upgrade to a [later version with a fixed cURL](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster (Praefect) is [unavailable](../../administration/gitaly/praefect/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md) and [Geo replication and verification](../../administration/geo/_index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster (Praefect). The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ## 15.6.1
@@ -585,6 +601,10 @@ if you can't upgrade to 15.11.12 and later.
 - We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
   - Affected versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
   - Versions containing fix: GitLab 15.8.3 and later.
+- The `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.md) in the Linux package (Omnibus)
+  might not work properly due to a bug in the [version of cURL](https://github.com/curl/curl/issues/10122) included with GitLab 15.4.6.
+  This issue causes all wildcard domains (like `.example.com`) to be ignored except for the last one listed in the `no_proxy` variable.
+  To work around the issue, you can move your wildcard domain to the end of the list or upgrade to a [later version with a fixed cURL](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster (Praefect) is [unavailable](../../administration/gitaly/praefect/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md) and [Geo replication and verification](../../administration/geo/_index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster (Praefect). The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ## 15.6.0
@@ -629,15 +649,27 @@ potentially cause downtime.
 - We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
   - Affected versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
   - Versions containing fix: GitLab 15.8.3 and later.
+- The `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.md) in the Linux package (Omnibus)
+  might not work properly due to a bug in the [version of cURL](https://github.com/curl/curl/issues/10122) included with GitLab 15.4.6.
+  This issue causes all wildcard domains (like `.example.com`) to be ignored except for the last one listed in the `no_proxy` variable.
+  To work around the issue, you can move your wildcard domain to the end of the list or upgrade to a [later version with a fixed cURL](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster (Praefect) is [unavailable](../../administration/gitaly/praefect/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md) and [Geo replication and verification](../../administration/geo/_index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster (Praefect). The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 - Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site).
 
 ## 15.5.5
 
+- The `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.md) in the Linux package (Omnibus)
+  might not work properly due to a bug in the [version of cURL](https://github.com/curl/curl/issues/10122) included with GitLab 15.4.6.
+  This issue causes all wildcard domains (like `.example.com`) to be ignored except for the last one listed in the `no_proxy` variable.
+  To work around the issue, you can move your wildcard domain to the end of the list or upgrade to a [later version with a fixed cURL](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster (Praefect) is [unavailable](../../administration/gitaly/praefect/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md) and [Geo replication and verification](../../administration/geo/_index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster (Praefect). The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ## 15.5.4
 
+- The `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.md) in the Linux package (Omnibus)
+  might not work properly due to a bug in the [version of cURL](https://github.com/curl/curl/issues/10122) included with GitLab 15.4.6.
+  This issue causes all wildcard domains (like `.example.com`) to be ignored except for the last one listed in the `no_proxy` variable.
+  To work around the issue, you can move your wildcard domain to the end of the list or upgrade to a [later version with a fixed cURL](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster (Praefect) is [unavailable](../../administration/gitaly/praefect/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md) and [Geo replication and verification](../../administration/geo/_index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster (Praefect). The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ## 15.5.3
@@ -650,6 +682,10 @@ potentially cause downtime.
     sidekiq['routing_rules'] = [['*', 'default']]
     ```
 
+- The `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.md) in the Linux package (Omnibus)
+  might not work properly due to a bug in the [version of cURL](https://github.com/curl/curl/issues/10122) included with GitLab 15.4.6.
+  This issue causes all wildcard domains (like `.example.com`) to be ignored except for the last one listed in the `no_proxy` variable.
+  To work around the issue, you can move your wildcard domain to the end of the list or upgrade to a [later version with a fixed cURL](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster (Praefect) is [unavailable](../../administration/gitaly/praefect/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md) and [Geo replication and verification](../../administration/geo/_index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster (Praefect). The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ## 15.5.2
@@ -662,6 +698,10 @@ potentially cause downtime.
     sidekiq['routing_rules'] = [['*', 'default']]
     ```
 
+- The `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.md) in the Linux package (Omnibus)
+  might not work properly due to a bug in the [version of cURL](https://github.com/curl/curl/issues/10122) included with GitLab 15.4.6.
+  This issue causes all wildcard domains (like `.example.com`) to be ignored except for the last one listed in the `no_proxy` variable.
+  To work around the issue, you can move your wildcard domain to the end of the list or upgrade to a [later version with a fixed cURL](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster (Praefect) is [unavailable](../../administration/gitaly/praefect/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md) and [Geo replication and verification](../../administration/geo/_index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster (Praefect). The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ## 15.5.1
@@ -674,6 +714,10 @@ potentially cause downtime.
     sidekiq['routing_rules'] = [['*', 'default']]
     ```
 
+- The `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.md) in the Linux package (Omnibus)
+  might not work properly due to a bug in the [version of cURL](https://github.com/curl/curl/issues/10122) included with GitLab 15.4.6.
+  This issue causes all wildcard domains (like `.example.com`) to be ignored except for the last one listed in the `no_proxy` variable.
+  To work around the issue, you can move your wildcard domain to the end of the list or upgrade to a [later version with a fixed cURL](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster (Praefect) is [unavailable](../../administration/gitaly/praefect/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md) and [Geo replication and verification](../../administration/geo/_index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster (Praefect). The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ## 15.5.0
@@ -686,6 +730,10 @@ potentially cause downtime.
     sidekiq['routing_rules'] = [['*', 'default']]
     ```
 
+- The `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.md) in the Linux package (Omnibus)
+  might not work properly due to a bug in the [version of cURL](https://github.com/curl/curl/issues/10122) included with GitLab 15.4.6.
+  This issue causes all wildcard domains (like `.example.com`) to be ignored except for the last one listed in the `no_proxy` variable.
+  To work around the issue, you can move your wildcard domain to the end of the list or upgrade to a [later version with a fixed cURL](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster (Praefect) is [unavailable](../../administration/gitaly/praefect/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md) and [Geo replication and verification](../../administration/geo/_index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster (Praefect). The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ### Geo installations
@@ -703,7 +751,10 @@ potentially cause downtime.
 
 ## 15.4.6
 
-- Due to a [bug introduced in curl in GitLab 15.4.6](https://github.com/curl/curl/issues/10122), the [`no_proxy` environment variable may not work properly](../../administration/geo/replication/troubleshooting/client_http.md#secondary-site-returns-received-http-code-403-from-proxy-after-connect). Either downgrade to GitLab 15.4.5, or upgrade to GitLab 15.5.7 or a later version.
+- The `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.md) in the Linux package (Omnibus)
+  might not work properly due to a bug in the [version of cURL](https://github.com/curl/curl/issues/10122) included with GitLab 15.4.6.
+  This issue causes all wildcard domains (like `.example.com`) to be ignored except for the last one listed in the `no_proxy` variable.
+  To work around the issue, you can move your wildcard domain to the end of the list or upgrade to a [later version with a fixed cURL](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster (Praefect) is [unavailable](../../administration/gitaly/praefect/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md) and [Geo replication and verification](../../administration/geo/_index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster (Praefect). The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ## 15.4.5

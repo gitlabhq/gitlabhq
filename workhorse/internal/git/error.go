@@ -26,7 +26,7 @@ type copyError struct{ error }
 // LimitError. A LimitError is returned by Gitaly when it is at its limit in
 // handling requests. Since this is a known error, we should print a sensible
 // error message to the end user.
-func handleLimitErr(err error, w io.Writer, c context.Context, f func(w io.Writer, correlationID string) error) {
+func handleLimitErr(c context.Context, err error, w io.Writer, f func(w io.Writer, correlationID string) error) {
 	var statusErr grpcErr
 	if !errors.As(err, &statusErr) {
 		return

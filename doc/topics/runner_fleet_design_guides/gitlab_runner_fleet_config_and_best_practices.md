@@ -492,43 +492,43 @@ The `.gitlab-ci.yml` file looks similar to this:
 
 - For medium jobs:
 
-```yaml
-variables:
-  KUBERNETES_CPU_LIMIT: "200m"
-  KUBERNETES_MEMORY_LIMIT: "100Mi"
-  KUBERNETES_HELPER_CPU_LIMIT: "100m"
-  KUBERNETES_HELPER_MEMORY_LIMIT: "100Mi"
+  ```yaml
+  variables:
+    KUBERNETES_CPU_LIMIT: "200m"
+    KUBERNETES_MEMORY_LIMIT: "100Mi"
+    KUBERNETES_HELPER_CPU_LIMIT: "100m"
+    KUBERNETES_HELPER_MEMORY_LIMIT: "100Mi"
 
-tests:
-  image: some-image:latest
-  script:
-  - command_1
-  - command_2
-  # ...
-  - command_n
-  tags:
-    - my-custom-tag
-```
+  tests:
+    image: some-image:latest
+    script:
+    - command_1
+    - command_2
+    # ...
+    - command_n
+    tags:
+      - my-custom-tag
+  ```
 
 - For CPU-intensive jobs:
 
-```yaml
-variables:
-  KUBERNETES_CPU_LIMIT: "0.75"
-  KUBERNETES_MEMORY_LIMIT: "900Mi"
-  KUBERNETES_HELPER_CPU_LIMIT: "150m"
-  KUBERNETES_HELPER_MEMORY_LIMIT: "100Mi"
+  ```yaml
+  variables:
+    KUBERNETES_CPU_LIMIT: "0.75"
+    KUBERNETES_MEMORY_LIMIT: "900Mi"
+    KUBERNETES_HELPER_CPU_LIMIT: "150m"
+    KUBERNETES_HELPER_MEMORY_LIMIT: "100Mi"
 
-tests:
-  image: custom-cpu-intensive-image:latest
-  script:
-  - cpu_intensive_command_1
-  - cpu_intensive_command_2
-  # ...
-  - cpu_intensive_command_n
-  tags:
-    - my-custom-tag
-```
+  tests:
+    image: custom-cpu-intensive-image:latest
+    script:
+    - cpu_intensive_command_1
+    - cpu_intensive_command_2
+    # ...
+    - cpu_intensive_command_n
+    tags:
+      - my-custom-tag
+  ```
 
 > [!note]
 > For an easier configuration, use one GitLab Runner per cluster for job profile. This approach is recommended until GitLab supports either multiple GitLab Runner installations on the same cluster or multiple `[[runners]]` section in the `config.toml` template.

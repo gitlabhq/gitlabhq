@@ -58,7 +58,7 @@ This should return a URL that points to your local and uses the right port: `htt
 If the value points to a non-local URL, you should ensure that:
 
 - `DEVELOPMENT_AI_GATEWAY_URL` is set to `"http://0.0.0.0:5052"`
-- `AI_GATEWAY_URL` is unset and `Ai::Setting.instance.ai_gateway_url` is `nil.
+- `AI_GATEWAY_URL` is unset and `Ai::Setting.instance.ai_gateway_url` is `nil`.
 
 If you are setting up GitLab Duo Self-Hosted, the there are [specific instructions](developing_ai_features_for_duo_self_hosted.md) for that GDK configuration.
 

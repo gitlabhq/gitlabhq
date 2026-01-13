@@ -20,11 +20,8 @@ title: Conan 2 packages in the package registry
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 {{< alert type="warning" >}}
 
@@ -34,11 +31,8 @@ work and timelines to make it production ready.
 
 {{< /alert >}}
 
-{{< alert type="note" >}}
-
-The Conan 2 registry is not FIPS compliant and is disabled when FIPS mode is enabled.
-
-{{< /alert >}}
+> [!note]
+> The Conan 2 registry is not FIPS compliant and is disabled when FIPS mode is enabled.
 
 Publish Conan 2 packages in your project's package registry. Then install the
 packages whenever you need to use them as a dependency.

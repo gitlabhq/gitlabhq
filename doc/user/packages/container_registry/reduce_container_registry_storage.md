@@ -278,11 +278,8 @@ To create a cleanup policy in the UI:
 
 The policy runs on the scheduled interval you selected.
 
-{{< alert type="note" >}}
-
-If you edit the policy and select **Save** again, the interval is reset.
-
-{{< /alert >}}
+> [!note]
+> If you edit the policy and select **Save** again, the interval is reset.
 
 ### Regex pattern examples
 

@@ -688,8 +688,6 @@ class Project < ApplicationRecord
   scope :with_visibility_level_greater_than, ->(level) { where("visibility_level > ?", level) }
 
   scope :aimed_for_deletion, -> { where.not(marked_for_deletion_at: nil).without_deleted }
-  scope :self_aimed_for_deletion, -> { where.not(marked_for_deletion_at: nil).without_deleted }
-
   scope :self_or_ancestors_aimed_for_deletion, -> do
     left_joins(:group)
       .where.not(marked_for_deletion_at: nil)
@@ -698,8 +696,6 @@ class Project < ApplicationRecord
   end
 
   scope :not_aimed_for_deletion, -> { where(marked_for_deletion_at: nil).without_deleted }
-  scope :self_not_aimed_for_deletion, -> { where(marked_for_deletion_at: nil).without_deleted }
-
   scope :self_and_ancestors_not_aimed_for_deletion, -> do
     left_joins(:group)
       .where(marked_for_deletion_at: nil)
@@ -866,7 +862,6 @@ class Project < ApplicationRecord
   scope :visible_to_user_and_access_level, ->(user, access_level) { where(id: user.authorized_projects.where('project_authorizations.access_level >= ?', access_level).select(:id).reorder(nil)) }
 
   scope :archived, -> { self_or_ancestors_archived }
-  scope :self_archived, -> { where(archived: true) }
   scope :self_or_ancestors_archived, -> do
     left_joins(:group)
       .where(archived: true)
@@ -874,17 +869,13 @@ class Project < ApplicationRecord
   end
 
   scope :non_archived, -> { self_and_ancestors_non_archived }
-  scope :self_non_archived, -> { where(archived: false) }
   scope :self_and_ancestors_non_archived, -> do
     left_joins(:group)
       .where(archived: false)
       .where.not(Group.self_or_ancestors_archived_setting_subquery.exists)
   end
 
-  scope :self_active, -> { self_non_archived.self_not_aimed_for_deletion }
   scope :self_and_ancestors_active, -> { self_and_ancestors_non_archived.self_and_ancestors_not_aimed_for_deletion }
-
-  scope :self_inactive, -> { self_archived.or(self_aimed_for_deletion) }
   scope :self_or_ancestors_inactive, -> { self_or_ancestors_archived.or(self_or_ancestors_aimed_for_deletion) }
 
   scope :with_push, -> { joins(:events).merge(Event.pushed_action) }

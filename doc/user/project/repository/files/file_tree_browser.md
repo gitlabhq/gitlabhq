@@ -40,7 +40,7 @@ The file tree browser helps you:
 
 To show or hide the file tree browser:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the top bar, select **Search or go to** and find your project.
 1. Go to your repository files at `/<project>/-/tree/<branch>`.
 1. In the upper-left corner, select the file tree browser icon ({{< icon name="file-tree" >}}).
 

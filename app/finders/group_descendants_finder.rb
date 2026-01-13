@@ -36,7 +36,7 @@ class GroupDescendantsFinder
                                     .page(page)
 
     preloaded_ancestors = []
-    if !empty_result? && search_descendants?
+    if search_descendants?
       preloaded_ancestors |= ancestors_of_filtered_subgroups
       preloaded_ancestors |= ancestors_of_filtered_projects
     end
@@ -92,17 +92,15 @@ class GroupDescendantsFinder
     groups_to_load_ancestors_of = paginated_projects_without_direct_descendents.pluck(:namespace_id)
     # rubocop:enable Database/AvoidUsingPluckWithoutLimit, CodeReuse/ActiveRecord
     ancestors_of_groups(groups_to_load_ancestors_of)
-      .with_selects_for_list(**selects_for_list_params)
+      .with_selects_for_list(archived: params[:archived], active: params[:active])
   end
 
   def ancestors_of_filtered_subgroups
     ancestors_of_groups(paginated_subgroups_without_direct_descendents)
-      .with_selects_for_list(**selects_for_list_params)
+      .with_selects_for_list(archived: params[:archived], active: params[:active])
   end
 
   def subgroups
-    return Group.none if empty_result?
-
     # When filtering subgroups, we want to find all matches within the tree of
     # descendants to show to the user
     groups = if search_descendants?
@@ -111,7 +109,7 @@ class GroupDescendantsFinder
                direct_child_groups
              end
 
-    groups.with_selects_for_list(**selects_for_list_params).order_by(sort)
+    groups.with_selects_for_list(archived: params[:archived], active: params[:active]).order_by(sort)
   end
 
   def direct_child_projects
@@ -136,8 +134,6 @@ class GroupDescendantsFinder
   end
 
   def projects
-    return Project.none if empty_result?
-
     projects = if search_descendants?
                  descendant_projects
                else
@@ -217,26 +213,4 @@ class GroupDescendantsFinder
   def search_descendants?
     params[:filter].present? || inactive?
   end
-
-  def selects_for_list_params
-    return { active: params[:active] } unless optimize_flag_enabled?
-    return { active: params[:active], options: { ignore_inherited_state: true } } if params[:active]
-
-    {}
-  end
-
-  def parent_inactive?
-    parent_group.self_or_ancestors_archived? || parent_group.scheduled_for_deletion_in_hierarchy_chain?
-  end
-  strong_memoize_attr :parent_inactive?
-
-  def optimize_flag_enabled?
-    Feature.enabled?(:optimize_children_json, parent_group)
-  end
-  strong_memoize_attr :optimize_flag_enabled?
-
-  def empty_result?
-    params[:active] && optimize_flag_enabled? && parent_inactive?
-  end
-  strong_memoize_attr :empty_result?
 end

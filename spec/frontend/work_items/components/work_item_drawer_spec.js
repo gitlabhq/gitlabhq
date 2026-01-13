@@ -266,7 +266,10 @@ describe('WorkItemDrawer', () => {
       findLinkButton().vm.$emit('click', new MouseEvent('click'));
 
       expect(visitUrl).not.toHaveBeenCalled();
-      expect(mockRouterPush).toHaveBeenCalledWith({ name: 'workItem', params: { iid: '1' } });
+      expect(mockRouterPush).toHaveBeenCalledWith({
+        name: 'workItem',
+        params: { iid: '1', type: 'issues' },
+      });
     });
 
     it('calls `router.push` when link is a group level work item and we are at the project level', () => {
@@ -280,7 +283,10 @@ describe('WorkItemDrawer', () => {
       });
       findLinkButton().vm.$emit('click', new MouseEvent('click'));
 
-      expect(mockRouterPush).toHaveBeenCalledWith({ name: 'workItem', params: { iid: '1' } });
+      expect(mockRouterPush).toHaveBeenCalledWith({
+        name: 'workItem',
+        params: { iid: '1', type: 'issues' },
+      });
     });
 
     it('calls `router.push` when work item is in same project', () => {
@@ -296,7 +302,10 @@ describe('WorkItemDrawer', () => {
       findLinkButton().vm.$emit('click', new MouseEvent('click'));
 
       expect(visitUrl).not.toHaveBeenCalled();
-      expect(mockRouterPush).toHaveBeenCalledWith({ name: 'workItem', params: { iid: '1' } });
+      expect(mockRouterPush).toHaveBeenCalledWith({
+        name: 'workItem',
+        params: { iid: '1', type: 'issues' },
+      });
     });
 
     it('does not call `router.push` when work item is in different project', () => {

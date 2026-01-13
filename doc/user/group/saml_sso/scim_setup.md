@@ -50,11 +50,8 @@ You can configure one of the following as an identity provider:
 - [Azure Active Directory](#configure-microsoft-entra-id-formerly-azure-active-directory).
 - [Okta](#configure-okta).
 
-{{< alert type="note" >}}
-
-Other providers can work with GitLab but they have not been tested and are not supported. You should contact the provider for support. GitLab support can assist by reviewing related log entries.
-
-{{< /alert >}}
+> [!note]
+> Other providers can work with GitLab but they have not been tested and are not supported. You should contact the provider for support. GitLab support can assist by reviewing related log entries.
 
 ### Configure Microsoft Entra ID (formerly Azure Active Directory)
 
@@ -302,11 +299,8 @@ the user's membership is revoked and they lose access.
 When you enable SCIM, this does not automatically remove existing users who do
 not have a SAML identity.
 
-{{< alert type="note" >}}
-
-Deprovisioning does not delete the GitLab user account.
-
-{{< /alert >}}
+> [!note]
+> Deprovisioning does not delete the GitLab user account.
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%

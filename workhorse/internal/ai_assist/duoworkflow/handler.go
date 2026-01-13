@@ -53,7 +53,7 @@ func (h *Handler) Shutdown(ctx context.Context) error {
 		return true
 	})
 
-	return shutdown.ShutdownAll(ctx, runners...)
+	return shutdown.All(ctx, runners...)
 }
 
 // Build returns an HTTP handler that processes Duo Workflow WebSocket connections.

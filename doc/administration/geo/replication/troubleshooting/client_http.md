@@ -112,37 +112,6 @@ To fix this issue, set the primary site's internal URL to a URL that is:
 1. Visit the primary site.
 1. [Set up the internal URLs](../../../geo_sites.md#set-up-the-internal-urls).
 
-### Secondary site returns `Received HTTP code 403 from proxy after CONNECT`
-
-If you have installed GitLab using the Linux package (Omnibus) and have configured the `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.html) for Gitaly, you may experience this issue. Affected versions:
-
-- `15.4.6`
-- `15.5.0`-`15.5.6`
-- `15.6.0`-`15.6.3`
-- `15.7.0`-`15.7.1`
-
-This is due to [a bug introduced in the included version of cURL](https://github.com/curl/curl/issues/10122) shipped with
-the Linux package 15.4.6 and later. You should upgrade to a later version where this has been
-[fixed](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
-
-The bug causes all wildcard domains (`.example.com`) to be ignored except for the last on in the `no_proxy` environment variable list. Therefore, if for any reason you cannot upgrade to a newer version, you can work around the issue by moving your wildcard domain to the end of the list:
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitaly['env'] = {
-     "no_proxy" => "server.yourdomain.org, .yourdomain.com",
-   }
-   ```
-
-1. Reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-You can have only one wildcard domain in the `no_proxy` list.
-
 ### Geo Admin area returns 404 error for a secondary site
 
 Sometimes `sudo gitlab-rake gitlab:geo:check` indicates that **Rails nodes of the secondary** sites are

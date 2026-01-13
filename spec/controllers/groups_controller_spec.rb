@@ -683,7 +683,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
               subject
 
               expect(response).to redirect_to(root_path)
-              expect(flash[:toast]).to include "Group '#{group.name}' is being deleted."
+              expect(flash[:toast]).to include "#{group.name} is being deleted."
             end
           end
 
@@ -694,7 +694,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
               subject
 
               expect(response).to redirect_to(root_path)
-              expect(flash[:toast]).to include "Group '#{group.name}' is being deleted."
+              expect(flash[:toast]).to include "#{group.name} is being deleted."
             end
           end
 
@@ -706,7 +706,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
 
               subject
 
-              expect(json_response['message']).to eq("Group '#{group.name}' is being deleted.")
+              expect(json_response['message']).to eq("#{group.name} is being deleted.")
             end
           end
         end

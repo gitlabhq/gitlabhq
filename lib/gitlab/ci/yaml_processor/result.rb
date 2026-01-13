@@ -56,6 +56,21 @@ module Gitlab
           end
         end
 
+        def uses_inputs?
+          return false unless @ci_config
+
+          @ci_config.spec[:inputs].present?
+        end
+
+        def uses_input_rules?
+          return false unless @ci_config
+
+          inputs = @ci_config.spec[:inputs]
+          return false unless inputs.is_a?(Hash)
+
+          inputs.values.any? { |input_spec| input_spec.is_a?(Hash) && input_spec.key?(:rules) }
+        end
+
         def included_components
           @ci_config.included_components
         end

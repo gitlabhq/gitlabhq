@@ -9,6 +9,17 @@ class WikiPage
   PageRenameError = Class.new(StandardError)
   FrontMatterTooLong = Class.new(StandardError)
 
+  # Reserved wiki page slugs that conflict with wiki routes.
+  # These cannot be used as the first path component of a wiki page title.
+  # See config/routes/wiki.rb for the routes that define these reserved paths.
+  RESERVED_SLUGS = %w[
+    pages
+    templates
+    new
+    git_access
+    -
+  ].freeze
+
   include ActiveModel::Validations
   include ActiveModel::Conversion
   include StaticModel
@@ -91,6 +102,7 @@ class WikiPage
   validates :title, presence: true
   validate :validate_path_limits, if: :title_changed?
   validate :validate_content_size_limit, if: :content_changed?
+  validate :validate_reserved_slug, if: :title_changed?
 
   # The GitLab Wiki instance.
   attr_reader :wiki
@@ -478,6 +490,18 @@ class WikiPage
       current_value: ActiveSupport::NumberHelper.number_to_human_size(current_value),
       max_size: ActiveSupport::NumberHelper.number_to_human_size(max_size)
     })
+  end
+
+  def validate_reserved_slug
+    return unless title.present?
+
+    # Only block exact matches of reserved slugs at the top level.
+    # Paths like "templates/my-template" are allowed because the wiki templates
+    # feature requires pages under the templates/ directory.
+    slug = title.downcase
+    return unless RESERVED_SLUGS.include?(slug)
+
+    errors.add(:title, _("'%{slug}' is a reserved name") % { slug: slug })
   end
 end
 

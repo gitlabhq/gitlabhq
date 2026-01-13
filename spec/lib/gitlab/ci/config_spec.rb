@@ -1036,6 +1036,11 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
         expect(config.valid?).to be_truthy
         expect(config.to_hash).to match(a_hash_including(result))
       end
+
+      it 'stores the spec for instrumentation' do
+        expect(config.spec).to be_present
+        expect(config.spec).to include(:inputs)
+      end
     end
   end
 

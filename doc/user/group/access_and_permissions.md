@@ -322,11 +322,8 @@ For example:
 
 For more information on the administration of LDAP and group sync, refer to the [main LDAP documentation](../../administration/auth/ldap/ldap_synchronization.md#group-sync).
 
-{{< alert type="note" >}}
-
-When you add LDAP group syncing, if an LDAP user is a group member and they are not part of the LDAP group, they are removed from the group.
-
-{{< /alert >}}
+> [!note]
+> When you add LDAP group syncing, if an LDAP user is a group member and they are not part of the LDAP group, they are removed from the group.
 
 You can use a workaround to [manage project access through LDAP groups](../project/working_with_projects.md#manage-project-access-through-ldap-groups).
 
@@ -381,11 +378,8 @@ To create group links with an LDAP user filter:
 1. Select **Settings** > **Active synchronization**.
 1. Identify the group link you want to remove and select **Remove**.
 
-{{< alert type="note" >}}
-
-When you remove LDAP group syncing, the existing memberships and role assignment are retained.
-
-{{< /alert >}}
+> [!note]
+> When you remove LDAP group syncing, the existing memberships and role assignment are retained.
 
 ### Override user permissions
 

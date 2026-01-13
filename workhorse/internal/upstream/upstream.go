@@ -306,13 +306,13 @@ func (u *upstream) updateGeoProxyFieldsFromData(geoProxyData *apipkg.GeoProxyDat
 	u.geoProxyRoute = u.route("", newRoute("", "proxy", geoPrimaryBackend), geoProxyUpstream, withGeoProxy())
 }
 
-func httpError(w http.ResponseWriter, r *http.Request, error string, code int) {
+func httpError(w http.ResponseWriter, r *http.Request, err string, code int) {
 	if r.ProtoAtLeast(1, 1) {
 		// Force client to disconnect if we render request error
 		w.Header().Set("Connection", "close")
 	}
 
-	http.Error(w, error, code)
+	http.Error(w, err, code)
 }
 
 func fixRemoteAddr(r *http.Request) {

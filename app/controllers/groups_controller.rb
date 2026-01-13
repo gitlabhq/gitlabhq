@@ -398,7 +398,7 @@ class GroupsController < Groups::ApplicationController
 
   def destroy_immediately
     Groups::DestroyService.new(@group, current_user).async_execute
-    message = format(_("Group '%{group_name}' is being deleted."), group_name: @group.full_name)
+    message = format(_("%{group_name} is being deleted."), group_name: @group.name)
 
     respond_to do |format|
       format.html do

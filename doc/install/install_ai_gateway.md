@@ -558,6 +558,88 @@ These tests are performed for offline environments:
 | License | Tests whether your license has the ability to access Code Suggestions feature. |
 | System exchange | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
 
+## Monitor the AI Gateway
+
+Use Prometheus to gather metrics about your AI Gateway usage and performance.
+
+### Set up Prometheus metrics for the AI Gateway
+
+To set up Prometheus metrics:
+
+1. Set the required environment variables and open port **8082**:
+
+   ```shell
+   -e AIGW_FASTAPI__METRICS_HOST=0.0.0.0
+   -e AIGW_FASTAPI__METRICS_PORT=8082
+   ```
+
+### Set up Prometheus for the GitLab Duo Workflow service
+
+To set up Prometheus metrics on the GitLab Duo Workflow service:
+
+1. Set the required environment variables and open port **8083**:
+
+   ```shell
+   -e PROMETHEUS_METRICS__ADDR=0.0.0.0
+   -e PROMETHEUS_METRICS__PORT=8083
+   ```
+
+1. Expose the metrics ports from the `gitlab-ai-gateway` container to the host:
+
+   - For Docker CLI:
+
+     ```shell
+     -p 8082:8082 \
+     -p 8083:8083 \
+     ```
+
+   - For Docker Compose, add to the `gitlab-ai-gateway` service:
+
+     ```shell
+     ports:
+       - "8082:8082"
+       - "8083:8083"
+     ```
+
+   This exposes the AI Gateway metrics endpoint on port `8082` and the GitLab Duo Workflow Service metrics endpoint on port `8083`.
+
+1. Restart the AI Gateway container
+
+### Configure Prometheus to scrape metrics
+
+To collect metrics from the AI Gateway and GitLab Duo Workflow service, add the following
+`prometheus.yml` configuration to your Prometheus instance. In this configuration, Prometheus
+scrapes metrics from both services every 15 seconds.
+
+```yaml
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'ai-gateway'
+    static_configs:
+      - targets: ['<your_AIGW_domain>:8082']
+    scheme: 'http'
+    metrics_path: '/metrics'
+
+  - job_name: 'duo-agent-platform-service'
+    static_configs:
+      - targets: ['<your_duo_agent_platform_service_domain>:8083']
+    scheme: 'http'
+    metrics_path: '/metrics'
+```
+
+### Verify metrics collection
+
+To verify that the targets for AI Gateway and GitLab Duo Workflow service are being collected:
+
+1. In the Prometheus UI, go to **Status > Targets**.
+1. Go to the **Alerts** or **Graph** tabs to query metrics. The AI Gateway and GitLab Duo Workflow service
+   expose metrics at the following endpoints:
+
+   - AI Gateway: `http://<your_AIGW_domain>:8082/metrics`
+   - GitLab Duo Workflow service: `http://<your_duo_agent_platform_service_domain>:8083/metrics`
+
 ## Does the AI gateway need to autoscale?
 
 Autoscaling is not mandatory but is recommended for environments with variable workloads, high concurrency requirements, or unpredictable usage patterns. In the GitLab production environment:

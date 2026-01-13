@@ -20,11 +20,8 @@ title: Dependency proxy for packages
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-The dependency proxy is in [beta](../../../../policy/development_stages_support.md#beta). Review the documentation carefully before you use this feature.
-
-{{< /alert >}}
+> [!warning]
+> The dependency proxy is in [beta](../../../../policy/development_stages_support.md#beta). Review the documentation carefully before you use this feature.
 
 The GitLab dependency proxy is a local proxy server that downloads and stores copies of packages.
 

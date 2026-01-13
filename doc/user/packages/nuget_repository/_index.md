@@ -197,11 +197,8 @@ To add the package registry as a source with a .NET configuration file:
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}
-
-The previous example commands add a source named `gitlab`. Subsequent example commands refer to the source name (`gitlab`), not the source URL.
-
-{{< /alert >}}
+> [!note]
+> The previous example commands add a source named `gitlab`. Subsequent example commands refer to the source name (`gitlab`), not the source URL.
 
 ### With the group endpoint
 
@@ -323,11 +320,8 @@ To add the package registry as a source with a .NET configuration file:
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}
-
-The previous example commands add a source named `gitlab`. Subsequent example commands refer to the source name (`gitlab`), not the source URL.
-
-{{< /alert >}}
+> [!note]
+> The previous example commands add a source named `gitlab`. Subsequent example commands refer to the source name (`gitlab`), not the source URL.
 
 ## Publish a package
 
@@ -706,11 +700,8 @@ choco upgrade MyPackage -Source gitlab -Version 1.0.3
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-Deleting a package is a permanent action that cannot be undone.
-
-{{< /alert >}}
+> [!warning]
+> Deleting a package is a permanent action that cannot be undone.
 
 Prerequisites:
 

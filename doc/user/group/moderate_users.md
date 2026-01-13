@@ -7,11 +7,8 @@ title: Moderate users
 
 If you are assigned the Owner role for a group, you can [approve](manage.md#user-cap-for-groups), ban, or automatically remove dormant members.
 
-{{< alert type="note" >}}
-
-This topic is specifically related to user moderation in groups. For information related to GitLab Self-Managed, see the [administration documentation](../../administration/moderate_users.md).
-
-{{< /alert >}}
+> [!note]
+> This topic is specifically related to user moderation in groups. For information related to GitLab Self-Managed, see the [administration documentation](../../administration/moderate_users.md).
 
 ## Ban and unban users
 
@@ -104,11 +101,8 @@ The following actions count as activity:
 
 Dormant [enterprise users](../enterprise_user/_index.md) are not removed, but [deactivated](../../administration/moderate_users.md#deactivate-and-reactivate-users). When these users sign back in, their accounts are reactivated and their access is restored.
 
-{{< alert type="note" >}}
-
-Activity has not been recorded for members added before 2025-01-22. These members will not be removed until 2025-04-22, even if they have been dormant for over 90 days.
-
-{{< /alert >}}
+> [!note]
+> Activity has not been recorded for members added before 2025-01-22. These members will not be removed until 2025-04-22, even if they have been dormant for over 90 days.
 
 To turn on automatic dormant member removal:
 

@@ -23,9 +23,8 @@ type snapshotParams struct {
 	GetSnapshotRequest string
 }
 
-var (
-	SendSnapshot = &snapshot{"git-snapshot:"}
-)
+// SendSnapshot is a senddata.Injector for handling Git snapshot requests
+var SendSnapshot = &snapshot{"git-snapshot:"}
 
 func (s *snapshot) Inject(w http.ResponseWriter, r *http.Request, sendData string) {
 	var params snapshotParams

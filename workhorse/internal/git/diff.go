@@ -19,6 +19,7 @@ type diffParams struct {
 	RawDiffRequest string
 }
 
+// SendDiff is a senddata.Injector for handling Git diff requests
 var SendDiff = &diff{"git-diff:"}
 
 func (d *diff) Inject(w http.ResponseWriter, r *http.Request, sendData string) {

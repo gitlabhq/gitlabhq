@@ -120,11 +120,8 @@ has an existing membership in the destination namespace with a [higher role](../
 the one being mapped, the membership is mapped as a direct membership instead. This ensures the member does not get
 elevated permissions.
 
-{{< alert type="note" >}}
-
-There is a [known issue](_index.md#known-issues) affecting the mapping of shared memberships.
-
-{{< /alert >}}
+> [!note]
+> There is a [known issue](_index.md#known-issues) affecting the mapping of shared memberships.
 
 ### Configure users on destination instance
 

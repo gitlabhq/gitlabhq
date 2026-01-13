@@ -312,7 +312,6 @@ export default {
     'ee/app/assets/javascripts/ai/duo_agents_platform/components/common/agent_flow_list.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/components/common/agent_flow_list_item.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/components/common/agent_status_icon.vue',
-    'ee/app/assets/javascripts/ai/duo_agents_platform/components/common/run_agent_flow_form.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/namespace/group/index.js',
     'ee/app/assets/javascripts/ai/duo_agents_platform/namespace/project/index.js',
     'ee/app/assets/javascripts/ai/duo_agents_platform/namespace/project/project_agents_platform_index.vue',

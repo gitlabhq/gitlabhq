@@ -353,8 +353,10 @@ This makes the device authorization grant flow ideal for users attempting to use
 1. The device client receives a response from the token endpoint. If the authorization was successful,
    a success response is returned, otherwise, an error response is returned.
    Potential error responses are categorized by either of the following:
+
    - Those defined by the OAuth Authorization Framework access token error responses.
    - Those specific to the device authorization grant flow described here.
+
    Those error responses specific to the device flow are described in the following content.
    For more information on each potential response, see the relevant [RFC spec for device authorization grant](https://datatracker.ietf.org/doc/html/rfc8628#section-3.5) and the
    [RFC spec for authorization tokens](https://datatracker.ietf.org/doc/html/rfc6749#section-5.2).

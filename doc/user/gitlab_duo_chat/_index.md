@@ -122,8 +122,10 @@ On the GitLab Duo sidebar, select **GitLab Duo Chat history** ({{< icon name="hi
 In GitLab 17.10 and later, you can have an unlimited number of simultaneous conversations with Chat.
 
 1. Create a new Chat conversation by doing either of the following:
+
    - On the GitLab Duo sidebar, select **New GitLab Duo Chat** ({{< icon name="pencil-square" >}}).
    - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
+
    A new Chat conversation replaces the previous one.
 1. Under the Chat text box, turn off the **Agentic** toggle.
 1. To view all of your conversations, view the [Chat history](#view-the-chat-history).

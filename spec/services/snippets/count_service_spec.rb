@@ -2,7 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Snippets::CountService, feature_category: :source_code_management do
+RSpec.describe Snippets::CountService, :with_current_organization, feature_category: :source_code_management do
+  before do
+    # Since this doesn't go through a request flow, we need to manually set Current.organization
+    Current.organization = current_organization
+  end
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
 
@@ -14,17 +19,17 @@ RSpec.describe Snippets::CountService, feature_category: :source_code_management
     it 'uses the SnippetsFinder to scope snippets by user' do
       expect(SnippetsFinder)
         .to receive(:new)
-        .with(user, author: user, project: nil)
+        .with(user, author: user, project: nil, organization_id: current_organization.id)
 
-      described_class.new(user, author: user)
+      described_class.new(user, organization_id: current_organization.id, author: user)
     end
 
     it 'allows scoping to project' do
       expect(SnippetsFinder)
         .to receive(:new)
-        .with(user, author: nil, project: project)
+        .with(user, author: nil, project: project, organization_id: current_organization.id)
 
-      described_class.new(user, project: project)
+      described_class.new(user, organization_id: current_organization.id, project: project)
     end
   end
 

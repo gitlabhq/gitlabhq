@@ -771,7 +771,6 @@ export default {
     'ee/app/assets/javascripts/ai/duo_agents_platform/components/catalog/ai_catalog_configured_items_wrapper.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/components/catalog/group_item_consumer_dropdown.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/components/common/agent_flow_list.vue',
-    'ee/app/assets/javascripts/ai/duo_agents_platform/components/common/run_agent_flow_form.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/pages/flow_triggers/components/flow_trigger_form.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/pages/flow_triggers/index/components/flow_triggers_table.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/pages/index/duo_agents_platform_index.vue',

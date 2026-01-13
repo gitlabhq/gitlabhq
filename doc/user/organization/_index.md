@@ -30,11 +30,8 @@ This feature is available for testing, but not ready for production use.
 
 {{< alert type="disclaimer" />}}
 
-{{< alert type="note" >}}
-
-Organizations is in development.
-
-{{< /alert >}}
+> [!note]
+> Organizations is in development.
 
 Organizations will be above the [top-level namespaces](../namespace/_index.md) for you to manage
 everything you do as a GitLab administrator, including:

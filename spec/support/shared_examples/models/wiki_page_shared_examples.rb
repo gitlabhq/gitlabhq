@@ -366,6 +366,40 @@ RSpec.shared_examples 'wiki_page' do |container_type|
         end
       end
     end
+
+    describe '#validate_reserved_slug' do
+      subject { build_wiki_page(container) }
+
+      # Reserved slugs that conflict with wiki routes (see config/routes/wiki.rb)
+      # E.g. 'pages', 'templates', 'new', 'git_access', '-'
+      WikiPage::RESERVED_SLUGS.each do |reserved_slug|
+        it { is_expected.not_to allow_value(reserved_slug).for(:title) }
+        it { is_expected.not_to allow_value(reserved_slug.upcase).for(:title) }
+        it { is_expected.not_to allow_value(reserved_slug.capitalize).for(:title) }
+        it { is_expected.not_to allow_value(reserved_slug.downcase).for(:title) }
+
+        # Subdirectories under reserved slugs are allowed
+        it { is_expected.to allow_value("#{reserved_slug}/subpage").for(:title) }
+        it { is_expected.to allow_value("#{reserved_slug}/#{reserved_slug}").for(:title) }
+
+        # Non-reserved slugs are allowed
+        it { is_expected.to allow_value("non_#{reserved_slug}-page").for(:title) }
+      end
+
+      context 'when updating an existing page' do
+        let!(:existing_page) { create_wiki_page(container, title: 'allowed-title') }
+
+        subject { wiki.find_page('allowed-title') }
+
+        it { is_expected.not_to allow_value('pages').for(:title) }
+
+        it 'allows updating content without changing title' do
+          subject.attributes[:content] = 'new content'
+
+          expect(subject).to be_valid
+        end
+      end
+    end
   end
 
   describe "#create" do

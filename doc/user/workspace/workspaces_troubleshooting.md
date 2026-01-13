@@ -24,6 +24,21 @@ To resolve this issue:
 1. Restart the agent instance.
 1. If the issue persists, check your Kubernetes cluster's health and connectivity.
 
+## Error: `Workspace create failed: Expiration date must be before <date>`
+
+When creating a workspace, you might encounter this error in the UI:
+
+```plaintext
+Workspace create failed: Expiration date must be before <date>
+```
+
+This error happens when the [personal access token created for authentication](_index.md#personal-access-token)
+to the newly created workspace has an expiry date that exceeds the instance setting for token expiry.
+
+To resolve this issue, disable the [access token expiry limit for the instance](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
+[Issue 579331)](https://gitlab.com/gitlab-org/gitlab/-/work_items/579331) proposes
+a configurable limit for workspace-related tokens to address this limitation.
+
 ## Error: `No agents available to create workspaces`
 
 When you create a workspace in a project, you might get the following error:

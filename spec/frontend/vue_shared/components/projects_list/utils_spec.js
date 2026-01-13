@@ -20,6 +20,7 @@ import toast from '~/vue_shared/plugins/global_toast';
 jest.mock('~/vue_shared/plugins/global_toast');
 
 const MOCK_PROJECT = {
+  name: 'With Delay Project',
   nameWithNamespace: 'With Delay Project',
   fullPath: 'path/to/project/2',
   group: {
@@ -179,7 +180,7 @@ describe('renderDeleteSuccessToast', () => {
 
     it('renders toast explaining project will be delayed deleted', () => {
       expect(toast).toHaveBeenCalledWith(
-        `Project '${MOCK_PROJECT_DELAY_DELETION_ENABLED.nameWithNamespace}' will be deleted on ${MOCK_PROJECT_DELAY_DELETION_ENABLED.permanentDeletionDate}.`,
+        `${MOCK_PROJECT_DELAY_DELETION_ENABLED.name} moved to pending deletion.`,
       );
     });
   });
@@ -190,9 +191,7 @@ describe('renderDeleteSuccessToast', () => {
     });
 
     it('renders toast explaining project is being deleted', () => {
-      expect(toast).toHaveBeenCalledWith(
-        `Project '${MOCK_PROJECT_PENDING_DELETION.nameWithNamespace}' is being deleted.`,
-      );
+      expect(toast).toHaveBeenCalledWith(`${MOCK_PROJECT_PENDING_DELETION.name} is being deleted.`);
     });
   });
 });

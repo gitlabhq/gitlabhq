@@ -19,6 +19,7 @@ type patchParams struct {
 	RawPatchRequest string
 }
 
+// SendPatch is a senddata.Injector for handling Git format-patch requests
 var SendPatch = &patch{"git-format-patch:"}
 
 func (p *patch) Inject(w http.ResponseWriter, r *http.Request, sendData string) {

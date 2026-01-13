@@ -100,7 +100,7 @@ You can triage and debug issues raised by ArkoseLabs with:
   and over 90% of sessions should be verified.
 - If the percentage of `high` risk users or verified sessions is significantly different
   from the expected percentages, contact the [`#ext-gitlab-arkose`](https://gitlab.slack.com/archives/C02SGF6RLPQ)
- Slack channel.
+  Slack channel.
 
 ### View ArkoseLabs Verify API response for a user session
 

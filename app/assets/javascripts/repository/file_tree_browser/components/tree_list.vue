@@ -540,7 +540,7 @@ export default {
       </h3>
     </div>
 
-    <div class="gl-relative gl-flex">
+    <div class="gl-relative gl-flex gl-pr-3">
       <gl-button
         ref="filterInput"
         icon="search"
@@ -574,7 +574,7 @@ export default {
       <ul
         v-if="flatFilesList.length"
         ref="fileTreeList"
-        class="gl-h-full gl-min-h-0 gl-flex-grow gl-list-none gl-overflow-y-auto !gl-pl-2"
+        class="gl-h-full gl-min-h-0 gl-flex-grow gl-list-none gl-overflow-y-auto !gl-pl-2 gl-pr-3"
         role="tree"
         @keydown="onTreeKeydown"
       >

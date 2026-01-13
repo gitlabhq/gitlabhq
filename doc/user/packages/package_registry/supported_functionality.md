@@ -17,11 +17,8 @@ and pulling packages, request forwarding, managing duplicates, and authenticatio
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-Not all package manager formats are ready for production use.
-
-{{< /alert >}}
+> [!warning]
+> Not all package manager formats are ready for production use.
 
 The package registry supports the following package manager types:
 

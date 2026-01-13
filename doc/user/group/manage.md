@@ -141,11 +141,8 @@ To archive a group:
 1. Expand **Advanced**.
 1. In the **Archive group** section, select **Archive**.
 
-{{< alert type="note" >}}
-
-Archiving a group automatically archives all its subgroups and projects. Individual subgroups or projects within an archived group cannot be unarchived separately.
-
-{{< /alert >}}
+> [!note]
+> Archiving a group automatically archives all its subgroups and projects. Individual subgroups or projects within an archived group cannot be unarchived separately.
 
 To archive a group from the **Your work** list view directly:
 
@@ -382,11 +379,8 @@ can invite users again.
 On GitLab Self-Managed and GitLab Dedicated instances, you can prevent user invitations for the entire instance.
 For more information, see [prevent invitations to a groups and projects](../../administration/settings/visibility_and_access_controls.md#prevent-invitations-to-groups-and-projects).
 
-{{< alert type="note" >}}
-
-Features such as [sharing](../project/members/sharing_projects_groups.md) or [migrations](../import/_index.md) can still allow access to these subgroups and projects.
-
-{{< /alert >}}
+> [!note]
+> Features such as [sharing](../project/members/sharing_projects_groups.md) or [migrations](../import/_index.md) can still allow access to these subgroups and projects.
 
 Prerequisites:
 
@@ -444,11 +438,8 @@ and must be paid at the next [quarterly reconciliation](../../subscriptions/quar
 When you turn on restricted access, groups cannot add new billable users when there are no seats
 left in the subscription.
 
-{{< alert type="note" >}}
-
-If [user cap](#user-cap-for-groups) is enabled for a group that has pending members, when you enable restricted access all pending members are automatically removed from the group.
-
-{{< /alert >}}
+> [!note]
+> If [user cap](#user-cap-for-groups) is enabled for a group that has pending members, when you enable restricted access all pending members are automatically removed from the group.
 
 ### Turn on restricted access
 
@@ -513,11 +504,8 @@ When the number of billable members reaches the user cap, the group Owner must a
 Groups with the user cap feature enabled have [group sharing](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group)
 disabled for the group and its subgroups.
 
-{{< alert type="warning" >}}
-
-When you specify a user cap, any members added through group sharing lose access to the group.
-
-{{< /alert >}}
+> [!warning]
+> When you specify a user cap, any members added through group sharing lose access to the group.
 
 ### Set a user cap for a group
 

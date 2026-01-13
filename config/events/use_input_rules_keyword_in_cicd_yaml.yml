@@ -1,0 +1,17 @@
+---
+description: Usage of spec:inputs:rules keyword in CICD Yaml
+internal_events: true
+action: use_input_rules_keyword_in_cicd_yaml
+identifiers:
+- project
+- namespace
+- user
+product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
+milestone: '18.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214061
+tiers:
+- free
+- premium
+- ultimate

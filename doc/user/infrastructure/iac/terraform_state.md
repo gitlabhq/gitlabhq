@@ -124,11 +124,8 @@ variables:
   TF_PLAN_CACHE: "my-plan.tfplan"
 ```
 
-{{< alert type="note" >}}
-
-Do not set the output filename by passing the `-out=<filename>` option. GitLab commands override this option.
-
-{{< /alert >}}
+> [!note]
+> Do not set the output filename by passing the `-out=<filename>` option. GitLab commands override this option.
 
 ## Access the state from your local machine
 

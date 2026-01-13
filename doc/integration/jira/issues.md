@@ -182,15 +182,17 @@ this setting:
 For advanced workflows, you can specify custom Jira transition IDs:
 
 1. Use the method based on your Jira subscription status:
-   - *(For users of Jira Cloud)* Obtain your transition IDs by editing a workflow
+
+   - For users of Jira Cloud: Obtain your transition IDs by editing a workflow
      in the **Text** view. The transition IDs display in the **Transitions** column.
-   - *(For users of Jira Server)* Obtain your transition IDs in one of these ways:
+   - For users of Jira Server: Obtain your transition IDs in one of these ways:
      - By using the API, with a request like `https://yourcompany.atlassian.net/rest/api/2/issue/ISSUE-123/transitions`,
        using an issue that is in the appropriate "open" state.
      - By mousing over the link for the transition you want and looking for the
        **action** parameter in the URL.
-   The transition ID may vary between workflows (for example, a bug instead of a
-   story), even if the status you're changing to is the same.
+
+   The transition ID may vary between workflows (for example, a bug instead of a story),
+   even if the status you're changing to is the same.
 1. Refer to the [Configure GitLab](configure.md) instructions.
 1. Select the **Enable Jira transitions** setting.
 1. Select the **Custom transitions** option.

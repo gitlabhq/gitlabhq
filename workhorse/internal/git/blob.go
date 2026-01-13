@@ -18,6 +18,7 @@ type blobParams struct {
 	GetBlobRequest gitalypb.GetBlobRequest
 }
 
+// SendBlob is a senddata.Injector for handling Git blob requests
 var SendBlob = &blob{"git-blob:"}
 
 func (b *blob) Inject(w http.ResponseWriter, r *http.Request, sendData string) {

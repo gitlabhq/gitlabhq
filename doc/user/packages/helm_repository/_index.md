@@ -109,11 +109,8 @@ upload:
 
 ## Install a package
 
-{{< alert type="note" >}}
-
-For each package, only the most recent package file is returned.
-
-{{< /alert >}}
+> [!note]
+> For each package, only the most recent package file is returned.
 
 To install the latest version of a chart, use the following command:
 

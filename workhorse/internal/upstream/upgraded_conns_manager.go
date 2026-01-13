@@ -47,7 +47,7 @@ func (m *UpgradedConnsManager) Shutdown(period time.Duration) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeoutSeconds)*time.Second) // lint:allow context.Background
 	defer cancel()
 
-	if err := shutdown.ShutdownAll(ctx, m.handlers...); err != nil {
+	if err := shutdown.All(ctx, m.handlers...); err != nil {
 		log.WithError(err).Errorf("upgraded connections: failed to shut down gracefully %v", err)
 	}
 

@@ -254,7 +254,7 @@ RSpec.describe 'gitlab:db:detach_partition', :silence_stdout, feature_category: 
     let(:databases) { { 'main' => {}, 'ci' => {} } }
 
     before do
-      skip_if_multiple_databases_not_setup(:ci)
+      skip_if_shared_database(:ci)
 
       allow(ActiveRecord::Tasks::DatabaseTasks).to receive(:setup_initial_database_yaml).and_return(databases)
       allow(Gitlab::Database::Dictionary).to receive_message_chain(:entries,

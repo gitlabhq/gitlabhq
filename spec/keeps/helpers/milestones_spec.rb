@@ -143,4 +143,10 @@ RSpec.describe Keeps::Helpers::Milestones, feature_category: :tooling do
       expect(upcoming_milestones).to contain_exactly(*expected_milestones)
     end
   end
+
+  describe '#current_milestone' do
+    subject(:current_milestone) { described_class.new.current_milestone }
+
+    it { is_expected.to eq('16.9') }
+  end
 end

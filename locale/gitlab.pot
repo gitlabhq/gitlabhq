@@ -957,6 +957,12 @@ msgstr ""
 msgid "%{group_name} is approaching the limit of available seats"
 msgstr ""
 
+msgid "%{group_name} is being deleted."
+msgstr ""
+
+msgid "%{group_name} moved to pending deletion."
+msgstr ""
+
 msgid "%{group_name}&%{epic_iid} &middot; created %{epic_created} by %{author}"
 msgstr ""
 
@@ -1273,6 +1279,12 @@ msgid "%{projectLength} %{projects}:"
 msgstr ""
 
 msgid "%{project_name}"
+msgstr ""
+
+msgid "%{project_name} is being deleted."
+msgstr ""
+
+msgid "%{project_name} moved to pending deletion."
 msgstr ""
 
 msgid "%{project_name} project members"
@@ -1707,6 +1719,9 @@ msgid "'%{lock_path}' is locked by @%{lock_user_name}"
 msgstr ""
 
 msgid "'%{lock_path}' is locked in Git LFS by @%{lock_user_name}"
+msgstr ""
+
+msgid "'%{slug}' is a reserved name"
 msgstr ""
 
 msgid "'%{source}' is not a import source"
@@ -25948,9 +25963,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Path to configuration file"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Prompt"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Read file"
 msgstr ""
 
@@ -25967,9 +25979,6 @@ msgid "DuoAgentsPlatform|Search for a session"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Search issues"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Select a flow"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Select a service account user"
@@ -25994,9 +26003,6 @@ msgid "DuoAgentsPlatform|Software development"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Start agent session"
 msgstr ""
 
 msgid "DuoAgentsPlatform|The trigger could not be created. Try again."
@@ -26833,6 +26839,9 @@ msgid "Editor toolbar"
 msgstr ""
 
 msgid "Editor|Code Editor. Press %{keyCombo} to toggle tab key behavior between indentation and navigation. Editing %{blobPath}."
+msgstr ""
+
+msgid "Editor|Editor accessibility guide"
 msgstr ""
 
 msgid "Edits"
@@ -33094,9 +33103,6 @@ msgid "Group '%{group_name}' is being deleted."
 msgstr ""
 
 msgid "Group '%{group_name}' was successfully updated."
-msgstr ""
-
-msgid "Group '%{group_name}' will be deleted on %{date}."
 msgstr ""
 
 msgid "Group Git LFS status:"
@@ -52574,9 +52580,6 @@ msgstr ""
 msgid "Project '%{project_name}' was successfully updated."
 msgstr ""
 
-msgid "Project '%{project_name}' will be deleted on %{date}."
-msgstr ""
-
 msgid "Project Badges"
 msgstr ""
 
@@ -61447,13 +61450,13 @@ msgstr ""
 msgid "SecurityOrchestration|Create custom variable"
 msgstr ""
 
-msgid "SecurityOrchestration|Create more robust vulnerability rules and apply them to all your projects."
-msgstr ""
-
 msgid "SecurityOrchestration|Create new framework label"
 msgstr ""
 
 msgid "SecurityOrchestration|Create new project with the new policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Create security policies to enforce security and compliance controls that help keep your project secure."
 msgstr ""
 
 msgid "SecurityOrchestration|Create security policy"

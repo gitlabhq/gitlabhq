@@ -64,11 +64,8 @@ From an epic, you can also [view the roadmap filtered to this epic's descendants
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Filtering roadmaps by milestone might not be available to you. Be sure to review this section's history for details.
-
-{{< /alert >}}
+> [!note]
+> Filtering roadmaps by milestone might not be available to you. Be sure to review this section's history for details.
 
 When you want to explore a roadmap, there are several ways to make it easier by sorting epics or
 filtering them by what's important for you.

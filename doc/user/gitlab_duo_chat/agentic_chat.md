@@ -209,11 +209,13 @@ Your conversations synchronize across GitLab Duo Chat in the GitLab UI and your 
 1. Create a new Chat conversation:
 
    - In the GitLab UI, you can do either of the following:
+
      - On the GitLab Duo sidebar, select **New GitLab Duo Chat**
        ({{< icon name="pencil-square" >}}).
      - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
-       A new Chat conversation replaces the previous one.
-       Under the Chat text box, ensure the **Agentic** toggle is turned on.
+
+     A new Chat conversation replaces the previous one.
+   - Under the Chat text box, ensure the **Agentic** toggle is turned on.
    - In your IDE, in the upper-right corner of the message box, select **New chat**
      ({{< icon name="plus" >}}).
 1. Enter your question and press <kbd>Enter</kbd> or select **Send**.

@@ -3,7 +3,7 @@
 module Search
   class SnippetService < Search::GlobalService
     def execute
-      Gitlab::SnippetSearchResults.new(current_user, params[:search])
+      Gitlab::SnippetSearchResults.new(current_user, params[:search], organization_id: params[:organization_id])
     end
 
     def scope

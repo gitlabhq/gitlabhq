@@ -415,7 +415,7 @@ class ProjectsController < Projects::ApplicationController
 
   def destroy_immediately
     ::Projects::DestroyService.new(@project, current_user, {}).async_execute
-    flash[:toast] = safe_format(_("Project '%{project_name}' is being deleted."), project_name: @project.full_name)
+    flash[:toast] = safe_format(_("%{project_name} is being deleted."), project_name: @project.name)
 
     redirect_to dashboard_projects_path, status: :found
   end

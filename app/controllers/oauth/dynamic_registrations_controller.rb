@@ -35,7 +35,8 @@ module Oauth
         redirect_uri: Array(redirect_uris).join("\n"),
         scopes: scopes,
         confidential: false,
-        dynamic: true
+        dynamic: true,
+        organization: Current.organization
       )
 
       if application.persisted?

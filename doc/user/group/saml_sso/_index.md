@@ -12,11 +12,8 @@ title: SAML SSO for GitLab.com groups
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-For GitLab Self-Managed, see [SAML SSO for GitLab Self-Managed](../../../integration/saml.md).
-
-{{< /alert >}}
+> [!note]
+> For GitLab Self-Managed, see [SAML SSO for GitLab Self-Managed](../../../integration/saml.md).
 
 Users can sign in to GitLab through their SAML identity provider.
 
@@ -228,11 +225,8 @@ The following GitLab settings correspond to the Keycloak fields.
 
 ### Configure assertions
 
-{{< alert type="note" >}}
-
-These attributes are case-insensitive.
-
-{{< /alert >}}
+> [!note]
+> These attributes are case-insensitive.
 
 At minimum, you must configure the following assertions:
 
@@ -345,11 +339,8 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-If the user is an [enterprise user](../../enterprise_user/_index.md) of that group, the following steps do not apply. The enterprise user must instead [sign in with a SAML account that has the same email as the GitLab account](#automatic-identity-linking-for-enterprise-users). This allows GitLab to link the SAML account to the existing account.
-
-{{< /alert >}}
+> [!note]
+> If the user is an [enterprise user](../../enterprise_user/_index.md) of that group, the following steps do not apply. The enterprise user must instead [sign in with a SAML account that has the same email as the GitLab account](#automatic-identity-linking-for-enterprise-users). This allows GitLab to link the SAML account to the existing account.
 
 To link SAML to your existing GitLab.com account:
 
