@@ -114,7 +114,7 @@ RSpec.shared_context 'ProjectPolicy context' do
   let(:admin_permissions) do
     %i[
       read_project_for_iids update_max_artifacts_size read_storage_disk_path
-      owner_access admin_remote_mirror read_internal_note
+      owner_access admin_remote_mirror read_internal_note read_custom_attribute
     ]
   end
 

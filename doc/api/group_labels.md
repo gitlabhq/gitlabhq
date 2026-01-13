@@ -41,7 +41,9 @@ GET /groups/:id/labels
 | `archived` | boolean | no | Whether the label is archived. Returns all labels, when not set. Requires the `:labels_archive` feature flag to be enabled. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/labels?with_counts=true"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/labels?with_counts=true"
 ```
 
 Example response:
@@ -94,7 +96,9 @@ GET /groups/:id/labels/:label_id
 | `only_group_labels` | boolean | no | Toggle to include only group labels or also project labels. Defaults to `true`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/labels/bug"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/labels/bug"
 ```
 
 Example response:
@@ -132,9 +136,15 @@ POST /groups/:id/labels
 | `archived`    | boolean | no       | Whether the label is archived. Requires the `labels_archive` feature flag to be enabled. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
-     --data '{"name": "Feature Proposal", "color": "#FFA500", "description": "Describes new ideas" }' \
-     "https://gitlab.example.com/api/v4/groups/5/labels"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "name": "Feature Proposal",
+    "color": "#FFA500",
+    "description": "Describes new ideas"
+  }' \
+  --url "https://gitlab.example.com/api/v4/groups/5/labels"
 ```
 
 Example response:
@@ -173,8 +183,11 @@ PUT /groups/:id/labels/:label_id
 | `archived`    | boolean | no       | Whether the label is archived. Requires the `labels_archive` feature flag to be enabled. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
-     --data '{"new_name": "Feature Idea" }' "https://gitlab.example.com/api/v4/groups/5/labels/Feature%20Proposal"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{"new_name": "Feature Idea"}' \
+  --url "https://gitlab.example.com/api/v4/groups/5/labels/Feature%20Proposal"
 ```
 
 Example response:
@@ -212,7 +225,9 @@ DELETE /groups/:id/labels/:label_id
 | `label_id` | integer or string | yes | The ID or title of a group's label. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/labels/bug"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/labels/bug"
 ```
 
 > [!note]
@@ -233,7 +248,9 @@ POST /groups/:id/labels/:label_id/subscribe
 | `label_id` | integer or string | yes      | The ID or title of a group's label. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/labels/9/subscribe"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/labels/9/subscribe"
 ```
 
 Example response:
@@ -270,7 +287,9 @@ POST /groups/:id/labels/:label_id/unsubscribe
 | `label_id` | integer or string | yes      | The ID or title of a group's label. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/labels/9/unsubscribe"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/labels/9/unsubscribe"
 ```
 
 Example response:

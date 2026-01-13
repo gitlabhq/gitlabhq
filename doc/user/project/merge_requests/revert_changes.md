@@ -62,8 +62,6 @@ To revert merge request `Example`:
    1. Fill in the fields for your revert merge request, then select **Create merge request**.
    1. When the merge request merges, the revert of `Example` is complete.
 
-After you revert the `Example` merge request, the option to **Revert** is no longer shown on it.
-
 ## Revert a commit
 
 You can revert any commit in a repository into either:

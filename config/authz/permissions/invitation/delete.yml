@@ -1,0 +1,6 @@
+---
+name: delete_invitation
+description: Grants the ability to delete invitations
+boundaries:
+  - group
+  - project

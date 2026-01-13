@@ -1,0 +1,8 @@
+---
+name: create_invitation
+description: Grants the ability to create invitations
+boundaries:
+  - group
+  - project
+permissions:
+  - create_invitation

@@ -30710,6 +30710,17 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserworkspacesincludeactualstates"></a>`includeActualStates` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="currentuserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
+### `CustomAttribute`
+
+A custom attribute key-value pair. Only available to admins.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customattributekey"></a>`key` | [`String!`](#string) | Key of the custom attribute. |
+| <a id="customattributevalue"></a>`value` | [`String!`](#string) | Value of the custom attribute. |
+
 ### `CustomDashboard`
 
 Customizable analytics dashboard.
@@ -33885,6 +33896,7 @@ Returns [`[AutocompletedUser!]`](#autocompleteduser).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupautocompleteusershideserviceaccountswithoutflowtriggers"></a>`hideServiceAccountsWithoutFlowTriggers` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Whether or not to hide service accounts without an associated Duo flow trigger. |
 | <a id="groupautocompleteuserssearch"></a>`search` | [`String`](#string) | Query to search users by name, username, or public email. |
 
 ##### `Group.availableSecurityScanProfiles`
@@ -42339,6 +42351,7 @@ Project-level settings for product analytics provider.
 | <a id="projectcontainertagsexpirationpolicy"></a>`containerTagsExpirationPolicy` | [`ContainerTagsExpirationPolicy`](#containertagsexpirationpolicy) | Container tags expiration policy of the project. |
 | <a id="projectcorpuses"></a>`corpuses` | [`CoverageFuzzingCorpusConnection`](#coveragefuzzingcorpusconnection) | Find corpuses of the project. (see [Connections](#connections)) |
 | <a id="projectcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the project creation. |
+| <a id="projectcustomattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the project. Only available to admins. |
 | <a id="projectdastscannerprofiles"></a>`dastScannerProfiles` | [`DastScannerProfileConnection`](#dastscannerprofileconnection) | DAST scanner profiles associated with the project. (see [Connections](#connections)) |
 | <a id="projectdastsiteprofiles"></a>`dastSiteProfiles` | [`DastSiteProfileConnection`](#dastsiteprofileconnection) | DAST Site Profiles associated with the project. (see [Connections](#connections)) |
 | <a id="projectdependencyproxypackagessetting"></a>`dependencyProxyPackagesSetting` | [`DependencyProxyPackagesSetting`](#dependencyproxypackagessetting) | Packages Dependency Proxy settings for the project. Requires the packages and dependency proxy to be enabled in the config. Requires the packages feature to be enabled at the project level. |
@@ -42735,6 +42748,7 @@ Returns [`[AutocompletedUser!]`](#autocompleteduser).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectautocompleteusershideserviceaccountswithoutflowtriggers"></a>`hideServiceAccountsWithoutFlowTriggers` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Whether or not to hide service accounts without an associated Duo flow trigger. |
 | <a id="projectautocompleteuserssearch"></a>`search` | [`String`](#string) | Query to search users by name, username, or public email. |
 
 ##### `Project.availableDeployKeys`

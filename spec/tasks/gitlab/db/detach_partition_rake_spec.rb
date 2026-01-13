@@ -262,13 +262,6 @@ RSpec.describe 'gitlab:db:detach_partition', :silence_stdout, feature_category: 
       allow(Gitlab::Database::EachDatabase).to receive(:each_connection)
     end
 
-    after do
-      %w[main ci].each do |db|
-        Rake::Task["gitlab:db:detach_partition:#{db}"].reenable
-        Rake::Task["gitlab:db:reattach_partition:#{db}"].reenable
-      end
-    end
-
     describe 'task registration' do
       it 'creates detach and reattach tasks for each database' do
         %w[main ci].each do |database_name|

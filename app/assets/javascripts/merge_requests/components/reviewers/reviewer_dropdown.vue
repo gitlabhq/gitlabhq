@@ -224,6 +224,7 @@ export default {
         query: userAutocompleteWithMRPermissionsQuery,
         variables: {
           search,
+          hideServiceAccountsWithoutFlowTriggers: true,
           fullPath: this.projectPath,
           mergeRequestId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.issuableId),
         },

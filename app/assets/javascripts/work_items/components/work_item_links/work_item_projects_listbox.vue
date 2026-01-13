@@ -75,11 +75,19 @@ export default {
         return data.namespace?.projects?.nodes;
       },
       result() {
-        this.selectedProject =
+        // Preserve the current selection if we're actively searching
+        const candidateProject =
           this.findSelectedProject(this.selectedProjectFullPath) ||
           this.frequentProjects?.at(0) ||
           this.projects?.at(0);
-        this.$emit('selectProject', this.selectedProject?.fullPath);
+
+        // Only update and emit if we found a valid project
+        if (candidateProject) {
+          this.selectedProject = candidateProject;
+          this.$emit('selectProject', candidateProject.fullPath);
+        }
+        // If no results found during search, keep the previous selection
+        // and don't emit undefined
       },
     },
   },
@@ -175,7 +183,7 @@ export default {
       this.searchKey = '';
       this.setFrequentProjects();
       await this.$nextTick();
-      this.$refs.searchInputField?.focusInput?.();
+      this.$refs.listbox.$refs.searchBox.clearInput?.();
     },
     setFrequentProjects(searchTerm) {
       const { current_username: currentUsername } = gon;
@@ -224,6 +232,7 @@ export default {
 
 <template>
   <gl-collapsible-listbox
+    ref="listbox"
     block
     searchable
     is-check-centered

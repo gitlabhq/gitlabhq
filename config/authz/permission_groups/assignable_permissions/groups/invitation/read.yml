@@ -1,0 +1,8 @@
+---
+name: read_invitation
+description: Grants the ability to read invitations
+boundaries:
+  - group
+  - project
+permissions:
+  - read_invitation

@@ -188,6 +188,7 @@ export default {
         fullPath: this.fullPath,
         search: this.search,
         first: 20,
+        hideServiceAccountsWithoutFlowTriggers: true,
       };
       if (!this.isMergeRequest) {
         return variables;

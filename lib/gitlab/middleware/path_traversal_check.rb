@@ -72,7 +72,7 @@ module Gitlab
       end
 
       def exclude_query_parameters(request)
-        query_params = request.GET
+        query_params = request.GET.dup
         return if query_params.empty?
 
         cleanup_query_parameters!(query_params)

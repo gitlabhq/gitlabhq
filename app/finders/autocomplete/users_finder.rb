@@ -12,7 +12,8 @@ module Autocomplete
 
     attr_reader :current_user, :project, :group, :search,
       :author_id, :todo_filter, :todo_state_filter,
-      :filter_by_current_user, :states, :push_code
+      :filter_by_current_user, :states, :push_code,
+      :hide_service_accounts_without_flow_triggers
 
     def initialize(params:, current_user:, project:, group:)
       @current_user = current_user
@@ -25,6 +26,7 @@ module Autocomplete
       @filter_by_current_user = params[:current_user]
       @states = params[:states] || ['active']
       @push_code = params[:push_code]
+      @hide_service_accounts_without_flow_triggers = params[:hide_service_accounts_without_flow_triggers]
     end
 
     def execute
