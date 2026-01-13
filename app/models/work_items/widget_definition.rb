@@ -17,6 +17,10 @@ module WorkItems
     scope :enabled, -> { where(disabled: false) }
     scope :by_enabled_widget_type, ->(widget_type) { enabled.where(widget_type: widget_type) }
 
+    # IMPORTANT: When adding widget types to this enum, they MUST be added to the end of this list.
+    # The saved views feature stores sort options as integers that map to positions in the list returned
+    # by WidgetDefinition.widget_classes (which iterates this enum). Inserting widgets in the middle
+    # would corrupt existing saved view sort values.
     enum :widget_type, {
       assignees: 0,
       description: 1,

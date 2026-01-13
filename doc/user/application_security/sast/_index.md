@@ -933,12 +933,12 @@ The following are Docker image-related CI/CD variables.
    For example, if `SAST_EXCLUDED_PATHS` is set to `*.py,tests`:
 
    - `*.py` ignores the following:
-      - `foo.py`
-      - `src/foo.py`
-      - `foo.py/bar.sh`
+     - `foo.py`
+     - `src/foo.py`
+     - `foo.py/bar.sh`
    - `tests` ignores:
-      - `tests/foo.py`
-      - `a/b/tests/c/foo.py`
+     - `tests/foo.py`
+     - `a/b/tests/c/foo.py`
 
    Each pattern is a glob-style pattern that uses the same syntax as [gitignore](https://git-scm.com/docs/gitignore#_pattern_format).
 
@@ -1040,7 +1040,11 @@ flags are added to the scanner's CLI options.
         <code>--multi-core</code>
       </td>
       <td>
-        Multi-core scanning is enabled by default, automatically detecting and utilizing available CPU cores based on container information. On self-hosted runners, the maximum number of cores is capped at 4. You can override the automatic core detection by explicitly setting <code>--multi-core</code> to a specific value. Multi-core execution requires proportionally more memory than single-core execution. To disable multi-core scanning, set the environment variable <code>DISABLE_MULTI_CORE</code>. Exceeding available cores or memory resources may lead to resource contention and suboptimal performance.
+        Multi-core scanning is enabled by default, auto-detecting available CPU cores (capped at 4 on self-hosted runners).
+        Override with <code>--multi-core <number of cores></code> (for example, <code>--multi-core 12</code>).
+        Multi-core execution requires proportionally more memory. You should allocate 4 GB per core.
+        To disable, set <code>DISABLE_MULTI_CORE</code>.
+        Exceeding available resources may cause performance issues.
       </td>
     </tr>
     <tr>

@@ -138,8 +138,8 @@ request to run tests with the production versions of Elasticsearch and PostgreSQ
    - See if the migration is pending: `::Elastic::DataMigrationService.pending_migrations`.
    - Check that the migration is not completed: `Elastic::DataMigrationService.pending_migrations.first.completed?`.
    - Make sure the mappings aren't already applied
-      - either by checking in Kibana `GET gitlab-development-some-index/_mapping`
-      - or sending a curl request `curl "http://localhost:9200/gitlab-development-some-index/_mappings" | jq`
+     - either by checking in Kibana `GET gitlab-development-some-index/_mapping`
+     - or sending a curl request `curl "http://localhost:9200/gitlab-development-some-index/_mappings" | jq`
 1. Tail the logs to see logged messages: `tail -f log/elasticsearch.log`.
 1. Execute the migration in one of the following ways:
    - Run the `Elastic::MigrationWorker.new.perform` migration worker.

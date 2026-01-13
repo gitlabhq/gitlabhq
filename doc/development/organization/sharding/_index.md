@@ -78,14 +78,14 @@ The keep file contains code that:
 
 1. Running the above command will give you useful information about the tables, such as indexes, pk, etc. For example, the `security_scans` table looks like:
 
-    ![Database schema output showing table columns, primary keys, indexes, and foreign key relationships for the `security_scans` table.](img/security-scans-table_v18_6.png)
+   ![Database schema output showing table columns, primary keys, indexes, and foreign key relationships for the `security_scans` table.](img/security-scans-table_v18_6.png)
 
-    The output shows:
-    - Table: `public.security_scans`
-    - Columns: `id` (bigint, not null), `created_at` (timestamp), `updated_at` (timestamp), `build_id` (bigint, not null), `scan_type` (smallint, not null), and other fields
-    - Primary key: `security_scans_pkey` (btree on `id`)
-    - Indexes: Including `index_security_scans_on_build_id` and `index_security_scans_on_project_id`
-    - Foreign keys: Including references to `ci_builds` and `projects`
+   The output shows:
+   - Table: `public.security_scans`
+   - Columns: `id` (bigint, not null), `created_at` (timestamp), `updated_at` (timestamp), `build_id` (bigint, not null), `scan_type` (smallint, not null), and other fields
+   - Primary key: `security_scans_pkey` (btree on `id`)
+   - Indexes: Including `index_security_scans_on_build_id` and `index_security_scans_on_project_id`
+   - Foreign keys: Including references to `ci_builds` and `projects`
 
 1. This is important because we have many cases where the primary key is composite, non unique, etc., and requires some manual changes in the keep.
 

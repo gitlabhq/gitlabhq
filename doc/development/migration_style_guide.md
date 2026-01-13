@@ -52,16 +52,16 @@ work it needs to perform and how long it takes to complete:
    These migrations can be used for schema changes that aren't critical for the application to operate, or data migrations that take at most a few minutes.
    Common examples for schema changes that should run post-deploy include:
 
-     - Clean-ups, like removing unused columns.
-     - Adding non-critical indices on high-traffic tables.
-     - Adding non-critical indices that take a long time to create.
+   - Clean-ups, like removing unused columns.
+   - Adding non-critical indices on high-traffic tables.
+   - Adding non-critical indices that take a long time to create.
 
    These migrations should not be used for schema changes that are critical for the application to operate. Making such
    schema changes in a post-deployment migration have caused issues in the past, for example [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/378582).
    Changes that should always be a regular schema migration and not be executed in a post-deployment migration include:
 
-     - Creating a new table, example: `create_table`.
-     - Adding a new column to an existing table, example: `add_column`.
+   - Creating a new table, example: `create_table`.
+   - Adding a new column to an existing table, example: `add_column`.
 
     {{< alert type="note" >}}
 

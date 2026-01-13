@@ -45,17 +45,17 @@ To create a project with `git push`:
 
    - With SSH:
 
-      - If your project uses the standard port 22, run:
+     - If your project uses the standard port 22, run:
 
-        ```shell
-        git push --set-upstream git@gitlab.example.com:namespace/myproject.git main
-        ```
+       ```shell
+       git push --set-upstream git@gitlab.example.com:namespace/myproject.git main
+       ```
 
-      - If your project requires a non-standard port number, run:
+     - If your project requires a non-standard port number, run:
 
-        ```shell
-        git push --set-upstream ssh://git@gitlab.example.com:00/namespace/myproject.git main
-        ```
+       ```shell
+       git push --set-upstream ssh://git@gitlab.example.com:00/namespace/myproject.git main
+       ```
 
    - With HTTP, run:
 

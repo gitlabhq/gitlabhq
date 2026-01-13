@@ -38,8 +38,8 @@ The following metrics are available in the runner fleet dashboard:
 
 **Footnotes**:
 
-  1. For GitLab Self-Managed, to view the **Runner usage** and **Wait time to pick a job** metrics,
-you must configure the [ClickHouse integration](../../integration/clickhouse.md).
+1. For GitLab Self-Managed, to view the **Runner usage** and **Wait time to pick a job** metrics,
+   you must configure the [ClickHouse integration](../../integration/clickhouse.md).
 
 ## View the runner fleet dashboard for groups
 

@@ -31,6 +31,10 @@ module Ci
       ServiceResponse.success
     rescue Gitlab::Access::AccessDeniedError => e
       ServiceResponse.error(message: e.message, http_status: :forbidden)
+    rescue ActiveRecord::StaleObjectError
+      raise unless Feature.enabled?(:rescue_stale_object_errors_in_pipeline_processing, project)
+
+      ServiceResponse.error(message: 'Error updating stale job', http_status: :conflict)
     end
 
     def check_access(pipeline)

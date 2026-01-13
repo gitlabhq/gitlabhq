@@ -1,0 +1,338 @@
+{
+  "description": "Filter data for a saved view",
+  "type": "object",
+  "properties": {
+    "assignee_wildcard_id": {
+      "type": "string"
+    },
+    "weight_wildcard_id": {
+      "type": "string"
+    },
+    "iteration_wildcard_id": {
+      "type": "string"
+    },
+    "release_tag_wildcard_id": {
+      "type": "string"
+    },
+    "assignee_ids": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "author_ids": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "iid": {
+      "type": "string"
+    },
+    "confidential": {
+      "type": "boolean"
+    },
+    "namespace_id": {
+      "type": "integer"
+    },
+    "health_status_filter": {
+      "type": "string"
+    },
+    "milestone_wildcard_id": {
+      "type": "string"
+    },
+    "iteration_id": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "label_ids": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "milestone_ids": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "my_reaction_emoji": {
+      "type": "string"
+    },
+    "parent": {
+      "type": "string"
+    },
+    "release_ids": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "in": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "search": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "status": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "input_format": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "input_format"
+      ],
+      "additionalProperties": false
+    },
+    "subscribed": {
+      "type": "string"
+    },
+    "custom_field": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "custom_field_id": {
+            "type": "string"
+          },
+          "selected_option_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "issue_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "weight": {
+      "type": "string"
+    },
+    "group": {
+      "type": "string"
+    },
+    "crm_organization_id": {
+      "type": "string"
+    },
+    "crm_contact_id": {
+      "type": "string"
+    },
+    "created_before": {
+      "type": "string"
+    },
+    "created_after": {
+      "type": "string"
+    },
+    "updated_before": {
+      "type": "string"
+    },
+    "updated_after": {
+      "type": "string"
+    },
+    "closed_before": {
+      "type": "string"
+    },
+    "closed_after": {
+      "type": "string"
+    },
+    "due_before": {
+      "type": "string"
+    },
+    "due_after": {
+      "type": "string"
+    },
+    "exclude_projects": {
+      "type": "boolean"
+    },
+    "exclude_group_work_items": {
+      "type": "boolean"
+    },
+    "include_descendants": {
+      "type": "boolean"
+    },
+    "include_descendant_work_items": {
+      "type": "boolean"
+    },
+    "hierarchy_filters": {
+      "type": "object",
+      "properties": {
+        "work_item_parent_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "parent_wildcard_id": {
+          "type": "string"
+        },
+        "include_descendant_work_items": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "iteration_cadence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "not": {
+      "type": "object",
+      "properties": {
+        "parent_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "assignee_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "iteration_wildcard_id": {
+          "type": "string"
+        },
+        "author_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "label_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "milestone_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "milestone_wildcard_id": {
+          "type": "string"
+        },
+        "release_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "iteration_cadence_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "my_reaction_emoji": {
+          "type": "string"
+        },
+        "issue_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "health_status_filter": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "weight": {
+          "type": "string"
+        },
+        "custom_field": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "custom_field_id": {
+                "type": "string"
+              },
+              "selected_option_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "iteration_id": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "or": {
+      "type": "object",
+      "properties": {
+        "assignee_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "author_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "label_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "custom_field": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "custom_field_id": {
+                "type": "string"
+              },
+              "selected_option_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

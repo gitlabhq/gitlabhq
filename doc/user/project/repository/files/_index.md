@@ -67,10 +67,10 @@ The first file found in each category (in alphabetical order) is selected, with
 previewable files taking precedence over plain text files. For example, if
 multiple READMEs are available GitLab renders them in the following order:
 
-  1. `README.adoc`
-  1. `README.md`
-  1. `README.rst`
-  1. `README`
+1. `README.adoc`
+1. `README.md`
+1. `README.rst`
+1. `README`
 
 ### Render OpenAPI files
 

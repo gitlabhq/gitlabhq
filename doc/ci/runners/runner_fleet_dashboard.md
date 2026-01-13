@@ -59,8 +59,8 @@ For an overview, see [setting up runner fleet dashboard with ClickHouse](https:/
 
 **Footnotes**:
 
-  1. This feature is in [beta](../../policy/development_stages_support.md#beta) and subject to change without notice.
-For more information, see [epic 11180](https://gitlab.com/groups/gitlab-org/-/epics/11180).
+1. This feature is in [beta](../../policy/development_stages_support.md#beta) and subject to change without notice.
+   For more information, see [epic 11180](https://gitlab.com/groups/gitlab-org/-/epics/11180).
 
 ## View the runner fleet dashboard
 

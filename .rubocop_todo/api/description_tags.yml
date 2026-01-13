@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 API/DescriptionTags:
   Exclude:
-    - 'ee/lib/api/admin/search/zoekt.rb'
     - 'ee/lib/api/ai/duo_workflows/code_review.rb'
     - 'ee/lib/api/ai/duo_workflows/workflows.rb'
     - 'ee/lib/api/ai/duo_workflows/workflows_internal.rb'

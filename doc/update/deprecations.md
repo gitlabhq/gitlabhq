@@ -5005,9 +5005,9 @@ GitLab 15.7 [adds full support](https://docs.gitlab.com/user/infrastructure/iac/
 
 To resolve the issue:
 
-  1. Change any references to the state file by excluding the period and any characters that follow.
-     - For example, if your state name is `state.name`, change all references to `state`.
-  1. Run your Terraform commands.
+1. Change any references to the state file by excluding the period and any characters that follow.
+   - For example, if your state name is `state.name`, change all references to `state`.
+1. Run your Terraform commands.
 
 To use the full state name, including the period, [migrate to the full state file](https://docs.gitlab.com/user/infrastructure/iac/terraform_state/#migrate-to-a-gitlab-managed-terraform-state).
 

@@ -681,9 +681,9 @@ flow of how we construct a Chat prompt:
    ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v2/chat/agent.py#L133))
 1. `api.v2.agent.chat.agent.chat` creates the `GLAgentRemoteExecutor` through the `gl_agent_remote_executor_factory` ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v2/chat/agent.py#L166)).
 
-      Upon creation of the `GLAgentRemoteExecutor`, the following parameters are passed:
-      - `tools_registry` - the registry of all available tools; this is passed through the factory ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/container.py#L35))
-      - `agent` - `ReActAgent` object that wraps the prompt information, including the chosen LLM model, prompt template, etc
+   Upon creation of the `GLAgentRemoteExecutor`, the following parameters are passed:
+   - `tools_registry` - the registry of all available tools; this is passed through the factory ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/container.py#L35))
+   - `agent` - `ReActAgent` object that wraps the prompt information, including the chosen LLM model, prompt template, etc
 
 1. `api.v2.agent.chat.agent.chat` calls the `GLAgentRemoteExecutor.on_behalf`, which gets the user tools early to raise an exception as soon as possible if an error occurs ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/executor.py#L56)).
 1. `api.v2.agent.chat.agent.chat` calls the `GLAgentRemoteExecutor.stream` ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/executor.py#L81)).

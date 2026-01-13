@@ -1069,7 +1069,7 @@ class Project < ApplicationRecord
   end
 
   def self.with_api_commit_entity_associations
-    preload(:ci_pipelines, :project_feature, :route, namespace: [:route, :owner])
+    preload(:project_feature, :route, namespace: [:route, :owner])
   end
 
   def self.with_api_blob_entity_associations

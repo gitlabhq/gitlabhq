@@ -65,10 +65,10 @@ To create the policies:
 1. Go to **Secure** > **Policies**.
 1. Create one or more security policies as you typically would. Before you save each policy:
    - In the **Policy scope** section, select a scope to apply the policy to:
-      - **Groups**: Apply the policy to specific groups and subgroups.
-      - **Projects**: Apply the policy individual projects.
-      - **All projects**: Apply to the entire instance.
-      - **All projects except**: Apply to all projects with specified exceptions.
+     - **Groups**: Apply the policy to specific groups and subgroups.
+     - **Projects**: Apply the policy individual projects.
+     - **All projects**: Apply to the entire instance.
+     - **All projects except**: Apply to all projects with specified exceptions.
 1. Save your policy configuration.
 
 ## Policy storage and configuration

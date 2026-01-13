@@ -93,9 +93,9 @@ and complete an integration with the Secure stage.
      - If you need a new kind of scan or report, [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new#)
        and add the label `devops::secure`.
    - After the job is completed, the data can be seen:
-      - In the [Merge Request Security Report](../../ci/testing/_index.md#security-reports) ([MR Security Report data flow](https://gitlab.com/snippets/1910005#merge-request-view)).
-      - While [browsing a Job Artifact](../../ci/jobs/job_artifacts.md).
-      - In the [Security Dashboard](../../user/application_security/security_dashboard/_index.md) ([Dashboard data flow](https://gitlab.com/snippets/1910005#project-and-group-dashboards)).
+     - In the [Merge Request Security Report](../../ci/testing/_index.md#security-reports) ([MR Security Report data flow](https://gitlab.com/snippets/1910005#merge-request-view)).
+     - While [browsing a Job Artifact](../../ci/jobs/job_artifacts.md).
+     - In the [Security Dashboard](../../user/application_security/security_dashboard/_index.md) ([Dashboard data flow](https://gitlab.com/snippets/1910005#project-and-group-dashboards)).
 1. Optional. Provide a way to interact with results as Vulnerabilities:
    - Users can interact with the findings from your artifact within their workflow. They can dismiss the findings or accept them and create a backlog issue.
    - To automatically create issues without user interaction, use the [issue API](../../api/issues.md).

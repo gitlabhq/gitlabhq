@@ -323,7 +323,7 @@ installation can configure which data stores are used. On non-GitLab.com instanc
    - Creates single consolidated archive file as a `JobArtifact` of `type: :trace`
    - Deletes individual chunks from object storage
    - Deletes `Ci::BuildTraceChunk` records from PostgreSQL
-      - `Ci::Build::Trace` changes from the `live` to `archived` state
+     - `Ci::Build::Trace` changes from the `live` to `archived` state
    - Returns 200 OK to runner
    - `build.trace_chunks` will be an empty array
 

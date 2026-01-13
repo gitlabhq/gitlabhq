@@ -6,21 +6,26 @@ RSpec.describe Types::WorkItems::SavedViews::SavedViewType, feature_category: :p
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
+  let_it_be(:group) { create(:group, planners: [current_user]) }
+
+  let_it_be(:filter_data) { { state: 'opened', confidential: true } }
+  let_it_be(:display_settings) { { 'hiddenMetadataKeys' => ['assignee'] } }
+
+  let_it_be(:saved_view) do
+    create(:saved_view, namespace: group, filter_data: filter_data, display_settings: display_settings,
+      sort: :priority_asc)
+  end
 
   specify { expect(described_class).to require_graphql_authorizations(:read_saved_view) }
 
   describe '#filters' do
     it 'returns an empty hash' do
-      saved_view = create(:saved_view)
-
       expect(resolve_field(:filters, saved_view, current_user: current_user)).to eq({})
     end
   end
 
   describe '#filter_warnings' do
     it 'returns an empty array' do
-      saved_view = create(:saved_view)
-
       expect(resolve_field(:filter_warnings, saved_view, current_user: current_user)).to eq([])
     end
   end
@@ -33,12 +38,25 @@ RSpec.describe Types::WorkItems::SavedViews::SavedViewType, feature_category: :p
     end
   end
 
+  describe '#sort' do
+    it 'returns the saved view sorting option' do
+      expect(resolve_field(:sort, saved_view, current_user: current_user)).to eq(:priority_asc)
+    end
+
+    context 'when sort is nil' do
+      let_it_be(:saved_view_without_sort) do
+        create(:saved_view, namespace: group, filter_data: filter_data, sort: nil)
+      end
+
+      it 'returns nil' do
+        expect(resolve_field(:sort, saved_view_without_sort, current_user: current_user)).to be_nil
+      end
+    end
+  end
+
   describe '#share_url' do
     context 'when namespace is a group' do
-      let_it_be(:group) { create(:group, planners: [current_user]) }
-      let_it_be(:saved_view) { create(:saved_view, namespace: group) }
-
-      it 'returns the group subscribe URL' do
+      it 'returns the group URL' do
         url = resolve_field(:share_url, saved_view, current_user: current_user)
 
         expect(url).to eq(Gitlab::Routing.url_helpers.subscribe_group_saved_view_url(group, saved_view.id))
@@ -53,7 +71,7 @@ RSpec.describe Types::WorkItems::SavedViews::SavedViewType, feature_category: :p
         project.add_planner(current_user)
       end
 
-      it 'returns the project subscribe URL' do
+      it 'returns the project URL' do
         url = resolve_field(:share_url, saved_view, current_user: current_user)
 
         expect(url).to eq(Gitlab::Routing.url_helpers.subscribe_project_saved_view_url(project, saved_view.id))

@@ -257,9 +257,9 @@ Prerequisites:
 1. Expand **Visibility and access controls**.
 1. For **Restricted visibility levels**, select the desired visibility levels to restrict.
    - If you restrict the **Public** level:
-      - Only administrators can create public groups, projects, and snippets.
-      - User profiles are visible to only authenticated users through the Web interface.
-      - User attributes are not visible through the GraphQL API.
+     - Only administrators can create public groups, projects, and snippets.
+     - User profiles are visible to only authenticated users through the Web interface.
+     - User attributes are not visible through the GraphQL API.
    - If you restrict the **Internal** level:
      - Only administrators can create internal groups, projects, and snippets.
    - If you restrict the **Private** level:

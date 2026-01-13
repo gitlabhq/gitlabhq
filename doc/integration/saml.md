@@ -734,7 +734,7 @@ Google Workspace SAML application.
 
 1. Set the following attributes:
    - **Unique User Identifier (Name ID)** to `user.objectID`.
-      - **Name identifier format** to `persistent`. For more information, see how to [manage user SAML identity](../user/group/saml_sso/_index.md#manage-user-saml-identity).
+     - **Name identifier format** to `persistent`. For more information, see how to [manage user SAML identity](../user/group/saml_sso/_index.md#manage-user-saml-identity).
    - **Additional claims** to [supported attributes](#configure-assertions).
 
 For more information, see an [example configuration page](../user/group/saml_sso/example_saml_config.md#azure-active-directory).

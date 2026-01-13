@@ -11,9 +11,10 @@ RSpec.describe Mutations::WorkItems::SavedViews::Create, feature_category: :port
   let(:arguments) do
     { namespace_path: namespace_path,
       name: 'New Saved View',
-      filters: {},
-      display_settings: {},
-      sort: 'CREATED_ASC' }
+      description: 'New Saved View Description',
+      filters: { state: 'opened', confidential: true },
+      display_settings: { hiddenMetadataKeys: ['assignee'] },
+      sort: :created_asc }
   end
 
   let_it_be(:project) { create(:project) }
@@ -41,8 +42,33 @@ RSpec.describe Mutations::WorkItems::SavedViews::Create, feature_category: :port
       project.add_planner(current_user)
     end
 
-    it 'does not raise an error' do
-      expect { mutation.resolve(**arguments) }.not_to raise_error
+    it 'creates a saved view with the specified arguments' do
+      result = mutation.resolve(**arguments)
+      saved_view = result[:saved_view]
+
+      expect(saved_view).to have_attributes(
+        namespace: project.project_namespace,
+        name: 'New Saved View',
+        display_settings: { "hiddenMetadataKeys" => ["assignee"] },
+        filter_data: { "confidential" => true, "state" => "opened" },
+        sort: 'created_asc',
+        author: current_user
+      )
+    end
+  end
+
+  context 'when saved view creation fails' do
+    before_all do
+      project.add_planner(current_user)
+    end
+
+    let(:arguments) { { namespace_path: namespace_path, name: '', filters: { state: 'opened' } } }
+
+    it 'returns errors without creating a saved view' do
+      result = mutation.resolve(**arguments)
+
+      expect(result[:saved_view]).to be_nil
+      expect(result[:errors]).not_to be_empty
     end
   end
 end

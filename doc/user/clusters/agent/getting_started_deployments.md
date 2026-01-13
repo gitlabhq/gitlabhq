@@ -26,8 +26,8 @@ In this section, you'll use the GitLab pipeline integration to create a secret i
 1. Save your deploy token and username as CI/CD variables called `CONTAINER_REGISTRY_ACCESS_TOKEN` and `CONTAINER_REGISTRY_ACCESS_USERNAME`.
    - For both variables, set the environment to `container-registry-secret*`.
    - For `CONTAINER_REGISTRY_ACCESS_TOKEN`:
-      - [Mask the variable](../../../ci/variables/_index.md#mask-a-cicd-variable).
-      - [Protect the variable](../../../ci/variables/_index.md#protect-a-cicd-variable).
+     - [Mask the variable](../../../ci/variables/_index.md#mask-a-cicd-variable).
+     - [Protect the variable](../../../ci/variables/_index.md#protect-a-cicd-variable).
 1. Add the following snippet to your `.gitlab-ci.yml` file, and update both `AGENT_KUBECONTEXT` variables to match your project's path:
 
    ```yaml

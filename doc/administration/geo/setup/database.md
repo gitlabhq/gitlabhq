@@ -577,11 +577,11 @@ data before running `pg_basebackup`.
 
    - If your primary site has a single node, use the primary node host as the `--host` parameter.
    - If your primary site is using an external PostgreSQL database, you need to adjust the `--host` parameter:
-      - For PgBouncer setups, target the actual PostgreSQL database host directly, not the PgBouncer address.
-      - For Patroni configurations, target the current Patroni leader host.
-      - When using a load balancer (for example, HAProxy), if the load balancer is configured to always route to the Patroni leader, you can target the load balancer's
-        If not, you must target the actual database host.
-      - For setups with a dedicated PostgreSQL node, target the dedicated database host directly.
+     - For PgBouncer setups, target the actual PostgreSQL database host directly, not the PgBouncer address.
+     - For Patroni configurations, target the current Patroni leader host.
+     - When using a load balancer (for example, HAProxy), if the load balancer is configured to always route to the Patroni leader, you can target the load balancer's
+       If not, you must target the actual database host.
+     - For setups with a dedicated PostgreSQL node, target the dedicated database host directly.
    - Change the `--slot-name` to the name of the replication slot
      to be used on the **primary** database. The script attempts to create the
      replication slot automatically if it does not exist.

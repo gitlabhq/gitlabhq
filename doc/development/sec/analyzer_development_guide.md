@@ -587,32 +587,32 @@ In order to push images to this location:
       - Maintainer: `@gitlab-org/secure/managers`, `@gitlab-org/govern/managers`
       - Developer: [@gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation)
 
-         This is necessary to allow the [service account used in the automatic release process](#service-account-used-in-the-automatic-release-process) to push images to `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`.
+        This is necessary to allow the [service account used in the automatic release process](#service-account-used-in-the-automatic-release-process) to push images to `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`.
 
    1. Configure the following project settings:
 
       - `Settings -> General -> Visibility, project features, permissions`
-         - `Project visibility`
-            - `Public`
-         - `Additional options`
-            - `Users can request access`
-               - `Disabled`
-         - `Issues`
+        - `Project visibility`
+          - `Public`
+        - `Additional options`
+          - `Users can request access`
             - `Disabled`
-         - `Repository`
-            - `Only Project Members`
-            - `Merge Requests`
-               - `Disabled`
-            - `Forks`
-               - `Disabled`
-            - `Git Large File Storage (LFS)`
-               - `Disabled`
-            - `CI/CD`
-               - `Disabled`
-         - `Container Registry`
-            - `Everyone with access`
-         - `Analytics`, `Requirements`, `Security and compliance`, `Wiki`, `Snippets`, `Package registry`, `Model experiments`, `Model registry`, `Pages`, `Monitor`, `Environments`, `Feature flags`, `Infrastructure`, `Releases`, `GitLab Duo`
+        - `Issues`
+          - `Disabled`
+        - `Repository`
+          - `Only Project Members`
+          - `Merge Requests`
             - `Disabled`
+          - `Forks`
+            - `Disabled`
+          - `Git Large File Storage (LFS)`
+            - `Disabled`
+          - `CI/CD`
+            - `Disabled`
+        - `Container Registry`
+          - `Everyone with access`
+        - `Analytics`, `Requirements`, `Security and compliance`, `Wiki`, `Snippets`, `Package registry`, `Model experiments`, `Model registry`, `Pages`, `Monitor`, `Environments`, `Feature flags`, `Infrastructure`, `Releases`, `GitLab Duo`
+          - `Disabled`
 
 1. Configure the following options for the _analyzer project_, located at `https://gitlab.com/gitlab-org/security-products/analyzers/<ANALYZER_NAME>`:
 

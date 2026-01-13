@@ -30,7 +30,6 @@ module Users
 
     include Gitlab::Utils::StrongMemoize
 
-    # rubocop:disable CodeReuse/ActiveRecord -- Need to instantiate a record here
     def initialize(organization: nil)
       case organization
       when ::Organizations::Organization
@@ -45,7 +44,7 @@ module Users
     # owns records previously belonging to deleted users.
     def ghost
       email = 'ghost%s@example.com'
-      unique_internal(User.where(user_type: :ghost), 'ghost', email) do |u|
+      unique_internal(User.with_user_types(:ghost), 'ghost', email) do |u|
         u.bio = _('This is a "Ghost User", created to hold all issues authored by users that have ' \
                   'since been deleted. This user cannot be removed.')
         u.name = 'Ghost'
@@ -55,7 +54,7 @@ module Users
     def alert_bot
       email_pattern = "alert%s@#{Settings.gitlab.host}"
 
-      unique_internal(User.where(user_type: :alert_bot), 'alert-bot', email_pattern) do |u|
+      unique_internal(User.with_user_types(:alert_bot), 'alert-bot', email_pattern) do |u|
         u.bio = 'The GitLab alert bot'
         u.name = 'GitLab Alert Bot'
         u.avatar = bot_avatar(image: 'alert-bot.png')
@@ -67,7 +66,7 @@ module Users
     def security_bot
       email_pattern = "security-bot%s@#{Settings.gitlab.host}"
 
-      unique_internal(User.where(user_type: :security_bot), 'GitLab-Security-Bot', email_pattern) do |u|
+      unique_internal(User.with_user_types(:security_bot), 'GitLab-Security-Bot', email_pattern) do |u|
         u.bio = 'System bot that monitors detected vulnerabilities for solutions ' \
                 'and creates merge requests with the fixes.'
         u.name = 'GitLab Security Bot'
@@ -80,7 +79,7 @@ module Users
     def support_bot
       email_pattern = "support%s@#{Settings.gitlab.host}"
 
-      unique_internal(User.where(user_type: :support_bot), 'support-bot', email_pattern) do |u|
+      unique_internal(User.with_user_types(:support_bot), 'support-bot', email_pattern) do |u|
         u.bio = 'The GitLab support bot used for Service Desk'
         u.name = 'GitLab Support Bot'
         u.avatar = bot_avatar(image: 'support-bot.png')
@@ -96,7 +95,7 @@ module Users
     def automation_bot
       email_pattern = "automation%s@#{Settings.gitlab.host}"
 
-      unique_internal(User.where(user_type: :automation_bot), 'automation-bot', email_pattern) do |u|
+      unique_internal(User.with_user_types(:automation_bot), 'automation-bot', email_pattern) do |u|
         u.bio = 'The GitLab automation bot used for automated workflows and tasks'
         u.name = 'GitLab Automation Bot'
         u.avatar = bot_avatar(image: 'support-bot.png') # todo: add an avatar for automation-bot
@@ -108,7 +107,7 @@ module Users
     def duo_code_review_bot
       email_pattern = "gitlab-duo%s@#{Settings.gitlab.host}"
 
-      unique_internal(User.where(user_type: :duo_code_review_bot), 'GitLabDuo', email_pattern) do |u|
+      unique_internal(User.with_user_types(:duo_code_review_bot), 'GitLabDuo', email_pattern) do |u|
         u.bio = 'GitLab Duo bot for handling AI tasks'
         u.name = 'GitLab Duo'
         u.avatar = bot_avatar(image: 'duo-bot.png')
@@ -120,7 +119,7 @@ module Users
     def admin_bot
       email_pattern = "admin-bot%s@#{Settings.gitlab.host}"
 
-      unique_internal(User.where(user_type: :admin_bot), 'GitLab-Admin-Bot', email_pattern) do |u|
+      unique_internal(User.with_user_types(:admin_bot), 'GitLab-Admin-Bot', email_pattern) do |u|
         u.bio = 'Admin bot used for tasks that require admin privileges'
         u.name = 'GitLab Admin Bot'
         u.avatar = bot_avatar(image: 'admin-bot.png')
@@ -147,7 +146,7 @@ module Users
     # :before_all scope to keep the specs DRY.
     def unique_internal(scope, username, email_pattern, &block)
       if @organization_id && organization_users_internal_enabled? # rubocop:disable Style/IfUnlessModifier -- exceeds line length
-        scope = scope.where(organization_id: @organization_id)
+        scope = scope.in_organization(@organization_id)
       end
 
       scope.first || create_unique_internal(scope, username, email_pattern, &block)
@@ -244,8 +243,6 @@ module Users
     ensure
       Gitlab::ExclusiveLease.cancel(lease_key, uuid)
     end
-
-    # rubocop:enable CodeReuse/ActiveRecord
   end
 end
 

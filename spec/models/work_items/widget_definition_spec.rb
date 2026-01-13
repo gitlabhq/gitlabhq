@@ -153,4 +153,43 @@ RSpec.describe WorkItems::WidgetDefinition, feature_category: :team_planning do
       expect(build(:widget_definition, widget_type: nil).widget_class).to be_nil
     end
   end
+
+  describe 'widget_type enum stability' do
+    it 'maintains stable enum values for existing widget types' do
+      expected_enum_values = {
+        "assignees" => 0,
+        "description" => 1,
+        "hierarchy" => 2,
+        "labels" => 3,
+        "milestone" => 4,
+        "notes" => 5,
+        "start_and_due_date" => 6,
+        "health_status" => 7,
+        "weight" => 8,
+        "iteration" => 9,
+        "progress" => 10,
+        "verification_status" => 11,
+        "requirement_legacy" => 12,
+        "test_reports" => 13,
+        "notifications" => 14,
+        "current_user_todos" => 15,
+        "award_emoji" => 16,
+        "linked_items" => 17,
+        "color" => 18,
+        "participants" => 20,
+        "time_tracking" => 21,
+        "designs" => 22,
+        "development" => 23,
+        "crm_contacts" => 24,
+        "email_participants" => 25,
+        "status" => 26,
+        "linked_resources" => 27,
+        "custom_fields" => 28,
+        "error_tracking" => 29,
+        "vulnerabilities" => 30
+      }
+
+      expect(described_class.widget_types).to eq(expected_enum_values)
+    end
+  end
 end

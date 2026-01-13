@@ -84,6 +84,10 @@ module Types
           false
         end
 
+        def sort
+          object.sort&.to_sym
+        end
+
         def share_url
           namespace = object.namespace
 

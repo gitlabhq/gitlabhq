@@ -343,52 +343,52 @@ Truncate the filenames in the `uploads` table:
 
    The following query selects the `uploads` records with filenames longer than 246 characters in batches of 0 to 10000. This improves the performance on large GitLab instances with tables having thousand of records.
 
-      ```sql
-      CREATE TEMP TABLE uploads_with_long_filenames AS
-      SELECT ROW_NUMBER() OVER(ORDER BY id) row_id, id, path
-      FROM uploads AS u
-      WHERE LENGTH((regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1]) > 246;
+   ```sql
+   CREATE TEMP TABLE uploads_with_long_filenames AS
+   SELECT ROW_NUMBER() OVER(ORDER BY id) row_id, id, path
+   FROM uploads AS u
+   WHERE LENGTH((regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1]) > 246;
 
-      CREATE INDEX ON uploads_with_long_filenames(row_id);
+   CREATE INDEX ON uploads_with_long_filenames(row_id);
 
-      SELECT
-         u.id,
-         u.path,
-         -- Current filename
-         (regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1] AS current_filename,
-         -- New filename
+   SELECT
+      u.id,
+      u.path,
+      -- Current filename
+      (regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1] AS current_filename,
+      -- New filename
+      CONCAT(
+         LEFT(SPLIT_PART((regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1], '.', 1), 242),
+         COALESCE(SUBSTRING((regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1] FROM '\.(?:.(?!\.))+$'))
+      ) AS new_filename,
+      -- New path
+      CONCAT(
+         COALESCE((regexp_match(u.path, '(.*\/).*'))[1], ''),
          CONCAT(
             LEFT(SPLIT_PART((regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1], '.', 1), 242),
             COALESCE(SUBSTRING((regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1] FROM '\.(?:.(?!\.))+$'))
-         ) AS new_filename,
-         -- New path
-         CONCAT(
-            COALESCE((regexp_match(u.path, '(.*\/).*'))[1], ''),
-            CONCAT(
-               LEFT(SPLIT_PART((regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1], '.', 1), 242),
-               COALESCE(SUBSTRING((regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1] FROM '\.(?:.(?!\.))+$'))
-            )
-         ) AS new_path
-      FROM uploads_with_long_filenames AS u
-      WHERE u.row_id > 0 AND u.row_id <= 10000;
-      ```
+         )
+      ) AS new_path
+   FROM uploads_with_long_filenames AS u
+   WHERE u.row_id > 0 AND u.row_id <= 10000;
+   ```
 
-      Output example:
+   Output example:
 
-      ```postgresql
-      -[ RECORD 1 ]----+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-      id               | 34
-      path             | public/@hashed/loremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelitsedvulputatemisitloremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelitsedvulputatemisit.txt
-      current_filename | loremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelitsedvulputatemisitloremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelitsedvulputatemisit.txt
-      new_filename     | loremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelitsedvulputatemisitloremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelits.txt
-      new_path         | public/@hashed/loremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelitsedvulputatemisitloremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelits.txt
-      ```
+   ```postgresql
+   -[ RECORD 1 ]----+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   id               | 34
+   path             | public/@hashed/loremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelitsedvulputatemisitloremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelitsedvulputatemisit.txt
+   current_filename | loremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelitsedvulputatemisitloremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelitsedvulputatemisit.txt
+   new_filename     | loremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelitsedvulputatemisitloremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelits.txt
+   new_path         | public/@hashed/loremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelitsedvulputatemisitloremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaauctorelits.txt
+   ```
 
-      Where:
+   Where:
 
-      - `current_filename`: a filename that is more than 246 characters long.
-      - `new_filename`: a filename that has been truncated to 246 characters maximum.
-      - `new_path`: new path considering the `new_filename` (truncated).
+   - `current_filename`: a filename that is more than 246 characters long.
+   - `new_filename`: a filename that has been truncated to 246 characters maximum.
+   - `new_path`: new path considering the `new_filename` (truncated).
 
    After you validate the batch results, you must change the batch size (`row_id`) using the following sequence of numbers (10000 to 20000). Repeat this process until you reach the last record in the `uploads` table.
 

@@ -1453,8 +1453,8 @@ background migration.
    {{< /alert >}}
 
    After deployment, our application:
-     - Continues using the data as before.
-     - Ensures that both existing and new data are migrated.
+   - Continues using the data as before.
+   - Ensures that both existing and new data are migrated.
 
 1. Add a new post-deployment migration that checks that the batched background migration is complete. Also update
    `finalized_by` attribute in BBM dictionary with the version of this migration.
