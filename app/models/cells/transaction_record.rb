@@ -97,6 +97,9 @@ module Cells
         destroy_records: destroy_records,
         deadline: deadline
       )
+    rescue GRPC::BadStatus => e
+      raise_committing_error!(e)
+      raise ActiveRecord::Rollback
     end
 
     def rolledback!(force_restore_state: false, should_run_callbacks: true) # rubocop:disable Lint/UnusedMethodArgument -- this needs to follow the interface
@@ -126,6 +129,13 @@ module Cells
 
     def deadline
       GRPC::Core::TimeConsts.from_relative_time(TIMEOUT_IN_SECONDS)
+    end
+
+    def raise_committing_error!(error)
+      create_records.map do |record|
+        value = record.dig(:bucket, :value)
+        record[:record].handle_grpc_error(error, value)
+      end
     end
   end
 end

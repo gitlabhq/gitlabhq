@@ -135,6 +135,29 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
           record.before_committed!
         end.to raise_error(described_class::Error, "Attributes can now only be claimed on main DB")
       end
+
+      context "when GRPC error occurs" do
+        let(:grpc_error) { GRPC::AlreadyExists.new("claim conflict") }
+        let(:model) { build(:organization) }
+        let(:metadata) do
+          {
+            bucket: {
+              value: model.path
+            },
+            record: model
+          }
+        end
+
+        before do
+          record.create_record(metadata)
+          allow(Cells::OutstandingLease).to receive(:create_from_request!).and_raise(grpc_error)
+        end
+
+        it "adds error to created records and raises Rollback" do
+          expect { record.before_committed! }.to raise_error(ActiveRecord::Rollback)
+          expect(model.errors[:path]).to include("has already been taken")
+        end
+      end
     end
 
     describe "#committed!" do

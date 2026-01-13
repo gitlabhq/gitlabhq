@@ -53,6 +53,10 @@ class Projects::TagsController < Projects::ApplicationController
 
     @release = @project.releases.find_by(tag: @tag.name)
     @commit = @repository.commit(@tag.dereferenced_target)
+
+    @pipeline_status = Ci::CommitStatusesFinder
+      .new(@project, @repository, current_user, [@tag], ref_type: :tags)
+      .execute[@tag.name]
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

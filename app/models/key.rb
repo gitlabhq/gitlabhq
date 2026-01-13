@@ -202,6 +202,10 @@ class Key < ApplicationRecord
   def expiration
     errors.add(:key, message: 'has expired') if expired?
   end
+
+  def unique_attribute
+    :key
+  end
 end
 
 Key.prepend_mod_with('Key')

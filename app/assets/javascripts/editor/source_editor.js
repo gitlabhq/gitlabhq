@@ -59,7 +59,10 @@ export default class SourceEditor {
     this.options = {
       extraEditorClassName: 'gl-source-editor',
       ...defaultEditorOptions,
-      accessibilitySupport: 'on',
+      // Changed from 'on' to 'auto' to allow word wrap when screen readers are not detected.
+      // Monaco Editor disables word wrap when accessibilitySupport is 'on' because
+      // screen readers cannot properly handle wrapped lines.
+      accessibilitySupport: 'auto',
       ...options,
     };
 

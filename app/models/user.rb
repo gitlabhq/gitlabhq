@@ -3158,6 +3158,10 @@ class User < ApplicationRecord
     query = query.try(scope) if scope
     query.exists?
   end
+
+  def unique_attribute
+    :username
+  end
 end
 
 User.prepend_mod_with('User')

@@ -4124,6 +4124,10 @@ class Project < ApplicationRecord
   def validate_unsafe_import_url?
     import_url.present? && import_url_changed?
   end
+
+  def unique_attribute
+    :path
+  end
 end
 
 Project.prepend_mod_with('Project')

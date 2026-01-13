@@ -374,7 +374,11 @@ The following table outlines Mattermost version changes for GitLab 15.0 and late
 
 | GitLab version | Mattermost version |
 |:---------------|:-------------------|
-| 18.3           | 10.10              |
+| 18.7           | 10.11.8            |
+| 18.6           | 10.11.8            |
+| 18.5           | 10.10.2            |
+| 18.4           | 10.10.2            |
+| 18.3           | 10.10.2            |
 | 18.2           | 10.9               |
 | 18.1           | 10.8               |
 | 18.0           | 10.7               |

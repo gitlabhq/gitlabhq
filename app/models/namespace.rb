@@ -1067,6 +1067,10 @@ class Namespace < ApplicationRecord
     # Use SHA2 of `traversal_ids` to account for moving a namespace within the same root ancestor hierarchy.
     "namespaces:{#{traversal_ids.first}}:first_auto_devops_config:#{group_id}:#{Digest::SHA2.hexdigest(traversal_ids.join(' '))}"
   end
+
+  def unique_attribute
+    :path
+  end
 end
 
 Namespace.prepend_mod_with('Namespace')

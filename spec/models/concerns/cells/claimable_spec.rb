@@ -41,9 +41,8 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
     let(:transaction_record) { instance_double(Cells::TransactionRecord) }
 
     before do
-      allow(Cells::TransactionRecord).to receive(:current_transaction)
-        .with(instance.connection)
-        .and_return(transaction_record)
+      allow(Cells::TransactionRecord)
+        .to receive(:current_transaction).with(instance.connection).and_return(transaction_record)
     end
 
     describe '#cells_claims_save_changes' do
@@ -147,8 +146,9 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
       expect(metadata).to eq({
         subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: instance.id },
-        source: { type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
-                  rails_primary_key_id: instance.id }
+        source: {
+          type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS, rails_primary_key_id: instance.id
+        }
       })
     end
   end
@@ -179,6 +179,38 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
         expect { cells_claims_subject_key }.to raise_error(
           ArgumentError, /subject_key must be a Symbol or a Proc, but got: String/
         )
+      end
+    end
+  end
+
+  describe "#handle_grpc_error" do
+    let(:model) { build(:organization) }
+    let(:attribute) { :path }
+
+    context "when error is ALREADY_EXISTS" do
+      let(:grpc_error) { GRPC::AlreadyExists.new("conflict") }
+
+      it "assigns attribute-specific message" do
+        model.handle_grpc_error(grpc_error, attribute)
+        expect(model.errors[attribute]).to include("has already been taken")
+      end
+    end
+
+    context "when error is DEADLINE_EXCEEDED" do
+      let(:grpc_error) { GRPC::DeadlineExceeded.new("timeout") }
+
+      it "assigns timeout message" do
+        model.handle_grpc_error(grpc_error, attribute)
+        expect(model.errors[:base]).to include("Request timed out. Please try again.")
+      end
+    end
+
+    context "when error is unknown" do
+      let(:grpc_error) { GRPC::Internal.new("something bad") }
+
+      it "assigns generic message" do
+        model.handle_grpc_error(grpc_error, attribute)
+        expect(model.errors[:base]).to include("An error occurred while processing your request")
       end
     end
   end
