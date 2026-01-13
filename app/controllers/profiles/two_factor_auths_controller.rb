@@ -71,7 +71,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
         redirect_to profile_two_factor_auth_path, notice: notice
       else
 
-        Users::UpdateService.new(current_user, user: current_user).execute! do |user|
+        Users::UpdateService.new(current_user, user: current_user).execute! do |_user|
           @codes = current_user.generate_otp_backup_codes!
         end
         helpers.dismiss_two_factor_auth_recovery_settings_check

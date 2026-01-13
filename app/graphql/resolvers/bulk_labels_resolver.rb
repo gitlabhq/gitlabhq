@@ -20,7 +20,7 @@ module Resolvers
     private
 
     def bulk_load_labels
-      BatchLoader::GraphQL.for(object.id).batch(key: object.class.name, cache: false) do |ids, loader, args|
+      BatchLoader::GraphQL.for(object.id).batch(key: object.class.name, cache: false) do |ids, loader, _args|
         labels = Label.for_targets(object.class.id_in(ids)).group_by(&:target_id)
 
         ids.each do |id|

@@ -150,7 +150,7 @@ module Types
       end
 
       def project_count
-        BatchLoader::GraphQL.for(runner.id).batch(key: :runner_project_count) do |ids, loader, args|
+        BatchLoader::GraphQL.for(runner.id).batch(key: :runner_project_count) do |ids, loader, _args|
           counts = ::Ci::Runner.project_type
             .select(:id, 'COUNT(ci_runner_projects.id) as count')
             .left_outer_joins(:runner_projects)

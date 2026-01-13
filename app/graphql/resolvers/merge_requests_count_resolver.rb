@@ -5,7 +5,7 @@ module Resolvers
     type GraphQL::Types::Int, null: true
 
     def resolve
-      BatchLoader::GraphQL.for(object.id).batch do |ids, loader, args|
+      BatchLoader::GraphQL.for(object.id).batch do |ids, loader, _args|
         counts = MergeRequestsClosingIssues.count_for_collection(ids, context[:current_user]).to_h
 
         ids.each do |id|

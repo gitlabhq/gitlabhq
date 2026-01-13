@@ -168,6 +168,7 @@ If you'd prefer, you can [create an external agent manually](#create-an-external
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207610) in GitLab 18.6 with a flag named `ai_catalog_third_party_flows`. Enabled on GitLab.com.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217634) in GitLab 18.8 to require an additional [flag](../../../administration/feature_flags/_index.md) named `ai_catalog_create_third_party_flows`. Disabled by default.
 
 {{< /history >}}
 
@@ -270,6 +271,19 @@ Prerequisites:
    ready-to-merge change or an inline comment.
 
 ## Create an external agent manually
+
+{{< history >}}
+
+- Changed in GitLab 18.8 to require an additional [flag](../../../administration/feature_flags/_index.md) named `ai_catalog_create_third_party_flows`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
 
 If you prefer to not follow the UI flow, you can create an external agent manually:
 

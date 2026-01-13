@@ -20,7 +20,7 @@ module Resolvers
     private
 
     def load_notes_counts
-      BatchLoader::GraphQL.for(object.id).batch(key: :user_notes_count) do |ids, loader, args|
+      BatchLoader::GraphQL.for(object.id).batch(key: :user_notes_count) do |ids, loader, _args|
         counts = Note.count_for_collection(ids, object.class.name).index_by(&:noteable_id)
 
         ids.each do |id|

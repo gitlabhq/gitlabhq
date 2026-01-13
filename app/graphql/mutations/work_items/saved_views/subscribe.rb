@@ -28,9 +28,19 @@ module Mutations
           description: 'Errors encountered during the mutation.'
 
         def resolve(id:)
-          authorized_find!(id: id)
+          saved_view = authorized_find!(id: id)
 
-          { saved_view: nil, errors: [] }
+          unless saved_view.namespace.owner_entity.work_items_saved_views_enabled?(current_user)
+            return { saved_view: nil, errors: [_('Saved views are not enabled for this namespace.')] }
+          end
+
+          subscription = ::WorkItems::SavedViews::UserSavedView.subscribe(user: current_user, saved_view: saved_view)
+
+          if subscription
+            { saved_view: saved_view, errors: [] }
+          else
+            { saved_view: nil, errors: [_('Saved view limit exceeded.')] }
+          end
         end
       end
     end

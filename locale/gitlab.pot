@@ -58773,6 +58773,12 @@ msgstr ""
 msgid "Save password"
 msgstr ""
 
+msgid "Saved view limit exceeded."
+msgstr ""
+
+msgid "Saved views are not enabled for this namespace."
+msgstr ""
+
 msgid "Saving"
 msgstr ""
 

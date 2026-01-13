@@ -8069,6 +8069,63 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    context 'save_merge_data_changes' do
+      context 'when merge_data does not exist before save' do
+        context 'And no merge_data attributes being accessed' do
+          let(:merge_request) do
+            build(:merge_request,
+              source_project: project,
+              target_project: project,
+              title: 'One Title'
+            )
+          end
+
+          it 'calls ensure_merge_data and creates merge_data on save' do
+            merge_request.merge_data = nil
+            expect(merge_request.merge_data).to be_nil
+
+            expect(merge_request).to receive(:ensure_merge_data).and_call_original
+            merge_request.save!
+
+            expect(merge_request.merge_data).to be_present
+            expect(merge_request.merge_data.persisted?).to be_truthy
+            expect(merge_request.merge_data.merge_jid).to eq(nil)
+          end
+        end
+
+        context 'And has merge_data attributes being accessed already' do
+          let(:merge_request) do
+            build(:merge_request,
+              source_project: project,
+              target_project: project,
+              title: 'One Title',
+              merge_jid: 'job123' # merge_data attributes
+            )
+          end
+
+          it 'calls ensure_merge_data and creates merge_data on save' do
+            merge_request.merge_data = nil
+            expect(merge_request.merge_data).to be_nil
+
+            expect(merge_request).to receive(:ensure_merge_data).and_call_original
+            merge_request.save!
+
+            expect(merge_request.merge_data).to be_present
+            expect(merge_request.merge_data.persisted?).to be_truthy
+            expect(merge_request.merge_data.merge_jid).to eq('job123')
+          end
+        end
+      end
+
+      it 'saves all attributes when state changes' do
+        merge_request.merge_jid = "job1234"
+        merge_request.mark_as_preparing!
+
+        expect(merge_data.merge_status).to eq('preparing')
+        expect(merge_data.merge_jid).to eq("job1234")
+      end
+    end
+
     context 'merge_status transitions' do
       it 'syncs merge_status state machine transitions' do
         # Test transition to preparing

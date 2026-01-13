@@ -883,11 +883,27 @@ class Issue < ApplicationRecord
     epic_work_item? && group_level?
   end
 
-  # Service Desk issues and incidents should not use the work item view,
-  # since these have not been migrated over to using the work items framework.
-  # These should continue to use the .../issues/... path and render as issues.
+  # Some Issues types/conditions were not fully migrated to WorkItems UI/workflows yet.
+  # On the other hand some other Issue types/conditions are only available through
+  # WorkItems UI/workflows.
+  #
+  # Overriden on EE (For OKRs and Epics)
   def show_as_work_item?
-    !from_service_desk? && !work_item_type&.incident?
+    # WorkItems only views
+    return true if work_item_type&.task?
+    return true if project.blank? && namespace.present?
+
+    # Legacy only views
+    return false if require_legacy_views?
+
+    resource_parent.work_items_consolidated_list_enabled?
+  end
+
+  # Legacy views/workflows only
+  # - Service Desk were not converted to the work items framework.
+  # - Incidents were not converted to the work items framework.
+  def require_legacy_views?
+    from_service_desk? || work_item_type&.incident?
   end
 
   def ensure_work_item_description

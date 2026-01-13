@@ -52,7 +52,7 @@ module IssuesHelper
   end
 
   def awards_sort(awards)
-    awards.sort_by do |award, award_emojis|
+    awards.sort_by do |award, _award_emojis|
       case award
       when AwardEmoji::THUMBS_UP
         0

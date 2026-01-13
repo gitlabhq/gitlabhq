@@ -2864,6 +2864,8 @@ class MergeRequest < ApplicationRecord
 
   def save_merge_data_changes
     return unless dual_write_to_merge_data_ff_enabled?
+
+    ensure_merge_data
     return unless merge_data&.changed?
 
     # id is set when merge_request gets saved so we need to manually

@@ -40,7 +40,7 @@ class AbuseReport < ApplicationRecord
   validates :user_id,
     uniqueness: {
       scope: [:reporter_id, :category],
-      message: ->(object, data) do
+      message: ->(_object, _data) do
         _('You have already reported this user')
       end
     }, on: :create

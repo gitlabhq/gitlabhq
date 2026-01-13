@@ -17,14 +17,18 @@ and provide the [required information for Support](#required-information-for-sup
 If GitLab Duo Chat or GitLab Duo Code Suggestions are not available in your IDE:
 
 - Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo).
-- Confirm that the feature is enabled:
-
+- Review diagnostics output:
+  - In your JetBrains IDE, go to **Tools** > **GitLab** > **Diagnostics** and review the output for any failed checks.
+- If the diagnostics indicate that the feature is not enabled:
   1. In your JetBrains IDE, go to **Settings** > **Tools** > **GitLab Duo**.
-  1. Ensure that **Enable Code Suggestions**, **Enable GitLab Duo Chat**, or **GitLab Duo Agent Platform** are selected.
+  1. Find and select the checkbox to enable the missing feature.
   1. Select **OK** or **Save**.
   1. Restart your IDE if prompted.
 
-For other GitLab Duo Code Suggestions errors, see [troubleshooting Code Suggestions for JetBrains IDEs](../../user/project/repository/code_suggestions/troubleshooting.md#jetbrains-ides-troubleshooting).
+For additional support:
+
+- [Troubleshooting the GitLab Duo Agent Platform in your IDE](../../user/duo_agent_platform/troubleshooting_ide.md)
+- [Troubleshooting Code Suggestions for JetBrains IDEs](../../user/project/repository/code_suggestions/troubleshooting.md#jetbrains-ides-troubleshooting)
 
 ## Enable debug mode
 

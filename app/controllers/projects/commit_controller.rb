@@ -317,7 +317,7 @@ class Projects::CommitController < Projects::ApplicationController
 
         merge_request_commit_notes = @merge_request.notes.where(commit_id: @commit.id).inc_relations_for_view
         merge_request_commit_diff_discussions = merge_request_commit_notes.grouped_diff_discussions(@commit.diff_refs)
-        @grouped_diff_discussions.merge!(merge_request_commit_diff_discussions) do |line_code, left, right|
+        @grouped_diff_discussions.merge!(merge_request_commit_diff_discussions) do |_line_code, left, right|
           left + right
         end
       end

@@ -15449,7 +15449,7 @@ Input type: `WorkItemSavedViewSubscribeInput`
 **Status**: Experiment.
 {{< /details >}}
 
-Unsubscribes the current user to a saved view.
+Unsubscribes the current user from a saved view.
 
 Input type: `WorkItemSavedViewUnsubscribeInput`
 
@@ -15458,7 +15458,7 @@ Input type: `WorkItemSavedViewUnsubscribeInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationworkitemsavedviewunsubscribeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationworkitemsavedviewunsubscribeid"></a>`id` | [`WorkItemsSavedViewsSavedViewID!`](#workitemssavedviewssavedviewid) | Global ID of the saved view to unsubscribe to. |
+| <a id="mutationworkitemsavedviewunsubscribeid"></a>`id` | [`WorkItemsSavedViewsSavedViewID!`](#workitemssavedviewssavedviewid) | Global ID of the saved view to unsubscribe from. |
 
 #### Fields
 

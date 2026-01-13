@@ -407,7 +407,7 @@ module Types
     end
 
     def notes_count_for_collection(key)
-      BatchLoader::GraphQL.for(object.id).batch(key: key) do |ids, loader, args|
+      BatchLoader::GraphQL.for(object.id).batch(key: key) do |ids, loader, _args|
         counts = Note.count_for_collection(
           ids,
           'MergeRequest',
