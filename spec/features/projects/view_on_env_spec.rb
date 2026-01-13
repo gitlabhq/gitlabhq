@@ -74,7 +74,7 @@ RSpec.describe 'View on environment', :js, feature_category: :groups_and_project
         before do
           sign_in(user)
 
-          visit project_commit_path(project, sha)
+          visit project_commit_path(project, sha, rapid_diffs: true)
 
           wait_for_requests
         end

@@ -6,10 +6,6 @@ RSpec.describe 'Commit', feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
-  before do
-    stub_feature_flags(rapid_diffs_on_commit_show: false)
-  end
-
   shared_examples "single commit view" do
     let(:commit) do
       project.repository.commits(nil, limit: 100).find do |commit|

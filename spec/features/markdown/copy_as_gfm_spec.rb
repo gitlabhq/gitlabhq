@@ -719,7 +719,6 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :markdown do
 
       context 'inline diff' do
         before do
-          stub_feature_flags(rapid_diffs_on_commit_show: false)
           visit project_commit_path(project, sample_commit.id, view: 'inline')
           wait_for_requests
         end
@@ -729,7 +728,6 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :markdown do
 
       context 'parallel diff' do
         before do
-          stub_feature_flags(rapid_diffs_on_commit_show: false)
           visit project_commit_path(project, sample_commit.id, view: 'parallel')
           wait_for_requests
         end

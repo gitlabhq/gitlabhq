@@ -111,6 +111,13 @@ When this checkbox is selected, requests to the following are still not blocked:
 - Object storage.
 - IP addresses and domains in the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
+When this setting is enabled, GitLab may perform DNS resolution on URLs included in other objects,
+such as Release Links.
+If DNS resolution fails, the request fails.
+To resolve this issue, add the hostname to the
+[allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains),
+even if GitLab never needs to make an outbound connection to that host.
+
 This setting is respected by the main GitLab application only, so other services like Gitaly can still make requests that break the rule.
 Additionally, [some areas of GitLab](https://gitlab.com/groups/gitlab-org/-/epics/8029) do not respect outbound filtering
 rules.

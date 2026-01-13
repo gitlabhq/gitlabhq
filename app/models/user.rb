@@ -929,6 +929,35 @@ class User < ApplicationRecord
       end
     end
 
+    # override from Devise
+    # https://github.com/heartcombo/devise/blob/e9c534d363cc9d552662049b38582eead87bedd6/lib/devise/models/confirmable.rb#L329C1-L354C12
+    # modified to use Current.organization in primary query
+    # rubocop:disable Gitlab/AvoidCurrentOrganization -- this method is only called by Devise::ConfirmationsController
+    def confirm_by_token(confirmation_token)
+      if confirmation_token.blank?
+        confirmable = new
+        confirmable.errors.add(:confirmation_token, :blank)
+        return confirmable
+      end
+
+      confirmable = find_first_by_auth_conditions(
+        organization_id: Current.organization.id,
+        confirmation_token: confirmation_token
+      )
+
+      unless confirmable
+        confirmation_digest = Devise.token_generator.digest(self, :confirmation_token, confirmation_token)
+        confirmable = find_or_initialize_with_errors(
+          [:organization_id, :confirmation_token],
+          { organization_id: Current.organization.id, confirmation_token: confirmation_digest }
+        )
+      end
+
+      confirmable.confirm if confirmable.persisted?
+      confirmable
+    end
+    # rubocop:enable Gitlab/AvoidCurrentOrganization
+
     def sort_by_attribute(method)
       order_method = method || 'id_desc'
 

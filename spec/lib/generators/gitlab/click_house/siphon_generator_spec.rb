@@ -7,6 +7,10 @@ RSpec.describe Gitlab::ClickHouse::SiphonGenerator, feature_category: :database 
 
   subject(:generator) { described_class.new([table_name]) }
 
+  before do
+    allow(generator).to receive(:pg_primary_keys).and_return(['id'])
+  end
+
   describe '#validate!' do
     context 'when PG table exists' do
       before do
@@ -121,16 +125,69 @@ CREATE TABLE IF NOT EXISTS siphon_test_table
         _siphon_deleted Bool DEFAULT FALSE
       )
       ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
-      PRIMARY KEY id
+      PRIMARY KEY (id)
       SQL
 
       expect(generator.send(:table_definition)).to eq(expected_definition)
+    end
+
+    describe 'when hierarchy_denormalization flag is enabled' do
+      let(:generator) { described_class.new(['project_authorizations'], with_traversal_path: true) }
+
+      subject(:table_definition) { generator.send(:table_definition) }
+
+      before do
+        allow(generator).to receive_messages(pg_primary_keys: %w[project_id user_id], pg_fields_metadata: [
+          { 'field_name' => 'project_id', 'field_type_id' => 23, 'nullable' => 'NO' },
+          { 'field_name' => 'user_id', 'field_type_id' => 23, 'nullable' => 'NO' },
+          { 'field_name' => 'access_level', 'field_type_id' => 23, 'nullable' => 'NO' }
+        ])
+      end
+
+      it 'generates correct table definition' do
+        expected_definition = <<-SQL.chomp
+CREATE TABLE IF NOT EXISTS siphon_project_authorizations
+      (
+        project_id Int64,
+        user_id Int64,
+        access_level Int64,
+        traversal_path String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/'),
+        _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now(),
+        _siphon_deleted Bool DEFAULT FALSE,
+        PROJECTION pg_pkey_ordered (
+          SELECT *
+          ORDER BY project_id, user_id
+        )
+      )
+      ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+      PRIMARY KEY (traversal_path, project_id, user_id)
+      SETTINGS deduplicate_merge_projection_mode = 'rebuild'
+        SQL
+
+        expect(table_definition).to eq(expected_definition)
+      end
+
+      context 'when the table definition is missing' do
+        let(:generator) { described_class.new(['unknown_table'], with_traversal_path: true) }
+
+        it 'raises errors' do
+          expect { table_definition }.to raise_error(/Unknown PostgreSQL table/)
+        end
+      end
+
+      context 'when the table has no sharding keys' do
+        let(:generator) { described_class.new(['tags'], with_traversal_path: true) }
+
+        it 'raises errors' do
+          expect { table_definition }.to raise_error(/No sharding_key/)
+        end
+      end
     end
   end
 
   describe '#pg_fields_metadata' do
     # rubocop:disable RSpec/VerifiedDoubles -- ApplicationRecord.connection.class returns a class which does not implement #execute method
-    let(:connection) { double('connection') }
+    let(:connection) { double('connection', current_database: 'gitlab_db_name') }
     # rubocop:enable RSpec/VerifiedDoubles
 
     before do
@@ -149,7 +206,8 @@ CREATE TABLE IF NOT EXISTS siphon_test_table
         JOIN
             pg_catalog.pg_type ON pg_catalog.pg_type.typname = information_schema.columns.udt_name
         WHERE
-            table_name = 'test_table';
+            table_name = 'test_table' AND
+            table_catalog = 'gitlab_db_name';
       SQL
 
       expect(connection).to receive(:execute)

@@ -1,34 +1,13 @@
 ---
-stage: Software Supply Chain Security
-group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Custom password length limits
+redirect_to: '../administration/settings/sign_up_restrictions.md'
+remove_date: '2026-04-12'
 ---
 
-{{< details >}}
+<!-- markdownlint-disable -->
 
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
+This document was moved to [another location](../administration/settings/sign_up_restrictions.md).
 
-{{< /details >}}
-
-By default, GitLab supports passwords with the following lengths:
-
-- Minimum: 8 characters
-- Maximum: 128 characters
-
-You can only change the minimum password length. Changing the minimum length does not affect existing user passwords.
-Existing users are not asked to reset their password to adhere to the new limits. The new limit restriction applies only
-during new user sign-ups and when an existing user performs a password reset.
-
-## Modify minimum password length
-
-The user password length is set to a minimum of 8 characters by default.
-
-To change the minimum password length using GitLab UI:
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
-1. Expand **Sign-up restrictions**.
-1. Enter a **Minimum password length** value greater than or equal to `8`.
-1. Select **Save changes**.
+<!-- This redirect file can be deleted after <2026-04-12>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/development/documentation/redirects -->

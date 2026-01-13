@@ -19,7 +19,6 @@ RSpec.describe 'Multiple view Diffs', :js, feature_category: :source_code_manage
   let(:feature_flag_on) { false }
 
   before do
-    stub_feature_flags(rapid_diffs_on_commit_show: false)
     visit path
 
     wait_for_all_requests

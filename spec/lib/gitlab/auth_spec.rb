@@ -544,7 +544,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       let_it_be(:organization) { create(:organization) }
 
       let(:user) { create(:user, organizations: [organization]) }
-      let(:application) { Authn::OauthApplication.create!(name: 'MyApp', redirect_uri: 'https://app.com', owner: user) }
+      let(:application) { create(:oauth_application, owner: user) }
       let(:scopes) { 'api' }
 
       let(:token) do

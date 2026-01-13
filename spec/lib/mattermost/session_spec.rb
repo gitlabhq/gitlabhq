@@ -46,10 +46,12 @@ RSpec.describe Mattermost::Session, type: :request do
 
     context 'with oauth_uri' do
       let!(:doorkeeper) do
-        Authn::OauthApplication.create!(
+        create(
+          :oauth_application,
           name: 'GitLab Mattermost',
           redirect_uri: "#{mattermost_url}/signup/gitlab/complete\n#{mattermost_url}/login/gitlab/complete",
-          scopes: '')
+          scopes: ''
+        )
       end
 
       context 'without token_uri' do

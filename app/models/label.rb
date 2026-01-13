@@ -9,6 +9,7 @@ class Label < ApplicationRecord
   include FromUnion
   include Presentable
   include EachBatch
+  include BatchNullifyDependentAssociations
 
   DESCRIPTION_LENGTH_MAX = 512.kilobytes
 
@@ -19,11 +20,12 @@ class Label < ApplicationRecord
   has_many :lists, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :priorities, class_name: 'LabelPriority'
   has_many :label_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :resource_label_events, inverse_of: :label, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent -- Necessary to nullify in batches
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
 
   before_validation :ensure_single_parent_for_given_type
-  before_destroy :prevent_locked_label_destroy, prepend: true
+  before_destroy :prevent_locked_label_destroy, :nullify_dependent_associations_in_batches, prepend: true
 
   after_save :unprioritize_all!, if: -> { saved_change_to_attribute?(:archived) && archived }
 

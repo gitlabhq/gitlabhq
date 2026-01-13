@@ -57,8 +57,8 @@ Passwords remain a primary authentication method despite their limitations. Stro
 policies reduce the risk of credential-based attacks by requiring strong passwords that meet
 your organization's security standards.
 
-- Configure [password length limits](../security/password_length_limits.md) appropriate for
-  your security requirements.
+- Configure [password complexity requirements](../administration/settings/sign_up_restrictions.md#modify-password-complexity-requirements)
+  appropriate for your organization.
 - Enable [compromised password detection](../security/compromised_password_detection.md) to
   prevent the use of known compromised passwords.
 

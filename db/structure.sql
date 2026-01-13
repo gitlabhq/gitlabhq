@@ -45497,8 +45497,6 @@ CREATE UNIQUE INDEX index_queries_service_pings_on_org_id_recorded_at ON queries
 
 CREATE UNIQUE INDEX index_raw_usage_data_on_organization_id_recorded_at ON raw_usage_data USING btree (organization_id, recorded_at);
 
-CREATE UNIQUE INDEX index_raw_usage_data_on_recorded_at ON raw_usage_data USING btree (recorded_at);
-
 CREATE INDEX index_redirect_routes_on_namespace_id ON redirect_routes USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_redirect_routes_on_path ON redirect_routes USING btree (path);
@@ -46351,8 +46349,6 @@ CREATE INDEX index_users_for_auditors ON users USING btree (id) WHERE (auditor I
 
 CREATE INDEX index_users_on_admin ON users USING btree (admin);
 
-CREATE UNIQUE INDEX index_users_on_confirmation_token ON users USING btree (confirmation_token);
-
 CREATE INDEX index_users_on_created_at ON users USING btree (created_at);
 
 CREATE UNIQUE INDEX index_users_on_email ON users USING btree (email);
@@ -46376,6 +46372,8 @@ CREATE INDEX index_users_on_name ON users USING btree (name);
 CREATE INDEX index_users_on_name_trigram ON users USING gin (name gin_trgm_ops);
 
 CREATE INDEX index_users_on_organization_id ON users USING btree (organization_id);
+
+CREATE UNIQUE INDEX index_users_on_organization_id_and_confirmation_token ON users USING btree (organization_id, confirmation_token);
 
 CREATE UNIQUE INDEX index_users_on_organization_id_and_reset_password_token ON users USING btree (organization_id, reset_password_token);
 

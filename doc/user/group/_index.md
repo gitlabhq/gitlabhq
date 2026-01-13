@@ -267,12 +267,12 @@ To leave a group:
 1. On the group overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Leave group**, then **Leave group** again.
 
-## Delete a group
+## Schedule a group for deletion
 
 {{< history >}}
 
-- Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
-- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0. Premium and Ultimate only.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
 
 {{< /history >}}
 
@@ -282,7 +282,7 @@ Delete a group again to remove it immediately.
 Prerequisites:
 
 - You must have the Owner role for a group.
-- If the groups contains any project, owners must be [allowed to delete projects](../../administration/settings/visibility_and_access_controls.md#restrict-project-deletion-to-administrators).
+- If a group contains any projects, owners must be [allowed to delete projects](../../administration/settings/visibility_and_access_controls.md#restrict-project-deletion-to-administrators).
 
 To delete a group and its contents:
 
@@ -299,10 +299,10 @@ You can also delete a group from the groups dashboard:
 1. Select **Delete**.
 1. On the confirmation dialog, enter the group name and select **Confirm**.
 
-This action adds a background job to mark a group for deletion. On GitLab.com, the group is deleted after 30 days. On GitLab Self-Managed,
+This action adds a background job to schedule a group for deletion. On GitLab.com, the group is deleted after 30 days. On GitLab Self-Managed,
 you can modify the retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
-When a group is marked for deletion, scheduled CI/CD pipelines stop running.
+When a group is scheduled for deletion, scheduled CI/CD pipelines stop running.
 
 If the user who scheduled the group deletion loses access to the group (for example, by leaving the group, having their role downgraded, or being banned from the group) before the deletion occurs,
 the deletion job instead restores the group, and the group is no longer scheduled for deletion.
@@ -332,9 +332,9 @@ If you don't want to wait, you can delete a group immediately.
 Prerequisites:
 
 - You must have the Owner role for a group.
-- You have [marked the group for deletion](#delete-a-group).
+- You have [scheduled the group for deletion](#schedule-a-group-for-deletion).
 
-To immediately delete a group marked for deletion:
+To immediately delete a group scheduled for deletion:
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
@@ -346,7 +346,7 @@ This action deletes the group, its subgroups, projects, and all related resource
 
 ## Restore a group
 
-To restore a group that is marked for deletion:
+To restore a group that is scheduled for deletion:
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.

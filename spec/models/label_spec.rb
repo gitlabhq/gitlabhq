@@ -16,6 +16,7 @@ RSpec.describe Label, feature_category: :team_planning do
   describe 'associations' do
     it { is_expected.to have_many(:issues).through(:label_links).source(:target) }
     it { is_expected.to have_many(:label_links).dependent(:destroy) }
+    it { is_expected.to have_many(:resource_label_events).dependent(:nullify) }
     it { is_expected.to have_many(:lists).dependent(:destroy) }
     it { is_expected.to have_many(:priorities).class_name('LabelPriority') }
   end
@@ -238,6 +239,21 @@ RSpec.describe Label, feature_category: :team_planning do
           label.project_id = project.id
           expect(label).to be_valid
         end
+      end
+    end
+
+    describe 'nullify_dependent_associations_in_batches' do
+      let_it_be(:issue) { create(:issue, :group_level, namespace: group) }
+      let_it_be_with_reload(:resource_label_event) { create(:resource_label_event, issue: issue) }
+      let(:label) { resource_label_event.label }
+
+      it 'nullifys associated resource_label_events' do
+        expect(label).to receive(:nullify_dependent_associations_in_batches).and_call_original
+
+        label.destroy!
+
+        expect(resource_label_event.reload.label_id).to be_nil
+        expect(described_class.find_by(id: label.id)).to be_nil
       end
     end
   end

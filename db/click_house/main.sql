@@ -823,6 +823,45 @@ PRIMARY KEY id
 ORDER BY id
 SETTINGS index_granularity = 8192;
 
+CREATE TABLE siphon_members
+(
+    `id` Int64,
+    `access_level` Int64,
+    `source_id` Int64,
+    `source_type` String,
+    `user_id` Nullable(Int64),
+    `notification_level` Int64,
+    `type` String,
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `created_by_id` Nullable(Int64),
+    `invite_email` Nullable(String),
+    `invite_token` Nullable(String),
+    `invite_accepted_at` Nullable(DateTime64(6, 'UTC')),
+    `requested_at` Nullable(DateTime64(6, 'UTC')),
+    `expires_at` Nullable(Date32),
+    `ldap` Bool DEFAULT false,
+    `override` Bool DEFAULT false,
+    `state` Int8 DEFAULT 0,
+    `invite_email_success` Bool DEFAULT true,
+    `member_namespace_id` Nullable(Int64),
+    `member_role_id` Nullable(Int64),
+    `expiry_notified_at` Nullable(DateTime64(6, 'UTC')),
+    `request_accepted_at` Nullable(DateTime64(6, 'UTC')),
+    `traversal_path` String DEFAULT multiIf(coalesce(member_namespace_id, 0) != 0, dictGetOrDefault('namespace_traversal_paths_dict', 'traversal_path', member_namespace_id, '0/'), '0/'),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false,
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY id
+    )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS deduplicate_merge_projection_mode = 'rebuild', index_granularity = 8192;
+
 CREATE TABLE siphon_merge_request_assignees
 (
     `id` Int64,
@@ -1088,6 +1127,29 @@ PRIMARY KEY id
 ORDER BY id
 SETTINGS index_granularity = 512;
 
+CREATE TABLE siphon_project_authorizations
+(
+    `user_id` Int64,
+    `project_id` Int64,
+    `access_level` Int64,
+    `is_unique` Nullable(Bool),
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/'),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false,
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY
+            user_id,
+            project_id,
+            access_level
+    )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, user_id, project_id, access_level)
+ORDER BY (traversal_path, user_id, project_id, access_level)
+SETTINGS deduplicate_merge_projection_mode = 'rebuild', index_granularity = 8192;
+
 CREATE TABLE siphon_projects
 (
     `id` Int64,
@@ -1173,6 +1235,74 @@ CREATE TABLE siphon_projects
     `project_namespace_id` Nullable(Int64),
     `hidden` Bool DEFAULT false,
     `organization_id` Nullable(Int64),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY id
+ORDER BY id
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE siphon_users
+(
+    `id` Int64,
+    `email` String DEFAULT '',
+    `sign_in_count` Int64 DEFAULT 0,
+    `current_sign_in_at` Nullable(DateTime64(6, 'UTC')),
+    `last_sign_in_at` Nullable(DateTime64(6, 'UTC')),
+    `current_sign_in_ip` Nullable(String),
+    `last_sign_in_ip` Nullable(String),
+    `created_at` Nullable(DateTime64(6, 'UTC')),
+    `updated_at` Nullable(DateTime64(6, 'UTC')),
+    `name` String DEFAULT '',
+    `admin` Bool DEFAULT false,
+    `projects_limit` Int64,
+    `failed_attempts` Int64 DEFAULT 0,
+    `locked_at` Nullable(DateTime64(6, 'UTC')),
+    `username` String DEFAULT '',
+    `can_create_group` Bool DEFAULT true,
+    `can_create_team` Bool DEFAULT true,
+    `state` String DEFAULT '',
+    `color_scheme_id` Int64 DEFAULT 1,
+    `created_by_id` Nullable(Int64),
+    `last_credential_check_at` Nullable(DateTime64(6, 'UTC')),
+    `avatar` Nullable(String),
+    `unconfirmed_email` String DEFAULT '',
+    `hide_no_ssh_key` Bool DEFAULT false,
+    `admin_email_unsubscribed_at` Nullable(DateTime64(6, 'UTC')),
+    `notification_email` Nullable(String),
+    `hide_no_password` Bool DEFAULT false,
+    `password_automatically_set` Bool DEFAULT false,
+    `public_email` Nullable(String),
+    `dashboard` Int64 DEFAULT 0,
+    `project_view` Int64 DEFAULT 2,
+    `consumed_timestep` Nullable(Int64),
+    `layout` Int64 DEFAULT 0,
+    `hide_project_limit` Bool DEFAULT false,
+    `note` Nullable(String),
+    `otp_grace_period_started_at` Nullable(DateTime64(6, 'UTC')),
+    `external` Bool DEFAULT false,
+    `auditor` Bool DEFAULT false,
+    `require_two_factor_authentication_from_group` Bool DEFAULT false,
+    `two_factor_grace_period` Int64 DEFAULT 48,
+    `last_activity_on` Nullable(Date32),
+    `notified_of_own_activity` Nullable(Bool) DEFAULT false,
+    `preferred_language` Nullable(String),
+    `theme_id` Nullable(Int8),
+    `accepted_term_id` Nullable(Int64),
+    `private_profile` Bool DEFAULT false,
+    `roadmap_layout` Nullable(Int8),
+    `include_private_contributions` Nullable(Bool),
+    `commit_email` Nullable(String),
+    `group_view` Nullable(Int64),
+    `managing_group_id` Nullable(Int64),
+    `first_name` String DEFAULT '',
+    `last_name` String DEFAULT '',
+    `user_type` Int8 DEFAULT 0,
+    `onboarding_in_progress` Bool DEFAULT false,
+    `color_mode_id` Int8 DEFAULT 1,
+    `composite_identity_enforced` Bool DEFAULT false,
+    `organization_id` Int64,
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
     `_siphon_deleted` Bool DEFAULT false
 )

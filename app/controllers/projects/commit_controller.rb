@@ -19,8 +19,8 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :commit
   before_action :define_commit_vars, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
   before_action :define_environment,
-    only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
-  before_action :define_commit_box_vars, only: [:show, :pipelines]
+    only: [:show, :rapid_diffs, :diff_for_path, :diff_files, :pipelines, :merge_requests]
+  before_action :define_commit_box_vars, only: [:show, :pipelines, :rapid_diffs]
   before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files, :discussions, :create_discussions]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
   before_action :rate_limit_for_expanded_diff_files, only: :diff_files
@@ -29,29 +29,15 @@ class Projects::CommitController < Projects::ApplicationController
   COMMIT_DIFFS_PER_PAGE = 20
 
   feature_category :source_code_management
-  urgency :low, [:pipelines, :merge_requests, :show]
+  urgency :low, [:pipelines, :merge_requests, :show, :rapid_diffs]
 
   def show
     apply_diff_view_cookie!
 
     respond_to do |format|
       format.html do
-        if rapid_diffs_enabled? && !rapid_diffs_force_disabled?
-          @js_action_name = 'rapid_diffs'
-          @files_changed_count = @commit.stats.files
-          @rapid_diffs_presenter = RapidDiffs::CommitPresenter.new(
-            @commit,
-            diff_view,
-            commit_diff_options,
-            nil,
-            current_user,
-            define_environment
-          )
-          render action: :rapid_diffs
-        else
-          @ref = commit_params_safe[:id]
-          render locals: { pagination_params: pagination_params }
-        end
+        @ref = commit_params_safe[:id]
+        render locals: { pagination_params: pagination_params }
       end
       format.diff do
         send_git_diff(@project.repository, @commit.diff_refs)
@@ -63,7 +49,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def discussions
-    return render_404 unless rapid_diffs_enabled?
+    return render_404 unless ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :wip)
 
     all_discussions = (@grouped_diff_discussions.values.flatten + @discussions)
 
@@ -184,15 +170,26 @@ class Projects::CommitController < Projects::ApplicationController
     )
   end
 
+  def rapid_diffs
+    return render_404 unless ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :wip)
+
+    @files_changed_count = @commit.stats.files
+    @rapid_diffs_presenter = RapidDiffs::CommitPresenter.new(
+      @commit,
+      diff_view,
+      commit_diff_options,
+      nil,
+      current_user,
+      define_environment
+    )
+
+    show
+  end
+
   private
 
   def rapid_diffs_enabled?
     ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :wip)
-  end
-
-  def rapid_diffs_force_disabled?
-    ::Feature.enabled?(:rapid_diffs_debug, current_user, type: :ops) &&
-      params.permit(:rapid_diffs_disabled)[:rapid_diffs_disabled] == 'true'
   end
 
   def noteable

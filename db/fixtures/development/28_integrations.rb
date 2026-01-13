@@ -18,7 +18,8 @@ Gitlab::Seeder.quiet do
       redirect_uri: "#{ENV['CUSTOMER_PORTAL_URL']}/auth/gitlab/callback",
       scopes: 'api read_user openid',
       trusted: true,
-      confidential: true
+      confidential: true,
+      organization: Organizations::Organization.default_organization
     )
 
     print '.'

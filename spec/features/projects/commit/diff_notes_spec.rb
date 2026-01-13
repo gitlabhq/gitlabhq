@@ -17,7 +17,6 @@ RSpec.describe 'Commit diff', :js, feature_category: :source_code_management do
 
   with_them do
     before do
-      stub_feature_flags(rapid_diffs_on_commit_show: false)
       project.add_maintainer(user)
       sign_in user
       visit project_commit_path(project, sample_commit.id, view: view)

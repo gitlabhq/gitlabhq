@@ -89,7 +89,8 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
       end
 
       it 'updates RawUsageData entry when there is entry with the same recorded_at timestamp' do
-        record = create(:raw_usage_data, payload: { some_metric: 123 }, recorded_at: payload[:recorded_at])
+        record = create(:raw_usage_data, organization: organization, payload: { some_metric: 123 },
+          recorded_at: payload[:recorded_at])
 
         expect { subject.perform }.to change { record.reload.payload }
                                         .from("some_metric" => 123).to(payload.stringify_keys)

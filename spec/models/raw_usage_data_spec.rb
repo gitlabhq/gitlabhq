@@ -35,7 +35,7 @@ RSpec.describe RawUsageData do
     context 'uniqueness validation' do
       let!(:existing_record) { create(:raw_usage_data) }
 
-      it { is_expected.to validate_uniqueness_of(:recorded_at) }
+      it { is_expected.to validate_uniqueness_of(:recorded_at).scoped_to(:organization_id) }
     end
 
     describe '#update_version_metadata!' do

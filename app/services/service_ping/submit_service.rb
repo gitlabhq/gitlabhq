@@ -99,12 +99,10 @@ module ServicePing
     end
 
     def save_raw_usage_data(usage_data)
-      # safe_find_or_create_by! was originally called here.
-      # We merely switched to `find_or_create_by!`
       # rubocop: disable CodeReuse/ActiveRecord
-      RawUsageData.find_or_create_by(recorded_at: usage_data[:recorded_at]) do |record|
+      RawUsageData.find_or_create_by(organization_id: organization.id,
+        recorded_at: usage_data[:recorded_at]) do |record|
         record.payload = usage_data
-        record.organization_id = organization.id
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

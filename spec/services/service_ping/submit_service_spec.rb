@@ -183,7 +183,7 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
       it 'saves usage_data_id to version_usage_data_id_value' do
         submit_service.execute
 
-        raw_usage_data = RawUsageData.find_by(recorded_at: usage_data[:recorded_at])
+        raw_usage_data = RawUsageData.find_by(organization_id: organization.id, recorded_at: usage_data[:recorded_at])
 
         expect(raw_usage_data.version_usage_data_id_value).to eq(31643)
       end
@@ -203,7 +203,7 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
       it 'saves usage_data_id to version_usage_data_id_value' do
         submit_service.execute
 
-        raw_usage_data = RawUsageData.find_by(recorded_at: usage_data[:recorded_at])
+        raw_usage_data = RawUsageData.find_by(organization_id: organization.id, recorded_at: usage_data[:recorded_at])
 
         expect(raw_usage_data.version_usage_data_id_value).to eq(31643)
       end
@@ -245,7 +245,7 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
       it 'saves the correct payload' do
         submit_service.execute
 
-        raw_usage_data = RawUsageData.find_by(recorded_at: usage_data[:recorded_at])
+        raw_usage_data = RawUsageData.find_by(organization_id: organization.id, recorded_at: usage_data[:recorded_at])
 
         expect(raw_usage_data.payload.to_json).to eq(usage_data.to_json)
       end
@@ -253,7 +253,7 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
       it 'links to the first found organization' do
         submit_service.execute
 
-        raw_usage_data = RawUsageData.find_by(recorded_at: usage_data[:recorded_at])
+        raw_usage_data = RawUsageData.find_by(organization_id: organization.id, recorded_at: usage_data[:recorded_at])
 
         expect(raw_usage_data.organization_id).to eq(organization.id)
       end

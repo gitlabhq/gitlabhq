@@ -172,6 +172,7 @@ label:
 - epic_lists
 - group
 - organization
+- resource_label_events
 milestone:
 - group
 - project

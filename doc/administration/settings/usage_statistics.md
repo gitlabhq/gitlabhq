@@ -75,7 +75,7 @@ In the following table, you can see:
 | [Maintenance mode](../maintenance_mode/_index.md) | GitLab 16.0 and later |
 | [Configurable issue boards](../../user/project/issue_board.md#configurable-issue-boards) | GitLab 16.0 and later |
 | [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/_index.md) | GitLab 16.0 and later |
-| [Password complexity requirements](sign_up_restrictions.md#password-complexity-requirements) | GitLab 16.0 and later |
+| [Modify password complexity requirements](sign_up_restrictions.md#modify-password-complexity-requirements) | GitLab 16.0 and later |
 | [Group wikis](../../user/project/wiki/group.md) | GitLab 16.5 and later |
 | [Issue analytics](../../user/group/issues_analytics/_index.md) | GitLab 16.5 and later |
 | [Custom Text in Emails](email.md#custom-additional-text) | GitLab 16.5 and later |

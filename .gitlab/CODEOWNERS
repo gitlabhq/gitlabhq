@@ -180,6 +180,10 @@ Dangerfile
 ^[End-to-end] @gl-dx
 /qa/
 
+^[Unused method linting script] @kerrizor @splattael
+/.gitlab/lint/unused_methods/
+/scripts/lint/unused_methods.rb
+
 ^[LDAP] @dblessing @mkozono
 /ee/lib/ee/gitlab/auth/ldap/
 /lib/gitlab/auth/ldap/

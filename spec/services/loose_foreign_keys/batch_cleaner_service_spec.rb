@@ -194,6 +194,66 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
     end
   end
 
+  describe '#feature_category_override_exception' do
+    let(:exception) { StandardError.new('Test error') }
+    let(:loose_foreign_key_definition) do
+      ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+        '_test_loose_fk_child_table_1',
+        '_test_loose_fk_parent_table',
+        {
+          column: 'parent_id',
+          on_delete: :async_delete,
+          gitlab_schema: :gitlab_main
+        }
+      )
+    end
+
+    context 'when feature flag is enabled' do
+      before do
+        stub_feature_flags(loose_foreign_key_worker_feature_category_override: true)
+      end
+
+      it 'tracks exception with feature_category from dictionary' do
+        dictionary_entry = instance_double(Gitlab::Database::Dictionary::Entry, feature_categories: ['ci_pipeline'])
+        allow(Gitlab::Database::Dictionary.entries).to receive(:find_by_table_name)
+          .with('_test_loose_fk_child_table_1')
+          .and_return(dictionary_entry)
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          exception,
+          feature_category: :ci_pipeline
+        )
+
+        service.send(:feature_category_override_exception, exception, loose_foreign_key_definition)
+      end
+
+      it 'uses :database as fallback when table not in dictionary' do
+        allow(Gitlab::Database::Dictionary.entries).to receive(:find_by_table_name)
+          .with('_test_loose_fk_child_table_1')
+          .and_return(nil)
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          exception,
+          feature_category: :database
+        )
+
+        service.send(:feature_category_override_exception, exception, loose_foreign_key_definition)
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(loose_foreign_key_worker_feature_category_override: false)
+      end
+
+      it 'does not track exception' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        service.send(:feature_category_override_exception, exception, loose_foreign_key_definition)
+      end
+    end
+  end
+
   shared_examples 'cleans up loose foreign key records' do
     context 'when parent records are deleted' do
       let(:deleted_records_counter) { Gitlab::Metrics.client.get(:loose_foreign_key_processed_deleted_records) }
@@ -427,12 +487,115 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
 
     it_behaves_like 'cleans up loose foreign key records'
 
-    it 'uses new cleaner service with feature category context' do
-      parent_record_1.delete
+    describe 'error tracking with feature category' do
+      let(:expected_feature_category) { :ci_pipeline }
+      let(:cleanup_error) { StandardError.new('Cleanup failed') }
 
-      expect(Gitlab::ApplicationContext).to receive(:with_context).exactly(4).times.and_call_original
+      before do
+        parent_record_1.delete
 
-      service.execute
+        mock_dictionary_entry = instance_double(
+          Gitlab::Database::Dictionary::Entry,
+          feature_categories: ['ci_pipeline']
+        )
+        mock_entries = instance_double(Gitlab::Database::Dictionary)
+        allow(mock_entries).to receive(:find_by_table_name).and_return(mock_dictionary_entry)
+        allow(Gitlab::Database::Dictionary).to receive(:entries).and_return(mock_entries)
+      end
+
+      it 'tracks exception with correct feature_category via ErrorTracking' do
+        allow(service).to receive(:run_cleaner_service).and_raise(cleanup_error)
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          cleanup_error,
+          hash_including(feature_category: expected_feature_category)
+        )
+
+        expect { service.execute }.to raise_error(cleanup_error)
+      end
+
+      it 're-raises the exception after tracking' do
+        allow(service).to receive(:run_cleaner_service).and_raise(cleanup_error)
+        allow(Gitlab::ErrorTracking).to receive(:track_exception)
+
+        expect { service.execute }.to raise_error(cleanup_error)
+      end
+
+      it 'tracks exception with correct feature_category when handle_over_limit raises an error' do
+        reschedule_error = StandardError.new('Failed to reschedule')
+
+        allow(service).to receive(:run_cleaner_service) do
+          service.send(:modification_tracker).add_deletions('test', 100_000)
+        end
+
+        allow(LooseForeignKeys::DeletedRecord).to receive(:reschedule).and_raise(reschedule_error)
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          reschedule_error,
+          hash_including(feature_category: expected_feature_category)
+        )
+
+        expect { service.execute }.to raise_error(reschedule_error)
+      end
+
+      context 'with multiple child tables' do
+        let(:definitions_with_different_categories) do
+          [
+            ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+              '_test_loose_fk_child_table_1',
+              '_test_loose_fk_parent_table',
+              {
+                column: 'parent_id',
+                on_delete: :async_delete,
+                gitlab_schema: :gitlab_main
+              }
+            ),
+            ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+              '_test_loose_fk_child_table_2',
+              '_test_loose_fk_parent_table',
+              {
+                column: 'parent_id_with_different_column',
+                on_delete: :async_nullify,
+                gitlab_schema: :gitlab_main
+              }
+            )
+          ]
+        end
+
+        let(:service_with_multiple_tables) do
+          described_class.new(
+            parent_table: '_test_loose_fk_parent_table',
+            loose_foreign_key_definitions: definitions_with_different_categories,
+            deleted_parent_records: LooseForeignKeys::DeletedRecord.load_batch_for_table('public._test_loose_fk_parent_table', 100),
+            connection: ::ApplicationRecord.connection
+          )
+        end
+
+        it 'tracks exception with the feature_category of the failing child table' do
+          mock_entries = instance_double(Gitlab::Database::Dictionary)
+          allow(mock_entries).to receive(:find_by_table_name).with('_test_loose_fk_child_table_1')
+            .and_return(instance_double(Gitlab::Database::Dictionary::Entry, feature_categories: ['ci_pipeline']))
+          allow(mock_entries).to receive(:find_by_table_name).with('_test_loose_fk_child_table_2')
+            .and_return(instance_double(Gitlab::Database::Dictionary::Entry, feature_categories: ['code_review']))
+          allow(Gitlab::Database::Dictionary).to receive(:entries).and_return(mock_entries)
+
+          call_count = 0
+          allow(service_with_multiple_tables).to receive(:run_cleaner_service).and_wrap_original do |method, definition, with_skip_locked:|
+            call_count += 1
+            # Fail on the second table (third call since each table has skip_locked true/false)
+            raise cleanup_error if definition.from_table == '_test_loose_fk_child_table_2'
+
+            method.call(definition, with_skip_locked: with_skip_locked)
+          end
+
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            cleanup_error,
+            hash_including(feature_category: :code_review)
+          )
+
+          expect { service_with_multiple_tables.execute }.to raise_error(cleanup_error)
+        end
+      end
     end
   end
 
@@ -443,12 +606,15 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
 
     it_behaves_like 'cleans up loose foreign key records'
 
-    it 'uses original cleaner service without feature category context' do
+    it 'does not track exceptions with feature_category but still raises errors' do
       parent_record_1.delete
+      cleanup_error = StandardError.new('Cleanup failed')
 
-      expect(Gitlab::ApplicationContext).not_to receive(:with_context)
+      allow(service).to receive(:run_cleaner_service).and_raise(cleanup_error)
 
-      service.execute
+      expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+      expect { service.execute }.to raise_error(cleanup_error)
     end
   end
 end

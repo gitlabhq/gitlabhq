@@ -9,7 +9,6 @@ RSpec.describe 'Reportable note on commit', :js, feature_category: :source_code_
   let(:project) { create(:project, :repository) }
 
   before do
-    stub_feature_flags(rapid_diffs_on_commit_show: false)
     project.add_maintainer(user)
     sign_in(user)
   end

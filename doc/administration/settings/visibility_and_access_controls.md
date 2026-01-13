@@ -95,10 +95,9 @@ To disable the restriction:
 
 {{< history >}}
 
-- Enabled delayed deletion for projects by default [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
-- [Changed to default behavior for groups](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) on the Premium and Ultimate tier in GitLab 16.0.
-- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
-- [Instance setting](#immediate-deletion) to allow immediate deletion for groups or projects scheduled for deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205556) in GitLab 18.5. Enabled by default. Disabled on GitLab.com and Dedicated.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0. Premium and Ultimate only.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) a feature flag in GitLab 18.5 called `allow_immediate_namespaces_deletion` that controls the immediate deletion instance setting for groups and projects scheduled for deletion. Enabled by default on GitLab Self-Managed and GitLab.com. Disabled by default on GitLab Dedicated.
 
 {{< /history >}}
 
@@ -109,7 +108,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-These protections help guard against accidental deletion of groups and projects on your instance.
+Deletion protection prevents accidental deletion of groups and projects on your instance.
 
 ### Retention period
 
@@ -118,24 +117,21 @@ the retention period is 30 days, but you can change it to a value between `1` an
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access.
 
 To configure deletion protection for groups and projects:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
-1. Scroll to **Deletion protection** and set the retention period to a value between `1` and `90` days.
+1. Scroll to **Retention period** and set the retention period to a value between `1` and `90` days.
 1. Select **Save changes**.
 
 ### Immediate deletion
 
 {{< history >}}
 
-- Instance setting to allow immediate deletion for groups or projects scheduled for deletion
-  [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205556) in GitLab 18.5
-  [with a flag](../feature_flags/_index.md) named `allow_immediate_namespaces_deletion`.
-  Enabled by default on self-managed, but disabled on GitLab.com and Dedicated.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) a feature flag in GitLab 18.5 called `allow_immediate_namespaces_deletion` that controls the immediate deletion instance setting for groups and projects scheduled for deletion. Enabled by default on GitLab Self-Managed and GitLab.com. Disabled by default on GitLab Dedicated.
 
 {{< /history >}}
 
@@ -146,10 +142,10 @@ For more information, see the history.
 
 {{< /alert >}}
 
-By default, immediate deletion is allowed for groups and projects marked for deletion. This allows users
-to effectively bypass the configured retention period and delete groups or projects immediately.
+By default, immediate deletion is turned on for groups and projects scheduled for deletion. This way, users
+can bypass the configured retention period and delete groups or projects immediately.
 
-This can be disabled, so that groups and projects are only deleted automatically after the configured retention period:
+To disable immediate deletion:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.

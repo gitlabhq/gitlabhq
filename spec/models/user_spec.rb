@@ -4112,6 +4112,61 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe '.confirm_by_token' do
+    let!(:user) do
+      create(:user, :unconfirmed).tap do |user|
+        user.send_confirmation_instructions
+      end
+    end
+
+    let(:confirmation_token) { user.confirmation_token }
+
+    subject(:confirm_by_token) { described_class.confirm_by_token(confirmation_token) }
+
+    it 'finds user by organization and confirmation token' do
+      expect { confirm_by_token }.to change { user.reload.confirmed? }.from(false).to(true)
+
+      expect(confirm_by_token).to be_a(described_class)
+    end
+
+    context 'with blank confirmation_token' do
+      let(:confirmation_token) { '' }
+
+      it 'returns empty model with errors' do
+        expect { confirm_by_token }.not_to change { user.reload.confirmed? }
+
+        expect(confirm_by_token).to be_a(described_class)
+        expect(confirm_by_token.errors[:confirmation_token]).to include("can't be blank")
+      end
+    end
+
+    context 'with invalid confirmation token' do
+      let(:confirmation_token) { Devise.friendly_token(10) }
+
+      it 'returns empty model with errors' do
+        expect { confirm_by_token }.not_to change { user.reload.confirmed? }
+
+        expect(confirm_by_token).to be_a(described_class)
+        expect(confirm_by_token.errors[:confirmation_token]).to include('is invalid')
+      end
+    end
+
+    context 'with incorrect organization' do
+      let(:another_organization) { create(:organization) }
+
+      before do
+        stub_current_organization(another_organization)
+      end
+
+      it 'returns empty model with errors' do
+        expect { confirm_by_token }.not_to change { user.reload.confirmed? }
+
+        expect(confirm_by_token).to be_a(described_class)
+        expect(confirm_by_token.errors[:confirmation_token]).to include('is invalid')
+      end
+    end
+  end
+
   describe '.find_for_database_authentication' do
     it 'strips whitespace from login' do
       user = create(:user)

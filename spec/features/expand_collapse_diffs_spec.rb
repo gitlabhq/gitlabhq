@@ -9,7 +9,6 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
   let_it_be(:admin) { create(:admin) }
 
   before do
-    stub_feature_flags(rapid_diffs_on_commit_show: false)
     allow(Gitlab::CurrentSettings).to receive(:diff_max_patch_bytes).and_return(100.kilobytes)
 
     sign_in(admin)

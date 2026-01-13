@@ -2,7 +2,8 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Merge Trains API
+description: Documentation for the REST API for merge trains in GitLab.
+title: Merge trains API
 ---
 
 {{< details >}}
@@ -18,34 +19,70 @@ Prerequisites:
 
 - You must have at least the Developer role.
 
-## List Merge Trains for a project
+All merge train endpoints support [offset-based pagination](rest/_index.md#offset-based-pagination) using the `page` and `per_page` parameters.
 
-Get all Merge Trains of the requested project:
+## List merge trains for a project
+
+Lists all merge trains for a project.
 
 ```plaintext
 GET /projects/:id/merge_trains
-GET /projects/:id/merge_trains?scope=complete
 ```
 
-Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
-control the pagination of results.
+Supported attributes:
 
-| Attribute | Type           | Required | Description |
-|-----------|----------------|----------|-------------|
+| Attribute | Type              | Required | Description |
+| --------- | ----------------- | -------- | ----------- |
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `scope`   | string         | No       | Return Merge Trains filtered by the given scope. Available scopes are `active` (to be merged) and `complete` (have been merged). |
-| `sort`    | string         | No       | Return Merge Trains sorted in `asc` or `desc` order. Default: `desc`. |
+| `scope`   | string            | No       | Return merge trains filtered by the given scope. Available scopes are `active` (to be merged) and `complete` (have been merged). |
+| `sort`    | string            | No       | Return merge trains sorted in `asc` or `desc` order. Default: `desc`. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute                   | Type     | Description |
+| --------------------------- | -------- | ----------- |
+| `created_at`                | datetime | Timestamp when the merge train was created. |
+| `duration`                  | integer  | Time spent in seconds on the merge train, or `null` if not completed. |
+| `id`                        | integer  | ID of the merge train. |
+| `merged_at`                 | datetime | Timestamp when the merge request was merged, or `null` if not merged. |
+| `merge_request`             | object   | Merge request details. |
+| `merge_request.created_at`  | datetime | Timestamp when the merge request was created. |
+| `merge_request.description` | string   | Description of the merge request. |
+| `merge_request.id`          | integer  | ID of the merge request. |
+| `merge_request.iid`         | integer  | Internal ID of the merge request. |
+| `merge_request.project_id`  | integer  | ID of the project containing the merge request. |
+| `merge_request.state`       | string   | State of the merge request. |
+| `merge_request.title`       | string   | Title of the merge request. |
+| `merge_request.updated_at`  | datetime | Timestamp when the merge request was last updated. |
+| `merge_request.web_url`     | string   | Web URL of the merge request. |
+| `pipeline`                  | object   | Pipeline details, or `null` if no pipeline is associated. |
+| `pipeline.created_at`       | datetime | Timestamp when the pipeline was created. |
+| `pipeline.id`               | integer  | ID of the pipeline. |
+| `pipeline.iid`              | integer  | Internal ID of the pipeline. |
+| `pipeline.project_id`       | integer  | ID of the project containing the pipeline. |
+| `pipeline.ref`              | string   | Git reference of the pipeline. |
+| `pipeline.sha`              | string   | SHA of the commit that triggered the pipeline. |
+| `pipeline.source`           | string   | Source of the pipeline trigger. |
+| `pipeline.status`           | string   | Status of the pipeline. |
+| `pipeline.updated_at`       | datetime | Timestamp when the pipeline was last updated. |
+| `pipeline.web_url`          | string   | Web URL of the pipeline. |
+| `status`                    | string   | Status of the merge train. Possible values: `idle`, `stale`, `fresh`, `merging`, `merged`, `skip_merged`. |
+| `target_branch`             | string   | Name of the target branch. |
+| `updated_at`                | datetime | Timestamp when the merge train was last updated. |
+| `user`                      | object   | User who added the merge request to the merge train. |
+| `user.avatar_url`           | string   | Avatar URL of the user. |
+| `user.id`                   | integer  | ID of the user. |
+| `user.name`                 | string   | Name of the user. |
+| `user.state`                | string   | State of the user account. |
+| `user.username`             | string   | Username of the user. |
+| `user.web_url`              | string   | Web URL of the user profile. |
+
+Example request:
 
 ```shell
-curl --request GET \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/merge_trains"
 ```
-
-Returns:
-
-- `403: Forbidden` if Merge Trains are not available for the project
-- `404: Not Found` if the user is not a member of a private project
 
 Example response:
 
@@ -93,36 +130,67 @@ Example response:
 
 ## List merge requests in a merge train
 
-Get all merge requests added to a merge train for the requested target branch.
+Lists all merge requests in a merge train for a target branch.
 
 ```plaintext
 GET /projects/:id/merge_trains/:target_branch
 ```
 
-Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
-control the pagination of results.
-
 Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-|-----------------|----------------|----------|-------------|
+| Attribute       | Type              | Required | Description |
+| --------------- | ----------------- | -------- | ----------- |
 | `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `target_branch` | string         | Yes      | The target branch of the merge train. |
-| `scope`         | string         | No       | Return Merge Trains filtered by the given scope. Available scopes are `active` (to be merged) and `complete` (have been merged). |
-| `sort`          | string         | No       | Return Merge Trains sorted in `asc` or `desc` order. Default: `desc`. |
+| `target_branch` | string            | Yes      | The target branch of the merge train. |
+| `scope`         | string            | No       | Return merge trains filtered by the given scope. Available scopes are `active` (to be merged) and `complete` (have been merged). |
+| `sort`          | string            | No       | Return merge trains sorted in `asc` or `desc` order. Default: `desc`. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute                   | Type     | Description |
+| --------------------------- | -------- | ----------- |
+| `created_at`                | datetime | Timestamp when the merge train was created. |
+| `duration`                  | integer  | Time spent in seconds on the merge train, or `null` if not completed. |
+| `id`                        | integer  | ID of the merge train. |
+| `merged_at`                 | datetime | Timestamp when the merge request was merged, or `null` if not merged. |
+| `merge_request`             | object   | Merge request details. |
+| `merge_request.created_at`  | datetime | Timestamp when the merge request was created. |
+| `merge_request.description` | string   | Description of the merge request. |
+| `merge_request.id`          | integer  | ID of the merge request. |
+| `merge_request.iid`         | integer  | Internal ID of the merge request. |
+| `merge_request.project_id`  | integer  | ID of the project containing the merge request. |
+| `merge_request.state`       | string   | State of the merge request. |
+| `merge_request.title`       | string   | Title of the merge request. |
+| `merge_request.updated_at`  | datetime | Timestamp when the merge request was last updated. |
+| `merge_request.web_url`     | string   | Web URL of the merge request. |
+| `pipeline`                  | object   | Pipeline details, or `null` if no pipeline is associated. |
+| `pipeline.created_at`       | datetime | Timestamp when the pipeline was created. |
+| `pipeline.id`               | integer  | ID of the pipeline. |
+| `pipeline.iid`              | integer  | Internal ID of the pipeline. |
+| `pipeline.project_id`       | integer  | ID of the project containing the pipeline. |
+| `pipeline.ref`              | string   | Git reference of the pipeline. |
+| `pipeline.sha`              | string   | SHA of the commit that triggered the pipeline. |
+| `pipeline.source`           | string   | Source of the pipeline trigger. |
+| `pipeline.status`           | string   | Status of the pipeline. |
+| `pipeline.updated_at`       | datetime | Timestamp when the pipeline was last updated. |
+| `pipeline.web_url`          | string   | Web URL of the pipeline. |
+| `status`                    | string   | Status of the merge train. Possible values: `idle`, `stale`, `fresh`, `merging`, `merged`, `skip_merged`. |
+| `target_branch`             | string   | Name of the target branch. |
+| `updated_at`                | datetime | Timestamp when the merge train was last updated. |
+| `user`                      | object   | User who added the merge request to the merge train. |
+| `user.avatar_url`           | string   | Avatar URL of the user. |
+| `user.id`                   | integer  | ID of the user. |
+| `user.name`                 | string   | Name of the user. |
+| `user.state`                | string   | State of the user account. |
+| `user.username`             | string   | Username of the user. |
+| `user.web_url`              | string   | Web URL of the user profile. |
 
 Example request:
 
 ```shell
-curl --request GET \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/597/merge_trains/main"
 ```
-
-Returns:
-
-- `403: Forbidden` if Merge Trains are not available for the project
-- `404: Not Found` if the user is not a member of a private project
 
 Example response:
 
@@ -146,7 +214,7 @@ Example response:
       "username": "user12",
       "name": "Sidney Jones31",
       "state": "active",
-      "avatar_url": "https://www.gravatar.com/avatar/6c8365de387cb3db10ecc7b1880203c4?s=80\u0026d=identicon",
+      "avatar_url": "https://www.gravatar.com/avatar/6c8365de387cb3db10ecc7b1880203c4?s=80&d=identicon",
       "web_url": "http://localhost/user12"
     },
     "pipeline": {
@@ -162,45 +230,76 @@ Example response:
       "web_url": "http://localhost/namespace19/project22/-/pipelines/273"
     },
     "created_at": "2022-10-31T19:06:06.237Z",
-    "updated_at":"2022-10-31T19:06:06.237Z",
-    "target_branch":"main",
-    "status":"idle",
-    "merged_at":null,
-    "duration":null
+    "updated_at": "2022-10-31T19:06:06.237Z",
+    "target_branch": "main",
+    "status": "idle",
+    "merged_at": null,
+    "duration": null
   }
 ]
 ```
 
 ## Get the status of a merge request on a merge train
 
-Get merge train information for the requested merge request.
+Retrieves the merge train status of a merge request.
 
 ```plaintext
 GET /projects/:id/merge_trains/merge_requests/:merge_request_iid
 ```
 
-Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
-control the pagination of results.
-
 Supported attributes:
 
-| Attribute           | Type           | Required | Description |
-|---------------------|----------------|----------|-------------|
+| Attribute           | Type              | Required | Description |
+| ------------------- | ----------------- | -------- | ----------- |
 | `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `merge_request_iid` | integer        | Yes      | The internal ID of the merge request. |
+| `merge_request_iid` | integer           | Yes      | The internal ID of the merge request. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute                   | Type     | Description |
+| --------------------------- | -------- | ----------- |
+| `created_at`                | datetime | Timestamp when the merge train was created. |
+| `duration`                  | integer  | Time spent in seconds on the merge train, or `null` if not completed. |
+| `id`                        | integer  | ID of the merge train. |
+| `merged_at`                 | datetime | Timestamp when the merge request was merged, or `null` if not merged. |
+| `merge_request`             | object   | Merge request details. |
+| `merge_request.created_at`  | datetime | Timestamp when the merge request was created. |
+| `merge_request.description` | string   | Description of the merge request. |
+| `merge_request.id`          | integer  | ID of the merge request. |
+| `merge_request.iid`         | integer  | Internal ID of the merge request. |
+| `merge_request.project_id`  | integer  | ID of the project containing the merge request. |
+| `merge_request.state`       | string   | State of the merge request. |
+| `merge_request.title`       | string   | Title of the merge request. |
+| `merge_request.updated_at`  | datetime | Timestamp when the merge request was last updated. |
+| `merge_request.web_url`     | string   | Web URL of the merge request. |
+| `pipeline`                  | object   | Pipeline details, or `null` if no pipeline is associated. |
+| `pipeline.created_at`       | datetime | Timestamp when the pipeline was created. |
+| `pipeline.id`               | integer  | ID of the pipeline. |
+| `pipeline.iid`              | integer  | Internal ID of the pipeline. |
+| `pipeline.project_id`       | integer  | ID of the project containing the pipeline. |
+| `pipeline.ref`              | string   | Git reference of the pipeline. |
+| `pipeline.sha`              | string   | SHA of the commit that triggered the pipeline. |
+| `pipeline.source`           | string   | Source of the pipeline trigger. |
+| `pipeline.status`           | string   | Status of the pipeline. |
+| `pipeline.updated_at`       | datetime | Timestamp when the pipeline was last updated. |
+| `pipeline.web_url`          | string   | Web URL of the pipeline. |
+| `status`                    | string   | Status of the merge train. Possible values: `idle`, `stale`, `fresh`, `merging`, `merged`, `skip_merged`. |
+| `target_branch`             | string   | Name of the target branch. |
+| `updated_at`                | datetime | Timestamp when the merge train was last updated. |
+| `user`                      | object   | User who added the merge request to the merge train. |
+| `user.avatar_url`           | string   | Avatar URL of the user. |
+| `user.id`                   | integer  | ID of the user. |
+| `user.name`                 | string   | Name of the user. |
+| `user.state`                | string   | State of the user account. |
+| `user.username`             | string   | Username of the user. |
+| `user.web_url`              | string   | Web URL of the user profile. |
 
 Example request:
 
 ```shell
-curl --request GET \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/597/merge_trains/merge_requests/1"
 ```
-
-Returns:
-
-- `403: Forbidden` if Merge Trains are not available for the project
-- `404: Not Found` if the user is not a member of a private project
 
 Example response:
 
@@ -223,7 +322,7 @@ Example response:
     "username": "user12",
     "name": "Sidney Jones31",
     "state": "active",
-    "avatar_url": "https://www.gravatar.com/avatar/6c8365de387cb3db10ecc7b1880203c4?s=80\u0026d=identicon",
+    "avatar_url": "https://www.gravatar.com/avatar/6c8365de387cb3db10ecc7b1880203c4?s=80&d=identicon",
     "web_url": "http://localhost/user12"
   },
   "pipeline": {
@@ -239,17 +338,17 @@ Example response:
     "web_url": "http://localhost/namespace19/project22/-/pipelines/273"
   },
   "created_at": "2022-10-31T19:06:06.237Z",
-  "updated_at":"2022-10-31T19:06:06.237Z",
-  "target_branch":"main",
-  "status":"idle",
-  "merged_at":null,
-  "duration":null
+  "updated_at": "2022-10-31T19:06:06.237Z",
+  "target_branch": "main",
+  "status": "idle",
+  "merged_at": null,
+  "duration": null
 }
 ```
 
 ## Add a merge request to a merge train
 
-Add a merge request to the merge train targeting the merge request's target branch.
+Adds a merge request to a merge train.
 
 ```plaintext
 POST /projects/:id/merge_trains/merge_requests/:merge_request_iid
@@ -257,14 +356,59 @@ POST /projects/:id/merge_trains/merge_requests/:merge_request_iid
 
 Supported attributes:
 
-| Attribute                | Type           | Required | Description |
-|--------------------------|----------------|----------|-------------|
+| Attribute                | Type              | Required | Description |
+| ------------------------ | ----------------- | -------- | ----------- |
 | `id`                     | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `merge_request_iid`      | integer        | Yes      | The internal ID of the merge request. |
-| `auto_merge`             | boolean        | No       | If true, the merge request is added to the merge train when the checks pass. When false or unspecified, the merge request is added directly to the merge train. |
-| `sha`                    | string         | No       | If present, the SHA must match the `HEAD` of the source branch, otherwise the merge fails. |
-| `squash`                 | boolean        | No       | If true, the commits are squashed into a single commit on merge. |
-| `when_pipeline_succeeds` | boolean        | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/521290) in GitLab 17.11. Use `auto_merge` instead. |
+| `merge_request_iid`      | integer           | Yes      | The internal ID of the merge request. |
+| `auto_merge`             | boolean           | No       | If true, the merge request is added to the merge train when the checks pass. When false or unspecified, the merge request is added directly to the merge train. |
+| `sha`                    | string            | No       | If present, the SHA must match the `HEAD` of the source branch, otherwise the merge fails. |
+| `squash`                 | boolean           | No       | If true, the commits are squashed into a single commit on merge. |
+| `when_pipeline_succeeds` | boolean           | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/521290) in GitLab 17.11. Use `auto_merge` instead. |
+
+If successful, returns:
+
+- [`201 Created`](rest/troubleshooting.md#status-codes) if the merge request is immediately added to the merge train.
+- [`202 Accepted`](rest/troubleshooting.md#status-codes) if the merge request is scheduled to be added to the merge train.
+
+The following response attributes are returned:
+
+| Attribute                   | Type     | Description |
+| --------------------------- | -------- | ----------- |
+| `created_at`                | datetime | Timestamp when the merge train was created. |
+| `duration`                  | integer  | Time spent in seconds on the merge train, or `null` if not completed. |
+| `id`                        | integer  | ID of the merge train. |
+| `merged_at`                 | datetime | Timestamp when the merge request was merged, or `null` if not merged. |
+| `merge_request`             | object   | Merge request details. |
+| `merge_request.created_at`  | datetime | Timestamp when the merge request was created. |
+| `merge_request.description` | string   | Description of the merge request. |
+| `merge_request.id`          | integer  | ID of the merge request. |
+| `merge_request.iid`         | integer  | Internal ID of the merge request. |
+| `merge_request.project_id`  | integer  | ID of the project containing the merge request. |
+| `merge_request.state`       | string   | State of the merge request. |
+| `merge_request.title`       | string   | Title of the merge request. |
+| `merge_request.updated_at`  | datetime | Timestamp when the merge request was last updated. |
+| `merge_request.web_url`     | string   | Web URL of the merge request. |
+| `pipeline`                  | object   | Pipeline details, or `null` if no pipeline is associated. |
+| `pipeline.created_at`       | datetime | Timestamp when the pipeline was created. |
+| `pipeline.id`               | integer  | ID of the pipeline. |
+| `pipeline.iid`              | integer  | Internal ID of the pipeline. |
+| `pipeline.project_id`       | integer  | ID of the project containing the pipeline. |
+| `pipeline.ref`              | string   | Git reference of the pipeline. |
+| `pipeline.sha`              | string   | SHA of the commit that triggered the pipeline. |
+| `pipeline.source`           | string   | Source of the pipeline trigger. |
+| `pipeline.status`           | string   | Status of the pipeline. |
+| `pipeline.updated_at`       | datetime | Timestamp when the pipeline was last updated. |
+| `pipeline.web_url`          | string   | Web URL of the pipeline. |
+| `status`                    | string   | Status of the merge train. Possible values: `idle`, `stale`, `fresh`, `merging`, `merged`, `skip_merged`. |
+| `target_branch`             | string   | Name of the target branch. |
+| `updated_at`                | datetime | Timestamp when the merge train was last updated. |
+| `user`                      | object   | User who added the merge request to the merge train. |
+| `user.avatar_url`           | string   | Avatar URL of the user. |
+| `user.id`                   | integer  | ID of the user. |
+| `user.name`                 | string   | Name of the user. |
+| `user.state`                | string   | State of the user account. |
+| `user.username`             | string   | Username of the user. |
+| `user.web_url`              | string   | Web URL of the user profile. |
 
 Example request:
 
@@ -273,59 +417,6 @@ curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/597/merge_trains/merge_requests/1"
 ```
-
-If successful, returns:
-
-- `201 Created` if the merge request is immediately added to the merge train
-- `202 Accepted` if the merge request is scheduled to be added to the merge train
-
-Other possible responses:
-
-- `400 Bad Request` if the merge failed
-- `401 Unauthorized` if authentication is required
-- `403 Forbidden` if merge trains are not available for the project
-- `404 Not Found` if the project or merge request is not found
-- `409 Conflict` if there's a conflicting resource
-
-On success, the response contains the following attributes:
-
-| Attribute                              | Type    | Description |
-|----------------------------------------|---------|-------------|
-| `created_at`                           | datetime | Timestamp of when the merge train was created. |
-| `duration`                             | integer  | Duration in seconds, or `null` if not completed. |
-| `id`                                   | integer  | ID of the merge train. |
-| `merge_request`                        | object   | Merge request details. |
-| `merge_request.created_at`             | datetime | Timestamp of when the merge request was created. |
-| `merge_request.description`            | string   | Description of the merge request. |
-| `merge_request.id`                     | integer  | ID of the merge request. |
-| `merge_request.iid`                    | integer  | Internal ID of the merge request. |
-| `merge_request.project_id`             | integer  | ID of the project containing the merge request. |
-| `merge_request.state`                  | string   | State of the merge request. |
-| `merge_request.title`                  | string   | Title of the merge request. |
-| `merge_request.updated_at`             | datetime | Timestamp of when the merge request was last updated. |
-| `merge_request.web_url`                | string   | Web URL of the merge request. |
-| `merged_at`                            | datetime | Timestamp of when the merge request merged, or `null` if not merged. |
-| `pipeline`                             | object   | Pipeline details. |
-| `pipeline.created_at`                  | datetime | Timestamp of when the pipeline was created. |
-| `pipeline.id`                          | integer  | ID of the pipeline. |
-| `pipeline.iid`                         | integer  | Internal ID of the pipeline. |
-| `pipeline.project_id`                  | integer  | ID of the project containing the pipeline. |
-| `pipeline.ref`                         | string   | Git reference of the pipeline. |
-| `pipeline.sha`                         | string   | SHA of the commit that triggered the pipeline. |
-| `pipeline.source`                      | string   | Source of the pipeline trigger. |
-| `pipeline.status`                      | string   | Status of the pipeline. |
-| `pipeline.updated_at`                  | datetime | Timestamp of when the pipeline was last updated. |
-| `pipeline.web_url`                     | string   | Web URL of the pipeline. |
-| `status`                               | string   | Status of the merge train. Possible values: `idle`, `merged`, `stale`, `fresh`, `merging`, `skip_merged`. |
-| `target_branch`                        | string   | Name of the target branch. |
-| `updated_at`                           | datetime | Timestamp of when the merge train was last updated. |
-| `user`                                 | object   | User who added the merge request to the merge train. |
-| `user.avatar_url`                      | string   | Avatar URL of the user. |
-| `user.id`                              | integer  | ID of the user. |
-| `user.name`                            | string   | Name of the user. |
-| `user.state`                           | string   | State of the user account. |
-| `user.username`                        | string   | Username of the user. |
-| `user.web_url`                         | string   | Web URL of the user profile. |
 
 Example response:
 
@@ -349,7 +440,7 @@ Example response:
       "username": "user12",
       "name": "Sidney Jones31",
       "state": "active",
-      "avatar_url": "https://www.gravatar.com/avatar/6c8365de387cb3db10ecc7b1880203c4?s=80\u0026d=identicon",
+      "avatar_url": "https://www.gravatar.com/avatar/6c8365de387cb3db10ecc7b1880203c4?s=80&d=identicon",
       "web_url": "http://localhost/user12"
     },
     "pipeline": {
@@ -365,11 +456,11 @@ Example response:
       "web_url": "http://localhost/namespace19/project22/-/pipelines/273"
     },
     "created_at": "2022-10-31T19:06:06.237Z",
-    "updated_at":"2022-10-31T19:06:06.237Z",
-    "target_branch":"main",
-    "status":"idle",
-    "merged_at":null,
-    "duration":null
+    "updated_at": "2022-10-31T19:06:06.237Z",
+    "target_branch": "main",
+    "status": "idle",
+    "merged_at": null,
+    "duration": null
   }
 ]
 ```

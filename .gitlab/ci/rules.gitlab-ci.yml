@@ -2174,6 +2174,8 @@
   rules:
     - <<: *if-merge-request-targeting-stable-branch
       when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
     - <<: *if-merge-request-labels-pipeline-skip-performance
       when: never
     - if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security"'

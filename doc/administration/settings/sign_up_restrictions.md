@@ -215,39 +215,32 @@ To remove the user cap:
 1. Remove the number from **User cap**.
 1. Select **Save changes**.
 
-## Minimum password length limit
+## Modify password complexity requirements
 
-You can [change](../../security/password_length_limits.md#modify-minimum-password-length)
-the minimum number of characters a user must have in their password using the GitLab UI.
+By default, user passwords have a limited number of [requirements](../../user/profile/user_passwords.md#password-requirements).
+You can modify the requirements to increase the minimum length or require specific character types.
 
-### Password complexity requirements
+Changing the password requirements does not affect existing user passwords.
+Modified complexity requirements are enforced only in these situations:
 
-{{< details >}}
+- When a new user creates an account.
+- When an existing user resets their password.
 
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354965) in GitLab 15.2.
-
-{{< /history >}}
-
-By default, the only requirement for user passwords is [minimum password length](#minimum-password-length-limit).
-You can add additional complexity requirements. Changes to password complexity requirements apply to new passwords:
-
-- For new users that sign up.
-- For existing users that reset their password.
-
-Existing passwords are unaffected. To change password complexity requirements:
+To modify password complexity requirements:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
-1. Under **Minimum password length (number of characters)**, select additional password complexity requirements. You can require numbers, uppercase letters, lowercase letters,
-   and symbols.
+1. Modify the complexity requirements:
+
+   | Setting | Description |
+   |---------|-------------|
+   | **Minimum password length** | Sets the minimum number of characters required. Cannot be less than 8 characters or more than 128 characters. |
+   | **Require numbers** | Requires passwords to contain at least one number (0-9). Premium and Ultimate only. |
+   | **Require uppercase letters** | Requires passwords to contain at least one uppercase letter (A-Z). Premium and Ultimate only. |
+   | **Require lowercase letters** | Requires passwords to contain at least one lowercase letter (a-z). Premium and Ultimate only. |
+   | **Require symbols** | Requires passwords to contain at least one symbol. Premium and Ultimate only. |
+
 1. Select **Save changes**.
 
 ## Allow or deny sign ups using specific email domains

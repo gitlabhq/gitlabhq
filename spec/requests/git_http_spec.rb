@@ -652,12 +652,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                   .plaintext_token
                 end
 
-                let(:application) do
-                  Authn::OauthApplication.create!(
-                    name: "MyApp",
-                    redirect_uri: "https://app.com",
-                    owner: user)
-                end
+                let(:application) { create(:oauth_application, owner: user) }
 
                 let(:scopes) { 'api' }
                 let(:path) { "#{project.full_path}.git" }
@@ -1431,12 +1426,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                   .plaintext_token
                 end
 
-                let(:application) do
-                  Authn::OauthApplication.create!(
-                    name: "MyApp",
-                    redirect_uri: "https://app.com",
-                    owner: user)
-                end
+                let(:application) { create(:oauth_application, owner: user) }
 
                 let(:path) { "#{project.full_path}.git" }
                 let(:env) { { user: 'oauth2', password: token } }

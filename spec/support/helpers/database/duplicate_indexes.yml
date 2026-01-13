@@ -171,6 +171,8 @@ work_item_weights_sources:
     - index_work_item_weights_sources_on_work_item_id
 users:
   index_users_on_organization_id_and_reset_password_token:
-  - index_users_on_organization_id
+    - index_users_on_organization_id
   index_users_on_organization_id_and_unlock_token:
-  - index_users_on_organization_id
+    - index_users_on_organization_id
+  index_users_on_organization_id_and_confirmation_token:
+    - index_users_on_organization_id
