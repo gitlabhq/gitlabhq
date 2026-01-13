@@ -11,6 +11,7 @@ RSpec.describe 'Project > Commit > View user status', feature_category: :source_
   let(:commit_author) { create(:user, email: sample_commit.author_email) }
 
   before do
+    stub_feature_flags(rapid_diffs_on_commit_show: false)
     sign_in(user)
     project.add_developer(user)
   end

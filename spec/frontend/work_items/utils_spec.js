@@ -50,6 +50,7 @@ import {
   getDraftWorkItemType,
   setLastUsedWorkItemTypeIdForNamespace,
   getLastUsedWorkItemTypeIdForNamespace,
+  combineWorkItemLists,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
@@ -760,5 +761,91 @@ describe('setLastUsedWorkItemTypeIdForNamespace', () => {
       'freq-wi-type:gitlab-org/gitlab',
       'gid://gitlab/WorkItems::Type/1',
     );
+  });
+});
+
+describe('combineWorkItemLists', () => {
+  const baseSlimList = [
+    { id: 1, widgets: [{ type: 'DESCRIPTION', value: 'slim desc' }] },
+    { id: 2, widgets: [{ type: 'ASSIGNEES', value: 'slim assignee' }] },
+  ];
+  const baseFullList = [
+    { id: 1, widgets: [{ type: 'DESCRIPTION', value: 'full desc' }] },
+    { id: 2, widgets: [{ type: 'ASSIGNEES', value: 'full assignee' }] },
+    { id: 3, widgets: [{ type: 'LABELS', value: 'full label' }] },
+  ];
+
+  describe('when slim list is empty', () => {
+    describe('and full list is empty', () => {
+      it('returns empty array', () => {
+        expect(combineWorkItemLists([], [])).toEqual([]);
+      });
+    });
+
+    describe('and full list has items', () => {
+      it('returns the full list', () => {
+        expect(combineWorkItemLists([], baseFullList)).toEqual(baseFullList);
+      });
+    });
+  });
+
+  describe('when both lists have items', () => {
+    describe('and slim list widgets have fewer keys than full list widgets', () => {
+      it('prioritizes full list widgets', () => {
+        const fullList = [
+          { ...baseFullList[0], widgets: [{ ...baseFullList[0].widgets[0], otherProp: true }] },
+          baseFullList[1],
+          baseFullList[2],
+        ];
+
+        const result = combineWorkItemLists(baseSlimList, fullList);
+
+        expect(result).toEqual([
+          { ...fullList[0], widgets: [fullList[0].widgets[0]] },
+          { ...fullList[1], widgets: [fullList[1].widgets[0]] },
+          fullList[2],
+        ]);
+      });
+    });
+
+    describe('and full list widgets have more keys than slim list widgets', () => {
+      it('prioritizes full list widgets', () => {
+        const fullList = [
+          { ...baseFullList[0], widgets: [{ ...baseFullList[0].widgets[0], otherProp: true }] },
+          { ...baseFullList[1], widgets: [{ ...baseFullList[1].widgets[0], otherProp: true }] },
+          baseFullList[2],
+        ];
+
+        const result = combineWorkItemLists(baseSlimList, fullList);
+
+        expect(result).toEqual([
+          { ...fullList[0], widgets: [fullList[0].widgets[0]] },
+          { ...fullList[1], widgets: [fullList[1].widgets[0]] },
+          fullList[2],
+        ]);
+      });
+    });
+
+    describe('and slim list has items not in full list', () => {
+      it('includes items from both lists', () => {
+        const slimList = [
+          ...baseSlimList,
+          { id: 4, widgets: [{ type: 'LABELS', value: 'slim label' }] },
+        ];
+        const fullList = [
+          baseFullList[0],
+          baseFullList[1],
+          { id: 3, widgets: [{ type: 'MILESTONE', value: 'full milestone' }] },
+        ];
+
+        const result = combineWorkItemLists(slimList, fullList);
+
+        expect(result).toEqual([
+          { ...fullList[0], widgets: [fullList[0].widgets[0]] },
+          { ...fullList[1], widgets: [fullList[1].widgets[0]] },
+          fullList[2],
+        ]);
+      });
+    });
   });
 });

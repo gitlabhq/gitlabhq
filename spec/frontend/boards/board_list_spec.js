@@ -1,6 +1,6 @@
 import { GlIntersectionObserver } from '@gitlab/ui';
-import Draggable from 'vuedraggable';
 import { nextTick } from 'vue';
+import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { DraggableItemTypes, ListType, WIP_ITEMS, WIP_WEIGHT } from 'ee_else_ce/boards/constants';
 import { DETAIL_VIEW_QUERY_PARAM_NAME, WORK_ITEM_TYPE_ENUM_ISSUE } from '~/work_items/constants';
 import { TYPE_ISSUE, WORKSPACE_PROJECT } from '~/issues/constants';
@@ -145,6 +145,12 @@ describe('Board list component', () => {
                 .mockResolvedValue(mockGroupIssuesResponse('gid://gitlab/List/1', mockIssuesMore)),
             ],
           ],
+          stubs: {
+            Draggable,
+            DraggableCompat: {
+              template: '<div><slot /><slot name="footer"></slot></div>',
+            },
+          },
         });
         await waitForPromises();
       });

@@ -71,10 +71,6 @@ module Ml
         create_with(user: user).find_or_create_by(project: project, name: name)
       end
 
-      def count_for_project(project)
-        by_project(project).count
-      end
-
       private
 
       def numeric?(value)

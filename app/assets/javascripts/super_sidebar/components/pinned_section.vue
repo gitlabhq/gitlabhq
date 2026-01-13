@@ -1,6 +1,6 @@
 <script>
-import Draggable from 'vuedraggable';
 import { s__ } from '~/locale';
+import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { setCookie, getCookie } from '~/lib/utils/common_utils';
 import {
   PINNED_NAV_STORAGE_KEY,
@@ -118,6 +118,8 @@ export default {
       data-testid="pinned-nav-items"
       handle=".js-draggable-icon"
       tag="ul"
+      item-key="id"
+      draggable=".js-draggable-item"
       @end="handleDrag"
     >
       <nav-item
@@ -126,6 +128,7 @@ export default {
         :item="item"
         :async-count="asyncCount"
         is-in-pinned-section
+        class="js-draggable-item"
         @pin-remove="onPinRemove(item.id, item.title)"
         @nav-link-click="writePinnedClick"
       />

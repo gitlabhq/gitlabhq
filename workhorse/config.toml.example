@@ -5,6 +5,27 @@
 
 [redis]
 URL = "unix:/home/git/gitlab/redis/redis.socket"
+# Optional: Sentinel configuration for Redis high availability
+#   sentinel = ["redis://sentinel1.example.com:26379", "redis://sentinel2.example.com:26379"]
+#   sentinel_master = "mymaster"
+#   sentinel_username = "sentinel-user"
+#   sentinel_password = "sentinel-password"
+
+# Optional: TLS configuration for Redis client connections
+# [redis.tls]
+#   certificate = "/path/to/client/certificate.crt"
+#   key = "/path/to/client/private/key.key"
+#   ca_certificate = "/path/to/ca/certificate.crt"
+#   min_version = "tls1.2"
+#   max_version = "tls1.3"
+
+# Optional: TLS configuration for Sentinel connections
+# [Sentinel.tls]
+#   certificate = "/path/to/client/certificate.crt"
+#   key = "/path/to/client/private/key.key"
+#   ca_certificate = "/path/to/ca/certificate.crt"
+#   min_version = "tls1.2"
+#   max_version = "tls1.3"
 
 [object_storage]
   provider = "AWS" # Allowed options: AWS, AzureRM, Google

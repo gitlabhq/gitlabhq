@@ -47,6 +47,7 @@ module.exports = (path, options = {}) => {
       '^vuex$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vuex.js',
       '^vue-apollo$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js',
       '^vue-router$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue_router.js',
+      '^portal-vue$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue.js',
     });
     Object.assign(globals, {
       'vue-jest': {

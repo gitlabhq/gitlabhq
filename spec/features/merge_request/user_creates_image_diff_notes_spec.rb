@@ -9,6 +9,7 @@ RSpec.describe 'Merge request > User creates image diff notes', :js, feature_cat
   let(:user) { project.creator }
 
   before do
+    stub_feature_flags(rapid_diffs_on_commit_show: false)
     sign_in(user)
 
     # Stub helper to return any blob file as image from public app folder.

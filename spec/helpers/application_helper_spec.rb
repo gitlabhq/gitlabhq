@@ -835,29 +835,6 @@ RSpec.describe ApplicationHelper do
     end
   end
 
-  describe '#disable_fixed_body_scroll' do
-    it 'disables body scroll' do
-      helper.disable_fixed_body_scroll
-      expect(helper.body_scroll_classes).to eq('')
-    end
-  end
-
-  describe '#body_scroll_classes' do
-    it 'does not fix body scroll' do
-      expect(helper.body_scroll_classes).to eq('')
-    end
-
-    context 'when `project studio` feature is disabled' do
-      before do
-        allow(helper).to receive(:project_studio_enabled?).and_return(false)
-      end
-
-      it 'fixes body scroll by default' do
-        expect(helper.body_scroll_classes).to eq('body-fixed-scrollbar')
-      end
-    end
-  end
-
   describe '#dispensable_render' do
     context 'when an error occurs in the template to be rendered' do
       before do

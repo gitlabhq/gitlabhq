@@ -1,5 +1,6 @@
 #import "ee_else_ce/work_items/graphql/work_item_type.fragment.graphql"
 
+# @feature_category: team_planning
 query namespaceWorkItemTypes($fullPath: ID!, $name: IssueType, $onlyAvailable: Boolean = false) {
   namespace(fullPath: $fullPath) {
     id

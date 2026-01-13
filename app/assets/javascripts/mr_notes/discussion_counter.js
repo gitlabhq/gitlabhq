@@ -12,7 +12,7 @@ export function initDiscussionCounter() {
     // eslint-disable-next-line no-new
     new Vue({
       el,
-      name: 'DiscussionCounter',
+      name: 'DiscussionCounterApp',
       components: {
         DiscussionCounter,
       },

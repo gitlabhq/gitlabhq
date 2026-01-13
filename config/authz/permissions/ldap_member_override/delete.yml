@@ -1,0 +1,5 @@
+---
+name: delete_ldap_member_override
+description: Grants the ability to delete access level override for an LDAP group member
+boundaries:
+  - group

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Job Artifacts (GraphQL fixtures)' do
+RSpec.describe 'Job Artifacts (GraphQL fixtures)', feature_category: :job_artifacts do
   describe GraphQL::Query, type: :request do
     include ApiHelpers
     include GraphqlHelpers

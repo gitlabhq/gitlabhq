@@ -31581,9 +31581,6 @@ msgstr ""
 msgid "GitLab KAS"
 msgstr ""
 
-msgid "GitLab Next|Next"
-msgstr ""
-
 msgid "GitLab Observability Backend requests"
 msgstr ""
 
@@ -40611,9 +40608,6 @@ msgid "Locks the discussion."
 msgstr ""
 
 msgid "LoggedOutMarketingHeader|Contact Sales"
-msgstr ""
-
-msgid "LoggedOutMarketingHeader|Explore GitLab"
 msgstr ""
 
 msgid "LoggedOutMarketingHeader|Pricing"

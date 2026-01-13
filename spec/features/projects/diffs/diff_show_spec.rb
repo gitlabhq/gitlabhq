@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe 'Diff file viewer', :js, :with_clean_rails_cache, feature_category: :code_review_workflow do
   let(:project) { create(:project, :public, :repository) }
 
+  before do
+    stub_feature_flags(rapid_diffs_on_commit_show: false)
+  end
+
   def visit_commit(sha, anchor: nil)
     visit project_commit_path(project, sha, anchor: anchor)
 

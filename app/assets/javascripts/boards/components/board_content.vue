@@ -2,7 +2,7 @@
 import { GlAlert } from '@gitlab/ui';
 import { sortBy } from 'lodash';
 import produce from 'immer';
-import Draggable from 'vuedraggable';
+import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
@@ -264,39 +264,42 @@ export default {
     <gl-alert v-if="error" variant="danger" :dismissible="true" @dismiss="dismissError">
       {{ error }}
     </gl-alert>
-    <component
-      :is="boardColumnWrapper"
+    <div
       v-if="!isSwimlanesOn"
-      ref="list"
-      v-bind="draggableOptions"
       class="boards-list gl-w-full gl-overflow-x-auto gl-whitespace-nowrap gl-py-5 gl-pl-0 gl-pr-5 @xl/panel:gl-pl-3 @xl/panel:gl-pr-6"
-      @end="updateListPosition"
     >
-      <board-column
-        v-for="(list, index) in boardListsToUse"
-        :key="index"
-        ref="board"
-        :column-index="index"
-        :board-id="boardId"
-        :list="list"
-        :filters="filterParams"
-        :highlighted-lists="highlightedLists"
-        :data-draggable-item-type="$options.draggableItemTypes.list"
-        :class="{ '!gl-hidden @sm/panel:!gl-inline-block': addColumnFormVisible }"
-        :last="isLastList(index)"
-        :list-query-variables="listQueryVariables"
-        :lists="boardListsById"
-        :can-admin-list="canAdminList"
-        :dragged-type="draggedType"
-        @dragStart="handleDragStart"
-        @dragStop="handleDragStop"
-        @highlight-list="highlightList"
-        @setActiveList="$emit('setActiveList', $event)"
-        @setFilters="$emit('setFilters', $event)"
-        @addNewListAfter="$emit('setAddColumnFormVisibility', $event)"
-        @cannot-find-active-item="handleCannotFindActiveItem"
-      />
-
+      <component
+        :is="boardColumnWrapper"
+        ref="list"
+        v-bind="draggableOptions"
+        item-key="id"
+        @end="updateListPosition"
+      >
+        <board-column
+          v-for="(list, index) in boardListsToUse"
+          :key="list.id"
+          ref="board"
+          :column-index="index"
+          :board-id="boardId"
+          :list="list"
+          :filters="filterParams"
+          :highlighted-lists="highlightedLists"
+          :data-draggable-item-type="$options.draggableItemTypes.list"
+          :class="{ '!gl-hidden @sm/panel:!gl-inline-block': addColumnFormVisible }"
+          :last="isLastList(index)"
+          :list-query-variables="listQueryVariables"
+          :lists="boardListsById"
+          :can-admin-list="canAdminList"
+          :dragged-type="draggedType"
+          @dragStart="handleDragStart"
+          @dragStop="handleDragStop"
+          @highlight-list="highlightList"
+          @setActiveList="$emit('setActiveList', $event)"
+          @setFilters="$emit('setFilters', $event)"
+          @addNewListAfter="$emit('setAddColumnFormVisibility', $event)"
+          @cannot-find-active-item="handleCannotFindActiveItem"
+        />
+      </component>
       <transition mode="out-in" name="slide" @after-enter="afterFormEnters">
         <div v-if="!addColumnFormVisible && canAdminList" class="gl-inline-block gl-pl-2">
           <board-add-new-column-trigger
@@ -305,7 +308,6 @@ export default {
           />
         </div>
       </transition>
-
       <transition mode="out-in" name="slide" @after-enter="afterFormEnters">
         <board-add-new-column
           v-if="addColumnFormVisible"
@@ -316,8 +318,7 @@ export default {
           @highlight-list="highlightList"
         />
       </transition>
-    </component>
-
+    </div>
     <epics-swimlanes
       v-else-if="boardListsToUse.length"
       ref="swimlanes"

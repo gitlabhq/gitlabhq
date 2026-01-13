@@ -277,24 +277,24 @@ func TestSentinelTLSOptions(t *testing.T) {
 	testCases := []struct {
 		description    string
 		sentinelConfig *config.SentinelConfig
-		expectedError  *error
+		expectedError  error
 		expectedCerts  int
 		checkRootCAs   func(t *testing.T, tlsConfig *tls.Config)
 	}{
 		{
 			description:    "no tls defined",
 			sentinelConfig: &config.SentinelConfig{},
-			expectedError:  &errSentinelTLSNotDefined,
+			expectedError:  errSentinelTLSNotDefined,
 		},
 		{
 			description:    "certificate missing",
 			sentinelConfig: &config.SentinelConfig{TLS: &config.TLSConfig{Key: keyFile}},
-			expectedError:  &errSentinelTLSCertificateNotDefined,
+			expectedError:  sentinelTLSErrors.CertificateNotDefined,
 		},
 		{
 			description:    "key missing",
 			sentinelConfig: &config.SentinelConfig{TLS: &config.TLSConfig{Certificate: certFile}},
-			expectedError:  &errSentinelTLSKeyNotDefined,
+			expectedError:  sentinelTLSErrors.KeyNotDefined,
 		},
 		{
 			description:    "tls defined with certificate and key",
@@ -330,8 +330,9 @@ func TestSentinelTLSOptions(t *testing.T) {
 			tlsConfig, err := sentinelTLSOptions(tc.sentinelConfig)
 
 			if tc.expectedError != nil {
-				require.ErrorIs(t, *tc.expectedError, err)
+				require.ErrorIs(t, err, tc.expectedError)
 			} else {
+				require.NoError(t, err)
 				require.Len(t, tlsConfig.Certificates, tc.expectedCerts)
 				if tc.checkRootCAs != nil {
 					tc.checkRootCAs(t, tlsConfig)
@@ -413,6 +414,159 @@ func TestSentinelOptionsWithRedissSchemeTLS(t *testing.T) {
 					require.NotNil(t, options.SentinelTLSConfig)
 				} else {
 					require.Nil(t, options.SentinelTLSConfig)
+				}
+			}
+		})
+	}
+}
+
+func TestRedisTLSOptions(t *testing.T) {
+	testCases := []struct {
+		description   string
+		redisConfig   *config.TLSConfig
+		expectedError error
+		expectedCerts int
+		checkRootCAs  func(t *testing.T, tlsConfig *tls.Config)
+	}{
+		{
+			description:   "no tls defined",
+			redisConfig:   nil,
+			expectedError: nil,
+		},
+		{
+			description:   "certificate missing",
+			redisConfig:   &config.TLSConfig{Key: keyFile},
+			expectedError: redisTLSErrors.CertificateNotDefined,
+		},
+		{
+			description:   "key missing",
+			redisConfig:   &config.TLSConfig{Certificate: certFile},
+			expectedError: redisTLSErrors.KeyNotDefined,
+		},
+		{
+			description:   "tls defined with certificate and key",
+			redisConfig:   &config.TLSConfig{Certificate: certFile, Key: keyFile, CACertificate: caCert},
+			expectedCerts: 1,
+			checkRootCAs: func(t *testing.T, tlsConfig *tls.Config) {
+				require.NotNil(t, tlsConfig.RootCAs)
+			},
+		},
+		{
+			description:   "tls defined with only CA certificate",
+			redisConfig:   &config.TLSConfig{CACertificate: caCert},
+			expectedCerts: 0,
+			checkRootCAs: func(t *testing.T, tlsConfig *tls.Config) {
+				require.NotNil(t, tlsConfig.RootCAs)
+			},
+		},
+		{
+			description:   "tls defined without CA certificate uses system store",
+			redisConfig:   &config.TLSConfig{},
+			expectedCerts: 0,
+			checkRootCAs: func(t *testing.T, tlsConfig *tls.Config) {
+				require.Nil(t, tlsConfig.RootCAs)
+			},
+		},
+		{
+			description:   "tls with min and max versions",
+			redisConfig:   &config.TLSConfig{MinVersion: "tls1.2", MaxVersion: "tls1.3"},
+			expectedCerts: 0,
+			checkRootCAs: func(t *testing.T, tlsConfig *tls.Config) {
+				require.Equal(t, uint16(tls.VersionTLS12), tlsConfig.MinVersion)
+				require.Equal(t, uint16(tls.VersionTLS13), tlsConfig.MaxVersion)
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.description, func(t *testing.T) {
+			tlsConfig, err := redisTLSOptions(tc.redisConfig)
+
+			if tc.expectedError != nil {
+				require.ErrorIs(t, err, tc.expectedError)
+			} else {
+				require.NoError(t, err)
+				if tlsConfig != nil {
+					require.Len(t, tlsConfig.Certificates, tc.expectedCerts)
+					if tc.checkRootCAs != nil {
+						tc.checkRootCAs(t, tlsConfig)
+					}
+				}
+			}
+		})
+	}
+}
+
+func TestConfigureRedisWithTLS(t *testing.T) {
+	testCases := []struct {
+		description string
+		scheme      string
+		tlsConfig   *config.TLSConfig
+		expectError bool
+	}{
+		{
+			description: "redis without TLS",
+			scheme:      "redis",
+			tlsConfig:   nil,
+			expectError: false,
+		},
+		{
+			description: "redis with explicit TLS config",
+			scheme:      "redis",
+			tlsConfig:   &config.TLSConfig{Certificate: certFile, Key: keyFile},
+			expectError: false,
+		},
+		{
+			description: "rediss with explicit TLS config",
+			scheme:      "rediss",
+			tlsConfig:   &config.TLSConfig{Certificate: certFile, Key: keyFile},
+			expectError: false,
+		},
+		{
+			description: "redis with TLS CA certificate only",
+			scheme:      "redis",
+			tlsConfig:   &config.TLSConfig{CACertificate: caCert},
+			expectError: false,
+		},
+		{
+			description: "redis with TLS certificate missing key",
+			scheme:      "redis",
+			tlsConfig:   &config.TLSConfig{Certificate: certFile},
+			expectError: true,
+		},
+		{
+			description: "redis with TLS key missing certificate",
+			scheme:      "redis",
+			tlsConfig:   &config.TLSConfig{Key: keyFile},
+			expectError: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.description, func(t *testing.T) {
+			connectReceived := atomic.Value{}
+			a := mockRedisServer(t, &connectReceived)
+
+			parsedURL := helper.URLMustParse(tc.scheme + "://" + a)
+			redisCfg := &config.RedisConfig{
+				URL: config.TomlURL{URL: *parsedURL},
+				TLS: tc.tlsConfig,
+			}
+			cfg := &config.Config{Redis: redisCfg}
+
+			rdb, err := Configure(cfg)
+
+			if tc.expectError {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+				require.NotNil(t, rdb)
+				defer rdb.Close()
+
+				// Verify TLS config is set when provided
+				if tc.tlsConfig != nil {
+					opt := rdb.Options()
+					require.NotNil(t, opt.TLSConfig)
 				}
 			}
 		})

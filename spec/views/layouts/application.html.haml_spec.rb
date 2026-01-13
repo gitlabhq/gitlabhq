@@ -54,16 +54,15 @@ RSpec.describe 'layouts/application' do
 
   context 'when user is not signed in' do
     before do
-      allow(view).to receive(:project_studio_enabled?).and_return(false)
       allow(view).to receive(:current_user).and_return(nil)
       allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(nil))
-    end
-
-    it 'renders the new marketing header for logged-out users' do
       allow(view).to receive(:render)
       allow(view).to receive(:render).with({ template: "layouts/application" }, {}).and_call_original
+    end
+
+    it 'renders the new global topbar' do
       render
-      expect(view).to have_received(:render).with({ partial: "layouts/header/super_sidebar_logged_out" })
+      expect(rendered).to have_css('.super-topbar')
     end
   end
 end

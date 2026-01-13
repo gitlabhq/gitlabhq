@@ -64,6 +64,14 @@ const javascriptsPath = path.resolve(assetsPath, 'javascripts');
 
 const emptyComponent = path.resolve(javascriptsPath, 'vue_shared/components/empty_component.js');
 
+const vueRule = webpackConfig.module.rules.find((rule) => rule.test?.toString() === '/\\.vue$/');
+if (!vueRule?.options?.compilerOptions) {
+  throw new Error(
+    'Could not find compilerOptions in webpack config for .vue rule. ' +
+      'Please ensure webpack.config.js has a .vue rule with options.compilerOptions defined.',
+  );
+}
+
 const EE_ALIAS_FALLBACK = [
   {
     find: /^ee_component\/(.*)\.vue/,
@@ -124,9 +132,7 @@ export default defineConfig({
     vue({
       template: {
         compiler: USE_VUE3 ? vue3migrationCompiler : undefined,
-        compilerOptions: {
-          whitespace: 'preserve',
-        },
+        compilerOptions: vueRule.options.compilerOptions,
       },
     }),
     graphql(),
@@ -190,6 +196,13 @@ export default defineConfig({
     format: 'es',
   },
   optimizeDeps: {
+    esbuildOptions: {
+      define: {
+        __VUE_OPTIONS_API__: 'true',
+        __VUE_PROD_DEVTOOLS__: 'false',
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false',
+      },
+    },
     exclude: ['@gitlab/ui'],
     include: [
       // When building @gitlab/ui from source, lodash imports fail in vite because lodash publishes commonjs modules.

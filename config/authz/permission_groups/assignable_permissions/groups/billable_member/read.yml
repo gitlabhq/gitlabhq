@@ -1,0 +1,7 @@
+---
+name: read_billable_member
+description: Grants the ability to read billable members of a group
+permissions:
+  - read_billable_member
+boundaries:
+  - group

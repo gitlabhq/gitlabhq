@@ -191,7 +191,7 @@ export default {
     markdownPreviewPath() {
       const notable = this.getNoteableData.preview_note_path;
 
-      const previewSuggestions = this.line && this.diffParams;
+      const previewSuggestions = Boolean(this.line && this.diffParams);
       const params = previewSuggestions
         ? {
             preview_suggestions: previewSuggestions,

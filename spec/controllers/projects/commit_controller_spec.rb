@@ -36,7 +36,19 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
         go(id: commit.id)
 
         expect(response).to be_ok
-        expect(assigns(:ref)).to eq commit.id
+      end
+
+      context 'with legacy diffs' do
+        before do
+          stub_feature_flags(rapid_diffs_on_commit_show: false)
+        end
+
+        it 'assigns ref' do
+          go(id: commit.id)
+
+          expect(response).to be_ok
+          expect(assigns(:ref)).to eq commit.id
+        end
       end
 
       context 'when a pipeline job is running' do

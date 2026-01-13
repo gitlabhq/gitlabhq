@@ -12,5 +12,5 @@
 
 .container-fluid{ class: [container_class] }
   = render "commit_box"
-  = render "ci_menu"
+  = render "ci_menu", hide_empty: true
   = render ::RapidDiffs::CommitAppComponent.new(@rapid_diffs_presenter)

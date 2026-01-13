@@ -1,5 +1,10 @@
 const { parse, compile: compilerDomCompile } = require('@vue/compiler-dom');
 
+// Custom elements that should not be resolved as Vue components
+// Defined here because webpack 4 cannot serialize functions in loader options
+const CUSTOM_ELEMENTS = ['gl-emoji', 'fe-island-duo-next', 'fe-island-visual-ci-editor'];
+const isCustomElement = (tag) => CUSTOM_ELEMENTS.includes(tag);
+
 const COMMENT_NODE_TYPE = 3;
 
 const hasProp = (node, prop) => node.props?.some((p) => p.name === prop);
@@ -96,6 +101,7 @@ function fixSameSlotsInsideTemplateFailingWhenUsingWhitespacePreserveDueToIssue6
 }
 
 module.exports = {
+  isCustomElement,
   parse,
   compile(template, options) {
     const rootNode = parse(template, options);
@@ -121,6 +127,6 @@ module.exports = {
       }
     }
 
-    return compilerDomCompile(rootNode, options);
+    return compilerDomCompile(rootNode, { isCustomElement, ...options });
   },
 };

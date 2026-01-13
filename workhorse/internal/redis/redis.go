@@ -39,11 +39,29 @@ var (
 		[]string{"type", "dst"},
 	)
 
-	errSentinelTLSNotDefined            = fmt.Errorf("configuration Sentinel.tls not defined")
-	errSentinelTLSCertificateNotDefined = fmt.Errorf("configuration Sentinel.tls.certificate not defined")
-	errSentinelTLSKeyNotDefined         = fmt.Errorf("configuration Sentinel.tls.key not defined")
-	errSentinelTLSCannotAppendPEM       = fmt.Errorf("cannot append PEM certificate from CACertificate path")
-	errSentinelInconsistentSchemes      = fmt.Errorf("inconsistent sentinel URL schemes: use all non-TLS (redis:// or tcp://) or all TLS (rediss://)")
+	errSentinelTLSNotDefined       = fmt.Errorf("configuration Sentinel.tls not defined")
+	errSentinelInconsistentSchemes = fmt.Errorf("inconsistent sentinel URL schemes: use all non-TLS (redis:// or tcp://) or all TLS (rediss://)")
+)
+
+// TLSErrorMessages holds context-specific error messages for TLS configuration
+type TLSErrorMessages struct {
+	CertificateNotDefined error
+	KeyNotDefined         error
+	CannotAppendPEM       error
+}
+
+var (
+	sentinelTLSErrors = TLSErrorMessages{
+		CertificateNotDefined: fmt.Errorf("configuration Sentinel.tls.certificate not defined"),
+		KeyNotDefined:         fmt.Errorf("configuration Sentinel.tls.key not defined"),
+		CannotAppendPEM:       fmt.Errorf("cannot append PEM certificate from from Sentinel.tls.ca_certificate path"),
+	}
+
+	redisTLSErrors = TLSErrorMessages{
+		CertificateNotDefined: fmt.Errorf("configuration redis.tls.certificate not defined"),
+		KeyNotDefined:         fmt.Errorf("configuration redis.tls.key not defined"),
+		CannotAppendPEM:       fmt.Errorf("cannot append PEM certificate from redis.tls.ca_certificate path"),
+	}
 )
 
 const (
@@ -199,7 +217,16 @@ func configureRedis(cfg *config.RedisConfig) (*redis.Client, error) {
 	opt.ReadTimeout = defaultReadTimeout
 	opt.WriteTimeout = defaultWriteTimeout
 
-	// ParseURL seeds TLSConfig if schems is rediss
+	// Explicit TLS configuration takes precedence over scheme-based detection
+	if cfg.TLS != nil {
+		tlsConfig, err := redisTLSOptions(cfg.TLS)
+		if err != nil {
+			return nil, err
+		}
+		opt.TLSConfig = tlsConfig
+	}
+
+	// ParseURL seeds TLSConfig if scheme is rediss
 	opt.Dialer = createDialer([]string{}, opt.TLSConfig)
 
 	return redis.NewClient(opt), nil
@@ -303,53 +330,67 @@ func sentinelOptions(cfg *config.Config) (SentinelOptions, error) {
 	return SentinelOptions{sentinelUsername, sentinelPassword, sentinels, sentinelTLSConfig}, nil
 }
 
-func sentinelTLSOptions(sentinelCfg *config.SentinelConfig) (*tls.Config, error) {
-	if sentinelCfg == nil || sentinelCfg.TLS == nil {
-		return nil, errSentinelTLSNotDefined
+// buildTLSConfig constructs a tls.Config from TLSConfig settings.
+// The errs parameter provides context-specific error messages for different scenarios.
+func buildTLSConfig(tlsCfg *config.TLSConfig, errs TLSErrorMessages) (*tls.Config, error) {
+	if tlsCfg == nil {
+		return nil, nil
 	}
 
 	tlsConfig := &tls.Config{ //nolint:gosec
-		MinVersion: config.TLSVersions[sentinelCfg.TLS.MinVersion],
-		MaxVersion: config.TLSVersions[sentinelCfg.TLS.MaxVersion],
+		MinVersion: config.TLSVersions[tlsCfg.MinVersion],
+		MaxVersion: config.TLSVersions[tlsCfg.MaxVersion],
 	}
 
 	// By default, use the system store if a CA certificate is not specified
-	if sentinelCfg.TLS.CACertificate != "" {
+	if tlsCfg.CACertificate != "" {
 		certPool := x509.NewCertPool()
 
-		certs, err := os.ReadFile(sentinelCfg.TLS.CACertificate)
+		certs, err := os.ReadFile(tlsCfg.CACertificate)
 		if err != nil {
 			return nil, err
 		}
 
 		ok := certPool.AppendCertsFromPEM(certs)
 		if !ok {
-			return nil, errSentinelTLSCannotAppendPEM
+			return nil, errs.CannotAppendPEM
 		}
 
 		tlsConfig.RootCAs = certPool
 	}
 
 	// Client certificates are optional
-	if sentinelCfg.TLS.Certificate == "" && sentinelCfg.TLS.Key == "" {
+	if tlsCfg.Certificate == "" && tlsCfg.Key == "" {
 		return tlsConfig, nil
 	}
 
-	if sentinelCfg.TLS.Certificate == "" {
-		return nil, errSentinelTLSCertificateNotDefined
+	if tlsCfg.Certificate == "" {
+		return nil, errs.CertificateNotDefined
 	}
 
-	if sentinelCfg.TLS.Key == "" {
-		return nil, errSentinelTLSKeyNotDefined
+	if tlsCfg.Key == "" {
+		return nil, errs.KeyNotDefined
 	}
 
-	cert, err := tls.LoadX509KeyPair(sentinelCfg.TLS.Certificate, sentinelCfg.TLS.Key)
+	cert, err := tls.LoadX509KeyPair(tlsCfg.Certificate, tlsCfg.Key)
 	if err != nil {
 		return nil, err
 	}
 	tlsConfig.Certificates = []tls.Certificate{cert}
 
 	return tlsConfig, nil
+}
+
+func redisTLSOptions(tlsCfg *config.TLSConfig) (*tls.Config, error) {
+	return buildTLSConfig(tlsCfg, redisTLSErrors)
+}
+
+func sentinelTLSOptions(sentinelCfg *config.SentinelConfig) (*tls.Config, error) {
+	if sentinelCfg == nil || sentinelCfg.TLS == nil {
+		return nil, errSentinelTLSNotDefined
+	}
+
+	return buildTLSConfig(sentinelCfg.TLS, sentinelTLSErrors)
 }
 
 func getOrDefault(ptr *int, val int) int {

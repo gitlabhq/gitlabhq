@@ -65,7 +65,6 @@ export const initAdminUsersApp = (el = document.querySelector('#js-admin-users-a
 
 export const initDeleteUserModals = () => {
   return new Vue({
-    functional: true,
     render: (createElement) =>
       createElement(DeleteUserModal, {
         props: {

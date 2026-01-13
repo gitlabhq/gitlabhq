@@ -1,4 +1,4 @@
-import { escapeRegExp, kebabCase } from 'lodash';
+import { escapeRegExp, kebabCase, isEmpty, unionBy } from 'lodash';
 import { ref } from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { joinPaths, queryToObject } from '~/lib/utils/url_utility';
@@ -525,4 +525,25 @@ export function getLastUsedWorkItemTypeIdForNamespace(namespaceFullPath) {
     return localStorage.getItem(storageKey);
   }
   return null;
+}
+
+export function combineWorkItemLists(slimList, fullList) {
+  if (isEmpty(fullList)) return slimList;
+
+  return fullList.map((fullItem) => {
+    const slimVersion = slimList.find((item) => item.id === fullItem.id);
+    const combinedWidgets = unionBy(fullItem.widgets, slimVersion?.widgets, 'type');
+    return {
+      ...fullItem,
+      widgets: combinedWidgets.reduce((acc, widget) => {
+        const slimWidget = slimVersion?.widgets.find((w) => w.type === widget.type);
+        const widgetToUse =
+          slimWidget && Object.keys(slimWidget).length > Object.keys(widget).length
+            ? slimWidget
+            : widget;
+        acc.push(widgetToUse);
+        return acc;
+      }, []),
+    };
+  });
 }

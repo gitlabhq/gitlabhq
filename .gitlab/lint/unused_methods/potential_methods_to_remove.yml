@@ -313,8 +313,6 @@ app/models/merge_request.rb:
 - find_assignee
 app/models/merge_request_diff.rb:
 - migrate_files_to_database!
-app/models/ml/experiment.rb:
-- count_for_project
 app/models/namespace.rb:
 - send_update_instructions
 - any_project_with_pages_deployed?

@@ -20,7 +20,7 @@ import IssuableBulkEditSidebar from './issuable_bulk_edit_sidebar.vue';
 import IssuableItem from './issuable_item.vue';
 import IssuableTabs from './issuable_tabs.vue';
 
-const VueDraggable = () => import('vuedraggable');
+const VueDraggable = () => import('~/lib/utils/vue3compat/draggable_compat.vue');
 
 export default {
   vueDraggableAttributes: {
@@ -448,6 +448,8 @@ export default {
       <component
         :is="issuablesWrapper"
         v-if="issuables.length > 0"
+        :value="issuables"
+        item-key="id"
         class="content-list issuable-list issues-list"
         :class="{ 'manual-ordering': isManualOrdering }"
         v-bind="$options.vueDraggableAttributes"

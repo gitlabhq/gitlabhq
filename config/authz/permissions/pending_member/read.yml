@@ -1,0 +1,5 @@
+---
+name: read_pending_member
+description: Grants the ability to read pending members
+boundaries:
+  - group

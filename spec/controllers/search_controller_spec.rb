@@ -619,6 +619,17 @@ RSpec.describe SearchController, feature_category: :global_search do
           get(:count, params: { search: 'foo@bar.com', scope: 'users' })
         end
       end
+
+      it 'increments the custom search sli apdex' do
+        expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_apdex).with(
+          elapsed: a_kind_of(Numeric),
+          search_scope: 'projects',
+          search_type: 'basic',
+          search_level: 'global'
+        )
+
+        get :count, params: { search: 'hello', scope: 'projects' }
+      end
     end
 
     describe 'GET #autocomplete' do
@@ -707,6 +718,17 @@ RSpec.describe SearchController, feature_category: :global_search do
         end
 
         let_it_be(:namespace) { create(:group) }
+      end
+
+      it 'increments the custom search sli apdex' do
+        expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_apdex).with(
+          elapsed: a_kind_of(Numeric),
+          search_scope: 'projects',
+          search_type: 'basic',
+          search_level: 'global'
+        )
+
+        get :autocomplete, params: { term: 'setting', scope: 'projects' }
       end
     end
 

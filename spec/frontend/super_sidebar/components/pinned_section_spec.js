@@ -29,6 +29,9 @@ describe('PinnedSection component', () => {
         items: [{ id: 'pin1', title: 'Pin 1', href: '/page1' }],
         ...props,
       },
+      stubs: {
+        Draggable: true,
+      },
     });
   };
 

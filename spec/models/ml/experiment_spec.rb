@@ -185,10 +185,4 @@ RSpec.describe Ml::Experiment, feature_category: :mlops do
       is_expected.to match_array([exp, exp2])
     end
   end
-
-  describe '.count_for_project' do
-    subject { described_class.count_for_project(exp.project_id) }
-
-    it { is_expected.to be(3) }
-  end
 end

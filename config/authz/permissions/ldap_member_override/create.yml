@@ -1,0 +1,5 @@
+---
+name: create_ldap_member_override
+description: Grants the ability to overrides the access level of an LDAP group member
+boundaries:
+  - group

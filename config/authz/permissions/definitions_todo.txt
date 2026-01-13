@@ -447,7 +447,6 @@ read_application_setting
 read_application_statistics
 read_approvers
 read_attestation
-read_billable_member
 read_billing
 read_blob
 read_branch_rule

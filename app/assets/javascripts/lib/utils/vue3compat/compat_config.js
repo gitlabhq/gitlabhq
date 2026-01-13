@@ -28,9 +28,6 @@ export const compatConfig = {
   OPTIONS_DESTROYED: 'suppress-warning',
   ATTR_FALSE_VALUE: 'suppress-warning',
 
-  COMPILER_V_ON_NATIVE: 'suppress-warning',
-  COMPILER_V_BIND_OBJECT_ORDER: 'suppress-warning',
-
   CONFIG_WHITESPACE: 'suppress-warning',
   CONFIG_OPTION_MERGE_STRATS: 'suppress-warning',
   PRIVATE_APIS: 'suppress-warning',

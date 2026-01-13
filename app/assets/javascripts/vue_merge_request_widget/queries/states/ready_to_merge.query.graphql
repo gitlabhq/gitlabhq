@@ -1,5 +1,6 @@
 #import "./ready_to_merge.fragment.graphql"
 
+# @feature_category: code_review_workflow
 query readyToMerge($projectPath: ID!, $iid: String!) {
   project(fullPath: $projectPath) {
     id

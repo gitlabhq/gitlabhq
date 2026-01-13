@@ -523,7 +523,7 @@ export default class MergeRequestTabs {
         commitsDiv.innerHTML += html;
         localTimeAgo(commitsDiv.querySelectorAll('.js-timeago'));
         this.commitsLoaded = true;
-        scrollToContainer('#commits');
+        scrollToElement('#commits');
 
         const loadMoreButton = document.querySelector('.js-load-more-commits');
 

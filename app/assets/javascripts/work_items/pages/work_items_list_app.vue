@@ -10,7 +10,7 @@ import {
   GlAlert,
 } from '@gitlab/ui';
 import produce from 'immer';
-import { isEmpty, unionBy } from 'lodash';
+import { isEmpty } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -141,7 +141,7 @@ import workItemsReorderMutation from '../graphql/work_items_reorder.mutation.gra
 import EmptyStateWithAnyIssues from '../list/components/empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from '../list/components/empty_state_without_any_issues.vue';
 import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
-import { findHierarchyWidget } from '../utils';
+import { combineWorkItemLists, findHierarchyWidget } from '../utils';
 import getUserWorkItemsPreferences from '../graphql/get_user_preferences.query.graphql';
 
 const EmojiToken = () =>
@@ -266,7 +266,6 @@ export default {
       error: undefined,
       bulkEditInProgress: false,
       filterTokens: [],
-      hasAnyIssues: false,
       isInitialLoadComplete: false,
       pageInfo: {},
       pageParams: {},
@@ -286,7 +285,7 @@ export default {
       workItemTypes: [],
       isLoggedIn: isLoggedIn(),
       isSortKeyInitialized: !this.isLoggedIn,
-      hasWorkItems: null,
+      hasWorkItems: false,
       workItemsCount: null,
     };
   },
@@ -435,10 +434,8 @@ export default {
         this.error = s__('WorkItem|An error occurred while getting work item counts.');
         Sentry.captureException(error);
       },
-      result({ data }) {
-        const count = data?.namespace?.workItems.nodes.length || 0;
+      result() {
         if (!this.isInitialLoadComplete) {
-          this.hasAnyIssues = Boolean(count);
           this.isInitialLoadComplete = true;
           this.initialLoadWasFiltered = this.filterTokens.length > 0;
         }
@@ -464,16 +461,11 @@ export default {
       return this.isServiceDeskList && this.isServiceDeskSupported && this.hasWorkItems;
     },
     workItems() {
-      if (this.workItemsFull.length > 0 && this.workItemsSlim.length > 0 && !this.detailLoading) {
-        return this.combineSlimAndFullLists(this.workItemsSlim, this.workItemsFull);
-      }
-
-      return this.workItemsSlim;
+      return combineWorkItemLists(this.workItemsSlim, this.workItemsFull);
     },
     shouldShowList() {
       return (
         this.hasWorkItems === true ||
-        this.hasAnyIssues ||
         this.error ||
         this.initialLoadWasFiltered ||
         this.workItems.length > 0 ||
@@ -945,7 +937,7 @@ export default {
   watch: {
     eeWorkItemUpdateCount() {
       // Only reset isInitialLoadComplete when there's no issues to minimize unmounting IssuableList
-      if (!this.hasAnyIssues) {
+      if (!this.hasWorkItems) {
         this.isInitialLoadComplete = false;
       }
       this.$apollo.queries.workItemStateCounts.refetch();
@@ -996,26 +988,6 @@ export default {
     setPageDefaultWidth();
   },
   methods: {
-    combineSlimAndFullLists(slim, full) {
-      const findSlimItem = (id) => slim.find((item) => item.id === id);
-
-      return full.map((fullItem) => {
-        const slimVersion = findSlimItem(fullItem.id);
-        const combinedWidgets = unionBy(fullItem.widgets, slimVersion?.widgets, 'type');
-        return {
-          ...fullItem,
-          widgets: combinedWidgets.reduce((acc, widget) => {
-            const slimWidget = slimVersion?.widgets.find((w) => w.type === widget.type);
-            if (slimWidget && Object.keys(slimWidget).length > Object.keys(widget).length) {
-              acc.push(slimWidget);
-            } else {
-              acc.push(widget);
-            }
-            return acc;
-          }, []),
-        };
-      });
-    },
     handleListDataResults(listData) {
       this.pageInfo = listData?.namespace?.workItems.pageInfo ?? {};
 
@@ -1683,7 +1655,7 @@ export default {
           <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab">
             <template v-if="isServiceDeskList">
               <empty-state-with-any-tickets
-                v-if="hasAnyIssues"
+                v-if="hasWorkItems"
                 :has-search="hasSearch"
                 :is-open-tab="isOpenTab"
               />
@@ -1691,7 +1663,7 @@ export default {
             </template>
 
             <empty-state-with-any-issues
-              v-else-if="hasAnyIssues"
+              v-else-if="hasWorkItems"
               :has-search="hasSearch"
               :is-open-tab="isOpenTab"
               :is-epic="isEpicsList"

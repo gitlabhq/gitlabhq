@@ -35,6 +35,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
 const WEBPACK_VERSION = require('webpack/package.json').version;
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const { isCustomElement } = require('./vue3migration/compiler');
 
 const {
   IS_EE,
@@ -230,6 +231,9 @@ const vueLoaderOptions = {
     VUE_LOADER_VERSION,
     EXPLICIT_VUE_VERSION,
   ].join('|'),
+  compilerOptions: {
+    whitespace: 'preserve',
+  },
 };
 
 const shouldExcludeFromCompiling = (modulePath) => {
@@ -274,6 +278,17 @@ if (USE_VUE3) {
   });
 
   vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/compiler.js');
+  vueLoaderOptions.compilerOptions.compatConfig = {
+    MODE: 2,
+
+    COMPILER_V_BIND_OBJECT_ORDER: 'suppress-warning',
+    COMPILER_V_BIND_SYNC: 'suppress-warning',
+    COMPILER_V_IF_V_FOR_PRECEDENCE: 'suppress-warning',
+    COMPILER_V_ON_NATIVE: 'suppress-warning',
+  };
+  // Has no real effect here, since we're using thread-loader which serializes config passing to threads
+  // Implemented in custom compiler itself instead, kept here for future upgrade and consistency with vite
+  vueLoaderOptions.compilerOptions.isCustomElement = isCustomElement;
 }
 
 const entriesState = {
@@ -927,6 +942,15 @@ module.exports = {
       ...(IS_PRODUCTION ? {} : { LIVE_RELOAD: DEV_SERVER_LIVERELOAD }),
       'process.env.PDF_JS_WORKER_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_PUBLIC_PATH),
       'process.env.PDF_JS_CMAPS_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_PUBLIC_PATH),
+      // Vue 3 feature flags - https://link.vuejs.org/feature-flags
+      // These are required for the esm-bundler build of Vue to enable proper tree-shaking
+      ...(USE_VUE3
+        ? {
+            __VUE_OPTIONS_API__: JSON.stringify(true),
+            __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
+            __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
+          }
+        : {}),
     }),
 
     /* Pikaday has a optional dependency to moment.

@@ -27,8 +27,6 @@ module NavHelper
   end
 
   def super_sidebar_loading_state_class
-    return '' unless project_studio_enabled?
-
     cookies['super_sidebar_collapsed'] == 'true' ? 'super-sidebar-is-icon-only' : ''
   end
 

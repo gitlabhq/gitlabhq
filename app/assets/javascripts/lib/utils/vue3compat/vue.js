@@ -19,7 +19,7 @@ class GitLabPatchedVue extends VueCompatOriginal {
     }
     super(config, ...rest);
     if (originalEl) {
-      originalEl.parentNode.replaceChild(config.el, originalEl);
+      originalEl?.replaceWith(config.el);
     }
   }
 }

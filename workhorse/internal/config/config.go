@@ -135,6 +135,7 @@ type RedisConfig struct {
 	DB               *int
 	MaxIdle          *int
 	MaxActive        *int
+	TLS              *TLSConfig `toml:"tls" json:"tls"`
 }
 
 // SentinelConfig contains configuration options specifically for Sentinel

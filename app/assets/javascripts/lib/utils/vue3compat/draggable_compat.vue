@@ -20,7 +20,11 @@ export default {
       required: true,
     },
   },
-  emits: ['update:modelValue', 'input', 'start', 'end'],
+  compatConfig: {
+    MODE: 3,
+    COMPONENT_V_MODEL: false,
+  },
+  emits: ['update:modelValue', 'input', 'start', 'end', 'update', 'change'],
   computed: {
     isVue3() {
       return Boolean(this.$);
@@ -38,13 +42,6 @@ export default {
     },
   },
   methods: {
-    onChange() {
-      if (this.isVue3) {
-        this.$emit('update:modelValue', this.internalList);
-      } else {
-        this.$emit('input', this.internalList);
-      }
-    },
     itemSlot(element) {
       if (!this.isVue3) return null;
       const children = this.$scopedSlots.default ? this.$scopedSlots.default()[0].children : [];
@@ -63,6 +60,9 @@ export default {
     <template #default>
       <slot></slot>
     </template>
+    <template #footer>
+      <slot name="footer"></slot>
+    </template>
   </draggable>
 
   <!-- Vue 3 mode: render item slot with correct props -->
@@ -71,12 +71,17 @@ export default {
     v-bind="$attrs"
     :model-value="internalList"
     :item-key="itemKey"
-    @change="onChange"
+    @change="$emit('change', $event)"
     @start="$emit('start', $event)"
     @end="$emit('end', $event)"
+    @update="$emit('update', $event)"
+    @update:model-value="$emit('update:modelValue', $event)"
   >
     <template #item="slotProps">
       <component :is="itemSlot(slotProps.element)" v-bind="slotProps" />
+    </template>
+    <template #footer>
+      <slot name="footer"></slot>
     </template>
   </draggable>
 </template>

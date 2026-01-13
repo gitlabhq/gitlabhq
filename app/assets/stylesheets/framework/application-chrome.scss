@@ -245,8 +245,7 @@
 
   // Unset fixed positions
   #js-peek,
-  #super-sidebar,
-  .header-logged-out {
+  #super-sidebar {
     @apply gl-relative #{!important};
     @apply gl-top-0;
   }
